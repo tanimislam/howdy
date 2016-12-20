@@ -1,13 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 import os, sys, glob
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from optparse import OptionParser
-
-sys.path.append( os.path.dirname( os.path.dirname(
-    os.path.abspath( __file__ ) ) ) )
-from plexstuff import plextmdb_gui, plexcore_gui
+mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
+sys.path.append( mainDir )
+from plextmdb import plextmdb_gui
+from plexcore import plexcore_gui
 
 parser = OptionParser( )
 parser.add_option('--movie', dest='movie', type=str, action='store',

@@ -3,7 +3,7 @@
 import pypandoc, glob, os, sys, textwrap
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from plexstuff import mainDir
+from plexcore import mainDir
 
 def checkValidLaTeX( myString ):
     try:

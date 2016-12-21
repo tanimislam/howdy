@@ -11,6 +11,8 @@ def main( ):
                       help = 'The episode string, in the form S%02dE%02d.' )
     parser.add_option('--summary', dest='do_summary', action='store_true', default = False,
                       help = 'If chosen, get a summary of all the seasons and episodes for the SERIES.')
+    parser.add_option('--season', dest='season', action='store', type=int,
+                      help = 'If chosen, get a list of all episode titles for this season of the SERIES.')
     opts, args = parser.parse_args( )
     assert( opts.series is not None )
     if opts.do_summary:
@@ -19,11 +21,24 @@ def main( ):
         if epdicts is None:
             print 'Error, could not find %s' % seriesName
             return
-        seasons = set( xrange( 1, max( epdicts.keys( ) ) + 1 ) ) - set( epdicts.keys( ) )
+        seasons = set( xrange( 1, max( epdicts.keys( ) ) + 1 ) ) & set( epdicts.keys( ) )
         print '%d episodes for %s' % ( sum(map(lambda seasno: len( epdicts[ seasno ] ), seasons ) ),
                                        seriesName )
         for seasno in sorted( seasons ):
-            print 'SEASON %02d: %d episides' % ( season, len( epdicts[ seasno ] ) )
+            print 'SEASON %02d: %d episodes' % ( seasno, len( epdicts[ seasno ] ) )
+    elif opts.season is not None:
+        seriesName = opts.series.strip( )
+        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName )
+        if epdicts is None:
+            print 'Error, could not find %s' % seriesName
+            return
+        if opts.season not in epdicts:
+            print 'Error, season %02d not in %s.' % ( opts.season, seriesName )
+            return
+        print '%d episodes in SEASON %02d of %s.' % ( len( epdicts[ opts.season ] ), opts.season, seriesName )
+        for epnum in sorted( epdicts[ opts.season ] ):
+            print 'Episode %02d/%02d: %s' % ( epnum, len( epdicts[ opts.season ] ),
+                                              epdicts[ opts.season ][ epnum ] )
     else:
         assert( opts.epstring is not None )
         seriesName = opts.series.strip( )

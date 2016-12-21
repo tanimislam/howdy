@@ -1,7 +1,8 @@
-#!/usr/bin/env python
-
 import xdg.BaseDirectory, os, requests, logging, sys, webbrowser
-from ConfigParser import RawConfigParser
+try:
+    from ConfigParser import RawConfigParser
+except:
+    from configparser import RawConfigParser
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from . import plexcore

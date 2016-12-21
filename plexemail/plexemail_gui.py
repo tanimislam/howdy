@@ -3,7 +3,10 @@ import json, re, urllib, time
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from ConfigParser import RawConfigParser
+try:
+    from ConfigParser import RawConfigParser
+except:
+    from configparser import RawConfigParser
 from . import plexemail_basegui, mainDir, plexemail
 sys.path.append( mainDir )
 from plexcore import plexcore
@@ -180,7 +183,7 @@ class PlexEmailGUI( QWidget ):
             
         def checkValidLaTeX( self ):
             myStr = unicode( self.textEdit.toPlainText( ).toUtf8( ), encoding='UTF-8').strip( )
-            mainText = unicode("""
+            mainText = r"""
             \documentclass[12pt, fleqn]{article}
             \usepackage{amsmath, amsfonts, graphicx, hyperref}
 
@@ -191,7 +194,7 @@ class PlexEmailGUI( QWidget ):
             %s
 
             \end{document}
-            """ % ( str( self.sectionNameWidget.text( ) ).strip( ), myStr ) )                    
+            """ % myStr
             htmlString = plexcore.latexToHTML( mainText )
             if htmlString is None:
                 self.isValidLaTeX = False
@@ -301,10 +304,10 @@ class PlexEmailGUI( QWidget ):
         postambleText, pngDataPOST = self.postambleDialog.sendValidLaTeX( )
         pngData = dict( pngDataPRE.items( ) + pngDataPOST.items( ) )
         if len(pngData) != len(pngDataPRE) + len( pngDataPOST ) and len(pngData) != 0:
-            print 'ERROR, MUST HAVE SOME INTERSECTIONS IN PNG FILE NAMES.'
-            print 'COMMON PNG FILES: %s.' % sorted( set( pngDataPRE.keys( ) ) &
-                                                    set( pngDataPOST.keys( ) ) )
-            print "I HOPE YOU KNOW WHAT YOU'RE DOING."
+            print( 'ERROR, MUST HAVE SOME INTERSECTIONS IN PNG FILE NAMES.' )
+            print( 'COMMON PNG FILES: %s.' % sorted( set( pngDataPRE.keys( ) ) &
+                                                     set( pngDataPOST.keys( ) ) ) )
+            print( "I HOPE YOU KNOW WHAT YOU'RE DOING." )
         htmlString = plexemail.get_summary_html( preambleText = preambleText,
                                                  postambleText = postambleText,
                                                  pngDataDict = pngData,

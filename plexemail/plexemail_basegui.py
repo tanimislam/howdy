@@ -2,8 +2,10 @@ import os, sys, base64, numpy, glob, hashlib, requests
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PIL import Image
-from cStringIO import StringIO
-from imgurpython import ImgurClient
+try:
+    from cStringIO import StringIO
+except:
+    from io import StringIO
 
 _clientID = 'c3d1a164052f816'
 _clientSECRET = 'e654905e2777aceb01c62af6305edc4e271ab1a4'

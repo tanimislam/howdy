@@ -32,3 +32,6 @@ def get_gracenote_credentials( ):
     if not cParser.has_option( 'GRACENOTE', 'userID' ):
         raise ValueError("Error, conf file does not have userID.")
     return cParser.get( "GRACENOTE", "clientID" ), cParser.get( "GRACENOTE", "userID" )
+
+def get_all_stuff( ):
+    pass

@@ -3,7 +3,10 @@ import json, re, urllib, time, glob, multiprocessing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from bs4 import BeautifulSoup
-from ConfigParser import RawConfigParser
+try:
+    from ConfigParser import RawConfigParser
+except:
+    from configparser import RawConfigParser
 from . import plexemail, plexemail_basegui, mainDir
 sys.path.append( mainDir )
 from plexcore import plexcore 
@@ -130,7 +133,7 @@ class PlexEmailMyGUI( QWidget ):
             self.emailSendButton.setEnabled( False )
             self.statusLabel.setText( 'INVALID LaTeX' )
             return            
-        mainText = unicode("""
+        mainText = r"""
         \documentclass[12pt, fleqn]{article}
         \usepackage{amsmath, amsfonts, graphicx, hyperref}
         
@@ -141,7 +144,7 @@ class PlexEmailMyGUI( QWidget ):
         %s
         
         \end{document}
-        """ % myStr )
+        """ % myStr
         html = plexcore.latexToHTML( mainText )
         if html is None:
             self.emailSendButton.setEnabled( False )
@@ -172,7 +175,7 @@ class PlexEmailMyGUI( QWidget ):
         result = qdl.exec_( )
 
     def getHTML( self ):
-        mainText = """
+        mainText = r"""
         \documentclass[12pt, fleqn]{article}
         \usepackage{amsmath, amsfonts, graphicx, hyperref}
         
@@ -183,7 +186,7 @@ class PlexEmailMyGUI( QWidget ):
         %s
         
         \end{document}
-        """ % str( self.mainEmailCanvas.toPlainText( ) ).strip( )
+        """ % unicode( self.mainEmailCanvas.toPlainText( ).toUtf8( ), encoding='UTF-8' ).strip( )
         status, html = _checkValidLaTeX( mainText )
         html = plexcore.processValidHTMLWithPNG( html, self.pngWidget.getAllDataAsDict( ) )
         return status, html

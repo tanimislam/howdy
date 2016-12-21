@@ -1,7 +1,7 @@
 from . import plexinitialization
 pi = plexinitialization.PlexInitialization( )
 
-import os, sys
+import os, sys, xdg
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine

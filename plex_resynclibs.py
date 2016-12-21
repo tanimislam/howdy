@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import requests, lxml.html
 from optparse import OptionParser
@@ -10,29 +10,29 @@ def _print_summary( library_key, library_dict, token = None, fullURL = 'http://l
     fullURL, title, mediatype = data[:3]
     if mediatype == 'movie':
         num_movies, totdur, totsize = data[3:]
-        print ' '.join([ '%s is a movie library.' % library_dict[ library_key ],
-                         'There are %d movies here.' % num_movies,
-                         'The total size of movie media is %s.' %
-                         plexemailstuff.get_formatted_size( totsize ),
-                         'The total duration of movie media is %s.' % 
-                         plexemailstuff.get_formatted_duration( totdur ) ])
+        print( ' '.join([ '%s is a movie library.' % library_dict[ library_key ],
+                          'There are %d movies here.' % num_movies,
+                          'The total size of movie media is %s.' %
+                          plexemailstuff.get_formatted_size( totsize ),
+                          'The total duration of movie media is %s.' % 
+                          plexemailstuff.get_formatted_duration( totdur ) ]) )
     elif mediatype == 'show':
         num_tveps, num_tvshows, totdur, totsize = data[3:]
-        print ' '.join([ '%s is a TV library.' % library_dict[ library_key ],
-                         'There are %d TV files in %d TV shows.' % ( num_tveps, num_tvshows ),
-                         'The total size of TV media is %s.' %
-                         plexemailstuff.get_formatted_size( totsize ),
-                         'The total duration of TV shows is %s.' % 
-                         plexemailstuff.get_formatted_duration( totdur ) ])
+        print( ' '.join([ '%s is a TV library.' % library_dict[ library_key ],
+                          'There are %d TV files in %d TV shows.' % ( num_tveps, num_tvshows ),
+                          'The total size of TV media is %s.' %
+                          plexemailstuff.get_formatted_size( totsize ),
+                          'The total duration of TV shows is %s.' % 
+                          plexemailstuff.get_formatted_duration( totdur ) ]) )
     elif mediatype == 'artist':
         num_songs, num_albums, num_artists, totdur, totsize = data[3:]
-        print ' '.join([ '%s is a music library.' % library_dict[ library_key ],
-                         'There are %d songs made by %d artists in %d albums.' %
-                         ( num_songs, num_artists, num_albums ),
-                         'The total size of music media is %s.' %
-                         plexemailstuff.get_formatted_size( totsize ),
-                         'The total duration of music media is %s.' %
-                         plexemailstuff.get_formatted_duration( totdur ) ])
+        print( ' '.join([ '%s is a music library.' % library_dict[ library_key ],
+                          'There are %d songs made by %d artists in %d albums.' %
+                          ( num_songs, num_artists, num_albums ),
+                          'The total size of music media is %s.' %
+                          plexemailstuff.get_formatted_size( totsize ),
+                          'The total duration of music media is %s.' %
+                          plexemailstuff.get_formatted_duration( totdur ) ]) )
 
 def main( ):
     parser = OptionParser( )
@@ -56,7 +56,7 @@ def main( ):
                       help = 'If chosen, print out all the servers owned by the user.')
     opts, args = parser.parse_args( )
     if not opts.do_remote:
-        assert( len( filter( lambda tok: tok is True, ( opts.do_librarynames, opts.do_refresh, opts.do_summary ) ) ) == 1 )
+        assert( len( list( filter( lambda tok: tok is True, ( opts.do_librarynames, opts.do_refresh, opts.do_summary ) ) ) ) == 1 )
         #
         ## first get the token
         data = plexcore.checkServerCredentials( doLocal = True )
@@ -80,27 +80,27 @@ def main( ):
             return
         _print_summary( library_key, library_dict, token = token )
     else:
-        assert( len( filter( lambda tok: tok is True, ( opts.do_librarynames, opts.do_refresh, opts.do_servernames,
-                                                        opts.do_summary ) ) ) == 1 )
+        assert( len( list( filter( lambda tok: tok is True, ( opts.do_librarynames, opts.do_refresh, opts.do_servernames,
+                                                        opts.do_summary ) ) ) ) == 1 )
         assert( opts.username is not None )
         assert( opts.password is not None )
         token = plexcore.getTokenForUsernamePassword( opts.username, opts.password )
         if token is None:
-            print 'INVALID USERNAME/PASSWORD'
+            print( 'INVALID USERNAME/PASSWORD' )
             return
         server_dicts = plexcore.get_all_servers( token )
         if server_dicts is None:
-            print 'COULD FIND NO SERVERS OWNED OR ACCESIBLE TO %s.' % opts.username
+            print( 'COULD FIND NO SERVERS OWNED OR ACCESIBLE TO %s.' % opts.username )
             return
         if opts.do_servernames:
             server_names = sorted( server_dicts[ 'owned' ].keys( ) )
-            print 'SERVERS OWNED BY %s:' % opts.username
+            print( 'SERVERS OWNED BY %s:' % opts.username )
             for server_name in server_names:
-                print '%s => %s' % ( server_name, server_dicts[ 'owned' ][ server_name ] )
+                print( '%s => %s' % ( server_name, server_dicts[ 'owned' ][ server_name ] ) )
             server_names = sorted( server_dicts[ 'unowned' ].keys( ) )
-            print 'SERVERS ACCESSIBLE TO %s:' % opts.username
+            print( 'SERVERS ACCESSIBLE TO %s:' % opts.username )
             for server_name in server_names:
-                print '%s => %s' % ( server_name, server_dicts[ 'unowned' ][ server_name ] )
+                print( '%s => %s' % ( server_name, server_dicts[ 'unowned' ][ server_name ] ) )
             return
         if opts.servername is None:
             servername = min( server_dicts[ 'owned' ] )

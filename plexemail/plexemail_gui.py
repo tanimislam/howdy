@@ -183,8 +183,8 @@ class PlexEmailGUI( QWidget ):
             
         def checkValidLaTeX( self ):
             myStr = unicode( self.textEdit.toPlainText( ).toUtf8( ), encoding='UTF-8').strip( )
-            mainText = r"""
-            \documentclass[12pt, fleqn]{article}
+            mainText = """
+            \documentclass{article}
             \usepackage{amsmath, amsfonts, graphicx, hyperref}
 
             \\begin{document}

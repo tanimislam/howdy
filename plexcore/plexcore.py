@@ -78,13 +78,15 @@ def latexToHTML( latexString ):
         htmlstring = pypandoc.convert( latexString, 'html', format = 'latex',
                                        extra_args = [ '-s' ] )
         return BeautifulSoup( htmlstring, 'lxml' ).prettify( )
-    except RuntimeError:
+    except RuntimeError as e:
+        logging.debug( '%s' % e )
         return None
 
 def processValidHTMLWithPNG( html, pngDataDict, doEmbed = False ):
     htmlData = BeautifulSoup( html, 'lxml' )
     pngNames = set(filter(lambda name: name.endswith('.png'),
                           map(lambda img: img['src'], htmlData.find_all('img'))))
+    if len( pngNames ) == 0: return htmlData.prettify( )
     if len( pngNames - set( pngDataDict ) ) != 0:
         print( 'ERROR, SOME DEFINED FIGURES IN LATEX DO NOT HAVE IMAGES.' )
         return htmlData.prettify( )

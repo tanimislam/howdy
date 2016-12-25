@@ -133,8 +133,8 @@ class PlexEmailMyGUI( QWidget ):
             self.emailSendButton.setEnabled( False )
             self.statusLabel.setText( 'INVALID LaTeX' )
             return            
-        mainText = r"""
-        \documentclass[12pt, fleqn]{article}
+        mainText = """
+        \documentclass{article}
         \usepackage{amsmath, amsfonts, graphicx, hyperref}
         
         \\begin{document}
@@ -175,8 +175,8 @@ class PlexEmailMyGUI( QWidget ):
         result = qdl.exec_( )
 
     def getHTML( self ):
-        mainText = r"""
-        \documentclass[12pt, fleqn]{article}
+        mainText = """
+        \documentclass{article}
         \usepackage{amsmath, amsfonts, graphicx, hyperref}
         
         \\begin{document}
@@ -207,8 +207,7 @@ class PlexEmailMyGUI( QWidget ):
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
         access_token = plexcore.oauth_get_access_token( )
         for name, email in self.emails_array:
-            plexemail.send_individual_email_full( html.prettify( ),
-                                                  subject, access_token, email, name = name, )
+            plexemail.send_individual_email_full( html, subject, access_token, email, name = name, )
         self.statusLabel.setText( 'EMAILS SENT' )
 
     def testEmail( self ):
@@ -223,7 +222,7 @@ class PlexEmailMyGUI( QWidget ):
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
         access_token = plexcore.oauth_get_access_token( )
         #
-        plexemail.send_individual_email_full( html.prettify( ), subject, access_token,
+        plexemail.send_individual_email_full( html, subject, access_token,
                                               '***REMOVED***.islam@gmail.com',
                                               name = 'Tanim Islam', )
         self.statusLabel.setText( 'EMAILS SENT TO TANIM.ISLAM@GMAIL.COM' )

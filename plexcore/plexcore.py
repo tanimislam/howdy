@@ -183,7 +183,10 @@ def pushCredentials( username, password, name = 'CLIENT' ):
     with open( absPath, 'wb') as openfile:
         cparser.write( openfile )
     os.chmod( absPath, 0o600 )
-    
+
+"""
+get_all_servers and get_owned_servers don't work. Something wrong with servers.xml endpoint
+"""
 def get_all_servers( token ):
     response = requests.get( 'https://plex.tv/pms/servers.xml', params = { 'X-Plex-Token' : token })
     if response.status_code != 200:

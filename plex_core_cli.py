@@ -35,7 +35,7 @@ def main( ):
                                                  opts.do_mapped_friends, opts.do_updateflaskcreds,
                                                  opts.do_justadd ) ) ) == 1 )
     if any(map(lambda tok: tok is None, ( opts.username, opts.password ) ) ):
-        var = plexcore.checkServerCredentials( doLocal = True )
+        var = plexcore.checkServerCredentials( )
         if var is None:
             print 'COULD NOT FIND PLEX SERVER CREDENTIALS OR INVALID USERNAME/PASSWORD COMBO'
             return

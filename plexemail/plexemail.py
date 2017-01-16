@@ -132,8 +132,8 @@ def get_email_contacts_dict( emailList ):
 def get_summary_body( token, nameSection = False, fullURL = 'http://localhost:32400' ):
     # allrows = plexcore.get_allrows( )
     tup_formatting = (
-        plexcore.get_lastupdated_string( dt = plexcore.get_updated_at(
-            fullURLWithPort = fullURL, token = token ) ), #0        
+        plexcore.get_lastupdated_string( dt = plexcore.get_updated_at( token,
+            fullURLWithPort = fullURL ) ), #0
         get_summary_data_freshair_remote( fullURLWithPort = fullURL, token = token ), #1
         _get_itemized_string( get_summary_data_thisamericanlife_remote( fullURLWithPort = fullURL,
                                                                         token = token ) ), #2
@@ -329,12 +329,11 @@ def _get_album_prifile( prifile ):
         return ( prifile, album )
     else: return None
 
-def get_summary_data_freshair_remote( fullURLWithPort = 'http://localhost:32400', token = None ):
+def get_summary_data_freshair_remote( token, fullURLWithPort = 'http://localhost:32400' ):
     libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'NPR Fresh Air' ])
     sinceDate = plexcore.get_current_date_newsletter( )
-    key, num_songs, _, _, totdur, totsizebytes = plexcore._get_library_stats_artist( keynum, fullURL = fullURLWithPort,
-                                                                                                        token = token )
+    key, num_songs, _, _, totdur, totsizebytes = plexcore._get_library_stats_artist( keynum, token, fullURL = fullURLWithPort )
     mainstring = 'There are %d episodes of NPR Fresh Air.'  % num_songs
     sizestring = 'The total size of Fresh Air media is %s.' % \
                  get_formatted_size( totsizebytes )
@@ -342,8 +341,8 @@ def get_summary_data_freshair_remote( fullURLWithPort = 'http://localhost:32400'
                 get_formatted_duration( totdur )
     if sinceDate is not None:
         key, num_songs_since, _, _, \
-            totdur_since, totsizebytes_since = plexcore._get_library_stats_artist( keynum, fullURL = fullURLWithPort,
-                                                                                   token = token, sinceDate = sinceDate )
+            totdur_since, totsizebytes_since = plexcore._get_library_stats_artist( keynum, token, fullURL = fullURLWithPort,
+                                                                                   sinceDate = sinceDate )
         if num_songs_since > 0:
             mainstring_since = ' '.join([ 'Since %s, I have added %d new Fresh Air episodes.' %
                                           ( sinceDate.strftime('%B %d, %Y'), num_songs_since ),
@@ -366,12 +365,11 @@ def get_summary_data_freshair( allrows ):
                 get_formatted_duration( totdur )
     return ' '.join([ mainstring, sizestring, durstring ])
 
-def get_summary_data_thisamericanlife_remote( fullURLWithPort = 'http://localhost:32400', token = None ):
+def get_summary_data_thisamericanlife_remote( token, fullURLWithPort = 'http://localhost:32400' ):
     libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'This American Life' ])
     sinceDate = plexcore.get_current_date_newsletter( )
-    key, song_data = plexcore._get_library_data_artist( keynum, fullURL = fullURLWithPort,
-                                                        token = token )
+    key, song_data = plexcore._get_library_data_artist( keynum, token, fullURL = fullURLWithPort )
     num_episodes = 0
     totdur = 0.0
     totsizebytes = 0.0
@@ -391,8 +389,8 @@ def get_summary_data_thisamericanlife_remote( fullURLWithPort = 'http://localhos
     if sinceDate is None:
         pristrings = [ ' '.join([ mainstring, sizestring, durstring ]), ]
     else:
-        key, song_data_since = plexcore._get_library_data_artist( keynum, fullURL = fullURLWithPort,
-                                                                  token = token, sinceDate = sinceDate )
+        key, song_data_since = plexcore._get_library_data_artist( keynum, token, fullURL = fullURLWithPort,
+                                                                  sinceDate = sinceDate )
         num_episodes_since = 0
         totdur_since = 0.0
         totsizebytes_since = 0.0
@@ -515,12 +513,11 @@ def get_summary_data_music( allrows ):
     musicstring = ' '.join([ mainstring, sizestring, durstring ])
     return musicstring
 
-def get_summary_data_music_remote( fullURLWithPort = 'http://localhost:32400', token = None ):
+def get_summary_data_music_remote( token, fullURLWithPort = 'http://localhost:32400' ):
     libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'Music' ])
     sinceDate = plexcore.get_current_date_newsletter( )
-    key, num_songs, num_albums, num_artists, totdur, totsizebytes = plexcore._get_library_stats_artist( keynum, fullURL = fullURLWithPort,
-                                                                                                        token = token )
+    key, num_songs, num_albums, num_artists, totdur, totsizebytes = plexcore._get_library_stats_artist( keynum, token, fullURL = fullURLWithPort )
     mainstring = 'There are %d songs made by %d artists in %d albums.' % ( num_songs, num_artists, num_albums )
     sizestring = 'The total size of music media is %s.' % \
                  get_formatted_size( totsizebytes )
@@ -530,8 +527,8 @@ def get_summary_data_music_remote( fullURLWithPort = 'http://localhost:32400', t
                 get_formatted_duration( totdur )
     if sinceDate is not None:
         key, num_songs_since, num_albums_since, num_artists_since, \
-            totdur_since, totsizebytes_since = plexcore._get_library_stats_artist( keynum, fullURL = fullURLWithPort,
-                                                                                   token = token, sinceDate = sinceDate )
+            totdur_since, totsizebytes_since = plexcore._get_library_stats_artist( keynum, token, fullURL = fullURLWithPort,
+                                                                                   sinceDate = sinceDate )
         if num_songs_since > 0:
             mainstring_since = ' '.join([ 'Since %s, I have added %d songs made by %d artists in %d albums.' %
                                           ( sinceDate.strftime( '%B %d, %Y' ), num_songs_since, num_artists_since, num_albums_since ),
@@ -558,12 +555,11 @@ def get_summary_data_television( allrows ):
     tvstring = ' '.join([ mainstring, sizestring, durstring ])
     return tvstring
 
-def get_summary_data_television_remote( fullURLWithPort = 'http://localhost:32400', token = None ):
+def get_summary_data_television_remote( token, fullURLWithPort = 'http://localhost:32400' ):
     libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'TV Shows' ])
     sinceDate = plexcore.get_current_date_newsletter( )
-    key, numTVeps, numTVshows, totdur, totsizebytes = plexcore._get_library_stats_show( keynum, fullURL = fullURLWithPort,
-                                                                                        token = token )
+    key, numTVeps, numTVshows, totdur, totsizebytes = plexcore._get_library_stats_show( keynum, token, fullURL = fullURLWithPort )
     sizestring = 'The total size of TV media is %s.' % \
                  get_formatted_size( totsizebytes )
     durstring = 'The total duration of TV media is %s.' % \
@@ -571,8 +567,8 @@ def get_summary_data_television_remote( fullURLWithPort = 'http://localhost:3240
     mainstring = 'There are %d TV files in %d TV shows.' % ( numTVeps, numTVshows )
     if sinceDate is not None:
         key, numTVeps_since, numTVshows_since, \
-            totdur_since, totsizebytes_since = plexcore._get_library_stats_show( keynum, fullURL = fullURLWithPort,
-                                                                                token = token, sinceDate = sinceDate )
+            totdur_since, totsizebytes_since = plexcore._get_library_stats_show( keynum, token, fullURL = fullURLWithPort,
+                                                                                 sinceDate = sinceDate )
         if numTVeps_since > 0:
             mainstring_since = ' '.join([ 'Since %s, I have added %d TV files in %d TV shows.' %
                                           ( sinceDate.strftime('%B %d, %Y'), numTVeps_since, numTVshows_since ),
@@ -583,15 +579,15 @@ def get_summary_data_television_remote( fullURLWithPort = 'http://localhost:3240
     tvstring = ' '.join([ mainstring, sizestring, durstring ])
     return tvstring
 
-def get_summary_data_movies_remote( fullURLWithPort = 'http://localhost:32400', token = None ):
+def get_summary_data_movies_remote( token, fullURLWithPort = 'http://localhost:32400' ):
     libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
     keynum = max(zip(*filter(lambda tup: tup[1] == 'Movies', libraries_dict.items()))[0])
     sinceDate = plexcore.get_current_date_newsletter( )
     _, num_movies, totsizebytes, totdur, \
-        sorted_by_genres = plexcore._get_library_stats_movie( keynum, fullURL = fullURLWithPort, token = token )    
+        sorted_by_genres = plexcore._get_library_stats_movie( keynum, token, fullURL = fullURLWithPort )
     if sinceDate is not None:
         _, num_movies_since, totsizebytes_since, totdur_since, \
-            sorted_by_genres_since = plexcore._get_library_stats_movie( keynum, fullURL = fullURLWithPort, token = token,
+            sorted_by_genres_since = plexcore._get_library_stats_movie( keynum, token, fullURL = fullURLWithPort,
                                                                         sinceDate = sinceDate )
         if num_movies_since > 0:
             mainstring_since = ' '.join([ 'Since %s, I have added %d movies in %d categories.' %
@@ -605,7 +601,7 @@ def get_summary_data_movies_remote( fullURLWithPort = 'http://localhost:32400', 
     durstring = 'The total duration of movie media is %s.' % get_formatted_duration( totdur )
     #
     ## get last 7 movies that I have added
-    lastN_movies = plexcore.get_lastN_movies( 7, fullURLWithPort = fullURLWithPort, token = token )
+    lastN_movies = plexcore.get_lastN_movies( 7, token, fullURLWithPort = fullURLWithPort )
     lastNstrings = [ '', '',
                      'Here are the last %d movies I have added.' % len( lastN_movies ),
                      '\\begin{itemize}' ]

@@ -306,8 +306,7 @@ class TMDBGUI( QWidget ):
         self.token = newToken
 
     def refreshMovies( self ):
-        movie_data_rows, _ = plexcore.fill_out_movies_stuff( fullurl = self.fullURL,
-                                                             token = self.token )
+        movie_data_rows, _ = plexcore.fill_out_movies_stuff( self.token, fullurl = self.fullURL )
         self.fill_out_movies( movie_data_rows )
         self.movieRefreshRows.emit( movie_data_rows )
         

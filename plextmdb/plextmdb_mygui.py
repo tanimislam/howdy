@@ -64,9 +64,6 @@ class TMDBMyGUI( QWidget ):
         self.show( )
 
     def fill_out_movies( self, movie_data_rows ):
-        #if movie_data_rows is None:
-        #    movie_data_rows, _ = plexcore.fill_out_movies_stuff( fullurl = self.fullurl,
-        #                                                         token = self.token )
         genres = sorted( set( map(lambda row: row[-3], movie_data_rows ) ) )
         self.genreComboBox.addItems( genres )
         self.genreComboBox.addItem( 'ALL' )

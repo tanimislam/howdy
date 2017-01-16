@@ -1,4 +1,4 @@
-import sqlite3, shutil, os, glob, datetime, gspread, lxml.html, logging, sys
+import sqlite3, shutil, os, glob, datetime, gspread, logging, sys
 import multiprocessing, tempfile, uuid, requests, pytz, pypandoc
 import xdg.BaseDirectory, urllib, json, oauth2client.file, httplib2
 try:
@@ -127,8 +127,8 @@ def checkClientCredentials( ):
     cparser.read( absPath )
     if not cparser.has_section( secname ):
         return None
-    if any([ not cparser.has_option( secname, opt ) for opt in
-             ('username', 'password' ) ]):
+    if any(map(lambda opt: not cparser.has_option( secname, opt ),
+               ( 'username', 'password' ) ) ):
         return None
     username = cparser.get( secname, 'username' )
     password = cparser.get( secname, 'password' )
@@ -191,27 +191,31 @@ def get_all_servers( token ):
     response = requests.get( 'https://plex.tv/pms/servers.xml', params = { 'X-Plex-Token' : token })
     if response.status_code != 200:
         return None
-    tree = lxml.html.fromstring( response.content )
+    myxml = BeautifulSoup( response.content, 'lxml' )
     server_dict = { }
-    for owned, name in zip(( '0', '1' ), ('unowned', 'owned')):
-        server_elems = filter(lambda elem: len(set([ 'name', 'address', 'port', 'owned' ]) - 
-                                               set( elem.keys() ) ) == 0 and elem.get('owned') == owned,
-                              tree.iter('server') )
-        server_dict[ name ] =  { server_elem.get('name') : '%s:%s' % (
-            server_elem.get('address'), server_elem.get('port') ) for server_elem in server_elems }
+    for server_elem in filter(lambda se: len(set([ 'name', 'port', 'owned', 'host' ]) -
+                                             set( se.attrs ) ) == 0, myxml.find_all('server') ):
+        name = server_elem[ 'name' ]
+        port = int( server_elem[ 'port' ] )
+        host = server_elem[ 'host' ]
+        server_dict[ name ] = '%s:%d' % ( host, port )
     return server_dict
     
 def get_owned_servers( token ):
     response = requests.get( 'https://plex.tv/pms/servers.xml', params = { 'X-Plex-Token' : token })
     if response.status_code != 200:
         return None
-    tree = lxml.html.fromstring( response.content )
-    server_elems = filter(lambda elem: len(set([ 'name', 'address', 'port', 'owned' ]) - 
-                                           set( elem.keys() ) ) == 0 and elem.get('owned') == '1',
-                          tree.iter('server') )
-    return dict(map(lambda server_elem: ( server_elem.get( 'name' ),
-                                          '%s:%s' % ( server_elem.get('address'), server_elem.get('port') ) ),
-                    server_elems ) )
+    myxml = BeautifulSoup( response.content, 'lxml' )
+    server_dict = { }
+    for server_elem in filter(lambda se: len(set([ 'name', 'port', 'owned', 'host' ]) -
+                                             set( se.attrs ) ) == 0, myxml.find_all('server') ):
+        name = server_elem[ 'name' ]
+        port = int( server_elem[ 'port' ] )
+        host = server_elem[ 'host' ]
+        owned = int( server_elem[ 'owned' ] )
+        if owned != 1: continue
+        server_dict[ name ] = '%s:%d' % ( host, port )
+    return server_dict
 
 def get_pic_data( plexPICURL, token = None ):
     if token is None:
@@ -223,18 +227,15 @@ def get_pic_data( plexPICURL, token = None ):
                    ( plexPICURL, len( response.content ) ) )
     return response.content
 
-def get_updated_at( fullURLWithPort = 'http://localhost:32400', token = None ):
-    if token is None:
-        params = {}
-    else:
-        params = { 'X-Plex-Token' : token }
+def get_updated_at( token, fullURLWithPort = 'http://localhost:32400' ):
+    params = { 'X-Plex-Token' : token }
     response = requests.get( fullURLWithPort, params = params, verify = False )
     if response.status_code != 200:
         return None
-    tree = lxml.html.fromstring( response.content )
-    media_elem = max( tree.iter( 'mediacontainer' ) )
-    assert( 'updatedat' in media_elem.keys( ) )
-    return datetime.datetime.fromtimestamp( int( media_elem.get('updatedat' ) ) )
+    myxml = BeautifulSoup( response.content, 'lxml' )
+    media_elem = max( myxml.find_all( 'mediacontainer' ) )
+    assert( 'updatedat' in media_elem.attrs )
+    return datetime.datetime.fromtimestamp( int( media_elem['updatedat'] ) )
 
 def get_email_contacts( token, verify = True ):
     response = requests.get( 'https://plex.tv/pms/friends/all',
@@ -242,10 +243,10 @@ def get_email_contacts( token, verify = True ):
                              verify = verify )
     if response.status_code != 200:
         return None
-    tree = lxml.html.fromstring( response.content )
-    emails = sorted(set(map(lambda elem: elem.get('email'),
-                            filter(lambda elem: 'email' in elem.keys(),
-                                   tree.iter( 'user' ) ) ) ) )
+    myxml = BeautifulSoup( response.content, 'lxml' )
+    emails = sorted(set(map(lambda elem: elem['email'],
+                            filter(lambda elem: 'email' in elem.attrs,
+                                   myxml.find_all( 'user' ) ) ) ) )
     return emails
 
 def get_mapped_email_contacts( token, verify = True ):
@@ -271,11 +272,8 @@ def get_current_date_newsletter( ):
         return None
     return val.date
 
-def _get_library_data_movie( key, fullURL = 'http://localhost:32400', token = None, sinceDate = None ):
-    if token is None:
-        params = { }
-    else:
-        params = { 'X-Plex-Token' : token }
+def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sinceDate = None ):
+    params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
 
@@ -326,8 +324,8 @@ def _get_library_data_movie( key, fullURL = 'http://localhost:32400', token = No
         movie_data.setdefault( first_genre, [] ).append( data )
     return key, movie_data
         
-def _get_library_stats_movie( key, fullURL ='http://localhost:32400', token = None, sinceDate = None ):
-    tup = _get_library_data_movie( key, fullURL = fullURL, token = token, sinceDate = sinceDate )
+def _get_library_stats_movie( key, token, fullURL ='http://localhost:32400', sinceDate = None ):
+    tup = _get_library_data_movie( key, token, fullURL = fullURL, sinceDate = sinceDate )
     if tup is None: return None
     _, movie_data = tup
     sorted_by_genres = {
@@ -340,13 +338,10 @@ def _get_library_stats_movie( key, fullURL ='http://localhost:32400', token = No
     totsize = sum(map(lambda genre: sorted_by_genres[ genre ][ -2 ], sorted_by_genres ) )
     return key, totnum, totdur, totsize, sorted_by_genres
 
-def _get_library_data_show( key, fullURL = 'http://localhost:32400',
-                            token = None, sinceDate = None ):
+def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
+                            sinceDate = None ):
     from requests.compat import urljoin
-    if token is None:
-        params = { }
-    else:
-        params = { 'X-Plex-Token' : token }
+    params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date()
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
@@ -405,10 +400,10 @@ def _get_library_data_show( key, fullURL = 'http://localhost:32400',
                 tvdata[ show ][ seasno ][ epno ] = ( title, dateaired, duration, size )
     return tvdata
 
-def _get_library_stats_show( key, fullURL = 'http://localhost:32400',
-                             token = None, sinceDate = None ):
-    tvdata = _get_library_data_show( key, fullURL = fullURL,
-                                     token = token, sinceDate = sinceDate )
+def _get_library_stats_show( key, token, fullURL = 'http://localhost:32400',
+                             sinceDate = None ):
+    tvdata = _get_library_data_show( key, token, fullURL = fullURL,
+                                     sinceDate = sinceDate )
     numTVshows = len( tvdata )
     numTVeps = 0
     totdur = 0.0
@@ -423,12 +418,9 @@ def _get_library_stats_show( key, fullURL = 'http://localhost:32400',
                               tvdata[ show ][ seasno ] ) )
     return key, numTVeps, numTVshows, totdur, totsize
 
-def _get_library_stats_artist( key, fullURL = 'http://localhost:32400', token = None,
+def _get_library_stats_artist( key, token, fullURL = 'http://localhost:32400',
                                sinceDate = None ):
-    if token is None:
-        params = {}
-    else:
-        params = { 'X-Plex-Token' : token }
+    params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
         
@@ -436,19 +428,19 @@ def _get_library_stats_artist( key, fullURL = 'http://localhost:32400', token = 
                              params = params, verify = False )
     if response.status_code != 200:
         return None
-    tree = lxml.html.fromstring( response.content )
-    artistelems = list(tree.iter('directory'))
+    html = BeautifulSoup( response.content, 'lxml' )
+    artistelems = list(html.find_all('directory'))
     num_artists = 0
     num_albums = 0
     num_songs = 0
     totdur = 0.0
     totsize = 0.0
     def valid_track( track_elem ):
-        if len(list(track_elem.iter('media'))) != 1:
+        if len(list(track_elem.find_all('media'))) != 1:
             return False
-        media_elem = max( track_elem.iter('media') )
+        media_elem = max( track_elem.find_all('media') )
         if len(set([ 'bitrate', 'duration' ]) -
-               set(media_elem.keys())) != 0:
+               set(media_elem.attrs) ) != 0:
             return False
         return True    
     for artist_elem in artistelems:
@@ -456,24 +448,24 @@ def _get_library_stats_artist( key, fullURL = 'http://localhost:32400', token = 
         resp2 = requests.get( newURL, params = params, verify = False )        
         if resp2.status_code != 200:
             continue
-        t2 = lxml.html.fromstring( resp2.content )
-        album_elems = list( t2.iter('directory') )
+        h2 = BeautifulSoup( resp2.content, 'lxml' )
+        album_elems = list( h2.find_all('directory') )
         albums_here = 0
         for album_elem in album_elems:
             newURL = '%s%s' % ( fullURL, album_elem.get('key') )
             resp3 = requests.get( newURL, params = params, verify = False )
             if resp3.status_code != 200:
                 continue
-            t3 = lxml.html.fromstring( resp3.content )
-            track_elems = filter(valid_track, t3.iter( 'track' ) )
+            h3 = BeautifulSoup( resp3.content, 'lxml' )
+            track_elems = filter(valid_track, h3.find_all( 'track' ) )
             num_songs_here = 0
             for track_elem in track_elems:
-                if datetime.datetime.fromtimestamp( float( track_elem.get('addedat') ) ).date() < sinceDate:
+                if datetime.datetime.fromtimestamp( float( track_elem['addedat'] ) ).date() < sinceDate:
                     continue
                 num_songs_here += 1
-                media_elem = max(track_elem.iter('media'))
-                duration = 1e-3 * int( media_elem.get('duration') )
-                bitrate = int( media_elem.get('bitrate') ) * 1e3 / 8.0
+                media_elem = max(track_elem.find_all('media'))
+                duration = 1e-3 * int( media_elem['duration'] )
+                bitrate = int( media_elem['bitrate'] ) * 1e3 / 8.0
                 totsize += duration * bitrate
                 totdur += duration
             if num_songs_here > 0:
@@ -484,12 +476,9 @@ def _get_library_stats_artist( key, fullURL = 'http://localhost:32400', token = 
             num_artists += 1                
     return key, num_songs, num_albums, num_artists, totdur, totsize
 
-def _get_library_data_artist( key, fullURL = 'http://localhost:32400', token = None,
+def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                               sinceDate = None ):
-    if token is None:
-        params = {}
-    else:
-        params = { 'X-Plex-Token' : token }
+    params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
         
@@ -497,43 +486,43 @@ def _get_library_data_artist( key, fullURL = 'http://localhost:32400', token = N
                              params = params, verify = False )
     if response.status_code != 200:
         return None
-    tree = lxml.html.fromstring( response.content )
-    artistelems = list(tree.iter('directory'))
+    html = BeautifulSoup( response.content, 'lxml' )
+    artistelems = list(html.find_all('directory'))
     song_data = { }
     def valid_track( track_elem ):
-        if len(list(track_elem.iter('media'))) != 1:
+        if len(list(track_elem.find_all('media'))) != 1:
             return False
-        media_elem = max( track_elem.iter('media') )
+        media_elem = max( track_elem.find_all('media') )
         if len(set([ 'bitrate', 'duration' ]) -
-               set(media_elem.keys())) != 0:
+               set(media_elem.attrs)) != 0:
             return False
-        return True    
+        return True
     for artist_elem in artistelems:
         newURL = '%s%s' % ( fullURL, artist_elem.get('key') )
         resp2 = requests.get( newURL, params = params, verify = False )        
         if resp2.status_code != 200:
             continue
-        t2 = lxml.html.fromstring( resp2.content )
-        album_elems = list( t2.iter('directory') )
-        artist_name = artist_elem.get( 'title' )
+        h2 = BeautifulSoup( resp2.content, 'lxml' )
+        album_elems = list( h2.find_all('directory') )
+        artist_name = artist_elem[ 'title' ]
         song_data.setdefault( artist_name, { } )
         for album_elem in album_elems:
             newURL = '%s%s' % ( fullURL, album_elem.get('key') )
             resp3 = requests.get( newURL, params = params, verify = False )
             if resp3.status_code != 200:
                 continue
-            t3 = lxml.html.fromstring( resp3.content )
-            track_elems = filter(valid_track, t3.iter( 'track' ) )
-            album_name = album_elem.get( 'title' )
+            h3 = BeautifulSoup( resp3.content, 'lxml' )
+            track_elems = filter(valid_track, h3.find_all( 'track' ) )
+            album_name = album_elem[ 'title' ]
             song_data[ artist_name ].setdefault( album_name, [ ] )
             for track_elem in track_elems:
                 if datetime.datetime.fromtimestamp( float( track_elem.get('addedat') ) ).date() < sinceDate:
                     continue
-                media_elem = max(track_elem.iter('media'))
-                duration = 1e-3 * int( media_elem.get('duration') )
-                bitrate = int( media_elem.get('bitrate') ) * 1e3 / 8.0
-                curdate = datetime.datetime.fromtimestamp( float( track_elem.get('addedat') ) ).date( )
-                track_name = track_elem.get( 'title' )
+                media_elem = max(track_elem.find_all('media'))
+                duration = 1e-3 * int( media_elem[ 'duration' ] )
+                bitrate = int( media_elem[ 'bitrate' ] ) * 1e3 / 8.0
+                curdate = datetime.datetime.fromtimestamp( float( track_elem[ 'addedat' ] ) ).date( )
+                track_name = track_elem[ 'title' ]
                 song_data[ artist_name ][ album_name ].append( ( track_name, curdate, duration, bitrate * duration ) )
             if len( song_data[ artist_name ][ album_name ] ) == 0:
                 song_data[ artist_name ].pop( album_name )
@@ -541,67 +530,58 @@ def _get_library_data_artist( key, fullURL = 'http://localhost:32400', token = N
             song_data.pop( artist_name )
     return key, song_data
 
-def get_movie_data( key, fullURL = 'http://localhost:32400', token = None ):
-    if token is None:
-        params = {}
-    else:
-        params = { 'X-Plex-Token' : token }
+def get_movie_data( key, token, fullURL = 'http://localhost:32400' ):
+    params = { 'X-Plex-Token' : token }
     response = requests.get( '%s/library/sections' % fullURL, params = params,
                              verify = False )
-    tree = lxml.html.fromstring( response.content )
-    library_dict = { int( direlem.get('key') ) : ( direlem.get('title'), direlem.get('type') ) for
-                     direlem in tree.iter('directory') }
+    html = BeautifulSoup( response.content, 'lxml' )
+    library_dict = { int( direlem['key'] ) : ( direlem[ 'title' ], direlem[ 'type' ] ) for
+                     direlem in html.find_all('directory') }
     assert( key in library_dict )
     _, mediatype = library_dict[ key ]
     assert( mediatype == 'movie' )
-    _, movie_data = _get_library_data_movie( key, fullURL = fullURL, token = token )
+    _, movie_data = _get_library_data_movie( key, token, fullURL = fullURL )
     return movie_data
 
-def get_movies_libraries( fullURL = 'http://localhost:32400', token = None ):
-    if token is None:
-        params = {}
-    else:
-        params = { 'X-Plex-Token' : token }
+def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
+    params = { 'X-Plex-Token' : token }
     response = requests.get( '%s/library/sections' % fullURL, params = params,
                              verify = False )
     if response.status_code != 200:
         return None
     if response.status_code != 200:
         return None
-    tree = lxml.html.fromstring( response.content )
-    library_dict = { int( direlem.get('key') ) : ( direlem.get('title'), direlem.get('type') ) for
-                     direlem in tree.iter('directory') }
+    html = BeautifulSoup( response.content, 'lxml' )
+    library_dict = { int( direlem['key'] ) : ( direlem['title'], direlem['type'] ) for
+                     direlem in html.find_all('directory') }
     keys = sorted(set(filter(lambda key: library_dict[ key ][1] == 'movie', library_dict.keys( ) ) ) )
     return keys    
 
-def get_library_stats( key, fullURL = 'http://localhost:32400', token = None ):
-    if token is None:
-        params = {}
-    else:
-        params = { 'X-Plex-Token' : token }
+def get_library_stats( key, token, fullURL = 'http://localhost:32400' ):
+    params = { 'X-Plex-Token' : token }
     response = requests.get( '%s/library/sections' % fullURL, params = params,
                              verify = False )
     if response.status_code != 200:
         return None
-    tree = lxml.html.fromstring( response.content )
-    library_dict = { int( direlem.get('key') ) : ( direlem.get('title'), direlem.get('type') ) for
-                     direlem in tree.iter('directory') }
+    html = BeautifulSoup( response.content, 'lxml' )
+    library_dict = { int( direlem['key'] ) : ( direlem[ 'title' ], direlem[ 'type' ] ) for
+                     direlem in html.find_all('directory') }
     assert( key in library_dict )
     title, mediatype = library_dict[ key ]
     if mediatype == 'movie':
-        data = _get_library_stats_movie( key, fullURL = fullURL, token = token )
+        data = _get_library_stats_movie( key, token, fullURL = fullURL )
         if data is None:
             return None
-        actkey, num_movies, totdur, totsize = data
+        actkey, num_movies, totdur, totsize, _ = data
         return fullURL, title, mediatype, num_movies, totdur, totsize
     elif mediatype == 'show':
-        data =  _get_library_stats_show( key, fullURL = fullURL, token = token )
+        data =  _get_library_stats_show( key, token, fullURL = fullURL )
         if data is None:
             return None
         actkey, num_tveps, num_tvshows, totdur, totsize = data
         return fullURL, title, mediatype, num_tveps, num_tvshows, totdur, totsize
     elif mediatype == 'artist':
-        data = _get_library_stats_artist( key, fullURL = fullURL, token = token )
+        data = _get_library_stats_artist( key, token, fullURL = fullURL )
         if data is None:
             return None
         actkey, num_songs, num_albums, num_artists, totdur, totsize = data
@@ -623,9 +603,9 @@ def get_libraries( fullURL = 'http://localhost:32400', token = None ):
                             params = params, verify = False )
     if response.status_code != 200:
         return None
-    tree = lxml.html.fromstring( response.content )
-    return dict( map( lambda direlem: ( int(direlem.get('key')), direlem.get('title' ) ),
-                      tree.iter('directory') ) )
+    html = BeautifulSoup( response.content, 'lxml' )
+    return dict( map( lambda direlem: ( int( direlem['key'] ), direlem['title'] ),
+                      html.find_all('directory') ) )
 
 def get_movie_titles_by_year( year, fullURLWithPort = 'http://localhost:32400',
                               token = None ):
@@ -642,18 +622,15 @@ def get_movie_titles_by_year( year, fullURLWithPort = 'http://localhost:32400',
                              params = params, verify = False )                             
     if response.status_code != 200:
         return None
-    movie_elems = filter( lambda elem: 'title' in elem.keys(),
-                          lxml.html.fromstring( response.content ).iter('video') )
-    return sorted(set(map( lambda movie_elem: movie_elem.get('title'), movie_elems ) ) )
+    movie_elems = filter( lambda elem: 'title' in elem.attrs,
+                          BeautifulSoup( response.content, 'lxml' ).find_all('video') )
+    return sorted(set(map( lambda movie_elem: movie_elem['title'], movie_elems ) ) )
 
-def get_lastN_movies( lastN, fullURLWithPort = 'http://localhost:32400', token = None,
+def get_lastN_movies( lastN, token, fullURLWithPort = 'http://localhost:32400',
                       useLastNewsletterDate = True ):    
     assert( isinstance( lastN, int ) )
     assert( lastN > 0 )
-    if token is None:
-        params = {}
-    else:
-        params = { 'X-Plex-Token' : token }
+    params = { 'X-Plex-Token' : token }
     libraries_dict = get_libraries( fullURL = fullURLWithPort, token = token )
     if libraries_dict is None:
         return None
@@ -662,20 +639,21 @@ def get_lastN_movies( lastN, fullURLWithPort = 'http://localhost:32400', token =
                             params = params, verify = False )
     if response.status_code != 200:
         return None
-    tree = lxml.html.fromstring( response.content )
-    valid_video_elems = sorted(filter(lambda elem: 'addedat' in elem.keys() and 'title' in elem.keys() and
-                                      'year' in elem.keys(), tree.iter('video')),
-                               key = lambda elem: -int( elem.get('addedat') ) )[:lastN]
+    html = BeautifulSoup( response.content, 'lxml' )
+    valid_video_elems = sorted(filter(lambda elem: len( set([ 'addedat', 'title', 'year' ]) -
+                                                        set( elem.attrs ) ) == 0,
+                                      html.find_all('video') ),
+                               key = lambda elem: -int( elem[ 'addedat' ] ) )[:lastN]
     if useLastNewsletterDate:
         lastnewsletterdate = get_current_date_newsletter( )
         if lastnewsletterdate is not None:
             valid_video_elems = filter(lambda elem: datetime.datetime.fromtimestamp(
-                int( elem.get('addedat' ) ) ).date( ) >=
+                int( elem['addedat'] ) ).date( ) >=
                                        lastnewsletterdate, valid_video_elems )
-    return map(lambda elem: ( elem.get('title'), int( elem.get('year') ),
-                              datetime.datetime.fromtimestamp( int( elem.get('addedat' ) ) ).
+    return map(lambda elem: ( elem['title'], int( elem['year'] ),
+                              datetime.datetime.fromtimestamp( int( elem['addedat'] ) ).
                               replace(tzinfo = pytz.timezone( 'US/Pacific' ) ),
-                              plextmdb.get_movie( elem.get('title') ) ),
+                              plextmdb.get_movie( elem['title'] ) ),
                valid_video_elems )
 
 """
@@ -721,8 +699,8 @@ def get_tvshownames_gspread( ):
     return tvshowshere
 
 
-def fill_out_movies_stuff( fullurl = 'http://localhost:32400', token = None ):
-    keys = get_movies_libraries( fullURL = fullurl, token = token )
+def fill_out_movies_stuff( token, fullurl = 'http://localhost:32400' ):
+    keys = get_movies_libraries( token, fullURL = fullurl )
     unified_movie_data = { }
     for key in keys:
         movie_data = get_movie_data( key, fullURL = fullurl, token = token )

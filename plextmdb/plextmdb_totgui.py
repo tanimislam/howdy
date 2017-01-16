@@ -21,8 +21,7 @@ class TMDBTotGUI( QWidget ):
         }""")
         #
         if movie_data_rows is None:
-            movie_data_rows, _ = plexcore.fill_out_movies_stuff( fullurl = self.fullurl,
-                                                                 token = self.token )
+            movie_data_rows, _ = plexcore.fill_out_movies_stuff( self.token, fullurl = self.fullurl )
         self.tmdb_gui = plextmdb_gui.TMDBGUI( token, fullurl, movie_data_rows, isIsolated = False )
         self.tmdb_mygui = plextmdb_mygui.TMDBMyGUI( token, movie_data_rows, isIsolated = False )
         self.tmdb_gui.movieRefreshRows.connect( self.tmdb_mygui.fill_out_movies )
@@ -84,8 +83,7 @@ class TMDBTotGUI( QWidget ):
             qdl.setFixedWidth( 450 )
             qdl.setFixedHeight( qdl.sizeHint( ).height( ) )
             qdl.show( )
-            movie_data_rows, _ = plexcore.fill_out_movies_stuff( fullurl = self.fullurl,
-                                                                 token = self.token )
+            movie_data_rows, _ = plexcore.fill_out_movies_stuff( self.token, fullurl = self.fullurl )
             self.tmdb_gui.fill_out_movies( movie_data_rows = movie_data_rows )
             self.tmdb_mygui.fill_out_movies( movie_data_rows = movie_data_rows )
             qdl.close( )

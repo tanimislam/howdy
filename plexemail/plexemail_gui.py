@@ -194,7 +194,7 @@ class PlexEmailGUI( QWidget ):
             %s
 
             \end{document}
-            """ % myStr
+            """ % ( str( self.sectionNameWidget.text( ) ).strip( ), myStr )
             htmlString = plexcore.latexToHTML( mainText )
             if htmlString is None:
                 self.isValidLaTeX = False

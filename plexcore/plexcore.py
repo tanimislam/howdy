@@ -7,7 +7,7 @@ except:
     from configparser import RawConfigParser
 from contextlib import contextmanager
 from bs4 import BeautifulSoup
-from . import mainDir, Base, session
+from . import mainDir, Base, session, baseConfDir
 from sqlalchemy import Column, Date, Boolean, String
 from oauth2client.client import flow_from_clientsecrets
 sys.path.append( mainDir )
@@ -116,10 +116,8 @@ def getTokenForUsernamePassword( username, password, verify = True ):
         return token
 
 def checkClientCredentials( ):
-    resource = 'plexstuff'
     filename = 'plex_creds.conf'
     secname = 'PLEX_CLIENT_CREDENTIALS'
-    baseConfDir = xdg.BaseDirectory.save_config_path( resource )
     absPath = os.path.join( baseConfDir, filename )
     if not os.path.isfile( absPath ):
         return None
@@ -141,9 +139,7 @@ def checkClientCredentials( ):
     return fullurl, token
     
 def checkServerCredentials( doLocal = False ):
-    resource = 'plexstuff'
     filename = 'plex_creds.conf'
-    baseConfDir = xdg.BaseDirectory.save_config_path( resource )
     absPath = os.path.join( baseConfDir, filename )
     if not os.path.isfile( absPath ):
         return None
@@ -168,10 +164,8 @@ def checkServerCredentials( doLocal = False ):
 
 def pushCredentials( username, password, name = 'CLIENT' ):
     assert(name in ( 'CLIENT', 'SERVER' ) )
-    resource = 'plexstuff'
     filename = 'plex_creds.conf'
     secname = 'PLEX_%s_CREDENTIALS' % name
-    baseConfDir = xdg.BaseDirectory.save_config_path( resource )
     absPath = os.path.join( baseConfDir, filename )
     cparser = RawConfigParser( )
     if os.path.isfile( absPath ):
@@ -841,9 +835,7 @@ def oauth_authorize_tokens(authorization_code,
 def oauth_push_new_gmailauthentication( valid_token ):
     client_id = '1062550112138-03t22u9sr35ph67c7v7db3tsgcujhekf.apps.googleusercontent.com'
     client_secret = 'Sp3nrqJcryaym820zEJ9Mu4j'    
-    resource = 'plexstuff'
     filename = 'email_authentication.json'
-    baseConfDir = xdg.BaseDirectory.save_config_path( resource )
     absPath = os.path.join( baseConfDir, filename )
     mydict = { 'Client ID' : client_id,
                'Client Secret' : client_secret,
@@ -852,9 +844,7 @@ def oauth_push_new_gmailauthentication( valid_token ):
     os.chmod( absPath, 0o600 )
 
 def oauth_get_access_token( ):    
-    resource = 'plexstuff'
     filename = 'email_authentication.json'
-    baseConfDir = xdg.BaseDirectory.save_config_path( resource )
     absPath = os.path.join( baseConfDir, filename )
     if not os.path.isfile( absPath ):
         return None
@@ -873,9 +863,7 @@ def oauth_get_access_token( ):
     return access_token
 
 def oauthCheckEmailCredentials( ):
-    resource = 'plexstuff'
     filename = 'email_authentication.json'
-    baseConfDir = xdg.BaseDirectory.save_config_path( resource )
     absPath = os.path.join( baseConfDir, filename )
     if not os.path.isfile( absPath ):
         return False, 'EMAIL AUTHENTICATION FILE DOES NOT EXIST.'
@@ -895,17 +883,13 @@ def oauth_generate_contacts_permission_url( ):
     return flow, auth_uri
 
 def oauth_store_contacts_credentials( credentials ):    
-    resource = 'plexstuff'
     filename = 'contacts_authentication.json'
-    baseConfDir = xdg.BaseDirectory.save_config_path( resource )
     absPath = os.path.join( baseConfDir, filename )
     oauth2client.file.Storage( absPath ).put( credentials )
 
 def oauth_get_contact_access_token( ):
     import gdata.gauth
-    resource = 'plexstuff'
     filename = 'contacts_authentication.json'
-    baseConfDir = xdg.BaseDirectory.save_config_path( resource )
     absPath = os.path.join( baseConfDir, filename )
     if not os.path.isfile( absPath ):
         return None
@@ -917,9 +901,7 @@ def oauth_get_contact_access_token( ):
         return None
 
 def oauthCheckContactCredentials( ):
-    resource = 'plexstuff'
     filename = 'contacts_authentication.json'
-    baseConfDir = xdg.BaseDirectory.save_config_path( resource )
     absPath = os.path.join( baseConfDir, filename )
     if not os.path.isfile( absPath ):
         return False, 'CONTACTS AUTHENTICATION FILE DOES NOT EXIST.'

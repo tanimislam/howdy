@@ -1,7 +1,7 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import os, sys, numpy, glob, datetime
-from . import mainDir, plextvdb
+from . import mainDir, plextvdb, get_token
 sys.path.append( mainDir )
 from plexcore import plexcore
 

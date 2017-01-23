@@ -1,14 +1,13 @@
 #!/usr/bin/env python2
 
-import requests, fuzzywuzzy, lxml.html, re, codecs
-from requests.compat import urljoin
+import re, codecs
 from optparse import OptionParser
-from plextvdb import plextvdb
+from plextvdb import plextvdb_torrents
 
 def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, raiseError = False,
                         filename = None ):
     assert( maxnum >= 5 )
-    its, status = plextvdb.get_tv_torrent_tpb( name, maxnum = maxnum, doAny = doAny )
+    its, status = plextvdb_torrents.get_tv_torrent_tpb( name, maxnum = maxnum, doAny = doAny )
     if status != 'SUCCESS':
         if raiseError:
             raise ValueError('ERROR, COULD NOT FIND %s.' % name)
@@ -47,7 +46,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, raiseError = False,
 
 def get_tv_torrent_torrentz( name, maxnum = 10, filename = None ):
     assert( maxnum >= 5 )
-    its, status = plextvdb.get_tv_torrent_torrentz( name, maxnum = maxnum )
+    its, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
     if status != 'SUCCESS':
         print 'ERROR, COULD NOT FIND %s.' % name
         return

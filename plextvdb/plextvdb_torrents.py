@@ -1,4 +1,4 @@
-import requests
+import requests, re
 from bs4 import BeautifulSoup
 
 def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):

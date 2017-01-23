@@ -2,10 +2,7 @@ import requests, os, sys, json, re, logging
 import multiprocessing, datetime, time
 from PIL import Image
 from cStringIO import StringIO
-
-_apiKey = '0B3F6D72213D71C8'
-_usrKey = 'AEE839E62568BA63'
-_usname = '***REMOVED***islam1978'
+from . import get_token
 
 def _create_season( input_tuple ):
     seriesName, seriesId, token, season, verify = input_tuple
@@ -215,18 +212,6 @@ class TVShow( object ):
         self.endDate = max(filter(None, map(lambda tvseason: tvseason.get_max_date( ),
                                             self.seasonDict.values( ) ) ) )
                                             
-            
-def get_token( verify = True ):
-    data = { 'apikey' : _apiKey,
-             'username' : _usname,
-             'userkey' : _usrKey }
-    headers = { 'Content-Type' : 'application/json' }
-    response = requests.post( 'https://api.thetvdb.com/login',
-                              data = json.dumps( data ),
-                              verify = verify, headers = headers )
-    if response.status_code != 200:
-        return None
-    return response.json( )[ 'token' ]
 
 def refresh_token( token, verify = True ):
     headers = { 'Content-Type' : 'application/json',

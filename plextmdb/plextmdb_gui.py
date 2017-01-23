@@ -1,6 +1,6 @@
 import numpy, os, sys, requests, json, base64
 import logging, glob, datetime, textwrap, titlecase
-from . import plextmdb, mainDir
+from . import plextmdb, mainDir, plextmdb_torrents
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 #
@@ -101,7 +101,7 @@ class TMDBTorrents( QDialog ):
         #
         ##
         if not bypass:
-            data, status = plextmdb.get_movie_torrent( movie_name )
+            data, status = plextmdb_torrents.get_movie_torrent( movie_name )
         else:
             status = 'FALURE'
         if status == 'SUCCESS':
@@ -113,7 +113,7 @@ class TMDBTorrents( QDialog ):
             self.statusLabel.setText( 'SUCCESS' )
         else:
             #data, status = plextmdb.get_movie_torrent_kickass( movie_name, maxnum = maxnum )
-            data, status = plextmdb.get_movie_torrent_tpb( movie_name, maxnum = maxnum, doAny = False )
+            data, status = plextmdb_torrents.get_movie_torrent_tpb( movie_name, maxnum = maxnum, doAny = False )
             if status == 'SUCCESS':
                 self.torrentStatus = 1
                 self.data = { }

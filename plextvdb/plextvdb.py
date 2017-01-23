@@ -8,8 +8,8 @@ _usrKey = 'AEE839E62568BA63'
 _usname = 'tanimislam1978'
 
 def _create_season( input_tuple ):
-    seriesName, seriesId, token, season  = input_tuple
-    return season, TVSeason( seriesName, seriesId, token, season )
+    seriesName, seriesId, token, season, verify = input_tuple
+    return season, TVSeason( seriesName, seriesId, token, season, verify = verify )
 
 class TVSeason( object ):
     def get_num_episodes( self ):
@@ -23,13 +23,13 @@ class TVSeason( object ):
         if self.get_num_episodes( ) == 0: return None
         return min(map(lambda epelem: epelem['airedDate'], self.episodes.values( ) ) )
         
-    def get_season_episodes( self, token ):
+    def get_season_episodes( self, token, verify = True ):
         currentDate = datetime.datetime.now( ).date( )
         headers = { 'Content-Type' : 'application/json',
                     'Authorization' : 'Bearer %s' % token }
         params = { 'airedSeason' : self.seasno, 'page' : 1 }
         response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/query' % self.seriesId,
-                                 headers = headers, params = params )
+                                 headers = headers, params = params, verify = verify )
         if response.status_code != 200:
             raise ValueError("Error, could find no episodes for season %02d in series %s." %
                              ( self.seasno, self.seriesName ) )
@@ -39,7 +39,8 @@ class TVSeason( object ):
         seriesdata = data
         for pageno in range( 2, lastpage + 1 ):
             response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/query' % self.seriesId,
-                                     headers = headers, params = {  'airedSeason' : self.seasno, 'page' : pageno } )
+                                     headers = headers, params = {  'airedSeason' : self.seasno, 'page' : pageno },
+                                     verify = verify )
             if response.status_code != 200:
                 continue
             seriesdata += response.json( )['data']
@@ -60,11 +61,11 @@ class TVSeason( object ):
                               'airedDate': airedDate }
         return sData        
     
-    def get_season_image( self, token ):
+    def get_season_image( self, token, verify = True ):
         headers = { 'Content-Type' : 'application/json',
                     'Authorization' : 'Bearer %s' % token }
         response = requests.get( 'https://api.thetvdb.com/series/%d/images/query/params' % self.seriesId,
-                                 headers = headers )
+                                 headers = headers, verify = verify )
         if response.status_code != 200:
             return None
         data = response.json( )['data']
@@ -86,7 +87,7 @@ class TVSeason( object ):
         if 'resolution' in season_one.keys( ) and len( season_one[ 'resolution' ] ) != 0:
             params[ 'resolution' ] = season_one[ 'resolution' ][ 0 ]
         response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
-                                 headers = headers, params = params )
+                                 headers = headers, params = params, verify = verify )
         if response.status_code != 200:
             return None
         data = response.json( )['data']
@@ -94,13 +95,13 @@ class TVSeason( object ):
         assert( 'fileName' in firstSeason )
         return 'https://thetvdb.com/banners/%s' % firstSeason[ 'fileName' ]        
     
-    def __init__( self, seriesName, seriesId, token, seasno ):
+    def __init__( self, seriesName, seriesId, token, seasno, verify = True ):
         self.seriesName = seriesName
         self.seriesId = seriesId
         self.seasno = seasno
         #
         ## first get the image associated with this season
-        self.imageURL = self.get_season_image( token )
+        self.imageURL = self.get_season_image( token, verify = verify )
         self.img = None
         if self.imageURL is not None:
             response = requests.get( self.imageURL )
@@ -112,11 +113,11 @@ class TVSeason( object ):
         self.episodes = self.get_season_episodes( token )
 
 class TVShow( object ):
-    def get_series_seasons( self, token ):
+    def get_series_seasons( self, token, verify = True ):
         headers = { 'Content-Type' : 'application/json',
                     'Authorization' : 'Bearer %s' % token }
         response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/summary' % self.seriesId,
-                                 headers = headers )
+                                 headers = headers, verify = verify )
         if response.status_code != 200:
             return None
         data = response.json( )['data']
@@ -124,11 +125,11 @@ class TVShow( object ):
             return None
         return sorted( map(lambda tok: int(tok), data['airedSeasons'] ) )
         
-    def get_series_image( self, token ):
+    def get_series_image( self, token, verify = True ):
         headers = { 'Content-Type' : 'application/json',
                     'Authorization' : 'Bearer %s' % token }
         response = requests.get( 'https://api.thetvdb.com/series/%d/images/query/params' % self.seriesId,
-                                 headers = headers )
+                                 headers = headers, verify = verify )
         if response.status_code != 200:
             return None
         data = response.json( )['data']
@@ -141,7 +142,7 @@ class TVShow( object ):
             if 'resolution' in poster_one and len( poster_one['resolution'] ) != 0:
                 params['resolution'] = poster_one['resolution'][0]
             response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
-                                     headers = headers, params = params )
+                                     headers = headers, params = params, verify = verify )
             if response.status_code == 200:
                 data = response.json( )['data']
                 firstPoster = data[0]
@@ -155,7 +156,7 @@ class TVShow( object ):
             if 'resolution' in fanart_one and len( fanart_one['resolution'] ) != 0:
                 params['resolution'] = fanart_one['resolution'][0]
             response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
-                                     headers = headers, params = params )
+                                     headers = headers, params = params, verify = verify )
             if response.status_code == 200:
                 data = response.json( )['data']
                 firstFanart = data[0]
@@ -169,7 +170,7 @@ class TVShow( object ):
             if 'resolution' in series_one and len( series_one['resolution'] ) != 0:
                 params['resolution'] = series_one['resolution'][0]
             response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
-                                     headers = headers, params = params )
+                                     headers = headers, params = params, verify = verify )
             if response.status_code == 200:
                 data = response.json( )['data']
                 firstSeries = data[0]
@@ -177,15 +178,15 @@ class TVShow( object ):
                 return 'https://thetvdb.com/banners/%s' % firstSeries['fileName']
         return None ## nothing happened
         
-    def __init__( self, seriesName, token):
-        self.seriesId = get_series_id( seriesName, token)
+    def __init__( self, seriesName, token, verify = True ):
+        self.seriesId = get_series_id( seriesName, token, verify = verify )
         self.seriesName = seriesName
         if self.seriesId is None:
             raise ValueError("Error, could not find TV Show named %s." % seriesName )
         headers = { 'Content-Type' : 'application/json',
                     'Authorization' : 'Bearer %s' % token }
         response = requests.get( 'https://api.thetvdb.com/series/%d' % self.seriesId,
-                                 headers = headers )
+                                 headers = headers, verify = verify )
         if response.status_code != 200:
             raise ValueError("Error, could not find TV Show named %s because of STATUS CODE = %d" %
                              ( seriesName, response.status_code ) )
@@ -219,106 +220,102 @@ def get_token( verify = True ):
     data = { 'apikey' : _apiKey,
              'username' : _usname,
              'userkey' : _usrKey }
-    with requests.Session( ) as s:
-        s.headers = { 'Content-Type' : 'application/json' }
-        response = s.post( 'https://api.thetvdb.com/login',
-                           data = json.dumps( data ),
-                           verify = verify )
-        if response.status_code != 200:
-            return None
-        outdata = response.json( )
-        return outdata[ 'token' ]
+    headers = { 'Content-Type' : 'application/json' }
+    response = requests.post( 'https://api.thetvdb.com/login',
+                              data = json.dumps( data ),
+                              verify = verify, headers = headers )
+    if response.status_code != 200:
+        return None
+    return response.json( )[ 'token' ]
 
-def refresh_token( token ):
-    with requests.Session( ) as s:
-        s.headers = { 'Content-Type' : 'application/json',
-                      'Authorization' : 'Bearer %s' % token }
-        response = s.get( 'https://api.thetvdb.com/refresh_token' )
-        if response.status_code != 200:
-            return None
-        return response.json( )['token']
+def refresh_token( token, verify = True ):
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/refresh_token',
+                             headers = headers, verify = verify )
+    if response.status_code != 200:
+        return None
+    return response.json( )['token']
 
-def get_series_id( series_name, token ):    
-    with requests.Session( ) as s:
-        params = { 'name' : series_name }
-        s.headers = { 'Content-Type' : 'application/json',
-                      'Authorization' : 'Bearer %s' % token }
-        response = s.get( 'https://api.thetvdb.com/search/series',
-                          params = params )
-        if response.status_code != 200:
-            return None
-        data = response.json( )[ 'data' ]
-        return data[0]['id']
+def get_series_id( series_name, token, verify = True ):    
+    params = { 'name' : series_name }
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/search/series',
+                             params = params, verify = verify, headers = headers )
+    if response.status_code != 200:
+        return None
+    data = response.json( )['data'][0]
+    return data[ 'id' ]
 
-def get_possible_ids( series_name, token ):
-    with requests.Session( ) as s:
-        params = { 'name' : series_name }
-        s.headers = { 'Content-Type' : 'application/json',
-                      'Authorization' : 'Bearer %s' % token }
-        response = s.get( 'https://api.thetvdb.com/search/series',
-                          params = params )
-        if response.status_code != 200:
-            return None
-        data = response.json( )[ 'data' ]
-        return map(lambda dat: dat['id'], data )
+def get_possible_ids( series_name, token, verify = True ):
+    params = { 'name' : series_name }
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/search/series',
+                             params = params, headers = headers,
+                             verify = verify )
+    if response.status_code != 200:
+        return None
+    data = response.json( )[ 'data' ]
+    return map(lambda dat: dat['id'], data )
 
-def get_episode_name( series_id, airedSeason, airedEpisode, token ):
-    with requests.Session( ) as s:
-        params = { 'page' : 1,
-                   'airedSeason' : '%d' % airedSeason,
-                   'airedEpisode' : '%d' % airedEpisode }
-        s.headers = { 'Content-Type' : 'application/json',
-                      'Authorization' : 'Bearer %s' % token }
-        response = s.get( 'https://api.thetvdb.com/series/%d/episodes/query' % series_id,
-                          params = params )
-        if response.status_code != 200:
-            return None
-        data = max( response.json( )[ 'data' ] )
-        return data[ 'episodeName' ]
+def get_episode_name( series_id, airedSeason, airedEpisode, token, verify = True ):
+    params = { 'page' : 1,
+               'airedSeason' : '%d' % airedSeason,
+               'airedEpisode' : '%d' % airedEpisode }
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/query' % series_id,
+                             params = params, headers = headers, verify = verify )
+    if response.status_code != 200:
+        return None
+    data = max( response.json( )[ 'data' ] )
+    return data[ 'episodeName' ]
 
-def get_episodes_series( series_id, token, showSpecials = True, fromDate = None ):
-    with requests.Session( ) as s:
-        params = { 'page' : 1 }
-        s.headers = { 'Content-Type' : 'application/json',
-                      'Authorization' : 'Bearer %s' % token }
-        response = s.get( 'https://api.thetvdb.com/series/%d/episodes' % series_id,
-                          params = params )
-        if response.status_code != 200:
-            return None
+def get_episodes_series( series_id, token, showSpecials = True, fromDate = None, verify = True ):
+    params = { 'page' : 1 }
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/series/%d/episodes' % series_id,
+                             params = params, headers = headers, verify = verify )
+    if response.status_code != 200:
+        return None
+    data = response.json( )
+    links = data[ 'links' ]
+    lastpage = links[ 'last' ]
+    seriesdata = data[ 'data' ]
+    for pageno in range( 2, lastpage + 1 ):
+        response = requests.get( 'https://api.thetvdb.com/series/%d/episodes' % series_id,
+                                 params = { 'page' : pageno }, headers = headers,
+                                 verify = verify )
         data = response.json( )
-        links = data[ 'links' ]
-        lastpage = links[ 'last' ]
-        seriesdata = data[ 'data' ]
-        for pageno in range( 2, lastpage + 1 ):
-            response = s.get( 'https://api.thetvdb.com/series/%d/episodes' % series_id,
-                              params = { 'page' : pageno } )
-            data = response.json( )
-            seriesdata += data[ 'data' ]
-        currentDate = datetime.datetime.now( ).date( )
-        sData = [ ]
-        logging.debug( 'GET_EPISODES_SERIES: %s' % seriesdata )
-        json.dump( seriesdata, open( 'series.json', 'w' ) )
-        for episode in seriesdata:
-            try:
-                date = datetime.datetime.strptime( episode['firstAired'], '%Y-%m-%d' ).date( )
-                if date >= currentDate:
+        seriesdata += data[ 'data' ]
+    currentDate = datetime.datetime.now( ).date( )
+    sData = [ ]
+    logging.debug( 'GET_EPISODES_SERIES: %s' % seriesdata )
+    json.dump( seriesdata, open( 'series.json', 'w' ) )
+    for episode in seriesdata:
+        try:
+            date = datetime.datetime.strptime( episode['firstAired'], '%Y-%m-%d' ).date( )
+            if date >= currentDate:
+                continue
+            if fromDate is not None:
+                if date < fromDate:
                     continue
-                if fromDate is not None:
-                    if date < fromDate:
-                        continue
-            except Exception:
-                continue
-            if episode[ 'airedSeason' ] is None:
-                continue
-            if not showSpecials and episode[ 'airedSeason' ] == 0:
-                continue
-            sData.append( episode )
-        return sData
+        except Exception:
+            continue
+        if episode[ 'airedSeason' ] is None:
+            continue
+        if not showSpecials and episode[ 'airedSeason' ] == 0:
+            continue
+        sData.append( episode )
+    return sData
 
 """
 Format of the datestring is January 1, 2016
 """
-def get_series_updated_fromdate( date, token ):
+def get_series_updated_fromdate( date, token, verify = True ):
     try:
         dt = datetime.datetime(
             year = date.year,
@@ -340,8 +337,8 @@ def get_series_updated_fromdate( date, token ):
         return response.json( )['data']
 
 def _get_remaining_eps_perproc( input_tuple ):
-    name, series_id, epsForShow, token, showSpecials, fromDate = input_tuple
-    eps = get_episodes_series( series_id, token, showSpecials = showSpecials )
+    name, series_id, epsForShow, token, showSpecials, fromDate, verify = input_tuple
+    eps = get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify )
     tvdb_eps = set(map(lambda ep: ( ep['airedSeason'], ep['airedEpisodeNumber' ] ), eps ) )
     here_eps = set([ ( seasno, epno ) for seasno in epsForShow for
                      epno in epsForShow[ seasno ] ] )
@@ -351,14 +348,14 @@ def _get_remaining_eps_perproc( input_tuple ):
     return name, sorted( tuples_to_get )
 
 def _get_series_id_perproc( input_tuple ):
-    show, token = input_tuple
-    return show, get_series_id( show, token )
+    show, token, verify = input_tuple
+    return show, get_series_id( show, token, verify = verify )
     
-def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None ):
-    token = get_token( )
+def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify = True ):
+    token = get_token( verify = verify )
     pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
     tvshow_id_map = dict( pool.map( _get_series_id_perproc,
-                                    map(lambda show: ( show, token ), tvdata ) ) )
+                                    map(lambda show: ( show, token, verify ), tvdata ) ) )
     if fromDate is not None:
         data = get_series_updated_fromdate( fromDate, token )
         series_ids = set( map(lambda tup: tup['id'], data ) )
@@ -368,15 +365,15 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None ):
                           updated_ids }
         print(len(tvshow_id_map ) )
     input_tuples = map(lambda name: ( name, tvshow_id_map[ name ], tvdata[ name ], token,
-                                      showSpecials, fromDate ), tvshow_id_map )                       
+                                      showSpecials, fromDate, verify ), tvshow_id_map )                       
     pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
     toGet = dict( filter( None, pool.map( _get_remaining_eps_perproc, input_tuples ) ) )
     return toGet
                                 
-def get_tot_epdict_tvdb( showName ):
-    token = get_token( )
-    id = get_series_id( showName, token )
-    eps = get_episodes_series( id, token )
+def get_tot_epdict_tvdb( showName, verify = True ):
+    token = get_token( verify = verify )
+    id = get_series_id( showName, token, verify = verify )
+    eps = get_episodes_series( id, token, verify = verify )
     totseasons = max( map(lambda episode: int( episode['airedSeason' ] ), eps ) )
     tot_epdict = { }
     for episode in eps:
@@ -427,7 +424,7 @@ def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):
              (idx, epelem) in enumerate( epelems[idxof_seasons[seasnums-1]+1:idxof_seasons[seasnums]] ) }
 
 
-def get_tv_torrent_torrentz( name, maxnum = 10 ):
+def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     from bs4 import BeautifulSoup
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
         'udp://tracker.opentrackr.org:1337/announce',
@@ -463,7 +460,7 @@ def get_tv_torrent_torrentz( name, maxnum = 10 ):
     #
     url = 'https://torrentz2.eu/feed'
     search_params = {'f': name }
-    response = requests.get( url, params = search_params )
+    response = requests.get( url, params = search_params, verify = verify )
     if response.status_code != 200:
         return None, 'FAILURE, request for %s did not work.' % name
     if not response.content.startswith('<?xml'):

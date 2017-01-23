@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-import requests, fuzzywuzzy, lxml.html, re, codecs
+import requests, fuzzywuzzy, re, codecs
 from requests.compat import urljoin
 from optparse import OptionParser
 from KickassAPI import Search, Latest, User, CATEGORY, ORDER
@@ -212,17 +212,16 @@ def get_movie_torrent_kickass( name, maxnum = 10, doAny = False ):
     #
     print('Chosen movie %s' % actmov )
     splitstuff = map(lambda tok: tok.lower(), actmov.split( ) )
-    tree = lxml.html.fromstring( requests.get( torrent_page ).content )
-    mag_links = filter(lambda elem: 'href' in elem.keys( ) and 
-                       elem.get( 'href' ).startswith( 'magnet:' ) and
-                       any([ tok in elem.get('href') for tok in splitstuff ]),
-                       tree.iter( 'a' ) )
+    html = BeautifulSoup( requests.get( torrent_page ).content, 'lxml' )
+    mag_links = filter(lambda elem: 'href' in elem.attrs and 
+                       elem.['href'].startswith( 'magnet:' ) and
+                       any([ tok in elem['href'] for tok in splitstuff ]),
+                       tree.find_all( 'a' ) )
     if len( mag_links )  == 0:
         print('Error, could not find any magnet links for %s.' % name )
         return
-    mag_link = max( mag_links ).get( 'href' )
+    mag_link = max( mag_links )[ 'href' ]
     print 'magnet link: %s' % mag_link
-    
     
 def get_movie_torrent( name, verify = True, raiseError = False ):
     mainURL = 'https://yts.ag/api/v2/list_movies.json'

@@ -1,8 +1,9 @@
-import requests, re
+import requests, re, threading
 from bs4 import BeautifulSoup
+from tpb import CATEGORIES, ORDERS
+from requests.compat import urljoin
 
 def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
-    from bs4 import BeautifulSoup
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
         'udp://tracker.opentrackr.org:1337/announce',
         'udp://open.demonii.com:1337',
@@ -65,10 +66,6 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
                items ), 'SUCCESS'
     
 def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
-    import threading
-    from tpb import CATEGORIES, ORDERS
-    from bs4 import BeautifulSoup
-    from requests.compat import urljoin
     surl = urljoin( 'https://thepiratebay.se', 's/' )
     if not doAny:
         cat = CATEGORIES.VIDEO.TV_SHOWS

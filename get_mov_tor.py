@@ -214,7 +214,7 @@ def get_movie_torrent_kickass( name, maxnum = 10, doAny = False ):
     splitstuff = map(lambda tok: tok.lower(), actmov.split( ) )
     html = BeautifulSoup( requests.get( torrent_page ).content, 'lxml' )
     mag_links = filter(lambda elem: 'href' in elem.attrs and 
-                       elem.['href'].startswith( 'magnet:' ) and
+                       elem['href'].startswith( 'magnet:' ) and
                        any([ tok in elem['href'] for tok in splitstuff ]),
                        tree.find_all( 'a' ) )
     if len( mag_links )  == 0:

@@ -17,3 +17,12 @@ def get_token( verify = True ):
     if response.status_code != 200:
         return None
     return response.json( )[ 'token' ]
+
+def refresh_token( token, verify = True ):
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/refresh_token',
+                             headers = headers, verify = verify )
+    if response.status_code != 200:
+        return None
+    return response.json( )['token']

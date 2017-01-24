@@ -301,18 +301,19 @@ def get_series_updated_fromdate( date, token, verify = True ):
         return None
     #
     ##
-    with requests.session( ) as s:
-        s.headers = { 'Content-Type' : 'application/json',
-                      'Authorization' : 'Bearer %s' % token }
-        response = s.get( 'https://api.thetvdb.com/updated/query',
-                          params = { 'fromTime' : epochtime })
-        if response.status_code != 200:
-            return None
-        return response.json( )['data']
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/updated/query',
+                             params = { 'fromTime' : epochtime },
+                             headers = headers, verify = verify )
+    if response.status_code != 200:
+        return None
+    return response.json( )['data']
 
 def _get_remaining_eps_perproc( input_tuple ):
     name, series_id, epsForShow, token, showSpecials, fromDate, verify = input_tuple
-    eps = get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify )
+    eps = get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
+                               fromDate = fromDate )
     tvdb_eps = set(map(lambda ep: ( ep['airedSeason'], ep['airedEpisodeNumber' ] ), eps ) )
     here_eps = set([ ( seasno, epno ) for seasno in epsForShow for
                      epno in epsForShow[ seasno ] ] )

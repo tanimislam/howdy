@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 
 from plextvdb import plextvdb
 from optparse import OptionParser
@@ -13,11 +13,13 @@ def main( ):
                       help = 'If chosen, get a summary of all the seasons and episodes for the SERIES.')
     parser.add_option('--season', dest='season', action='store', type=int,
                       help = 'If chosen, get a list of all episode titles for this season of the SERIES.')
+    parser.add_option('--noverify', dest='do_noverify', action='store_true', default = False,
+                      help = 'If chosen, do not verify the SSL connection.')
     opts, args = parser.parse_args( )
     assert( opts.series is not None )
     if opts.do_summary:
         seriesName = opts.series.strip( )
-        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName )
+        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName, verify = not opts.do_noverify )
         if epdicts is None:
             print('Error, could not find %s' % seriesName)
             return
@@ -28,7 +30,7 @@ def main( ):
             print('SEASON %02d: %d episodes' % ( seasno, len( epdicts[ seasno ] ) ) )
     elif opts.season is not None:
         seriesName = opts.series.strip( )
-        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName )
+        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName, verify = not opts.do_noverify )
         if epdicts is None:
             print( 'Error, could not find %s' % seriesName )
             return
@@ -42,8 +44,8 @@ def main( ):
     else:
         assert( opts.epstring is not None )
         seriesName = opts.series.strip( )
-        token = plextvdb.get_token( )
-        series_id = plextvdb.get_series_id( seriesName, token )
+        token = plextvdb.get_token( verify = not opts.do_noverify )
+        series_id = plextvdb.get_series_id( seriesName, token, verify = not opts.do_noverify )
         if series_id is None:
             print( 'Error, could not find %s' % seriesName )
             return

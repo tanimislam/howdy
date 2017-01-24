@@ -269,7 +269,6 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
     currentDate = datetime.datetime.now( ).date( )
     sData = [ ]
     logging.debug( 'GET_EPISODES_SERIES: %s' % seriesdata )
-    json.dump( seriesdata, open( 'series.json', 'w' ) )
     for episode in seriesdata:
         try:
             date = datetime.datetime.strptime( episode['firstAired'], '%Y-%m-%d' ).date( )

@@ -2,6 +2,7 @@ import requests, os, sys, json, re, logging
 import multiprocessing, datetime, time
 from PIL import Image
 from cStringIO import StringIO
+from dateutil.relativedelta import relativedelta
 from . import get_token
 
 def _create_season( input_tuple ):
@@ -287,28 +288,33 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
     return sData
 
 """
-Format of the datestring is January 1, 2016
+Date must be within 4 weeks of now
 """
 def get_series_updated_fromdate( date, token, verify = True ):
-    try:
-        dt = datetime.datetime(
-            year = date.year,
-            month = date.month,
-            day = date.day )
-        epochtime = int( time.mktime( dt.utctimetuple( ) ) )
-    except Exception as e:
-        print(e)
-        return None
+    assert( date + relativedelta(weeks=4) >= datetime.datetime.now( ).date( ) )
+    datetime_now = datetime.datetime.now( )
+    dates_start = filter(lambda mydate: mydate < datetime_now.date( ),
+                         sorted(map(lambda idx: date + relativedelta(weeks=idx), range(5))))
     #
     ##
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
-    response = requests.get( 'https://api.thetvdb.com/updated/query',
-                             params = { 'fromTime' : epochtime },
-                             headers = headers, verify = verify )
-    if response.status_code != 200:
-        return None
-    return response.json( )['data']
+    series_ids = [ ]
+    for mydate in dates_start:
+        dt_start = datetime.datetime( year = mydate.year,
+                                      month = mydate.month,
+                                      day = mydate.day )
+        dt_end = min( dt_start + relativedelta(weeks=1), datetime_now )
+        epochtime = int( time.mktime( dt_start.utctimetuple( ) ) )
+        toTime = int( time.mktime( dt_end.utctimetuple( ) ) )
+        response = requests.get( 'https://api.thetvdb.com/updated/query',
+                                 params = { 'fromTime' : epochtime,
+                                            'toTime' : toTime },
+                                 headers = headers, verify = verify )
+        if response.status_code != 200:
+            continue
+        series_ids += response.json( )['data']
+    return sorted( set( map(lambda elem: elem['id'], series_ids ) ) )
 
 def _get_remaining_eps_perproc( input_tuple ):
     name, series_id, epsForShow, token, showSpecials, fromDate, verify = input_tuple
@@ -332,13 +338,11 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
     tvshow_id_map = dict( pool.map( _get_series_id_perproc,
                                     map(lambda show: ( show, token, verify ), tvdata ) ) )
     if fromDate is not None:
-        data = get_series_updated_fromdate( fromDate, token )
-        series_ids = set( map(lambda tup: tup['id'], data ) )
+        series_ids = set( get_series_updated_fromdate( fromDate, token ) )
         ids_tvshows = dict(map( lambda tup: ( tup[1], tup[0] ), tvshow_id_map.items( ) ) )
         updated_ids = set( ids_tvshows.keys( ) ) & series_ids
         tvshow_id_map = { ids_tvshows[ series_id ] : series_id for series_id in
                           updated_ids }
-        print(len(tvshow_id_map ) )
     input_tuples = map(lambda name: ( name, tvshow_id_map[ name ], tvdata[ name ], token,
                                       showSpecials, fromDate, verify ), tvshow_id_map )                       
     pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )

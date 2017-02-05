@@ -1,7 +1,71 @@
-import requests, re, threading
+import requests, re, threading, plextvdb
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
+
+def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
+    candidate_seriesname = ' '.join( name.strip().split()[:-1] )
+    epstring = name.strip().split()[-1].upper()
+    if not epstring[0] == 'S':
+        status = 'Error, first string must be an s or S.'
+        return None, status
+    epstring = epstring[1:]
+    splitseaseps = epstring.split('E')[:2]
+    if len( splitseaseps ) != 2:
+        status = 'Error, string must have a SEASON and EPISODE part.'
+        return None, status
+    try:
+        seasno = int( splitseaseps[0] )
+    except:
+        status = 'Error, invalid season number.'
+        return None, status
+    try:
+        epno = int( splitseaseps[1] )
+    except:
+        status = 'Error, invalid episode number.'
+        return None, status
+    
+    tvdb_token = plextvdb.get_token( verify = verify )
+    series_id = plextvdb.get_series_id( candidate_seriesname, tvdb_token,
+                                        verify = verify )
+    if series_id is None:
+        series_ids = plextvdb.get_possible_ids( candidate_seriesname,
+                                                tvdb_token, verify = verify )
+        if series_ids is None or len( series_ids ) == 0:
+            status = 'ERROR, PLEXTVDB could find no candidate series that match %s' % \
+                     candidate_seriesname
+            return None, status
+        series_id = series_ids[ 0 ]
+    apiurl = "http://torrentapi.org/pubapi_v2.php"
+    response = requests.get(apiurl,
+                            params={ "get_token": "get_token",
+                                     "format": "json",
+                                     "app_id": "sickrage2" }, verify = verify )
+    if response.status_code != 200:
+        status = 'ERROR, problem with rarbg.to'
+        return None, status
+    token = response.json( )[ 'token' ]
+    params = { 'mode' : 'search', 'search_tvdb' : series_id, 'token' : token,
+               'response_type' : 'json', 'search_string' : 'E'.join( splitseaseps ), 'limit' : 100 }
+    response = requests.get( apiurl, params = params, verify = verify )
+    data = response.json( )
+    if 'torrent_results' not in data:
+        status = 'ERROR, RARBG.TO could not find any torrents for %s %s.' % (
+            candidate_seriesname, 'E'.join( splitseaseps ) )
+        return None, status
+    data = data['torrent_results']
+    filtered_data = filter(lambda elem: 'E'.join( splitseaseps ) in elem['filename'] and
+                           '720p' in elem['filename'] and 'HDTV' in elem['filename'], data )
+    if len( filtered_data ) == 0:
+        filtered_data = filter(lambda elem: 'E'.join( splitseaseps ) in elem['filename'], data )
+    filtered_data = filtered_data[:maxnum]
+    if len( filtered_data ) == 0:
+        status = 'ERROR, RARBG.TO could not find any torrents for %s %s.' % (
+            candidate_seriesname, 'E'.join( splitseaseps ) )
+        return None, status
+    items = map(lambda elem: { 'title' : elem['filename'], 'link' : elem['download'],
+                               'seeders' : 1, 'leechers' : 1 }, filtered_data )
+    return items, 'SUCCESS'
 
 def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
@@ -149,3 +213,23 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
     items = items[:maxnum]
     return map(lambda item: ( item['title'], item[ 'seeders' ], item[ 'leechers' ], item[ 'link' ] ),
                items ), 'SUCCESS'
+
+def get_tv_torrent_best( name, maxnum = 10 ):
+    items = [ ]
+    assert( maxnum >= 5 )
+    its, status = get_tv_torrent_tpb( name, maxnum = maxnum )
+    if status == 'SUCCESS':
+        print len(its)
+        items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
+                  item in its ]
+    its, status = get_tv_torrent_torrentz( name, maxnum = maxnum )
+    print status
+    if status == 'SUCCESS':
+        items+= [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
+                  item in its ]
+    print 'LENGTH OF ALL ITEMS = %d' % len( items )
+    if len( items ) == 0:
+        print "Error, could not find anything with name = %s" % name
+        return None, None # could find nothing
+    item = max( items, key = lambda item: item['seeders'] + item['leechers'] )
+    return item['title'], item[ 'link' ]

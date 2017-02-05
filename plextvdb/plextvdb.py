@@ -236,6 +236,19 @@ def get_possible_ids( series_name, token, verify = True ):
     data = response.json( )[ 'data' ]
     return map(lambda dat: dat['id'], data )
 
+def get_episode_id( series_id, airedSeason, airedEpisode, token, verify = True ):
+    params = { 'page' : 1,
+               'airedSeason' : '%d' % airedSeason,
+               'airedEpisode' : '%d' % airedEpisode }
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/query' % series_id,
+                             params = params, headers = headers, verify = verify )
+    if response.status_code != 200:
+        return None
+    data = max( response.json( )[ 'data' ] )
+    return data[ 'id' ]
+
 def get_episode_name( series_id, airedSeason, airedEpisode, token, verify = True ):
     params = { 'page' : 1,
                'airedSeason' : '%d' % airedSeason,

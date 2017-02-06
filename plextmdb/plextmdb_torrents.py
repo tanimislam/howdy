@@ -1,11 +1,33 @@
-import threading, requests, fuzzywuzzy
+import threading, requests, fuzzywuzzy, plextmdb
 from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
 from requests.compat import urljoin
 
 def get_movie_torrent_rarbg( name, maxnum = 10 ):
-    pass
-
+    tmdbid = plextmdb.get_movie_tmdbids( name )
+    if tmdbid is None:
+        return None, 'ERROR, could not find %s in themoviedb.'
+    apiurl = "http://torrentapi.org/pubapi_v2.php"
+    response = requests.get(apiurl,
+                            params={ "get_token": "get_token",
+                                     "format": "json",
+                                     "app_id": "sickrage2" } )
+    if response.status_code != 200:
+        status = 'ERROR, problem with rarbg.to'
+        return None, status
+    print response.status_code, response.content
+    print response.json( )
+    token = response.json( )[ 'token' ]
+    params = { 'mode' : 'search', 'search_themoviedb' : tmdbid, 'token' : token,
+               'response_type' : 'json', 'limit' : 100 }
+    response = requests.get( apiurl, params = params )
+    data = response.json( )
+    if 'torrent_results' not in data:
+        status = 'ERROR, RARBG.TO could not find any torrents for %s.' % name            
+        return None, status
+    data = data['torrent_results']
+    return data
+        
 def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
     assert( maxnum >= 5 )
     def convert_size(size, default=None, use_decimal=False, **kwargs):

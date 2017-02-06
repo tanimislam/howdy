@@ -3,8 +3,66 @@ from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
 from requests.compat import urljoin
 
+def get_movie_torrent_rarbg( name, maxnum = 10 ):
+    pass
+
 def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
-    import threading
+    assert( maxnum >= 5 )
+    def convert_size(size, default=None, use_decimal=False, **kwargs):
+        """
+        Convert a file size into the number of bytes
+        
+        :param size: to be converted
+        :param default: value to return if conversion fails
+        :param use_decimal: use decimal instead of binary prefixes (e.g. kilo = 1000 instead of 1024)
+        
+        :keyword sep: Separator between size and units, default is space
+        :keyword units: A list of (uppercase) unit names in ascending order.
+        Default units: ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+        
+        :keyword default_units: Default unit if none is given,
+        default is lowest unit on the scale, e.g. bytes
+
+        :returns: the number of bytes, the default value, or 0
+        """
+        result = None
+        
+        try:
+            sep = kwargs.pop('sep', ' ')
+            scale = kwargs.pop('units', ['B', 'KB', 'MB', 'GB', 'TB', 'PB'])
+            default_units = kwargs.pop('default_units', scale[0])
+            
+            if sep:
+                size_tuple = size.strip().split(sep)
+                scalar, units = size_tuple[0], size_tuple[1:]
+                units = units[0].upper() if units else default_units
+            else:
+                regex_scalar = re.search(r'([\d. ]+)', size, re.I)
+                scalar = regex_scalar.group() if regex_scalar else -1
+                units = size.strip(scalar) if scalar != -1 else 'B'
+
+            scalar = float(scalar)
+            scalar *= (1024 if not use_decimal else 1000) ** scale.index(units)
+            
+            result = scalar
+            
+            # TODO: Make sure fallback methods obey default units
+        except AttributeError:
+            result = size if size is not None else default
+
+        except ValueError:
+            result = default
+
+        finally:
+            try:
+                if result != default:
+                    result = long(result)
+                    result = max(result, 0)
+            except (TypeError, ValueError):
+                pass
+
+        return result
+
     surl = urljoin( 'https://thepiratebay.se', 's/' )
     if not doAny:
         cat = CATEGORIES.VIDEO.MOVIES
@@ -13,29 +71,18 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
     search_params = { "q" : name, "type" : "search",
                       "orderby" : ORDERS.SIZE.DES, "page" : 0,
                       "category" : cat }
-
-    response_arr = [ None, ]
-    def fill_response( response_arr ):
-        response_arr[ 0 ] = requests.get( surl, params = search_params )
-
-    e = threading.Event( )
-    t = threading.Thread( target = fill_response, args = ( response_arr, ) )
-    t.start( )
-    t.join( 30 )
-    e.set( )
-    t.join( )
-    response = max( response_arr )
-    if response is None:
-        return None, 'FAILURE TIMED OUT'
-    #response = requests.get( surl, params = search_params )
+    response = requests.get( surl, params = search_params )
     if response.status_code != 200:
-        return None, 'FAILURE STATUS CODE = %d' % response.status_code
-        
+        print('Error, could not use the movie service. Exiting...')
+        return
+    
     def process_column_header(th):
+        result = ""
         if th.a:
-            return th.a.get_text(strip=True)
+            result = th.a.get_text(strip=True)
         if not result:
-            return th.get_text(strip=True)
+            result = th.get_text(strip=True)
+        return result
 
     def try_int(candidate, default_value=0):
         """
@@ -54,7 +101,8 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
     torrent_table = html.find("table", id="searchResult")
     torrent_rows = torrent_table("tr") if torrent_table else []
     if len( torrent_rows ) < 2:
-        return None, 'FAILURE, NO MOVIES INITIALLY'
+        print('Error, could find no torrents with name %s' % name)
+        return
     labels = list(map(lambda label: process_column_header(label),
                       torrent_rows[0]("th") ) )
     items = []
@@ -63,11 +111,11 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
             cells = result('td')
             
             title = result.find(class_='detName').get_text(strip = True )
-            #if not doAny:
-            #    if 'x264' not in title.lower( ):
-            #        continue
-            #    if '720p' not in title.lower( ):
-            #        continue
+            if not doAny:
+                if 'x264' not in title.lower( ):
+                    continue
+                if '720p' not in title.lower( ):
+                    continue
             download_url = result.find(title='Download this torrent using magnet')['href']
             if 'magnet:?' not in download_url:
                 continue
@@ -77,13 +125,13 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
             leechers = try_int(cells[labels.index("LE")].get_text(strip=True))
             
             # Convert size after all possible skip scenarios
-            #torrent_size = cells[labels.index("Name")].find(class_="detDesc").get_text(strip=True).split(", ")[1]
-            #torrent_size = re.sub(r"Size ([\d.]+).+([KMGT]iB)", r"\1 \2", torrent_size)
-            #size = convert_size(torrent_size, units = ["B", "KB", "MB", "GB", "TB", "PB"]) or -1            
-            #item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers, 'hash': ''}
-            item = {'title': title, 'link': download_url, 'seeders': seeders, 'leechers': leechers }
+            torrent_size = cells[labels.index("Name")].find(class_="detDesc").get_text(strip=True).split(", ")[1]
+            torrent_size = re.sub(r"Size ([\d.]+).+([KMGT]iB)", r"\1 \2", torrent_size)
+            size = convert_size(torrent_size, units = ["B", "KB", "MB", "GB", "TB", "PB"]) or -1
+            
+            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers, 'hash': ''}
             items.append(item)
-        except Exception:
+        except Exception as e:
             continue
     if len( items ) == 0:
         return None, 'FAILURE, NO MOVIES SATISFYING CRITERIA'
@@ -125,10 +173,10 @@ def get_movie_torrent( name, verify = True ):
     if 'movies' not in data or len(data['movies']) == 0:
         return None, "Could not find %s, exiting..." % name
     movies = data['movies']
-    alldata = { }
-    for actmov in movies:
-        title = actmov['title']
-        url = list(filter(lambda tor: 'quality' in tor and '3D' not in tor['quality'],
-                          actmov['torrents']))[0]['url']
-        alldata[ title ] = requests.get( url, verify = verify ).content
-    return alldata, 'SUCCESS'
+    # alldata = { }
+    # for actmov in movies:
+    #     title = actmov['title']
+    #     url = list(filter(lambda tor: 'quality' in tor and '3D' not in tor['quality'],
+    #                       actmov['torrents']))[0]['url']
+    #    alldata[ title ] = requests.get( url, verify = verify ).content
+    return movies, 'SUCCESS'

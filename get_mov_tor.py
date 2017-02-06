@@ -105,7 +105,7 @@ if __name__=='__main__':
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
     try:
-        get_movie_torrent( opts.name, verify = True, raiseError = True )
+        get_movie_yts( opts.name, verify = True, raiseError = True )
     except ValueError:
         items = get_items_tpb( opts.name, doAny = opts.doAny, maxnum = opts.maxnum )
         if items is not None:

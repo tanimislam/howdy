@@ -84,7 +84,7 @@ def get_movie_yts( name, verify = True, raiseError = False ):
             if '3D' in mov['quality']:
                 return False
             return True
-        actmov = max( data['movies'] )
+        actmov = max( movies )
     print('Chosen movie %s' % actmov['title'])
     url = list(filter(lambda tor: 'quality' in tor and '3D' not in tor['quality'],
                       actmov['torrents']))[0]['url']

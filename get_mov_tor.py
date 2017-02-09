@@ -7,9 +7,7 @@ from plextmdb import plextmdb_torrents
 def get_items_tpb( name, maxnum = 10, doAny = False ):
     assert( maxnum >= 5)
     its, status = plextmdb_torrents.get_movie_torrent_tpb( name, maxnum = maxnum, doAny = doAny )
-    if status != 'SUCCESS':
-        print 'ERROR, COULD NOT FIND %s.' % name
-        return None    
+    if status != 'SUCCESS': return None    
     items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
               item in its ]
     return items
@@ -18,10 +16,17 @@ def get_items_kickass( name, maxnum = 10, doAny = False ):
     assert( maxnum >= 5)
     its, status = plextmdb_torrents.get_movie_torrent_kickass( name, maxnum = maxnum, doAny = doAny )
     if status != 'SUCCESS':
-        print 'ERROR, COULD NOT FIND %s.' % name
         return None    
     items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
               item in its ]
+    return items
+
+def get_items_rarbg( name, maxnum = 10 ):
+    assert( maxnum >= 5 )
+    its, status = plextmdb_torrents.get_movie_torrent_rarbg( name, maxnum = maxnum )
+    if status != 'SUCCESS' : return None
+    items = map(lambda item: { 'title' : item['filename'], 'seeders' : 10, 'leechers' : 10,
+                               'link' : item['download'] }, its )
     return items
 
 def get_movie_torrent_items( items, filename = None):    
@@ -92,7 +97,7 @@ def get_movie_yts( name, verify = True, raiseError = False ):
     with open( '%s.torrent' % '_'.join( actmov['title'].split() ), 'wb') as openfile:
         openfile.write( resp.content )
 
-if __name__=='__main__':
+def main( ):
     parser = OptionParser( )
     parser.add_option('--name', dest='name', type=str, action='store',
                       help = 'Name of the movie file to get.')
@@ -102,11 +107,22 @@ if __name__=='__main__':
                       help = 'If chosen, make no filter on movie format.')
     parser.add_option('--filename', dest='filename', action='store', type=str,
                       help = 'If defined, put option into filename.')
+    parser.add_option('--bypass', dest='do_bypass', action='store_true', default=False,
+                      help = 'If chosen, bypass YTS.AG.')    
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
-    try:
-        get_movie_yts( opts.name, verify = True, raiseError = True )
-    except ValueError:
-        items = get_items_tpb( opts.name, doAny = opts.doAny, maxnum = opts.maxnum )
-        if items is not None:
-            get_movie_torrent_items( items, filename = opts.filename )
+    if not opts.do_bypass:
+        try:
+            get_movie_yts( opts.name, verify = True, raiseError = True )
+            return
+        except ValueError:
+            pass
+
+    items = get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum )
+    if items is None:
+        items = get_items_rarbg( opts.name, maxnum = opts.maxnum )
+    if items is not None:
+        get_movie_torrent_items( items, filename = opts.filename )
+
+if __name__=='__main__':
+    main( )

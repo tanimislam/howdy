@@ -15,8 +15,6 @@ def get_movie_torrent_rarbg( name, maxnum = 10 ):
     if response.status_code != 200:
         status = 'ERROR, problem with rarbg.to'
         return None, status
-    print response.status_code, response.content
-    print response.json( )
     token = response.json( )[ 'token' ]
     params = { 'mode' : 'search', 'search_themoviedb' : tmdbid, 'token' : token,
                'response_type' : 'json', 'limit' : 100 }
@@ -26,7 +24,7 @@ def get_movie_torrent_rarbg( name, maxnum = 10 ):
         status = 'ERROR, RARBG.TO could not find any torrents for %s.' % name            
         return None, status
     data = data['torrent_results']
-    return data
+    return data, 'SUCCESS'
         
 def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
     assert( maxnum >= 5 )
@@ -195,6 +193,9 @@ def get_movie_torrent( name, verify = True ):
     if 'movies' not in data or len(data['movies']) == 0:
         return None, "Could not find %s, exiting..." % name
     movies = data['movies']
+    #print movies
+    #if beforeYear is not None:
+    #    movies = filter(lambda movie: int(movie['year']) <= beforeYear, movies )
     # alldata = { }
     # for actmov in movies:
     #     title = actmov['title']

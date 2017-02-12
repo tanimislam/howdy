@@ -241,15 +241,18 @@ class PlexEmailGUI( QWidget ):
             else:
                 return "", { }
             
-    def __init__( self, token, doLocal = True ):
+    def __init__( self, token, doLocal = True, doLarge = False ):
         super( PlexEmailGUI, self ).__init__( )
+        self.resolution = 1.0
+        if doLarge:
+            self.resolution = 2.0
         for fontFile in glob.glob( os.path.join( mainDir, 'resources', '*.ttf' ) ):
             QFontDatabase.addApplicationFont( fontFile )
         self.setStyleSheet("""
         QWidget {
         font-family: Consolas;
-        font-size: 11;
-        }""")
+        font-size: %d;
+        }""" % ( int( 11 * self.resolution ) ) )
         self.doLocal = doLocal
         self.mainEmailCanvas = QTextEdit( self )
         self.mainEmailCanvas.setReadOnly( True )
@@ -293,8 +296,12 @@ class PlexEmailGUI( QWidget ):
         self.postambleButton.clicked.connect( self.postambleDialog.show )
         self.sendEmailButton.clicked.connect( self.sendEmail )
         #
-        self.setFixedWidth( 500 )
-        self.setFixedHeight( 1000 )
+        qf = QFont( )
+        qf.setFamily( 'Consolas' )
+        qf.setPointSize( int( 11 * self.resolution ) )
+        qfm = QFontMetrics( qf )
+        self.setFixedWidth( 55 * qfm.width( 'A' ) )
+        self.setFixedHeight( 33 * qfm.height( ) )
         self.show( )
 
     def createSummaryEmail( self ):

@@ -5,12 +5,13 @@ from plexcore import plexcore_gui
 from plextmdb import plextmdb_totgui
 from optparse import OptionParser
 
-def main(debug = False, checkLocal = True):
+def main(debug = False, checkLocal = True, doLarge = False):
     app = PyQt4.QtGui.QApplication([])
     if debug:
         logging.basicConfig( level = logging.DEBUG )
-    fullurl, token = plexcore_gui.returnClientToken( )
-    tmdb_mygui = plextmdb_totgui.TMDBTotGUI( fullurl, token )
+    if checkLocal: fullurl, token = plexcore_gui.returnClientToken( )
+    else: fullurl, token = plexcore_gui.returnServerToken( )
+    tmdb_mygui = plextmdb_totgui.TMDBTotGUI( fullurl, token, doLarge = doLarge )
     result = app.exec_( )
     return tmdb_mygui
 

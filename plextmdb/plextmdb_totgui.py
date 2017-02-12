@@ -9,16 +9,20 @@ from plexcore import plexcore, plexcore_gui
 class TMDBTotGUI( QWidget ):
     emitNewToken = pyqtSignal( str )
 
-    def __init__( self, fullurl, token, movie_data_rows = None ):
+    def __init__( self, fullurl, token, movie_data_rows = None, doLarge = False ):
         super( TMDBTotGUI, self ).__init__( )
+        self.resolution = 1.0
+        if doLarge:
+            self.resolution = 2.0
         self.setWindowTitle('PLEX MOVIE GUI')
         tmdbEngine = plextmdb.TMDBEngine( )
         self.fullurl = fullurl
         self.token = token
         self.setStyleSheet("""
         QWidget {
-        font-family: Consolas;        
-        }""")
+        font-family: Consolas;
+        font-size: %d;
+        }""" % ( int( 11 * self.resolution ) ) )
         #
         if movie_data_rows is None:
             movie_data_rows, _ = plexcore.fill_out_movies_stuff( self.token, fullurl = self.fullurl )
@@ -45,7 +49,11 @@ class TMDBTotGUI( QWidget ):
         self._setupActions( )
         #
         ##
-        self.setFixedWidth( 750 )
+        qf = QFont( )
+        qf.setFamily( 'Consolas' )
+        qf.setPointSize( int( 11 * self.resolution ) )
+        qfm = QFontMetrics( qf )        
+        self.setFixedWidth( 105 * qfm.width( 'A' ) )
         self.show( )
 
     def _setupActions( self ):
@@ -126,7 +134,7 @@ class HelpDialog( QDialog ):
         layout = QVBoxLayout( )
         self.setLayout( layout )
         qf = QFont( )
-        qf.setPointSize( 12 )
+        qf.setPointSize( int( 12 * parent.resolution ) )
         qfm = QFontMetrics( qf )
         width = qfm.boundingRect( ''.join(['A'] * 55)).width( )
         self.setFixedWidth( width )

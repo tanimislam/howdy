@@ -4,6 +4,7 @@ gdata
 gspread
 httplib2
 KickassAPI
+tpb
 lxml
 mutagen
 oauth2client

@@ -28,19 +28,22 @@ class QLineCustom( QLineEdit ):
         self.setText( titlecase.titlecase( str( self.text( ) ).strip( ) ) )
 
 class PlexEmailMyGUI( QWidget ):
-    def __init__( self, token ):
+    def __init__( self, token, doLarge = False ):
         super( PlexEmailMyGUI, self ).__init__( )
+        self.resolution = 1.0
+        if doLarge:
+            self.resolution = 2.0
         for fontFile in glob.glob( os.path.join( mainDir, 'resources', '*.ttf' ) ):
             QFontDatabase.addApplicationFont( fontFile )
         self.setStyleSheet("""
         QWidget {
         font-family: Consolas;
-        font-size: 11;
-        }""")
+        font-size: %d;
+        }""" % ( int( 11 * self.resolution ) ) )
         self.setWindowTitle( 'SEND CUSTOM EMAIL' )
         qf = QFont( )
         qf.setFamily( 'Consolas' )
-        qf.setPointSize( 11 )
+        qf.setPointSize( int( 11 * self.resolution ) )
         qfm = QFontMetrics( qf )
         self.mainEmailCanvas = QTextEdit( )
         self.mainEmailCanvas.setTabStopWidth( 2 * qfm.width( 'A' ) )
@@ -93,8 +96,8 @@ class PlexEmailMyGUI( QWidget ):
         quitAction.triggered.connect( sys.exit )
         self.addAction( quitAction )
         #
-        self.setFixedWidth( 450 )
-        self.setFixedHeight( 650 )
+        self.setFixedWidth( 55 * qfm.width( 'A' ) )
+        self.setFixedHeight( 33 * qfm.height( ) )
         self.show( )
 
     def addPNGs( self ):
@@ -112,7 +115,7 @@ class PlexEmailMyGUI( QWidget ):
         qte.setReadOnly( True )
         qf = QFont( )
         qf.setFamily( 'Consolas' )
-        qf.setPointSize( 11 )
+        qf.setPointSize( int( 11 * self.resolution ) )
         qfm = QFontMetrics( qf )
         lines = [ ]
         for idx, ( name, email ) in enumerate( self.emails_array ):
@@ -166,7 +169,7 @@ class PlexEmailMyGUI( QWidget ):
         qdlLayout.addWidget( qte )
         qf = QFont( )
         qf.setFamily( 'Consolas' )
-        qf.setPointSize( 11 )
+        qf.setPointSize( int( 11 * self.resolution ) )
         qfm = QFontMetrics( qf )
         qdl.setFixedWidth( 85 * qfm.width( 'A' ) )
         qdl.setFixedHeight( 550 )

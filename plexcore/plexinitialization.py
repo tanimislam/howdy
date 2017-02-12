@@ -26,8 +26,11 @@ def _choose_install_local( requirements ):
 
 def _install_packages_local( requirements ):
     import pip
-    pip.main( [ 'install', '--user', '--upgrade' ] + requirements +
-              [ '--trusted-host', 'pypi.python.org' ] )
+    try:
+        pip.main( [ 'install', '--user', '--upgrade' ] + requirements +
+                  [ '--trusted-host', 'pypi.python.org' ] )
+    except:
+        pip.main( [ 'install', '--user', '--upgrade' ] + requirements )
 
 def _choose_install_pip( ):
     print('COULD NOT FIND pip MODULE ON YOUR MACHINE.')

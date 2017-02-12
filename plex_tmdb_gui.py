@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-import logging, PyQt4.QtGui, sys, pickle, gzip
+import logging, PyQt4.QtGui, sys, pickle, gzip, os
 from ConfigParser import RawConfigParser
 from optparse import OptionParser
 from plexcore import plexcore_gui, mainDir

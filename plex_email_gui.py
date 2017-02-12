@@ -15,6 +15,8 @@ if __name__=='__main__':
                       default = False, help = 'If chosen, only send bare email.')
     parser.add_option('--remote', dest='do_remote', action = 'store_true', default = False,
                       help = 'If chosen, then do everything remotely.')
+    parser.add_option('--large', dest='do_large', action='store_true', default = False,
+                      help = 'If chosen, make the GUI (widgets and fonts) LARGER to help with readability.')
     opts, args = parser.parse_args( )
     if opts.do_debug:
         logging.basicConfig( level = logging.DEBUG )
@@ -23,7 +25,7 @@ if __name__=='__main__':
     val = returnEmailAuthentication( )
     val = returnContactAuthentication( )
     if not opts.do_onlyemail:
-        pegui = PlexEmailGUI( token, doLocal = not opts.do_remote )
+        pegui = PlexEmailGUI( token, doLocal = not opts.do_remote, doLarge = opts.do_large )
     else:
-        pegui = PlexEmailMyGUI( token )
+        pegui = PlexEmailMyGUI( token, doLarge = opts.do_large )
     result = app.exec_( )

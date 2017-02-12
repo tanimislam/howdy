@@ -106,7 +106,17 @@ class TMDBTorrents( QDialog ):
             status = 'FALURE'
         if status == 'SUCCESS':
             self.torrentStatus = 0
-            self.data = data
+            self.data = { }
+            for actmovie in data:
+                title = actmovie[ 'title' ]
+                allmovies = filter(lambda tor: 'quality' in tor and '3D' not in tor['quality'],
+                                   actmovie['torrents'] )
+                if len( allmovies ) == 0:
+                    continue
+                allmovies2 = filter(lambda tor: '720p' in tor['quality'], allmovies )
+                if len( allmovies2 ) == 0: allmovies2 = allmovies
+                url = allmovies2[0]['url']
+                self.data[ title ] = requests.get( url ).content
             self.allRadioButtons = map(lambda name:
                                        QRadioButton( name, self ),
                                        sorted( self.data.keys( ) ) )
@@ -114,9 +124,12 @@ class TMDBTorrents( QDialog ):
         else:
             #data, status = plextmdb.get_movie_torrent_kickass( movie_name, maxnum = maxnum )
             data, status = plextmdb_torrents.get_movie_torrent_tpb( movie_name, maxnum = maxnum, doAny = False )
+            if status != 'SUCCESS':
+                data, status = plextmdb_torrents.get_movie_torrent_rarbg( movie_name, maxnum = maxnum )
             if status == 'SUCCESS':
                 self.torrentStatus = 1
                 self.data = { }
+                logging.debug('DATA = %s' % data )
                 for name, seeders, leechers, link in data:
                     self.data[ name ] = ( seeders, leechers, link )
                 self.allRadioButtons = map(lambda name:

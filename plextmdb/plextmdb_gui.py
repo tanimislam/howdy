@@ -81,6 +81,11 @@ class TMDBMovieInfo( QDialog ):
         tmdbt = TMDBTorrents( self, self.token, self.title,
                               bypass = bypass, maxnum = maxnum )
         result = tmdbt.exec_( )
+
+class TMDBRadioButton( QRadioButton ):
+    def __init__( self, text, value, parent = None ):
+        super( TMDBRadioButton, self ).__init__( text, parent = parent )
+        self.value = value
         
 class TMDBTorrents( QDialog ):
     def __init__( self, parent, token, movie_name, bypass = False, maxnum = 10 ):
@@ -118,7 +123,7 @@ class TMDBTorrents( QDialog ):
                 url = allmovies2[0]['url']
                 self.data[ title ] = requests.get( url ).content
             self.allRadioButtons = map(lambda name:
-                                       QRadioButton( name, self ),
+                                       TMDBRadioButton( name, name, self ),
                                        sorted( self.data.keys( ) ) )
             self.statusLabel.setText( 'SUCCESS' )
         else:
@@ -133,8 +138,9 @@ class TMDBTorrents( QDialog ):
                 for name, seeders, leechers, link in data:
                     self.data[ name ] = ( seeders, leechers, link )
                 self.allRadioButtons = map(lambda name:
-                                           QRadioButton( '%s ( %d, %d )' % ( name, self.data[ name ][0],
-                                                                             self.data[ name ][1] ), self ),
+                                           TMDBRadioButton( '%s ( %d, %d )' % ( name, self.data[ name ][0],
+                                                                                self.data[ name ][1] ),
+                                                            name, self ),
                                            sorted( self.data.keys( ),
                                                    key = lambda nm: sum( self.data[nm][:2] ) ) )
                 self.statusLabel.setText( 'SUCCESS' )
@@ -174,7 +180,7 @@ class TMDBTorrents( QDialog ):
         self.show( )
 
     def showSummaryChosen( self ):
-        whichChosen = max( map(lambda qbut: unicode( qbut.text( ) ),
+        whichChosen = max( map(lambda qbut: qbut.value,
                                filter( lambda qbut: qbut.isChecked( ),
                                        self.allRadioButtons ) ) )
         size, url = self.data[ whichChosen ]
@@ -224,7 +230,7 @@ class TMDBTorrents( QDialog ):
     def chooseDownloadTorrent( self ):
         if self.torrentStatus not in ( 0, 1 ):
             return
-        whichChosen = max( map( lambda qbut: unicode( qbut.text( ) ),
+        whichChosen = max( map( lambda qbut: qbut.value,
                                 filter( lambda qbut: qbut.isChecked( ),
                                         self.allRadioButtons ) ) )
         #

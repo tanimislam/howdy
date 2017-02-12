@@ -24,7 +24,8 @@ def get_movie_torrent_rarbg( name, maxnum = 10 ):
         status = 'ERROR, RARBG.TO could not find any torrents for %s.' % name            
         return None, status
     data = data['torrent_results']
-    return data, 'SUCCESS'
+    actdata = map(lambda item: ( item['filename'], 1, 1, item['download'] ), data )
+    return actdata, 'SUCCESS'
         
 def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
     assert( maxnum >= 5 )
@@ -93,8 +94,7 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
                       "category" : cat }
     response = requests.get( surl, params = search_params )
     if response.status_code != 200:
-        print('Error, could not use the movie service. Exiting...')
-        return
+        return None, 'Error, could not use the movie service. Exiting...'
     
     def process_column_header(th):
         result = ""
@@ -121,8 +121,7 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
     torrent_table = html.find("table", id="searchResult")
     torrent_rows = torrent_table("tr") if torrent_table else []
     if len( torrent_rows ) < 2:
-        print('Error, could find no torrents with name %s' % name)
-        return
+        return None, 'Error, could find no torrents with name %s' % name
     labels = list(map(lambda label: process_column_header(label),
                       torrent_rows[0]("th") ) )
     items = []
@@ -149,7 +148,8 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
             torrent_size = re.sub(r"Size ([\d.]+).+([KMGT]iB)", r"\1 \2", torrent_size)
             size = convert_size(torrent_size, units = ["B", "KB", "MB", "GB", "TB", "PB"]) or -1
             
-            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers, 'hash': ''}
+            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                    'leechers': leechers, 'hash': ''}
             items.append(item)
         except Exception as e:
             continue
@@ -178,8 +178,8 @@ def get_movie_torrent_kickass( name, maxnum = 10 ):
                           key = lambda lookup: get_size( lookup ) )[:maxnum]
         if len(lookups) == 0:
             return None, 'FAILURE'
-    except Exception:
-        return None, 'FAILURE'
+    except Exception as e:
+        return None, 'FAILURE: ', e
     return map(lambda lookup: ( lookup.name, get_size( lookup ),
                                 lookup.torrent_link ), lookups ), 'SUCCESS'
     

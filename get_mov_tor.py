@@ -25,8 +25,8 @@ def get_items_rarbg( name, maxnum = 10 ):
     assert( maxnum >= 5 )
     its, status = plextmdb_torrents.get_movie_torrent_rarbg( name, maxnum = maxnum )
     if status != 'SUCCESS' : return None
-    items = map(lambda item: { 'title' : item['filename'], 'seeders' : 10, 'leechers' : 10,
-                               'link' : item['download'] }, its )
+    items = map(lambda item: { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2],
+                               'link' : item[3] }, its )
     return items
 
 def get_movie_torrent_items( items, filename = None):    

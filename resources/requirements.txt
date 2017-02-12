@@ -4,7 +4,7 @@ gdata
 gspread
 httplib2
 KickassAPI
-tpb
+ThePirateBay
 lxml
 mutagen
 oauth2client

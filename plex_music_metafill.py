@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 from plexmusic import plexmusic
 from optparse import OptionParser

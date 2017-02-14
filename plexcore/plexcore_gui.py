@@ -337,7 +337,7 @@ class ContactsOauth2Dialog( QDialog ):
     def __init__( self ):
         super( ContactsOauth2Dialog, self ).__init__( )
         self.setModal( True )
-        self.setWindowTitle( 'PLEX ACCOUNT GMAIL OAUTH2 CREDENTIALS' )
+        self.setWindowTitle( 'PLEX ACCOUNT CONTACTS OAUTH2 CREDENTIALS' )
         mainLayout = QVBoxLayout( )
         self.setLayout( mainLayout )
         #
@@ -360,6 +360,50 @@ class ContactsOauth2Dialog( QDialog ):
         self.setFixedHeight( self.sizeHint( ).height( ) )
         #
         self.flow, url = plexcore.oauth_generate_contacts_permission_url( )
+        webbrowser.open_new_tab( url )
+        
+    def check_authCredentials( self ):
+        self.statusLabel.setText( '' )
+        self.authCredentials.setText( str( self.authCredentials.text( ) ).strip( ) )
+        authorization_code = str( self.authCredentials.text( ) )
+        try:
+            credentials = self.flow.step2_exchange( authorization_code )
+            plexcore.oauth_store_contacts_credentials( credentials )
+            self.authCredentials.setText( '' )
+            self.accept( )
+        except:
+            self.statusLabel.setText( 'ERROR: INVALID AUTHORIZATION CODE.' )
+            self.authCredentials.setText( '' )
+            return
+
+class YoutubeOauth2Dialog( QDialog ):
+    def __init__( self, makeVisible = False ):
+        super( YoutubeOauth2Dialog, self ).__init__( )
+        self.setModal( True )
+        self.setWindowTitle( 'PLEX ACCOUNT YOUTUBE OAUTH2 CREDENTIALS' )
+        mainLayout = QVBoxLayout( )
+        self.setLayout( mainLayout )
+        #
+        mainLayout.addWidget( QLabel( 'TOOL TO STORE GOOGLE YOUTUBE SETTINGS AS OAUTH2 TOKENS.' ) )
+        #
+        authWidget = QWidget( )
+        authLayout = QGridLayout( )
+        authWidget.setLayout( authLayout )
+        self.authCredentials = QLineEdit( )
+        self.authCredentials.setEchoMode( QLineEdit.Password )
+        authLayout.addWidget( QLabel( 'CREDENTIALS:' ), 0, 0, 1, 1 )
+        authLayout.addWidget( self.authCredentials, 0, 1, 1, 4 )
+        mainLayout.addWidget( authWidget )
+        #
+        self.statusLabel = QLabel( )
+        mainLayout.addWidget( self.statusLabel )
+        #
+        self.authCredentials.returnPressed.connect( self.check_authCredentials )
+        self.setFixedWidth( 550 )
+        self.setFixedHeight( self.sizeHint( ).height( ) )
+        if makeVisible: self.show( )
+        #
+        self.flow, url = plexcore.oauth_generate_youtube_permission_url( )
         webbrowser.open_new_tab( url )
         
     def check_authCredentials( self ):

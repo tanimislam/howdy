@@ -911,8 +911,34 @@ def oauthCheckContactCredentials( ):
     return True, 'SUCCESS'
     #
     ## now get the flow from mainDir
-    flow = flow_from_clientsecrets( os.path.join( mainDir, 'resources', ''),
+    flow = flow_from_clientsecrets( os.path.join( mainDir, 'resources', 'client_secrets.json'),
                                     client_secrets.json,
                                     redirect_uri = "urn:ietf:wg:oauth:2.0:oob" )
     auth_uri = flow.step1_get_authorize_url( )
+
+def oauth_generate_youtube_permission_url( ):
+    flow = flow_from_clientsecrets( os.path.join( mainDir, 'resources', 'client_secrets.json' ),
+                                    scope = 'https://www.googleapis.com/auth/youtube.readonly',
+                                    redirect_uri = "urn:ietf:wg:oauth:2.0:oob" )
+    auth_uri = flow.step1_get_authorize_url( )
+    return flow, auth_uri
+
+def oauth_store_youtube_credentials( credentials ):
+    filename = 'youtube_authentication.json'
+    absPath = os.path.join( baseConfDir, filename )
+    oauth2client.file.Storage( absPath ).put( credentials )
+
+def oauth_get_youtube_access_token( ):
+    import gdata.gauth
+    filename = 'youtube_authentication.json'
+    absPath = os.path.join( baseConfDir, filename )
+    if not os.path.isfile( absPath ):
+        return None
+    try:
+        credentials = oauth2client.file.Storage( absPath ).get( )
+        credentials.refresh( httplib2.Http( ) )
+        return gdata.gauth.OAuth2TokenFromCredentials( credentials )
+    except:
+        return None
+        
     

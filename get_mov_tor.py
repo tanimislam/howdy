@@ -4,6 +4,12 @@ import re, codecs, requests
 from optparse import OptionParser
 from plextmdb import plextmdb_torrents
 
+def get_items_zooqle( name, maxnum = 10 ):
+    assert( maxnum >= 5)
+    items, status = plextmdb_torrents.get_movie_torrent_zooqle( name, maxnum = maxnum )
+    if status != 'SUCCESS': return None
+    return items
+
 def get_items_tpb( name, maxnum = 10, doAny = False ):
     assert( maxnum >= 5)
     its, status = plextmdb_torrents.get_movie_torrent_tpb( name, maxnum = maxnum, doAny = doAny )
@@ -118,7 +124,9 @@ def main( ):
         except ValueError:
             pass
 
-    items = get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum )
+    items = get_items_zooqle( opts.name, maxnum = opts.maxnum )
+    if items is None:
+        items = get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum )
     if items is None:
         items = get_items_rarbg( opts.name, maxnum = opts.maxnum )
     if items is not None:

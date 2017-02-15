@@ -1,6 +1,7 @@
 # resource file
-import os, requests, json
+import os, requests, json, sys
 mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
+sys.path.append( mainDir )
 
 _apiKey = '0B3F6D72213D71C8'
 _usrKey = 'AEE839E62568BA63'

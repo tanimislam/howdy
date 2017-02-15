@@ -1,16 +1,24 @@
 #!/usr/bin/env python2
 
-import re, codecs
+import re, codecs, logging
 from optparse import OptionParser
 from plextvdb import plextvdb_torrents
+
+def get_items_zooqle( name, maxnum = 10 ):
+    assert( maxnum >= 5 )
+    items, status = plextvdb_torrents.get_tv_torrent_zooqle( name, maxnum = maxnum )
+    if status != 'SUCCESS':
+        logging.debug( 'ERROR, ZOOQLE COULD NOT FIND %s.' % name )
+        return None
+    return items
 
 def get_items_tpb(name, maxnum = 10, doAny = False, raiseError = False):
     assert( maxnum >= 5 )
     its, status = plextvdb_torrents.get_tv_torrent_tpb( name, maxnum = maxnum, doAny = doAny )
     if status != 'SUCCESS':
         if raiseError:
-            raise ValueError('ERROR, COULD NOT FIND %s.' % name)
-        print 'ERROR, COULD NOT FIND %s.' % name
+            raise ValueError('ERROR, TPB COULD NOT FIND %s.' % name)
+        logging.debug( 'ERROR, TPB COULD NOT FIND %s.' % name )
         return None
     items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
               item in its ]
@@ -20,7 +28,7 @@ def get_items_torrentz( name, maxnum = 10 ):
     assert( maxnum >= 5 )
     its, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
     if status != 'SUCCESS':
-        print 'ERROR, COULD NOT FIND %s.' % name
+        logging.debug( 'ERROR, TORRENTZ COULD NOT FIND %s.' % name )
         return None
     items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
               item in its ]
@@ -29,8 +37,8 @@ def get_items_torrentz( name, maxnum = 10 ):
 def get_items_rarbg( name, maxnum = 10 ):
     assert( maxnum >= 10 )
     items, status = plextvdb_torrents.get_tv_torrent_rarbg( name, maxnum = maxnum )
-    if status != 'SUCCESS':        
-        print 'ERROR, COULD NOT FIND %s.' % name
+    if status != 'SUCCESS':
+        logging.debug( 'ERROR, RARBG COULD NOT FIND %s.' % name )
         return None
     return items
 
@@ -77,7 +85,9 @@ if __name__=='__main__':
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
     #
-    items = get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum, raiseError = False )
+    items = get_items_zooqle( opts.name, maxnum = opts.maxnum )
+    if items is None:
+        items = get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum, raiseError = False )    
     if items is None:
         items = get_items_torrentz( opts.name, maxnum = opts.maxnum )
     if items is None:

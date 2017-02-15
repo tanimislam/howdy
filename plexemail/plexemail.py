@@ -711,6 +711,7 @@ def get_formatted_duration( totdur ):
     return ', '.join( durstringsplit )
 
 def get_formatted_size( totsizebytes ):
+    sizestring = ''
     if totsizebytes >= 1024**3:
         size_in_gb = totsizebytes * 1.0 / 1024**3
         sizestring = '%0.3f GB' % size_in_gb

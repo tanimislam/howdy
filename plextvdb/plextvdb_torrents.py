@@ -43,12 +43,12 @@ def get_tv_torrent_zooqle( name, maxnum = 10 ):
                         myxml.find_all('item'))
     items_toshow = map(lambda elem: { 'title' : '%s (%s)' % ( max( elem.find_all('title' ) ).get_text( ),
                                                               get_formatted_size( int( max( elem.find_all('torrent:contentlength')).get_text( ) ) ) ),
-                                      'seeds' : int( max( elem.find_all('torrent:seeds') ).get_text( ) ),
+                                      'seeders' : int( max( elem.find_all('torrent:seeds') ).get_text( ) ),
                                       'leechers' : int( max( elem.find_all('torrent:peers' ) ).get_text( ) ),
                                       'link' : _get_magnet_link( max( elem.find_all('torrent:infohash' ) ).get_text( ).lower( ),
                                                                  max( elem.find_all('title' ) ).get_text( ) ) },
                        cand_items )
-    return sorted( items_toshow, key = lambda item: -item['seeds'] - item['leechers'] )[:maxnum], 'SUCCESS'
+    return sorted( items_toshow, key = lambda item: -item['seeders'] - item['leechers'] )[:maxnum], 'SUCCESS'
 
 def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     candidate_seriesname = ' '.join( name.strip().split()[:-1] )

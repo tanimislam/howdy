@@ -692,7 +692,6 @@ def get_tvshownames_gspread( ):
     tvshowshere = set(filter(lambda val: len(val.strip()) != 0, wksht.col_values(1)))
     return tvshowshere
 
-
 def fill_out_movies_stuff( token, fullurl = 'http://localhost:32400' ):
     keys = get_movies_libraries( token, fullURL = fullurl )
     unified_movie_data = { }

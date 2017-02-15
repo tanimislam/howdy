@@ -2,6 +2,53 @@ import requests, re, threading, plextvdb
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
+from plexemail.plexemail import get_formatted_size
+
+def get_tv_torrent_zooqle( name, maxnum = 10 ):
+    assert( maxnum >= 5 )
+    names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
+        'udp://tracker.opentrackr.org:1337/announce',
+        'udp://open.demonii.com:1337',
+        'udp://tracker.pomf.se:80/announce',
+        'udp://torrent.gresille.org:80/announce',
+        'udp://11.rarbg.com/announce',
+        'udp://11.rarbg.com:80/announce',
+        'udp://open.demonii.com:1337/announce',
+        'udp://tracker.openbittorrent.com:80',
+        'http://tracker.ex.ua:80/announce',
+        'http://tracker.ex.ua/announce',
+        'http://bt.careland.com.cn:6969/announce',
+        'udp://glotorrents.pw:6969/announce'
+    ])
+    tracklist = ''.join(map(lambda tracker: '&tr=%s' % tracker, names_of_trackers ) )
+    def _get_magnet_link( info_hash, title ):
+        download_url = "magnet:?xt=urn:btih:" + info_hash + "&dn=" + '+'.join(title.split()) + tracklist
+        return download_url
+    candname = re.sub("'", '', name )
+    url = 'https://zooqle.com/search'
+    params = { 'q' : '+'.join( candname.split() + [ 'category%3ATV', ] ),
+               'fmt' : 'rss' }
+    paramurl = '?' + '&'.join(map(lambda tok: '%s=%s' % ( tok, params[ tok ] ),
+                                  params ) )
+    fullurl = urljoin( url, paramurl )
+    response = requests.get( fullurl )
+    if response.status_code != 200:
+        return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
+    myxml = BeautifulSoup( response.content, 'lxml' )
+    cand_items = filter(lambda elem: len( elem.find_all('title' ) ) >= 1 and
+                        len( elem.find_all('torrent:infohash' ) ) >= 1 and
+                        len( elem.find_all('torrent:seeds' ) ) >= 1 and
+                        len( elem.find_all('torrent:peers' ) ) >= 1 and
+                        len( elem.find_all('torrent:contentlength' ) ) >= 1,
+                        myxml.find_all('item'))
+    items_toshow = map(lambda elem: { 'title' : '%s (%s)' % ( max( elem.find_all('title' ) ).get_text( ),
+                                                              get_formatted_size( int( max( elem.find_all('torrent:contentlength')).get_text( ) ) ) ),
+                                      'seeds' : int( max( elem.find_all('torrent:seeds') ).get_text( ) ),
+                                      'leechers' : int( max( elem.find_all('torrent:peers' ) ).get_text( ) ),
+                                      'link' : _get_magnet_link( max( elem.find_all('torrent:infohash' ) ).get_text( ).lower( ),
+                                                                 max( elem.find_all('title' ) ).get_text( ) ) },
+                       cand_items )
+    return sorted( items_toshow, key = lambda item: -item['seeds'] - item['leechers'] )[:maxnum], 'SUCCESS'
 
 def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     candidate_seriesname = ' '.join( name.strip().split()[:-1] )

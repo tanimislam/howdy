@@ -48,6 +48,8 @@ def get_tv_torrent_zooqle( name, maxnum = 10 ):
                                       'link' : _get_magnet_link( max( elem.find_all('torrent:infohash' ) ).get_text( ).lower( ),
                                                                  max( elem.find_all('title' ) ).get_text( ) ) },
                        cand_items )
+    if len( items_toshow ) == 0:
+        return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
     return sorted( items_toshow, key = lambda item: -item['seeders'] - item['leechers'] )[:maxnum], 'SUCCESS'
 
 def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):

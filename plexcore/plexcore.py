@@ -939,5 +939,13 @@ def oauth_get_youtube_access_token( ):
         return gdata.gauth.OAuth2TokenFromCredentials( credentials )
     except:
         return None
-        
+
+def getOauthYoutubeCredentials( ):
+    filename = 'youtube_authentication.json'
+    absPath = os.path.join( baseConfDir, filename )
+    if not os.path.isfile( absPath ):
+        return None
+    credentials = oauth2client.file.Storage( absPath ).get( )
+    credentials.refresh( httplib2.Http( ) )
+    return credentials
     

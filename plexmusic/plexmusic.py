@@ -49,12 +49,6 @@ def fill_m4a_metadata( filename, data_dict ):
     assert( os.path.basename( filename ).lower( ).endswith( '.m4a' ) )
     #
     ## now start it off
-    #pm = PlexMusic( )
-    #data_dict, status = pm.get_music_metadata( song_name = song_name,
-    #                                           artist_name = artist_name )
-    #if status != 'SUCCESS':
-    #    print 'ERROR, %s' % status
-    #    return
     mp4tags = mutagen.mp4.MP4( filename )
     mp4tags[ '\xa9nam' ] = [ data_dict[ 'song' ], ]
     mp4tags[ '\xa9alb' ] = [ data_dict[ 'album' ], ]
@@ -68,7 +62,9 @@ def fill_m4a_metadata( filename, data_dict ):
         img = Image.open( csio )
         csio2 = StringIO( )
         img.save( csio2, format = 'png' )
-        mp4tags[ 'covr' ] = [ mutagen.mp4.MP4Cover( csio2.getvalue( ), mutagen.mp4.MP4Cover.FORMAT_PNG ), ]
+        mp4tags[ 'covr' ] = [
+            mutagen.mp4.MP4Cover( csio2.getvalue( ),
+                                  mutagen.mp4.MP4Cover.FORMAT_PNG ), ]
         csio.close( )
         csio2.close( )
     mp4tags.save( )
@@ -117,7 +113,7 @@ def youtube_search(youtube, query, max_results = 10):
             print e
             pass
     return videos
-
+    
 class PlexMusic( object ):
     def __init__( self ):
         self.clientID, self.userID = get_gracenote_credentials( )
@@ -147,7 +143,10 @@ class PlexMusic( object ):
         album_url = ''
         if 'album_art_url' in metadata_album:
             album_url = metadata_album[ 'album_art_url' ]
-        album_year = int( metadata_album[ 'album_year' ] )
+        try:
+            album_year = int( metadata_album[ 'album_year' ] )
+        except:
+            album_year = 1900
         data_dict = { 'song' : titlecase.titlecase( song_name ),
                       'artist' : titlecase.titlecase( artist_name ),
                       'tracknumber' : track_number,

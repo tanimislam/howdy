@@ -1,9 +1,17 @@
-import os, sys, glob, numpy, titlecase
+import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2
+import requests, apiclient.discovery
+from cStringIO import StringIO
 from . import mainDir, pygn
-try:
-    from ConfigParser import RawConfigParser
-except:
-    from configparser import RawConfigParser
+from ConfigParser import RawConfigParser
+from plexstuff.plexcore import plexcore
+
+def get_youtube_service( ):
+    credentials = plexcore.getOauthYoutubeCredentials( )
+    if credentials is None:
+        raise ValueError( "Error, could not build the YouTube service." )
+    youtube = apiclient.discovery.build( "youtube", "v3",
+                                         http = credentials.authorize(httplib2.Http()))
+    return youtube
 
 def push_gracenote_credentials( client_ID ):
     try:
@@ -32,6 +40,35 @@ def get_gracenote_credentials( ):
     if not cParser.has_option( 'GRACENOTE', 'userID' ):
         raise ValueError("Error, conf file does not have userID.")
     return cParser.get( "GRACENOTE", "clientID" ), cParser.get( "GRACENOTE", "userID" )
+
+def fill_m4a_metadata( filename, artist_name, song_name ):
+    assert( os.path.isfile( filename ) )
+    assert( os.path.basename( filename ).lower( ).endswith( '.m4a' ) )
+    #
+    ## now start it off
+    pm = PlexMusic( )
+    data_dict, status = pm.get_music_metadata( song_name = song_name,
+                                               artist_name = artist_name )
+    if status != 'SUCCESS':
+        print 'ERROR, %s' % status
+        return
+    mp4tags = mutagen.mp4.MP4( filename )
+    mp4tags[ '\xa9nam' ] = [ data_dict[ 'song' ], ]
+    mp4tags[ '\xa9alb' ] = [ data_dict[ 'album' ], ]
+    mp4tags[ '\xa9ART' ] = [ data_dict[ 'artist' ], ]
+    mp4tags[ 'aART' ] = [ data_dict[ 'artist' ], ]
+    mp4tags[ '\xa9day' ] = [ str(data_dict[ 'year' ]), ]
+    mp4tags[ 'trkn' ] = [ ( data_dict[ 'tracknumber' ],
+                            data_dict[ 'total tracks' ] ), ]
+    if data_dict[ 'album url' ] != '':
+        csio = StringIO( requests.get( data_dict[ 'album url' ] ).content )
+        img = Image.open( csio )
+        csio2 = StringIO( )
+        img.save( csio2, format = 'png' )
+        mp4tags[ 'covr' ] = [ mutagen.mp4.MP4Cover( csio2.getvalue( ), mutagen.mp4.MP4Cover.FORMAT_PNG ), ]
+        csio.close( )
+        csio2.close( )
+    mp4tags.save( )
 
 class PlexMusic( object ):
     def __init__( self ):

@@ -1,7 +1,8 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2
 import requests, apiclient.discovery
 from cStringIO import StringIO
-from . import mainDir, pygn
+from urlparse import urljoin
+from . import mainDir, pygn, parse_youtube_date, format_youtube_date
 from ConfigParser import RawConfigParser
 from plexstuff.plexcore import plexcore
 
@@ -69,6 +70,45 @@ def fill_m4a_metadata( filename, artist_name, song_name ):
         csio.close( )
         csio2.close( )
     mp4tags.save( )
+
+
+def youtube_search(youtube, query, max_results = 10):
+    assert( max_results >= 5 )
+    search_response = youtube.search().list(
+        q=query,
+        order="relevance",
+        type="video",
+        part="id,snippet",
+        #part="id",
+        maxResults=50).execute()
+
+    search_videos = map(lambda search_result:
+                        search_result['id']['videoId'],
+                        search_response.get('items', []) )
+    # Merge video ids
+    video_ids = ",".join(search_videos)
+    if len( search_videos ) == 0:
+        return
+
+    # Call the videos.list method to retrieve details for each video.
+    video_response = youtube.videos().list(
+        id=video_ids,
+        part='snippet, recordingDetails, contentDetails'
+    ).execute()
+
+    videos = []
+    # Add each result to the list, and then display the list of matching videos.
+    for video_result in video_response.get("items", [])[:max_results]:
+        duration_string = video_result['contentDetails']['duration']
+        try:
+            dt_duration = parse_youtube_date( duration_string )
+            dstring = format_youtube_date( dt_duration )
+            videos.append(("%s (%s)" % ( video_result["snippet"]["title"], dstring ),
+                           urljoin("https://youtu.be", video_result['id'] ) ) )
+        except Exception as e:
+            print e
+            pass
+    return videos
 
 class PlexMusic( object ):
     def __init__( self ):

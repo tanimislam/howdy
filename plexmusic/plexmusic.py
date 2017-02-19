@@ -1,10 +1,11 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2
-import requests, apiclient.discovery
+import requests, apiclient.discovery, youtube_dl
+from PIL import Image
 from cStringIO import StringIO
 from urlparse import urljoin
 from . import mainDir, pygn, parse_youtube_date, format_youtube_date
 from ConfigParser import RawConfigParser
-from plexstuff.plexcore import plexcore
+from plexcore import plexcore
 
 def get_youtube_service( ):
     credentials = plexcore.getOauthYoutubeCredentials( )
@@ -42,17 +43,18 @@ def get_gracenote_credentials( ):
         raise ValueError("Error, conf file does not have userID.")
     return cParser.get( "GRACENOTE", "clientID" ), cParser.get( "GRACENOTE", "userID" )
 
-def fill_m4a_metadata( filename, artist_name, song_name ):
+#def fill_m4a_metadata( filename, artist_name, song_name ):
+def fill_m4a_metadata( filename, data_dict ):
     assert( os.path.isfile( filename ) )
     assert( os.path.basename( filename ).lower( ).endswith( '.m4a' ) )
     #
     ## now start it off
-    pm = PlexMusic( )
-    data_dict, status = pm.get_music_metadata( song_name = song_name,
-                                               artist_name = artist_name )
-    if status != 'SUCCESS':
-        print 'ERROR, %s' % status
-        return
+    #pm = PlexMusic( )
+    #data_dict, status = pm.get_music_metadata( song_name = song_name,
+    #                                           artist_name = artist_name )
+    #if status != 'SUCCESS':
+    #    print 'ERROR, %s' % status
+    #    return
     mp4tags = mutagen.mp4.MP4( filename )
     mp4tags[ '\xa9nam' ] = [ data_dict[ 'song' ], ]
     mp4tags[ '\xa9alb' ] = [ data_dict[ 'album' ], ]
@@ -71,6 +73,12 @@ def fill_m4a_metadata( filename, artist_name, song_name ):
         csio2.close( )
     mp4tags.save( )
 
+def get_youtube_file( youtube_URL, outputfile ):
+    assert( os.path.basename( outputfile ).lower( ).endswith( '.m4a' ) )
+    ydl_opts = { 'format' : '140',
+                 'outtmpl' : outputfile }
+    with youtube_dl.YoutubeDL( ydl_opts ) as ydl:
+        ydl.download([ youtube_URL ])
 
 def youtube_search(youtube, query, max_results = 10):
     assert( max_results >= 5 )

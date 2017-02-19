@@ -46,10 +46,14 @@ def main( ):
     #
     ## first get music metadata
     pm = plexmusic.PlexMusic( )
-    data_dict, status = pm.get_music_metadata( song_name = opts.song_name,
-                                               artist_name = opts.artist_name )
-    if status != 'SUCCESS':
-        print( status )
+    try:
+        data_dict, status = pm.get_music_metadata( song_name = opts.song_name,
+                                                   artist_name = opts.artist_name )
+        if status != 'SUCCESS':
+            print( status )
+            return
+    except Exception as e:
+        print( e )
         return
     artist_name = data_dict[ 'artist' ]
     song_name = data_dict[ 'song' ]

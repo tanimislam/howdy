@@ -149,6 +149,17 @@ def get_movies_by_title( title ):
         actualMovieData.append( row )
     return actualMovieData
 
+# Followed advice from https://www.themoviedb.org/talk/5493b2b59251416e18000826?language=en
+def get_imdbid_from_id( id ):
+    response = requests.get( 'https://api.themoviedb.org/3/movie/%d' % id,
+                             params = { 'api_key' : tmdb_apiKey } )
+    if response.status_code != 200:
+        return None
+    data = response.json( )
+    if 'imdb_id' not in data:
+        return None
+    return data['imdb_id']
+
 def get_movie( title, year = None, checkMultiple = True, getAll = False ):
     movieSearchMainURL = 'https://api.themoviedb.org/3/search/movie'
     params = { 'api_key' : tmdb_apiKey,

@@ -9,8 +9,8 @@ def get_items_yts( name, maxnum = 10 ):
     assert( maxnum >= 5 )
     items = plextmdb_subtitles.get_subtitles_yts( name )
     if items is None: return None
-    return map(lambda item: { 'title' : item[0],
-                              'zipurl' : item[1] }, items[:maxnum] ), False
+    return map(lambda item: { 'title' : item['name'],
+                              'zipurl' : item['url'] }, items[:maxnum] ), False
 
 def get_items_subscene( name, maxnum = 10 ):
     assert( maxnum >= 5 )

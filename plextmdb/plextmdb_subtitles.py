@@ -2,11 +2,11 @@ import requests, plextmdb, os, re
 import sys, zipfile, codecs
 from urlparse import urljoin
 from bs4 import BeautifulSoup
-from cStringIO import StringIO
+from io import BytesIO
 
 def get_subtitles_subscene( title ):
     response = requests.get( 'https://subscene.com/subtitles/title',
-                             params = { 'q' : '+'.join( title.split( ) ), 'l' : 'english' } )
+                             params = { 'q' : title, 'l' : 'english' } )
     if response.status_code != 200:
         return None
     html = BeautifulSoup( response.content, 'lxml' )
@@ -15,8 +15,8 @@ def get_subtitles_subscene( title ):
         return None
     header = max( header )
 
-    film_url = header.findNext('ul').find('li').div.a.get('href')
-    film_url = urljoin( 'https://subscene.com', film_url )
+    film_url = urljoin( 'https://subscene.com',
+                        header.findNext('ul').find('li').div.a.get('href') )
     #
     ## now load this url
     response2 = requests.get( film_url )
@@ -79,7 +79,7 @@ def get_subtitles_subscene( title ):
         html = BeautifulSoup( response.content, 'lxml' )
         zipurl = urljoin( 'https://subscene.com', html.find('div', 'download').a.get('href') )
         try:
-            with zipfile.ZipFile( StringIO( requests.get( zipurl ).content ), 'r' ) as zf:
+            with zipfile.ZipFile( BytesIO( requests.get( zipurl ).content ), 'r' ) as zf:
                 name = max( zf.namelist( ) )
                 srtdata = zf.read( name )
                 return { 'title' : title, 'name' : name, 'language' : language, 'owner' : owner,
@@ -88,8 +88,7 @@ def get_subtitles_subscene( title ):
             return None
         
     
-    imdb = header.find('div', 'header').h2.find('a', 'imdb').get('href')
-    
+    imdb = header.find('div', 'header').h2.find('a', 'imdb').get('href')    
     year = header.find('div', 'header').ul.li.text
     year = int(re.findall(r'[0-9]+', year)[0])
 
@@ -169,7 +168,7 @@ def download_yts_sub( url, srtfilename = 'eng.srt' ):
     response = requests.get( url )
     if response.status_code != 200:
         raise ValueError("Error, could not download %s." % url )
-    with zipfile.ZipFile( StringIO( response.content ), 'r' ) as zf:
+    with zipfile.ZipFile( BytesIO( response.content ), 'r' ) as zf:
         name = max( zf.namelist( ) )
         if not name.endswith('.srt'):
             raise ValueError("Error, name = %s does not end with srt." % name )

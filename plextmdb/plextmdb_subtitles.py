@@ -82,7 +82,7 @@ def get_subtitles_subscene( title ):
             with zipfile.ZipFile( BytesIO( requests.get( zipurl ).content ), 'r' ) as zf:
                 name = max( zf.namelist( ) )
                 srtdata = zf.read( name )
-                return { 'title' : title, 'name' : name, 'language' : language, 'owner' : owner,
+                return { 'title' : title, 'name' : name, 'owner' : owner,
                          'comment' : comment, 'srtdata' : srtdata }
         except:
             return None

@@ -41,7 +41,7 @@ def get_movie_subtitle_items( items, hasSubs = False, filename = 'eng.srt' ):
                     with open( filename, 'wb' ) as openfile:
                         name = max( zf.namelist( ) )
                         openfile.write( zf.read( name ) )
-        except Exception:
+        except Exception as e:
             print('Error, did not give a valid integer value. Exiting...')
             return
 
@@ -61,4 +61,4 @@ if __name__=='__main__':
         data = get_items_subscene( opts.name, maxnum = opts.maxnum )
     if data is not None:
         items, hasSubs = data
-        get_movie_subtitle_items( items, hasSubs = False, filename = opts.filename )
+        get_movie_subtitle_items( items, hasSubs = hasSubs, filename = opts.filename )

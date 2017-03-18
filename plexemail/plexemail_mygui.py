@@ -1,14 +1,10 @@
 import os, sys, titlecase, datetime, pypandoc
 import json, re, urllib, time, glob, multiprocessing
+import plexemail, plexemail_basegui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from bs4 import BeautifulSoup
-try:
-    from ConfigParser import RawConfigParser
-except:
-    from configparser import RawConfigParser
-from . import plexemail, plexemail_basegui, mainDir
-sys.path.append( mainDir )
+from ConfigParser import RawConfigParser
 from plexcore import plexcore 
 
 def _checkValidLaTeX( myString ):

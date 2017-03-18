@@ -1,10 +1,7 @@
 import sqlite3, shutil, os, glob, datetime, gspread, logging, sys
 import multiprocessing, tempfile, uuid, requests, pytz, pypandoc
 import xdg.BaseDirectory, urllib, json, oauth2client.file, httplib2
-try:
-    from ConfigParser import RawConfigParser
-except:
-    from configparser import RawConfigParser
+from ConfigParser import RawConfigParser
 from contextlib import contextmanager
 from bs4 import BeautifulSoup
 from . import mainDir, Base, session, baseConfDir

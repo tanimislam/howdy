@@ -1,15 +1,24 @@
-import numpy, os, sys, requests
+import numpy, os, sys, requests, plextmdb
 import logging, glob, datetime, pickle, gzip
-from . import mainDir, plextmdb
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-sys.path.append( mainDir )
 from plexcore import plexcore
 
 _headers = [ 'title',  'popularity', 'rating', 'release date', 'added date',
              'genre' ]
 
 class TMDBMyGUI( QWidget ):
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                  os.path.expanduser( '~' ),
+                                                  filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0:
+            return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = fname + '.png'
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
+    
     def __init__( self, token, movie_data_rows, isIsolated = True ):
         super( TMDBMyGUI, self ).__init__( )
         tmdbEngine = plextmdb.TMDBEngine( )
@@ -51,6 +60,11 @@ class TMDBMyGUI( QWidget ):
             quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
             quitAction.triggered.connect( sys.exit )
             self.addAction( quitAction )
+            #
+            printAction = QAction( self )
+            printAction.setShortcut( 'Shift+Ctrl+P' )
+            printAction.triggered.connect( self.screenGrab )
+            self.addAction( printAction )
         #
         self.genreComboBox.installEventFilter( self )
         self.genreComboBox.currentIndexChanged.connect( self.changeGenre )
@@ -273,6 +287,21 @@ class MyMovieTableModel( QAbstractTableModel ):
         qlabel = QLabel( )
         qlabel.setPixmap( qpm )
         myLayout.addWidget( qlabel )
+        #
+        def screenGrab( ):
+            fname = str( QFileDialog.getSaveFileName( qdl, 'Save Screenshot',
+                                                      os.path.expanduser( '~' ),
+                                                      filter = '*.png' ) )
+            if len( os.path.basename( fname.strip( ) ) ) == 0:
+                return
+            if not fname.lower( ).endswith( '.png' ):
+                fname = fname + '.png'
+            qpm = QPixmap.grabWidget( qdl )
+            qpm.save( fname )
+        printAction = QAction( qdl )
+        printAction.setShortcut( 'Shift+Ctrl+P' )
+        printAction.triggered.connect( screenGrab )
+        qdl.addAction( printAction )
         #
         qdl.setFixedWidth( 450 )
         qdl.setFixedHeight( qdl.sizeHint( ).height( ) )

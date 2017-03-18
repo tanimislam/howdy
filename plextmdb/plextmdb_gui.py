@@ -10,6 +10,17 @@ from plexcore import plexcore, plexcore_gui
 _headers = [ 'title', 'release date', 'popularity', 'rating', 'overview' ]
 
 class TMDBMovieInfo( QDialog ):
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                  os.path.expanduser( '~' ),
+                                                  filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0:
+            return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = fname + '.png'
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
+    
     def __init__( self, parent, currentRow ):
         super( TMDBMovieInfo, self ).__init__( parent )
         self.token = parent.token
@@ -71,6 +82,11 @@ class TMDBMovieInfo( QDialog ):
             qlabel.setPixmap( qpm )
             myLayout.addWidget( qlabel )
         #
+        printAction = QAction( self )
+        printAction.setShortcut( 'Shift+Ctrl+P' )
+        printAction.triggered.connect( self.screenGrab )
+        self.addAction( printAction )
+        #
         self.setFixedWidth( 450 )
         self.setFixedHeight( self.sizeHint( ).height( ) )
         self.show( )
@@ -88,6 +104,17 @@ class TMDBRadioButton( QRadioButton ):
         self.value = value
         
 class TMDBTorrents( QDialog ):
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                  os.path.expanduser( '~' ),
+                                                  filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0:
+            return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = fname + '.png'
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
+            
     def __init__( self, parent, token, movie_name, bypass = False, maxnum = 10 ):
         super( TMDBTorrents, self ).__init__( parent )
         self.setModal( True )
@@ -175,6 +202,11 @@ class TMDBTorrents( QDialog ):
         self.sendButton.clicked.connect( self.chooseSentTorrent )
         self.downloadButton.clicked.connect( self.chooseDownloadTorrent )
         #
+        printAction = QAction( self )
+        printAction.setShortcut( 'Shift+Ctrl+P' )
+        printAction.triggered.connect( self.screenGrab )
+        self.addAction( printAction )
+        #
         self.setFixedWidth( 550 )
         self.setFixedWidth( max( 650, self.sizeHint( ).height( ) ) )
         self.show( )
@@ -251,6 +283,17 @@ class TMDBTorrents( QDialog ):
 class TMDBGUI( QWidget ):
     movieSendList = pyqtSignal( list )
     movieRefreshRows = pyqtSignal( list )
+
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                  os.path.expanduser( '~' ),
+                                                  filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0:
+            return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = fname + '.png'
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
     
     def __init__( self, token, fullURL, movie_data_rows, isIsolated = True ):
         super( TMDBGUI, self ).__init__( )
@@ -287,6 +330,11 @@ class TMDBGUI( QWidget ):
             quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
             quitAction.triggered.connect( sys.exit )
             self.addAction( quitAction )
+            #
+            printAction = QAction( self )
+            printAction.setShortcut( 'Shift+Ctrl+P' )
+            printAction.triggered.connect( self.screenGrab )
+            self.addAction( printAction )
         #
         ##
         self.show( )
@@ -331,8 +379,30 @@ class TMDBGUI( QWidget ):
         
 class StatusDialogWidget( QWidget ):
     emitStatusToShow = pyqtSignal( int )
+
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                  os.path.expanduser( '~' ),
+                                                  filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0:
+            return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = fname + '.png'
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
     
     class MovieListDialog( QDialog ):
+        def screenGrab( self ):
+            fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                      os.path.expanduser( '~' ),
+                                                      filter = '*.png' ) )
+            if len( os.path.basename( fname.strip( ) ) ) == 0:
+                return
+            if not fname.lower( ).endswith( '.png' ):
+                fname = fname + '.png'
+            qpm = QPixmap.grabWidget( self )
+            qpm.save( fname )
+        
         def __init__( self, parent, movieList ):
             super( StatusDialogWidget.MovieListDialog, self ).__init__( parent )
             self.setWindowTitle( 'MOVIE LIST FOR %d.' % parent.currentYear )
@@ -347,6 +417,12 @@ class StatusDialogWidget( QWidget ):
             qte.setReadOnly( True )
             myLayout = QVBoxLayout( )
             self.setLayout( myLayout )
+            #
+            printAction = QAction( self )
+            printAction.setShortcut( 'Shift+Ctrl+P' )
+            printAction.triggered.connect( self.screenGrab )
+            self.addAction( printAction )
+            #
             myLayout.addWidget( qte )
             self.show( )
     
@@ -373,6 +449,11 @@ class StatusDialogWidget( QWidget ):
         myLayout.addWidget( self.showStatusComboBox, 0, 3, 1, 1 )
         myLayout.addWidget( QLabel( 'MOVIE NAME:' ), 1, 0, 1, 1 )
         myLayout.addWidget( self.movieNameLineEdit, 1, 1, 1, 3 )
+        #
+        printAction = QAction( self )
+        printAction.setShortcut( 'Shift+Ctrl+P' )
+        printAction.triggered.connect( self.screenGrab )
+        self.addAction( printAction )
         #
         self.showStatusComboBox.installEventFilter( self )
         self.showStatusComboBox.currentIndexChanged.connect( self.sendStatus )
@@ -453,6 +534,17 @@ class StatusDialogWidget( QWidget ):
 class SelectYearGenreWidget( QWidget ):
     mySignal = pyqtSignal( int, tuple )
 
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                  os.path.expanduser( '~' ),
+                                                  filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0:
+            return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = fname + '.png'
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
+    
     def eventFilter( self, receiver, event ):
         if event.type( ) == QEvent.KeyPress:
             if event.key( ) == Qt.Key_Enter:
@@ -520,6 +612,11 @@ class SelectYearGenreWidget( QWidget ):
         botLayout.addWidget( QLabel( 'MOVIE:' ) )
         botLayout.addWidget( self.movieNameLineEdit )
         myLayout.addWidget( botWidget )
+        #
+        printAction = QAction( self )
+        printAction.setShortcut( 'Shift+Ctrl+P' )
+        printAction.triggered.connect( self.screenGrab )
+        self.addAction( printAction )
         #
         self.yearSpinBox.valueChanged.connect( self.emitSignal )
         self.genreComboBox.currentIndexChanged.connect( self.emitSignal )

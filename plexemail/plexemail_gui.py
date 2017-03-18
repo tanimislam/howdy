@@ -1,18 +1,25 @@
 import os, sys, titlecase, datetime
-import json, re, urllib, time
+import json, re, urllib, time, plexemail, plexemail_basegui
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-try:
-    from ConfigParser import RawConfigParser
-except:
-    from configparser import RawConfigParser
-from . import plexemail_basegui, mainDir, plexemail
-sys.path.append( mainDir )
+from ConfigParser import RawConfigParser
+from . import mainDir
 from plexcore import plexcore
 
 class PlexEmailGUI( QWidget ):
     class EmailSendDialog( QDialog ):
+        def screenGrab( self ):
+            fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                      os.path.expanduser( '~' ),
+                                                      filter = '*.png' ) )
+            if len( os.path.basename( fname.strip( ) ) ) == 0:
+                return
+            if not fname.lower( ).endswith( '.png' ):
+                fname = fname + '.png'
+            qpm = QPixmap.grabWidget( self )
+            qpm.save( fname )
+        
         def __init__( self, parent ):
             super( PlexEmailGUI.EmailSendDialog, self ).__init__( parent )
             self.setModal( True )
@@ -56,6 +63,11 @@ class PlexEmailGUI( QWidget ):
             self.selectTestButton.clicked.connect( self.selectTest )
             self.selectAllButton.clicked.connect( self.selectAll )
             self.sendEmailButton.clicked.connect( self.sendEmail )
+            #
+            printAction = QAction( self )
+            printAction.setShortcut( 'Shift+Ctrl+P' )
+            printAction.triggered.connect( self.screenGrab )
+            self.addAction( printAction )
             #
             self.setFixedWidth( self.sizeHint( ).width( ) )
             self.setFixedHeight( self.sizeHint( ).height( ) )
@@ -101,6 +113,17 @@ class PlexEmailGUI( QWidget ):
                 plexemail.set_date_newsletter( )
             
     class PrePostAmbleDialog( QDialog ):
+        def screenGrab( self ):
+            fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                      os.path.expanduser( '~' ),
+                                                      filter = '*.png' ) )
+            if len( os.path.basename( fname.strip( ) ) ) == 0:
+                return
+            if not fname.lower( ).endswith( '.png' ):
+                fname = fname + '.png'
+            qpm = QPixmap.grabWidget( self )
+            qpm.save( fname )
+        
         def __init__( self, parent, title = 'Preamble' ):
             super( PlexEmailGUI.PrePostAmbleDialog, self ).__init__( parent )
             self.parent = parent
@@ -148,6 +171,11 @@ class PlexEmailGUI( QWidget ):
             openAction.setShortcut( 'Ctrl+O' )
             openAction.triggered.connect( self.openLatex )
             self.addAction( openAction )
+            #
+            printAction = QAction( self )
+            printAction.setShortcut( 'Shift+Ctrl+P' )
+            printAction.triggered.connect( self.screenGrab )
+            self.addAction( printAction )
             #
             self.setFixedHeight( 650 )
             self.setFixedWidth( self.sizeHint( ).width( ) )
@@ -240,6 +268,17 @@ class PlexEmailGUI( QWidget ):
                 return myString, self.pngWidget.getAllDataAsDict( )
             else:
                 return "", { }
+
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                  os.path.expanduser( '~' ),
+                                                  filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0:
+            return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = fname + '.png'
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
             
     def __init__( self, token, doLocal = True, doLarge = False ):
         super( PlexEmailGUI, self ).__init__( )
@@ -295,6 +334,11 @@ class PlexEmailGUI( QWidget ):
         self.preambleButton.clicked.connect( self.preambleDialog.show )
         self.postambleButton.clicked.connect( self.postambleDialog.show )
         self.sendEmailButton.clicked.connect( self.sendEmail )
+        #
+        printAction = QAction( self )
+        printAction.setShortcut( 'Shift+Ctrl+P' )
+        printAction.triggered.connect( self.screenGrab )
+        self.addAction( printAction )
         #
         qf = QFont( )
         qf.setFamily( 'Consolas' )

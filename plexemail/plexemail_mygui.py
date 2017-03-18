@@ -5,7 +5,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from bs4 import BeautifulSoup
 from ConfigParser import RawConfigParser
-from plexcore import plexcore 
+from plexcore import plexcore
+from . import mainDir
 
 def _checkValidLaTeX( myString ):
     try:

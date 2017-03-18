@@ -6,6 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from plexcore import session, plexcore
+from . import mainDir
 
 def send_email_movie_torrent( movieName, data, isKickass = False):
     dtstring = datetime.datetime.now( ).strftime('%d %B %Y, %I:%M %p')

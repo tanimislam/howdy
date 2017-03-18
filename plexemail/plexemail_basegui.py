@@ -2,10 +2,7 @@ import os, sys, base64, numpy, glob, hashlib, requests
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PIL import Image
-try:
-    from cStringIO import StringIO
-except:
-    from io import StringIO
+from cStringIO import StringIO
 
 _clientID = 'c3d1a164052f816'
 _clientSECRET = 'e654905e2777aceb01c62af6305edc4e271ab1a4'
@@ -13,7 +10,7 @@ _clientREFRESHTOKEN = '71e35e184a38e5f6923833ce1d599da8e51fe206'
 _mainALBUMID = 'G0dnx'
 _mainALBUMTITLE = 'temporary images'
 
-class PlexIMGClient( object ):
+class PlexIMGClient( object ):    
     def __init__( self, verify = True ):
         #
         ## https://api.imgur.com/oauth2 advice on using refresh tokens
@@ -145,6 +142,17 @@ Because Pandoc does not recognize image size at all, I will
 need a separate column where I can specify the image width in cm.
 """
 class PNGWidget( QDialog ):
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                  os.path.expanduser( '~' ),
+                                                  filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0:
+            return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = fname + '.png'
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
+    
     def __init__( self, parent ):
         super( PNGWidget, self ).__init__( parent )
         self.setModal( True )
@@ -155,6 +163,12 @@ class PNGWidget( QDialog ):
         self.pngPicTableModel = PNGPicTableModel( self )
         self.pngTV = PNGPicTableView( self, self.pngPicTableModel )
         myLayout.addWidget( self.pngTV )
+        #
+        printAction = QAction( self )
+        printAction.setShortcut( 'Shift+Ctrl+P' )
+        printAction.triggered.connect( self.screenGrab )
+        self.addAction( printAction )
+        #
         # self.setFixedWidth( self.pngTV.sizeHint( ).width( ) )
         self.setFixedHeight( 450 )
         self.hide( )
@@ -186,7 +200,7 @@ class PNGPicTableView( QTableView ):
         self.setColumnWidth( 0, 220 )
         self.setColumnWidth( 1, 180 )
         self.setFixedWidth( 410 )
-        
+        #
         toBotAction = QAction( self )
         toBotAction.setShortcut( 'End' )
         toBotAction.triggered.connect( self.scrollToBottom )

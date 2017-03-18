@@ -5,8 +5,6 @@ import smtplib, re, urllib, base64
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
-from . import mainDir
-sys.path.append( mainDir )
 from plexcore import session, plexcore
 
 def send_email_movie_torrent( movieName, data, isKickass = False):

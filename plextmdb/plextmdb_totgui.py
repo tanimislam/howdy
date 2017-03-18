@@ -1,14 +1,24 @@
 import numpy, os, sys, requests
 import logging, glob, datetime, pickle, gzip
-from . import mainDir, plextmdb, plextmdb_mygui, plextmdb_gui
+import plextmdb, plextmdb_mygui, plextmdb_gui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-sys.path.append( mainDir )
 from plexcore import plexcore, plexcore_gui
 
 class TMDBTotGUI( QWidget ):
     emitNewToken = pyqtSignal( str )
 
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                  os.path.expanduser( '~' ),
+                                                  filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0:
+            return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = fname + '.png'
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
+    
     def __init__( self, fullurl, token, movie_data_rows = None, doLarge = False ):
         super( TMDBTotGUI, self ).__init__( )
         self.resolution = 1.0
@@ -42,8 +52,12 @@ class TMDBTotGUI( QWidget ):
         self.tabWidget.addTab( self.tmdb_mygui,
                                'My Own Movies' )
         mainLayout.addWidget( self.tabWidget )
-        #
         mainLayout.addWidget( self.statusDialog )
+        #
+        printAction = QAction( self )
+        printAction.setShortcut( 'Ctrl+P' )
+        printAction.triggered.connect( self.screenGrab )
+        self.addAction( printAction )
         #
         ##
         self._setupActions( )
@@ -53,7 +67,8 @@ class TMDBTotGUI( QWidget ):
         qf.setFamily( 'Consolas' )
         qf.setPointSize( int( 11 * self.resolution ) )
         qfm = QFontMetrics( qf )        
-        self.setFixedWidth( 105 * qfm.width( 'A' ) )
+        #self.setFixedWidth( 150 * qfm.width( 'A' ) )
+        self.setFixedWidth( 700 )
         self.show( )
 
     def _setupActions( self ):
@@ -127,7 +142,19 @@ class TMDBTotGUI( QWidget ):
         self.statusDialog.setText( 'FINISHED RELOGGING CREDENTIALS' )
 
 class HelpDialog( QDialog ):
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
+                                                  os.path.expanduser( '~' ),
+                                                  filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0:
+            return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = fname + '.png'
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
+    
     def __init__( self, parent ):
+        from . import mainDir
         super( HelpDialog, self ).__init__( parent )
         self.setModal( True )
         self.setWindowTitle( 'HELP WINDOW' )
@@ -139,6 +166,12 @@ class HelpDialog( QDialog ):
         width = qfm.boundingRect( ''.join(['A'] * 55)).width( )
         self.setFixedWidth( width )
         self.setFixedHeight( 450 )
+        #
+        printAction = QAction( self )
+        printAction.setShortcut( 'Shift+Ctrl+P' )
+        printAction.triggered.connect( self.screenGrab )
+        self.addAction( printAction )
+        #
         myTextArea = QTextEdit( )
         myTextArea.setReadOnly( True )
         myTextArea.setHtml( open( os.path.join( mainDir, 'docs', 'plex_tmdb_totgui_help.html' ), 'r' ).read( ) )

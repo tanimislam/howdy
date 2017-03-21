@@ -286,7 +286,7 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
     for episode in seriesdata:
         try:
             date = datetime.datetime.strptime( episode['firstAired'], '%Y-%m-%d' ).date( )
-            if date >= currentDate:
+            if date > currentDate:
                 continue
             if fromDate is not None:
                 if date < fromDate:

@@ -118,6 +118,19 @@ class PlexMusic( object ):
     def __init__( self ):
         self.clientID, self.userID = get_gracenote_credentials( )
 
+    def get_song_image( self, artist_name, album_name ):
+        metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,
+                                      album = album_name,
+                                      artist = titlecase.titlecase( artist_name ) )
+        if 'album_art_url' not in metadata_album or len( metadata_album[ 'album_art_url' ].strip( ) ) == 0:
+            print 'Could not find album = %s for artist = %s.' % (
+                album_name, titlecase.titlecase( artist_name ) )
+            return None
+        img = Image.open( StringIO( requests.get( metadata_album[ 'album_art_url' ] ).content ) )
+        with open( '%s.%s.png' % ( titlecase.titlecase( artist_name ), album_name.replace('/', '-') ), 'w') as openfile:
+            img.save( openfile, format = 'png' )
+            return True
+
     def get_music_metadata( self, song_name, artist_name ):
         metadata_song = pygn.search( clientID = self.clientID, userID = self.userID,
                                      artist = titlecase.titlecase( artist_name ),

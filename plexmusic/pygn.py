@@ -151,7 +151,6 @@ def createRadio(clientID='', userID='', artist='', track='', mood='', era='', ge
 	response = urllib_request.urlopen(_gnurl(clientID), queryXML)
 	responseXML = response.read()
 
-
 	myPlaylist = []
 
 	for x in range(1, int(count)):

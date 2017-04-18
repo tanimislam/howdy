@@ -179,7 +179,9 @@ def pushCredentials( username, password, name = 'CLIENT' ):
 get_all_servers and get_owned_servers don't work. Something wrong with servers.xml endpoint
 """
 def get_all_servers( token ):
-    response = requests.get( 'https://plex.tv/pms/servers.xml', params = { 'X-Plex-Token' : token })
+    response = requests.get( 'https://plex.tv/pms/servers.xml',
+                             params = { 'X-Plex-Token' : token,
+                                        'includeLite' : 1 })
     if response.status_code != 200:
         return None
     myxml = BeautifulSoup( response.content, 'lxml' )
@@ -193,7 +195,9 @@ def get_all_servers( token ):
     return server_dict
     
 def get_owned_servers( token ):
-    response = requests.get( 'https://plex.tv/pms/servers.xml', params = { 'X-Plex-Token' : token })
+    response = requests.get( 'https://plex.tv/pms/servers.xml',
+                             params = { 'X-Plex-Token' : token,
+                                        'includeLite' : 1 })
     if response.status_code != 200:
         return None
     myxml = BeautifulSoup( response.content, 'lxml' )
@@ -218,7 +222,7 @@ def get_pic_data( plexPICURL, token = None ):
                    ( plexPICURL, len( response.content ) ) )
     return response.content
 
-def get_updated_at( token, fullURLWithPort = 'http://localhost:32400' ):
+def get_updated_at( token, fullURLWithPort = 'https://localhost:32400' ):
     params = { 'X-Plex-Token' : token }
     response = requests.get( fullURLWithPort, params = params, verify = False )
     if response.status_code != 200:
@@ -263,7 +267,7 @@ def get_current_date_newsletter( ):
         return None
     return val.date
 
-def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sinceDate = None ):
+def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', sinceDate = None ):
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
@@ -315,7 +319,7 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
         movie_data.setdefault( first_genre, [] ).append( data )
     return key, movie_data
         
-def _get_library_stats_movie( key, token, fullURL ='http://localhost:32400', sinceDate = None ):
+def _get_library_stats_movie( key, token, fullURL ='https://localhost:32400', sinceDate = None ):
     tup = _get_library_data_movie( key, token, fullURL = fullURL, sinceDate = sinceDate )
     if tup is None: return None
     _, movie_data = tup

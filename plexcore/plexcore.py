@@ -179,36 +179,42 @@ def pushCredentials( username, password, name = 'CLIENT' ):
 get_all_servers and get_owned_servers don't work. Something wrong with servers.xml endpoint
 """
 def get_all_servers( token ):
-    response = requests.get( 'https://plex.tv/pms/servers.xml',
-                             params = { 'X-Plex-Token' : token,
-                                        'includeLite' : 1 })
+    response = requests.get( 'https://plex.tv/api/resources',
+                             params = { 'X-Plex-Token' : token } )
     if response.status_code != 200:
         return None
     myxml = BeautifulSoup( response.content, 'lxml' )
     server_dict = { }
-    for server_elem in filter(lambda se: len(set([ 'name', 'port', 'owned', 'host' ]) -
-                                             set( se.attrs ) ) == 0, myxml.find_all('server') ):
+    for server_elem in filter(lambda se: len(set([ 'product', 'publicaddress', 'owned' ]) - set( se.attrs ) ) == 0 and
+                              se['product'] == 'Plex Media Server', myxml.find_all('device') ):
+        connections = filter(lambda elem: elem['local'] == '0', server_elem.find_all('connection') )
+        if len( connections ) != 1:
+            continue
+        connection = max( connections )
         name = server_elem[ 'name' ]
-        port = int( server_elem[ 'port' ] )
-        host = server_elem[ 'host' ]
+        host = connection[ 'address' ]
+        port = int( connection[ 'port' ] )
         server_dict[ name ] = '%s:%d' % ( host, port )
     return server_dict
     
 def get_owned_servers( token ):
-    response = requests.get( 'https://plex.tv/pms/servers.xml',
-                             params = { 'X-Plex-Token' : token,
-                                        'includeLite' : 1 })
+    response = requests.get( 'https://plex.tv/api/resources',
+                             params = { 'X-Plex-Token' : token } )
     if response.status_code != 200:
         return None
     myxml = BeautifulSoup( response.content, 'lxml' )
     server_dict = { }
-    for server_elem in filter(lambda se: len(set([ 'name', 'port', 'owned', 'host' ]) -
-                                             set( se.attrs ) ) == 0, myxml.find_all('server') ):
-        name = server_elem[ 'name' ]
-        port = int( server_elem[ 'port' ] )
-        host = server_elem[ 'host' ]
-        owned = int( server_elem[ 'owned' ] )
+    for server_elem in filter(lambda se: len(set([ 'product', 'publicaddress', 'owned' ]) - set( se.attrs ) ) == 0 and
+                              se['product'] == 'Plex Media Server', myxml.find_all('device') ):
+        owned = int( server_elem['owned'] )
         if owned != 1: continue
+        connections = filter(lambda elem: elem['local'] == '0', server_elem.find_all('connection') )
+        if len( connections ) != 1:
+            continue
+        connection = max( connections )
+        name = server_elem[ 'name' ]
+        host = connection[ 'address' ]
+        port = int( connection[ 'port' ] )
         server_dict[ name ] = '%s:%d' % ( host, port )
     return server_dict
 

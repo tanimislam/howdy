@@ -74,13 +74,13 @@ def get_tv_torrent_items( items, filename = None ):
 
 if __name__=='__main__':
     parser = OptionParser( )
-    parser.add_option('--name', dest='name', type=str, action='store',
+    parser.add_option('-n', '--name', dest='name', type=str, action='store',
                       help = 'Name of the movie file to get.')
     parser.add_option('--maxnum', dest='maxnum', type=int, action='store', default = 10,
                       help = 'Maximum number of torrents to look through. Default is 10.')
     parser.add_option('--any', dest='do_any', action='store_true', default = False,
                       help = 'If chosen, make no filter on movie format.')
-    parser.add_option('--filename', dest='filename', action='store', type=str,
+    parser.add_option('-f', '--filename', dest='filename', action='store', type=str,
                       help = 'If defined, put option into filename.')
     opts, args = parser.parse_args( )
     assert( opts.name is not None )

@@ -3,16 +3,16 @@
 import codecs, os, sys, base64, requests
 from optparse import OptionParser
 
-def get_song( email, artist, song ):
+def get_song( artist, song ):
     url = 'https://***REMOVED***islam.ddns.net/flask/plex/sendmusic'
     data = { 'mode' : 'SENDARTISTSONG',
              'artist' : artist,
              'song' : song }
     response = requests.post( url, json = data,
-                              auth = ( email, 'initialplexserver' ) )
+                              auth = ( '***REMOVED***_shahriar_islam@yahoo.com',
+                                       'initialplexserver' ) )
     if response.status_code == 401:
-        print "ERROR, email '%s' is not known by the Plex Server. Please choose a valid email." % \
-            email
+        print "ERROR, email '%s' is not known by the Plex Server. Please choose a valid email." % '***REMOVED***_shahriar_islam@yahoo.com'
         return
     elif response.status_code == 400:
         message = response.json( )['message']
@@ -47,7 +47,8 @@ def get_song( email, artist, song ):
               'youtubeURL' : youtubeURL,
               'mode' : 'SENDCHOICE' }
     response2 = requests.post( url, json = data2,
-                               auth = ( email, 'initialplexserver' ) )
+                               auth = ( '***REMOVED***_shahriar_islam@yahoo.com',
+                                        'initialplexserver' ) )
     if response.status_code == 400:
         message = response.json( )['message']
         print message
@@ -68,9 +69,7 @@ if __name__=='__main__':
                        help = 'Name of the song to put into the M4A file.' )
     parser.add_option( '--artist', dest='artist_name', type=str, action='store',
                        help = 'Name of the artist to put into the M4A file.' )
-    parser.add_option( '--email', dest='email', type=str, action='store',
-                       help = 'Email of person who has access to the Plex server.' )
     opts, args = parser.parse_args( )
     assert(all(map(lambda tok: tok is not None,
-                   ( opts.song_name, opts.artist_name, opts.email ) ) ) )
-    get_song( opts.email, opts.artist_name, opts.song_name )
+                   ( opts.song_name, opts.artist_name ) ) ) )
+    get_song( opts.artist_name, opts.song_name )

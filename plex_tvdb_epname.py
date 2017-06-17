@@ -5,9 +5,9 @@ from optparse import OptionParser
 
 def main( ):
     parser = OptionParser( )
-    parser.add_option('--series', dest = 'series', type=str, action='store',
+    parser.add_option('-s', '--series', dest = 'series', type=str, action='store',
                       help = 'The name of the series' )
-    parser.add_option('--epstring', dest='epstring', type=str, action='store',
+    parser.add_option('-e', '--epstring', dest='epstring', type=str, action='store',
                       help = 'The episode string, in the form S%02dE%02d.' )
     parser.add_option('--summary', dest='do_summary', action='store_true', default = False,
                       help = 'If chosen, get a summary of all the seasons and episodes for the SERIES.')
@@ -39,8 +39,10 @@ def main( ):
             return
         print('%d episodes in SEASON %02d of %s.' % ( len( epdicts[ opts.season ] ), opts.season, seriesName ) )
         for epnum in sorted( epdicts[ opts.season ] ):
-            print( 'Episode %02d/%02d: %s' % ( epnum, len( epdicts[ opts.season ] ),
-                                               epdicts[ opts.season ][ epnum ] ) )
+            title, airedDate = epdicts[ opts.season ][ epnum ]
+            print( 'Episode %02d/%02d: %s (%s)' % (
+                epnum, len( epdicts[ opts.season ] ),
+                title, airedDate.strftime( '%A, %d %B %Y' ) ) )
     else:
         assert( opts.epstring is not None )
         seriesName = opts.series.strip( )
@@ -68,12 +70,13 @@ def main( ):
         except:
             print( 'Error, invalid episode number.' )
             return
-        epname = plextvdb.get_episode_name( series_id, seasno, epno, token )
-        if epname is None:
+        data = plextvdb.get_episode_name( series_id, seasno, epno, token )
+        if data is None:
             print( 'Error, could not find SEASON %02d, EPISODE %02d, in %s.' % (
                 seasno, epno, seriesName ) )
             return
-        print(epname)
+        epname, fa = data
+        print('%s (%s)' % ( epname, fa.strftime('%A, %d %B %Y' ) ) )
             
 if __name__=='__main__':
     main( )

@@ -367,7 +367,7 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
     input_tuples = map(lambda name: ( name, tvshow_id_map[ name ], tvdata[ name ], token,
                                       showSpecials, fromDate, verify ), tvshow_id_map )                       
     pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
-    toGet = dict( filter( tup is not None,
+    toGet = dict( filter( lambda tup: tup is not None,
                           pool.map( _get_remaining_eps_perproc,
                                     input_tuples ) ) )
     return toGet

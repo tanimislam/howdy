@@ -260,7 +260,15 @@ def get_episode_name( series_id, airedSeason, airedEpisode, token, verify = True
     if response.status_code != 200:
         return None
     data = max( response.json( )[ 'data' ] )
-    return data[ 'episodeName' ]
+    try:
+        firstAired_s = data[ 'firstAired' ]
+        firstAired = datetime.datetime.strptime( firstAired_s,
+                                                 '%Y-%m-%d' ).date( )
+    except:
+        firstAired = datetime.datetime.strptime( '1900-01-01',
+                                                 '%Y-%m-%d' ).date( )
+    
+    return ( data[ 'episodeName' ], firstAired )
 
 def get_episodes_series( series_id, token, showSpecials = True, fromDate = None, verify = True ):
     params = { 'page' : 1 }
@@ -359,7 +367,9 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
     input_tuples = map(lambda name: ( name, tvshow_id_map[ name ], tvdata[ name ], token,
                                       showSpecials, fromDate, verify ), tvshow_id_map )                       
     pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
-    toGet = dict( filter( None, pool.map( _get_remaining_eps_perproc, input_tuples ) ) )
+    toGet = dict( filter( tup is not None,
+                          pool.map( _get_remaining_eps_perproc,
+                                    input_tuples ) ) )
     return toGet
                                 
 def get_tot_epdict_tvdb( showName, verify = True ):
@@ -373,8 +383,15 @@ def get_tot_epdict_tvdb( showName, verify = True ):
         if seasnum == 0: continue
         epno = episode[ 'airedEpisodeNumber' ]
         title = episode[ 'episodeName' ]
+        try:
+            firstAired_s = episode[ 'firstAired' ]
+            firstAired = datetime.datetime.strptime( firstAired_s,
+                                                     '%Y-%m-%d' ).date( )
+        except:
+            firstAired = datetime.datetime.strptime('1900-01-01',
+                                                    '%Y-%m-%d' ).date( )
         tot_epdict.setdefault( seasnum, { } )
-        tot_epdict[ seasnum ][ epno ] = title
+        tot_epdict[ seasnum ][ epno ] = ( title, firstAired )
     return tot_epdict
 
 def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):

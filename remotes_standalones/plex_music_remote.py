@@ -60,6 +60,7 @@ def get_song( artist, song ):
             openfile.write( base64.b64decode( filedata ) )
         print 'FINISHED WRITING OUT SONG %s.' % filename
     else:
+        print 'ERROR STATUS CODE: %d' % response.status_code
         print 'ERROR, server https://***REMOVED***islam.ddns.net/flask may be down.'
         return
 

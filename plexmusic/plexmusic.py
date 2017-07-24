@@ -129,7 +129,9 @@ class PlexMusic( object ):
         img = Image.open( StringIO( requests.get( metadata_album[ 'album_art_url' ] ).content ) )
         with open( '%s.%s.png' % ( titlecase.titlecase( artist_name ), album_name.replace('/', '-') ), 'w') as openfile:
             img.save( openfile, format = 'png' )
-            return True
+            return True, '%s.%s.png' % (
+                titlecase.titlecase( artist_name ),
+                album_name.replace('/', '\-') )
 
     def get_music_metadata( self, song_name, artist_name ):
         metadata_song = pygn.search( clientID = self.clientID, userID = self.userID,

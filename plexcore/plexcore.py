@@ -556,7 +556,28 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
     library_dict = { int( direlem['key'] ) : ( direlem['title'], direlem['type'] ) for
                      direlem in html.find_all('directory') }
     keys = sorted(set(filter(lambda key: library_dict[ key ][1] == 'movie', library_dict.keys( ) ) ) )
-    return keys    
+    return keys
+
+def get_library_data( title, token, fullURL = 'http://localhost:32400' ):
+    params = { 'X-Plex-Token' : token }
+    response = requests.get( '%s/library/sections' % fullURL, params = params,
+                             verify = False )
+    if response.status_code != 200:
+        return None
+    html = BeautifulSoup( response.content, 'lxml' )
+    library_dict = { direlem[ 'title' ] : ( int( direlem['key'] ), direlem['type'] ) for
+                     direlem in html.find_all('directory') }
+    assert( title in library_dict )
+    key, mediatype = library_dict[ title ]
+    if mediatype == 'movie':
+        data = _get_library_data_movie( key, token, fullURL = fullURL )
+    elif mediatype == 'show':
+        data =  _get_library_data_show( key, token, fullURL = fullURL )
+    elif mediatype == 'artist':
+        data = _get_library_data_artist( key, token, fullURL = fullURL )
+    else:
+        return None
+    return data
 
 def get_library_stats( key, token, fullURL = 'http://localhost:32400' ):
     params = { 'X-Plex-Token' : token }

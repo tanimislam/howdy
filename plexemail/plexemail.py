@@ -111,9 +111,11 @@ def get_email_contacts_dict( emailList ):
     query = gdata.contacts.client.ContactsQuery( )
     query.max_results = 50000
     contacts = gd_client.GetContacts( q = query )
-    contacts_dict = { entry.title.text : entry for entry in contacts.entry }
+    contacts_dict = dict(map(lambda entry: ( entry.title.text, entry ),
+                             filter(lambda entr: entr.title.text is not None,
+                                    contacts.entry)))
     contacts_val = filter(lambda name: len(contacts_dict[name].email) > 0, contacts_dict )
-    emails_dict = { name : sorted(set([ eml.address.lower() for eml in contacts_dict[name].email ])) for
+    emails_dict = { name : sorted(set(map(lambda eml: eml.address, contacts_dict[name].email))) for
                     name in contacts_val }
     #
     emails_dict_rev = {}

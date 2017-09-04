@@ -976,4 +976,3 @@ def getOauthYoutubeCredentials( ):
     credentials = oauth2client.file.Storage( absPath ).get( )
     credentials.refresh( httplib2.Http( ) )
     return credentials
-    

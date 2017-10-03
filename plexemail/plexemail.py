@@ -205,7 +205,8 @@ def test_email_full( subject, htmlstring ):
     smtp_conn.sendmail( fromEmail, [ msg['To'], ], msg.as_string( ) )
     smtp_conn.quit( )
 
-def send_individual_email_full( mainHTML, subject, access_token, email, name = None):
+def send_individual_email_full( mainHTML, subject, access_token, email, name = None, attach = None,
+                                attachName = None, attachType = 'txt'):
     fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
@@ -219,6 +220,10 @@ def send_individual_email_full( mainHTML, subject, access_token, email, name = N
         htmlstring = re.sub( 'Hello Friend,', 'Hello %s,' % firstname, mainHTML )
     body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
+    if attach is not None and attachName is not None:
+        att = MIMEApplication( attach, _subtype = 'text' )
+        att.add_header( 'content-disposition', 'attachment', filename = attachName )
+        msg.attach( att )
     #
     auth_string = 'user=%s\1auth=Bearer %s\1\1' % (
         '***REMOVED***.islam@gmail.com', access_token)

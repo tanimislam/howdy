@@ -2,7 +2,10 @@ import os, sys, base64, numpy, glob, hashlib, requests
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PIL import Image
-from cStringIO import StringIO
+if sys.version_info.major >= 3:
+    from io import StringIO
+else:
+    from cStringIO import StringIO
 
 _clientID = 'c3d1a164052f816'
 _clientSECRET = 'e654905e2777aceb01c62af6305edc4e271ab1a4'

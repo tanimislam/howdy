@@ -1,12 +1,14 @@
 import os, sys, titlecase, datetime, pypandoc
 import json, re, urllib, time, glob, multiprocessing
-import plexemail, plexemail_basegui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from bs4 import BeautifulSoup
-from ConfigParser import RawConfigParser
+if sys.version_info.major >= 3:
+    from configparser import RawConfigParser
+else:
+    from ConfigParser import RawConfigParser
 from plexcore import plexcore
-from . import mainDir
+from . import mainDir, plexemail, plexemail_basegui
 
 def _checkValidLaTeX( myString ):
     try:
@@ -133,7 +135,7 @@ class PlexEmailMyGUI( QWidget ):
             self.emailSendButton.setEnabled( False )
             self.statusLabel.setText( 'INVALID LaTeX' )
             return            
-        mainText = """
+        mainText = r"""
         \documentclass{article}
         \usepackage{amsmath, amsfonts, graphicx, hyperref}
         
@@ -175,7 +177,7 @@ class PlexEmailMyGUI( QWidget ):
         result = qdl.exec_( )
 
     def getHTML( self ):
-        mainText = """
+        mainText = r"""
         \documentclass{article}
         \usepackage{amsmath, amsfonts, graphicx, hyperref}
         

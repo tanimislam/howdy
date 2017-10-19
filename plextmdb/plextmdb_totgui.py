@@ -1,6 +1,6 @@
 import numpy, os, sys, requests
 import logging, glob, datetime, pickle, gzip
-import plextmdb, plextmdb_mygui, plextmdb_gui
+from . import plextmdb, plextmdb_mygui, plextmdb_gui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from plexcore import plexcore, plexcore_gui

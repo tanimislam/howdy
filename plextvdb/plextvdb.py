@@ -1,7 +1,10 @@
 import requests, os, sys, json, re, logging
 import multiprocessing, datetime, time
 from PIL import Image
-from cStringIO import StringIO
+if sys.version_info.major >= 3:
+    from io import StringIO
+else:
+    from cStringIO import StringIO
 from dateutil.relativedelta import relativedelta
 from . import get_token
 

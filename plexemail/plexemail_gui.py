@@ -1,13 +1,10 @@
 import os, sys, titlecase, datetime
-import json, re, urllib, time
+import json, re, urllib, time, plexemail, plexemail_basegui
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-if sys.version_info.major >= 3:
-    from configparser import RawConfigParser
-else:
-    from ConfigParser import RawConfigParser
-from . import mainDir, plexemail, plexemail_basegui
+from ConfigParser import RawConfigParser
+from . import mainDir
 from plexcore import plexcore
 
 class PlexEmailGUI( QWidget ):
@@ -214,7 +211,7 @@ class PlexEmailGUI( QWidget ):
             
         def checkValidLaTeX( self ):
             myStr = unicode( self.textEdit.toPlainText( ).toUtf8( ), encoding='UTF-8').strip( )
-            mainText = r"""
+            mainText = """
             \documentclass{article}
             \usepackage{amsmath, amsfonts, graphicx, hyperref}
 

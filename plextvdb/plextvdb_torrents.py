@@ -179,7 +179,7 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
                items ), 'SUCCESS'
     
 def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
-    surl = urljoin( 'https://thepiratebay.org', 's/' )
+    surl = urljoin( 'https://thepiratebay.se', 's/' )
     if not doAny:
         cat = CATEGORIES.VIDEO.TV_SHOWS
     else:
@@ -268,16 +268,17 @@ def get_tv_torrent_best( name, maxnum = 10 ):
     assert( maxnum >= 5 )
     its, status = get_tv_torrent_tpb( name, maxnum = maxnum )
     if status == 'SUCCESS':
+        print len(its)
         items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
                   item in its ]
     its, status = get_tv_torrent_torrentz( name, maxnum = maxnum )
-    print(status)
+    print status
     if status == 'SUCCESS':
         items+= [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
                   item in its ]
-    print('LENGTH OF ALL ITEMS = %d' % len( items ) )
+    print 'LENGTH OF ALL ITEMS = %d' % len( items )
     if len( items ) == 0:
-        print("Error, could not find anything with name = %s" % name)
+        print "Error, could not find anything with name = %s" % name
         return None, None # could find nothing
     item = max( items, key = lambda item: item['seeders'] + item['leechers'] )
     return item['title'], item[ 'link' ]

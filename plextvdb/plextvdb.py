@@ -377,11 +377,15 @@ def get_series_updated_fromdate( date, token, verify = True ):
     return sorted( set( map(lambda elem: elem['id'], series_ids ) ) )
 
 def _get_remaining_eps_perproc( input_tuple ):
-    name, epsForShow, token, showSpecials, fromDate, verify, doShowEnded = input_tuple
-    tvshow = TVShow( name, token, verify = verify )
-    if not doShowEnded and tvshow.statusEnded:
-        return None
-    tvdb_eps = set(tvshow.get_episodes_series( showSpecials = showSpecials, fromDate = fromDate ) )
+    #name, epsForShow, token, showSpecials, fromDate, verify, doShowEnded = input_tuple
+    name, series_id, epsForShow, token, showSpecials, fromDate, verify = input_tuple
+    eps = get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
+                               fromDate = fromDate )
+    tvdb_eps = set(map(lambda ep: ( ep['airedSeason'], ep['airedEpisodeNumber' ] ), eps ) )
+    #tvshow = TVShow( name, token, verify = verify )
+    #if not doShowEnded and tvshow.statusEnded:
+    #    return None
+    #tvdb_eps = set(tvshow.get_episodes_series( showSpecials = showSpecials, fromDate = fromDate ) )
     here_eps = set([ ( seasno, epno ) for seasno in epsForShow for
                      epno in epsForShow[ seasno ] ] )
     tuples_to_get = tvdb_eps - here_eps
@@ -406,8 +410,10 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
         tvshow_id_map = { ids_tvshows[ series_id ] : series_id for series_id in
                           updated_ids }
     tvshows = sorted( set( tvshow_id_map.keys( ) ) )
-    input_tuples = map(lambda name: ( name, tvdata[ name ], token,
-                                      showSpecials, fromDate, verify, doShowEnded ), tvshows )
+    input_tuples = map(lambda name: ( name, tvshow_id_map[ name ], tvdata[ name ], token,
+                                      showSpecials, fromDate, verify ), tvshow_id_map )
+    #input_tuples = map(lambda name: ( name, tvdata[ name ], token,
+    #                                  showSpecials, fromDate, verify, doShowEnded ), tvshows )
     pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
     toGet = dict( filter( lambda tup: tup is not None,
                           pool.map( _get_remaining_eps_perproc,

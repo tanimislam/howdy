@@ -31,31 +31,28 @@ def main( ):
     parser.add_option( '--justadd', dest='do_justadd', action = 'store_true', default = False,
                        help = 'Just add the set of emails we set with --newemails.' )
     opts, args = parser.parse_args( )
-    assert(len(list(filter(lambda tok: tok is True,
-                           ( opts.do_friends, opts.do_addmapping,
-                             opts.do_mapped_friends, opts.do_updateflaskcreds,
-                             opts.do_justadd ) ) ) ) == 1 )
+    assert(len(filter(lambda tok: tok is True, ( opts.do_friends, opts.do_addmapping,
+                                                 opts.do_mapped_friends, opts.do_updateflaskcreds,
+                                                 opts.do_justadd ) ) ) == 1 )
     if any(map(lambda tok: tok is None, ( opts.username, opts.password ) ) ):
         var = plexcore.checkServerCredentials( )
         if var is None:
-            print('COULD NOT FIND PLEX SERVER CREDENTIALS OR INVALID USERNAME/PASSWORD COMBO')
+            print 'COULD NOT FIND PLEX SERVER CREDENTIALS OR INVALID USERNAME/PASSWORD COMBO'
             return
         _, token = var
     else:
-        assert(all(map(lambda tok: tok is not None,
-                       ( opts.username, opts.password ) ) ) )
-        token = plexcore.getTokenForUsernamePassword(
-            opts.username, opts.password, verify = False )
+        assert(all(map(lambda tok: tok is not None, ( opts.username, opts.password ) ) ) )
+        token = plexcore.getTokenForUsernamePassword( opts.username, opts.password, verify = False )
         if token is None:
-            print('INVALID USERNAME/PASSWORD COMBO.')
+            print 'INVALID USERNAME/PASSWORD COMBO.'
             return
         
     if opts.do_friends:
         plex_emails = sorted( set( plexcore.get_email_contacts( token, verify = False ) ) )
-        print('YOU HAVE %d PLEX FRIENDS' % len( plex_emails ) )
-        print('---')
+        print 'YOU HAVE %d PLEX FRIENDS' % len( plex_emails )
+        print '---'
         for email in plex_emails:
-            print('%s' % email)
+            print '%s' % email
 
     elif opts.do_addmapping:
         plex_emails = sorted( set( plexcore.get_email_contacts( token, verify = False ) ) )
@@ -67,16 +64,16 @@ def main( ):
                               opts.do_replace_existing )
     elif opts.do_mapped_friends:
         mapped_emails = sorted( set( plexcore.get_mapped_email_contacts( token, verify = True ) ) )
-        print('YOU HAVE %d MAPPED PLEX FRIENDS' % len( mapped_emails ))
-        print('---')
+        print 'YOU HAVE %d MAPPED PLEX FRIENDS' % len( mapped_emails )
+        print '---'
         for email in mapped_emails:
-            print('%s' % email)
+            print '%s' % email
     elif opts.do_updateflaskcreds:
         assert( opts.flaskpassword is not None )
         response = requests.get( 'https://tanimislam.ddns.net/flask/accounts/checkpassword',
                                  auth = ( 'tanim.islam@gmail.com', opts.flaskpassword ) )
         if response.status_code != 200:
-            print('ERROR, WRONG PASSWORD FOR TANIM ISLAM.')
+            print 'ERROR, WRONG PASSWORD FOR TANIM ISLAM.'
             return
         query = session.query( plexcore.PlexGuestEmailMapping )
         subtracts = [ ]
@@ -92,15 +89,15 @@ def main( ):
                                            'addemails' : adds, 'deleteemails' : subtracts },
                                   auth = ( 'tanim.islam@gmail.com', opts.flaskpassword ) )
         data = response.json( )
-        print(data['deleted'])
-        print(data['added'])
+        print data['deleted']
+        print data['added']
     elif opts.do_justadd:
         assert( opts.flaskpassword is not None )
         assert( opts.new_emails is not None )
         response = requests.get( 'https://tanimislam.ddns.net/flask/accounts/checkpassword',
                                  auth = ( 'tanim.islam@gmail.com', opts.flaskpassword ) )
         if response.status_code != 200:
-            print('ERROR, WRONG PASSWORD FOR TANIM ISLAM.')
+            print 'ERROR, WRONG PASSWORD FOR TANIM ISLAM.'
             return
         adds = sorted( set( map(lambda email: email.strip(), opts.new_emails.split(',') ) ) )
         response = requests.post( 'https://tanimislam.ddns.net/flask/accounts/adddeleteusersbulk',
@@ -108,7 +105,7 @@ def main( ):
                                            'addemails' : adds },
                                   auth = ( 'tanim.islam@gmail.com', opts.flaskpassword ) )
         data = response.json( )
-        print(data['added'])
+        print data['added']
         
 if __name__=='__main__':
     main( )

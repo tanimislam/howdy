@@ -1,9 +1,6 @@
 import requests, plextmdb, os, re
 import sys, zipfile, codecs
-if sys.version_info.major >= 3:
-    from urllib.parse import urljoin
-else:
-    from urlparse import urljoin
+from urlparse import urljoin
 from bs4 import BeautifulSoup
 from io import BytesIO
 

@@ -131,7 +131,7 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
 
         return result
 
-    surl = urljoin( 'https://thepiratebay.se', 's/' )
+    surl = urljoin( 'https://thepiratebay.org', 's/' )
     if not doAny:
         cat = CATEGORIES.VIDEO.MOVIES
     else:

@@ -1,10 +1,7 @@
 import sqlite3, shutil, os, glob, datetime, gspread, logging, sys
 import multiprocessing, tempfile, uuid, requests, pytz, pypandoc
 import xdg.BaseDirectory, urllib, json, oauth2client.file, httplib2
-if sys.version_info.major >= 3:
-    from configparser import RawConfigParser
-else:
-    from ConfigParser import RawConfigParser
+from ConfigParser import RawConfigParser
 from contextlib import contextmanager
 from bs4 import BeautifulSoup
 from . import mainDir, Base, session, baseConfDir
@@ -211,7 +208,7 @@ def get_owned_servers( token ):
                               se['product'] == 'Plex Media Server', myxml.find_all('device') ):
         owned = int( server_elem['owned'] )
         if owned != 1: continue
-        connections = list( filter(lambda elem: elem['local'] == '0', server_elem.find_all('connection') ) )
+        connections = filter(lambda elem: elem['local'] == '0', server_elem.find_all('connection') )
         if len( connections ) != 1:
             continue
         connection = max( connections )

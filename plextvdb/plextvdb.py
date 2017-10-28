@@ -24,7 +24,7 @@ class TVSeason( object ):
         if self.get_num_episodes( ) == 0: return None
         return min(map(lambda epelem: epelem['airedDate'], self.episodes.values( ) ) )
         
-    def get_season_episodes( self, token, verify = True ):
+    def _get_season_episodes( self, token, verify = True ):
         currentDate = datetime.datetime.now( ).date( )
         headers = { 'Content-Type' : 'application/json',
                     'Authorization' : 'Bearer %s' % token }
@@ -62,7 +62,7 @@ class TVSeason( object ):
                               'airedDate': airedDate }
         return sData        
     
-    def get_season_image( self, token, verify = True ):
+    def _get_season_image( self, token, verify = True ):
         headers = { 'Content-Type' : 'application/json',
                     'Authorization' : 'Bearer %s' % token }
         response = requests.get( 'https://api.thetvdb.com/series/%d/images/query/params' % self.seriesId,
@@ -102,7 +102,7 @@ class TVSeason( object ):
         self.seasno = seasno
         #
         ## first get the image associated with this season
-        self.imageURL = self.get_season_image( token, verify = verify )
+        self.imageURL = self._get_season_image( token, verify = verify )
         self.img = None
         if self.imageURL is not None:
             response = requests.get( self.imageURL )
@@ -111,10 +111,10 @@ class TVSeason( object ):
 
         #
         ## now get the specific episodes for that season
-        self.episodes = self.get_season_episodes( token )
+        self.episodes = self._get_season_episodes( token )
 
 class TVShow( object ):
-    def get_series_seasons( self, token, verify = True ):
+    def _get_series_seasons( self, token, verify = True ):
         headers = { 'Content-Type' : 'application/json',
                     'Authorization' : 'Bearer %s' % token }
         response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/summary' % self.seriesId,
@@ -126,7 +126,7 @@ class TVShow( object ):
             return None
         return sorted( map(lambda tok: int(tok), data['airedSeasons'] ) )
         
-    def get_series_image( self, token, verify = True ):
+    def _get_series_image( self, token, verify = True ):
         headers = { 'Content-Type' : 'application/json',
                     'Authorization' : 'Bearer %s' % token }
         response = requests.get( 'https://api.thetvdb.com/series/%d/images/query/params' % self.seriesId,
@@ -194,11 +194,11 @@ class TVShow( object ):
         data = response.json( )['data']
         #
         ## check if status ended
-        if data['status'] == 'Ended': self.statusEnded = True                
-        else: self.statusEnded = False
+        self.statusEnded = False
+        if data['status'] == 'Ended': self.statusEnded = True
         #
         ## get Image URL and Image
-        self.imageURL = self.get_series_image( token )
+        self.imageURL = self._get_series_image( token )
         self.img = None
         if self.imageURL is not None:
             response = requests.get( self.imageURL )
@@ -206,15 +206,54 @@ class TVShow( object ):
                 self.img = Image.open( StringIO( response.content ) )
         #
         ## get every season defined
-        allSeasons = self.get_series_seasons( token )
+        allSeasons = self._get_series_seasons( token )
         pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
-        input_tuples = map(lambda seasno: ( self.seriesName, self.seriesId, token, seasno ),
+        input_tuples = map(lambda seasno: (
+            self.seriesName, self.seriesId, token, seasno, verify ),
                            allSeasons)
-        self.seasonDict = dict( pool.map( _create_season, input_tuples ) )
+        self.seasonDict = dict( filter(lambda (seasno, tvseason ): len( tvseason.episodes ) != 0,
+                                       pool.map( _create_season, input_tuples ) ) )
         self.startDate = min(filter(None, map(lambda tvseason: tvseason.get_min_date( ),
                                               self.seasonDict.values( ) ) ) )
         self.endDate = max(filter(None, map(lambda tvseason: tvseason.get_max_date( ),
                                             self.seasonDict.values( ) ) ) )
+
+    def get_episode_name( self, airedSeason, airedEpisode ):
+        if airedSeason not in self.seasonDict:
+            raise ValueError("Error, season %d not a valid season." % airedSeason )
+        if airedEpisode not in self.seasonDict[ airedSeason ].episodes:
+            raise ValueError("Error, episode %d in season %d not a valid episode number." % (
+                airedEpisode, airedSeason ) )
+        epStruct = self.seasonDict[ airedSeason ].episode[ airedEpisode ]
+        return ( epStruct['name'], epStruct['airedDate'] )
+
+    def get_episodes_series( self, showSpecials = True, fromDate = None ):
+        seasons = set( self.seasonDict.keys( ) )
+        if not showSpecials:
+            seasons = seasons - set([0,])
+        sData = reduce(lambda x,y: x+y,
+                       map(lambda seasno:
+                           map(lambda epno: ( seasno, epno ),
+                               self.seasonDict[ seasno ].episodes.keys( ) ),
+                           seasons ) )
+        if fromDate is not None:
+            sData = filter(lambda ( seasno, epno ):
+                           self.seasonDict[ seasno ].episodes[ epno ][ 'airedDate' ] >=
+                           fromDate, sData )
+        return sData
+
+    def get_tot_epdict_tvdb( self ):
+        tot_epdict = { }
+        seasons = set( self.seasonDict.keys( ) ) - set([0,])
+        for seasno in sorted(seasons):
+            tot_epdict.setdefault( seasno, {} )
+            for epno in sorted(self.seasonDict[ seasno ].episodes):
+                epStruct = self.seasonDict[ seasno ].episodes[ epno ]
+                title = epStruct[ 'name' ]
+                airedDate = epStruct[ 'airedDate' ]
+                tot_epdict[ seasno ][ epno ] = ( title, airedDate )
+        return tot_epdict
+                                            
 
 def get_series_id( series_name, token, verify = True ):    
     params = { 'name' : series_name }
@@ -341,10 +380,11 @@ def get_series_updated_fromdate( date, token, verify = True ):
     return sorted( set( map(lambda elem: elem['id'], series_ids ) ) )
 
 def _get_remaining_eps_perproc( input_tuple ):
-    name, series_id, epsForShow, token, showSpecials, fromDate, verify = input_tuple
-    eps = get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
-                               fromDate = fromDate )
-    tvdb_eps = set(map(lambda ep: ( ep['airedSeason'], ep['airedEpisodeNumber' ] ), eps ) )
+    name, epsForShow, token, showSpecials, fromDate, verify, doShowEnded = input_tuple
+    tvshow = TVShow( name, token, verify = verify )
+    if not doShowEnded and tvshow.statusEnded:
+        return None
+    tvdb_eps = set(tvshow.get_episodes_series( showSpecials = showSpecials, fromDate = fromDate ) )
     here_eps = set([ ( seasno, epno ) for seasno in epsForShow for
                      epno in epsForShow[ seasno ] ] )
     tuples_to_get = tvdb_eps - here_eps
@@ -356,19 +396,21 @@ def _get_series_id_perproc( input_tuple ):
     show, token, verify = input_tuple
     return show, get_series_id( show, token, verify = verify )
     
-def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify = True ):
+def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify = True,
+                            doShowEnded = False ):
     token = get_token( verify = verify )
     pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
     tvshow_id_map = dict( pool.map( _get_series_id_perproc,
                                     map(lambda show: ( show, token, verify ), tvdata ) ) )
     if fromDate is not None:
         series_ids = set( get_series_updated_fromdate( fromDate, token ) )
-        ids_tvshows = dict(map( lambda tup: ( tup[1], tup[0] ), tvshow_id_map.items( ) ) )
+        ids_tvshows = dict(map(lambda (name, seriesId): ( seriesId, name ), tvshow_id_map.items( ) ) )
         updated_ids = set( ids_tvshows.keys( ) ) & series_ids
         tvshow_id_map = { ids_tvshows[ series_id ] : series_id for series_id in
                           updated_ids }
-    input_tuples = map(lambda name: ( name, tvshow_id_map[ name ], tvdata[ name ], token,
-                                      showSpecials, fromDate, verify ), tvshow_id_map )                       
+    tvshows = sorted( set( tvshow_id_map.keys( ) ) )
+    input_tuples = map(lambda name: ( name, tvdata[ name ], token,
+                                      showSpecials, fromDate, verify, doShowEnded ), tvshows )
     pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
     toGet = dict( filter( lambda tup: tup is not None,
                           pool.map( _get_remaining_eps_perproc,

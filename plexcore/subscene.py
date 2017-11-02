@@ -1,4 +1,3 @@
-#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # vim: fenc=utf-8 ts=4 et sw=4 sts=4
 
@@ -25,10 +24,12 @@ this script that does the job by parsing the website"s pages.
 """
 
 # imports
-import re
-import enum
-from contextlib import suppress
-from urllib.request import Request, urlopen
+import re, enum, sys
+if sys.version_info.major >= 3:
+    from contextlib import suppress
+    from urllib.request import Request, urlopen
+else:
+    from six.moves.urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 
 # constants
@@ -47,8 +48,7 @@ def soup_for(url):
     html = urlopen(r).read().decode("utf-8")
     return BeautifulSoup(html, "html.parser")
 
-
-class AttrDict():
+class AttrDict( object ):
     def __init__(self, *attrs):
         self._attrs = attrs
 
@@ -76,7 +76,7 @@ SectionsParts = {
 }
 
 
-class Subtitle:
+class Subtitle( object ):
     def __init__(self, title, url, language, owner_username, owner_url,
                  description):
         self.title = title
@@ -105,28 +105,43 @@ class Subtitle:
     def from_row(cls, row):
         attrs = AttrDict("title", "url", "language", "owner_username",
                          "owner_url", "description")
+        if sys.version_info.major >= 3:
+            with suppress(Exception):
+                attrs.title = row.find("td", "a1").a.find_all("span")[1].text.strip()
+                
+            with suppress(Exception):
+                attrs.url = SITE_DOMAIN + row.find("td", "a1").a.get("href")
 
-        with suppress(Exception):
-            attrs.title = row.find("td", "a1").a.find_all("span")[1].text \
-                    .strip()
+            with suppress(Exception):
+                attrs.language = row.find("td", "a1").a.find_all("span")[0].text.strip()
+                
+            with suppress(Exception):
+                attrs.owner_username = row.find("td", "a5").a.text.strip()
 
-        with suppress(Exception):
-            attrs.url = SITE_DOMAIN + row.find("td", "a1").a.get("href")
+            with suppress(Exception):
+                attrs.owner_page = SITE_DOMAIN + row.find("td", "a5").a.get("href").strip()
+                
+            with suppress(Exception):
+                attrs.description = row.find("td", "a6").div.text.strip()
+        else:
+            try: attrs.title = row.find("td", "a1").a.find_all("span")[1].text.strip()                
+            except: pass
+            
+            try: attrs.url = SITE_DOMAIN + row.find("td", "a1").a.get("href")
+            except: pass
 
-        with suppress(Exception):
-            attrs.language = row.find("td", "a1").a.find_all("span")[0].text \
-                    .strip()
+            try: attrs.language = row.find("td", "a1").a.find_all("span")[0].text.strip()
+            except: pass
 
-        with suppress(Exception):
-            attrs.owner_username = row.find("td", "a5").a.text.strip()
+            try: attrs.owner_username = row.find("td", "a5").a.text.strip()
+            except: pass
 
-        with suppress(Exception):
-            attrs.owner_page = SITE_DOMAIN + row.find("td", "a5").a \
-                    .get("href").strip()
+            try: ttrs.owner_page = SITE_DOMAIN + row.find("td", "a5").a.get("href").strip()
+            except: pass
 
-        with suppress(Exception):
-            attrs.description = row.find("td", "a6").div.text.strip()
-
+            try: attrs.description = row.find("td", "a6").div.text.strip()
+            except: pass
+            
         return cls(**attrs.to_dict())
 
     @property
@@ -140,7 +155,7 @@ class Subtitle:
         return self._zipped_url
 
 
-class Film:
+class Film( object ):
     def __init__(self, title, year=None, imdb=None, cover=None,
                  subtitles=None):
         self.title = title
@@ -186,7 +201,6 @@ def section_exists(soup, section):
     for header in headers:
         if tag_part in header.text:
             return True
-
     return False
 
 
@@ -199,7 +213,6 @@ def get_first_film(soup, section):
         if tag_part in header.text:
             tag = header
             break
-
     if not tag:
         return
 

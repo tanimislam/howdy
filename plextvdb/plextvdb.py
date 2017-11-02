@@ -1,7 +1,10 @@
 import requests, os, sys, json, re, logging
 import multiprocessing, datetime, time
 from PIL import Image
-from cStringIO import StringIO
+if sys.version_info.major < 3:
+    from cStringIO import StringIO
+else:
+    from io import StringIO
 from dateutil.relativedelta import relativedelta
 from . import get_token
 
@@ -208,7 +211,7 @@ class TVShow( object ):
         input_tuples = map(lambda seasno: (
             self.seriesName, self.seriesId, token, seasno, verify ),
                            allSeasons)
-        self.seasonDict = dict( filter(lambda (seasno, tvseason ): len( tvseason.episodes ) != 0,
+        self.seasonDict = dict( filter(lambda seasno_tvseason: len( seasno_tvseason[1].episodes ) != 0,
                                        pool.map( _create_season, input_tuples ) ) )
         self.startDate = min(filter(None, map(lambda tvseason: tvseason.get_min_date( ),
                                               self.seasonDict.values( ) ) ) )
@@ -234,8 +237,8 @@ class TVShow( object ):
                                self.seasonDict[ seasno ].episodes.keys( ) ),
                            seasons ) )
         if fromDate is not None:
-            sData = filter(lambda ( seasno, epno ):
-                           self.seasonDict[ seasno ].episodes[ epno ][ 'airedDate' ] >=
+            sData = filter(lambda seasno_epno:
+                           self.seasonDict[ seasno_epno[0] ].episodes[ seasno_epno[1] ][ 'airedDate' ] >=
                            fromDate, sData )
         return sData
 
@@ -405,7 +408,7 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
                                     map(lambda show: ( show, token, verify ), tvdata ) ) )
     if fromDate is not None:
         series_ids = set( get_series_updated_fromdate( fromDate, token ) )
-        ids_tvshows = dict(map(lambda (name, seriesId): ( seriesId, name ), tvshow_id_map.items( ) ) )
+        ids_tvshows = dict(map(lambda name_seriesId: ( name_seriesId[1], name_seriesId[0] ), tvshow_id_map.items( ) ) )
         updated_ids = set( ids_tvshows.keys( ) ) & series_ids
         tvshow_id_map = { ids_tvshows[ series_id ] : series_id for series_id in
                           updated_ids }

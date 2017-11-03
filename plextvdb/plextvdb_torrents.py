@@ -179,7 +179,7 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
                items ), 'SUCCESS'
     
 def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
-    surl = urljoin( 'https://thepiratebay.se', 's/' )
+    surl = urljoin( 'https://thepiratebay.org', 's/' )
     if not doAny:
         cat = CATEGORIES.VIDEO.TV_SHOWS
     else:

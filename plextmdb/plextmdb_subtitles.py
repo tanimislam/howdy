@@ -3,7 +3,18 @@ import sys, zipfile, codecs
 from urlparse import urljoin
 from bs4 import BeautifulSoup
 from io import BytesIO
+from plexcore import subscene
 
+def get_subtitles_subscene2( title, extra_strings = [ ] ):
+    film = subscene.search( title )
+    subtitles = filter(lambda subtitle: subtitle.language == 'English', film.subtitles )
+    if len( extra_strings ) != 0:
+        subtitles = filter(lambda subtitle: any(map(lambda tok: tok.lower( ) in subtitle.title.lower( ))),
+                           subtitles )
+    if len( subtitles ) == 0:
+        return None
+    return subtitles
+    
 def get_subtitles_subscene( title ):
     response = requests.get( 'https://subscene.com/subtitles/title',
                              params = { 'q' : title, 'l' : 'english' } )

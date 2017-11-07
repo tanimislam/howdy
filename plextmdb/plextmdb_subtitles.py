@@ -9,11 +9,16 @@ def get_subtitles_subscene2( title, extra_strings = [ ] ):
     film = subscene.search( title )
     subtitles = filter(lambda subtitle: subtitle.language == 'English', film.subtitles )
     if len( extra_strings ) != 0:
-        subtitles = filter(lambda subtitle: any(map(lambda tok: tok.lower( ) in subtitle.title.lower( ))),
-                           subtitles )
+        subtitles = filter(lambda subtitle: any(map(lambda tok: tok.lower( ) in subtitle.title.lower( ),
+                                                    set( extra_strings) ) ), subtitles )
     if len( subtitles ) == 0:
         return None
-    return subtitles
+    subtitles_map = { }
+    for subtitle in subtitles:
+        title = subtitle.title
+        if title not in subtitles_map:
+            subtitles_map[ title ] = subtitle
+    return subtitles_map
     
 def get_subtitles_subscene( title ):
     response = requests.get( 'https://subscene.com/subtitles/title',

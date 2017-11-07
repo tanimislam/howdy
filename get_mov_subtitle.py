@@ -20,8 +20,16 @@ def get_items_subscene( name, maxnum = 10 ):
                               'srtdata' : item['srtdata'] },
                items[ 'subtitles' ][:maxnum] ), True
 
+def get_items_subscene2( name, maxnum = 20, extra_strings = [ ] ):
+    assert( maxnum >= 5 )
+    subtitles_map = plextmdb_subtitles.get_subtitles_subscene2( name, extra_strings = extra_strings )
+    if subtitles_map is None: return None
+    return map(lambda title: { 'title' : title,
+                               'srtdata' : subtitles_map[ title ] },
+               sorted( subtitles_map )[:maxnum] ), True
+
 def get_movie_subtitle_items( items, hasSubs = False, filename = 'eng.srt' ):
-    if len( items ) != 1:
+    if len( items ) != 0:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate( items ) }
         bs = codecs.encode( 'Choose movie subtitle:\n%s\n' %
                             '\n'.join(map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 'title' ] ),
@@ -32,9 +40,12 @@ def get_movie_subtitle_items( items, hasSubs = False, filename = 'eng.srt' ):
             if iidx not in sortdict:
                 print('Error, need to choose one of the movie names. Exiting...')
                 return
-            if hasSubs:
-                with open( filename, 'wb' ) as openfile:
-                    openfile.write('%s\n' % sortdict[ iidx ][ 'srtdata' ] )
+            if hasSubs: # this is the subscene data structures
+                zipurl = sortdict[ iidx ][ 'srtdata' ].zipped_url
+                with zipfile.ZipFile( BytesIO( requests.get( zipurl ).content ), 'r') as zf:
+                    with open( filename, 'wb' ) as openfile:
+                        name = max( zf.namelist( ) )
+                        openfile.write( zf.read( name ) )
             else:
                 zipurl = sortdict[ iidx ][ 'zipurl' ]
                 with zipfile.ZipFile( BytesIO( requests.get( zipurl ).content ), 'r') as zf:
@@ -53,12 +64,22 @@ if __name__=='__main__':
                       help = 'Maximum number of torrents to look through. Default is 10.')
     parser.add_option('--filename', dest='filename', action='store', type=str, default = 'eng.srt',
                       help = 'Name of the subtitle file. Default is eng.srt.')
+    parser.add_option('--bypass', dest='do_bypass', action='store_true', default = True,
+                      help = 'If chosen, then bypass yts subtitles.')
+    parser.add_option('--keywords', dest='keywords', action='store', type=str,
+                      help = 'Optional definition of a list of keywords to look for, in the subscene search for movie subtitles.')
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
     assert( os.path.basename( opts.filename ).endswith('.srt' ) )
-    data = get_items_yts( opts.name, maxnum = opts.maxnum )
+    keywords_set = { }
+    if opts.keywords is not None:
+        keywords_set = set(map(lambda tok: tok.lower( ), filter(lambda tok: len( tok.strip( ) ) != 0,
+                                                                opts.keywords.strip().split(','))))
+    data = None
+    if not opts.do_bypass:
+        data = get_items_yts( opts.name, maxnum = opts.maxnum )
     if data is None:
-        data = get_items_subscene( opts.name, maxnum = opts.maxnum )
+        data = get_items_subscene2( opts.name, maxnum = opts.maxnum, extra_strings = keywords_set )
     if data is not None:
         items, hasSubs = data
         get_movie_subtitle_items( items, hasSubs = hasSubs, filename = opts.filename )

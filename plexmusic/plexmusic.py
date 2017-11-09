@@ -1,5 +1,5 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2
-import requests, apiclient.discovery, youtube_dl
+import requests, googleapiclient.discovery, youtube_dl
 from PIL import Image
 from cStringIO import StringIO
 from urlparse import urljoin
@@ -11,8 +11,8 @@ def get_youtube_service( ):
     credentials = plexcore.getOauthYoutubeCredentials( )
     if credentials is None:
         raise ValueError( "Error, could not build the YouTube service." )
-    youtube = apiclient.discovery.build( "youtube", "v3",
-                                         http = credentials.authorize(httplib2.Http()))
+    youtube = googleapiclient.discovery.build( "youtube", "v3",
+                                               http = credentials.authorize(httplib2.Http()))
     return youtube
 
 def push_gracenote_credentials( client_ID ):
@@ -132,6 +132,14 @@ class PlexMusic( object ):
             return True, '%s.%s.png' % (
                 titlecase.titlecase( artist_name ),
                 album_name.replace('/', '\-') )
+
+    def get_song_listing( self, artist_name, album_name ):
+        metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,
+                                      album = album_name,
+                                      artist = titlecase.titlecase( artist_name ) )
+        track_listing = sorted(map(lambda track: ( track['track_title'], int( track['track_number'])),
+                                   metadata_album['tracks']), key = lambda (title, num ): num )
+        return track_listing
 
     def get_music_metadata( self, song_name, artist_name ):
         metadata_song = pygn.search( clientID = self.clientID, userID = self.userID,

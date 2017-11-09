@@ -22,6 +22,5 @@ if __name__=='__main__':
         pm.get_song_image( opts.artist_name, opts.album_name )
     else:
         track_listing = pm.get_song_listing( opts.artist_name, album_name = opts.album_name )
-        print track_listing
         for title, trkno in track_listing:
             print '%02d - %s' % ( trkno, title )

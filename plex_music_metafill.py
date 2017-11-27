@@ -32,8 +32,8 @@ def choose_youtube_item( name, maxnum = 10 ):
 
 def main( ):
     parser = OptionParser( )
-    parser.add_option( '--song', dest='song_name', type=str, action='store',
-                       help = 'Name of the song to put into the M4A file.' )
+    parser.add_option( '--songs', dest='song_names', type=str, action='store',
+                       help = 'Names of the song to put into M4A files. Separated by ;' )
     parser.add_option( '--artist', dest='artist_name', type=str, action='store',
                        help = 'Name of the artist to put into the M4A file.' )
     parser.add_option( '--maxnum', dest='maxnum', type=int, action='store',
@@ -42,36 +42,40 @@ def main( ):
                        ' Default is 10.' )
     opts, args = parser.parse_args( )
     assert(all(map(lambda tok: tok is not None,
-                   ( opts.song_name, opts.artist_name ) ) ) )
+                   ( opts.song_names, opts.artist_name ) ) ) )
     #
     ## first get music metadata
     pm = plexmusic.PlexMusic( )
-    try:
-        data_dict, status = pm.get_music_metadata( song_name = opts.song_name,
-                                                   artist_name = opts.artist_name )
-        if status != 'SUCCESS':
-            print( status )
-            return
-    except Exception as e:
-        print( e )
-        return
-    artist_name = data_dict[ 'artist' ]
-    song_name = data_dict[ 'song' ]
-    print 'ACTUAL ARTIST: %s' % artist_name
-    print 'ACTUAL SONG: %s' % song_name
-    #
-    ## now get the youtube song selections
-    youtubeURL = choose_youtube_item( '%s %s' % ( artist_name, song_name ),
-                                      maxnum = opts.maxnum )
-    if youtubeURL is None:
-        return
-    #
-    ## now download the song into the given filename
-    filename = '%s.%s.m4a' % ( artist_name, song_name )
-    plexmusic.get_youtube_file( youtubeURL, filename )
-    #
-    ## now fill out the metadata
-    plexmusic.fill_m4a_metadata( filename, data_dict )
+
+    song_names = map(lambda song_name: song_name.strip( ), opts.song_names.split(';'))
+
+    for song_name in song_names:
+        try:
+            data_dict, status = pm.get_music_metadata( song_name = song_name,
+                                                       artist_name = opts.artist_name )
+            if status != 'SUCCESS':
+                print( status )
+                continue
+        except Exception as e:
+            print( e )
+            continue
+        artist_name = data_dict[ 'artist' ]
+        song_name = data_dict[ 'song' ]
+        print 'ACTUAL ARTIST: %s' % artist_name
+        print 'ACTUAL SONG: %s' % song_name
+        #
+        ## now get the youtube song selections
+        youtubeURL = choose_youtube_item( '%s %s' % ( artist_name, song_name ),
+                                          maxnum = opts.maxnum )
+        if youtubeURL is None:
+            continue
+        #
+        ## now download the song into the given filename
+        filename = '%s.%s.m4a' % ( artist_name, song_name )
+        plexmusic.get_youtube_file( youtubeURL, filename )
+        #
+        ## now fill out the metadata
+        plexmusic.fill_m4a_metadata( filename, data_dict )
     
 if __name__=='__main__':
     main( )

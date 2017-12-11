@@ -174,7 +174,10 @@ class Film( object ):
         content = soup.find("div", "subtitles")
         header = content.find("div", "box clearfix")
 
-        cover = header.find("div", "poster").img.get("src")
+        try:
+            cover = header.find("div", "poster").img.get("src")
+        except:
+            cover = None
 
         title = header.find("div", "header").h2.text[:-12].strip()
 

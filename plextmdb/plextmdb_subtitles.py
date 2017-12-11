@@ -7,6 +7,7 @@ from plexcore import subscene
 
 def get_subtitles_subscene2( title, extra_strings = [ ] ):
     film = subscene.search( title )
+    if film is None: return None
     subtitles = filter(lambda subtitle: subtitle.language == 'English', film.subtitles )
     if len( extra_strings ) != 0:
         subtitles = filter(lambda subtitle: any(map(lambda tok: tok.lower( ) in subtitle.title.lower( ),

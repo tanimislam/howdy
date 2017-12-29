@@ -1,6 +1,6 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
-import re, codecs, requests, zipfile, os
+import re, codecs, requests, zipfile, os, sys
 from io import BytesIO
 from optparse import OptionParser
 from plextmdb import plextmdb_subtitles
@@ -16,25 +16,31 @@ def get_items_subscene( name, maxnum = 10 ):
     assert( maxnum >= 5 )
     items = plextmdb_subtitles.get_subtitles_subscene( name )
     if items is None: return None
-    return map(lambda item: { 'title' : item['name'],
-                              'srtdata' : item['srtdata'] },
-               items[ 'subtitles' ][:maxnum] ), True
+    return list( map(lambda item: { 'title' : item['name'],
+                                    'srtdata' : item['srtdata'] },
+                     items[ 'subtitles' ][:maxnum] ) ), True
 
 def get_items_subscene2( name, maxnum = 20, extra_strings = [ ] ):
     assert( maxnum >= 5 )
     subtitles_map = plextmdb_subtitles.get_subtitles_subscene2( name, extra_strings = extra_strings )
     if subtitles_map is None: return None
-    return map(lambda title: { 'title' : title,
-                               'srtdata' : subtitles_map[ title ] },
-               sorted( subtitles_map )[:maxnum] ), True
+    return list( map(lambda title: { 'title' : title,
+                                     'srtdata' : subtitles_map[ title ] },
+                     sorted( subtitles_map )[:maxnum] ) ), True
 
 def get_movie_subtitle_items( items, hasSubs = False, filename = 'eng.srt' ):
     if len( items ) != 0:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate( items ) }
-        bs = codecs.encode( 'Choose movie subtitle:\n%s\n' %
-                            '\n'.join(map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 'title' ] ),
-                                          sorted( sortdict ) ) ), 'utf-8' )
-        iidx = raw_input( bs )
+        if sys.version_info.major == 2:
+            bs = codecs.encode( 'Choose movie subtitle:\n%s\n' %
+                                '\n'.join(map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 'title' ] ),
+                                              sorted( sortdict ) ) ), 'utf-8' )
+            iidx = raw_input( bs )
+        else:
+            bs = 'Choose movie subtitle:\n%s\n' % '\n'.join(
+                map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 'title' ] ),
+                    sorted( sortdict ) ) )
+            iidx = input( bs )
         try:
             iidx = int( iidx.strip( ) )
             if iidx not in sortdict:

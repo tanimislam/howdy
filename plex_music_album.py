@@ -1,7 +1,7 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 from __future__ import unicode_literals
-import codecs, os
+import codecs, os, sys
 from plexmusic import plexmusic
 from optparse import OptionParser
 
@@ -23,4 +23,4 @@ if __name__=='__main__':
     else:
         track_listing = pm.get_song_listing( opts.artist_name, album_name = opts.album_name )
         for title, trkno in track_listing:
-            print '%02d - %s' % ( trkno, title )
+            print( '%02d - %s' % ( trkno, title ) )

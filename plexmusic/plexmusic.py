@@ -1,10 +1,15 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2
 import requests, googleapiclient.discovery, youtube_dl
 from PIL import Image
-from cStringIO import StringIO
-from urlparse import urljoin
+if sys.version_info.major == 2:
+    from cStringIO import StringIO
+    from urlparse import urljoin
+    from ConfigParser import RawConfigParser
+else:
+    from io import StringIO, BytesIO
+    from urllib.parse import urljoin
+    from configparser import RawConfigParser
 from . import mainDir, pygn, parse_youtube_date, format_youtube_date
-from ConfigParser import RawConfigParser
 from plexcore import plexcore
 
 def get_youtube_service( ):
@@ -58,9 +63,13 @@ def fill_m4a_metadata( filename, data_dict ):
     mp4tags[ 'trkn' ] = [ ( data_dict[ 'tracknumber' ],
                             data_dict[ 'total tracks' ] ), ]
     if data_dict[ 'album url' ] != '':
-        csio = StringIO( requests.get( data_dict[ 'album url' ] ).content )
+        if sys.version_info.major == 2:
+            csio = StringIO( requests.get( data_dict[ 'album url' ] ).content )
+            csio2 = StringIO( )
+        else:
+            csio = BytesIO( requests.get( data_dict[ 'album url' ] ).content )
+            csio2 = BytesIO( )
         img = Image.open( csio )
-        csio2 = StringIO( )
         img.save( csio2, format = 'png' )
         mp4tags[ 'covr' ] = [
             mutagen.mp4.MP4Cover( csio2.getvalue( ),
@@ -86,9 +95,9 @@ def youtube_search(youtube, query, max_results = 10):
         #part="id",
         maxResults=50).execute()
 
-    search_videos = map(lambda search_result:
-                        search_result['id']['videoId'],
-                        search_response.get('items', []) )
+    search_videos = list( map(lambda search_result:
+                              search_result['id']['videoId'],
+                              search_response.get('items', []) ) )
     # Merge video ids
     video_ids = ",".join(search_videos)
     if len( search_videos ) == 0:
@@ -110,7 +119,7 @@ def youtube_search(youtube, query, max_results = 10):
             videos.append(("%s (%s)" % ( video_result["snippet"]["title"], dstring ),
                            urljoin("https://youtu.be", video_result['id'] ) ) )
         except Exception as e:
-            print e
+            print( e )
             pass
     return videos
     
@@ -123,22 +132,24 @@ class PlexMusic( object ):
                                       album = album_name,
                                       artist = titlecase.titlecase( artist_name ) )
         if 'album_art_url' not in metadata_album or len( metadata_album[ 'album_art_url' ].strip( ) ) == 0:
-            print 'Could not find album = %s for artist = %s.' % (
-                album_name, titlecase.titlecase( artist_name ) )
+            print( 'Could not find album = %s for artist = %s.' % (
+                album_name, titlecase.titlecase( artist_name ) ) )
             return None
-        img = Image.open( StringIO( requests.get( metadata_album[ 'album_art_url' ] ).content ) )
-        with open( '%s.%s.png' % ( titlecase.titlecase( artist_name ), album_name.replace('/', '-') ), 'w') as openfile:
-            img.save( openfile, format = 'png' )
-            return True, '%s.%s.png' % (
-                titlecase.titlecase( artist_name ),
-                album_name.replace('/', '\-') )
+        if sys.version_info.major == 2:
+            img = Image.open( StringIO( requests.get( metadata_album[ 'album_art_url' ] ).content ) )
+        else:
+            img = Image.open( BytesIO( requests.get( metadata_album[ 'album_art_url' ] ).content ) )
+        img.save(  '%s.%s.png' % ( titlecase.titlecase( artist_name ), album_name.replace('/', '-') ), format = 'png' )
+        return True, '%s.%s.png' % (
+            titlecase.titlecase( artist_name ),
+            album_name.replace('/', '\-') )
 
     def get_song_listing( self, artist_name, album_name ):
         metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,
                                       album = album_name,
                                       artist = titlecase.titlecase( artist_name ) )
         track_listing = sorted(map(lambda track: ( track['track_title'], int( track['track_number'])),
-                                   metadata_album['tracks']), key = lambda (title, num ): num )
+                                   metadata_album['tracks']), key = lambda title_num: title_num[1] )
         return track_listing
 
     def get_music_metadata( self, song_name, artist_name ):

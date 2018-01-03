@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import re, codecs, logging
+import re, codecs, logging, sys
 from optparse import OptionParser
 from plextvdb import plextvdb_torrents
 

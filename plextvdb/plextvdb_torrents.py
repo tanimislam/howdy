@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
 from plexemail.plexemail import get_formatted_size
+from . import plextvdb
 
 def get_tv_torrent_zooqle( name, maxnum = 10 ):
     assert( maxnum >= 5 )
@@ -41,13 +42,13 @@ def get_tv_torrent_zooqle( name, maxnum = 10 ):
                         len( elem.find_all('torrent:peers' ) ) >= 1 and
                         len( elem.find_all('torrent:contentlength' ) ) >= 1,
                         myxml.find_all('item'))
-    items_toshow = map(lambda elem: { 'title' : '%s (%s)' % ( max( elem.find_all('title' ) ).get_text( ),
-                                                              get_formatted_size( int( max( elem.find_all('torrent:contentlength')).get_text( ) ) ) ),
-                                      'seeders' : int( max( elem.find_all('torrent:seeds') ).get_text( ) ),
-                                      'leechers' : int( max( elem.find_all('torrent:peers' ) ).get_text( ) ),
-                                      'link' : _get_magnet_link( max( elem.find_all('torrent:infohash' ) ).get_text( ).lower( ),
-                                                                 max( elem.find_all('title' ) ).get_text( ) ) },
-                       cand_items )
+    items_toshow = list( map(lambda elem: { 'title' : '%s (%s)' % ( max( elem.find_all('title' ) ).get_text( ),
+                                                                    get_formatted_size( int( max( elem.find_all('torrent:contentlength')).get_text( ) ) ) ),
+                                            'seeders' : int( max( elem.find_all('torrent:seeds') ).get_text( ) ),
+                                            'leechers' : int( max( elem.find_all('torrent:peers' ) ).get_text( ) ),
+                                            'link' : _get_magnet_link( max( elem.find_all('torrent:infohash' ) ).get_text( ).lower( ),
+                                                                       max( elem.find_all('title' ) ).get_text( ) ) },
+                             cand_items ) )
     if len( items_toshow ) == 0:
         return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
     return sorted( items_toshow, key = lambda item: -item['seeders'] - item['leechers'] )[:maxnum], 'SUCCESS'
@@ -154,7 +155,7 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     response = requests.get( url, params = search_params, verify = verify )
     if response.status_code != 200:
         return None, 'FAILURE, request for %s did not work.' % name
-    if not response.content.startswith('<?xml'):
+    if not response.content.startswith(b'<?xml'):
         return None, 'ERROR, request content is not a valid XML block.'
     html = BeautifulSoup( response.content, 'lxml' )
     items = []

@@ -45,12 +45,20 @@ def get_items_rarbg( name, maxnum = 10 ):
 def get_tv_torrent_items( items, filename = None ):
     if len( items ) != 1:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate(items) }
-        bs = codecs.encode( 'Choose TV episode or series:\n%s\n' %
-                            '\n'.join(map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
-                                                                                  sortdict[ idx ][ 'seeders' ],
-                                                                                  sortdict[ idx ][ 'leechers' ]),
-                                          sorted( sortdict ) ) ), 'utf-8' )
-        iidx = raw_input( bs )
+        if sys.version_info.major == 2:
+            bs = codecs.encode( 'Choose TV episode or series:\n%s\n' %
+                                '\n'.join(map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
+                                                                                      sortdict[ idx ][ 'seeders' ],
+                                                                                      sortdict[ idx ][ 'leechers' ]),
+                                              sorted( sortdict ) ) ), 'utf-8' )
+            iidx = raw_input( bs )
+        else:
+            bs = 'Choose TV episode or series:\n%s\n' % '\n'.join(
+                map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
+                                                            sortdict[ idx ][ 'seeders' ],
+                                                            sortdict[ idx ][ 'leechers' ]),
+                    sorted( sortdict ) ) )
+            iidx = input( bs )
         try:
             iidx = int( iidx.strip( ) )
             if iidx not in sortdict:

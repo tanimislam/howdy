@@ -254,7 +254,6 @@ class TVShow( object ):
                 tot_epdict[ seasno ][ epno ] = ( title, airedDate )
         return tot_epdict
                                             
-
 def get_series_id( series_name, token, verify = True ):    
     params = { 'name' : series_name }
     headers = { 'Content-Type' : 'application/json',

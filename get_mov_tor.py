@@ -1,6 +1,6 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
-import re, codecs, requests
+import re, codecs, requests, sys
 from optparse import OptionParser
 from plextmdb import plextmdb_torrents
 
@@ -38,12 +38,20 @@ def get_items_rarbg( name, maxnum = 10 ):
 def get_movie_torrent_items( items, filename = None):    
     if len( items ) != 1:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate(items) }
-        bs = codecs.encode( 'Choose movie:\n%s\n' %
-                            '\n'.join(map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
-                                                                                  sortdict[ idx ][ 'seeders' ],
-                                                                                  sortdict[ idx ][ 'leechers' ]),
-                                          sorted( sortdict ) ) ), 'utf-8' )
-        iidx = raw_input( bs )
+        if sys.version_info.major == 2:
+            bs = codecs.encode( 'Choose movie:\n%s\n' %
+                                '\n'.join(map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
+                                                                                      sortdict[ idx ][ 'seeders' ],
+                                                                                      sortdict[ idx ][ 'leechers' ]),
+                                              sorted( sortdict ) ) ), 'utf-8' )
+            iidx = raw_input( bs )
+        else:
+            bs = 'Choose movie:\n%s\n' % '\n'.join(
+                map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
+                                                            sortdict[ idx ][ 'seeders' ],
+                                                            sortdict[ idx ][ 'leechers' ]),
+                    sorted( sortdict ) ) )
+            iidx = input( bs )
         try:
             iidx = int( iidx.strip( ) )
             if iidx not in sortdict:

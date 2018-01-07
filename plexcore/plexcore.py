@@ -5,6 +5,7 @@ if sys.version_info.major < 3:
     from ConfigParser import RawConfigParser
 else:
     from configparser import RawConfigParser
+    from functools import reduce
 from contextlib import contextmanager
 from bs4 import BeautifulSoup
 from . import mainDir, Base, session, baseConfDir
@@ -211,7 +212,7 @@ def get_owned_servers( token ):
                               se['product'] == 'Plex Media Server', myxml.find_all('device') ):
         owned = int( server_elem['owned'] )
         if owned != 1: continue
-        connections = filter(lambda elem: elem['local'] == '0', server_elem.find_all('connection') )
+        connections = list( filter(lambda elem: elem['local'] == '0', server_elem.find_all('connection') ) )
         if len( connections ) != 1:
             continue
         connection = max( connections )
@@ -321,7 +322,7 @@ def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', si
         else:
             contentrating = 'NR'
         duration = 1e-3 * int( movie_elem[ 'duration' ] )
-        bitrate = int( min( movie_elem.find_all('media'))[ 'bitrate' ] ) * 1e3 / 8.0
+        bitrate = int( movie_elem.find_all('media')[0][ 'bitrate' ] ) * 1e3 / 8.0
         totsize = duration * bitrate
         data = ( title, rating, contentrating, picurl, releasedate, addedat, summary,
                  duration, totsize )
@@ -573,11 +574,11 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400' ):
     assert( title in library_dict )
     key, mediatype = library_dict[ title ]
     if mediatype == 'movie':
-        data = _get_library_data_movie( key, token, fullURL = fullURL )
+        _, data = _get_library_data_movie( key, token, fullURL = fullURL )
     elif mediatype == 'show':
         data =  _get_library_data_show( key, token, fullURL = fullURL )
     elif mediatype == 'artist':
-        data = _get_library_data_artist( key, token, fullURL = fullURL )
+        _, data = _get_library_data_artist( key, token, fullURL = fullURL )
     else:
         return None
     return data

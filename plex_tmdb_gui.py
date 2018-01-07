@@ -1,8 +1,12 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import logging, PyQt4.QtGui, sys, pickle, gzip, os
-from ConfigParser import RawConfigParser
+if sys.version_info.major == 2: from ConfigParser import RawConfigParser
+else: from configparser import RawConfigParser
 from optparse import OptionParser
+#
+##
+sip.setapi( 'QVariant', 1 )
 from plexcore import plexcore_gui, mainDir
 from plextmdb import plextmdb_gui
 

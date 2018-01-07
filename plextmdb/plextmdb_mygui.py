@@ -1,5 +1,6 @@
-import numpy, os, sys, requests, plextmdb
+import numpy, os, sys, requests
 import logging, glob, datetime, pickle, gzip
+from . import plextmdb
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from plexcore import plexcore
@@ -105,7 +106,7 @@ class MyMovieTableView( QTableView ):
         self.tm = MyMovieTableModel( parent )
         self.proxy = MyMovieQSortFilterProxyModel( self, self.tm )
         self.setModel( self.proxy )
-        for idx in xrange(6):
+        for idx in range(6):
             self.setItemDelegateForColumn( idx, StringEntryDelegate( self ) )
         self.setShowGrid( True )
         self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
@@ -186,8 +187,8 @@ class MyMovieTableModel( QAbstractTableModel ):
     def setFilterStatus( self, filterStatus ):
         self.filterStatus = str( filterStatus )
         self.sort( -1, Qt.AscendingOrder )
-        numRows = len(filter(lambda rowNumber: self.filterRow( rowNumber ),
-                             range(len( self.myMovieData ) ) ) )
+        numRows = len(list( filter(lambda rowNumber: self.filterRow( rowNumber ),
+                                   range(len( self.myMovieData ) ) ) ) )
         self.emitGenreNumMovies.emit( self.filterStatus, numRows )
         
     def rowCount( self, parent ):
@@ -198,8 +199,8 @@ class MyMovieTableModel( QAbstractTableModel ):
 
     def headerData( self, col, orientation, role ):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return QVariant( _headers[ col ] )
-        return QVariant( )
+            return  _headers[ col ]
+        return None
 
     def filloutMyMovieData( self, myMovieData ):
         #

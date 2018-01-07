@@ -272,7 +272,7 @@ def get_main_genre_movie( movie_elem ):
         return val
     classic_genres = [ 'horror', 'comedy', 'animation', 'documentary', 'drama',
                        'action', 'hindi', 'horror', 'science fiction' ]
-    genres = map(lambda elem: elem['tag'].lower( ).strip( ), movie_elem.find_all( 'genre' ) )
+    genres = list( map(lambda elem: elem['tag'].lower( ).strip( ), movie_elem.find_all( 'genre' ) ) )
     for genre in genres:
         if genre in classic_genres:
             return genre

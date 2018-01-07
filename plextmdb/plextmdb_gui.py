@@ -796,8 +796,8 @@ class TMDBTableModel( QAbstractTableModel ):
 
     def headerData( self, col, orientation, role ):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return QVariant( _headers[ col ] )
-        return QVariant( )
+            return _headers[ col ]
+        return None
         
     #
     ## engine code, actually do the calculation
@@ -858,7 +858,7 @@ class TMDBTableModel( QAbstractTableModel ):
 
     def data( self, index, role ):
         if not index.isValid( ):
-            return QVariant("")
+            return ""
         row = index.row( )
         col = index.column( )
         #
@@ -880,10 +880,10 @@ class TMDBTableModel( QAbstractTableModel ):
                 return QBrush( color )
         elif role == Qt.DisplayRole:
             if col in (0, 2, 3):
-                return QVariant( self.actualMovieData[ row ][ col ] )
+                return self.actualMovieData[ row ][ col ]
             else:
                 dt = self.actualMovieData[ row ][ 1 ]
-                return QVariant( dt.strftime('%d %b %Y') )
+                return dt.strftime('%d %b %Y')
         
 #
 ## long description delegate, creates an unmodifiable QTextEdit

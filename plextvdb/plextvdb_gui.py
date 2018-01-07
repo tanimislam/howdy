@@ -143,8 +143,8 @@ class TVDBShowsTableModel( QAbstractTableModel ):
 
     def headerData( self, col, orientation, role ):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return QVariant( self._headers[ col ] )
-        return QVariant( )
+            return self._headers[ col ]
+        return None
 
     def fillOutCalculation( tvSeriesNames, tvSeriesData, missings ):
         assert( len( tvSeriesNames ) == len( tvSeriesData ) )
@@ -170,7 +170,7 @@ class TVDBShowsTableModel( QAbstractTableModel ):
     ## engine code, actually show data in the table
     def data( self, index, role ):
         if not index.isValid( ):
-            return QVariant("")
+            return ""
         row = index.row( )
         col = index.column( )
         tvSeriesName, tvSeries, missing = self.actualTVSeriesData[ row ]
@@ -182,20 +182,20 @@ class TVDBShowsTableModel( QAbstractTableModel ):
             else: return QBrush( 'pink' )
         elif role == Qt.DisplayRole:
             if col == 0: # series name
-                return QVariant( tvSeriesName )
+                return tvSeriesName
             elif col == 1: # start date
-                return QVariant( tvSeries.startDate.strftime('%Y %b %d') )
+                return tvSeries.startDate.strftime('%Y %b %d')
             elif col == 2: # end date
                 if tvSeries.statusEnded:
-                    return QVariant( tvSeries.endDate.strftime('%Y %b %d') )
+                    return tvSeries.endDate.strftime('%Y %b %d')
                 else: return QVariant( "" )
             elif col == 3: # number of seasons
                 numSeasons = len(filter(lambda seasno: seasno != 0,
                                         tvSeries.seasDict.keys( ) ) )
-                return QVariant( numSeasons )
+                return numSeasons
             elif col == 4: # number missing, number of eps
                 validSeasons = set( tvSeries.seasDict.key( ) ) - set([0,])
                 numEpsTot = sum(map(lambda season: len( tvSeries.seasDict[ season ].keys( ) ),
                                     validSeasons) )
-                return QVariant( "%d / %d" % ( len(missing), numEpsTot ) )
+                return "%d / %d" % ( len(missing), numEpsTot )
                 

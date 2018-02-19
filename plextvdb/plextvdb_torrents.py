@@ -4,6 +4,7 @@ from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
 from plexemail.plexemail import get_formatted_size
 from . import plextvdb
+from plexcore.plexcore import get_maximum_matchval
 
 def get_tv_torrent_zooqle( name, maxnum = 10 ):
     assert( maxnum >= 5 )
@@ -40,7 +41,8 @@ def get_tv_torrent_zooqle( name, maxnum = 10 ):
                         len( elem.find_all('torrent:infohash' ) ) >= 1 and
                         len( elem.find_all('torrent:seeds' ) ) >= 1 and
                         len( elem.find_all('torrent:peers' ) ) >= 1 and
-                        len( elem.find_all('torrent:contentlength' ) ) >= 1,
+                        len( elem.find_all('torrent:contentlength' ) ) >= 1 and
+                        get_maximum_matchval( max( elem.find_all('title' ) ).get_text( ), candname ) >= 80,
                         myxml.find_all('item'))
     items_toshow = list( map(lambda elem: { 'title' : '%s (%s)' % ( max( elem.find_all('title' ) ).get_text( ),
                                                                     get_formatted_size( int( max( elem.find_all('torrent:contentlength')).get_text( ) ) ) ),

@@ -1,6 +1,7 @@
 import sqlite3, shutil, os, glob, datetime, gspread, logging, sys
 import multiprocessing, tempfile, uuid, requests, pytz, pypandoc
 import xdg.BaseDirectory, urllib, json, oauth2client.file, httplib2
+from fuzzywuzzy.fuzz import partial_ratio
 if sys.version_info.major < 3:
     from ConfigParser import RawConfigParser
 else:
@@ -980,3 +981,12 @@ def getOauthYoutubeCredentials( ):
     credentials = oauth2client.file.Storage( absPath ).get( )
     credentials.refresh( httplib2.Http( ) )
     return credentials
+
+#
+## string match with fuzzywuzzy
+def get_maximum_matchval( check_string, input_string ):
+    cstring = check_string.strip( ).lower( )
+    istring = input_string.strip( ).lower( )
+    return partial_ratio( check_string.strip( ).lower( ),
+                          input_string.strip( ).lower( ) )
+    

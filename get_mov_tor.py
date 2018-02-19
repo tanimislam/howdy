@@ -84,9 +84,14 @@ def get_movie_yts( name, verify = True, raiseError = False ):
         movdict = { mov['title'] : mov for mov in movies }
         sortdict = { idx + 1 : title for (idx, title) in
                      enumerate( sorted( movdict.keys( ) ) ) }
-        iidx = raw_input( 'choose movie: %s\n' % '\n'.join([
-            '%d: %s' % ( idx, sortdict[idx] ) for idx in
-            sorted( sortdict.keys( ) ) ]) )
+        if sys.version_info.major == 2:
+            iidx = raw_input( 'choose movie: %s\n' % '\n'.join([
+                '%d: %s' % ( idx, sortdict[idx] ) for idx in
+                sorted( sortdict.keys( ) ) ]) )
+        else:
+            iidx = input( 'choose movie: %s\n' % '\n'.join([
+                '%d: %s' % ( idx, sortdict[idx] ) for idx in
+                sorted( sortdict.keys( ) ) ]) )
         try:
             iidx = int( iidx.strip( ) )
             if iidx not in sortdict:

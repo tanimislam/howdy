@@ -108,16 +108,16 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     data = data['torrent_results']
     filtered_data = filter(lambda elem: 'E'.join( splitseaseps ) in elem['filename'] and
                            '720p' in elem['filename'] and 'HDTV' in elem['filename'], data )
-    if len( filtered_data ) == 0:
+    if len( list( filtered_data ) ) == 0:
         filtered_data = filter(lambda elem: 'E'.join( splitseaseps ) in elem['filename'], data )
-    filtered_data = filtered_data[:maxnum]
+    filtered_data = list(filtered_data)[:maxnum]
     if len( filtered_data ) == 0:
         status = 'ERROR, RARBG.TO could not find any torrents for %s %s.' % (
             candidate_seriesname, 'E'.join( splitseaseps ) )
         return None, status
     items = map(lambda elem: { 'title' : elem['filename'], 'link' : elem['download'],
                                'seeders' : 1, 'leechers' : 1 }, filtered_data )
-    return items, 'SUCCESS'
+    return list(items), 'SUCCESS'
 
 def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [

@@ -344,7 +344,11 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
             continue
         if episode[ 'airedSeason' ] is None:
             continue
+        if episode[ 'airedEpisodeNumber' ] is None:
+            continue
         if not showSpecials and episode[ 'airedSeason' ] == 0:
+            continue
+        if episode[ 'airedEpisodeNumber' ] == 0:
             continue
         sData.append( episode )
     return sData

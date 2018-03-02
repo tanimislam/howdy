@@ -200,7 +200,7 @@ def get_movie( title, year = None, checkMultiple = True, getAll = False ):
 def get_movie_tmdbids( title, year = None, getAll = False ):
     results = get_movie( title, year = year, checkMultiple = True, getAll = True )
     if results is None: return None
-    ids = map(lambda result: result['id'], results )
+    ids = list(map(lambda result: result['id'], results ) )
     if not getAll: return ids[0]
     else: return ids                   
 

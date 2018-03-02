@@ -12,7 +12,6 @@ from bs4 import BeautifulSoup
 from . import mainDir, Base, session, baseConfDir
 from sqlalchemy import Column, Date, Boolean, String
 from oauth2client.client import flow_from_clientsecrets
-sys.path.append( mainDir )
 from plextmdb import plextmdb
 
 # disable insecure request warnings, because do not recall how to get the name of the certificate for a 

@@ -1,9 +1,10 @@
-import threading, requests, fuzzywuzzy, plextmdb, re
+import threading, requests, fuzzywuzzy, re
 from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
 from requests.compat import urljoin
 from plexemail.plexemail import get_formatted_size
 from plexcore.plexcore import get_maximum_matchval
+from . import plextmdb
 
 def get_movie_torrent_zooqle( name, maxnum = 10 ):
     assert( maxnum >= 5 )

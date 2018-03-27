@@ -1,4 +1,4 @@
-import requests, re, threading, plextvdb
+import requests, re, threading
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
@@ -37,18 +37,32 @@ def get_tv_torrent_zooqle( name, maxnum = 10 ):
     if response.status_code != 200:
         return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
     myxml = BeautifulSoup( response.content, 'lxml' )
+    def is_valid_elem( elem ):
+        names = set(map(lambda elm: elm.name, elem.find_all( ) ) )
+        return len( names & set([ 'torrent:infohash',
+                                  'torrent:seeds',
+                                  'torrent:peers',
+                                  'torrent:contentlength' ]) ) == 4
     cand_items = filter(lambda elem: len( elem.find_all('title' ) ) >= 1 and
-                        len( elem.find_all('torrent:infohash' ) ) >= 1 and
-                        len( elem.find_all('torrent:seeds' ) ) >= 1 and
-                        len( elem.find_all('torrent:peers' ) ) >= 1 and
-                        len( elem.find_all('torrent:contentlength' ) ) >= 1 and
+                        is_valid_elem( elem ) and
                         get_maximum_matchval( max( elem.find_all('title' ) ).get_text( ), candname ) >= 80,
                         myxml.find_all('item'))
+    def get_num_forelem( elem, name ):
+        valid_elm = list(filter(lambda elm: elm.name == 'torrent:%s' % name, elem ) )
+        if len( valid_elm ) == 0: return None
+        valid_elm = valid_elm[ 0 ]
+        return int( valid_elm.get_text( ) )
+    def get_infohash( elem ):
+        valid_elm = list(filter(lambda elm: elm.name == 'torrent:infohash', elem ) )
+        if len( valid_elm ) == 0: return None
+        valid_elm = valid_elm[ 0 ]
+        return valid_elm.get_text( ).lower( )
+    
     items_toshow = list( map(lambda elem: { 'title' : '%s (%s)' % ( max( elem.find_all('title' ) ).get_text( ),
-                                                                    get_formatted_size( int( max( elem.find_all('torrent:contentlength')).get_text( ) ) ) ),
-                                            'seeders' : int( max( elem.find_all('torrent:seeds') ).get_text( ) ),
-                                            'leechers' : int( max( elem.find_all('torrent:peers' ) ).get_text( ) ),
-                                            'link' : _get_magnet_link( max( elem.find_all('torrent:infohash' ) ).get_text( ).lower( ),
+                                                                    get_formatted_size( get_num_forelem( elem, 'contentlength' ) ) ),
+                                            'seeders' : get_num_forelem( elem, 'seeds' ),
+                                            'leechers' : get_num_forelem( elem, 'peers' ),
+                                            'link' : _get_magnet_link( get_infohash( elem ),
                                                                        max( elem.find_all('title' ) ).get_text( ) ) },
                              cand_items ) )
     if len( items_toshow ) == 0:
@@ -98,25 +112,34 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
         return None, status
     token = response.json( )[ 'token' ]
     params = { 'mode' : 'search', 'search_tvdb' : series_id, 'token' : token,
-               'response_type' : 'json', 'search_string' : 'E'.join( splitseaseps ), 'limit' : 100 }
+               'format' : 'json_extended', 'category' : 'tv', 'app_id' : 'sickrage2',
+               'search_string' : 'E'.join( splitseaseps ), 'limit' : 100 }
     response = requests.get( apiurl, params = params, verify = verify )
     data = response.json( )
     if 'torrent_results' not in data:
         status = 'ERROR, RARBG.TO could not find any torrents for %s %s.' % (
             candidate_seriesname, 'E'.join( splitseaseps ) )
         return None, status
-    data = data['torrent_results']
-    filtered_data = filter(lambda elem: 'E'.join( splitseaseps ) in elem['filename'] and
-                           '720p' in elem['filename'] and 'HDTV' in elem['filename'], data )
-    if len( list( filtered_data ) ) == 0:
-        filtered_data = filter(lambda elem: 'E'.join( splitseaseps ) in elem['filename'], data )
+    data = filter(lambda elem: 'title' in elem, data['torrent_results'])
+    filtered_data = list( filter(lambda elem: 'E'.join( splitseaseps ) in elem['title'] and
+                                 '720p' in elem['title'] and 'HDTV' in elem['title'], data ) )
+    if len( filtered_data ) == 0:
+        filtered_data = list( filter(lambda elem: 'E'.join( splitseaseps ) in elem['title'], data ) )
     filtered_data = list(filtered_data)[:maxnum]
     if len( filtered_data ) == 0:
         status = 'ERROR, RARBG.TO could not find any torrents for %s %s.' % (
             candidate_seriesname, 'E'.join( splitseaseps ) )
         return None, status
-    items = map(lambda elem: { 'title' : elem['filename'], 'link' : elem['download'],
-                               'seeders' : 1, 'leechers' : 1 }, filtered_data )
+    def get_num_seeders( elem ):
+        if 'seeders' in elem: return elem['seeders']
+        return 1
+    def get_num_leechers( elem ):
+        if 'leechers' in elem: return elem['leechers']
+        return 1
+    items = map(lambda elem: { 'title' : elem['title'], 'link' : elem['download'],
+                               'seeders' : get_num_seeders( elem ),
+                               'leechers' : get_num_leechers( elem ) },
+                filtered_data )
     return list(items), 'SUCCESS'
 
 def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):

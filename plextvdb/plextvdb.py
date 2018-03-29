@@ -1,10 +1,8 @@
 import requests, os, sys, json, re, logging
 import multiprocessing, datetime, time
 from PIL import Image
-if sys.version_info.major < 3:
-    from cStringIO import StringIO
-else:
-    from io import StringIO
+if sys.version_info.major < 3: from cStringIO import StringIO
+else: from io import StringIO
 from dateutil.relativedelta import relativedelta
 from . import get_token
 
@@ -184,18 +182,12 @@ class TVShow( object ):
         self.seriesName = seriesName
         if self.seriesId is None:
             raise ValueError("Error, could not find TV Show named %s." % seriesName )
-        headers = { 'Content-Type' : 'application/json',
-                    'Authorization' : 'Bearer %s' % token }
-        response = requests.get( 'https://api.thetvdb.com/series/%d' % self.seriesId,
-                                 headers = headers, verify = verify )
-        if response.status_code != 200:
-            raise ValueError("Error, could not find TV Show named %s because of STATUS CODE = %d" %
-                             ( seriesName, response.status_code ) )
-        data = response.json( )['data']
         #
         ## check if status ended
-        self.statusEnded = False
-        if data['status'] == 'Ended': self.statusEnded = True
+        self.statusEnded = did_series_end( self.seriesId, token, verify = verify )
+        if self.statusEnded is None:
+             raise ValueError("Error, could not find whether TV Show named %s ended or not." %
+                              seriesName )
         #
         ## get Image URL and Image
         self.imageURL = self._get_series_image( token )
@@ -276,6 +268,16 @@ def get_possible_ids( series_name, token, verify = True ):
         return None
     data = response.json( )[ 'data' ]
     return map(lambda dat: dat['id'], data )
+
+def did_series_end( series_id, token, verify = True ):
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
+                             headers = headers, verify = verify )
+    if response.status_code != 200:
+        return None
+    data = response.json( )['data']
+    return data['status'] == 'Ended'
 
 def get_episode_id( series_id, airedSeason, airedEpisode, token, verify = True ):
     params = { 'page' : 1,
@@ -400,15 +402,21 @@ def _get_remaining_eps_perproc( input_tuple ):
     return name, sorted( tuples_to_get )
 
 def _get_series_id_perproc( input_tuple ):
-    show, token, verify = input_tuple
-    return show, get_series_id( show, token, verify = verify )
+    show, token, verify, doShowEnded = input_tuple
+    series_id = get_series_id( show, token, verify = verify )
+    if not doShowEnded:
+        didEnd = did_series_end( series_id, token, verify = verify )
+        if didEnd is None: return None
+        if didEnd: return None
+    return show, series_id
     
 def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify = True,
                             doShowEnded = False ):
     token = get_token( verify = verify )
     pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
-    tvshow_id_map = dict( pool.map( _get_series_id_perproc,
-                                    map(lambda show: ( show, token, verify ), tvdata ) ) )
+    tvshow_id_map = dict( filter(lambda tup: tup is not None, 
+                                 pool.map( _get_series_id_perproc,
+                                           map(lambda show: ( show, token, verify, doShowEnded ), tvdata ) ) ) )
     if fromDate is not None:
         series_ids = set( get_series_updated_fromdate( fromDate, token ) )
         ids_tvshows = dict(map(lambda name_seriesId: ( name_seriesId[1], name_seriesId[0] ), tvshow_id_map.items( ) ) )

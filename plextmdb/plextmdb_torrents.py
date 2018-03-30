@@ -30,27 +30,43 @@ def get_movie_torrent_zooqle( name, maxnum = 10 ):
     url = 'https://zooqle.com/search'
     params = { 'q' : '+'.join( candname.split() + [ 'category%3AMovie', ] ),
                'fmt' : 'rss' }
-    paramurl = '?' + '&'.join(map(lambda tok: '%s=%s' % ( tok, params[ tok ] ),
-                                  params ) )
+    paramurl = '?' + '&'.join(map(lambda tok: '%s=%s' % ( tok, params[ tok ] ), params ) )                                  
     fullurl = urljoin( url, paramurl )
     response = requests.get( fullurl )
     if response.status_code != 200:
         return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
     myxml = BeautifulSoup( response.content, 'lxml' )
-    cand_items = filter(lambda elem: len( elem.find_all('title' ) ) >= 1 and
-                        len( elem.find_all('torrent:infohash' ) ) >= 1 and
-                        len( elem.find_all('torrent:seeds' ) ) >= 1 and
-                        len( elem.find_all('torrent:peers' ) ) >= 1 and
-                        len( elem.find_all('torrent:contentlength' ) ) >= 1 and
-                        get_maximum_matchval( max( elem.find_all('title' ) ).get_text( ), candname ) >= 80,
-                        myxml.find_all('item'))
-    items_toshow = map(lambda elem: { 'title' : '%s (%s)' % ( max( elem.find_all('title' ) ).get_text( ),
-                                                              get_formatted_size( int( max( elem.find_all('torrent:contentlength')).get_text( ) ) ) ),
-                                      'seeders' : int( max( elem.find_all('torrent:seeds') ).get_text( ) ),
-                                      'leechers' : int( max( elem.find_all('torrent:peers' ) ).get_text( ) ),
-                                      'link' : _get_magnet_link( max( elem.find_all('torrent:infohash' ) ).get_text( ).lower( ),
-                                                                 max( elem.find_all('title' ) ).get_text( ) ) },
-                       cand_items )
+    def is_valid_elem( elem ):
+        names = set(map(lambda elm: elm.name, elem.find_all( ) ) )
+        return len( names & set([ 'torrent:infohash',
+                                  'torrent:seeds',
+                                  'torrent:peers',
+                                  'torrent:contentlength' ]) ) == 4
+    
+    cand_items = list( filter(lambda elem: len( elem.find_all('title' ) ) >= 1 and
+                              is_valid_elem( elem ) and
+                              get_maximum_matchval( max( elem.find_all('title' ) ).get_text( ), candname ) >= 80,
+                              myxml.find_all('item') ) )
+    def get_num_forelem( elem, name ):
+        valid_elm = list(filter(lambda elm: elm.name == 'torrent:%s' % name, elem ) )
+        if len( valid_elm ) == 0: return None
+        valid_elm = valid_elm[ 0 ]
+        return int( valid_elm.get_text( ) )
+    def get_infohash( elem ):
+        valid_elm = list(filter(lambda elm: elm.name == 'torrent:infohash', elem ) )
+        if len( valid_elm ) == 0: return None
+        valid_elm = valid_elm[ 0 ]
+        return valid_elm.get_text( ).lower( )
+    
+    items_toshow = list( map(lambda elem: { 'title' : '%s (%s)' % ( max( elem.find_all('title' ) ).get_text( ),
+                                                                    get_formatted_size( get_num_forelem( elem, 'contentlength' ) ) ),
+                                            'seeders' : get_num_forelem( elem, 'seeds' ),
+                                            'leechers' : get_num_forelem( elem, 'peers' ),
+                                            'link' : _get_magnet_link( get_infohash( elem ),
+                                                                       max( elem.find_all('title' ) ).get_text( ) ) },
+                       cand_items ) )
+    if len( items_toshow ) == 0:
+        return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
     return sorted( items_toshow, key = lambda item: -item['seeders'] - item['leechers'] )[:maxnum], 'SUCCESS'
 
 def get_movie_torrent_rarbg( name, maxnum = 10 ):
@@ -67,14 +83,28 @@ def get_movie_torrent_rarbg( name, maxnum = 10 ):
         return None, status
     token = response.json( )[ 'token' ]
     params = { 'mode' : 'search', 'search_themoviedb' : tmdbid, 'token' : token,
-               'response_type' : 'json', 'limit' : 100 }
+               'format' : 'json_extended', 'app_id' : 'sickrage2', 'limit' : 100,
+               'category' : 'movies' }
     response = requests.get( apiurl, params = params )
     data = response.json( )
     if 'torrent_results' not in data:
         status = 'ERROR, RARBG.TO could not find any torrents for %s.' % name            
         return None, status
     data = data['torrent_results']
-    actdata = map(lambda item: ( item['filename'], 1, 1, item['download'] ), data )
+    def get_num_seeders( elem ):
+        if 'seeders' in elem: return elem['seeders']
+        return 1
+    def get_num_leechers( elem ):
+        if 'leechers' in elem: return elem['leechers']
+        return 1
+    def get_title( elem ):
+        if 'size' in elem:
+            return '%s (%s)' % ( elem['title'], get_formatted_size( elem[ 'size' ] ) )
+        return '%s ()' % elem['title']
+    actdata = list( map(lambda elem: { 'title' : get_title( elem ),
+                                       'seeders' : get_num_seeders( elem ),
+                                       'leechers' : get_num_leechers( elem ),
+                                       'link' : elem['download'] }, data ) ) 
     return actdata, 'SUCCESS'
         
 def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):

@@ -29,10 +29,8 @@ def get_items_kickass( name, maxnum = 10, doAny = False ):
 
 def get_items_rarbg( name, maxnum = 10 ):
     assert( maxnum >= 5 )
-    its, status = plextmdb_torrents.get_movie_torrent_rarbg( name, maxnum = maxnum )
+    items, status = plextmdb_torrents.get_movie_torrent_rarbg( name, maxnum = maxnum )
     if status != 'SUCCESS' : return None
-    items = map(lambda item: { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2],
-                               'link' : item[3] }, its )
     return items
 
 def get_movie_torrent_items( items, filename = None):    
@@ -127,7 +125,9 @@ def main( ):
     parser.add_option('-f', '--filename', dest='filename', action='store', type=str,
                       help = 'If defined, put option into filename.')
     parser.add_option('--bypass', dest='do_bypass', action='store_true', default=False,
-                      help = 'If chosen, bypass YTS.AG.')    
+                      help = 'If chosen, bypass YTS.AG.')
+    parser.add_option('--nozooq', dest='do_nozooq', action='store_true', default=False,
+                      help = 'If chosen, bypass ZOOQLE.')
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
     if not opts.do_bypass:
@@ -137,11 +137,15 @@ def main( ):
         except ValueError:
             pass
 
-    items = get_items_zooqle( opts.name, maxnum = opts.maxnum )
-    if items is None:
-        items = get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum )
+    if not opts.do_nozooq:
+        items = get_items_zooqle( opts.name, maxnum = opts.maxnum )
+    else:
+        items = None
+        
     if items is None:
         items = get_items_rarbg( opts.name, maxnum = opts.maxnum )
+    if items is None:
+        items = get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum )
     if items is not None:
         get_movie_torrent_items( items, filename = opts.filename )
 

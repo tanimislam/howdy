@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import codecs, os, sys, base64, requests
 from optparse import OptionParser
@@ -12,26 +12,26 @@ def get_song( artist, song ):
                               auth = ( '***REMOVED***_shahriar_islam@yahoo.com',
                                        'initialplexserver' ) )
     if response.status_code == 401:
-        print "ERROR, email '%s' is not known by the Plex Server. Please choose a valid email." % '***REMOVED***_shahriar_islam@yahoo.com'
+        print( "ERROR, email '%s' is not known by the Plex Server. Please choose a valid email." % '***REMOVED***_shahriar_islam@yahoo.com' )
         return
     elif response.status_code == 400:
         message = response.json( )['message']
-        print message
+        print( message )
         return
     elif response.status_code == 200:
         data_dict = response.json( )['data_dict']
         videos = response.json( )['videos']
     else:
-        print 'ERROR, server https://***REMOVED***islam.ddns.net/flask may be down.'
+        print( 'ERROR, server https://***REMOVED***islam.ddns.net/flask may be down.' )
         return
     #
     ##
     if len( videos ) != 1:
         sortdict = { idx + 1 : item for (idx, item) in enumerate(videos) }
-        bs = codecs.encode( 'Choose YouTube video:\n%s\n' %
-                            '\n'.join(map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 0 ] ),
-                                          sorted( sortdict ) ) ), 'utf-8' )
-        iidx = raw_input( bs )
+        bs = 'Choose YouTube video:\n%s\n' % (
+            '\n'.join(map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 0 ] ),
+                          sorted( sortdict ) ) ) )
+        iidx = input( bs )
         try:
             iidx = int( iidx.strip( ) )
             if iidx not in sortdict:
@@ -41,8 +41,7 @@ def get_song( artist, song ):
         except:
             print('Error, did not choose a valid integer. Exiting...')
             return None
-    elif len( videos ) == 1:
-        _, youtubeURL = videos[0]
+    elif len( videos ) == 1: _, youtubeURL = videos[0]
     data2 = { 'data_dict' : data_dict,
               'youtubeURL' : youtubeURL,
               'mode' : 'SENDCHOICE' }
@@ -51,17 +50,17 @@ def get_song( artist, song ):
                                         'initialplexserver' ) )
     if response.status_code == 400:
         message = response.json( )['message']
-        print message
+        print( message )
         return
     elif response.status_code == 200:
         filename = response2.json( )['filename']
         filedata = response2.json( )['filedata']
         with open( filename, 'wb') as openfile:
             openfile.write( base64.b64decode( filedata ) )
-        print 'FINISHED WRITING OUT SONG %s.' % filename
+        print( 'FINISHED WRITING OUT SONG %s.' % filename )
     else:
-        print 'ERROR STATUS CODE: %d' % response.status_code
-        print 'ERROR, server https://***REMOVED***islam.ddns.net/flask may be down.'
+        print( 'ERROR STATUS CODE: %d' % response.status_code )
+        print( 'ERROR, server https://***REMOVED***islam.ddns.net/flask may be down.' )
         return
 
 if __name__=='__main__':

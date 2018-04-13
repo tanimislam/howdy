@@ -9,6 +9,7 @@ from sqlalchemy import create_engine
 # resource file
 mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 baseConfDir = xdg.BaseDirectory.save_config_path( 'plexstuff' )
+sys.path.append( mainDir )
 
 # follow directions in http://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
 _engine = create_engine( 'sqlite:///%s' % os.path.join( baseConfDir, 'app.db') )

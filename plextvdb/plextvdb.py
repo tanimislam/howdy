@@ -432,7 +432,7 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
                                     input_tuples ) ) )
     return toGet
                                 
-def get_tot_epdict_tvdb( showName, verify = True ):
+def get_tot_epdict_tvdb( showName, verify = True, showSpecials = False ):
     token = get_token( verify = verify )
     id = get_series_id( showName, token, verify = verify )
     eps = get_episodes_series( id, token, verify = verify )
@@ -440,7 +440,7 @@ def get_tot_epdict_tvdb( showName, verify = True ):
     tot_epdict = { }
     for episode in eps:
         seasnum = int( episode[ 'airedSeason' ] )
-        if seasnum == 0: continue
+        if not showSpecials and seasnum == 0: continue
         epno = episode[ 'airedEpisodeNumber' ]
         title = episode[ 'episodeName' ]
         try:

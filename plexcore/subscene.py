@@ -24,7 +24,7 @@ this script that does the job by parsing the website"s pages.
 """
 
 # imports
-import re, enum, sys
+import re, enum, sys, requests
 if sys.version_info.major >= 3:
     from contextlib import suppress
     from urllib.request import Request, urlopen
@@ -34,19 +34,19 @@ from bs4 import BeautifulSoup
 
 # constants
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWeb"
-                  "Kit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safa"
-                  "ri/537.36"
+    "User-Agent": ''.join([ "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWeb",
+                            "Kit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safa",
+                            "ri/537.36" ])
 }
 SITE_DOMAIN = "https://subscene.com"
 
 
 # utils
-def soup_for(url):
-    url = re.sub("\s", "+", url)
-    r = Request(url, data=None, headers=HEADERS)
-    html = urlopen(r).read().decode("utf-8")
-    return BeautifulSoup(html, "html.parser")
+def soup_for(url, params):
+    response = requests.get( url, headers = HEADERS, params = params )
+    print('response status: %s' % response.status_code )
+    html = response.content.decode("utf-8")
+    return BeautifulSoup(html, "lxml")
 
 class AttrDict( object ):
     def __init__(self, *attrs):
@@ -224,9 +224,11 @@ def get_first_film(soup, section):
 
 
 def search(term, language="", limit_to=SearchTypes.Exact):
-    soup = soup_for("%s/subtitles/title?q=%s&l=%s" % (SITE_DOMAIN, term,
-                                                      language))
-
+    params = { 'q' : re.sub("\s", "+", term),
+               'l' : language }
+    soup = soup_for("%s/subtitles/title" % SITE_DOMAIN,
+                    params = params )
+    
     if "Subtitle search by" in str(soup):
         rows = soup.find("table").tbody.find_all("tr")
         subtitles = Subtitle.from_rows(rows)

@@ -8,6 +8,20 @@ from bs4 import BeautifulSoup
 from io import BytesIO
 from plexcore import subscene
 
+def get_subtitles_opensubtitles( title, extra_strings = [ ] ):
+    headers = {'User-Agent': 'TanimIslamSubtitles v1'}
+    response = requests.get('https://rest.opensubtitles.org/search/query-%s/sublanguageid-eng' %
+                            '%20'.join( title.lower( ).split( ) ), headers = headers )
+    if response.status_code != 200: return None
+    subtitles = list(map(lambda item: { 'title'   : item['SubFileName'],
+                                        'srtfile' : item['ZipDownloadLink'] },
+                         response.json( ) ) )
+    if len( extra_strings ) != 0:
+        subtitles = list(filter(lambda item: any(map(lambda tok: tok.lower( ) in item['title'].lower( ),
+                                                     set( extra_strings) ) ), subtitles ) )
+    if len( subtitles ) == 0: return None
+    return { item['title'] : item['srtfile'] for item in subtitles }
+
 def get_subtitles_subscene2( title, extra_strings = [ ] ):
     film = subscene.search( title )
     if film is None: return None

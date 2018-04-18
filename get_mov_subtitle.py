@@ -10,7 +10,7 @@ def get_items_yts( name, maxnum = 10 ):
     items = plextmdb_subtitles.get_subtitles_yts( name )
     if items is None: return None
     return map(lambda item: { 'title' : item['name'],
-                              'zipurl' : item['url'] }, items[:maxnum] ), False
+                              'zipurl' : item['url'] }, items[:maxnum] ), -1
 
 def get_items_subscene( name, maxnum = 10 ):
     assert( maxnum >= 5 )
@@ -18,7 +18,7 @@ def get_items_subscene( name, maxnum = 10 ):
     if items is None: return None
     return list( map(lambda item: { 'title' : item['name'],
                                     'srtdata' : item['srtdata'] },
-                     items[ 'subtitles' ][:maxnum] ) ), True
+                     items[ 'subtitles' ][:maxnum] ) ), 0
 
 def get_items_subscene2( name, maxnum = 20, extra_strings = [ ] ):
     assert( maxnum >= 5 )
@@ -26,40 +26,49 @@ def get_items_subscene2( name, maxnum = 20, extra_strings = [ ] ):
     if subtitles_map is None: return None
     return list( map(lambda title: { 'title' : title,
                                      'srtdata' : subtitles_map[ title ] },
-                     sorted( subtitles_map )[:maxnum] ) ), True
+                     sorted( subtitles_map )[:maxnum] ) ), 1
 
-def get_movie_subtitle_items( items, hasSubs = False, filename = 'eng.srt' ):
+def get_items_opensubtitles( name, maxnum = 20, extra_strings = [ ] ):
+    assert( maxnum >= 5 )
+    subtitles_map = plextmdb_subtitles.get_subtitles_opensubtitles( name, extra_strings = extra_strings )
+    if subtitles_map is None: return None
+    return list( map(lambda title: { 'title' : title,
+                                     'srtdata' : subtitles_map[ title ] },
+                     sorted( subtitles_map )[:maxnum] ) ), 2
+
+def get_movie_subtitle_items( items, status, filename = 'eng.srt' ):
     if len( items ) != 0:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate( items ) }
-        if sys.version_info.major == 2:
-            bs = codecs.encode( 'Choose movie subtitle:\n%s\n' %
-                                '\n'.join(map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 'title' ] ),
-                                              sorted( sortdict ) ) ), 'utf-8' )
-            iidx = raw_input( bs )
-        else:
-            bs = 'Choose movie subtitle:\n%s\n' % '\n'.join(
-                map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 'title' ] ),
-                    sorted( sortdict ) ) )
-            iidx = input( bs )
+        bs = 'Choose movie subtitle:\n%s\n' % '\n'.join(
+            map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 'title' ] ),
+                sorted( sortdict ) ) )
+        iidx = input( bs )
         try:
             iidx = int( iidx.strip( ) )
             if iidx not in sortdict:
                 print('Error, need to choose one of the movie names. Exiting...')
                 return
-            if hasSubs: # this is the subscene data structures
+            if status == 0: # yts
+                 zipurl = sortdict[ iidx ][ 'zipurl' ]
+                 with zipfile.ZipFile( BytesIO( requests.get( zipurl ).content ), 'r') as zf:
+                     with open( filename, 'wb' ) as openfile:
+                         name = max( zf.namelist( ) )
+                         openfile.write( zf.read( name ) )
+            elif status == 1: # subscene2
                 zipurl = sortdict[ iidx ][ 'srtdata' ].zipped_url
                 with zipfile.ZipFile( BytesIO( requests.get( zipurl ).content ), 'r') as zf:
                     with open( filename, 'wb' ) as openfile:
                         name = max( zf.namelist( ) )
                         openfile.write( zf.read( name ) )
-            else:
-                zipurl = sortdict[ iidx ][ 'zipurl' ]
+            elif status == 2: # opensubtitles
+                zipurl = sortdict[ iidx ][ 'srtdata' ]
                 with zipfile.ZipFile( BytesIO( requests.get( zipurl ).content ), 'r') as zf:
                     with open( filename, 'wb' ) as openfile:
-                        name = max( zf.namelist( ) )
+                        name = max( filter(lambda nm: nm.endswith('.srt'), zf.namelist( ) ) )
                         openfile.write( zf.read( name ) )
         except Exception as e:
             print('Error, did not give a valid integer value. Exiting...')
+            print(e)
             return
 
 if __name__=='__main__':
@@ -86,6 +95,8 @@ if __name__=='__main__':
         data = get_items_yts( opts.name, maxnum = opts.maxnum )
     if data is None:
         data = get_items_subscene2( opts.name, maxnum = opts.maxnum, extra_strings = keywords_set )
+    if data is None:
+        data = get_items_opensubtitles( opts.name, maxnum = opts.maxnum, extra_strings = keywords_set )        
     if data is not None:
-        items, hasSubs = data
-        get_movie_subtitle_items( items, hasSubs = hasSubs, filename = opts.filename )
+        items, status = data
+        get_movie_subtitle_items( items, status, filename = opts.filename )

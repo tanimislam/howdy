@@ -44,7 +44,6 @@ SITE_DOMAIN = "https://subscene.com"
 # utils
 def soup_for(url, params):
     response = requests.get( url, headers = HEADERS, params = params )
-    print('response status: %s' % response.status_code )
     html = response.content.decode("utf-8")
     return BeautifulSoup(html, "lxml")
 

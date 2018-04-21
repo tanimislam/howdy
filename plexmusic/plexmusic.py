@@ -1,17 +1,86 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2
-import requests, googleapiclient.discovery, youtube_dl
+import requests, googleapiclient.discovery, youtube_dl, gmusicapi
+from contextlib import contextmanager
 from PIL import Image
-if sys.version_info.major == 2:
-    from cStringIO import StringIO
-    from urlparse import urljoin
-    from ConfigParser import RawConfigParser
-else:
-    from io import StringIO, BytesIO
-    from urllib.parse import urljoin
-    from configparser import RawConfigParser
+from io import StringIO, BytesIO
+from urllib.parse import urljoin
+from configparser import RawConfigParser
 from . import mainDir, pygn, parse_youtube_date, format_youtube_date
-from plexcore import plexcore
+from plexcore import plexcore, baseConfDir
 
+#
+## gmusicapi stuff
+def _get_gmusic_resource_abspath( ):
+    filename = 'gmusic_credentials.conf'
+    absPath = os.path.join( baseConfDir, filename )
+    return absPath
+
+_gmusic_absPath = _get_gmusic_resource_abspath( )
+
+@contextmanager
+def gmusicmanager( useMobileclient = False ):
+    mmg = get_gmusicmanager( useMobileclient = useMobileclient )
+    try: yield mmg
+    finally: mmg.logout( )
+
+def get_gmusicmanager( useMobileclient = False ):
+    if not useMobileclient:
+        mmg = gmusicapi.Musicmanager( )
+        mmg.login( )
+    else:
+        mmg = gmusicapi.Mobileclient( )
+        if not os.path.isfile( _gmusic_absPath ):
+            raise ValueError( "Error, default configuration file = %s does not exist." % absPath )
+        cparser = RawConfigParser( )
+        cparser.read( _absPath )
+        if not cparser.has_section( 'GMUSIC_CREDENTIALS' ):
+            raise ValueError( "Error, configuration file has not defined GMUSIC_CREDENTIALS." )
+        if not all([ cparser.has_option('GMUSIC_CREDENTIALS', tok) for tok in
+                     ( 'email', 'password' ) ]):
+            raise ValueError( "Error, configuration file has not defined both email and password." )
+        email = cparser.get( 'GMUSIC_CREDENTIALS', 'email' )
+        password = cparser.get( 'GMUSIC_CREDENTIALS', 'password' )
+        mmg.login( email, password, gmusicapi.Mobileclient.FROM_MAC_ADDRESS )
+    return mmg
+
+"""
+Took stuff from http://unofficial-google-music-api.readthedocs.io/en/latest/usage.html#usage                                                                    
+"""
+def save_gmusic_creds( email, password ):
+    cparser = RawConfigParser( )
+    cparser.add_section( 'GMUSIC_CREDENTIALS' )
+    cparser.set( 'GMUSIC_CREDENTIALS', 'email', email )
+    cparser.set( 'GMUSIC_CREDENTIALS', 'password', password )
+    with open( _gmusic_absPath, 'w') as openfile:
+        cparser.write( openfile )
+    os.chmod( _gmusic_absPath, 0o600 )
+    
+def save_gmusic_oath( ):
+    mmg = gmusicapi.Musicmanager( )
+    mmg.perform_oath( )
+
+def get_gmusic_all_songs( ):
+    with gmusicmanager( useMobileclient = True ) as mmg:
+        allSongs = mmg.get_all_songs( )
+        allSongsDict = dict( map(lambda song: (
+            song.get('id'),
+            {
+                "album":       song.get('album').encode('utf-8'),
+                "artist":      song.get('artist').encode('utf-8'),
+                "name":        song.get('title').encode('utf-8'),
+                "trackNumber": song.get('trackNumber'),
+                "playCount":   song.get('playCount')
+            } ), allSongs ) )
+        return allSongsDict
+
+def upload_to_gmusic(filenames):
+    filenames_valid = list(filter(lambda fname: os.path.isfile(fname), set(filenames)))
+    if len(filenames_valid) != 0:
+        mmg = gmusicapi.Musicmanager()
+        mmg.login()
+        mmg.upload(filenames_valid)
+        mmg.logout()
+        
 def get_youtube_service( ):
     credentials = plexcore.getOauthYoutubeCredentials( )
     if credentials is None:

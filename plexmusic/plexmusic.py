@@ -26,13 +26,13 @@ def gmusicmanager( useMobileclient = False ):
 def get_gmusicmanager( useMobileclient = False ):
     if not useMobileclient:
         mmg = gmusicapi.Musicmanager( )
-        mmg.login( )
+        mmg.login( oauth_credentials = os.path.join( baseConfDir, 'oauth.cred' ) )
     else:
         mmg = gmusicapi.Mobileclient( )
         if not os.path.isfile( _gmusic_absPath ):
             raise ValueError( "Error, default configuration file = %s does not exist." % absPath )
         cparser = RawConfigParser( )
-        cparser.read( _absPath )
+        cparser.read( _gmusic_absPath )
         if not cparser.has_section( 'GMUSIC_CREDENTIALS' ):
             raise ValueError( "Error, configuration file has not defined GMUSIC_CREDENTIALS." )
         if not all([ cparser.has_option('GMUSIC_CREDENTIALS', tok) for tok in
@@ -57,7 +57,7 @@ def save_gmusic_creds( email, password ):
     
 def save_gmusic_oath( ):
     mmg = gmusicapi.Musicmanager( )
-    mmg.perform_oath( )
+    mmg.perform_oath( storage_filepath = baseConfDir )
 
 def get_gmusic_all_songs( ):
     with gmusicmanager( useMobileclient = True ) as mmg:
@@ -76,10 +76,8 @@ def get_gmusic_all_songs( ):
 def upload_to_gmusic(filenames):
     filenames_valid = list(filter(lambda fname: os.path.isfile(fname), set(filenames)))
     if len(filenames_valid) != 0:
-        mmg = gmusicapi.Musicmanager()
-        mmg.login()
-        mmg.upload(filenames_valid)
-        mmg.logout()
+        with gmusicmanager( useMobileclient = False ) as mmg:
+            mmg.upload(filenames_valid)
         
 def get_youtube_service( ):
     credentials = plexcore.getOauthYoutubeCredentials( )

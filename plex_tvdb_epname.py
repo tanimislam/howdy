@@ -11,7 +11,7 @@ def main( ):
                       help = 'The episode string, in the form S%02dE%02d.' )
     parser.add_option('--summary', dest='do_summary', action='store_true', default = False,
                       help = 'If chosen, get a summary of all the seasons and episodes for the SERIES.')
-    parser.add_option('--season', dest='season', action='store', type=int,
+    parser.add_option('-S', '--season', dest='season', action='store', type=int,
                       help = 'If chosen, get a list of all episode titles for this season of the SERIES.')
     parser.add_option('--noverify', dest='do_noverify', action='store_true', default = False,
                       help = 'If chosen, do not verify the SSL connection.')

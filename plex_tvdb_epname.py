@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 import signal
-from plextvdb import plextvdb
 from plexcore import signal_handler
+signal.signal( signal.SIGINT, signal_handler)
+from plextvdb import plextvdb
 from optparse import OptionParser
 
 def main( ):
@@ -19,7 +20,6 @@ def main( ):
                       help = 'If chosen, do not verify the SSL connection.')
     opts, args = parser.parse_args( )
     assert( opts.series is not None )
-    signal.signal( signal.SIGINT, signal_handler)
     if opts.do_summary:
         seriesName = opts.series.strip( )
         epdicts = plextvdb.get_tot_epdict_tvdb( seriesName, verify = not opts.do_noverify )

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-import re, codecs, requests, sys
+import re, codecs, requests, sys, signal
+from plexcore import signal_handler
+signal.signal( signal.SIGINT, signal_handler )
 from optparse import OptionParser
 from plextmdb import plextmdb_torrents
 

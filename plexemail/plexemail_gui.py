@@ -12,9 +12,8 @@ class PlexEmailGUI( QWidget ):
         def screenGrab( self ):
             fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
                                                       os.path.expanduser( '~' ),
-                                                      filter = '*.png' ) )
-            if len( os.path.basename( fname.strip( ) ) ) == 0:
-                return
+                                                      'PNG Images (*.png)' ) )
+            if len( os.path.basename( fname.strip( ) ) ) == 0: return
             if not fname.lower( ).endswith( '.png' ):
                 fname = fname + '.png'
             qpm = QPixmap.grabWidget( self )
@@ -116,9 +115,8 @@ class PlexEmailGUI( QWidget ):
         def screenGrab( self ):
             fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
                                                       os.path.expanduser( '~' ),
-                                                      filter = '*.png' ) )
-            if len( os.path.basename( fname.strip( ) ) ) == 0:
-                return
+                                                      'PNG Images (*.png)' ) )
+            if len( os.path.basename( fname.strip( ) ) ) == 0: return
             if not fname.lower( ).endswith( '.png' ):
                 fname = fname + '.png'
             qpm = QPixmap.grabWidget( self )

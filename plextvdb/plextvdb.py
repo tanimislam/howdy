@@ -247,25 +247,23 @@ class TVShow( object ):
         return tot_epdict
                                             
 def get_series_id( series_name, token, verify = True ):    
-    params = { 'name' : series_name }
+    params = { 'name' : series_name.replace("'",'') }
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/search/series',
                              params = params, verify = verify, headers = headers )
-    if response.status_code != 200:
-        return None
+    if response.status_code != 200: return None
     data = response.json( )['data'][0]
     return data[ 'id' ]
 
 def get_possible_ids( series_name, token, verify = True ):
-    params = { 'name' : series_name }
+    params = { 'name' : series_name.replace("'", '') }
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/search/series',
                              params = params, headers = headers,
                              verify = verify )
-    if response.status_code != 200:
-        return None
+    if response.status_code != 200: return None
     data = response.json( )[ 'data' ]
     return map(lambda dat: dat['id'], data )
 
@@ -274,8 +272,7 @@ def did_series_end( series_id, token, verify = True ):
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
                              headers = headers, verify = verify )
-    if response.status_code != 200:
-        return None
+    if response.status_code != 200: return None
     data = response.json( )['data']
     return data['status'] == 'Ended'
 
@@ -287,8 +284,7 @@ def get_episode_id( series_id, airedSeason, airedEpisode, token, verify = True )
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/query' % series_id,
                              params = params, headers = headers, verify = verify )
-    if response.status_code != 200:
-        return None
+    if response.status_code != 200: return None
     data = max( response.json( )[ 'data' ] )
     return data[ 'id' ]
 
@@ -300,8 +296,7 @@ def get_episode_name( series_id, airedSeason, airedEpisode, token, verify = True
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/query' % series_id,
                              params = params, headers = headers, verify = verify )
-    if response.status_code != 200:
-        return None
+    if response.status_code != 200: return None
     data = max( response.json( )[ 'data' ] )
     try:
         firstAired_s = data[ 'firstAired' ]
@@ -319,8 +314,7 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/series/%d/episodes' % series_id,
                              params = params, headers = headers, verify = verify )
-    if response.status_code != 200:
-        return None
+    if response.status_code != 200: return None
     data = response.json( )
     links = data[ 'links' ]
     lastpage = links[ 'last' ]

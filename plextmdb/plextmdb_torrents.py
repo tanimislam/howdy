@@ -72,7 +72,7 @@ def get_movie_torrent_zooqle( name, maxnum = 10 ):
 def get_movie_torrent_rarbg( name, maxnum = 10 ):
     tmdbid = plextmdb.get_movie_tmdbids( name )
     if tmdbid is None:
-        return None, 'ERROR, could not find %s in themoviedb.'
+        return None, 'ERROR, could not find %s in themoviedb.' % name
     apiurl = "http://torrentapi.org/pubapi_v2.php"
     response = requests.get(apiurl,
                             params={ "get_token": "get_token",

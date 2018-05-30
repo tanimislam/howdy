@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from __future__ import unicode_literals
-import codecs, sys
+import codecs, sys, os
 from plexmusic import plexmusic
 from optparse import OptionParser
 
@@ -82,6 +82,9 @@ def main( ):
         #
         ## now fill out the metadata
         plexmusic.fill_m4a_metadata( filename, data_dict )
+        #
+        ##
+        os.chmod( filename, 0o644 )
     
 if __name__=='__main__':
     main( )

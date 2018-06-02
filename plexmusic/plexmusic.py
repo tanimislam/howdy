@@ -207,6 +207,8 @@ class PlexMusic( object ):
         else:
             img = Image.open( BytesIO( requests.get( metadata_album[ 'album_art_url' ] ).content ) )
         img.save(  '%s.%s.png' % ( titlecase.titlecase( artist_name ), album_name.replace('/', '-') ), format = 'png' )
+        os.chmod( '%s.%s.png' % ( titlecase.titlecase( artist_name ), album_name.replace('/', '-') ),
+                  0o644 )
         return True, '%s.%s.png' % (
             titlecase.titlecase( artist_name ),
             album_name.replace('/', '\-') )

@@ -22,7 +22,7 @@ if __name__=='__main__':
     ##    
     pm = plexmusic.PlexMusic( )
     if not opts.do_songs:
-        pm.get_song_image( opts.artist_name, opts.album_name )
+        pm.get_song_image( opts.artist_name, opts.album_name )        
     else:
         track_listing = pm.get_song_listing( opts.artist_name, album_name = opts.album_name )
         if not opts.do_formatted:

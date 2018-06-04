@@ -1,4 +1,4 @@
-import requests, re, threading
+import requests, re, threading, cfscrape
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
@@ -108,7 +108,7 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
                                      "format": "json",
                                      "app_id": "sickrage2" }, verify = verify )
     if response.status_code != 200:
-        status = 'ERROR, problem with rarbg.to'
+        status = 'ERROR, problem with rarbg.to: %d' % response.status_code
         return None, status
     token = response.json( )[ 'token' ]
     params = { 'mode' : 'search', 'search_tvdb' : series_id, 'token' : token,
@@ -117,10 +117,11 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     response = requests.get( apiurl, params = params, verify = verify )
     data = response.json( )
     if 'torrent_results' not in data:
-        status = 'ERROR, RARBG.TO could not find any torrents for %s %s.' % (
-            candidate_seriesname, 'E'.join( splitseaseps ) )
+        status = '\n'.join([ 'ERROR, RARBG.TO could not find any torrents for %s %s.' % (
+            candidate_seriesname, 'E'.join( splitseaseps ) ),
+                             'keys = %s' % sorted( data.keys( ) ) ])
         return None, status
-    data = filter(lambda elem: 'title' in elem, data['torrent_results'])
+    data = list( filter(lambda elem: 'title' in elem, data['torrent_results']) )
     filtered_data = list( filter(lambda elem: 'E'.join( splitseaseps ) in elem['title'] and
                                  '720p' in elem['title'] and 'HDTV' in elem['title'], data ) )
     if len( filtered_data ) == 0:
@@ -177,7 +178,8 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     #
     url = 'https://torrentz2.eu/feed'
     search_params = {'f': name }
-    response = requests.get( url, params = search_params, verify = verify )
+    scraper = cfscrape.create_scraper( )
+    response = scraper.get( url, params = search_params, verify = verify )
     if response.status_code != 200:
         return None, 'FAILURE, request for %s did not work.' % name
     if not response.content.startswith(b'<?xml'):
@@ -193,16 +195,16 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
             continue
         download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + '+'.join(title.split()) + tracklist
         torrent_size, seeders, leechers = _split_description(item.find('description').text)
+        if get_maximum_matchval( title, name ) < 80: continue
         item = {'title': title, 'link': download_url, 'seeders': seeders,
                 'leechers': leechers }
         items.append(item)
     if len( items ) == 0:
-        return None, 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA'
+        return None, 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name
     items.sort(key=lambda d: try_int(d.get('seeders', 0)) +
                try_int(d.get('leechers')), reverse=True)
     items = items[:maxnum]
-    return map(lambda item: ( item['title'], item[ 'seeders' ], item[ 'leechers' ], item[ 'link' ] ),
-               items ), 'SUCCESS'
+    return items, 'SUCCESS'
     
 def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
     surl = urljoin( 'https://thepiratebay.org', 's/' )
@@ -227,7 +229,6 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
     response = max( response_arr )
     if response is None:
         return None, 'FAILURE TIMED OUT'
-    #response = requests.get( surl, params = search_params )
     if response.status_code != 200:
         return None, 'FAILURE STATUS CODE = %d' % response.status_code
         
@@ -286,22 +287,18 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
     items.sort(key=lambda d: try_int(d.get('seeders', 0)) +
                try_int(d.get('leechers')), reverse=True)
     items = items[:maxnum]
-    return map(lambda item: ( item['title'], item[ 'seeders' ], item[ 'leechers' ], item[ 'link' ] ),
-               items ), 'SUCCESS'
+    return items, 'SUCCESS'
 
 def get_tv_torrent_best( name, maxnum = 10 ):
     items = [ ]
     assert( maxnum >= 5 )
-    its, status = get_tv_torrent_tpb( name, maxnum = maxnum )
+    items_1, status = get_tv_torrent_tpb( name, maxnum = maxnum )
     if status == 'SUCCESS':
-        print( len(its) )
-        items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
-                  item in its ]
-    its, status = get_tv_torrent_torrentz( name, maxnum = maxnum )
-    print( status )
+        print( len(items) )
+        items += items_1
+    items_1, status = get_tv_torrent_torrentz( name, maxnum = maxnum )
     if status == 'SUCCESS':
-        items+= [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
-                  item in its ]
+        items += items_1
     print( 'LENGTH OF ALL ITEMS = %d' % len( items ) )
     if len( items ) == 0:
         print( "Error, could not find anything with name = %s" % name )

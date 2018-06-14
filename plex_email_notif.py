@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, sys, datetime, logging
+import os, datetime, logging
 import time, multiprocessing
 from optparse import OptionParser
 from plexcore import plexcore

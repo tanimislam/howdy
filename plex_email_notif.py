@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os, sys, datetime, logging
 import time, multiprocessing
@@ -6,7 +6,7 @@ from optparse import OptionParser
 from plexcore import plexcore
 from plexemail import plexemail
 
-if __name__=='__main__':
+def main( ):
     time0 = time.time( )
     date_now = datetime.datetime.now( ).date( )
     parser = OptionParser( )
@@ -25,16 +25,16 @@ if __name__=='__main__':
         logging.basicConfig( level = logging.DEBUG )
     status, _ = plexcore.oauthCheckEmailCredentials( )
     if not status:
-        print "Error, do not have correct email credentials."
-        sys.exit( 0 )
+        print( "Error, do not have correct email credentials." )
+        return
     status, _ = plexcore.oauthCheckContactCredentials( )
     if not status:
-        print "Error, do not have correct contact credentials."
-        sys.exit( 0 )
+        print( "Error, do not have correct contact credentials." )
+        return
     val = plexcore.checkServerCredentials( )
     if val is None:
-        print "Error, could not get an instance of a running Plex server on this machine."
-        sys.exit( 0 )
+        print( "Error, could not get an instance of a running Plex server on this machine." )
+        return
     _, token = val
     #
     ## get mapped emails
@@ -44,26 +44,26 @@ if __name__=='__main__':
         if name is not None:
             return "%s <%s>" % ( name, email )
         return email
-    items = sorted(map(lambda (name, email): return_nameemail_string( name, email ),
-                       name_emails))
+    items = sorted(list(map(lambda name_email: return_nameemail_string( name_email[0], name_email[1] ),
+                            name_emails)))
     finalString = '\n'.join([ 'Hello Friend,', '', opts.body ])
     htmlString = plexcore.latexToHTML( finalString )
     if htmlString is None:
-        print 'Error, %s could not be converted into email.' % opts.body
-        sys.exit( 0 )
+        print( 'Error, %s could not be converted into email.' % opts.body )
+        return
 
     #
     ## now do the email sending out
     access_token = plexcore.oauth_get_access_token( )
     if access_token is None:
-        print 'Error, could not authorize email sending.'
-        sys.exit( 0 )
-    print 'processed all checks in %0.3f seconds.' % ( time.time( ) - time0 )
+        print( 'Error, could not authorize email sending.' )
+        return
+    print( 'processed all checks in %0.3f seconds.' % ( time.time( ) - time0 ) )
     time0 = time.time( )
     if opts.do_test:
         plexemail.send_individual_email_full( htmlString, opts.subject, access_token,
                                               'tanim.islam@gmail.com', 'Tanim Islam' )
-        print 'processed test email in %0.3f seconds.' % ( time.time( ) - time0 )
+        print( 'processed test email in %0.3f seconds.' % ( time.time( ) - time0 ) )
     else:
         def _send_email_perproc( input_tuple ):
             name, email = input_tuple
@@ -72,11 +72,7 @@ if __name__=='__main__':
             return True
         pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
         arrs = pool.map( _send_email_perproc, name_emails + [ ( 'Tanim Islam', 'tanim.islam@gmail.com' ) ])
-        print 'processed %d emails in %0.3f seconds.' % ( len(arrs), time.time( ) - time0 )
+        print( 'processed %d emails in %0.3f seconds.' % ( len(arrs), time.time( ) - time0 ) )
         
-        
-    
-    
-            
-    
-
+if __name__=='__main__':
+    main( )

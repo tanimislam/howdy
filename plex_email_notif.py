@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-import os, datetime, logging
-import time, multiprocessing
+import os, datetime, logging, time
 from optparse import OptionParser
 from plexcore import plexcore
 from plexemail import plexemail
@@ -66,8 +65,8 @@ def main( ):
             plexemail.send_individual_email_full( htmlString, opts.subject,
                                                   email, name )
             return True
-        pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
-        arrs = pool.map( _send_email_perproc, name_emails + [ ( 'Tanim Islam', 'tanim.islam@gmail.com' ) ])
+        arrs = list( map( _send_email_perproc, name_emails +
+                          [ ( 'Tanim Islam', 'tanim.islam@gmail.com' ) ]) )
         print( 'processed %d emails in %0.3f seconds.' % ( len(arrs), time.time( ) - time0 ) )
         
 if __name__=='__main__':

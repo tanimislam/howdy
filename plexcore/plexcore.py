@@ -1,12 +1,11 @@
 import sqlite3, shutil, os, glob, datetime, gspread, logging, sys
 import multiprocessing, tempfile, uuid, requests, pytz, pypandoc
 import xdg.BaseDirectory, urllib, json, oauth2client.file, httplib2
+from urllib.request import urlopen
+from urllib.parse import urlencode
 from fuzzywuzzy.fuzz import partial_ratio
-if sys.version_info.major < 3:
-    from ConfigParser import RawConfigParser
-else:
-    from configparser import RawConfigParser
-    from functools import reduce
+from configparser import RawConfigParser
+from functools import reduce
 from contextlib import contextmanager
 from bs4 import BeautifulSoup
 from . import mainDir, Base, session, baseConfDir
@@ -859,9 +858,9 @@ def oauth_authorize_tokens(authorization_code,
   params['redirect_uri'] = REDIRECT_URI
   params['grant_type'] = 'authorization_code'
   request_url = _accounts_url('o/oauth2/token')
-
-  response = urllib.urlopen(request_url, urllib.urlencode(params)).read()
-  return json.loads(response)
+  
+  response = requests.get( request_url, params = params )
+  return json.loads(response.get_json( ))
 
 def oauth_push_new_gmailauthentication( valid_token ):
     client_id = '1062550112138-03t22u9sr35ph67c7v7db3tsgcujhekf.apps.googleusercontent.com'
@@ -887,7 +886,8 @@ def oauth_get_access_token( ):
         'refresh_token' : creds_email['Refresh Token'],
         'grant_type' : 'refresh_token',
     }
-    refreshData = json.loads( urllib.urlopen( refreshURL, urllib.urlencode( params ) ).read( ) )
+    #refreshData = requests.get( refreshURL, params = params ).get_json( )
+    refreshData = json.loads( urlopen( refreshURL, urlencode( params ) ).read( ) )
     if 'access_token' not in refreshData:
        return None
     access_token = refreshData[ 'access_token' ]
@@ -898,13 +898,23 @@ def oauthCheckEmailCredentials( ):
     absPath = os.path.join( baseConfDir, filename )
     if not os.path.isfile( absPath ):
         return False, 'EMAIL AUTHENTICATION FILE DOES NOT EXIST.'
-    data = json.load( open( absPath, 'r' ) )
-    if len( set([ 'Client ID', 'Client Secret', 'Refresh Token' ]) - set( data.keys( ) ) ) != 0:
-        return False, 'HAVE NOT DEFINED ONE OF CLIENT ID, CLIENT SECRET, REFRESH TOKEN'
-    val = oauth_get_access_token( )
-    if val is None:
-        return False, 'INVALID AUTHORIZATION CREDENTIALS'
     return True, 'SUCCESS'
+
+def oauthGetEmailCredentials( ):
+    filename = 'email_authentication.json'
+    absPath = os.path.join( baseConfDir, filename )
+    if not os.path.isfile( absPath ):
+        return None
+    credentials = oauth2client.file.Storage( absPath ).get( )
+    credentials.refresh( httplib2.Http( ) )
+    return credentials
+
+def oauth_generate_email_permission_url( ):
+    flow = flow_from_clientsecrets( os.path.join( mainDir, 'resources', 'client_secrets.json' ),
+                                    scope = 'https://www.googleapis.com/auth/gmail.send',
+                                    redirect_uri = "urn:ietf:wg:oauth:2.0:oob" )
+    auth_uri = flow.step1_get_authorize_url( )
+    return flow, auth_uri
 
 def oauth_generate_contacts_permission_url( ):
     flow = flow_from_clientsecrets( os.path.join( mainDir, 'resources', 'client_secrets.json' ),
@@ -936,16 +946,17 @@ def oauthCheckContactCredentials( ):
     absPath = os.path.join( baseConfDir, filename )
     if not os.path.isfile( absPath ):
         return False, 'CONTACTS AUTHENTICATION FILE DOES NOT EXIST.'
-    val = oauth_get_contact_access_token( )
-    if val is None:
-        return False, 'INVALID AUTHORIZATION CREDENTIALS'
     return True, 'SUCCESS'
-    #
-    ## now get the flow from mainDir
-    flow = flow_from_clientsecrets( os.path.join( mainDir, 'resources', 'client_secrets.json'),
-                                    client_secrets.json,
-                                    redirect_uri = "urn:ietf:wg:oauth:2.0:oob" )
-    auth_uri = flow.step1_get_authorize_url( )
+
+
+def getOauthContactCredentials( ):
+    filename = 'contacts_authentication.json'
+    absPath = os.path.join( baseConfDir, filename )
+    if not os.path.isfile( absPath ):
+        return None
+    credentials = oauth2client.file.Storage( absPath ).get( )
+    credentials.refresh( httplib2.Http( ) )
+    return credentials
 
 def oauth_generate_youtube_permission_url( ):
     flow = flow_from_clientsecrets( os.path.join( mainDir, 'resources', 'client_secrets.json' ),

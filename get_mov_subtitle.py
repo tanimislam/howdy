@@ -93,8 +93,8 @@ if __name__=='__main__':
     data = None
     if not opts.do_bypass:
         data = get_items_yts( opts.name, maxnum = opts.maxnum )
-    if data is None:
-        data = get_items_subscene2( opts.name, maxnum = opts.maxnum, extra_strings = keywords_set )
+    #if data is None:
+    #    data = get_items_subscene2( opts.name, maxnum = opts.maxnum, extra_strings = keywords_set )
     if data is None:
         data = get_items_opensubtitles( opts.name, maxnum = opts.maxnum, extra_strings = keywords_set )        
     if data is not None:

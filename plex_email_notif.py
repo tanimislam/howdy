@@ -54,20 +54,16 @@ def main( ):
 
     #
     ## now do the email sending out
-    access_token = plexcore.oauth_get_access_token( )
-    if access_token is None:
-        print( 'Error, could not authorize email sending.' )
-        return
     print( 'processed all checks in %0.3f seconds.' % ( time.time( ) - time0 ) )
     time0 = time.time( )
     if opts.do_test:
-        plexemail.send_individual_email_full( htmlString, opts.subject, access_token,
+        plexemail.send_individual_email_full( htmlString, opts.subject,
                                               '***REMOVED***.islam@gmail.com', 'Tanim Islam' )
         print( 'processed test email in %0.3f seconds.' % ( time.time( ) - time0 ) )
     else:
         def _send_email_perproc( input_tuple ):
             name, email = input_tuple
-            plexemail.send_individual_email_full( htmlString, opts.subject, access_token,
+            plexemail.send_individual_email_full( htmlString, opts.subject,
                                                   email, name )
             return True
         pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )

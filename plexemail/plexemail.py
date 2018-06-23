@@ -1,7 +1,7 @@
 import os, sys, titlecase, datetime, re, urllib, time, requests
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing, lxml.html
-import oauth2client.file, httplib2
-import smtplib, re, urllib, base64
+from apiclient.discovery import build
+import smtplib, re, urllib, base64, httplib2
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
@@ -101,22 +101,35 @@ def set_date_newsletter( ):
     session.commit( )
         
 def get_email_contacts_dict( emailList ):
-    import gdata.contacts, gdata.contacts.client
-    token = plexcore.oauth_get_contact_access_token( )
-    if token is None: return None
-    gd_client = gdata.contacts.client.ContactsClient( source = '***REMOVED***-islam-cloud-storage-2' )
-    gd_client.auth_token = token
-    #
-    ## copy nprstuff/oldstuff/google_pull_contacts.py#GoogleContactsSimple
-    query = gdata.contacts.client.ContactsQuery( )
-    query.max_results = 50000
-    contacts = gd_client.GetContacts( q = query )
-    contacts_dict = dict(map(lambda entry: ( entry.title.text, entry ),
-                             filter(lambda entr: entr.title.text is not None,
-                                    contacts.entry)))
-    contacts_val = filter(lambda name: len(contacts_dict[name].email) > 0, contacts_dict )
-    emails_dict = { name : sorted(set(map(lambda eml: eml.address, contacts_dict[name].email))) for
-                    name in contacts_val }
+    if len( emailList ) == 0: return [ ]
+    credentials = plexcore.getOauthContactCredentials( )
+    people_service = build( 'people', 'v1', http = credentials.authorize( httplib2.Http( ) ) )
+    connections = people_service.people( ).connections( ).list(
+        resourceName='people/me', personFields='names,emailAddresses',
+        pageSize = 2000 ).execute( )
+    emails_dict = { }
+    for conn in filter(lambda conn: 'names' in conn and 'emailAddresses' in conn,
+                       connections['connections']):
+        name = conn['names'][0]['displayName']
+        emails = set(map(lambda eml: eml['value'], conn['emailAddresses'] ) )
+        if name not in emails_dict:
+            emails_dict[ name ] = emails
+        else:
+            new_emails = emails | emails_dict[ name ]
+            emails_dict[ name ] = new_emails
+    while 'nextPageToken' in connections: 
+        connections = people_service.people( ).connections( ).list(
+            resourceName='people/me', personFields='names,emailAddresses',
+            pageToken = connections['nextPageToken'], pageSize = 2000 ).execute( )
+        for conn in filter(lambda conn: 'names' in conn and 'emailAddresses' in conn,
+                           connections['connections']):
+            name = conn['names'][0]['displayName']
+            emails = set(map(lambda eml: eml['value'], conn['emailAddresses'] ) )
+            if name not in emails_dict:
+                emails_dict[ name ] = emails
+            else:
+                new_emails = emails | emails_dict[ name ]
+                emails_dict[ name ] = new_emails
     #
     emails_dict_rev = {}
     for contact in emails_dict:
@@ -192,20 +205,15 @@ def test_email_full( subject, htmlstring ):
     msg['To'] = '***REMOVED***.islam@gmail.com'
     body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
+    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
     #
-    access_token = plexcore.oauth_get_access_token( )
+    credentials = plexcore.oauthGetEmailCredentials( )
+    assert( credentials is not None )
+    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ) )
     #
-    auth_string = 'user=%s\1auth=Bearer %s\1\1' % (
-        '***REMOVED***.islam@gmail.com', access_token)
-    auth_string = base64.b64encode( auth_string )
-    smtp_conn = smtplib.SMTP('smtp.gmail.com', 587)
-    smtp_conn.ehlo( 'test' )
-    smtp_conn.starttls( )
-    smtp_conn.docmd( 'AUTH', 'XOAUTH2 ' + auth_string )
-    smtp_conn.sendmail( fromEmail, [ msg['To'], ], msg.as_string( ) )
-    smtp_conn.quit( )
+    message = service.users( ).messages( ).send( userId='me', body = data )
 
-def send_individual_email_full( mainHTML, subject, access_token, email, name = None, attach = None,
+def send_individual_email_full( mainHTML, subject, email, name = None, attach = None,
                                 attachName = None, attachType = 'txt'):
     fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
     msg = MIMEMultipart( )
@@ -224,19 +232,15 @@ def send_individual_email_full( mainHTML, subject, access_token, email, name = N
         att = MIMEApplication( attach, _subtype = 'text' )
         att.add_header( 'content-disposition', 'attachment', filename = attachName )
         msg.attach( att )
+    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
     #
-    auth_string = 'user=%s\1auth=Bearer %s\1\1' % (
-        '***REMOVED***.islam@gmail.com', access_token)
-    auth_string = base64.b64encode( auth_string )
-    smtp_conn = smtplib.SMTP('smtp.gmail.com', 587)
-    smtp_conn.ehlo( 'test' )
-    smtp_conn.starttls( )
-    smtp_conn.docmd( 'AUTH', 'XOAUTH2 ' + auth_string )
-    smtp_conn.sendmail( fromEmail, [ msg['To'], ], msg.as_string( ) )
-    smtp_conn.quit( )
+    credentials = plexcore.oauthGetEmailCredentials( )
+    assert( credentials is not None )
+    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ) )
+    message = service.users( ).messages( ).send( userId='me', body = data )
 
-def send_individual_email( mainHTML, access_token, email,
-                           name = None, mydate = datetime.datetime.now().date() ):
+def send_individual_email( mainHTML, email, name = None,
+                           mydate = datetime.datetime.now().date() ):
     fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
     subject = titlecase.titlecase( 'Plex Email Newsletter For %s' % mydate.strftime( '%B %Y' ) )
     msg = MIMEMultipart( )
@@ -252,16 +256,12 @@ def send_individual_email( mainHTML, access_token, email,
     #
     body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
+    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
     #
-    auth_string = 'user=%s\1auth=Bearer %s\1\1' % (
-        '***REMOVED***.islam@gmail.com', access_token)
-    auth_string = base64.b64encode( auth_string )
-    smtp_conn = smtplib.SMTP('smtp.gmail.com', 587)
-    smtp_conn.ehlo( 'test' )
-    smtp_conn.starttls( )
-    smtp_conn.docmd( 'AUTH', 'XOAUTH2 ' + auth_string )
-    smtp_conn.sendmail( fromEmail, [ msg['To'], ], msg.as_string( ) )
-    smtp_conn.quit( )
+    credentials = plexcore.oauthGetEmailCredentials( )
+    assert( credentials is not None )
+    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ) )
+    message = service.users( ).messages( ).send( userId='me', body = data )
 
 def get_summary_html( preambleText = '', postambleText = '', pngDataDict = { },
                       name = None, token = None, doLocal = True ):

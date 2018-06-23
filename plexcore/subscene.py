@@ -24,12 +24,8 @@ this script that does the job by parsing the website"s pages.
 """
 
 # imports
-import re, enum, sys, requests
-if sys.version_info.major >= 3:
-    from contextlib import suppress
-    from urllib.request import Request, urlopen
-else:
-    from six.moves.urllib.request import Request, urlopen
+import re, enum, sys, cfscrape
+if sys.version_info.major >= 3: from contextlib import suppress
 from bs4 import BeautifulSoup
 
 # constants
@@ -39,11 +35,11 @@ HEADERS = {
                             "ri/537.36" ])
 }
 SITE_DOMAIN = "https://subscene.com"
-
+_scraper = cfscrape.create_scraper( )
 
 # utils
 def soup_for(url, params):
-    response = requests.get( url, headers = HEADERS, params = params )
+    response = _scraper.get( url, headers = HEADERS, params = params )
     html = response.content.decode("utf-8")
     return BeautifulSoup(html, "lxml")
 
@@ -227,6 +223,8 @@ def search(term, language="", limit_to=SearchTypes.Exact):
                'l' : language }
     soup = soup_for("%s/subtitles/title" % SITE_DOMAIN,
                     params = params )
+    with open('sub.html', 'w') as openfile:
+        openfile.write('%s\n' % soup.prettify( ) )
     
     if "Subtitle search by" in str(soup):
         rows = soup.find("table").tbody.find_all("tr")

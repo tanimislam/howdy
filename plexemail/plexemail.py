@@ -103,7 +103,8 @@ def set_date_newsletter( ):
 def get_email_contacts_dict( emailList ):
     if len( emailList ) == 0: return [ ]
     credentials = plexcore.getOauthContactCredentials( )
-    people_service = build( 'people', 'v1', http = credentials.authorize( httplib2.Http( ) ) )
+    people_service = build( 'people', 'v1', http = credentials.authorize( httplib2.Http( ) ),
+                            cache_discovery=False )
     connections = people_service.people( ).connections( ).list(
         resourceName='people/me', personFields='names,emailAddresses',
         pageSize = 2000 ).execute( )
@@ -183,18 +184,13 @@ def test_email( ):
     msg['To'] = '***REMOVED***.islam@gmail.com'
     body = MIMEText( 'This is a test.' )
     msg.attach( body )
-    #    
-    access_token = plexcore.oauth_get_access_token( )
+    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
     #
-    auth_string = 'user=%s\1auth=Bearer %s\1\1' % (
-        '***REMOVED***.islam@gmail.com', access_token)
-    auth_string = base64.b64encode( auth_string )
-    smtp_conn = smtplib.SMTP('smtp.gmail.com', 587)
-    smtp_conn.ehlo( 'test' )
-    smtp_conn.starttls( )
-    smtp_conn.docmd( 'AUTH', 'XOAUTH2 ' + auth_string )
-    smtp_conn.sendmail( fromEmail, [ msg['To'], ], msg.as_string( ) )
-    smtp_conn.quit( )
+    credentials = plexcore.oauthGetEmailCredentials( )
+    assert( credentials is not None )
+    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
+                    cache_discovery = False )
+    message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
 
 def test_email_full( subject, htmlstring ):
     fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
@@ -209,9 +205,9 @@ def test_email_full( subject, htmlstring ):
     #
     credentials = plexcore.oauthGetEmailCredentials( )
     assert( credentials is not None )
-    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ) )
-    #
-    message = service.users( ).messages( ).send( userId='me', body = data )
+    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
+                    cache_discovery = False )
+    message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
 
 def send_individual_email_full( mainHTML, subject, email, name = None, attach = None,
                                 attachName = None, attachType = 'txt'):
@@ -236,8 +232,9 @@ def send_individual_email_full( mainHTML, subject, email, name = None, attach = 
     #
     credentials = plexcore.oauthGetEmailCredentials( )
     assert( credentials is not None )
-    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ) )
-    message = service.users( ).messages( ).send( userId='me', body = data )
+    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
+                    cache_discovery = False )
+    message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
 
 def send_individual_email( mainHTML, email, name = None,
                            mydate = datetime.datetime.now().date() ):
@@ -260,8 +257,9 @@ def send_individual_email( mainHTML, email, name = None,
     #
     credentials = plexcore.oauthGetEmailCredentials( )
     assert( credentials is not None )
-    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ) )
-    message = service.users( ).messages( ).send( userId='me', body = data )
+    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
+                    cache_discovery = False )
+    message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
 
 def get_summary_html( preambleText = '', postambleText = '', pngDataDict = { },
                       name = None, token = None, doLocal = True ):

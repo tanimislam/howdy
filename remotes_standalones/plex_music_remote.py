@@ -57,6 +57,7 @@ def get_song( artist, song ):
         filedata = response2.json( )['filedata']
         with open( filename, 'wb') as openfile:
             openfile.write( base64.b64decode( filedata ) )
+        os.chmod( filename, 0o644 )
         print( 'FINISHED WRITING OUT SONG %s.' % filename )
     else:
         print( 'ERROR STATUS CODE: %d' % response.status_code )

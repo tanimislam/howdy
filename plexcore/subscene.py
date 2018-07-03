@@ -221,7 +221,7 @@ def get_first_film(soup, section):
 def search(term, language="", limit_to=SearchTypes.Exact):
     params = { 'q' : re.sub("\s", "+", term),
                'l' : language }
-    soup = soup_for("%s/subtitles/title" % SITE_DOMAIN,
+    soup = soup_for("%s/subtitles/release" % SITE_DOMAIN,
                     params = params )
     with open('sub.html', 'w') as openfile:
         openfile.write('%s\n' % soup.prettify( ) )

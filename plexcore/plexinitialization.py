@@ -10,7 +10,7 @@ def _choose_install_local( requirements ):
                               '\n'.join(map(lambda key: '%d: %s' % ( key, choicedict[key] ),
                                             sorted( choicedict.keys( ) ) ) ) ] ) )
     try:
-        # iidx = int( iidx.strip( ) )
+        iidx = int( iidx.strip( ) )
         if iidx not in choicedict:
             print('YOU HAVE CHOSEN NEITHER 1 (YES) OR 2 (NO). EXITING...')
             sys.exit( 0 )
@@ -89,11 +89,11 @@ class PlexInitialization( object ):
         def __init__( self ):
             #
             ## first see if we have PyQt4
-            try:
-                val = imp.find_module( 'PyQt4' )
-            except ImportError:
-                print('ERROR, YOU NEED TO INSTALL PyQt4 ON YOUR MACHINE.')
-                sys.exit( 0 )
+            #try:
+            #    val = imp.find_module( 'PyQt4' )
+            #except ImportError:
+            #    print('ERROR, YOU NEED TO INSTALL PyQt4 ON YOUR MACHINE.')
+            #    sys.exit( 0 )
             
             #
             ## first see if we have pip on this machine

@@ -13,7 +13,7 @@ def main( ):
     access_code = input( bs )
     try:
         credentials = flow.step2_exchange( access_code )
-        plexcore.oauth_store_youtube_credentials( credentials )
+        plexcore.oauth_store_google_credentials( credentials )
         print( 'Success. Stored GOOGLE credentials.' )
     except:
         print( 'Error: invalid authorization code.' )

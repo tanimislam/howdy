@@ -1,6 +1,7 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2
-import requests, googleapiclient.discovery, youtube_dl, gmusicapi
+import requests, youtube_dl, gmusicapi
 from contextlib import contextmanager
+from googleapiclient.discovery import build
 from PIL import Image
 from io import StringIO, BytesIO
 from urllib.parse import urljoin
@@ -55,9 +56,9 @@ def save_gmusic_creds( email, password ):
         cparser.write( openfile )
     os.chmod( _gmusic_absPath, 0o600 )
     
-def save_gmusic_oath( ):
+def save_gmusic_oauth( ):
     mmg = gmusicapi.Musicmanager( )
-    mmg.perform_oath( storage_filepath = baseConfDir )
+    mmg.perform_oauth( storage_filepath = baseConfDir )
 
 def get_gmusic_all_songs( ):
     with gmusicmanager( useMobileclient = True ) as mmg:
@@ -80,11 +81,10 @@ def upload_to_gmusic(filenames):
             mmg.upload(filenames_valid)
         
 def get_youtube_service( ):
-    credentials = plexcore.getOauthYoutubeCredentials( )
+    credentials = plexcore.oauthGetGoogleCredentials( )
     if credentials is None:
         raise ValueError( "Error, could not build the YouTube service." )
-    youtube = googleapiclient.discovery.build( "youtube", "v3",
-                                               http = credentials.authorize(httplib2.Http()))
+    youtube = build( "youtube", "v3", http = credentials.authorize(httplib2.Http()))                     
     return youtube
 
 def push_gracenote_credentials( client_ID ):

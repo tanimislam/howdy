@@ -27,7 +27,7 @@ def gmusicmanager( useMobileclient = False ):
 def get_gmusicmanager( useMobileclient = False ):
     if not useMobileclient:
         mmg = gmusicapi.Musicmanager( )
-        mmg.login( oauth_credentials = os.path.join( baseConfDir, 'oauth.cred' ) )
+        mmg.login( oauth_credentials = os.path.join( baseConfDir, 'google_authentication.json' ) )
     else:
         mmg = gmusicapi.Mobileclient( )
         if not os.path.isfile( _gmusic_absPath ):
@@ -55,10 +55,6 @@ def save_gmusic_creds( email, password ):
     with open( _gmusic_absPath, 'w') as openfile:
         cparser.write( openfile )
     os.chmod( _gmusic_absPath, 0o600 )
-    
-def save_gmusic_oauth( ):
-    mmg = gmusicapi.Musicmanager( )
-    mmg.perform_oauth( storage_filepath = baseConfDir )
 
 def get_gmusic_all_songs( ):
     with gmusicmanager( useMobileclient = True ) as mmg:

@@ -22,13 +22,9 @@ def main( ):
     opts, args = parser.parse_args( )
     if opts.do_debug:
         logging.basicConfig( level = logging.DEBUG )
-    status, _ = plexcore.oauthCheckEmailCredentials( )
+    status, _ = plexcore.oauthCheckGoogleCredentials( )
     if not status:
-        print( "Error, do not have correct email credentials." )
-        return
-    status, _ = plexcore.oauthCheckContactCredentials( )
-    if not status:
-        print( "Error, do not have correct contact credentials." )
+        print( "Error, do not have correct Google credentials." )
         return
     val = plexcore.checkServerCredentials( )
     if val is None:

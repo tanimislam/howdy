@@ -102,9 +102,9 @@ def set_date_newsletter( ):
         
 def get_email_contacts_dict( emailList ):
     if len( emailList ) == 0: return [ ]
-    credentials = plexcore.getOauthContactCredentials( )
+    credentials = plexcore.oauthGetGoogleCredentials( )
     people_service = build( 'people', 'v1', http = credentials.authorize( httplib2.Http( ) ),
-                            cache_discovery=False )
+                            cache_discovery = False )
     connections = people_service.people( ).connections( ).list(
         resourceName='people/me', personFields='names,emailAddresses',
         pageSize = 2000 ).execute( )
@@ -173,37 +173,21 @@ def send_individual_email_perproc( input_tuple ):
                 print('Problem sending to %s. Trying again...' % email)
             else:
                 print('Problem sending to %s <%s>. Trying again...' % ( name, email ) )
-                
-def test_email( ):
-    mydate = datetime.datetime.now( ).date( )
-    fromEmail = 'Tanim Islam <tanim.islam@gmail.com>'
-    subject = titlecase.titlecase( 'Plex Email Newsletter For %s' % mydate.strftime( '%B %Y' ) )
-    msg = MIMEMultipart( )
-    msg['From'] = fromEmail
-    msg['Subject'] = subject
-    msg['To'] = 'tanim.islam@gmail.com'
-    body = MIMEText( 'This is a test.' )
-    msg.attach( body )
-    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
-    #
-    credentials = plexcore.oauthGetEmailCredentials( )
-    assert( credentials is not None )
-    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
-                    cache_discovery = False )
-    message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
 
-def test_email_full( subject, htmlstring ):
+def test_email( subject = None, htmlstring = None ):
     fromEmail = 'Tanim Islam <tanim.islam@gmail.com>'
-    # subject = titlecase.titlecase( 'Plex Email Newsletter For %s' % mydate.strftime( '%B %Y' ) )
+    if subject is None:
+        subject = titlecase.titlecase( 'Plex Email Newsletter For %s' % mydate.strftime( '%B %Y' ) )
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
     msg['Subject'] = subject
     msg['To'] = 'tanim.islam@gmail.com'
-    body = MIMEText( htmlstring, 'html', 'utf-8' )
+    if htmlstring is None: body = MIMEText( 'This is a test.' )
+    else: body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
     data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
     #
-    credentials = plexcore.oauthGetEmailCredentials( )
+    credentials = plexcore.oauthGetGoogleCredentials( )
     assert( credentials is not None )
     service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
                     cache_discovery = False )
@@ -230,7 +214,7 @@ def send_individual_email_full( mainHTML, subject, email, name = None, attach = 
         msg.attach( att )
     data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
     #
-    credentials = plexcore.oauthGetEmailCredentials( )
+    credentials = plexcore.oauthGetGoogleCredentials( )
     assert( credentials is not None )
     service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
                     cache_discovery = False )
@@ -255,7 +239,7 @@ def send_individual_email( mainHTML, email, name = None,
     msg.attach( body )
     data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
     #
-    credentials = plexcore.oauthGetEmailCredentials( )
+    credentials = plexcore.oauthGetGoogleCredentials( )
     assert( credentials is not None )
     service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
                     cache_discovery = False )

@@ -1,9 +1,9 @@
 import requests, os, sys, json, re, logging
 import multiprocessing, datetime, time
 from PIL import Image
-if sys.version_info.major < 3: from cStringIO import StringIO
-else: from io import StringIO
+from io import StringIO
 from dateutil.relativedelta import relativedelta
+from fuzzywuzzy.fuzz import ratio
 from . import get_token
 
 def _create_season( input_tuple ):
@@ -221,6 +221,7 @@ class TVShow( object ):
 
     def get_episodes_series( self, showSpecials = True, fromDate = None ):
         seasons = set( self.seasonDict.keys( ) )
+        print('all seasons: %s' % seasons )
         if not showSpecials:
             seasons = seasons - set([0,])
         sData = reduce(lambda x,y: x+y,
@@ -246,15 +247,19 @@ class TVShow( object ):
                 tot_epdict[ seasno ][ epno ] = ( title, airedDate )
         return tot_epdict
                                             
-def get_series_id( series_name, token, verify = True ):    
-    params = { 'name' : series_name.replace("'",'') }
-    headers = { 'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer %s' % token }
-    response = requests.get( 'https://api.thetvdb.com/search/series',
-                             params = params, verify = verify, headers = headers )
-    if response.status_code != 200: return None
-    data = response.json( )['data'][0]
-    return data[ 'id' ]
+def get_series_id( series_name, token, verify = True ):
+    data_ids = get_possible_ids( series_name, token, verify = verify )
+    if data_ids is None: return None
+    data_matches = list(filter(lambda dat: dat['seriesName'] == series_name,
+                               data_ids ) )
+    #
+    ## if not get any matches, choose best one
+    if len( data_matches ) == 0:
+        data_match = max( data_ids, key = lambda dat:
+                          ratio( dat[ 'seriesName' ], series_name ) )
+        return data_match[ 'id' ]
+    if len( data_matches ) != 1: return None
+    return max( data_matches )[ 'id' ]
 
 def get_possible_ids( series_name, token, verify = True ):
     params = { 'name' : series_name.replace("'", '') }
@@ -265,7 +270,8 @@ def get_possible_ids( series_name, token, verify = True ):
                              verify = verify )
     if response.status_code != 200: return None
     data = response.json( )[ 'data' ]
-    return map(lambda dat: dat['id'], data )
+    return list(map(lambda dat: {
+        'id' : dat['id'], 'seriesName' : dat['seriesName'] }, data ) )
 
 def did_series_end( series_id, token, verify = True ):
     headers = { 'Content-Type' : 'application/json',

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from __future__ import unicode_literals
 import codecs, sys, os
 from plexmusic import plexmusic
 from optparse import OptionParser
@@ -10,16 +9,10 @@ def choose_youtube_item( name, maxnum = 10 ):
     videos = plexmusic.youtube_search( youtube, name, max_results = maxnum )
     if len( videos ) != 1:
         sortdict = { idx + 1 : item for (idx, item) in enumerate(videos) }
-        if sys.version_info.major == 2:
-            bs = codecs.encode( 'Choose YouTube video:\n%s\n' %
-                                '\n'.join(map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 0 ] ),
-                                              sorted( sortdict ) ) ), 'utf-8' )
-            iidx = raw_input( bs )
-        else:
-            bs = 'Choose YouTube video:\n%s\n' % '\n'.join(
-                map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 0 ] ),
-                    sorted( sortdict ) ) )
-            iidx = input( bs )
+        bs = 'Choose YouTube video:\n%s\n' % '\n'.join(
+            map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 0 ] ),
+                sorted( sortdict ) ) )
+        iidx = input( bs )
         try:
             iidx = int( iidx.strip( ) )
             if iidx not in sortdict:
@@ -67,7 +60,9 @@ def main( ):
             continue
         artist_name = data_dict[ 'artist' ]
         song_name = data_dict[ 'song' ]
+        album_name = data_dict[ 'album' ]
         print( 'ACTUAL ARTIST: %s' % artist_name )
+        print( 'ACTUAL ALBUM: %s' % album_name )
         print( 'ACTUAL SONG: %s' % song_name )
         #
         ## now get the youtube song selections

@@ -126,12 +126,8 @@ def fill_m4a_metadata( filename, data_dict ):
     mp4tags[ 'trkn' ] = [ ( data_dict[ 'tracknumber' ],
                             data_dict[ 'total tracks' ] ), ]
     if data_dict[ 'album url' ] != '':
-        if sys.version_info.major == 2:
-            csio = StringIO( requests.get( data_dict[ 'album url' ] ).content )
-            csio2 = StringIO( )
-        else:
-            csio = BytesIO( requests.get( data_dict[ 'album url' ] ).content )
-            csio2 = BytesIO( )
+        csio = BytesIO( requests.get( data_dict[ 'album url' ] ).content )
+        csio2 = BytesIO( )
         img = Image.open( csio )
         img.save( csio2, format = 'png' )
         mp4tags[ 'covr' ] = [
@@ -212,10 +208,10 @@ class PlexMusic( object ):
                                    metadata_album['tracks']), key = lambda title_num: title_num[1] )
         return track_listing
 
-    def get_music_metadata_lowlevel( self, metadata_song ):
+    def get_music_metadata_lowlevel( self, metadata_song, album_title = None ):
         song_name = titlecase.titlecase( metadata_song[ 'track_title' ] )
         track_number = int( metadata_song[ 'track_number' ] )
-        album_title = metadata_song[ 'album_title' ]
+        if album_title is None: album_title = metadata_song[ 'album_title' ]
         artist_name = metadata_song[ 'album_artist_name' ]
         metadata_album = pygn.search(clientID = self.clientID, userID = self.userID,
                                      artist = titlecase.titlecase( artist_name ),
@@ -241,7 +237,8 @@ class PlexMusic( object ):
         metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,
                                       album = album_name,
                                       artist = artist_name )
-        if album_name != metadata_album[ 'album_title' ]:
+        if titlecase.titlecase( album_name ) != \
+           titlecase.titlecase( metadata_album[ 'album_title' ] ):
             return None, 'COULD NOT FIND ALBUM = %s FOR ARTIST = %s' % (
                 album_name, artist_name )
         album_url = ''
@@ -263,7 +260,7 @@ class PlexMusic( object ):
                                        'total tracks' : total_tracks,
                                        'year' : album_year,
                                        'album url' : album_url,
-                                       'album' : metadata_album[ 'album_title' ] },
+                                       'album' : album_name },
                                      track_listing ), key = lambda tok: tok['tracknumber'])
         return album_data_dict, 'SUCCESS'
 

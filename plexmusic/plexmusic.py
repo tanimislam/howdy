@@ -190,7 +190,7 @@ class PlexMusic( object ):
     def __init__( self ):
         self.clientID, self.userID = get_gracenote_credentials( )
 
-    def get_song_image( self, artist_name, album_name ):
+    def get_album_image( self, artist_name, album_name ):
         metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,
                                       album = album_name,
                                       artist = titlecase.titlecase( artist_name ) )
@@ -198,17 +198,12 @@ class PlexMusic( object ):
             print( 'Could not find album = %s for artist = %s.' % (
                 album_name, titlecase.titlecase( artist_name ) ) )
             return None
-        if sys.version_info.major == 2:
-            img = Image.open( StringIO( requests.get( metadata_album[ 'album_art_url' ] ).content ) )
-        else:
-            img = Image.open( BytesIO( requests.get( metadata_album[ 'album_art_url' ] ).content ) )
-        img.save(  '%s.%s.png' % ( titlecase.titlecase( artist_name ), album_name.replace('/', '-') ), format = 'png' )
-        os.chmod( '%s.%s.png' % ( titlecase.titlecase( artist_name ), album_name.replace('/', '-') ),
-                  0o644 )
-        return True, '%s.%s.png' % (
-            titlecase.titlecase( artist_name ),
-            album_name.replace('/', '\-') )
-
+        filename = '%s.%s.png' % ( artist_name, album_name.replace('/', '-') )
+        img = Image.open( BytesIO( requests.get( metadata_album[ 'album_art_url' ] ).content ) )
+        img.save( filename, format = 'png' )
+        os.chmod( filename, 0o644 )
+        return True, filename
+    
     def get_song_listing( self, artist_name, album_name ):
         metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,
                                       album = album_name,
@@ -217,24 +212,11 @@ class PlexMusic( object ):
                                    metadata_album['tracks']), key = lambda title_num: title_num[1] )
         return track_listing
 
-    def get_music_metadata( self, song_name, artist_name ):
-        metadata_song = pygn.search( clientID = self.clientID, userID = self.userID,
-                                     artist = titlecase.titlecase( artist_name ),
-                                     track = titlecase.titlecase( song_name ) )
-        if titlecase.titlecase( metadata_song['track_title'] ) != \
-           titlecase.titlecase( song_name ):
-            return None, "ERROR, COULD NOT FIND ARTIST = %s, SONG = %s." % (
-                titlecase.titlecase( artist_name ), titlecase.titlecase( song_name ) )
-        #
-        ## now see if I can get the album name
-        if 'album_title' not in metadata_song:
-            return None, "ERROR, COULD NOT FIND ALBUM FOR ARTIST = %s, SONG = %s." % (
-                titlecase.titlecase( artist_name ), titlecase.titlecase( song_name ) )
-        if 'track_number' not in metadata_song:
-            return None, "ERROR, COULD NOT FIND TRACK NUMBER FOR ARTIST = %s, SONG = %s." % (
-                titlecase.titlecase( artist_name ), titlecase.titlecase( song_name ) )
+    def get_music_metadata_lowlevel( self, metadata_song ):
+        song_name = titlecase.titlecase( metadata_song[ 'track_title' ] )
         track_number = int( metadata_song[ 'track_number' ] )
         album_title = metadata_song[ 'album_title' ]
+        artist_name = metadata_song[ 'album_artist_name' ]
         metadata_album = pygn.search(clientID = self.clientID, userID = self.userID,
                                      artist = titlecase.titlecase( artist_name ),
                                      album = album_title )
@@ -247,10 +229,72 @@ class PlexMusic( object ):
         except:
             album_year = 1900
         data_dict = { 'song' : titlecase.titlecase( song_name ),
-                      'artist' : titlecase.titlecase( artist_name ),
+                      'artist' : artist_name,
                       'tracknumber' : track_number,
                       'total tracks' : total_tracks,
                       'year' : album_year,
                       'album url' : album_url,
                       'album' : titlecase.titlecase( album_title ) }
         return data_dict, 'SUCCESS'
+
+    def get_music_metadatas_album( self, artist_name, album_name ):
+        metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,
+                                      album = album_name,
+                                      artist = titlecase.titlecase( artist_name ) )
+        if titlecase.titlecase( album_name ) != \
+           titlecase.titlecase( metadata_album[ 'album_title' ] ):
+            return None, 'COULD NOT FIND ALBUM = %s FOR ARTIST = %s' % (
+                album_name, artist_name )
+        album_url = ''
+        if 'album_art_url' in metadata_album:
+            album_url = metadata_album[ 'album_art_url' ]
+        try:
+            album_year = int( metadata_album[ 'album_year' ] )
+        except:
+            album_year = 1900
+        total_tracks = len( metadata_album['tracks'] )
+        track_listing = sorted(map(lambda track: ( track['track_title'],
+                                                   int( track['track_number'] ) ),
+                                   metadata_album['tracks']),
+                               key = lambda title_num: title_num[1] )
+        album_data_dict = sorted(map(lambda title_num:
+                                     { 'song' : titlecase.titlecase( title_num[ 0 ] ),
+                                       'artist' : artist_name,
+                                       'tracknumber' : title_num[ 1 ],
+                                       'total tracks' : total_tracks,
+                                       'year' : album_year,
+                                       'album url' : album_url,
+                                       'album' : titlecase.titlecase( metadata_album[ 'album_title' ] ) },
+                                     track_listing ), key = lambda tok: tok['tracknumber'])
+        return album_data_dict, 'SUCCESS'
+
+    def get_music_metadata( self, song_name, artist_name ):
+        metadata_song = pygn.search( clientID = self.clientID, userID = self.userID,
+                                     artist = titlecase.titlecase( artist_name ),
+                                     track = titlecase.titlecase( song_name ) )
+        #
+        ## now see if I can get the necessary metadata
+        if 'album_artist_name' not in metadata_song:
+            return None, "ERROR, COULD NOT FIND ARTIST = %s" % titlecase.titlecase( artist_name )
+        if titlecase.titlecase( metadata_song[ 'album_artist_name' ] ) != \
+           titlecase.titlecase( artist_name ):
+            return None, "ERROR, COULD NOT FIND ARTIST = %s" % titlecase.titlecase( artist_name )
+        #
+        if 'track_title' not in metadata_song:
+            return None, 'ERROR, COULD NOT FIND SONG = %s FOR ARTIST = %s.' % (
+                titlecase.titlecase( song_name ), titlecase.titlecase( artist_name ) )
+        if titlecase.titlecase( metadata_song['track_title'] ) != \
+           titlecase.titlecase( song_name ):
+            return None, "ERROR, COULD NOT FIND ARTIST = %s, SONG = %s." % (
+                titlecase.titlecase( artist_name ), titlecase.titlecase( song_name ) )
+        #
+        if 'album_title' not in metadata_song:
+            return None, "ERROR, COULD NOT FIND ALBUM FOR ARTIST = %s, SONG = %s." % (
+                titlecase.titlecase( artist_name ), titlecase.titlecase( song_name ) )
+        #
+        if 'track_number' not in metadata_song:
+            return None, "ERROR, COULD NOT FIND TRACK NUMBER FOR ARTIST = %s, SONG = %s." % (
+                titlecase.titlecase( artist_name ), titlecase.titlecase( song_name ) )
+        #
+        ##
+        return self.get_music_metadata_lowlevel( metadata_song )

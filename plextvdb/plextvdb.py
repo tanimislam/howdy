@@ -249,7 +249,9 @@ class TVShow( object ):
                                             
 def get_series_id( series_name, token, verify = True ):
     data_ids = get_possible_ids( series_name, token, verify = verify )
-    if data_ids is None: return None
+    if data_ids is None:
+        print( 'PROBLEM WITH series %s' % series_name )
+        return None
     data_matches = list(filter(lambda dat: dat['seriesName'] == series_name,
                                data_ids ) )
     #
@@ -268,7 +270,15 @@ def get_possible_ids( series_name, token, verify = True ):
     response = requests.get( 'https://api.thetvdb.com/search/series',
                              params = params, headers = headers,
                              verify = verify )
-    if response.status_code != 200: return None
+    if response.status_code != 200: # quick hack to get this to work
+        # was a problem with show AQUA TEEN HUNGER FORCE FOREVER
+        params = { 'name' : ' '.join( series_name.replace("'", '').split()[:-1] ) }
+        headers = { 'Content-Type' : 'application/json',
+                    'Authorization' : 'Bearer %s' % token }
+        response = requests.get( 'https://api.thetvdb.com/search/series',
+                                 params = params, headers = headers,
+                                 verify = verify )
+        if response.status_code != 200: return None
     data = response.json( )[ 'data' ]
     return list(map(lambda dat: {
         'id' : dat['id'], 'seriesName' : dat['seriesName'] }, data ) )
@@ -404,6 +414,9 @@ def _get_remaining_eps_perproc( input_tuple ):
 def _get_series_id_perproc( input_tuple ):
     show, token, verify, doShowEnded = input_tuple
     series_id = get_series_id( show, token, verify = verify )
+    if series_id is None:
+        print( 'SOMETHING HAPPENED WITH SHOW %s' % show )
+        return None
     if not doShowEnded:
         didEnd = did_series_end( series_id, token, verify = verify )
         if didEnd is None: return None

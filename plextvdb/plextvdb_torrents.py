@@ -6,6 +6,9 @@ from plexemail.plexemail import get_formatted_size
 from . import plextvdb
 from plexcore.plexcore import get_maximum_matchval
 
+def _return_error_couldnotfind( name ):
+    return None, 'FAILURE, COULD NOT FIND ANY TV SHOWS WITH SEARCH TERM %s' % name
+
 def get_tv_torrent_zooqle( name, maxnum = 10 ):
     assert( maxnum >= 5 )
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
@@ -117,9 +120,9 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     response = requests.get( apiurl, params = params, verify = verify )
     data = response.json( )
     if 'torrent_results' not in data:
-        status = '\n'.join([ 'ERROR, RARBG.TO could not find any torrents for %s %s.' % (
-            candidate_seriesname, 'E'.join( splitseaseps ) ),
-                             'keys = %s' % sorted( data.keys( ) ) ])
+        status = '\n'.join([ 'ERROR, RARBG.TO could not find any torrents for %s %s.' %
+                             ( candidate_seriesname, 'E'.join( splitseaseps ) ),
+                             'data = %s' % data ])
         return None, status
     data = list( filter(lambda elem: 'title' in elem, data['torrent_results']) )
     filtered_data = list( filter(lambda elem: 'E'.join( splitseaseps ) in elem['title'] and
@@ -137,11 +140,11 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     def get_num_leechers( elem ):
         if 'leechers' in elem: return elem['leechers']
         return 1
-    items = map(lambda elem: { 'title' : elem['title'], 'link' : elem['download'],
-                               'seeders' : get_num_seeders( elem ),
-                               'leechers' : get_num_leechers( elem ) },
-                filtered_data )
-    return list(items), 'SUCCESS'
+    items = list( map(lambda elem: { 'title' : elem['title'], 'link' : elem['download'],
+                                     'seeders' : get_num_seeders( elem ),
+                                     'leechers' : get_num_leechers( elem ) },
+                filtered_data ) )
+    return items, 'SUCCESS'
 
 def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
@@ -200,6 +203,7 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
                 'leechers': leechers }
         items.append(item)
     if len( items ) == 0:
+        return _couldnot
         return None, 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name
     items.sort(key=lambda d: try_int(d.get('seeders', 0)) +
                try_int(d.get('leechers')), reverse=True)
@@ -227,8 +231,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
     e.set( )
     t.join( )
     response = max( response_arr )
-    if response is None:
-        return None, 'FAILURE TIMED OUT'
+    if response is None: return None, 'FAILURE TIMED OUT'
     if response.status_code != 200:
         return None, 'FAILURE STATUS CODE = %d' % response.status_code
         
@@ -255,7 +258,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
     torrent_table = html.find("table", id="searchResult")
     torrent_rows = torrent_table("tr") if torrent_table else []
     if len( torrent_rows ) < 2:
-        return None, 'FAILURE, NO MOVIES INITIALLY'
+        return _return_error_couldnotfind( name )
     labels = list(map(lambda label: process_column_header(label),
                       torrent_rows[0]("th") ) )
     items = []
@@ -283,11 +286,10 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
             print(e)
             continue
     if len( items ) == 0:
-        return None, 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA'
+        return _return_error_couldnotfind( name )
     items.sort(key=lambda d: try_int(d.get('seeders', 0)) +
                try_int(d.get('leechers')), reverse=True)
-    items = items[:maxnum]
-    return items, 'SUCCESS'
+    return items[:maxnum], 'SUCCESS'
 
 def get_tv_torrent_best( name, maxnum = 10 ):
     items = [ ]

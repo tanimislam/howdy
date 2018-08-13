@@ -16,24 +16,20 @@ def get_items_zooqle( name, maxnum = 10 ):
 
 def get_items_tpb(name, maxnum = 10, doAny = False, raiseError = False):
     assert( maxnum >= 5 )
-    its, status = plextvdb_torrents.get_tv_torrent_tpb( name, maxnum = maxnum, doAny = doAny )
+    items, status = plextvdb_torrents.get_tv_torrent_tpb( name, maxnum = maxnum, doAny = doAny )
     if status != 'SUCCESS':
         if raiseError:
             raise ValueError('ERROR, TPB COULD NOT FIND %s.' % name)
         logging.debug( 'ERROR, TPB COULD NOT FIND %s.' % name )
         return None
-    items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
-              item in its ]
     return items
 
 def get_items_torrentz( name, maxnum = 10 ):
     assert( maxnum >= 5 )
-    its, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
+    itemss, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
     if status != 'SUCCESS':
         logging.debug( 'ERROR, TORRENTZ COULD NOT FIND %s.' % name )
         return None
-    items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
-              item in its ]
     return items
 
 def get_items_rarbg( name, maxnum = 10 ):

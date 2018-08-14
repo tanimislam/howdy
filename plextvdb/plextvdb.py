@@ -273,7 +273,7 @@ def get_tvdata_ordered_by_date( tvdata, year = 2010 ):
         tvdata_date_dict.setdefault( tup[0], [ ] ).append( tup[1:] )
     return tvdata_date_dict
 
-def create_plot_year_tvdata( tvdata_dict, year = 2010 ):
+def create_plot_year_tvdata( tvdata_date_dict, year = 2010 ):
     calendar.setfirstweekday( 6 )
     def suncal( mon, year = 2010 ):
         return numpy.array( calendar.monthcalendar( year, mon ), dtype=int )

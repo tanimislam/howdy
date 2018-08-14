@@ -279,7 +279,6 @@ def get_tvdata_ordered_by_date( tvdata ):
 def create_plot_year_tvdata( tvdata_date_dict, year = 2010 ):
     #
     calendar.setfirstweekday( 6 )
-    
     def suncal( mon, year = 2010, current_date = None ):
         if current_date is None:
             return numpy.array( calendar.monthcalendar( year, mon ), dtype=int )
@@ -300,14 +299,18 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010 ):
     numdays = sum(list(map(lambda mon: len( numpy.where( suncal( mon, year, current_date = current_date ) > 0)[1] ),
                            range(1, 13 ))))
     numdays_eps = len(list(filter(lambda mydate: mydate.year == year, tvdata_date_dict)))
-    numeps = sum(list(map(lambda mydate: len( tvdata_date_dict[ mydate ] ),
-                          filter(lambda mydate: mydate.year == year, tvdata_date_dict))))
-    #
-    ## now count the number of shows in these new episodes
-    shownames = set(reduce(lambda x,y: x+y,
-                           list( map(lambda mydate: list(map(lambda tup: tup[0], tvdata_date_dict[ mydate ] ) ),
-                                     filter(lambda mydate: mydate.year == year, tvdata_date_dict)))))
-    
+    if numdays_eps != 0:
+        numeps = sum(list(map(lambda mydate: len( tvdata_date_dict[ mydate ] ),
+                              filter(lambda mydate: mydate.year == year, tvdata_date_dict))))
+        #
+        ## now count the number of shows in these new episodes
+        shownames = set(reduce(lambda x,y: x+y,
+                               list( map(lambda mydate: list(map(lambda tup: tup[0], tvdata_date_dict[ mydate ] ) ),
+                                         filter(lambda mydate: mydate.year == year, tvdata_date_dict)))))
+    else:
+        numeps = 0
+        shownames = { }
+        
     #
     ## these are the legend plots
     ax = fig.add_subplot(5,3,3)

@@ -1,5 +1,6 @@
 import requests, os, sys, json, re, logging
 import multiprocessing, datetime, time
+from functools import reduce
 from PIL import Image
 from io import StringIO
 from dateutil.relativedelta import relativedelta
@@ -246,7 +247,32 @@ class TVShow( object ):
                 airedDate = epStruct[ 'airedDate' ]
                 tot_epdict[ seasno ][ epno ] = ( title, airedDate )
         return tot_epdict
-                                            
+
+#
+## method to get all the shows organized by date.
+## 1)  key is date
+## 2)  value is list of tuples
+## 2a) each tuple is of type date, show name, season, episode number, episode title
+def get_tvdata_ordered_by_date( tvdata ):
+    def _get_tuple_list_season( show, seasno ):
+        assert( show in tvdata )
+        assert( seasno in tvdata[ show ] )
+        episodes_dict = tvdata[ show ][ seasno ]
+        return list( filter(lambda tup: tup[0].year > 1900,
+                            map(lambda epno: (
+                                episodes_dict[ epno ][ 1 ], show,
+                                seasno, epno,
+                                episodes_dict[ epno ][ 0 ] ), episodes_dict ) ) )
+    def _get_tuple_list_show( show ):
+        assert( show in tvdata )
+        return reduce(lambda x,y: x+y, list( map(lambda seasno: _get_tuple_list_season( show, seasno ),
+                                           tvdata[ show ] ) ) )
+    tvdata_tuples = reduce(lambda x,y: x+y, list( map(lambda show: _get_tuple_list_show( show ), tvdata) ) )
+    tvdata_date_dict = { }
+    for tup in tvdata_tuples:
+        tvdata_date_dict.setdefault( tup[0], [ ] ).append( tup[1:] )
+    return tvdata_date_dict
+    
 def get_series_id( series_name, token, verify = True ):
     data_ids = get_possible_ids( series_name, token, verify = verify )
     if data_ids is None:

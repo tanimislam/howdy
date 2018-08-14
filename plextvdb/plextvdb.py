@@ -253,7 +253,7 @@ class TVShow( object ):
 ## 1)  key is date
 ## 2)  value is list of tuples
 ## 2a) each tuple is of type date, show name, season, episode number, episode title
-def get_tvdata_ordered_by_date( tvdata ):
+def get_tvdata_ordered_by_date( tvdata, year = 2010 ):
     def _get_tuple_list_season( show, seasno ):
         assert( show in tvdata )
         assert( seasno in tvdata[ show ] )

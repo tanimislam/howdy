@@ -272,6 +272,108 @@ def get_tvdata_ordered_by_date( tvdata ):
     for tup in tvdata_tuples:
         tvdata_date_dict.setdefault( tup[0], [ ] ).append( tup[1:] )
     return tvdata_date_dict
+
+def create_plot_year_tvdata( tvdata_dict, year = 2010 ):
+    calendar.setfirstweekday( 6 )
+    def suncal( mon, year = 2010 ):
+        return numpy.array( calendar.monthcalendar( year, mon ), dtype=int )
+    
+    fig = pylab.figure( figsize = ( 8 * 3, 6 * 5 ) )
+    days = [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT' ]
+    firstcolors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
+                   '#9467bd', '#8c564b', '#e377c2', '#7f7f7f',
+                   '#bcbd22']
+    numdays = sum(list(map(lambda mon: len( numpy.where( suncal( mon, year ) > 0)[1] ),
+                           range(1, 13 ))))
+    numdays_eps = len(list(filter(lambda mydate: mydate.year == year, tvdata_date_dict)))
+    numeps = sum(list(map(lambda mydate: len( tvdata_date_dict[ mydate ] ),
+                          filter(lambda mydate: mydate.year == year, tvdata_date_dict))))
+    #
+    ## now count the number of shows in these new episodes
+    shownames = set(reduce(lambda x,y: x+y,
+                           list( map(lambda mydate: list(map(lambda tup: tup[0], tvdata_date_dict[ mydate ] ) ),
+                                     filter(lambda mydate: mydate.year == year, tvdata_date_dict)))))
+    
+    #
+    ## these are the legend plots
+    ax = fig.add_subplot(5,3,3)
+    pylab.axis('off')
+    ax.set_xlim([0,1])
+    ax.set_ylim([0,1])
+    mystr = '\n'.join([
+        '%d / %d days have new episodes' % (numdays_eps, numdays),
+        '%d new episodes in' % numeps,
+        '%d shows' % len( shownames ) ])
+    ax.text(0.15, 0.5, mystr,
+            fontdict = { 'fontsize' : 16, 'fontweight' : 'bold' },
+            horizontalalignment = 'left', verticalalignment = 'center',
+            color = 'black' )
+    #
+    ax = fig.add_subplot(5,3,2)
+    pylab.axis('off')
+    ax.set_xlim([0,1])
+    ax.set_ylim([0,1])
+    ax.text(0.5,0.5, '\n'.join([ '%d TV DATA' % year, 'EPISODE COUNTS' ]),
+            fontdict = { 'fontsize' : 24, 'fontweight' : 'bold' },
+            horizontalalignment = 'center', verticalalignment = 'center' )
+    #
+    ax = fig.add_subplot(5,3,1)
+    pylab.axis('off')
+    ax.set_xlim([0,1])
+    ax.set_ylim([0,1])
+    ax.text( 0.5, 0.75, 'number of new episodes on a day',
+             fontdict = { 'fontsize' : 14, 'fontweight' : 'bold' },
+             horizontalalignment = 'center', verticalalignment = 'center' )
+    for idx in range( 10 ):
+        ax.add_patch( Rectangle(( 0.01 + 0.098 * idx, 0.5 ), 0.098, 0.098 * 1.5,
+                                linewidth = 2, facecolor = 'white', edgecolor = 'black' ) )
+        if idx == 0: color = 'white'
+        else: color = firstcolors[ idx - 1 ]
+        ax.add_patch( Rectangle(( 0.01 + 0.098 * idx, 0.5 ), 0.098, 0.098 * 1.5,
+                                facecolor = color, edgecolor = None, alpha = 0.5 ) )
+        if idx != 9: mytxt = '%d' % idx
+        else: mytxt = '≥ %d' % idx
+        ax.text( 0.01 + 0.098 * ( idx + 0.5 ), 0.5 + 0.098 * 0.75, mytxt,
+                 fontdict = { 'fontsize' : 14, 'fontweight' : 'bold' },
+                 horizontalalignment = 'center', verticalalignment = 'center' )
+    
+    for mon in range(1, 13):
+        cal = suncal( mon, year )
+        ax = fig.add_subplot(5, 3, mon + 3 )
+        ax.set_xlim([0,1])
+        ax.set_ylim([0,1])
+        pylab.axis('off')
+        for jdx in range(7):
+            ax.text( 0.01 + 0.14 * (jdx + 0.5), 0.93, days[jdx],
+                     fontdict = { 'fontsize' : 14, 'fontweight' : 'bold' },
+                     horizontalalignment = 'center',
+                     verticalalignment = 'center' )
+        for idx in range(cal.shape[0]):
+            for jdx in range(7):
+                if cal[idx, jdx] == 0: continue
+                cand_date = datetime.date( year, mon, cal[ idx, jdx ] )
+                if cand_date in tvdata_date_dict:
+                    count = min( 9, len( tvdata_date_dict[ cand_date ] ) )
+                    color = firstcolors[ count - 1 ]
+                else: color = 'white'
+                ax.add_patch( Rectangle( ( 0.01 + 0.14 * jdx,
+                                           0.99 - 0.14 - 0.14 * (idx + 1) ),
+                                         0.14, 0.14, linewidth = 2,
+                                         facecolor = 'white', edgecolor = 'black' ) )
+                ax.add_patch( Rectangle( ( 0.01 + 0.14 * jdx,
+                                           0.99 - 0.14 - 0.14 * (idx + 1) ),
+                                         0.14, 0.14, linewidth = 2,
+                                         facecolor = color, edgecolor = None, alpha = 0.5 ) )
+                ax.text( 0.01 + 0.14 * ( jdx + 0.5 ),
+                         0.99 - 0.14 - 0.14 * ( idx + 0.5 ), '%d' % cal[idx, jdx],
+                         fontdict = { 'fontsize' : 14, 'fontweight' : 'bold' },
+                         horizontalalignment = 'center',
+                         verticalalignment = 'center' )
+        monname = datetime.datetime.strptime('%02d.%d' % ( mon, year ),
+                                             '%m.%Y' ).strftime('%B').upper( )
+        ax.set_title( monname, fontsize = 14, fontweight = 'bold' )
+    fig.savefig( 'tvdata.%d.svgz' % year, bbox_inches = 'tight' )
+    pylab.close( )
     
 def get_series_id( series_name, token, verify = True ):
     data_ids = get_possible_ids( series_name, token, verify = verify )

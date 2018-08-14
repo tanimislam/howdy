@@ -1,7 +1,7 @@
 import requests, os, sys, json, re, logging, calendar
 import multiprocessing, datetime, time, numpy
 from matplotlib.figure import Figure
-from matplotlib.patches import Rectangle
+from matplotlib.patches import Rectangle, Ellipse
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from functools import reduce
 from PIL import Image
@@ -338,21 +338,37 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010 ):
     ax.axis('off')
     ax.set_xlim([0,1])
     ax.set_ylim([0,1])
-    ax.text( 0.5, 0.375, 'number of new episodes on a day',
+    ax.text( 0.5, 0.575, 'number of new episodes on a day',
              fontdict = { 'fontsize' : 20, 'fontweight' : 'bold' },
              horizontalalignment = 'center', verticalalignment = 'center' )
     for idx in range( 10 ):
-        ax.add_patch( Rectangle(( 0.01 + 0.098 * idx, 0.15 ), 0.098, 0.098 * 1.5,
-                                linewidth = 2, facecolor = 'white', edgecolor = 'black' ) )
         if idx == 0: color = 'white'
         else: color = firstcolors[ idx - 1 ]
-        ax.add_patch( Rectangle(( 0.01 + 0.098 * idx, 0.15 ), 0.098, 0.098 * 1.5,
+        #
+        ## numbers 0-9
+        ax.add_patch( Rectangle(( 0.01 + 0.098 * idx, 0.35 ), 0.098, 0.098 * 1.5,
+                                linewidth = 2, facecolor = 'white', edgecolor = 'black' ) )
+        ax.add_patch( Rectangle(( 0.01 + 0.098 * idx, 0.35 ), 0.098, 0.098 * 1.5,
                                 facecolor = color, edgecolor = None, alpha = 0.5 ) )
-        if idx != 9: mytxt = '%d' % idx
-        else: mytxt = '≥ %d' % idx
-        ax.text( 0.01 + 0.098 * ( idx + 0.5 ), 0.15 + 0.098 * 0.75, mytxt,
+        #if idx != 9: mytxt = '%d' % idx
+        #else: mytxt = '≥ %d' % idx
+        mytxt = '%d' % idx
+        ax.text( 0.01 + 0.098 * ( idx + 0.5 ), 0.35 + 0.098 * 0.75, mytxt,
                  fontdict = { 'fontsize' : 16, 'fontweight' : 'bold' },
                  horizontalalignment = 'center', verticalalignment = 'center' )
+        #
+        ## numbers 10-19
+        ax.add_patch( Rectangle(( 0.01 + 0.098 * idx, 0.35 - 0.098 * 1.5 ), 0.098, 0.098 * 1.5,
+                                linewidth = 2, facecolor = 'white', edgecolor = 'black' ) )
+        ax.add_patch( Rectangle(( 0.01 + 0.098 * idx, 0.35 - 0.098 * 1.5 ), 0.098, 0.098 * 1.5,
+                                facecolor = color, edgecolor = None, alpha = 0.5 ) )
+        ax.add_patch( Ellipse(( 0.01 + 0.098 * (idx + 0.5), 0.35 - 0.098 * 0.75 ),
+                              0.098 * 0.8, 0.098 * 1.5 * 0.8, linewidth = 3,
+                              facecolor = (0.5, 0.5, 0.5, 0.0), edgecolor = 'red' ) )
+        ax.text( 0.01 + 0.098 * ( idx + 0.5 ), 0.35 - 0.098 * 0.75, '%d' % ( idx + 10),
+                 fontdict = { 'fontsize' : 16, 'fontweight' : 'bold' },
+                 horizontalalignment = 'center', verticalalignment = 'center' )
+        
 
     for mon in range(1, 13):
         cal = suncal( mon, year )
@@ -370,8 +386,9 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010 ):
                 if cal[idx, jdx] == 0: continue
                 cand_date = datetime.date( year, mon, cal[ idx, jdx ] )
                 if cand_date in tvdata_date_dict:
-                    count = min( 9, len( tvdata_date_dict[ cand_date ] ) )
-                    color = firstcolors[ count - 1 ]
+                    count = min( 19, len( tvdata_date_dict[ cand_date ] ) )
+                else: count = 0
+                if count % 10 != 0: color = firstcolors[ count % 10 - 1 ]
                 else: color = 'white'
                 ax.add_patch( Rectangle( ( 0.01 + 0.14 * jdx,
                                            0.99 - 0.14 - 0.14 * (idx + 1) ),
@@ -382,6 +399,11 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010 ):
                                                0.99 - 0.14 - 0.14 * (idx + 1) ),
                                              0.14, 0.14, linewidth = 2,
                                              facecolor = color, edgecolor = None, alpha = 0.5 ) )
+                    if count >= 10:
+                        ax.add_patch( Ellipse( ( 0.01 + 0.14 * ( jdx + 0.5 ),
+                                                 0.99 - 0.14 - 0.14 * (idx + 0.5) ),
+                                               0.14 * 0.8, 0.14 * 0.8, linewidth = 3,
+                                               facecolor = ( 0.5, 0.5, 0.5, 0.0), edgecolor = 'red' ) )
                 else:
                     ax.add_patch( Rectangle( ( 0.01 + 0.14 * jdx,
                                                0.99 - 0.14 - 0.14 * (idx + 1) ),

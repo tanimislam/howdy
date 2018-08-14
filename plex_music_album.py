@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from __future__ import unicode_literals
 import codecs, os, sys
 from plexmusic import plexmusic
 from optparse import OptionParser

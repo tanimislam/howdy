@@ -237,8 +237,8 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
         return None, 'FAILURE, NO MOVIES SATISFYING CRITERIA'
     items.sort(key=lambda d: try_int(d.get('seeders', 0)), reverse=True)
     items = items[:maxnum]
-    return map(lambda item: ( item['title'], item[ 'seeders' ], item[ 'leechers' ], item[ 'link' ] ),
-               items ), 'SUCCESS'
+    return list( map(lambda item: ( item['title'], item[ 'seeders' ], item[ 'leechers' ], item[ 'link' ] ),
+               items ) ), 'SUCCESS'
 
 def get_movie_torrent_kickass( name, maxnum = 10 ):
     from KickassAPI import Search, Latest, User, CATEGORY, ORDER

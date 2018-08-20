@@ -277,7 +277,6 @@ def get_tvdata_ordered_by_date( tvdata ):
     return tvdata_date_dict
 
 def create_plot_year_tvdata( tvdata_date_dict, year = 2010 ):
-    #
     calendar.setfirstweekday( 6 )
     def suncal( mon, year = 2010, current_date = None ):
         if current_date is None:
@@ -371,6 +370,13 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010 ):
         
 
     for mon in range(1, 13):
+        validdates = list(filter(lambda mydate: mydate.year == year and
+                                 mydate.month == mon, tvdata_date_dict ) )
+        mondata = []
+        if len(validdates) != 0:
+            mondata = reduce(lambda x,y: x+y,
+                             map(lambda mydate: tvdata_date_dict[ mydate ],
+                                 validdates))
         cal = suncal( mon, year )
         ax = fig.add_subplot(5, 3, mon + 3 )
         ax.set_xlim([0,1])
@@ -416,6 +422,9 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010 ):
                          verticalalignment = 'center' )
         monname = datetime.datetime.strptime('%02d.%d' % ( mon, year ),
                                              '%m.%Y' ).strftime('%B').upper( )
+        if len(mondata) != 0:
+            numshows = len(set(map(lambda tup: tup[0], mondata)))
+            monname = '%s (%d eps., %d shows)' % ( monname, len(mondata), numshows )
         ax.set_title( monname, fontsize = 18, fontweight = 'bold' )
     canvas = FigureCanvasAgg(fig)
     canvas.print_figure( 'tvdata.%d.svgz' % year, bbox_inches = 'tight' )

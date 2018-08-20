@@ -25,8 +25,10 @@ this script that does the job by parsing the website"s pages.
 
 # imports
 import re, enum, sys, cfscrape
-if sys.version_info.major >= 3: from contextlib import suppress
+from contextlib import suppress
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+from . import plexcore
 
 # constants
 HEADERS = {
@@ -42,6 +44,14 @@ def soup_for(url, params):
     response = _scraper.get( url, headers = HEADERS, params = params )
     html = response.content.decode("utf-8")
     return BeautifulSoup(html, "lxml")
+
+def get_subscene_zipped_content( suburl ):
+    html = soup_for( suburl, params = { } )
+    href_elem = html.find_all( 'a', { 'class' : 'button positive' } )
+    if len( href_elem ) != 1: return None
+    href_elem = max( href_elem )
+    subzipurl = urljoin( SITE_DOMAIN, href_elem.attrs[ 'href' ])
+    return _scraper.get( subzipurl, headers = HEADERS ).content
 
 class AttrDict( object ):
     def __init__(self, *attrs):
@@ -100,43 +110,24 @@ class Subtitle( object ):
     def from_row(cls, row):
         attrs = AttrDict("title", "url", "language", "owner_username",
                          "owner_url", "description")
-        if sys.version_info.major >= 3:
-            with suppress(Exception):
-                attrs.title = row.find("td", "a1").a.find_all("span")[1].text.strip()
-                
-            with suppress(Exception):
-                attrs.url = SITE_DOMAIN + row.find("td", "a1").a.get("href")
-
-            with suppress(Exception):
-                attrs.language = row.find("td", "a1").a.find_all("span")[0].text.strip()
-                
-            with suppress(Exception):
-                attrs.owner_username = row.find("td", "a5").a.text.strip()
-
-            with suppress(Exception):
-                attrs.owner_page = SITE_DOMAIN + row.find("td", "a5").a.get("href").strip()
-                
-            with suppress(Exception):
-                attrs.description = row.find("td", "a6").div.text.strip()
-        else:
-            try: attrs.title = row.find("td", "a1").a.find_all("span")[1].text.strip()                
-            except: pass
+        with suppress(Exception):
+            attrs.title = row.find("td", "a1").a.find_all("span")[1].text.strip()
             
-            try: attrs.url = SITE_DOMAIN + row.find("td", "a1").a.get("href")
-            except: pass
-
-            try: attrs.language = row.find("td", "a1").a.find_all("span")[0].text.strip()
-            except: pass
-
-            try: attrs.owner_username = row.find("td", "a5").a.text.strip()
-            except: pass
-
-            try: ttrs.owner_page = SITE_DOMAIN + row.find("td", "a5").a.get("href").strip()
-            except: pass
-
-            try: attrs.description = row.find("td", "a6").div.text.strip()
-            except: pass
+        with suppress(Exception):
+            attrs.url = SITE_DOMAIN + row.find("td", "a1").a.get("href")
             
+        with suppress(Exception):
+            attrs.language = row.find("td", "a1").a.find_all("span")[0].text.strip()
+            
+        with suppress(Exception):
+            attrs.owner_username = row.find("td", "a5").a.text.strip()
+            
+        with suppress(Exception):
+            attrs.owner_page = SITE_DOMAIN + row.find("td", "a5").a.get("href").strip()
+            
+        with suppress(Exception):
+            attrs.description = row.find("td", "a6").div.text.strip()
+        
         return cls(**attrs.to_dict())
 
     @property
@@ -205,7 +196,7 @@ def section_exists(soup, section):
 def get_first_film(soup, section):
     tag_part = SectionsParts[section]
     tag = None
-
+    
     headers = soup.find("div", "search-result").find_all("h2")
     for header in headers:
         if tag_part in header.text:
@@ -217,23 +208,54 @@ def get_first_film(soup, section):
     url = SITE_DOMAIN + tag.findNext("ul").find("li").div.a.get("href")
     return Film.from_url(url)
 
+def _get_best_match_url( html, term ):
+    def is_valid_subscene_elem( elem ):
+        href_elem = list(filter(lambda elm: 'href' in elm.attrs, elem.find_all('a')))
+        if len( href_elem ) == 0: return False
+        return True
+    def get_elem_url( elem ):
+        return max( elem.find_all('a')).attrs['href']
+    def get_elem_text( elem ):
+        return max( elem.find_all('a')).text.strip( )
+    #
+    ## get best match
+    best_match_tup = max(map(lambda elem: ( get_elem_url( elem ), get_elem_text( elem ) ),
+                             filter( is_valid_subscene_elem, html.find_all( 'div', { 'class' : 'title' } ) ) ),
+                         key = lambda match_tup: plexcore.get_maximum_matchval( term, match_tup[1] ) )
+    if plexcore.get_maximum_matchval(  term, best_match_tup[1] ) < 95: return None
+    return urljoin( SITE_DOMAIN, best_match_tup[0] )
 
-def search(term, language="", limit_to=SearchTypes.Exact):
-    params = { 'q' : re.sub("\s", "+", term),
-               'l' : language }
-    soup = soup_for("%s/subtitles/release" % SITE_DOMAIN,
+def _get_valid_subscene_urltups( subtitles_html ):
+    def is_valid_subtitle_elem( elem ):
+        if 'href' not in elem.attrs: return False
+        if 'subtitles' not in elem.attrs['href']: return False
+        lang_elem = list(filter(lambda elm: 'class' in elm.attrs and len(elm.text.strip( ) ) != 0,
+                                elem.find_all('span')))
+        if len(lang_elem) != 1: return False
+        lang_elem = max( lang_elem )
+        if lang_elem.text.strip( ) != 'English' : return False
+        name_elem = list(filter(lambda elm: 'class' not in elm.attrs and len(elm.text.strip( ) ) != 0,
+                                elem.find_all('span')))
+        if len( name_elem ) != 1: return False
+        return True
+    def get_subscene_urltup( elem ):
+        myurl = urljoin( SITE_DOMAIN, elem.attrs['href'].strip( ) )
+        name_elem = list(filter(lambda elm: 'class' not in elm.attrs and len(elm.text.strip( ) ) != 0,
+                                elem.find_all('span')))
+        name_elem = max( name_elem )
+        name = name_elem.text.strip( )
+        return myurl, name
+        
+    subscene_tups = list(map(get_subscene_urltup, filter(
+        is_valid_subtitle_elem, subtitles_html.find_all('a'))))
+    return subscene_tups
+
+def search(term):
+    params = { 'q' : re.sub("\s", "+", term) }
+    soup = soup_for("%s/subtitles/title" % SITE_DOMAIN,
                     params = params )
-    with open('sub.html', 'w') as openfile:
-        openfile.write('%s\n' % soup.prettify( ) )
-    
-    if "Subtitle search by" in str(soup):
-        rows = soup.find("table").tbody.find_all("tr")
-        subtitles = Subtitle.from_rows(rows)
-        return Film(term, subtitles=subtitles)
-
-    for junk, search_type in SearchTypes.__members__.items():
-        if section_exists(soup, search_type):
-            return get_first_film(soup, search_type)
-
-        if limit_to == search_type:
-            return
+    subscene_movie_url = _get_best_match_url( soup, term )
+    if subscene_movie_url is None: return None
+    soup = soup_for( subscene_movie_url, params = { } )
+    subscene_tups = _get_valid_subscene_urltups( soup )
+    return subscene_tups

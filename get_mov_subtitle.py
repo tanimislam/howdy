@@ -4,6 +4,7 @@ import re, codecs, requests, zipfile, os, sys
 from io import BytesIO
 from optparse import OptionParser
 from plextmdb import plextmdb_subtitles
+from plexcore import subscene
 
 def get_items_yts( name, maxnum = 10 ):
     assert( maxnum >= 5 )
@@ -55,8 +56,9 @@ def get_movie_subtitle_items( items, status, filename = 'eng.srt' ):
                          name = max( zf.namelist( ) )
                          openfile.write( zf.read( name ) )
             elif status == 1: # subscene2
-                zipurl = sortdict[ iidx ][ 'srtdata' ].zipped_url
-                with zipfile.ZipFile( BytesIO( requests.get( zipurl ).content ), 'r') as zf:
+                suburl = sortdict[ iidx ][ 'srtdata' ]
+                zipcontent = subscene.get_subscene_zipped_content( suburl )
+                with zipfile.ZipFile( BytesIO( zipcontent ), 'r') as zf:
                     with open( filename, 'wb' ) as openfile:
                         name = max( zf.namelist( ) )
                         openfile.write( zf.read( name ) )
@@ -93,8 +95,8 @@ if __name__=='__main__':
     data = None
     if not opts.do_bypass:
         data = get_items_yts( opts.name, maxnum = opts.maxnum )
-    #if data is None:
-    #    data = get_items_subscene2( opts.name, maxnum = opts.maxnum, extra_strings = keywords_set )
+    if data is None:
+        data = get_items_subscene2( opts.name, maxnum = opts.maxnum, extra_strings = keywords_set )
     if data is None:
         data = get_items_opensubtitles( opts.name, maxnum = opts.maxnum, extra_strings = keywords_set )        
     if data is not None:

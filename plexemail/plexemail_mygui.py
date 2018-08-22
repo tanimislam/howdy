@@ -226,3 +226,7 @@ class PlexEmailMyGUI( QWidget ):
                                               '***REMOVED***.islam@gmail.com',
                                               name = 'Tanim Islam', )
         self.statusLabel.setText( 'EMAILS SENT TO TANIM.ISLAM@GMAIL.COM' )
+
+if __name__=='__main__':
+    app = QApplication([])
+    

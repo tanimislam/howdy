@@ -1,9 +1,6 @@
 import requests, plextmdb, os, re
 import sys, zipfile, codecs
-if sys.version_info.major == 2:
-    from urlparse import urljoin
-else:
-    from urllib.parse import urljoin
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from io import BytesIO
 from plexcore import subscene
@@ -23,19 +20,19 @@ def get_subtitles_opensubtitles( title, extra_strings = [ ] ):
     return { item['title'] : item['srtfile'] for item in subtitles }
 
 def get_subtitles_subscene2( title, extra_strings = [ ] ):
-    film = subscene.search( title )
-    if film is None: return None
-    subtitles = list( filter(lambda subtitle: subtitle.language == 'English', film.subtitles ) )
+    subtitle_tups = subscene.search( title )
+    if subtitle_tups is None: return None
     if len( extra_strings ) != 0:
-        subtitles = list( filter(lambda subtitle: any(map(lambda tok: tok.lower( ) in subtitle.title.lower( ),
-                                                          set( extra_strings) ) ), subtitles ) )
-    if len( subtitles ) == 0:
+        subtitle_tups = list( filter(lambda url_title:
+                                     any(map(lambda tok: tok.lower( ) in url_title[1].lower( ),
+                                             set( extra_strings) ) ), subtitle_tups ) )
+    if len( subtitle_tups ) == 0:
         return None
     subtitles_map = { }
-    for subtitle in subtitles:
-        title = subtitle.title
+    for url_title in subtitle_tups:
+        url, title = url_title
         if title not in subtitles_map:
-            subtitles_map[ title ] = subtitle
+            subtitles_map[ title ] = url
     return subtitles_map
     
 def get_subtitles_subscene( title ):

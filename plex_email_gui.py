@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import os, logging, sys
 from plexemail.plexemail_gui import PlexEmailGUI

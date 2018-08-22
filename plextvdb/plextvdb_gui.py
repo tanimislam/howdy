@@ -188,7 +188,7 @@ class TVDBShowsTableModel( QAbstractTableModel ):
             elif col == 2: # end date
                 if tvSeries.statusEnded:
                     return tvSeries.endDate.strftime('%Y %b %d')
-                else: return QVariant( "" )
+                else: return ""
             elif col == 3: # number of seasons
                 numSeasons = len(filter(lambda seasno: seasno != 0,
                                         tvSeries.seasDict.keys( ) ) )

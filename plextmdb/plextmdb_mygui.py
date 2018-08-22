@@ -234,7 +234,7 @@ class MyMovieTableModel( QAbstractTableModel ):
 
     def data( self, index, role ):
         if not index.isValid( ):
-            return QVariant("")
+            return ""
         row = index.row( )
         col = index.column( )
         #
@@ -250,10 +250,10 @@ class MyMovieTableModel( QAbstractTableModel ):
             return QBrush( color )
         elif role == Qt.DisplayRole:
             if col in (0, 1, 2, 5):
-                return QVariant( self.myMovieData[ row ][ col ] )
+                return self.myMovieData[ row ][ col ]
             else:
                 dt = self.myMovieData[ row ][ col ]
-                return QVariant( dt.strftime('%d %b %Y') )
+                return dt.strftime('%d %b %Y')
             
     def infoOnMovieAtRow( self, currentRowIdx ):
         # first determine the actual movie row based on the current row number

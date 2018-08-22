@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import logging, PyQt4.QtGui, sys, pickle, gzip
 from plexcore import plexcore_gui, mainDir

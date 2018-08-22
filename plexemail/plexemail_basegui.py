@@ -2,7 +2,7 @@ import os, sys, base64, numpy, glob, hashlib, requests
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PIL import Image
-from cStringIO import StringIO
+from io import StringIO
 
 _clientID = 'c3d1a164052f816'
 _clientSECRET = 'e654905e2777aceb01c62af6305edc4e271ab1a4'
@@ -274,10 +274,10 @@ class PNGPicTableModel( QAbstractTableModel ):
     def headerData( self, col, orientation, role ):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             if col == 0:
-                return QVariant( 'PNG PICTURE' )
+                return 'PNG PICTURE'
             elif col == 1:
-                return QVariant( 'WIDTH IN CM' )
-        return QVariant( )
+                return 'WIDTH IN CM'
+        return None
 
     def setData( self, index, value, role ):
         col = index.column( )
@@ -303,7 +303,7 @@ class PNGPicTableModel( QAbstractTableModel ):
 
     def data( self, index, role ):
         if not index.isValid( ):
-            return QVariant("")
+            return ""
         row = index.row( )
         col = index.column( )
         if role == Qt.BackgroundRole:
@@ -312,9 +312,9 @@ class PNGPicTableModel( QAbstractTableModel ):
             return QBrush( color )
         elif role == Qt.DisplayRole:
             if col == 0:
-                return QVariant( self.pngPicObjects[ row ].actName )
+                return self.pngPicObjects[ row ].actName
             elif col == 1:
-                return QVariant( '%0.3f' % self.pngPicObjects[ row ].currentWidth )
+                return '%0.3f' % self.pngPicObjects[ row ].currentWidth
 
     def removePicObject( self, row ):
         assert( row >= 0 and row < len( self.pngPicObjects ) )

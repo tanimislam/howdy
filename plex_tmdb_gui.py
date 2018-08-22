@@ -1,19 +1,16 @@
 #!/usr/bin/env python3
 
 import logging, PyQt4.QtGui, sys, pickle, gzip, os
-if sys.version_info.major == 2: from ConfigParser import RawConfigParser
 else: from configparser import RawConfigParser
 from optparse import OptionParser
 #
 ##
-sip.setapi( 'QVariant', 1 )
 from plexcore import plexcore_gui, mainDir
 from plextmdb import plextmdb_gui
 
 def main(debug = False, checkLocal = True):
     app = PyQt4.QtGui.QApplication([])
-    if debug:
-        logging.basicConfig( level = logging.DEBUG )
+    if debug: logging.basicConfig( level = logging.DEBUG )
     fullurl, token = plexcore_gui.returnToken( shouldCheckLocal = checkLocal )
     movie_data_rows = pickle.load( gzip.open( os.path.join( mainDir, 'resources', 'movie_data_rows.pkl.gz', 'rb' ) ) )
     tmdbgui = plextmdb_gui.TMDBGUI( movie_data_rows )

@@ -301,7 +301,7 @@ def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', si
         ## to get the Image, use the following code from Stackoverflow
         ## http://stackoverflow.com/questions/13137817/how-to-download-image-using-requests
         ##
-        ## from cStringIO import StringIO
+        ## from io import StringIO
         ## from PIL import Image
         ## response = requests.get( picurl, params = params )
         ## img = Image.open( StringIO( response.content ) )

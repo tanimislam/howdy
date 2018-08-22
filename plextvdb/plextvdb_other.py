@@ -1,7 +1,7 @@
 import requests, os, sys, json, re
 import logging, datetime, fuzzywuzzy.fuzz
 from PIL import Image
-from cStringIO import StringIO
+from io import StringIO
 from dateutil.relativedelta import relativedelta
 from plexstuff.plextmdb import tmdb_apiKey
 

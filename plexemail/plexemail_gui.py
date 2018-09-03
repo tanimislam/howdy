@@ -208,7 +208,7 @@ class PlexEmailGUI( QWidget ):
                 self.textEdit.setText( '\n'.join( lines[ lineBegin+1:lineEnd ] ) )
             
         def checkValidLaTeX( self ):
-            myStr = unicode( self.textEdit.toPlainText( ).toUtf8( ), encoding='UTF-8').strip( )
+            myStr = self.textEdit.toPlainText( ).strip( )
             mainText = """
             \documentclass{article}
             \usepackage{amsmath, amsfonts, graphicx, hyperref}
@@ -220,7 +220,7 @@ class PlexEmailGUI( QWidget ):
             %s
 
             \end{document}
-            """ % ( str( self.sectionNameWidget.text( ) ).strip( ), myStr )
+            """ % ( self.sectionNameWidget.text( ).strip( ), myStr )
             htmlString = plexcore.latexToHTML( mainText )
             if htmlString is None:
                 self.isValidLaTeX = False

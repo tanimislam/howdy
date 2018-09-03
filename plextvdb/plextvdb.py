@@ -1,5 +1,5 @@
 import requests, os, sys, json, re, logging, calendar
-import multiprocessing, datetime, time, numpy
+import multiprocessing, datetime, time, numpy, copy
 from matplotlib.figure import Figure
 from matplotlib.patches import Rectangle, Ellipse
 from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -606,12 +606,16 @@ def _get_series_id_perproc( input_tuple ):
     return show, series_id
     
 def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify = True,
-                            doShowEnded = False ):
+                            doShowEnded = False, showsToExclude = None ):
     token = get_token( verify = verify )
+    tvdata_copy = copy.deepcopy( tvdata )
+    if showsToExclude is not None:
+        showsExclude = set( showsToExclude ) & set( tvdata_copy.keys( ) )
+        for show in showsExclude: tvdata_copy.pop( show )
     pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
-    tvshow_id_map = dict( filter(lambda tup: tup is not None, 
-                                 pool.map( _get_series_id_perproc,
-                                           map(lambda show: ( show, token, verify, doShowEnded ), tvdata ) ) ) )
+    tvshow_id_map = dict(filter(lambda tup: tup is not None, 
+                                pool.map( _get_series_id_perproc,
+                                          map(lambda show: ( show, token, verify, doShowEnded ), tvdata_copy ) ) ) )
     if fromDate is not None:
         series_ids = set( get_series_updated_fromdate( fromDate, token ) )
         ids_tvshows = dict(map(lambda name_seriesId: ( name_seriesId[1], name_seriesId[0] ), tvshow_id_map.items( ) ) )

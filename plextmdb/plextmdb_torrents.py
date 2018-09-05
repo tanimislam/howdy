@@ -164,7 +164,7 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
 
         return result
 
-    surl = urljoin( 'https://thepiratebay.org', 's/' )
+    surl = urljoin( 'https://thepiratebay3.org', 's/' )
     if not doAny:
         cat = CATEGORIES.VIDEO.MOVIES
     else:
@@ -237,8 +237,11 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
         return None, 'FAILURE, NO MOVIES SATISFYING CRITERIA'
     items.sort(key=lambda d: try_int(d.get('seeders', 0)), reverse=True)
     items = items[:maxnum]
-    return list( map(lambda item: ( item['title'], item[ 'seeders' ], item[ 'leechers' ], item[ 'link' ] ),
-               items ) ), 'SUCCESS'
+    return list( map(lambda item: {
+        'title' : item['title'],
+        'seeders' : item[ 'seeders' ],
+        'leechers' : item[ 'leechers' ],
+        'link' : item[ 'link' ] }, items ) ), 'SUCCESS'
 
 def get_movie_torrent_kickass( name, maxnum = 10 ):
     from KickassAPI import Search, Latest, User, CATEGORY, ORDER
@@ -276,11 +279,12 @@ def get_movie_torrent_kickass( name, maxnum = 10 ):
 
     try:
         lookups = sorted( filter(lambda lookup: '720p' in lookup.name and
-                                 get_size( lookup ) >= 100.0 and
+                                 # get_size( lookup ) >= 100.0 and
+                                 get_maximum_matchval( lookup.name, name ) >= 90 and
                                  lookup.torrent_link is not None,
                                  Search( name, category = CATEGORY.MOVIES ) ),
                           key = lambda lookup: get_size( lookup ) )[:maxnum]
-        if len(lookups) == 0: return None, 'FAILURE'
+        if len(lookups) == 0: return None, 'FAILURE, COULD FIND NOTHING THAT MATCHES %s' % name
     except Exception as e:
         return None, 'FAILURE: %s' % e
 

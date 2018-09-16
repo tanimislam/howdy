@@ -1,6 +1,7 @@
 import sqlite3, shutil, os, glob, datetime, gspread, logging, sys
 import multiprocessing, tempfile, uuid, requests, pytz, pypandoc
 import xdg.BaseDirectory, urllib, json, oauth2client.file, httplib2
+from html import unescape
 from urllib.request import urlopen
 from urllib.parse import urlencode
 from fuzzywuzzy.fuzz import partial_ratio
@@ -287,6 +288,16 @@ def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', si
         return None
     html = BeautifulSoup( response.content, 'lxml' )
     movie_data = { }
+    def _get_bitrate_size( movie_elem ):
+        bitrate_elem = list(filter(lambda elem: 'bitrate' in elem.attrs, movie_elem.find_all('media')))
+        if len( bitrate_elem ) != 0: bitrate = int( bitrate_elem[0]['bitrate'] ) * 1e3 / 8.0
+        else: bitrate = -1
+        size_elem = reduce(lambda x,y: x+y, list(map(lambda media_elem: media_elem.find_all('part'),
+                                                     movie_elem.find_all('media'))))
+        size_elem = list(filter(lambda elem: 'size' in elem.attrs, size_elem) )
+        if len(size_elem) != 0: totsize = int( size_elem[0]['size'] ) * 1.0
+        else: totsize = -1
+        return bitrate, totsize
     for movie_elem in html.find_all( 'video' ):
         if datetime.datetime.fromtimestamp( float( movie_elem.get('addedat') ) ).date() < sinceDate:
             continue
@@ -307,10 +318,8 @@ def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', si
         ## img = Image.open( StringIO( response.content ) )
         ##
         ## maybe need to do something to convert to QImage from Image
-        if 'art' in movie_elem.attrs:
-            picurl = '%s%s' % ( fullURL, movie_elem.get('art') )
-        else:
-            picurl = None
+        if 'art' in movie_elem.attrs: picurl = '%s%s' % ( fullURL, movie_elem.get('art') )
+        else: picurl = None
         if 'originallyavailableat' in movie_elem.attrs:
             releasedate = datetime.datetime.strptime( movie_elem.get( 'originallyavailableat' ), '%Y-%m-%d' ).date( )
         else:
@@ -321,8 +330,9 @@ def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', si
         else:
             contentrating = 'NR'
         duration = 1e-3 * int( movie_elem[ 'duration' ] )
-        bitrate = int( movie_elem.find_all('media')[0][ 'bitrate' ] ) * 1e3 / 8.0
-        totsize = duration * bitrate
+        bitrate, totsize = _get_bitrate_size( movie_elem )
+        if bitrate == -1 and totsize != -1:
+            bitrate = 1.0 * totsize / duration
         data = ( title, rating, contentrating, picurl, releasedate, addedat, summary,
                  duration, totsize )
         movie_data.setdefault( first_genre, [] ).append( data )
@@ -342,7 +352,7 @@ def _get_library_stats_movie( key, token, fullURL ='https://localhost:32400', si
     totsize = sum(map(lambda genre: sorted_by_genres[ genre ][ -2 ], sorted_by_genres ) )
     return key, totnum, totdur, totsize, sorted_by_genres
 
-def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
+def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
                             sinceDate = None ):
     from requests.compat import urljoin
     params = { 'X-Plex-Token' : token }
@@ -371,7 +381,7 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
     ## videlem.get('originallyavailableat') == when first aired
     tvdata = { }
     for direlem in html.find_all( 'directory' ):
-        show = direlem['title']
+        show = unescape( direlem['title'] )
         tvdata.setdefault( show, { } )
         newURL = urljoin( fullURL, direlem['key'] )
         resp2 = requests.get( newURL, params = params, verify = False )

@@ -276,9 +276,8 @@ def get_movie_torrent_kickass( name, maxnum = 10 ):
         elif size_string.lower().endswith('gib'):
             return float( size_string.lower().split()[0] ) * 1024
         else: return 0.0
-
     try:
-        lookups = sorted( filter(lambda lookup: '720p' in lookup.name and
+        lookups = sorted( filter(lambda lookup: #'720p' in lookup.name and
                                  # get_size( lookup ) >= 100.0 and
                                  get_maximum_matchval( lookup.name, name ) >= 90 and
                                  lookup.torrent_link is not None,

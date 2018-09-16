@@ -3,7 +3,7 @@
 import os, logging, sys
 from plexemail.plexemail_gui import PlexEmailGUI
 from plexemail.plexemail_mygui import PlexEmailMyGUI
-from plexcore.plexcore_gui import returnServerToken, returnEmailAuthentication, returnContactAuthentication
+from plexcore.plexcore_gui import returnServerToken, returnGoogleAuthentication
 from optparse import OptionParser
 from PyQt4.QtGui import QApplication
 
@@ -22,8 +22,7 @@ if __name__=='__main__':
         logging.basicConfig( level = logging.DEBUG )
     app = QApplication([])
     _, token = returnServerToken( )
-    val = returnEmailAuthentication( )
-    val = returnContactAuthentication( )
+    val = returnGoogleAuthentication( )
     if not opts.do_onlyemail:
         pegui = PlexEmailGUI( token, doLocal = not opts.do_remote, doLarge = opts.do_large )
     else:

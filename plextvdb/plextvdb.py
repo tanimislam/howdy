@@ -506,7 +506,7 @@ def get_episode_name( series_id, airedSeason, airedEpisode, token, verify = True
     
     return ( data[ 'episodeName' ], firstAired )
 
-def get_episodes_series( series_id, token, showSpecials = True, fromDate = None, verify = True ):
+def get_episodes_series( series_id, token, showSpecials = True, fromDate = None, verify = True, showFuture = False ):
     params = { 'page' : 1 }
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
@@ -529,7 +529,7 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
     for episode in seriesdata:
         try:
             date = datetime.datetime.strptime( episode['firstAired'], '%Y-%m-%d' ).date( )
-            if date > currentDate:
+            if date > currentDate and not showFuture:
                 continue
             if fromDate is not None:
                 if date < fromDate:
@@ -631,10 +631,10 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
                                     input_tuples ) ) )
     return toGet
                                 
-def get_tot_epdict_tvdb( showName, verify = True, showSpecials = False ):
+def get_tot_epdict_tvdb( showName, verify = True, showSpecials = False, showFuture = False ):
     token = get_token( verify = verify )
     id = get_series_id( showName, token, verify = verify )
-    eps = get_episodes_series( id, token, verify = verify )
+    eps = get_episodes_series( id, token, verify = verify, showFuture = showFuture )
     totseasons = max( map(lambda episode: int( episode['airedSeason' ] ), eps ) )
     tot_epdict = { }
     for episode in eps:

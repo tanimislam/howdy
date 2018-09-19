@@ -96,7 +96,7 @@ class PlexEmailGUI( QWidget ):
                 else:
                     name = None
                     email = fullName.strip( )
-                input_tuples.append(( self.mainHtml, access_token, email, name ))
+                input_tuples.append(( self.mainHtml, email, name ))
             #
             ## now send the emails
             time0 = time.time( )

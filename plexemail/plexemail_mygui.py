@@ -127,7 +127,7 @@ class PlexEmailMyGUI( QWidget ):
 
     def checkLaTeX( self ):
         self.statusLabel.setText( '' )
-        myStr = unicode( self.mainEmailCanvas.toPlainText( ).toUtf8( ), encoding='UTF-8').strip( )
+        myStr = self.mainEmailCanvas.toPlainText( ).strip( )
         if len( myStr ) == 0:
             self.emailSendButton.setEnabled( False )
             self.statusLabel.setText( 'INVALID LaTeX' )
@@ -185,7 +185,7 @@ class PlexEmailMyGUI( QWidget ):
         %s
         
         \end{document}
-        """ % unicode( self.mainEmailCanvas.toPlainText( ).toUtf8( ), encoding='UTF-8' ).strip( )
+        """ % self.mainEmailCanvas.toPlainText( ).strip( )
         status, html = _checkValidLaTeX( mainText )
         html = plexcore.processValidHTMLWithPNG( html, self.pngWidget.getAllDataAsDict( ) )
         return status, html
@@ -204,9 +204,8 @@ class PlexEmailMyGUI( QWidget ):
         subject = titlecase.titlecase( str( self.subjectLine.text( ) ).strip( ) )
         if len(subject) == 0:
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
-        access_token = plexcore.oauth_get_access_token( )
         for name, email in self.emails_array:
-            plexemail.send_individual_email_full( html, subject, access_token, email, name = name, )
+            plexemail.send_individual_email_full( html, subject, email, name = name, )
         self.statusLabel.setText( 'EMAILS SENT' )
 
     def testEmail( self ):
@@ -219,10 +218,8 @@ class PlexEmailMyGUI( QWidget ):
         subject = titlecase.titlecase( str( self.subjectLine.text( ) ).strip( ) )
         if len(subject) == 0:
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
-        access_token = plexcore.oauth_get_access_token( )
         #
-        plexemail.send_individual_email_full( html, subject, access_token,
-                                              'tanim.islam@gmail.com',
+        plexemail.send_individual_email_full( html, subject, 'tanim.islam@gmail.com',
                                               name = 'Tanim Islam', )
         self.statusLabel.setText( 'EMAILS SENT TO TANIM.ISLAM@GMAIL.COM' )
 

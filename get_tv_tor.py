@@ -26,7 +26,7 @@ def get_items_tpb(name, maxnum = 10, doAny = False, raiseError = False):
 
 def get_items_torrentz( name, maxnum = 10 ):
     assert( maxnum >= 5 )
-    itemss, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
+    items, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
     if status != 'SUCCESS':
         logging.debug( 'ERROR, TORRENTZ COULD NOT FIND %s.' % name )
         return None
@@ -37,6 +37,14 @@ def get_items_rarbg( name, maxnum = 10 ):
     items, status = plextvdb_torrents.get_tv_torrent_rarbg( name, maxnum = maxnum )
     if status != 'SUCCESS':
         logging.debug( 'ERROR, RARBG COULD NOT FIND %s.' % name )
+        return None
+    return items
+
+def get_items_kickass( name, maxnum = 10 ):
+    assert( maxnum >= 10 )
+    items, status = plextvdb_torrents.get_tv_torrent_kickass( name, maxnum = maxnum )
+    if status != 'SUCCESS':
+        logging.debug( 'ERROR, KICKASS COULD NOT FIND %s.' % name )
         return None
     return items
 
@@ -92,6 +100,8 @@ if __name__=='__main__':
     assert( opts.name is not None )
     #
     items = get_items_zooqle( opts.name, maxnum = opts.maxnum )
+    if items is None:
+        items = get_items_kickass( opts.name, maxnum = opts.maxnum )
     if items is None:
         items = get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum, raiseError = False )    
     if items is None:

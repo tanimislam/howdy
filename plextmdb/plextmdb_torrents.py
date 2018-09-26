@@ -299,7 +299,7 @@ def get_movie_torrent_kickass( name, maxnum = 10 ):
         'seeders' : -1,
         'leechers' : -1,
         'link' : create_magnet_link( lookup ) }, lookups ) )
-
+    
     return items_toshow, 'SUCCESS'
     
 def get_movie_torrent( name, verify = True ):

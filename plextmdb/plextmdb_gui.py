@@ -162,7 +162,11 @@ class TMDBTorrents( QDialog ):
                 self.torrentStatus = 1
                 self.data = { }
                 logging.debug('DATA = %s' % data )
-                for name, seeders, leechers, link in data:
+                for datum in data:
+                    name = datum['title']
+                    seeders = datum['seeders']
+                    leechers = datum['leechers']
+                    link = datum['link']
                     self.data[ name ] = ( seeders, leechers, link )
                 self.allRadioButtons = list(
                     map(lambda name:

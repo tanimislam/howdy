@@ -1,4 +1,4 @@
-import requests, re, threading, cfscrape
+import requests, re, threading, cfscrape, os
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
@@ -243,12 +243,19 @@ def get_tv_torrent_kickass( name, maxnum = 10 ):
             return float( size_string.lower().split()[0] ) * 1024
         else: return 0.0
     try:
-        lookups = sorted( filter(lambda lookup: #'720p' in lookup.name and
-                                 # get_size( lookup ) >= 100.0 and
-                                 get_maximum_matchval( lookup.name, name ) >= 90 and
-                                 lookup.torrent_link is not None,
-                                 Search( name, category = CATEGORY.TV ) ),
-                          key = lambda lookup: get_size( lookup ) )[:maxnum]
+        lookups = [ ]
+        data = Search( name, category = CATEGORY.TV )
+        for page in range(1, min( 11, 1 + int( data.url.max_page ) ) ):
+            data.url.set_page( page )
+            lookups += list( filter(lambda lookup: get_maximum_matchval( lookup.name, name ) >= 90 and
+                                lookup.torrent_link is not None, data.list( ) ) )
+        lookups = sorted( lookups, key = lambda lookup: get_maximum_matchval( lookup.name, name ) )[:maxnum]
+        #lookups = sorted( filter(lambda lookup: #'720p' in lookup.name and
+        #                         # get_size( lookup ) >= 100.0 and
+        #                         get_maximum_matchval( lookup.name, name ) >= 90 and
+        #                         lookup.torrent_link is not None,
+        #                         Search( name, category = CATEGORY.TV ) ),
+        #                  key = lambda lookup: get_size( lookup ) )[:maxnum]
         if len(lookups) == 0: return None, 'FAILURE, COULD FIND NOTHING THAT MATCHES %s' % name
     except Exception as e:
         return None, 'FAILURE: %s' % e

@@ -101,12 +101,14 @@ if __name__=='__main__':
     #
     items = get_items_zooqle( opts.name, maxnum = opts.maxnum )
     if items is None:
-        items = get_items_kickass( opts.name, maxnum = opts.maxnum )
-    if items is None:
         items = get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum, raiseError = False )    
     if items is None:
         items = get_items_torrentz( opts.name, maxnum = opts.maxnum )
     if items is None:
         items = get_items_rarbg( opts.name, maxnum = opts.maxnum )
+    if items is None:
+        items = get_items_kickass( opts.name, maxnum = opts.maxnum )
+    #
+    ##
     if items is not None:
         get_tv_torrent_items( items, filename = opts.filename )

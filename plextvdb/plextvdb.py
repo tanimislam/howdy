@@ -438,11 +438,10 @@ def get_series_id( series_name, token, verify = True ):
                                data_ids ) )
     #
     ## if not get any matches, choose best one
-    if len( data_matches ) == 0:
+    if len( data_matches ) != 1:
         data_match = max( data_ids, key = lambda dat:
                           ratio( dat[ 'seriesName' ], series_name ) )
         return data_match[ 'id' ]
-    if len( data_matches ) != 1: return None
     return max( data_matches )[ 'id' ]
 
 def get_possible_ids( series_name, token, verify = True ):

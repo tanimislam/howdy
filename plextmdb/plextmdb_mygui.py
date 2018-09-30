@@ -242,6 +242,8 @@ class MyMovieTableModel( QAbstractTableModel ):
         if role == Qt.BackgroundRole:
             popularity = self.myMovieData[ row ][ 1 ]
             h = popularity * 0.095
+            h = min( h, 0.995 )
+            h = max( h, 0.005 )
             s = 0.2
             v = 1.0
             alpha = 1.0

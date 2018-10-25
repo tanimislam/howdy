@@ -1,8 +1,5 @@
 import xdg.BaseDirectory, os, requests, logging, sys, webbrowser
-try:
-    from ConfigParser import RawConfigParser
-except:
-    from configparser import RawConfigParser
+from configparser import RawConfigParser
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from . import plexcore
@@ -72,21 +69,10 @@ def returnClientToken( ):
         sys.exit( 0 )
     return dlg.fullurl, dlg.token
 
-def returnEmailAuthentication( ):
-    status, message = plexcore.oauthCheckEmailCredentials( )
-    if status:
-        return status
+def returnGoogleAuthentication( ):
+    status, message = plexcore.oauthCheckGoogleCredentials( )
+    if status: return status
     dlg = GMailOauth2Dialog( )
-    result = dlg.exec_( )
-    if result != QDialog.Accepted:
-        sys.exit( 0 )
-    return True
-
-def returnContactAuthentication( ):
-    status, message = plexcore.oauthCheckContactCredentials( )
-    if status:
-        return status
-    dlg = ContactsOauth2Dialog( )
     result = dlg.exec_( )
     if result != QDialog.Accepted:
         sys.exit( 0 )
@@ -291,57 +277,15 @@ class UsernamePasswordDialog( QDialog ):
         self.clearCreds( )
         self.accept( )
 
-class GMailOauth2Dialog( QDialog ):
+class GoogleOauth2Dialog( QDialog ):
     def __init__( self ):
-        super( GMailOauth2Dialog, self ).__init__( )
+        super( GoogleOauth2Dialog, self ).__init__( )
         self.setModal( True )
-        self.setWindowTitle( 'PLEX ACCOUNT GMAIL OAUTH2 CREDENTIALS' )
+        self.setWindowTitle( 'PLEX ACCOUNT GOOGLE OAUTH2 CREDENTIALS' )
         mainLayout = QVBoxLayout( )
         self.setLayout( mainLayout )
         #
-        mainLayout.addWidget( QLabel( 'TOOL TO STORE GMAIL ACCOUNT SETTINGS AS OAUTH2 TOKENS.' ) )
-        #
-        authWidget = QWidget( )
-        authLayout = QGridLayout( )
-        authWidget.setLayout( authLayout )
-        self.authCredentials = QLineEdit( )
-        self.authCredentials.setEchoMode( QLineEdit.Password )
-        authLayout.addWidget( QLabel( 'CREDENTIALS:' ), 0, 0, 1, 1 )
-        authLayout.addWidget( self.authCredentials, 0, 1, 1, 4 )
-        mainLayout.addWidget( authWidget )
-        #
-        self.statusLabel = QLabel( )
-        mainLayout.addWidget( self.statusLabel )
-        #
-        self.authCredentials.returnPressed.connect( self.check_authCredentials )
-        self.setFixedWidth( 550 )
-        self.setFixedHeight( self.sizeHint( ).height( ) )
-        webbrowser.open_new_tab( plexcore.oauth_generate_permission_url( ) )
-        
-    def check_authCredentials( self ):
-        self.statusLabel.setText( '' )
-        self.authCredentials.setText( str( self.authCredentials.text( ) ).strip( ) )
-        authorization_code = str( self.authCredentials.text( ) )
-        tokens = plexcore.oauth_authorize_tokens( authorization_code )
-        if 'refresh_token' not in tokens:
-            self.statusLabel.setText( 'ERROR: INVALID AUTHORIZATION CODE.' )
-            self.authCredentials.setText( '' )
-            return
-        #
-        ## otherwise is valid
-        plexcore.oauth_push_new_gmailauthentication( tokens[ 'refresh_token' ] )
-        self.authCredentials.setText( '' )
-        self.accept( )
-
-class ContactsOauth2Dialog( QDialog ):
-    def __init__( self ):
-        super( ContactsOauth2Dialog, self ).__init__( )
-        self.setModal( True )
-        self.setWindowTitle( 'PLEX ACCOUNT CONTACTS OAUTH2 CREDENTIALS' )
-        mainLayout = QVBoxLayout( )
-        self.setLayout( mainLayout )
-        #
-        mainLayout.addWidget( QLabel( 'TOOL TO STORE GOOGLE CONTACT SETTINGS AS OAUTH2 TOKENS.' ) )
+        mainLayout.addWidget( QLabel( 'TOOL TO STORE GOOGLE SETTINGS AS OAUTH2 TOKENS.' ) )
         #
         authWidget = QWidget( )
         authLayout = QGridLayout( )
@@ -359,7 +303,7 @@ class ContactsOauth2Dialog( QDialog ):
         self.setFixedWidth( 550 )
         self.setFixedHeight( self.sizeHint( ).height( ) )
         #
-        self.flow, url = plexcore.oauth_generate_contacts_permission_url( )
+        self.flow, url = plexcore.oauth_generate_google_permission_url( )
         webbrowser.open_new_tab( url )
         
     def check_authCredentials( self ):
@@ -368,51 +312,7 @@ class ContactsOauth2Dialog( QDialog ):
         authorization_code = str( self.authCredentials.text( ) )
         try:
             credentials = self.flow.step2_exchange( authorization_code )
-            plexcore.oauth_store_contacts_credentials( credentials )
-            self.authCredentials.setText( '' )
-            self.accept( )
-        except:
-            self.statusLabel.setText( 'ERROR: INVALID AUTHORIZATION CODE.' )
-            self.authCredentials.setText( '' )
-            return
-
-class YoutubeOauth2Dialog( QDialog ):
-    def __init__( self, makeVisible = False ):
-        super( YoutubeOauth2Dialog, self ).__init__( )
-        self.setModal( True )
-        self.setWindowTitle( 'PLEX ACCOUNT YOUTUBE OAUTH2 CREDENTIALS' )
-        mainLayout = QVBoxLayout( )
-        self.setLayout( mainLayout )
-        #
-        mainLayout.addWidget( QLabel( 'TOOL TO STORE GOOGLE YOUTUBE SETTINGS AS OAUTH2 TOKENS.' ) )
-        #
-        authWidget = QWidget( )
-        authLayout = QGridLayout( )
-        authWidget.setLayout( authLayout )
-        self.authCredentials = QLineEdit( )
-        self.authCredentials.setEchoMode( QLineEdit.Password )
-        authLayout.addWidget( QLabel( 'CREDENTIALS:' ), 0, 0, 1, 1 )
-        authLayout.addWidget( self.authCredentials, 0, 1, 1, 4 )
-        mainLayout.addWidget( authWidget )
-        #
-        self.statusLabel = QLabel( )
-        mainLayout.addWidget( self.statusLabel )
-        #
-        self.authCredentials.returnPressed.connect( self.check_authCredentials )
-        self.setFixedWidth( 550 )
-        self.setFixedHeight( self.sizeHint( ).height( ) )
-        if makeVisible: self.show( )
-        #
-        self.flow, url = plexcore.oauth_generate_youtube_permission_url( )
-        webbrowser.open_new_tab( url )
-        
-    def check_authCredentials( self ):
-        self.statusLabel.setText( '' )
-        self.authCredentials.setText( str( self.authCredentials.text( ) ).strip( ) )
-        authorization_code = str( self.authCredentials.text( ) )
-        try:
-            credentials = self.flow.step2_exchange( authorization_code )
-            plexcore.oauth_store_contacts_credentials( credentials )
+            plexcore.oauth_store_google_credentials( credentials )
             self.authCredentials.setText( '' )
             self.accept( )
         except:

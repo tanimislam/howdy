@@ -1,12 +1,11 @@
 import os, sys, titlecase, datetime, pypandoc
 import json, re, urllib, time, glob, multiprocessing
-import plexemail, plexemail_basegui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from bs4 import BeautifulSoup
-from ConfigParser import RawConfigParser
+from configparser import RawConfigParser
 from plexcore import plexcore
-from . import mainDir
+from . import mainDir, plexemail, plexemail_basegui
 
 def _checkValidLaTeX( myString ):
     try:
@@ -128,16 +127,16 @@ class PlexEmailMyGUI( QWidget ):
 
     def checkLaTeX( self ):
         self.statusLabel.setText( '' )
-        myStr = unicode( self.mainEmailCanvas.toPlainText( ).toUtf8( ), encoding='UTF-8').strip( )
+        myStr = self.mainEmailCanvas.toPlainText( ).strip( )
         if len( myStr ) == 0:
             self.emailSendButton.setEnabled( False )
             self.statusLabel.setText( 'INVALID LaTeX' )
-            return            
-        mainText = """
+            return
+        mainText = r"""
         \documentclass{article}
         \usepackage{amsmath, amsfonts, graphicx, hyperref}
         
-        \\begin{document}
+        \begin{document}
         
         Hello Friend,
 
@@ -175,18 +174,18 @@ class PlexEmailMyGUI( QWidget ):
         result = qdl.exec_( )
 
     def getHTML( self ):
-        mainText = """
+        mainText = r"""
         \documentclass{article}
         \usepackage{amsmath, amsfonts, graphicx, hyperref}
         
-        \\begin{document}
+        \begin{document}
         
         Hello Friend,
 
         %s
         
         \end{document}
-        """ % unicode( self.mainEmailCanvas.toPlainText( ).toUtf8( ), encoding='UTF-8' ).strip( )
+        """ % self.mainEmailCanvas.toPlainText( ).strip( )
         status, html = _checkValidLaTeX( mainText )
         html = plexcore.processValidHTMLWithPNG( html, self.pngWidget.getAllDataAsDict( ) )
         return status, html
@@ -205,9 +204,8 @@ class PlexEmailMyGUI( QWidget ):
         subject = titlecase.titlecase( str( self.subjectLine.text( ) ).strip( ) )
         if len(subject) == 0:
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
-        access_token = plexcore.oauth_get_access_token( )
         for name, email in self.emails_array:
-            plexemail.send_individual_email_full( html, subject, access_token, email, name = name, )
+            plexemail.send_individual_email_full( html, subject, email, name = name, )
         self.statusLabel.setText( 'EMAILS SENT' )
 
     def testEmail( self ):
@@ -220,10 +218,8 @@ class PlexEmailMyGUI( QWidget ):
         subject = titlecase.titlecase( str( self.subjectLine.text( ) ).strip( ) )
         if len(subject) == 0:
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
-        access_token = plexcore.oauth_get_access_token( )
         #
-        plexemail.send_individual_email_full( html, subject, access_token,
-                                              'tanim.islam@gmail.com',
+        plexemail.send_individual_email_full( html, subject, 'tanim.islam@gmail.com',
                                               name = 'Tanim Islam', )
         self.statusLabel.setText( 'EMAILS SENT TO TANIM.ISLAM@GMAIL.COM' )
 

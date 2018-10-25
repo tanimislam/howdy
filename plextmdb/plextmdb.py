@@ -13,9 +13,9 @@ def get_movies_by_actors( actor_names ):
             continue
         data = response.json()
         total_pages = data['total_pages']
-        actor_ids = map(lambda result: result['id'], data['results'] )
+        actor_ids = list( map(lambda result: result['id'], data['results'] ) )
         if total_pages >= 2:
-            for pageno in xrange(2, total_pages + 1 ):
+            for pageno in range(2, total_pages + 1 ):
                 params =  { 'api_key' : tmdb_apiKey,
                             'query' : '+'.join( actor_name.split( ) ),
                             'page' : pageno }
@@ -24,7 +24,7 @@ def get_movies_by_actors( actor_names ):
             if response.status_code != 200:
                 continue
             data = response.json( )
-            actor_ids += map(lambda result: result['id'], data['results'] )
+            actor_ids += list( map(lambda result: result['id'], data['results'] ) )
         actor_name_dict[ actor_name ] = min(set( actor_ids ) )
     #
     response = requests.get( 'https://api.themoviedb.org/3/discover/movie',
@@ -42,7 +42,7 @@ def get_movies_by_actors( actor_names ):
     total_pages = data['total_pages']
     results = data['results']
     if total_pages >= 2:
-        for pageno in xrange( 2, total_pages + 1 ):
+        for pageno in range( 2, total_pages + 1 ):
             response = requests.get( 'https://api.themoviedb.org/3/discover/movie',
                                      params = { 'api_key' : tmdb_apiKey,
                                                 'append_to_response': 'images',
@@ -58,8 +58,8 @@ def get_movies_by_actors( actor_names ):
             results += data[ 'results' ]
     # return results
     actualMovieData = [ ]
-    moviePosterMainURL = 'http://image.tmdb.org/t/p/w396'
-    movieListMainURL = 'http://api.themoviedb.org/3/discover/movie'
+    moviePosterMainURL = 'https://image.tmdb.org/t/p/w500'
+    movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'
     for datum in results:
         if 'poster_path' not in datum or datum['poster_path'] is None:
             poster_path = None
@@ -99,11 +99,11 @@ def get_movies_by_title( title ):
         return [ ]
     data = response.json( )
     total_pages = data['total_pages']
-    results = filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 10.0,
-                     data['results'] )
+    results = list( filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 10.0,
+                           data['results'] ) )
     results = sorted( results, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
     if total_pages >= 2:
-        for pageno in xrange( 2, max( 5, total_pages + 1 ) ):
+        for pageno in range( 2, max( 5, total_pages + 1 ) ):
             response = requests.get( 'https://api.themoviedb.org/3/search/movie',
                                      params = { 'api_key' : tmdb_apiKey,
                                                 'append_to_response': 'images',
@@ -115,14 +115,14 @@ def get_movies_by_title( title ):
             if response.status_code != 200:
                 continue
             data = response.json( )
-            newresults = filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 10.0,
-                                data['results'] )
+            newresults = list( filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 10.0,
+                                      data['results'] ) )
             if len( newresults ) > 0:
                 results += sorted( newresults, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
     #return results
     actualMovieData = [ ]
-    moviePosterMainURL = 'http://image.tmdb.org/t/p/w396'
-    movieListMainURL = 'http://api.themoviedb.org/3/discover/movie'
+    moviePosterMainURL = 'https://image.tmdb.org/t/p/w500'
+    movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'
     for datum in results:
         if 'poster_path' not in datum or datum['poster_path'] is None:
             poster_path = None
@@ -175,8 +175,8 @@ def get_movie( title, year = None, checkMultiple = True, getAll = False ):
     data = response.json( )
     if 'total_pages' in data:
         total_pages = data['total_pages']
-        results = filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 90.0,
-                         data['results'] )
+        results = list( filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 90.0,
+                         data['results'] ) )
         results = sorted( results, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
     else:
         return None
@@ -217,11 +217,10 @@ def get_genre_movie( title, year = None, checkMultiple = True ):
     data = response.json( )
     if 'total_pages' in data:
         total_pages = data['total_pages']
-        results = filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 90.0,
-                         data['results'] )
+        results = list( filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 90.0,
+                               data['results'] ) )
         results = sorted( results, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
-    else:
-        results = [ ]
+    else: results = [ ]
     if len(results) == 0:
         if checkMultiple:
             indices = range(len(title.split()))
@@ -282,8 +281,8 @@ def get_main_genre_movie( movie_elem ):
     return postprocess_genre( genres[ 0 ] )
                              
 def getMovieData( year, genre_id ):
-    moviePosterMainURL = 'http://image.tmdb.org/t/p/w396'
-    movieListMainURL = 'http://api.themoviedb.org/3/discover/movie'
+    moviePosterMainURL = 'https://image.tmdb.org/t/p/w500'
+    movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'
     params = { 'api_key' : tmdb_apiKey,
                'append_to_response': 'images',
                'include_image_language': 'en',
@@ -296,18 +295,17 @@ def getMovieData( year, genre_id ):
     response = requests.get( movieListMainURL, params = params )
     logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
     total_pages = response.json()['total_pages']
-    data = filter(lambda datum: datum['title'] is not None and
-                  datum['release_date'] is not None and
-                  datum['popularity'] is not None, response.json( )['results'] )
+    data = list( filter(lambda datum: datum['title'] is not None and
+                        datum['release_date'] is not None and
+                        datum['popularity'] is not None, response.json( )['results'] ) )
     for pageno in range( 2, total_pages + 1 ):
-            params['page'] = pageno
-            response = requests.get( movieListMainURL, params = params )
-            if response.status_code != 200:
-                continue
-            logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
-            data += filter(lambda datum: datum['title'] is not None and
-                           datum['release_date'] is not None and
-                           datum['popularity'] is not None, response.json( )['results'] )
+        params['page'] = pageno
+        response = requests.get( movieListMainURL, params = params )
+        if response.status_code != 200: continue
+        logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
+        data += list( filter(lambda datum: datum['title'] is not None and
+                             datum['release_date'] is not None and
+                             datum['popularity'] is not None, response.json( )['results'] ) )
     actualMovieData = [ ]
     for datum in data:
         if 'poster_path' not in datum or datum['poster_path'] is None:
@@ -335,7 +333,7 @@ class TMDBEngine( object ):
     class __TMDBEngine( object ):
         def __init__( self ):
             from PyQt4.QtGui import QFontDatabase
-            mainURL = 'http://api.themoviedb.org/3/genre/movie/list'
+            mainURL = 'https://api.themoviedb.org/3/genre/movie/list'
             params = { 'api_key' : tmdb_apiKey }
             response = requests.get( mainURL, params = params )
             data = response.json( )

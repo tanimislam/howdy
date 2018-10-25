@@ -1,10 +1,9 @@
-import os, sys, titlecase, datetime
-import json, re, urllib, time, plexemail, plexemail_basegui
+import os, sys, titlecase, datetime, json, re, urllib, time
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from ConfigParser import RawConfigParser
-from . import mainDir
+from configparser import RawConfigParser
+from . import mainDir, plexemail, plexemail_basegui
 from plexcore import plexcore
 
 class PlexEmailGUI( QWidget ):
@@ -97,7 +96,7 @@ class PlexEmailGUI( QWidget ):
                 else:
                     name = None
                     email = fullName.strip( )
-                input_tuples.append(( self.mainHtml, access_token, email, name ))
+                input_tuples.append(( self.mainHtml, email, name ))
             #
             ## now send the emails
             time0 = time.time( )
@@ -208,19 +207,19 @@ class PlexEmailGUI( QWidget ):
                 self.textEdit.setText( '\n'.join( lines[ lineBegin+1:lineEnd ] ) )
             
         def checkValidLaTeX( self ):
-            myStr = unicode( self.textEdit.toPlainText( ).toUtf8( ), encoding='UTF-8').strip( )
-            mainText = """
+            myStr = self.textEdit.toPlainText( ).strip( )
+            mainText = r"""
             \documentclass{article}
             \usepackage{amsmath, amsfonts, graphicx, hyperref}
 
-            \\begin{document}
+            \begin{document}
             
             \section{%s}
 
             %s
 
             \end{document}
-            """ % ( str( self.sectionNameWidget.text( ) ).strip( ), myStr )
+            """ % ( self.sectionNameWidget.text( ).strip( ), myStr )
             htmlString = plexcore.latexToHTML( mainText )
             if htmlString is None:
                 self.isValidLaTeX = False

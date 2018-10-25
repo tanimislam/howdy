@@ -141,17 +141,17 @@ class TMDBTorrents( QDialog ):
             self.data = { }
             for actmovie in data:
                 title = actmovie[ 'title' ]
-                allmovies = filter(lambda tor: 'quality' in tor and '3D' not in tor['quality'],
-                                   actmovie['torrents'] )
+                allmovies = list( filter(lambda tor: 'quality' in tor and '3D' not in tor['quality'],
+                                         actmovie['torrents'] ) )
                 if len( allmovies ) == 0:
                     continue
-                allmovies2 = filter(lambda tor: '720p' in tor['quality'], allmovies )
+                allmovies2 = list( filter(lambda tor: '720p' in tor['quality'], allmovies ) )
                 if len( allmovies2 ) == 0: allmovies2 = allmovies
                 url = allmovies2[0]['url']
                 self.data[ title ] = requests.get( url ).content
-            self.allRadioButtons = map(lambda name:
-                                       TMDBRadioButton( name, name, self ),
-                                       sorted( self.data.keys( ) ) )
+            self.allRadioButtons = list( map(lambda name:
+                                             TMDBRadioButton( name, name, self ),
+                                             sorted( self.data.keys( ) ) ) )
             self.statusLabel.setText( 'SUCCESS' )
         else:
             #data, status = plextmdb.get_movie_torrent_kickass( movie_name, maxnum = maxnum )
@@ -162,14 +162,19 @@ class TMDBTorrents( QDialog ):
                 self.torrentStatus = 1
                 self.data = { }
                 logging.debug('DATA = %s' % data )
-                for name, seeders, leechers, link in data:
+                for datum in data:
+                    name = datum['title']
+                    seeders = datum['seeders']
+                    leechers = datum['leechers']
+                    link = datum['link']
                     self.data[ name ] = ( seeders, leechers, link )
-                self.allRadioButtons = map(lambda name:
-                                           TMDBRadioButton( '%s ( %d, %d )' % ( name, self.data[ name ][0],
-                                                                                self.data[ name ][1] ),
-                                                            name, self ),
-                                           sorted( self.data.keys( ),
-                                                   key = lambda nm: sum( self.data[nm][:2] ) ) )
+                self.allRadioButtons = list(
+                    map(lambda name:
+                        TMDBRadioButton( '%s ( %d, %d )' % ( name, self.data[ name ][0],
+                                                             self.data[ name ][1] ),
+                                         name, self ),
+                        sorted( self.data.keys( ),
+                                key = lambda nm: sum( self.data[nm][:2] ) ) ) )
                 self.statusLabel.setText( 'SUCCESS' )
             else:
                 self.torrentStatus = 2
@@ -868,6 +873,8 @@ class TMDBTableModel( QAbstractTableModel ):
             if not isFound:
                 popularity = self.actualMovieData[ row ][ 2 ]
                 h = numpy.log10( min( 100.0, popularity ) ) * 0.25
+                h = min( h, 0.995 )
+                h = max( h, 0.005 )
                 s = 0.2
                 v = 1.0
                 alpha = 1.0

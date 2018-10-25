@@ -22,7 +22,7 @@ def main( ):
     assert( opts.series is not None )
     if opts.do_summary:
         seriesName = opts.series.strip( )
-        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName, verify = not opts.do_noverify )
+        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName, verify = not opts.do_noverify, showFuture = True )
         if epdicts is None:
             print('Error, could not find %s' % seriesName)
             return
@@ -33,7 +33,7 @@ def main( ):
             print('SEASON %02d: %d episodes' % ( seasno, len( epdicts[ seasno ] ) ) )
     elif opts.season is not None:
         seriesName = opts.series.strip( )
-        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName, verify = not opts.do_noverify )
+        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName, verify = not opts.do_noverify, showFuture = True )
         if epdicts is None:
             print( 'Error, could not find %s' % seriesName )
             return

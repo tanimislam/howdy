@@ -1,4 +1,4 @@
-import requests, re, threading, cfscrape
+import requests, re, threading, cfscrape, os
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
@@ -203,13 +203,78 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
                 'leechers': leechers }
         items.append(item)
     if len( items ) == 0:
-        return _couldnot
-        return None, 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name
+        return _return_error_couldnotfind('FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name)
     items.sort(key=lambda d: try_int(d.get('seeders', 0)) +
                try_int(d.get('leechers')), reverse=True)
     items = items[:maxnum]
     return items, 'SUCCESS'
+
+def get_tv_torrent_kickass( name, maxnum = 10 ):
+    from KickassAPI import Search, Latest, User, CATEGORY, ORDER
+    names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
+        'http://mgtracker.org:2710/announce',
+        'http://tracker.internetwarriors.net:1337/announce',
+        'http://37.19.5.139:6969/announce',
+        'http://37.19.5.155:6881/announce',
+        'http://p4p.arenabg.ch:1337/announce',
+        'udp://tracker.zer0day.to:1337/announce',
+        'udp://tracker.coppersurfer.tk:6969/announce',
+        'http://109.121.134.121:1337/announce',
+        'udp://tracker.opentrackr.org:1337/announce',
+        'http://5.79.83.193:2710/announce',
+        'udp://p4p.arenabg.com:1337/announce',
+        'udp://explodie.org:6969/announce',
+        'http://tracker.sktorrent.net:6969/announce',
+        'udp://tracker.leechers-paradise.org:6969/announce',
+        'http://mgtracker.org:6969/announce',
+        'http://tracker.opentrackr.org:1337/announce',
+        'http://p4p.arenabg.com:1337/announce',
+        'udp://9.rarbg.com:2710/announce',
+        'http://tracker.mg64.net:6881/announce',
+        'http://explodie.org:6969/announce' ] )
+    tracklist = ''.join(map(lambda tracker: '&tr=%s' % tracker, names_of_trackers ) )
+    def get_size( lookup ):
+        size_string = lookup.size
+        if size_string.lower().endswith('mib'):
+            return float( size_string.lower().split()[0] )
+        elif size_string.lower().endswith('kib'):
+            return float( size_string.lower().split()[0] ) / 1024
+        elif size_string.lower().endswith('gib'):
+            return float( size_string.lower().split()[0] ) * 1024
+        else: return 0.0
+    try:
+        lookups = [ ]
+        data = Search( name, category = CATEGORY.TV )
+        for page in range(1, min( 11, 1 + int( data.url.max_page ) ) ):
+            data.url.set_page( page )
+            lookups += list( filter(lambda lookup: get_maximum_matchval( lookup.name, name ) >= 90 and
+                                lookup.torrent_link is not None, data.list( ) ) )
+        lookups = sorted( lookups, key = lambda lookup: get_maximum_matchval( lookup.name, name ) )[:maxnum]
+        #lookups = sorted( filter(lambda lookup: #'720p' in lookup.name and
+        #                         # get_size( lookup ) >= 100.0 and
+        #                         get_maximum_matchval( lookup.name, name ) >= 90 and
+        #                         lookup.torrent_link is not None,
+        #                         Search( name, category = CATEGORY.TV ) ),
+        #                  key = lambda lookup: get_size( lookup ) )[:maxnum]
+        if len(lookups) == 0: return None, 'FAILURE, COULD FIND NOTHING THAT MATCHES %s' % name
+    except Exception as e:
+        return None, 'FAILURE: %s' % e
+
+    def create_magnet_link( lookup ):
+        info_hash = os.path.basename( lookup.torrent_link ).lower( )
+        download_url = ''.join([ "magnet:?xt=urn:btih:%s" % info_hash,
+                                 "&dn=%s" % '+'.join( lookup.name.split( ) ),
+                                 tracklist ])
+        return download_url
+
+    items_toshow = list( map(lambda lookup: {
+        'title' : '%s (%s)' % ( lookup.name, lookup.size ),
+        'seeders' : -1,
+        'leechers' : -1,
+        'link' : create_magnet_link( lookup ) }, lookups ) )
     
+    return items_toshow, 'SUCCESS'
+
 def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
     surl = urljoin( 'https://thepiratebay.org', 's/' )
     if not doAny:
@@ -222,7 +287,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
 
     response_arr = [ None, ]
     def fill_response( response_arr ):
-        response_arr[ 0 ] = requests.get( surl, params = search_params )
+        response_arr[ 0 ] = requests.get( surl, params = search_params, verify = False )
 
     e = threading.Event( )
     t = threading.Thread( target = fill_response, args = ( response_arr, ) )

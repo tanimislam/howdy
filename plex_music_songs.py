@@ -3,6 +3,8 @@
 import codecs, sys, os
 from plexmusic import plexmusic
 from optparse import OptionParser
+from plexcore import plexcore
+from plexemail import plexemail
 
 def choose_youtube_item( name, maxnum = 10 ):
     youtube = plexmusic.get_youtube_service( )
@@ -31,21 +33,26 @@ def choose_youtube_item( name, maxnum = 10 ):
 
 def main( ):
     parser = OptionParser( )
-    parser.add_option( '--songs', dest='song_names', type=str, action='store',
+    parser.add_option( '-s', '--songs', dest='song_names', type=str, action='store',
                        help = 'Names of the song to put into M4A files. Separated by ;' )
-    parser.add_option( '--artist', dest='artist_name', type=str, action='store',
+    parser.add_option( '-a', '--artist', dest='artist_name', type=str, action='store',
                        help = 'Name of the artist to put into the M4A file.' )
     parser.add_option( '--maxnum', dest='maxnum', type=int, action='store',
                        default = 10, help =
                        'Number of YouTube video choices to choose for your song.' +
                        ' Default is 10.' )
-    parser.add_option( '--album', dest='album_name', type=str, action='store',
+    parser.add_option( '-A', '--album', dest='album_name', type=str, action='store',
                        help = 'If defined, then use ALBUM information to get all the songs in order from the album.' )
+    parser.add_option( '-e', '--email', dest='email', type=str, action='store',
+                       help = 'If defined with an email address, will email these songs to the recipient with that email address.')
+    parser.add_option( '-n', '--ename', dest='email_name', type=str, action='store',
+                       help = 'Only works if --email is defined. Optional argument to include the name of the recipient.' )
     opts, args = parser.parse_args( )
     assert( opts.artist_name is not None )
     #
     ## first get music metadata
     pm = plexmusic.PlexMusic( )
+    all_songs_downloaded = [ ]
 
     if opts.album_name is not None:
         album_data_dict, status = pm.get_music_metadatas_album( opts.artist_name,
@@ -81,6 +88,7 @@ def main( ):
             #
             ##
             os.chmod( filename, 0o644 )
+            all_songs_downloaded.append( ( artist_name, song_name, filename ) )
     else:
         assert( opts.song_names is not None )
         song_names = map(lambda song_name: song_name.strip( ), opts.song_names.split(';'))
@@ -116,7 +124,35 @@ def main( ):
             #
             ##
             os.chmod( filename, 0o644 )
-    
+            all_songs_downloaded.append( ( artist_name, song_name, filename ) )
+
+    if opts.email is not None:
+        status, _ = plexcore.oauthCheckGoogleCredentials( )
+        if not status:
+            print( "Error, do not have correct Google credentials." )
+            return
+        songs_by_list = '\n'.join(map(lambda tup: '%s - %s' % ( tup[0], tup[1] ),
+                                      all_songs_downloaded ) )
+        body = """I have emailed you %d songs from %d artists as attachments:
+        \\begin{list}
+          %s
+        \end{list}
+        Have a good day!
+
+        Tanim
+        """ % ( len( all_songs_downloaded ),
+                len( set( map(lambda tup: tup[0], all_songs_downloaded ) ) ),
+                songs_by_list )
+        finalString = '\n'.join([ 'Hello Friend,', '', body ])
+        htmlString = plexcore.latexToHTML( finalString )
+        subject = 'The %d songs with %d artists you requested.' % (
+             len( all_songs_downloaded ),
+                len( set( map(lambda tup: tup[0], all_songs_downloaded ) ) ) )
+        plexemail.send_individual_email_full_withattachs( htmlString, subject, opts.email,
+                                                          name = opts.email_name,
+                                                          attachNames = list(map(lambda tup: tup[-1],
+                                                                                 all_songs_downloaded ) ) )
+        
 if __name__=='__main__':
     main( )
         

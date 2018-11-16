@@ -220,6 +220,35 @@ def send_individual_email_full( mainHTML, subject, email, name = None, attach = 
                     cache_discovery = False )
     message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
 
+def send_individual_email_full_withattachs( mainHTML, subject, email, name = None,
+                                            attachNames = None):
+    fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
+    msg = MIMEMultipart( )
+    msg['From'] = fromEmail
+    msg['Subject'] = subject
+    if name is None:
+        msg['To'] = email
+        htmlstring = mainHTML
+    else:
+        msg['To'] = '%s <%s>' % ( name, email )
+        firstname = name.split()[0].strip()
+        htmlstring = re.sub( 'Hello Friend,', 'Hello %s,' % firstname, mainHTML )
+    body = MIMEText( htmlstring, 'html', 'utf-8' )
+    msg.attach( body )
+    if attachNames is not None:
+        for attachName in attachNames:
+            attach = base64.urlsafe_b64encode( open( attachName, 'rb').read( ) )
+            att = MIMEApplication( attach )
+            att.add_header( 'content-disposition', 'attachment', filename = attachName )
+            msg.attach( att )
+    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
+    #
+    credentials = plexcore.oauthGetGoogleCredentials( )
+    assert( credentials is not None )
+    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
+                    cache_discovery = False )
+    message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
+
 def send_individual_email( mainHTML, email, name = None,
                            mydate = datetime.datetime.now().date() ):
     fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'

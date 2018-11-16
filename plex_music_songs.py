@@ -133,21 +133,26 @@ def main( ):
             return
         songs_by_list = '\n'.join(map(lambda tup: '%s - %s' % ( tup[0], tup[1] ),
                                       all_songs_downloaded ) )
-        body = """I have emailed you %d songs from %d artists as attachments:
+        num_songs = len( all_songs_downloaded )
+        num_artists = len( set( map(lambda tup: tup[0], all_songs_downloaded ) ) )
+        if num_songs == 1: num_songs_string = "1 song"
+        else: num_songs_string = "%d songs" % num_songs
+        if num_artists == 1: num_artists_string = "1 artist"
+        else: num_artists_string = "%d artists" % num_artists
+        body = """I have emailed you %s from %s as attachments:
         \\begin{list}
           %s
         \end{list}
         Have a good day!
 
         Tanim
-        """ % ( len( all_songs_downloaded ),
-                len( set( map(lambda tup: tup[0], all_songs_downloaded ) ) ),
+        """ % ( num_songs_string,
+                num_artists_string,
                 songs_by_list )
         finalString = '\n'.join([ 'Hello Friend,', '', body ])
         htmlString = plexcore.latexToHTML( finalString )
-        subject = 'The %d songs with %d artists you requested.' % (
-             len( all_songs_downloaded ),
-                len( set( map(lambda tup: tup[0], all_songs_downloaded ) ) ) )
+        subject = 'The %s with %s you requested.' % (
+            num_songs_string, num_artists_string )
         plexemail.send_individual_email_full_withattachs( htmlString, subject, opts.email,
                                                           name = opts.email_name,
                                                           attachNames = list(map(lambda tup: tup[-1],

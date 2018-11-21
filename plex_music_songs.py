@@ -2,11 +2,11 @@
 
 import codecs, sys, os
 from plexmusic import plexmusic
-from optparse import OptionParser
 from plexcore import plexcore
 from plexemail import plexemail
+from optparse import OptionParser
 
-def choose_youtube_item( name, maxnum = 10 ):
+def _choose_youtube_item( name, maxnum = 10 ):
     youtube = plexmusic.get_youtube_service( )
     videos = plexmusic.youtube_search( youtube, name, max_results = maxnum )
     if len( videos ) != 1:
@@ -31,30 +31,91 @@ def choose_youtube_item( name, maxnum = 10 ):
         return None
     return youtubeURL
 
-def main( ):
-    parser = OptionParser( )
-    parser.add_option( '-s', '--songs', dest='song_names', type=str, action='store',
-                       help = 'Names of the song to put into M4A files. Separated by ;' )
-    parser.add_option( '-a', '--artist', dest='artist_name', type=str, action='store',
-                       help = 'Name of the artist to put into the M4A file.' )
-    parser.add_option( '--maxnum', dest='maxnum', type=int, action='store',
-                       default = 10, help =
-                       'Number of YouTube video choices to choose for your song.' +
-                       ' Default is 10.' )
-    parser.add_option( '-A', '--album', dest='album_name', type=str, action='store',
-                       help = 'If defined, then use ALBUM information to get all the songs in order from the album.' )
-    parser.add_option( '-e', '--email', dest='email', type=str, action='store',
-                       help = 'If defined with an email address, will email these songs to the recipient with that email address.')
-    parser.add_option( '-n', '--ename', dest='email_name', type=str, action='store',
-                       help = 'Only works if --email is defined. Optional argument to include the name of the recipient.' )
-    opts, args = parser.parse_args( )
+def _download_actual_song( pm, s_name, a_name, maxnum ):
+    try:
+        data_dict, status = pm.get_music_metadata( song_name = s_name,
+                                                   artist_name = a_name )
+        if status != 'SUCCESS':
+            print( status )
+            return None
+    except Exception as e:
+        print( e )
+        return None
+    artist_name = data_dict[ 'artist' ]
+    song_name = data_dict[ 'song' ]
+    album_name = data_dict[ 'album' ]
+    print( 'ACTUAL ARTIST: %s' % artist_name )
+    print( 'ACTUAL ALBUM: %s' % album_name )
+    print( 'ACTUAL SONG: %s' % song_name )
+    #
+    ## now get the youtube song selections
+    youtubeURL = _choose_youtube_item( '%s %s' % ( artist_name, song_name ),
+                                       maxnum = maxnum )
+    if youtubeURL is None: return None
+    #
+    ## now download the song into the given filename
+    filename = '%s.%s.m4a' % ( artist_name, song_name )
+    plexmusic.get_youtube_file( youtubeURL, filename )
+    #
+    ## now fill out the metadata
+    plexmusic.fill_m4a_metadata( filename, data_dict )
+    #
+    ##
+    os.chmod( filename, 0o644 )
+    return ( artist_name, song_name, filename )
+
+def _email_songs( opts, all_songs_downloaded ):
+    if len( all_songs_downloaded ) == 0: return
+    status, _ = plexcore.oauthCheckGoogleCredentials( )
+    if not status:
+        print( "Error, do not have correct Google credentials." )
+        return
+    songs_by_list = '\n'.join(map(lambda tup: '%s - %s' % ( tup[0], tup[1] ),
+                                  all_songs_downloaded ) )
+    num_songs = len( all_songs_downloaded )
+    num_artists = len( set( map(lambda tup: tup[0], all_songs_downloaded ) ) )
+    if num_songs == 1: num_songs_string = "1 song"
+    else: num_songs_string = "%d songs" % num_songs
+    if num_artists == 1: num_artists_string = "1 artist"
+    else: num_artists_string = "%d artists" % num_artists
+    body = """I have emailed you %s from %s as attachments:
+    \\begin{list}
+    %s
+    \end{list}
+    Have a good day!
+    
+    Tanim
+    """ % ( num_songs_string,
+            num_artists_string,
+            songs_by_list )
+    finalString = '\n'.join([ 'Hello Friend,', '', body ])
+    htmlString = plexcore.latexToHTML( finalString )
+    subject = 'The %s with %s you requested.' % (
+        num_songs_string, num_artists_string )
+    plexemail.send_individual_email_full_withattachs( htmlString, subject, opts.email,
+                                                      name = opts.email_name,
+                                                      attachNames = list(map(lambda tup: tup[-1],
+                                                                             all_songs_downloaded ) ) )
+def _download_songs_newformat( opts ):
+    assert( opts.song_names is not None )
+    assert( opts.artist_names is not None )
+    #
+    ## first get the music metadata
+    pm = plexmusic.PlexMusic( )
+    song_names = map(lambda song_name: song_name.strip( ), opts.song_names.split(';'))
+    artist_names = map(lambda artist_name: artist_name.strip( ), opts.artist_names.split(';'))
+    all_songs_downloaded = list(
+        filter(None, map(lambda tup: _download_actual_song( pm, tup[0], tup[1], opts.maxnum ),
+                         filter(None, zip( song_names, artist_names ) ) ) ) )    
+    return all_songs_downloaded
+
+def _download_songs_oldformat( opts ):
     assert( opts.artist_name is not None )
     #
     ## first get music metadata
     pm = plexmusic.PlexMusic( )
-    all_songs_downloaded = [ ]
-
     if opts.album_name is not None:
+        all_songs_downloaded = [ ]
         album_data_dict, status = pm.get_music_metadatas_album( opts.artist_name,
                                                                 opts.album_name )
         if status != 'SUCCESS':
@@ -74,7 +135,7 @@ def main( ):
             print( 'ACTUAL SONG: %s' % song_name )
             #
             ## now get the youtube song selections
-            youtubeURL = choose_youtube_item( '%s %s' % ( artist_name, song_name ),
+            youtubeURL = _choose_youtube_item( '%s %s' % ( artist_name, song_name ),
                                               maxnum = opts.maxnum )
             if youtubeURL is None:
                 continue
@@ -92,71 +153,40 @@ def main( ):
     else:
         assert( opts.song_names is not None )
         song_names = map(lambda song_name: song_name.strip( ), opts.song_names.split(';'))
-        for song_name in song_names:
-            try:
-                data_dict, status = pm.get_music_metadata( song_name = song_name,
-                                                           artist_name = opts.artist_name )
-                if status != 'SUCCESS':
-                    print( status )
-                    continue
-            except Exception as e:
-                print( e )
-                continue
-            artist_name = data_dict[ 'artist' ]
-            song_name = data_dict[ 'song' ]
-            album_name = data_dict[ 'album' ]
-            print( 'ACTUAL ARTIST: %s' % artist_name )
-            print( 'ACTUAL ALBUM: %s' % album_name )
-            print( 'ACTUAL SONG: %s' % song_name )
-            #
-            ## now get the youtube song selections
-            youtubeURL = choose_youtube_item( '%s %s' % ( artist_name, song_name ),
-                                              maxnum = opts.maxnum )
-            if youtubeURL is None:
-                continue
-            #
-            ## now download the song into the given filename
-            filename = '%s.%s.m4a' % ( artist_name, song_name )
-            plexmusic.get_youtube_file( youtubeURL, filename )
-            #
-            ## now fill out the metadata
-            plexmusic.fill_m4a_metadata( filename, data_dict )
-            #
-            ##
-            os.chmod( filename, 0o644 )
-            all_songs_downloaded.append( ( artist_name, song_name, filename ) )
+        all_songs_downloaded = list(filter(
+            None,  map(lambda song_name: _download_actual_song( pm, song_name, opts.artist_name, opts.maxnum ),
+                       song_names ) ) )
+    return all_songs_downloaded
 
-    if opts.email is not None:
-        status, _ = plexcore.oauthCheckGoogleCredentials( )
-        if not status:
-            print( "Error, do not have correct Google credentials." )
-            return
-        songs_by_list = '\n'.join(map(lambda tup: '%s - %s' % ( tup[0], tup[1] ),
-                                      all_songs_downloaded ) )
-        num_songs = len( all_songs_downloaded )
-        num_artists = len( set( map(lambda tup: tup[0], all_songs_downloaded ) ) )
-        if num_songs == 1: num_songs_string = "1 song"
-        else: num_songs_string = "%d songs" % num_songs
-        if num_artists == 1: num_artists_string = "1 artist"
-        else: num_artists_string = "%d artists" % num_artists
-        body = """I have emailed you %s from %s as attachments:
-        \\begin{list}
-          %s
-        \end{list}
-        Have a good day!
+def main( ):
+    parser = OptionParser( )
+    parser.add_option( '-s', '--songs', dest='song_names', type=str, action='store',
+                       help = 'Names of the song to put into M4A files. Separated by ;' )
+    parser.add_option( '-a', '--artist', dest='artist_name', type=str, action='store',
+                       help = 'Name of the artist to put into the M4A file.' )
+    parser.add_option( '--maxnum', dest='maxnum', type=int, action='store',
+                       default = 10, help = ' '.join([ 
+                           'Number of YouTube video choices to choose for each of your songs.'
+                           'Default is 10.' ]))
+    parser.add_option( '-A', '--album', dest='album_name', type=str, action='store',
+                       help = 'If defined, then use ALBUM information to get all the songs in order from the album.' )
+    parser.add_option( '-e', '--email', dest='email', type=str, action='store',
+                       help = 'If defined with an email address, will email these songs to the recipient with that email address.')
+    parser.add_option( '-n', '--ename', dest='email_name', type=str, action='store',
+                       help = 'Only works if --email is defined. Optional argument to include the name of the recipient.' )
+    parser.add_option( '--new', dest='do_new', action='store_true', default = False,
+                       help = ' '.join([
+                           "If chosen, use the new format for getting the song list.",
+                           "Instead of -a or --artist, will look for --artists.",
+                           "Each artist is separated by a ';'." ]))
+    parser.add_option( '--artists', dest='artist_names', type=str, action='store',
+                       help = "List of artists. Each artist is separated by a ';'.")
+    opts, args = parser.parse_args( )
 
-        Tanim
-        """ % ( num_songs_string,
-                num_artists_string,
-                songs_by_list )
-        finalString = '\n'.join([ 'Hello Friend,', '', body ])
-        htmlString = plexcore.latexToHTML( finalString )
-        subject = 'The %s with %s you requested.' % (
-            num_songs_string, num_artists_string )
-        plexemail.send_individual_email_full_withattachs( htmlString, subject, opts.email,
-                                                          name = opts.email_name,
-                                                          attachNames = list(map(lambda tup: tup[-1],
-                                                                                 all_songs_downloaded ) ) )
+    if not opts.do_new: all_songs_downloaded = _download_songs_oldformat( opts )
+    else: all_songs_downloaded = _download_songs_newformat( opts )
+    
+    if opts.email is not None: _email_songs( opts, all_songs_downloaded )
         
 if __name__=='__main__':
     main( )

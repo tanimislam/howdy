@@ -237,6 +237,7 @@ def send_individual_email_full_withattachs( mainHTML, subject, email, name = Non
         htmlstring = re.sub( 'Hello Friend,', 'Hello %s,' % firstname, mainHTML )
     body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
+    # attachNames = None
     if attachNames is not None:
         for attachName in attachNames:
             #
@@ -245,15 +246,13 @@ def send_individual_email_full_withattachs( mainHTML, subject, email, name = Non
             if content_type is None or encoding is not None:
                 content_type = 'application/octet-stream'
             main_type, sub_type = content_type.split('/', 1)
-            if main_type == 'text':
-                att = MIMEText(open(attachName, 'rb').read(), _subtype=sub_type)
-            elif main_type == 'image':
-                att = MIMEImage(open(attachName, 'rb').read(), _subtype=sub_type)
-            elif main_type == 'audio':
-                att = MIMEAudio(open(attachName, 'rb').read(), _subtype=sub_type)
+            data = open(attachName, 'rb').read()
+            if main_type == 'text': att = MIMEText(data, _subtype=sub_type)
+            elif main_type == 'image': att = MIMEImage(data, _subtype=sub_type)
+            elif main_type == 'audio': att = MIMEAudio(data, _subtype=sub_type)
             else:
                 att = MIMEBase(main_type, sub_type)
-                att.set_payload(open(attachName, 'rb').read())
+                att.set_payload(data)
             att.add_header( 'content-disposition', 'attachment', filename = attachName )
             msg.attach( att )
     data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }

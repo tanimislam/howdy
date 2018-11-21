@@ -235,10 +235,27 @@ def send_individual_email_full_withattachs( mainHTML, subject, email, name = Non
         htmlstring = re.sub( 'Hello Friend,', 'Hello %s,' % firstname, mainHTML )
     body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
+    # attachNames = None
     if attachNames is not None:
         for attachName in attachNames:
+<<<<<<< HEAD
             attach = base64.urlsafe_b64encode( open( attachName, 'rb').read( ) )
             att = MIMEApplication( attach )
+=======
+            #
+            ## gotten code from https://developers.google.com/gmail/api/guides/sending
+            content_type, encoding = mimetypes.guess_type(attachName)
+            if content_type is None or encoding is not None:
+                content_type = 'application/octet-stream'
+            main_type, sub_type = content_type.split('/', 1)
+            data = open(attachName, 'rb').read()
+            if main_type == 'text': att = MIMEText(data, _subtype=sub_type)
+            elif main_type == 'image': att = MIMEImage(data, _subtype=sub_type)
+            elif main_type == 'audio': att = MIMEAudio(data, _subtype=sub_type)
+            else:
+                att = MIMEBase(main_type, sub_type)
+                att.set_payload(data)
+>>>>>>> b6b9d67a600fc5edb9c7c6b87da6dcfe9412acb2
             att.add_header( 'content-disposition', 'attachment', filename = attachName )
             msg.attach( att )
     data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }

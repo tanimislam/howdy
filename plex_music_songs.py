@@ -70,7 +70,7 @@ def _email_songs( opts, all_songs_downloaded ):
     if not status:
         print( "Error, do not have correct Google credentials." )
         return
-    songs_by_list = '\n'.join(map(lambda tup: '%s - %s' % ( tup[0], tup[1] ),
+    songs_by_list = '\n'.join(map(lambda tup: '\item %s - %s.' % ( tup[0], tup[1] ),
                                   all_songs_downloaded ) )
     num_songs = len( all_songs_downloaded )
     num_artists = len( set( map(lambda tup: tup[0], all_songs_downloaded ) ) )
@@ -79,9 +79,9 @@ def _email_songs( opts, all_songs_downloaded ):
     if num_artists == 1: num_artists_string = "1 artist"
     else: num_artists_string = "%d artists" % num_artists
     body = """I have emailed you %s from %s as attachments:
-    \\begin{list}
+    \\begin{enumerate}
     %s
-    \end{list}
+    \end{enumerate}
     Have a good day!
     
     Tanim

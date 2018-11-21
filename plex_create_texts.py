@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import pypandoc, glob, os, sys, textwrap
 from PyQt4.QtCore import *
@@ -34,11 +34,11 @@ def printString( myString, statusLabel, toHTML = True ):
     qte.setFixedWidth( 85 * qfm.width( 'A' ) )
     qte.setFixedHeight( 550 )
     qdl.setFixedWidth( 85 * qfm.width( 'A' ) )
-    qdl.setFixedHeight( 550 )    
+    qdl.setFixedHeight( 550 )
     if toHTML:
         qte.setHtml( pypandoc.convert( myString, 'html', format = 'latex',
                                        extra_args = [ '-s' ] ) )
-    else:        
+    else:
         qte.setPlainText( pypandoc.convert( myString, 'markdown', format = 'latex',
                                             extra_args = [ '-s' ] ) )
     def saveFilename( ):
@@ -66,7 +66,7 @@ def printString( myString, statusLabel, toHTML = True ):
     result = qdl.exec_( )
 
 class MainGUI( QWidget ):
-    
+
     def __init__( self ):
         super( MainGUI, self ).__init__( )
         self.setWindowTitle( 'FORMAT CONVERTER' )
@@ -108,11 +108,11 @@ class MainGUI( QWidget ):
             mainText = """
             \documentclass[12pt, fleqn]{article}
             \usepackage{amsmath, amsfonts, graphicx, hyperref}
-            
+
             \\begin{document}
-            
+
             %s
-            
+
             \end{document}
             """ % str( self.latexOutput.toPlainText( ) ).strip( )
             printString( mainText, self.statusLabel, toHTML = True )
@@ -120,11 +120,11 @@ class MainGUI( QWidget ):
             mainText = """
             \documentclass[12pt, fleqn]{article}
             \usepackage{amsmath, amsfonts, graphicx, hyperref}
-            
+
             \\begin{document}
-            
+
             %s
-            
+
             \end{document}
             """ % str( self.latexOutput.toPlainText( ) ).strip( )
             printString( mainText, self.statusLabel, toHTML = False )

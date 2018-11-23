@@ -2,6 +2,7 @@ import os, sys, titlecase, datetime, re, urllib, time, requests, mimetypes
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing, lxml.html
 from apiclient.discovery import build
 import smtplib, re, urllib, base64, httplib2
+from email import encoders
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
@@ -222,8 +223,8 @@ def send_individual_email_full( mainHTML, subject, email, name = None, attach = 
                     cache_discovery = False )
     message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
 
-def send_individual_email_full_withattachs( mainHTML, subject, email, name = None,
-                                            attachNames = None):
+def send_individual_email_full_withsingleattach( mainHTML, subject, email, name = None,
+                                                 attachData = None, attachName = None):
     fromEmail = 'Tanim Islam <tanim.islam@gmail.com>'
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
@@ -237,16 +238,48 @@ def send_individual_email_full_withattachs( mainHTML, subject, email, name = Non
         htmlstring = re.sub( 'Hello Friend,', 'Hello %s,' % firstname, mainHTML )
     body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
-    # attachNames = None
+    if attachData is not None:
+        assert( attachName is not None )
+        attachName = os.path.basename( attachName )
+        content_type, encoding = mimetypes.guess_type(attachName)
+        if content_type is None or encoding is not None:
+            content_type = 'application/octet-stream'
+        main_type, sub_type = content_type.split('/', 1)
+        att = MIMEApplication( attachData, _subtype = sub_type )
+        att.add_header( 'content-disposition', 'attachment', filename = attachName )
+        msg.attach( att )
+    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
+    credentials = plexcore.oauthGetGoogleCredentials( )
+    assert( credentials is not None )
+    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
+                    cache_discovery = False )
+    message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
+    
+def send_individual_email_full_withattachs( mainHTML, subject, email, name = None,
+                                            attachNames = None, attachDatas = None):
+    fromEmail = 'Tanim Islam <tanim.islam@gmail.com>'
+    msg = MIMEMultipart( )
+    msg['From'] = fromEmail
+    msg['Subject'] = subject
+    if name is None:
+        msg['To'] = email
+        htmlstring = mainHTML
+    else:
+        msg['To'] = '%s <%s>' % ( name, email )
+        firstname = name.split()[0].strip()
+        htmlstring = re.sub( 'Hello Friend,', 'Hello %s,' % firstname, mainHTML )
+    body = MIMEText( htmlstring, 'html', 'utf-8' )
+    msg.attach( body )
     if attachNames is not None:
-        for attachName in attachNames:
+        assert( attachDatas is not None )
+        for attachName, data in filter(None, zip( attachNames, attachDatas ) ):
             #
             ## gotten code from https://developers.google.com/gmail/api/guides/sending
+            attachName = os.path.basename( attachName )
             content_type, encoding = mimetypes.guess_type(attachName)
             if content_type is None or encoding is not None:
                 content_type = 'application/octet-stream'
             main_type, sub_type = content_type.split('/', 1)
-            data = open(attachName, 'rb').read()
             if main_type == 'text': att = MIMEText(data, _subtype=sub_type)
             elif main_type == 'image': att = MIMEImage(data, _subtype=sub_type)
             elif main_type == 'audio': att = MIMEAudio(data, _subtype=sub_type)
@@ -256,7 +289,6 @@ def send_individual_email_full_withattachs( mainHTML, subject, email, name = Non
             att.add_header( 'content-disposition', 'attachment', filename = attachName )
             msg.attach( att )
     data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
-    #
     credentials = plexcore.oauthGetGoogleCredentials( )
     assert( credentials is not None )
     service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),

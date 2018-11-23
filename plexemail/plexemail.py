@@ -1,12 +1,10 @@
-import os, sys, titlecase, datetime, re, urllib, time, requests, mimetypes
+import os, sys, titlecase, datetime, re, urllib, time, requests
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing, lxml.html
 from apiclient.discovery import build
 import smtplib, re, urllib, base64, httplib2
 from email import encoders
 from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
-from email.mime.audio import MIMEAudio
 from email.mime.application import MIMEApplication
 from plexcore import session, plexcore
 from . import mainDir

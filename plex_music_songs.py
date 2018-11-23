@@ -64,6 +64,14 @@ def _download_actual_song( pm, s_name, a_name, maxnum ):
     os.chmod( filename, 0o644 )
     return ( artist_name, song_name, filename )
 
+def _create_archive_songs( all_songs_downloaded ):
+    from io import BytesIO
+    import zipfile
+    mf = BytesIO( )
+    with zipfile.ZipFile( mf, 'w', compression=zipfile.ZIP_DEFLATED ) as zf:                          
+        for tup in all_songs_downloaded: zf.write( tup[-1] )
+    return mf.getvalue( ), 'songs.zip'
+
 def _email_songs( opts, all_songs_downloaded ):
     if len( all_songs_downloaded ) == 0: return
     status, _ = plexcore.oauthCheckGoogleCredentials( )
@@ -78,7 +86,7 @@ def _email_songs( opts, all_songs_downloaded ):
     else: num_songs_string = "%d songs" % num_songs
     if num_artists == 1: num_artists_string = "1 artist"
     else: num_artists_string = "%d artists" % num_artists
-    body = """I have emailed you %s from %s as attachments:
+    body = """I have emailed you %s from %s in an attached zip file, songs.zip:
     \\begin{enumerate}
     %s
     \end{enumerate}
@@ -92,10 +100,13 @@ def _email_songs( opts, all_songs_downloaded ):
     htmlString = plexcore.latexToHTML( finalString )
     subject = 'The %s with %s you requested.' % (
         num_songs_string, num_artists_string )
-    plexemail.send_individual_email_full_withattachs( htmlString, subject, opts.email,
-                                                      name = opts.email_name,
-                                                      attachNames = list(map(lambda tup: tup[-1],
-                                                                             all_songs_downloaded ) ) )
+    attachData, attachName = _create_archive_songs( all_songs_downloaded )
+    plexemail.send_individual_email_full_withsingleattach(
+        htmlString, subject, opts.email,
+        name = opts.email_name,
+        attachData = attachData,
+        attachName = attachName )
+
 def _download_songs_newformat( opts ):
     assert( opts.song_names is not None )
     assert( opts.artist_names is not None )

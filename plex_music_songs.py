@@ -101,6 +101,7 @@ def _email_songs( opts, all_songs_downloaded ):
     subject = 'The %s with %s you requested.' % (
         num_songs_string, num_artists_string )
     # attachData, attachName = _create_archive_songs( all_songs_downloaded )
+    attachNames = list(map(lambda tup: tup[-1], all_songs_downloaded ) )
     plexemail.send_individual_email_full_withattachs(
         htmlString, subject, opts.email,
         name = opts.email_name,

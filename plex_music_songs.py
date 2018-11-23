@@ -169,6 +169,7 @@ def _download_songs_oldformat( opts ):
                        song_names ) ) )
     return all_songs_downloaded
 
+<<<<<<< HEAD
 def main( ):
     parser = OptionParser( )
     parser.add_option( '-s', '--songs', dest='song_names', type=str, action='store',
@@ -198,6 +199,34 @@ def main( ):
     else: all_songs_downloaded = _download_songs_newformat( opts )
     
     if opts.email is not None: _email_songs( opts, all_songs_downloaded )
+=======
+    if opts.email is not None:
+        status, _ = plexcore.oauthCheckGoogleCredentials( )
+        if not status:
+            print( "Error, do not have correct Google credentials." )
+            return
+        songs_by_list = '\n'.join(map(lambda tup: '%s - %s' % ( tup[0], tup[1] ),
+                                      all_songs_downloaded ) )
+        body = """I have emailed you %d songs from %d artists as attachments:
+        \\begin{list}
+          %s
+        \end{list}
+        Have a good day!
+
+        Tanim
+        """ % ( len( all_songs_downloaded ),
+                len( set( map(lambda tup: tup[0], all_songs_downloaded ) ) ),
+                songs_by_list )
+        finalString = '\n'.join([ 'Hello Friend,', '', body ])
+        htmlString = plexcore.latexToHTML( finalString )
+        subject = 'The %d songs with %d artists you requested.' % (
+             len( all_songs_downloaded ),
+                len( set( map(lambda tup: tup[0], all_songs_downloaded ) ) ) )
+        plexemail.send_individual_email_full_withattachs( htmlString, subject, opts.email,
+                                                          name = opts.email_name,
+                                                          attachNames = list(map(lambda tup: tup[-1],
+                                                                                 all_songs_downloaded ) ) )
+>>>>>>> parent of ea17b20... fixed emailing songs functionality in plex_music_songs.py and plexemail/plexemail.py
         
 if __name__=='__main__':
     main( )

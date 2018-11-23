@@ -286,12 +286,16 @@ def send_individual_email_full_withattachs( mainHTML, subject, email, name = Non
                 att.set_payload(data)
             att.add_header( 'content-disposition', 'attachment', filename = attachName )
             msg.attach( att )
-    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
-    credentials = plexcore.oauthGetGoogleCredentials( )
-    assert( credentials is not None )
-    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
-                    cache_discovery = False )
-    message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
+    #data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
+    #credentials = plexcore.oauthGetGoogleCredentials( )
+    #assert( credentials is not None )
+    #service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
+    #                cache_discovery = False )
+    #message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
+    smtp_conn = smtplib.SMTP('localhost', 25 )
+    smtp_conn.ehlo( 'test' )
+    smtp_conn.sendmail( msg['From'], [ msg["To"], ], msg.as_string( ) )
+    smtp_conn.quit( )
 
 def send_individual_email( mainHTML, email, name = None,
                            mydate = datetime.datetime.now().date() ):

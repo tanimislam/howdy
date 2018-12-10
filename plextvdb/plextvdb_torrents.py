@@ -276,7 +276,8 @@ def get_tv_torrent_kickass( name, maxnum = 10 ):
     return items_toshow, 'SUCCESS'
 
 def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
-    surl = urljoin( 'https://thepiratebay.org', 's/' )
+    #surl = urljoin( 'https://thepiratebay3.org', 's/' )
+    surl = 'https://thepiratebay3.org'
     if not doAny:
         cat = CATEGORIES.VIDEO.TV_SHOWS
     else:
@@ -298,7 +299,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
     response = max( response_arr )
     if response is None: return None, 'FAILURE TIMED OUT'
     if response.status_code != 200:
-        return None, 'FAILURE STATUS CODE = %d' % response.status_code
+        return _return_error_couldnotfind( 'FAILURE STATUS CODE = %d' % response.status_code )
         
     def process_column_header(th):
         if th.a:
@@ -341,11 +342,12 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
             leechers = try_int(cells[labels.index("LE")].get_text(strip=True))
             
             # Convert size after all possible skip scenarios
-            #torrent_size = cells[labels.index("Name")].find(class_="detDesc").get_text(strip=True).split(", ")[1]
-            #torrent_size = re.sub(r"Size ([\d.]+).+([KMGT]iB)", r"\1 \2", torrent_size)
-            #size = convert_size(torrent_size, units = ["B", "KB", "MB", "GB", "TB", "PB"]) or -1            
-            #item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers, 'hash': ''}
-            item = {'title': title, 'link': download_url, 'seeders': seeders, 'leechers': leechers }
+            torrent_size = cells[labels.index("Name")].find(class_="detDesc").get_text(strip=True).split(", ")[1]
+            torrent_size = re.sub(r"Size ([\d.]+).+([KMGT]iB)", r"\1 \2", torrent_size)
+            #size = convert_size(torrent_size, units = ["B", "KB", "MB", "GB", "TB", "PB"]) or -1
+            size = torrent_size
+            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers, 'hash': ''}
+            #item = {'title': title, 'link': download_url, 'seeders': seeders, 'leechers': leechers }
             items.append(item)
         except Exception as e:
             print(e)

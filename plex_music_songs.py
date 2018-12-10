@@ -86,7 +86,7 @@ def _email_songs( opts, all_songs_downloaded ):
     else: num_songs_string = "%d songs" % num_songs
     if num_artists == 1: num_artists_string = "1 artist"
     else: num_artists_string = "%d artists" % num_artists
-    body = """I have emailed you %s from %s in an attached zip file, songs.zip:
+    body = """I have emailed you %s from %s:
     \\begin{enumerate}
     %s
     \end{enumerate}

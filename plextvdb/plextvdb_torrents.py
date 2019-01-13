@@ -277,7 +277,7 @@ def get_tv_torrent_kickass( name, maxnum = 10 ):
 
 def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
     #surl = urljoin( 'https://thepiratebay3.org', 's/' )
-    surl = 'https://thepiratebay3.org'
+    surl = 'https://thepiratebay.org'
     if not doAny:
         cat = CATEGORIES.VIDEO.TV_SHOWS
     else:

@@ -175,7 +175,7 @@ def pushCredentials( username, password, name = 'CLIENT' ):
     cparser.add_section( secname )
     cparser.set( secname, 'username', username )
     cparser.set( secname, 'password', password )
-    with open( absPath, 'wb') as openfile:
+    with open( absPath, 'w') as openfile:
         cparser.write( openfile )
     os.chmod( absPath, 0o600 )
 

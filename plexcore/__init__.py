@@ -1,3 +1,8 @@
+# code to handle Ctrl+C, convenience method for command line tools
+def signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Exiting...")
+    sys.exit( 0 )
+
 from . import plexinitialization
 pi = plexinitialization.PlexInitialization( )
 
@@ -16,8 +21,3 @@ _engine = create_engine( 'sqlite:///%s' % os.path.join( baseConfDir, 'app.db') )
 Base = declarative_base( )
 Base.metadata.bind = _engine
 session = sessionmaker( bind = _engine )( )
-
-# code to handle Ctrl+C, convenience method for command line tools
-def signal_handler( signal, frame ):
-    print( "You pressed Ctrl+C. Exiting...")
-    sys.exit( 0 )

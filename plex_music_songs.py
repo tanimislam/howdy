@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+import signal
+from plexcore import signal_handler
+signal.signal( signal.SIGINT, signal_handler )
 import codecs, sys, os
 from plexmusic import plexmusic
 from plexcore import plexcore

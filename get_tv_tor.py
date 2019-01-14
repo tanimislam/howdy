@@ -1,53 +1,61 @@
 #!/usr/bin/env python3
 
 import re, codecs, logging, sys, signal, time
-from functools import reduce
-from plexcore import signal_handler, plexcore_deluge
+from plexcore import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
+from functools import reduce
+from multiprocessing import Process, Manager, cpu_count
 from optparse import OptionParser
+from plexcore import plexcore_deluge
 from plextvdb import plextvdb_torrents
 
-def get_items_zooqle( name, maxnum = 10 ):
+def _process_items_list( items, shared_list ):
+    if shared_list is None: return items
+    else:
+        shared_list.append( items )
+        return
+
+def get_items_zooqle( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 5 )
     items, status = plextvdb_torrents.get_tv_torrent_zooqle( name, maxnum = maxnum )
     if status != 'SUCCESS':
         logging.debug( 'ERROR, ZOOQLE COULD NOT FIND %s.' % name )
-        return None
-    return items
+        return _process_items_list( None, shared_list )
+    return _process_items_list( items, shared_list )
 
-def get_items_tpb(name, maxnum = 10, doAny = False, raiseError = False):
+def get_items_tpb(name, maxnum = 10, doAny = False, raiseError = False, shared_list = None):
     assert( maxnum >= 5 )
     items, status = plextvdb_torrents.get_tv_torrent_tpb( name, maxnum = maxnum, doAny = doAny )
     if status != 'SUCCESS':
         if raiseError:
             raise ValueError('ERROR, TPB COULD NOT FIND %s.' % name)
         logging.debug( 'ERROR, TPB COULD NOT FIND %s.' % name )
-        return None
-    return items
+        return _process_items_list( None, shared_list )
+    return _process_items_list( items, shared_list )
 
-def get_items_torrentz( name, maxnum = 10 ):
+def get_items_torrentz( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 5 )
     items, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
     if status != 'SUCCESS':
         logging.debug( 'ERROR, TORRENTZ COULD NOT FIND %s.' % name )
-        return None
-    return items
+        return _process_items_list( None, shared_list )
+    return _process_items_list( items, shared_list )
 
-def get_items_rarbg( name, maxnum = 10 ):
+def get_items_rarbg( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 10 )
     items, status = plextvdb_torrents.get_tv_torrent_rarbg( name, maxnum = maxnum )
     if status != 'SUCCESS':
         logging.debug( 'ERROR, RARBG COULD NOT FIND %s.' % name )
-        return None
-    return items
+        return _process_items_list( None, shared_list )
+    return _process_items_list( items, shared_list )
 
-def get_items_kickass( name, maxnum = 10 ):
+def get_items_kickass( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 10 )
     items, status = plextvdb_torrents.get_tv_torrent_kickass( name, maxnum = maxnum )
     if status != 'SUCCESS':
         logging.debug( 'ERROR, KICKASS COULD NOT FIND %s.' % name )
-        return None
-    return items
+        return _process_items_list( None, shared_list )
+    return _process_items_list( items, shared_list )
 
 def get_tv_torrent_items( items, filename = None, to_torrent = False ):
     if len( items ) != 1:
@@ -103,14 +111,27 @@ if __name__=='__main__':
     assert( opts.name is not None )
     if opts.do_debug: logging.basicConfig( level = logging.INFO )
     #
-    time0 = time.time( )
-    items = reduce(lambda x,y: x+y, list( filter(
-        None,
-        [ get_items_zooqle( opts.name, maxnum = opts.maxnum ),
-          get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum, raiseError = False ),
-          get_items_torrentz( opts.name, maxnum = opts.maxnum ),
-          get_items_rarbg( opts.name, maxnum = opts.maxnum ),
-          get_items_kickass( opts.name, maxnum = opts.maxnum ) ] ) ) )
+    time0 = time.time( ) 
+    manager = Manager( ) # multiprocessing code is a bit faster than single-process code
+    num_processes = cpu_count( )
+    shared_list = manager.list( )
+    jobs = [ Process( target=get_items_zooqle, args=(opts.name, opts.maxnum, shared_list ) ),
+             Process( target=get_items_tpb, args=(opts.name, opts.maxnum, opts.do_any, False, shared_list ) ),
+             Process( target=get_items_rarbg, args=(opts.name, opts.maxnum, shared_list) ),
+             Process( target=get_items_kickass, args=(opts.name, opts.maxnum, shared_list ) ), ]
+#             Process( target=get_items_torrentz, args=(opts.name, opts.maxnum, shared_list ) ) ]
+    for idx in list(range(len(jobs)))[::num_processes]:
+        for process in jobs[idx:idx+num_processes]: process.start( )
+        for process in jobs[idx:idx+num_processes]: process.join( )
+    items = reduce(lambda x,y: x+y, list( filter( None, shared_list ) ) )
+    
+    # items = reduce(lambda x,y: x+y, list( filter(
+    #     None,
+    #     [ get_items_zooqle( opts.name, maxnum = opts.maxnum ),
+    #       get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum, raiseError = False ),
+    #       get_items_torrentz( opts.name, maxnum = opts.maxnum ),
+    #       get_items_rarbg( opts.name, maxnum = opts.maxnum ),
+    #       get_items_kickass( opts.name, maxnum = opts.maxnum ) ] ) ) )
     logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )
     if items is not None:
         #

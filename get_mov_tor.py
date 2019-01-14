@@ -1,40 +1,59 @@
 #!/usr/bin/env python3
 
 import re, codecs, requests, sys, signal, time, logging
-from functools import reduce
 from plexcore import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
+from functools import reduce
+from multiprocessing import Process, Manager, cpu_count
 from optparse import OptionParser
 from plextmdb import plextmdb_torrents
+from plextvdb import plextvdb_torrents
 
-def get_items_zooqle( name, maxnum = 10 ):
+def _process_items_list( items, shared_list ):
+    if shared_list is None: return items
+    else:
+        shared_list.append( items )
+        return
+
+def get_items_zooqle( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 5)
     items, status = plextmdb_torrents.get_movie_torrent_zooqle( name, maxnum = maxnum )
-    if status != 'SUCCESS': return None
-    return items
+    if status != 'SUCCESS':
+        return _process_items_list( None, shared_list )
+    return _process_items_list( items, shared_list )
 
-def get_items_tpb( name, maxnum = 10, doAny = False ):
+def get_items_tpb( name, maxnum = 10, doAny = False, shared_list = None ):
     assert( maxnum >= 5)
     its, status = plextmdb_torrents.get_movie_torrent_tpb( name, maxnum = maxnum, doAny = doAny )
-    if status != 'SUCCESS': return None    
+    if status != 'SUCCESS':
+        return _process_items_list( None, shared_list )
     items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
               item in its ]
-    return items
+    return _process_items_list( items, shared_list )
 
-def get_items_kickass( name, maxnum = 10, doAny = False ):
+def get_items_kickass( name, maxnum = 10, doAny = False, shared_list = None ):
     assert( maxnum >= 5)
     its, status = plextmdb_torrents.get_movie_torrent_kickass( name, maxnum = maxnum, doAny = doAny )
     if status != 'SUCCESS':
-        return None    
+        return _process_items_list( None, shared_list )
     items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
               item in its ]
-    return items
+    return _process_items_list( items, shared_list )
 
-def get_items_rarbg( name, maxnum = 10 ):
+def get_items_rarbg( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 5 )
     items, status = plextmdb_torrents.get_movie_torrent_rarbg( name, maxnum = maxnum )
-    if status != 'SUCCESS' : return None
-    return items
+    if status != 'SUCCESS' :
+        return _process_items_list(None, shared_list )
+    return _process_items_list( items, shared_list )
+
+def get_items_torrentz( name, maxnum = 10, shared_list = None ):
+    assert( maxnum >= 5 )
+    items, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
+    if status != 'SUCCESS':
+        logging.debug( 'ERROR, TORRENTZ COULD NOT FIND %s.' % name )
+        return _process_items_list( None, shared_list )
+    return _process_items_list( items, shared_list )
 
 def get_movie_torrent_items( items, filename = None):    
     if len( items ) != 1:
@@ -138,15 +157,31 @@ def main( ):
         except ValueError:
             pass
 
+    manager = Manager( )  # multiprocessing may be a bit faster than single-process code
+    num_processes = cpu_count( )
+    shared_list = manager.list( )
     if not opts.do_nozooq:
-        items = get_items_zooqle( opts.name, maxnum = opts.maxnum )
+        jobs = [ Process(target=get_items_zooqle, args=(opts.name, opts.maxnum, shared_list ) ) ]
     else:
-        items = None
-    items = reduce(lambda x,y: x+y, list( filter(
-        None,
-        [ items,
-          get_items_rarbg( opts.name, maxnum = opts.maxnum ),
-          get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum ) ] ) ) )
+        jobs = [ ]
+    jobs += [
+        Process( target=get_items_rarbg, args=(opts.name, opts.maxnum, shared_list ) ),
+        Process( target=get_items_tpb, args=(opts.name, opts.maxnum, opts.do_any, shared_list ) ), ]
+    # Process( target=get_items_torrentz, args=(opts.name, opts.maxnum, shared_list ) ) ]
+    for idx in list(range(len(jobs)))[::num_processes]:
+        for process in jobs[idx:idx+num_processes]: process.start( )
+        for process in jobs[idx:idx+num_processes]: process.join( )
+    items = reduce(lambda x,y: x+y, list( filter( None, shared_list ) ) )
+    
+    # if not opts.do_nozooq:
+    #     items = get_items_zooqle( opts.name, maxnum = opts.maxnum )
+    # else:
+    #     items = None
+    # items = reduce(lambda x,y: x+y, list( filter(
+    #     None,
+    #     [ items,
+    #       get_items_rarbg( opts.name, maxnum = opts.maxnum ),
+    #       get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum ) ] ) ) )
     
     logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )    
     if items is not None:

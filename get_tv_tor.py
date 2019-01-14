@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import re, codecs, logging, sys, signal
-from plexcore import signal_handler
+import re, codecs, logging, sys, signal, time
+from functools import reduce
+from plexcore import signal_handler, plexcore_deluge
 signal.signal( signal.SIGINT, signal_handler )
 from optparse import OptionParser
 from plextvdb import plextvdb_torrents
@@ -48,23 +49,15 @@ def get_items_kickass( name, maxnum = 10 ):
         return None
     return items
 
-def get_tv_torrent_items( items, filename = None ):
+def get_tv_torrent_items( items, filename = None, to_torrent = False ):
     if len( items ) != 1:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate(items) }
-        if sys.version_info.major == 2:
-            bs = codecs.encode( 'Choose TV episode or series:\n%s\n' %
-                                '\n'.join(map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
-                                                                                      sortdict[ idx ][ 'seeders' ],
-                                                                                      sortdict[ idx ][ 'leechers' ]),
-                                              sorted( sortdict ) ) ), 'utf-8' )
-            iidx = raw_input( bs )
-        else:
-            bs = 'Choose TV episode or series:\n%s\n' % '\n'.join(
-                map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
-                                                            sortdict[ idx ][ 'seeders' ],
-                                                            sortdict[ idx ][ 'leechers' ]),
-                    sorted( sortdict ) ) )
-            iidx = input( bs )
+        bs = 'Choose TV episode or series:\n%s\n' % '\n'.join(
+            map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
+                                                        sortdict[ idx ][ 'seeders' ],
+                                                        sortdict[ idx ][ 'leechers' ]),
+                sorted( sortdict ) ) )
+        iidx = input( bs )
         try:
             iidx = int( iidx.strip( ) )
             if iidx not in sortdict:
@@ -80,7 +73,13 @@ def get_tv_torrent_items( items, filename = None ):
         magnet_link = max( items )[ 'link' ]
 
     print('Chosen TV show: %s' % actmov )
-    if filename is None:
+    if to_torrent: # upload to deluge server
+        client, status = plexcore_deluge.get_deluge_client( )
+        if status != 'SUCCESS':
+            print( status )
+            return
+        plexcore_deluge.deluge_add_magnet_file( client, magnet_link )
+    elif filename is None:
         print('magnet link: %s' % magnet_link )
     else:
         with open(filename, 'w') as openfile:
@@ -96,19 +95,25 @@ if __name__=='__main__':
                       help = 'If chosen, make no filter on movie format.')
     parser.add_option('-f', '--filename', dest='filename', action='store', type=str,
                       help = 'If defined, put option into filename.')
+    parser.add_option('--add', dest='do_add', action='store_true', default = False,
+                      help = 'If chosen, push the magnet link into the deluge server.' )
+    parser.add_option('--debug', dest='do_debug', action='store_true', default = False,
+                      help = 'If chosen, run in debug mode.' )
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
+    if opts.do_debug: logging.basicConfig( level = logging.INFO )
     #
-    items = get_items_zooqle( opts.name, maxnum = opts.maxnum )
-    if items is None:
-        items = get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum, raiseError = False )    
-    if items is None:
-        items = get_items_torrentz( opts.name, maxnum = opts.maxnum )
-    if items is None:
-        items = get_items_rarbg( opts.name, maxnum = opts.maxnum )
-    if items is None:
-        items = get_items_kickass( opts.name, maxnum = opts.maxnum )
-    #
-    ##
+    time0 = time.time( )
+    items = reduce(lambda x,y: x+y, list( filter(
+        None,
+        [ get_items_zooqle( opts.name, maxnum = opts.maxnum ),
+          get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum, raiseError = False ),
+          get_items_torrentz( opts.name, maxnum = opts.maxnum ),
+          get_items_rarbg( opts.name, maxnum = opts.maxnum ),
+          get_items_kickass( opts.name, maxnum = opts.maxnum ) ] ) ) )
+    logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )
     if items is not None:
-        get_tv_torrent_items( items, filename = opts.filename )
+        #
+        ## sort from most seeders + leecher to least
+        items_sorted = sorted( items, key = lambda tup: tup['seeders'] + tup['leechers'] )[::-1][:opts.maxnum]
+        get_tv_torrent_items( items_sorted, filename = opts.filename, to_torrent = opts.do_add )

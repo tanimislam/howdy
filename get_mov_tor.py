@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import re, codecs, requests, sys, signal
+import re, codecs, requests, sys, signal, time, logging
+from functools import reduce
 from plexcore import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
 from optparse import OptionParser
@@ -38,20 +39,12 @@ def get_items_rarbg( name, maxnum = 10 ):
 def get_movie_torrent_items( items, filename = None):    
     if len( items ) != 1:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate(items) }
-        if sys.version_info.major == 2:
-            bs = codecs.encode( 'Choose movie:\n%s\n' %
-                                '\n'.join(map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
-                                                                                      sortdict[ idx ][ 'seeders' ],
-                                                                                      sortdict[ idx ][ 'leechers' ]),
-                                              sorted( sortdict ) ) ), 'utf-8' )
-            iidx = raw_input( bs )
-        else:
-            bs = 'Choose movie:\n%s\n' % '\n'.join(
-                map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
-                                                            sortdict[ idx ][ 'seeders' ],
-                                                            sortdict[ idx ][ 'leechers' ]),
-                    sorted( sortdict ) ) )
-            iidx = input( bs )
+        bs = 'Choose movie:\n%s\n' % '\n'.join(
+            map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
+                                                        sortdict[ idx ][ 'seeders' ],
+                                                        sortdict[ idx ][ 'leechers' ]),
+                sorted( sortdict ) ) )
+        iidx = input( bs )
         try:
             iidx = int( iidx.strip( ) )
             if iidx not in sortdict:
@@ -130,11 +123,17 @@ def main( ):
                       help = 'If chosen, bypass YTS.AG.')
     parser.add_option('--nozooq', dest='do_nozooq', action='store_true', default=False,
                       help = 'If chosen, bypass ZOOQLE.')
+    parser.add_option('--debug', dest='do_debug', action='store_true', default = False,
+                      help = 'If chosen, run in debug mode.' )
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
+    if opts.do_debug: logging.basicConfig( level = logging.INFO )
+    #
+    time0 = time.time( )
     if not opts.do_bypass:
         try:
             get_movie_yts( opts.name, verify = True, raiseError = True )
+            logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )
             return
         except ValueError:
             pass
@@ -143,12 +142,17 @@ def main( ):
         items = get_items_zooqle( opts.name, maxnum = opts.maxnum )
     else:
         items = None
-        
-    if items is None:
-        items = get_items_rarbg( opts.name, maxnum = opts.maxnum )
-    if items is None:
-        items = get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum )
+    items = reduce(lambda x,y: x+y, list( filter(
+        None,
+        [ items,
+          get_items_rarbg( opts.name, maxnum = opts.maxnum ),
+          get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum ) ] ) ) )
+    
+    logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )    
     if items is not None:
+        #
+        ## sort from most seeders + leecher to least
+        items_sorted = sorted( items, key = lambda tup: tup['seeders'] + tup['leechers'] )[::-1][:opts.maxnum]
         get_movie_torrent_items( items, filename = opts.filename )
 
 if __name__=='__main__':

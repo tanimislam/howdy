@@ -1,4 +1,4 @@
-import threading, requests, fuzzywuzzy, re, os
+import threading, requests, fuzzywuzzy, re, os, time
 from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
 from requests.compat import urljoin
@@ -73,19 +73,30 @@ def get_movie_torrent_rarbg( name, maxnum = 10 ):
     tmdbid = plextmdb.get_movie_tmdbids( name )
     if tmdbid is None:
         return None, 'ERROR, could not find %s in themoviedb.' % name
-    apiurl = "http://torrentapi.org/pubapi_v2.php"
+    #
+    ## got app_id and apiurl from https://www.rubydoc.info/github/epistrephein/rarbg/master/RARBG/API
+    apiurl = "https://torrentapi.org/pubapi_v2.php"
     response = requests.get(apiurl,
                             params={ "get_token": "get_token",
                                      "format": "json",
-                                     "app_id": "sickrage2" } )
+                                     "app_id": "rarbg-rubygem" } )
     if response.status_code != 200:
-        status = 'ERROR, problem with rarbg.to'
+        status = '. '.join([ 'ERROR, problem with rarbg.to: %d' % response.status_code,
+                             'Unable to connect to provider.' ])
         return None, status
     token = response.json( )[ 'token' ]
     params = { 'mode' : 'search', 'search_themoviedb' : tmdbid, 'token' : token,
-               'format' : 'json_extended', 'app_id' : 'sickrage2', 'limit' : 100,
+               'format' : 'json_extended', 'app_id' : 'rarbg-rubygem', 'limit' : 100,
                'category' : 'movies' }
+    #
+    ## wait 4 seconds
+    ## this is a diamond hard limit for RARBG
+    time.sleep( 4.0 )
     response = requests.get( apiurl, params = params )
+    if response.status_code != 200:
+        status = '. '.join([ 'ERROR, problem with rarbg.to: %d' % response.status_code,
+                             'Unable to connect to provider.' ])
+        return None, status
     data = response.json( )
     if 'torrent_results' not in data:
         status = 'ERROR, RARBG.TO could not find any torrents for %s.' % name            

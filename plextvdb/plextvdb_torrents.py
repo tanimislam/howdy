@@ -1,4 +1,4 @@
-import requests, re, threading, cfscrape, os
+import requests, re, threading, cfscrape, os, time
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
@@ -105,19 +105,30 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
                      candidate_seriesname
             return None, status
         series_id = series_ids[ 0 ]
-    apiurl = "http://torrentapi.org/pubapi_v2.php"
+    #
+    ## got app_id and apiurl from https://www.rubydoc.info/github/epistrephein/rarbg/master/RARBG/API
+    apiurl = "https://torrentapi.org/pubapi_v2.php"
     response = requests.get(apiurl,
                             params={ "get_token": "get_token",
                                      "format": "json",
-                                     "app_id": "sickrage2" }, verify = verify )
+                                     "app_id": "rarbg-rubygem" }, verify = verify )
     if response.status_code != 200:
-        status = 'ERROR, problem with rarbg.to: %d' % response.status_code
+        status = '. '.join([ 'ERROR, problem with rarbg.to: %d' % response.status_code,
+                             'Unable to connect to provider.' ])
         return None, status
     token = response.json( )[ 'token' ]
     params = { 'mode' : 'search', 'search_tvdb' : series_id, 'token' : token,
-               'format' : 'json_extended', 'category' : 'tv', 'app_id' : 'sickrage2',
+               'format' : 'json_extended', 'category' : 'tv', 'app_id' : 'rarbg-rubygem',
                'search_string' : 'E'.join( splitseaseps ), 'limit' : 100 }
+    #
+    ## wait 4 seconds
+    ## this is a diamond hard limit for RARBG
+    time.sleep( 4.0 )
     response = requests.get( apiurl, params = params, verify = verify )
+    if response.status_code != 200:
+        status = '. '.join([ 'ERROR, problem with rarbg.to: %d' % response.status_code,
+                             'Unable to connect to provider.' ])
+        return None, status
     data = response.json( )
     if 'torrent_results' not in data:
         status = '\n'.join([ 'ERROR, RARBG.TO could not find any torrents for %s %s.' %

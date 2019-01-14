@@ -118,11 +118,10 @@ if __name__=='__main__':
     jobs = [ Process( target=get_items_zooqle, args=(opts.name, opts.maxnum, shared_list ) ),
              Process( target=get_items_tpb, args=(opts.name, opts.maxnum, opts.do_any, False, shared_list ) ),
              Process( target=get_items_rarbg, args=(opts.name, opts.maxnum, shared_list) ),
-             Process( target=get_items_kickass, args=(opts.name, opts.maxnum, shared_list ) ), ]
-#             Process( target=get_items_torrentz, args=(opts.name, opts.maxnum, shared_list ) ) ]
-    for idx in list(range(len(jobs)))[::num_processes]:
-        for process in jobs[idx:idx+num_processes]: process.start( )
-        for process in jobs[idx:idx+num_processes]: process.join( )
+             Process( target=get_items_kickass, args=(opts.name, opts.maxnum, shared_list ) ),
+             Process( target=get_items_torrentz, args=(opts.name, opts.maxnum, shared_list ) ) ]
+    for process in jobs: process.start( )
+    for process in jobs: process.join( )
     items = reduce(lambda x,y: x+y, list( filter( None, shared_list ) ) )
     
     # items = reduce(lambda x,y: x+y, list( filter(

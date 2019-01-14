@@ -142,6 +142,8 @@ def main( ):
                       help = 'If chosen, bypass YTS.AG.')
     parser.add_option('--nozooq', dest='do_nozooq', action='store_true', default=False,
                       help = 'If chosen, bypass ZOOQLE.')
+    parser.add_option('--torrentz', dest='do_torrentz', action='store_true', default=False,
+                      help = 'If chosen, also look through TORRENTZ to get magnet link.')
     parser.add_option('--debug', dest='do_debug', action='store_true', default = False,
                       help = 'If chosen, run in debug mode.' )
     opts, args = parser.parse_args( )
@@ -166,11 +168,11 @@ def main( ):
         jobs = [ ]
     jobs += [
         Process( target=get_items_rarbg, args=(opts.name, opts.maxnum, shared_list ) ),
-        Process( target=get_items_tpb, args=(opts.name, opts.maxnum, opts.do_any, shared_list ) ), ]
-    # Process( target=get_items_torrentz, args=(opts.name, opts.maxnum, shared_list ) ) ]
-    for idx in list(range(len(jobs)))[::num_processes]:
-        for process in jobs[idx:idx+num_processes]: process.start( )
-        for process in jobs[idx:idx+num_processes]: process.join( )
+        Process( target=get_items_tpb, args=(opts.name, opts.maxnum, opts.do_any, shared_list ) ) ]
+    if opts.do_torrentz:
+        jobs.append( Process( target=get_items_torrentz, args=(opts.name, opts.maxnum, shared_list ) ) )
+    for process in jobs: process.start( )
+    for process in jobs: process.join( )
     items = reduce(lambda x,y: x+y, list( filter( None, shared_list ) ) )
     
     # if not opts.do_nozooq:

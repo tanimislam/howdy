@@ -1,6 +1,6 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
-import requests, lxml.html
+import requests
 from optparse import OptionParser
 from plexcore import plexcore
 from plexemail import plexemail

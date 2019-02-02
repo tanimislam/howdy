@@ -197,12 +197,17 @@ def deluge_is_torrent_file( torrent_file_name ):
     return True
 
 def deluge_add_torrent_file( client, torrent_file_name ):
-    baseName = os.path.basename( torrent_file_name )
     if not deluge_is_torrent_file( torrent_file_name ): return None
-    ## now add the file in
+    return deluge_add_torrent_file_as_data(
+        client, torrent_file_name,
+        open( torrent_file_name, 'rb' ).read( ) )
+
+def deluge_add_torrent_file_as_data( client, torrent_file_name,
+                                     torrent_file_data ):
+    baseName = os.path.basename( torrent_file_name )
     torrentId = client.call(
         'core.add_torrent_file', baseName,
-        base64.b64encode( open( torrent_file_name, 'rb' ).read( ) ), {} )
+        base64.b64encode( torrent_file_data ), {} )
     return torrentId
 
 def deluge_add_magnet_file( client, magnet_uri ):

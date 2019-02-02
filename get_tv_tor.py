@@ -93,14 +93,39 @@ def get_tv_torrent_items( items, filename = None, to_torrent = False ):
         with open(filename, 'w') as openfile:
             openfile.write('%s\n' % magnet_link )
 
+def process_magnet_items( name ):
+    # items = reduce(lambda x,y: x+y, list( filter(
+    #     None,
+    #     [ get_items_zooqle( opts.name, maxnum = opts.maxnum ),
+    #       get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum, raiseError = False ),
+    #       get_items_torrentz( opts.name, maxnum = opts.maxnum ),
+    #       get_items_rarbg( opts.name, maxnum = opts.maxnum ),
+    #       get_items_kickass( opts.name, maxnum = opts.maxnum ) ] ) ) )
+    
+    time0 = time.time( )
+    manager = Manager( ) # multiprocessing code is a bit faster than single-process code
+    num_processes = cpu_count( )
+    shared_list = manager.list( )
+    jobs = [ Process( target=get_items_zooqle, args=(name, opts.maxnum, shared_list ) ),
+             Process( target=get_items_tpb, args=(name, opts.maxnum, opts.do_any, False, shared_list ) ),
+             Process( target=get_items_rarbg, args=(name, opts.maxnum, shared_list) ),
+             Process( target=get_items_kickass, args=(name, opts.maxnum, shared_list ) ),
+             Process( target=get_items_torrentz, args=(name, opts.maxnum, shared_list ) ) ]
+    for process in jobs: process.start( )
+    for process in jobs: process.join( )
+    items_split = list( filter( None, shared_list ) )
+    logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )
+    if len( items_split ) != 0: return reduce(lambda x,y: x+y, items_split )
+    return None
+            
 if __name__=='__main__':
     parser = OptionParser( )
     parser.add_option('-n', '--name', dest='name', type=str, action='store',
-                      help = 'Name of the movie file to get.')
+                      help = 'Name of the TV show to get.')
     parser.add_option('--maxnum', dest='maxnum', type=int, action='store', default = 10,
                       help = 'Maximum number of torrents to look through. Default is 10.')
     parser.add_option('--any', dest='do_any', action='store_true', default = False,
-                      help = 'If chosen, make no filter on movie format.')
+                      help = 'If chosen, make no filter on TV show format.')
     parser.add_option('-f', '--filename', dest='filename', action='store', type=str,
                       help = 'If defined, put option into filename.')
     parser.add_option('--add', dest='do_add', action='store_true', default = False,
@@ -111,27 +136,7 @@ if __name__=='__main__':
     assert( opts.name is not None )
     if opts.do_debug: logging.basicConfig( level = logging.INFO )
     #
-    time0 = time.time( ) 
-    manager = Manager( ) # multiprocessing code is a bit faster than single-process code
-    num_processes = cpu_count( )
-    shared_list = manager.list( )
-    jobs = [ Process( target=get_items_zooqle, args=(opts.name, opts.maxnum, shared_list ) ),
-             Process( target=get_items_tpb, args=(opts.name, opts.maxnum, opts.do_any, False, shared_list ) ),
-             Process( target=get_items_rarbg, args=(opts.name, opts.maxnum, shared_list) ),
-             Process( target=get_items_kickass, args=(opts.name, opts.maxnum, shared_list ) ),
-             Process( target=get_items_torrentz, args=(opts.name, opts.maxnum, shared_list ) ) ]
-    for process in jobs: process.start( )
-    for process in jobs: process.join( )
-    items = reduce(lambda x,y: x+y, list( filter( None, shared_list ) ) )
-    
-    # items = reduce(lambda x,y: x+y, list( filter(
-    #     None,
-    #     [ get_items_zooqle( opts.name, maxnum = opts.maxnum ),
-    #       get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum, raiseError = False ),
-    #       get_items_torrentz( opts.name, maxnum = opts.maxnum ),
-    #       get_items_rarbg( opts.name, maxnum = opts.maxnum ),
-    #       get_items_kickass( opts.name, maxnum = opts.maxnum ) ] ) ) )
-    logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )
+    items = process_magnet_items( opts.name )
     if items is not None:
         #
         ## sort from most seeders + leecher to least

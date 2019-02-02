@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import re, codecs, requests, sys, signal, time, logging
-from plexcore import signal_handler
+from plexcore import signal_handler, plexcore_deluge
 signal.signal( signal.SIGINT, signal_handler )
 from functools import reduce
 from multiprocessing import Process, Manager, cpu_count
@@ -55,7 +55,7 @@ def get_items_torrentz( name, maxnum = 10, shared_list = None ):
         return _process_items_list( None, shared_list )
     return _process_items_list( items, shared_list )
 
-def get_movie_torrent_items( items, filename = None):    
+def get_movie_torrent_items( items, filename = None, to_torrent = False ):    
     if len( items ) != 1:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate(items) }
         bs = 'Choose movie:\n%s\n' % '\n'.join(
@@ -79,13 +79,19 @@ def get_movie_torrent_items( items, filename = None):
         magnet_link = max( items )[ 'link' ]
 
     print('Chosen movie %s' % actmov )
-    if filename is None:
+    if to_torrent: # upload to deluge server
+        client, status = plexcore_deluge.get_deluge_client( )
+        if status != 'SUCCESS':
+            print( status )
+            return
+        plexcore_deluge.deluge_add_magnet_file( client, magnet_link )
+    elif filename is None:
         print('magnet link: %s' % magnet_link )
     else:
         with open(filename, 'w') as openfile:
             openfile.write('%s\n' % magnet_link )
             
-def get_movie_yts( name, verify = True, raiseError = False ):
+def get_movie_yts( name, verify = True, raiseError = False, to_torrent = False ):
     movies, status = plextmdb_torrents.get_movie_torrent( name, verify = verify )
     if status != 'SUCCESS':
         if raiseError:
@@ -125,8 +131,18 @@ def get_movie_yts( name, verify = True, raiseError = False ):
     url = list(filter(lambda tor: 'quality' in tor and '3D' not in tor['quality'],
                       actmov['torrents']))[0]['url']
     resp = requests.get( url, verify = verify )
-    with open( '%s.torrent' % '_'.join( actmov['title'].split() ), 'wb') as openfile:
-        openfile.write( resp.content )
+    filename =  '%s.torrent' % '_'.join( actmov['title'].split() )
+    if not to_torrent:
+        with open( filename, 'wb') as openfile:
+            openfile.write( resp.content )
+    else:
+        import base64
+        client, status = plexcore_deluge.get_deluge_client( )
+        if status != 'SUCCESS':
+            print( status )
+            return
+        plexcore_deluge.deluge_add_torrent_file_as_data(
+            client, filename, resp.content )
 
 def main( ):
     parser = OptionParser( )
@@ -146,6 +162,8 @@ def main( ):
                       help = 'If chosen, also look through TORRENTZ to get magnet link.')
     parser.add_option('--debug', dest='do_debug', action='store_true', default = False,
                       help = 'If chosen, run in debug mode.' )
+    parser.add_option('--add', dest='do_add', action='store_true', default = False,
+                      help = 'If chosen, push the magnet link into the deluge server.' )
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
     if opts.do_debug: logging.basicConfig( level = logging.INFO )
@@ -153,19 +171,19 @@ def main( ):
     time0 = time.time( )
     if not opts.do_bypass:
         try:
-            get_movie_yts( opts.name, verify = True, raiseError = True )
-            logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )
+            get_movie_yts( opts.name, verify = True, raiseError = True,
+                           to_torrent = opts.do_add )
+            logging.info( 'search for torrents took %0.3f seconds.' %
+                          ( time.time( ) - time0 ) )
             return
-        except ValueError:
-            pass
+        except ValueError: pass
 
     manager = Manager( )  # multiprocessing may be a bit faster than single-process code
     num_processes = cpu_count( )
     shared_list = manager.list( )
-    if not opts.do_nozooq:
-        jobs = [ Process(target=get_items_zooqle, args=(opts.name, opts.maxnum, shared_list ) ) ]
-    else:
-        jobs = [ ]
+    if not opts.do_nozooq: jobs = [
+            Process(target=get_items_zooqle, args=(opts.name, opts.maxnum, shared_list ) ) ]
+    else: jobs = [ ]
     jobs += [
         Process( target=get_items_rarbg, args=(opts.name, opts.maxnum, shared_list ) ),
         Process( target=get_items_tpb, args=(opts.name, opts.maxnum, opts.do_any, shared_list ) ) ]
@@ -175,22 +193,12 @@ def main( ):
     for process in jobs: process.join( )
     items = reduce(lambda x,y: x+y, list( filter( None, shared_list ) ) )
     
-    # if not opts.do_nozooq:
-    #     items = get_items_zooqle( opts.name, maxnum = opts.maxnum )
-    # else:
-    #     items = None
-    # items = reduce(lambda x,y: x+y, list( filter(
-    #     None,
-    #     [ items,
-    #       get_items_rarbg( opts.name, maxnum = opts.maxnum ),
-    #       get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum ) ] ) ) )
-    
     logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )    
     if items is not None:
         #
         ## sort from most seeders + leecher to least
         items_sorted = sorted( items, key = lambda tup: tup['seeders'] + tup['leechers'] )[::-1][:opts.maxnum]
-        get_movie_torrent_items( items, filename = opts.filename )
+        get_movie_torrent_items( items, filename = opts.filename, to_torrent = opts.do_add )
 
 if __name__=='__main__':
     main( )

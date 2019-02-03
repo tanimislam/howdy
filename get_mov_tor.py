@@ -191,7 +191,8 @@ def main( ):
         jobs.append( Process( target=get_items_torrentz, args=(opts.name, opts.maxnum, shared_list ) ) )
     for process in jobs: process.start( )
     for process in jobs: process.join( )
-    items = reduce(lambda x,y: x+y, list( filter( None, shared_list ) ) )
+    try: items = reduce(lambda x,y: x+y, list( filter( None, shared_list ) ) )
+    except: items = None
     
     logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )    
     if items is not None:

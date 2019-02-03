@@ -8,7 +8,7 @@ def main( ):
     act_args = sys.argv[1:]
     #
     ## by first set of names
-    first_arg = act_acrgs[0]
+    first_arg = act_args[0]
     if first_arg in ( '-h', '--help' ):
         print("Possible commands: info, rm (del), add, pause, resume, push")
         return

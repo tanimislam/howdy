@@ -19,7 +19,7 @@ def get_subtitles_opensubtitles( title, extra_strings = [ ] ):
     if len( subtitles ) == 0: return None
     return { item['title'] : item['srtfile'] for item in subtitles }
 
-def get_subtitles_subscene2( title, extra_strings = [ ] ):
+def get_subtitles_subscene( title, extra_strings = [ ] ):
     subtitle_tups = subscene.search( title )
     if subtitle_tups is None: return None
     if len( extra_strings ) != 0:
@@ -34,106 +34,6 @@ def get_subtitles_subscene2( title, extra_strings = [ ] ):
         if title not in subtitles_map:
             subtitles_map[ title ] = url
     return subtitles_map
-    
-def get_subtitles_subscene( title ):
-    response = requests.get( 'https://subscene.com/subtitles/title',
-                             params = { 'q' : title, 'l' : 'english' } )
-    if response.status_code != 200:
-        return None
-    html = BeautifulSoup( response.content, 'lxml' )
-    header = filter(lambda elem: elem.get_text( ) == 'Exact', html.find('div', 'search-result').find_all('h2') )
-    if len( header ) != 1:
-        return None
-    header = max( header )
-
-    film_url = urljoin( 'https://subscene.com',
-                        header.findNext('ul').find('li').div.a.get('href') )
-    #
-    ## now load this url
-    response2 = requests.get( film_url )
-    if response2.status_code != 200:
-        return None
-    html2 = BeautifulSoup( response2.content, 'lxml' )
-    content = html2.find('div', 'subtitles')
-    header = content.find('div', 'box clearfix')
-    cover = header.find('div', 'poster').img.get('src')
-    title = header.find('div', 'header').h2.text
-    def from_rows( rows ):
-        subtitles = filter(None, map(from_row, filter(lambda row: row.td.a is not None, rows ) ) )
-        return subtitles
-
-    def from_row( row ):
-        try:
-            title = row.find('td', 'a1').a.find_all('span')[1].text
-        except:
-            title = ''
-        title = title.strip()
-        
-        try:
-            page = urljoin( 'https://subscene.com', row.find('td', 'a1').a.get('href') )
-        except:
-            page = ''
-        if page == '':
-            return None
-        
-        try:
-            language = row.find('td', 'a1').a.find_all('span')[0].text
-        except:
-            language = ''
-        language = language.strip()
-        if language != '':
-            if language.lower( ) != 'english':
-                return None
-
-        owner = {}
-        try:
-            owner_username = row.find('td', 'a5').a.text
-        except:
-            owner_username = ''
-        owner['username'] = owner_username.strip()
-        try:
-            owner_page = row.find('td', 'a5').a.get('href')
-            owner['page'] = urljoin( 'https://subscene.com', owner_page.strip() )
-        except:
-            owner['page'] = ''
-            
-        try:
-            comment = row.find('td', 'a6').div.text
-        except:
-            comment = ''
-        comment = comment.strip()
-        #
-        ## now get the name, and SRT file, for this subtitle
-        response = requests.get( page )
-        if response.status_code != 200:
-            return None
-        html = BeautifulSoup( response.content, 'lxml' )
-        zipurl = urljoin( 'https://subscene.com', html.find('div', 'download').a.get('href') )
-        try:
-            with zipfile.ZipFile( BytesIO( requests.get( zipurl ).content ), 'r' ) as zf:
-                name = max( zf.namelist( ) )
-                srtdata = zf.read( name )
-                return { 'title' : title, 'name' : name, 'owner' : owner,
-                         'comment' : comment, 'srtdata' : srtdata }
-        except:
-            return None
-        
-    
-    imdb = header.find('div', 'header').h2.find('a', 'imdb').get('href')    
-    year = header.find('div', 'header').ul.li.text
-    year = int(re.findall(r'[0-9]+', year)[0])
-
-    rows = content.find('table').tbody.find_all('tr')    
-    subtitles = from_rows( rows )
-    names_exact = [ ]
-    subtitles_unique = [ ]
-    for subtitle in subtitles:
-        name = subtitle[ 'name' ]
-        if name not in names_exact:
-            names_exact.append( name )
-            subtitles_unique.append( subtitle )
-    return { 'title' : title, 'year' : year, 'imdb' : imdb, 'cover' : cover,
-             'subtitles' : subtitles_unique }
 
 def get_subtitles_yts( title ):
     tmdbid = plextmdb.get_movie_tmdbids( title )

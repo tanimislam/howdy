@@ -3,6 +3,7 @@
 import re, codecs, requests, zipfile, os, sys, signal, logging, time
 from plexcore import signal_handler, subscene
 signal.signal( signal.SIGINT, signal_handler )
+from termcolor import colored
 from io import BytesIO
 from functools import reduce
 from multiprocessing import Process, Manager, cpu_count
@@ -47,10 +48,14 @@ def get_items_opensubtitles( name, maxnum = 20, extra_strings = [ ], shared_list
         shared_list )
 
 def get_movie_subtitle_items( items, filename = 'eng.srt' ):
+    coloration_dict = { 'yts' : 'red',
+                        'subscene' : 'green',
+                        'opensubtitles' : 'blue' }
     if len( items ) == 0: return
     sortdict = { idx + 1 : item for ( idx, item ) in enumerate( items ) }
     bs = 'Choose movie subtitle:\n%s\n' % '\n'.join(
-        map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 'title' ] ),
+        map(lambda idx: '%d: %s' % ( idx, colored( sortdict[ idx ][ 'title' ],
+                                                   coloration_dict[ sortdict[ idx ][ 'content' ] ] ) ),
             sorted( sortdict ) ) )
     iidx = input( bs )
     try:
@@ -85,17 +90,17 @@ def get_movie_subtitle_items( items, filename = 'eng.srt' ):
 
 if __name__=='__main__':
     parser = OptionParser( )
-    parser.add_option('--name', dest='name', type=str, action='store',
+    parser.add_option('-n', '--name', dest='name', type=str, action='store',
                       help = 'Name of the movie file to get.')
-    parser.add_option('--maxnum', dest='maxnum', type=int, action='store', default = 10,
+    parser.add_option('-m', '--maxnum', dest='maxnum', type=int, action='store', default = 10,
                       help = 'Maximum number of torrents to look through. Default is 10.')
-    parser.add_option('--filename', dest='filename', action='store', type=str, default = 'eng.srt',
+    parser.add_option('-f', '--filename', dest='filename', action='store', type=str, default = 'eng.srt',
                       help = 'Name of the subtitle file. Default is eng.srt.')
-    parser.add_option('--bypass', dest='do_bypass', action='store_true', default = True,
+    parser.add_option('-b', '--bypass', dest='do_bypass', action='store_true', default = True,
                       help = 'If chosen, then bypass yts subtitles.')
-    parser.add_option('--keywords', dest='keywords', action='store', type=str,
+    parser.add_option('-k', '--keywords', dest='keywords', action='store', type=str,
                       help = 'Optional definition of a list of keywords to look for, in the subscene search for movie subtitles.')
-    parser.add_option('--debug', dest='do_debug', action='store_true', default = False,
+    parser.add_option('-d', '--debug', dest='do_debug', action='store_true', default = False,
                       help = 'If chosen, run in debug mode.' )
     opts, args = parser.parse_args( )
     assert( opts.name is not None )

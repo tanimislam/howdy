@@ -111,7 +111,42 @@ def get_gracenote_credentials( ):
         raise ValueError("Error, conf file does not have userID.")
     return cParser.get( "GRACENOTE", "clientID" ), cParser.get( "GRACENOTE", "userID" )
 
-#def fill_m4a_metadata( filename, artist_name, song_name ):
+def push_lastfm_credentials( api_data ):
+    assert( len(set(api_data) - set([ 'api_key', 'api_secret', 'application_name',
+                                      'username' ]) ) == 0 )
+    cParser = RawConfigParser( )
+    cParser.add_section( 'LASTFM' )
+    cParser.set( 'LASTFM', 'api_key',
+                 api_data[ 'api_key' ] )
+    cParser.set( 'LASTFM', 'api_secret',
+                 api_data[ 'api_secret' ] )
+    cParser.set( 'LASTFM', 'application_name',
+                 api_data[ 'application_name' ] )
+    cParser.set( 'LASTFM', 'username',
+                 api_data[ 'username' ] )
+    absPath = os.path.join( mainDir, 'resources', 'lastfm_api.conf' )
+    with open( absPath, 'w') as openfile:
+        cParser.write( openfile )
+    os.chmod( absPath, 0o600 )
+
+def get_lastfm_credentials( ):
+    cParser = RawConfigParser( )
+    absPath = os.path.join( mainDir, 'resources', 'lastfm_api.conf' )
+    if not os.path.isfile( absPath ):
+        raise ValueError("ERROR, LASTFM CREDENTIALS NOT FOUND" )
+    cParser.read( absPath )
+    if not cParser.has_section( 'LASTFM' ):
+        raise ValueError("Error, lastfm_api.conf does not have a LASTFM section.")
+    for key in ( 'api_key', 'api_secret', 'application_name', 'username' ):
+         if not cParser.has_option( 'LASTFM', key ):
+            raise ValueError("Error, conf file does not have %s." % key )
+    return {
+        "api_key" : cParser.get( 'LASTFM', 'api_key' ),
+        "api_secret" : cParser.get( 'LASTFM', 'api_secret' ),
+        "application_name" : cParser.get( 'LASTFM', 'application_name' ),
+        "username" : cParser.get( 'LASTFM', 'username' ) }
+    
+
 def fill_m4a_metadata( filename, data_dict ):
     assert( os.path.isfile( filename ) )
     assert( os.path.basename( filename ).lower( ).endswith( '.m4a' ) )
@@ -122,7 +157,7 @@ def fill_m4a_metadata( filename, data_dict ):
     mp4tags[ '\xa9alb' ] = [ data_dict[ 'album' ], ]
     mp4tags[ '\xa9ART' ] = [ data_dict[ 'artist' ], ]
     mp4tags[ 'aART' ] = [ data_dict[ 'artist' ], ]
-    mp4tags[ '\xa9day' ] = [ str(data_dict[ 'year' ]), ]
+    if 'year' in data_dict: mp4tags[ '\xa9day' ] = [ str(data_dict[ 'year' ]), ]
     mp4tags[ 'trkn' ] = [ ( data_dict[ 'tracknumber' ],
                             data_dict[ 'total tracks' ] ), ]
     if data_dict[ 'album url' ] != '':
@@ -181,6 +216,127 @@ def youtube_search(youtube, query, max_results = 10):
             print( e )
             pass
     return videos
+
+class PlexLastFM( object ):
+
+    @classmethod
+    def get_album_url( cls, album_url_entries ):
+        sorting_list_size = { 'large' : 0,
+                              'extralarge' : 1,
+                              'mega' : 2, 'medium' : 3, 'small' : 4,
+                              '' : 5 }
+        sorted_entries = sorted( filter(lambda entry: 'size' in entry and
+                                        '#text' in entry and
+                                        entry['size'] in sorting_list_size, album_url_entries ),
+                                 key = lambda entry: sorting_list_size[ entry['size'] ] )
+        if len( sorted_entries ) == 0: return None
+        return sorted_entries[ 0 ][ '#text' ]
+    
+    def __init__( self ):
+        data = get_lastfm_credentials( )
+        self.api_key = data[ 'api_key' ]
+        self.api_secret = data[ 'api_secret' ]
+        self.application_name = data[ 'application_name' ]
+        self.username = data[ 'username' ]
+        self.endpoint = 'http://ws.audioscrobbler.com/2.0'
+
+    def get_album_info( self, artist_name, album_name ):
+        response = requests.get( self.endpoint,
+                                 params = { 'method' : 'album.getinfo',
+                                            'album' : album_name,
+                                            'artist' : artist_name,
+                                            'api_key' : self.api_key,
+                                            'format' : 'json',
+                                            'lang' : 'en' } )
+        data = response.json( )
+        if 'error' in data:
+            return None, "ERROR: %s" % data['message']
+        return data['album'], 'SUCCESS'
+        
+    def get_album_image( self, artist_name, album_name ):
+        album, status = self.get_album_info( artist_name, album_name )
+        if status != 'SUCCESS':
+            return None, status
+        if 'image' not in album:
+            error_message = 'Could not find album art for album = %s for artist = %s.' % (
+                album_name, artist_name )
+            return None, error_message
+        album_url = PlexLastFM.get_album_url( album[ 'image' ] )
+        if album_url is None:
+            error_message = "Could not find album art for album = %s for artist = %s." % (
+                album_name, artist_name )
+            return None, error_message
+        filename = '%s.%s.png' % ( artist_name, album_name.replace('/', '-' ) )
+        img = Image.open( BytesIO( requests.get( album_url ).content ) )
+        img.save( filename, format = 'png' )
+        os.chmod( filename, 0o644 )
+        return filename, 'SUCCESS'
+        
+    def get_song_listing( self, artist_name, album_name ):
+        album, status = self.get_album_info( artist_name, album_name )
+        if status != 'SUCCESS': return None, status
+        track_listing = sorted(map(lambda track: ( titlecase.titlecase( track['name'] ),
+                                                   int( track[ '@attr' ][ 'rank' ] ) ),
+                                   album['tracks']['track'] ), key = lambda tup: tup[1] )
+        return track_listing, 'SUCCESS'
+
+    #
+    ## note that lastfm does not provide a releasedate at all. This music metadata is not going to arrive at all
+    ## see, e.g., https://github.com/pylast/pylast/issues/177.
+    ## also, https://github.com/feross/last-fm/issues/2.
+    ## documentation found here, https://www.last.fm/api/show/album.getInfo, is incorrect.
+    def get_music_metadata( self, song_name, artist_name, all_data = False ):
+        response = requests.get( self.endpoint,
+                                 params = { 'method' : 'track.getinfo',
+                                            'artist' : artist_name,
+                                            'track' : titlecase.titlecase( song_name ),
+                                            'autocorrect' : 1,
+                                            'api_key' : self.api_key,
+                                            'format' : 'json',
+                                            'lang' : 'en' } )
+        data = response.json( )
+        if 'error' in data:
+            return None, "ERROR: %s" % data[ 'message' ]
+        track = data['track']
+        music_metadata = { 'artist' : track['artist']['name'],
+                           'song' : titlecase.titlecase( track['name'] ),
+                           'album' : track[ 'album' ][ 'title' ] }
+        if 'image' in track[ 'album' ]:
+            album_url = PlexLastFM.get_album_url( track[ 'album' ][ 'image' ] )
+            if album_url is not None:
+                music_metadata[ 'album url' ] = album_url
+        if not all_data:
+            return music_metadata, 'SUCCESS'
+        #
+        ## now if we want to get total number of tracks for this album, and track number for song
+        track_listing, status = self.get_song_listing( artist_name = artist_name,
+                                                       album_name = track[ 'album' ][ 'title' ] )
+        if track_listing is None:
+            return music_metadata, 'SUCCESS'
+        track_listing_dict = dict( track_listing )
+        if titlecase.titlecase( song_name ) in track_listing_dict:
+            music_metadata[ 'tracknumber' ] = track_listing_dict[
+                titlecase.titlecase( song_name ) ]
+            music_metadata[ 'total tracks' ] = len( track_listing_dict )
+        return music_metadata, 'SUCCESS'
+
+    def get_music_metadatas_album( self, artist_name, album_name ):
+        album, status = self.get_album_info( artist_name = artist_name,
+                                             album_name = album_name )
+        if status != 'SUCCESS':
+            return None, status
+        track_listing = sorted(map(lambda track: ( titlecase.titlecase( track['name'] ),
+                                                   int( track[ '@attr' ][ 'rank' ] ) ),
+                                   album['tracks']['track'] ), key = lambda tup: tup[1] )
+        album_data_dict = list( map(lambda title_num:
+                                    { 'song' : titlecase.titlecase( title_num[ 0 ] ),
+                                      'artist' : album[ 'artist' ],
+                                      'tracknumber' : title_num[ 1 ],
+                                      'total tracks' : len( track_listing ),
+                                      'album url' : PlexLastFM.get_album_url( album[ 'image' ] ),
+                                      'album' : album[ 'name' ] },
+                                    track_listing ) )
+        return album_data_dict, 'SUCCESS'
     
 class PlexMusic( object ):
     def __init__( self ):

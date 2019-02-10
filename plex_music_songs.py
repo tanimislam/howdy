@@ -34,13 +34,17 @@ def _choose_youtube_item( name, maxnum = 10 ):
         return None
     return youtubeURL
 
-def _download_actual_song( pm, s_name, a_name, maxnum ):
+def _download_actual_song( pm, lastfm, s_name, a_name, maxnum ):
     try:
         data_dict, status = pm.get_music_metadata( song_name = s_name,
                                                    artist_name = a_name )
         if status != 'SUCCESS':
-            print( status )
-            return None
+            data_dict, status = lastfm.get_music_metadata( song_name = s_name,
+                                                           artist_name = a_name,
+                                                           all_data = True )
+            if status != 'SUCCESS':
+                print( status )
+                return None
     except Exception as e:
         print( e )
         return None
@@ -129,21 +133,26 @@ def _download_songs_oldformat( opts ):
     #
     ## first get music metadata
     pm = plexmusic.PlexMusic( )
+    lastfm = plexmusic.PlexLastFM( )
     if opts.album_name is not None:
         all_songs_downloaded = [ ]
         album_data_dict, status = pm.get_music_metadatas_album( opts.artist_name,
                                                                 opts.album_name )
         if status != 'SUCCESS':
-            print( status )
-            return
+            album_data_dict, status = lastfm.get_music_metadatas_album( opts.artist_name,
+                                                                        opts.album_name )
+            if status != 'SUCCESS':
+                print( status )
+                return
         data_dict = album_data_dict[ 0 ]
         artist_name = data_dict[ 'artist' ]
         album_name = data_dict[ 'album' ]
-        album_year = data_dict[ 'year' ]
         album_tracks = data_dict[ 'total tracks' ]        
         print( 'ACTUAL ARTIST: %s' % artist_name )
         print( 'ACTUAL ALBUM: %s' % album_name )
-        print( 'ACTUAL YEAR: %d' % album_year )
+        if 'year' in data_dict:
+            album_year = data_dict[ 'year' ]
+            print( 'ACTUAL YEAR: %d' % album_year )
         print( 'ACTUAL NUM TRACKS: %d' % album_tracks )
         for data_dict in album_data_dict:
             song_name = data_dict[ 'song' ]
@@ -169,7 +178,7 @@ def _download_songs_oldformat( opts ):
         assert( opts.song_names is not None )
         song_names = map(lambda song_name: song_name.strip( ), opts.song_names.split(';'))
         all_songs_downloaded = list(filter(
-            None,  map(lambda song_name: _download_actual_song( pm, song_name, opts.artist_name, opts.maxnum ),
+            None,  map(lambda song_name: _download_actual_song( pm, lastfm, song_name, opts.artist_name, opts.maxnum ),
                        song_names ) ) )
     return all_songs_downloaded
 

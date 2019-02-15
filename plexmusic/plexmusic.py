@@ -146,7 +146,6 @@ def get_lastfm_credentials( ):
         "application_name" : cParser.get( 'LASTFM', 'application_name' ),
         "username" : cParser.get( 'LASTFM', 'username' ) }
     
-
 def fill_m4a_metadata( filename, data_dict ):
     assert( os.path.isfile( filename ) )
     assert( os.path.basename( filename ).lower( ).endswith( '.m4a' ) )
@@ -314,10 +313,13 @@ class PlexLastFM( object ):
         if track_listing is None:
             return music_metadata, 'SUCCESS'
         track_listing_dict = dict( track_listing )
-        if titlecase.titlecase( song_name ) in track_listing_dict:
+        if titlecase.titlecase( song_name ) in track_listing_dict or song_name in track_listing_dict:
             music_metadata[ 'tracknumber' ] = track_listing_dict[
                 titlecase.titlecase( song_name ) ]
             music_metadata[ 'total tracks' ] = len( track_listing_dict )
+        else:
+            music_metadata[ 'tracknumber' ] = 1
+            music_metadata[ 'total tracks' ] = 1
         return music_metadata, 'SUCCESS'
 
     def get_music_metadatas_album( self, artist_name, album_name ):

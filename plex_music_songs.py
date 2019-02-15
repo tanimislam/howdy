@@ -48,6 +48,9 @@ def _download_actual_song( pm, lastfm, s_name, a_name, maxnum ):
     except Exception as e:
         print( e )
         return None
+    if 'tracknumber' not in data_dict:
+        data_dict[ 'tracknumber' ] = 1
+        data_dict[ 'total tracks' ] = 1
     artist_name = data_dict[ 'artist' ]
     song_name = data_dict[ 'song' ]
     album_name = data_dict[ 'album' ]

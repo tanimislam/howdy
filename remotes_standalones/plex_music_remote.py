@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import codecs, os, sys, base64, requests
+import codecs, os, sys, base64, requests, time
 from optparse import OptionParser
 
 def get_song( artist, song ):
@@ -26,6 +26,9 @@ def get_song( artist, song ):
         return
     #
     ##
+    print( "ACTUAL ARTIST: %s" % data_dict[ 'artist' ] )
+    print( "ACTUAL ALBUM: %s" % data_dict[ 'album' ] )
+    print( "ACTUAL SONG: %s" % data_dict[ 'song' ] )
     if len( videos ) != 1:
         sortdict = { idx + 1 : item for (idx, item) in enumerate(videos) }
         bs = 'Choose YouTube video:\n%s\n' % (
@@ -40,8 +43,9 @@ def get_song( artist, song ):
             _, youtubeURL = sortdict[ iidx ]
         except:
             print('Error, did not choose a valid integer. Exiting...')
-            return None
+            return
     elif len( videos ) == 1: _, youtubeURL = videos[0]
+    time0 = time.time( )
     data2 = { 'data_dict' : data_dict,
               'youtubeURL' : youtubeURL,
               'mode' : 'SENDCHOICE' }
@@ -58,7 +62,8 @@ def get_song( artist, song ):
         with open( filename, 'wb') as openfile:
             openfile.write( base64.b64decode( filedata ) )
         os.chmod( filename, 0o644 )
-        print( 'FINISHED WRITING OUT SONG %s.' % filename )
+        print( 'finished downloading song %s in %0.3f seconds. Enjoy!' % (
+            filename, time.time( ) - time0 ) )
     else:
         print( 'ERROR STATUS CODE: %d' % response.status_code )
         print( 'ERROR, server https://***REMOVED***islam.ddns.net/flask may be down.' )
@@ -66,9 +71,9 @@ def get_song( artist, song ):
 
 if __name__=='__main__':
     parser = OptionParser( )
-    parser.add_option( '--song', dest='song_name', type=str, action='store',
+    parser.add_option( '-s', '--song', dest='song_name', type=str, action='store',
                        help = 'Name of the song to put into the M4A file.' )
-    parser.add_option( '--artist', dest='artist_name', type=str, action='store',
+    parser.add_option( '-a', '--artist', dest='artist_name', type=str, action='store',
                        help = 'Name of the artist to put into the M4A file.' )
     opts, args = parser.parse_args( )
     assert(all(map(lambda tok: tok is not None,

@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
-import codecs, os, sys, base64, requests, time
+import codecs, os, sys, base64, requests, time, signal
+# code to handle Ctrl+C, convenience method for command line tools
+def signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Just quitting...")
+    sys.exit( 0 )
+signal.signal( signal.SIGINT, signal_handler )
 from optparse import OptionParser
 
 def get_album( artist, album ):

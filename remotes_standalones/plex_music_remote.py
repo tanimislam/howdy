@@ -76,11 +76,11 @@ def get_song( artist, song ):
     response2 = requests.post( url, json = data2,
                                auth = ( '***REMOVED***_shahriar_islam@yahoo.com',
                                         'initialplexserver' ) )
-    if response.status_code == 400:
+    if response2.status_code == 400:
         message = response.json( )['message']
         print( message )
         return
-    elif response.status_code == 200:
+    elif response2.status_code == 200:
         filename = response2.json( )['filename']
         filedata = response2.json( )['filedata']
         with open( filename, 'wb') as openfile:

@@ -8,6 +8,7 @@ from multiprocessing import Process, Manager, cpu_count
 from optparse import OptionParser
 from plexcore import plexcore_deluge
 from plextvdb import plextvdb_torrents
+from plexcore.plexcore import get_jackett_credentials
 
 def _process_items_list( items, shared_list ):
     if shared_list is None: return items
@@ -15,6 +16,14 @@ def _process_items_list( items, shared_list ):
         shared_list.append( items )
         return
 
+def get_items_jackett( name, maxnum = 1000, shared_list = None ):
+    assert( maxnum >= 5 )
+    items, status = plextvdb_torrents.get_tv_torrent_jackett( name, maxnum = maxnum )
+    if status != 'SUCCESS':
+        logging.debug( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
+        return _process_items_list( None, shared_list )
+    return _process_items_list( items, shared_list )
+    
 def get_items_zooqle( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 5 )
     items, status = plextvdb_torrents.get_tv_torrent_zooqle( name, maxnum = maxnum )
@@ -106,11 +115,18 @@ def process_magnet_items( name ):
     manager = Manager( ) # multiprocessing code is a bit faster than single-process code
     num_processes = cpu_count( )
     shared_list = manager.list( )
-    jobs = [ Process( target=get_items_zooqle, args=(name, opts.maxnum, shared_list ) ),
-             Process( target=get_items_tpb, args=(name, opts.maxnum, opts.do_any, False, shared_list ) ),
-             Process( target=get_items_rarbg, args=(name, opts.maxnum, shared_list) ),
-             Process( target=get_items_kickass, args=(name, opts.maxnum, shared_list ) ),
-             Process( target=get_items_torrentz, args=(name, opts.maxnum, shared_list ) ) ]
+    #
+    ## check for jackett
+    if get_jackett_credentials( ) is None:
+        jobs = [ Process( target=get_items_zooqle, args=(name, opts.maxnum, shared_list ) ),
+                 Process( target=get_items_tpb, args=(name, opts.maxnum, opts.do_any, False, shared_list ) ),
+                 Process( target=get_items_rarbg, args=(name, opts.maxnum, shared_list) ),
+                 Process( target=get_items_kickass, args=(name, opts.maxnum, shared_list ) ),
+                 Process( target=get_items_torrentz, args=(name, opts.maxnum, shared_list ) ) ]
+    else:
+        jobs = [ Process( target=get_items_jackett, args=(name, opts.maxnum, shared_list ) ),
+                 Process( target=get_items_zooqle, args=(name, opts.maxnum, shared_list ) ),
+                 Process( target=get_items_rarbg, args=(name, opts.maxnum, shared_list ) ) ]
     for process in jobs: process.start( )
     for process in jobs: process.join( )
     items_split = list( filter( None, shared_list ) )

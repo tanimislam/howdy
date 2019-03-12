@@ -122,7 +122,6 @@ _status_keys = [
     'time_added',
 ]
 
-
 def create_deluge_client( url, port, username, password ):
     from deluge_client import DelugeRPCClient
     client = DelugeRPCClient( url, port, username, password )

@@ -797,6 +797,68 @@ def oauth_store_google_credentials( credentials ):
     oauth2client.file.Storage( absPath ).put( credentials )
 
 #
+## put in the jackett credentials into here
+def store_jackett_credentials( url, apikey ):
+    import validators
+    from urllib.parse import urljoin
+    endpoint = 'api/v2.0/indexers/all/results/torznab/api'
+    filename = 'plex_creds.conf'
+    secname = 'JACKETT_CREDENTIALS'
+    absPath = os.path.join( baseConfDir, filename )
+    #
+    ## now check that everything works
+    ## first, is URL a valid URL?
+    if not validators.url( url ):
+        print( "ERROR, %s is not a valid URL" % url )
+        return
+
+    #
+    ## second, add a '/' to end of URL
+    actURL = url
+    if not actURL.endswith('/'): actURL += '/'
+
+    #
+    ## third, check that we have a valid URL
+    response = requests.get( urljoin( url, endpoint ),
+                             params = { 'apikey' : apikey,
+                                        't' : 'caps' })
+    if response.status_code != 200:
+        print("ERROR, invalid jackett credentials")
+        return
+
+    #
+    ## now put the stuff inside
+    cparser = RawConfigParser( )
+    if os.path.isfile( absPath ):
+        cparser.read( absPath )
+    cparser.remove_section( secname )
+    cparser.add_section( secname )
+    cparser.set( secname, 'url', actURL )
+    cparser.set( secname, 'apikey', apikey )
+    with open( absPath, 'w') as openfile:
+        cparser.write( openfile )
+    os.chmod( absPath, 0o600 )
+
+#
+## read in JACKETT credentials here
+def get_jackett_credentials( ):
+    filename = 'plex_creds.conf'
+    secname = 'JACKETT_CREDENTIALS'
+    absPath = os.path.join( baseConfDir, filename )
+    if not os.path.isfile( absPath ): return None
+
+    cparser = RawConfigParser( )
+    cparser.read( absPath )
+    if not cparser.has_section( secname ):
+        return None
+    if any(map(lambda opt: not cparser.has_option( secname, opt ),
+               ( 'url', 'apikey' ) ) ):
+        return None
+    url = cparser.get( secname, 'url' )
+    apikey = cparser.get( secname, 'apikey' )
+    return url, apikey
+        
+#
 ## string match with fuzzywuzzy
 def get_maximum_matchval( check_string, input_string ):
     cstring = check_string.strip( ).lower( )

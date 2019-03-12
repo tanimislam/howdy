@@ -7,6 +7,10 @@ _apiKey = '0B3F6D72213D71C8'
 _usrKey = 'AEE839E62568BA63'
 _usname = '***REMOVED***islam1978'
 
+# change this later
+_apiKey_jackett = '0cstpcrrdx7wrihtij3jbe461t0uk3l6'
+_url_jackett = 'https://dark.seedhost.eu/***REMOVED***islam/jackett'
+
 def get_token( verify = True ):
     data = { 'apikey' : _apiKey,
              'username' : _usname,

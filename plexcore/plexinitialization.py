@@ -10,7 +10,6 @@ def _choose_install_local( requirements ):
                               '\n'.join(map(lambda key: '%d: %s' % ( key, choicedict[key] ),
                                             sorted( choicedict.keys( ) ) ) ) ] ) )
     try:
-        iidx = int( iidx.strip( ) )
         if iidx not in choicedict:
             print('YOU HAVE CHOSEN NEITHER 1 (YES) OR 2 (NO). EXITING...')
             sys.exit( 0 )

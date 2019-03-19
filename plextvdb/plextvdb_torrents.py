@@ -233,7 +233,7 @@ def get_tv_torrent_jackett( name, maxnum = 10 ):
     response = requests.get( urljoin( url, endpoint ),
                              params = { 'apikey' : apikey, 'q' : name, 'cat' : '5000' } ) # tv shows
     if response.status_code != 200:
-        return _return_error_couldnotfile( 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url )
+        return _return_error_raw( 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url )
     html = BeautifulSoup( response.content, 'lxml' )
     if len( html.find_all('item') ) == 0:
         return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
@@ -376,7 +376,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
     response = max( response_arr )
     if response is None: return None, 'FAILURE TIMED OUT'
     if response.status_code != 200:
-        return _return_error_couldnotfind( 'FAILURE STATUS CODE = %d' % response.status_code )
+        return _return_error_raw( 'FAILURE STATUS CODE = %d' % response.status_code )
         
     def process_column_header(th):
         if th.a:

@@ -1,6 +1,7 @@
 import os, sys, numpy, logging, magic, base64, subprocess
 from configparser import RawConfigParser
-from . import baseConfDir
+from . import baseConfDir, session, Base
+from sqlalchemy import Integer, String, Column
 
 #
 ## copied from deluge.common
@@ -129,27 +130,27 @@ def create_deluge_client( url, port, username, password ):
     assert( client.connected ) # make sure we can connect
     return client
 
-def get_deluge_client( ):
-    filename = 'plex_creds.conf'
-    secname = 'DELUGE_CREDENTIALS'
-    absPath = os.path.join( baseConfDir, filename )
-    cparser = RawConfigParser( )
-    cparser.read( absPath )
-    if not cparser.has_section( secname ):
-        error_message = 'ERROR, %s NOT DEFINED.' % secname
-        logging.debug( error_message )
-        return None, error_message
-    if any(map(lambda option: not cparser.has_option( secname, option ),
-               ( 'url', 'port', 'username', 'password' ) ) ):
-        error_message = 'ERROR, DOES NOT HAVE ALL OF %s.' % (
-            'url', 'port', 'username', 'password' )
-        logging.debug( error_message )
-        return None, error_message
+class PlexDelugeCredentials( Base ):
+    #
+    ## create the table using Base.metadata.create_all( _engine )
+    __tablename__ = 'plexdelugecredentials'
+    __table_args__ = { 'extend_existing' : True }
+    url = Column( String( 65536 ), index = True, unique = True, primary_key = True )
+    port = Column( Integer )
+    username = Column( String( 65536 ) )
+    password = Column( String( 65536 ) )
     
-    username = cparser.get( secname, 'username' )
-    password = cparser.get( secname, 'password' )
-    port = int( cparser.get( secname, 'port' ) )
-    url = cparser.get( secname, 'url' )
+def get_deluge_client( ):
+    query = session.query( PlexDelugeCredentials )
+    val = query.first( )
+    if val is None:
+        error_message = "ERROR, DELUGE CLIENT SETTINGS NOT DEFINED."
+        logging.debug( error_message )
+        return None, error_message
+    url = val.url
+    port = val.port
+    username = val.username
+    password = val.password
     #
     ## now check that we have the correct info
     try:
@@ -174,15 +175,19 @@ def push_deluge_credentials( url, port, username, password ):
         error_message = 'ERROR, INVALID SETTINGS FOR DELUGE CLIENT.'
         logging.debug( error_message )
         return error_message
-    cparser.remove_section( secname )
-    cparser.add_section( secname )
-    cparser.set( secname, 'url', url )
-    cparser.set( secname, 'port', port )
-    cparser.set( secname, 'username', username )
-    cparser.set( secname, 'password', password )
-    with open( absPath, 'w') as openfile:
-        cparser.write( openfile )
-    os.chmod( absPath, 0o600 )
+    #
+    ## now put into the database
+    query = session.query( PlexDelugeCredentials )
+    val = query.first( )
+    if val is not None:
+        session.delete( val )
+        session.commit( )
+    newval = PlexDelugeCredentials( url = url,
+                                    port = port,
+                                    username = username,
+                                    password = password )
+    session.add( newval )
+    session.commit( )
     return 'SUCCESS'
 
 def deluge_get_torrents_info( client ):

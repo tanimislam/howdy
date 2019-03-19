@@ -5,18 +5,17 @@ from googleapiclient.discovery import build
 from PIL import Image
 from io import StringIO, BytesIO
 from urllib.parse import urljoin
-from configparser import RawConfigParser
 from . import mainDir, pygn, parse_youtube_date, format_youtube_date
-from plexcore import plexcore, baseConfDir
+from plexcore import plexcore, baseConfDir, Base, session
+from sqlalchemy import Integer, String, Column
 
-#
-## gmusicapi stuff
-def _get_gmusic_resource_abspath( ):
-    filename = 'gmusic_credentials.conf'
-    absPath = os.path.join( baseConfDir, filename )
-    return absPath
-
-_gmusic_absPath = _get_gmusic_resource_abspath( )
+class PlexGMusicConfig( Base ):
+    #
+    ## create the table using Base.metadata.create_all( _engine )
+    __tablename__ = 'plexgmusicconfig'
+    __table_args__ = { 'extend_existing' : True }
+    email = Column( String( 65536 ), index = True, unique = True, primary_key = True )
+    password = Column( String( 65536 ) )
 
 @contextmanager
 def gmusicmanager( useMobileclient = False ):
@@ -30,17 +29,12 @@ def get_gmusicmanager( useMobileclient = False ):
         mmg.login( oauth_credentials = os.path.join( baseConfDir, 'google_authentication.json' ) )
     else:
         mmg = gmusicapi.Mobileclient( )
-        if not os.path.isfile( _gmusic_absPath ):
-            raise ValueError( "Error, default configuration file = %s does not exist." % absPath )
-        cparser = RawConfigParser( )
-        cparser.read( _gmusic_absPath )
-        if not cparser.has_section( 'GMUSIC_CREDENTIALS' ):
-            raise ValueError( "Error, configuration file has not defined GMUSIC_CREDENTIALS." )
-        if not all([ cparser.has_option('GMUSIC_CREDENTIALS', tok) for tok in
-                     ( 'email', 'password' ) ]):
-            raise ValueError( "Error, configuration file has not defined both email and password." )
-        email = cparser.get( 'GMUSIC_CREDENTIALS', 'email' )
-        password = cparser.get( 'GMUSIC_CREDENTIALS', 'password' )
+        query = session.query( PlexGMusicConfig )
+        val = query.first( )
+        if val is None:
+            raise ValueError( "Error, do not have Google Music credentials." )
+        email = val.email.strip( )
+        password = val.password.strip( )
         mmg.login( email, password, gmusicapi.Mobileclient.FROM_MAC_ADDRESS )
     return mmg
 
@@ -48,13 +42,15 @@ def get_gmusicmanager( useMobileclient = False ):
 Took stuff from http://unofficial-google-music-api.readthedocs.io/en/latest/usage.html#usage                                                                    
 """
 def save_gmusic_creds( email, password ):
-    cparser = RawConfigParser( )
-    cparser.add_section( 'GMUSIC_CREDENTIALS' )
-    cparser.set( 'GMUSIC_CREDENTIALS', 'email', email )
-    cparser.set( 'GMUSIC_CREDENTIALS', 'password', password )
-    with open( _gmusic_absPath, 'w') as openfile:
-        cparser.write( openfile )
-    os.chmod( _gmusic_absPath, 0o600 )
+    query = session.query( PlexGMusicConfig )
+    val = query.first( )
+    if val is not None:
+        session.delete( val )
+        session.commit( )
+    newval = PlexGMusicConfig( email = email.strip( ),
+                               password = password.strip( ) )
+    session.add( newval )
+    session.commit( )
 
 def get_gmusic_all_songs( ):
     with gmusicmanager( useMobileclient = True ) as mmg:
@@ -83,69 +79,6 @@ def get_youtube_service( ):
     youtube = build( "youtube", "v3", http = credentials.authorize(httplib2.Http()))                     
     return youtube
 
-def push_gracenote_credentials( client_ID ):
-    try:
-        userID = pygn.register( client_ID )
-        cParser = RawConfigParser( )
-        cParser.add_section( 'GRACENOTE' )
-        cParser.set( 'GRACENOTE', 'clientID', client_ID )
-        cParser.set( 'GRACENOTE', 'userID', userID )
-        absPath = os.path.join( mainDir, 'resources', 'gracenote_api.conf' )
-        with open( absPath, 'w') as openfile:
-            cParser.write( openfile )
-        os.chmod( absPath, 0o600 )
-    except:
-        raise ValueError("Error, %s is invalid." % client_ID )
-
-def get_gracenote_credentials( ):
-    cParser = RawConfigParser( )
-    absPath = os.path.join( mainDir, 'resources', 'gracenote_api.conf' )
-    if not os.path.isfile( absPath ):
-        raise ValueError("ERROR, GRACENOTE CREDENTIALS NOT FOUND" )
-    cParser.read( absPath )
-    if not cParser.has_section( 'GRACENOTE' ):
-        raise ValueError("Error, gracenote_api.conf does not have a GRACENOTE section.")
-    if not cParser.has_option( 'GRACENOTE', 'clientID' ):
-        raise ValueError("Error, conf file does not have clientID.")
-    if not cParser.has_option( 'GRACENOTE', 'userID' ):
-        raise ValueError("Error, conf file does not have userID.")
-    return cParser.get( "GRACENOTE", "clientID" ), cParser.get( "GRACENOTE", "userID" )
-
-def push_lastfm_credentials( api_data ):
-    assert( len(set(api_data) - set([ 'api_key', 'api_secret', 'application_name',
-                                      'username' ]) ) == 0 )
-    cParser = RawConfigParser( )
-    cParser.add_section( 'LASTFM' )
-    cParser.set( 'LASTFM', 'api_key',
-                 api_data[ 'api_key' ] )
-    cParser.set( 'LASTFM', 'api_secret',
-                 api_data[ 'api_secret' ] )
-    cParser.set( 'LASTFM', 'application_name',
-                 api_data[ 'application_name' ] )
-    cParser.set( 'LASTFM', 'username',
-                 api_data[ 'username' ] )
-    absPath = os.path.join( mainDir, 'resources', 'lastfm_api.conf' )
-    with open( absPath, 'w') as openfile:
-        cParser.write( openfile )
-    os.chmod( absPath, 0o600 )
-
-def get_lastfm_credentials( ):
-    cParser = RawConfigParser( )
-    absPath = os.path.join( mainDir, 'resources', 'lastfm_api.conf' )
-    if not os.path.isfile( absPath ):
-        raise ValueError("ERROR, LASTFM CREDENTIALS NOT FOUND" )
-    cParser.read( absPath )
-    if not cParser.has_section( 'LASTFM' ):
-        raise ValueError("Error, lastfm_api.conf does not have a LASTFM section.")
-    for key in ( 'api_key', 'api_secret', 'application_name', 'username' ):
-         if not cParser.has_option( 'LASTFM', key ):
-            raise ValueError("Error, conf file does not have %s." % key )
-    return {
-        "api_key" : cParser.get( 'LASTFM', 'api_key' ),
-        "api_secret" : cParser.get( 'LASTFM', 'api_secret' ),
-        "application_name" : cParser.get( 'LASTFM', 'application_name' ),
-        "username" : cParser.get( 'LASTFM', 'username' ) }
-    
 def fill_m4a_metadata( filename, data_dict ):
     assert( os.path.isfile( filename ) )
     assert( os.path.basename( filename ).lower( ).endswith( '.m4a' ) )
@@ -218,6 +151,43 @@ def youtube_search(youtube, query, max_results = 10):
 
 class PlexLastFM( object ):
 
+    class PlexLastFMConfig( Base ):
+        #
+        ## create the table using Base.metadata.create_all( _engine )
+        __tablename__ = 'plexlastfmconfig'
+        __table_args__ = { 'extend_existing' : True }
+        application_name = Column( String( 65536 ), index = True, unique = True, primary_key = True )
+        api_secret = Column( String( 65536 ) )
+        api_key = Column( String( 65536 ) )
+        username = Column( String( 65536 ) )
+    
+    @classmethod
+    def push_lastfm_credentials( cls, api_data ):
+        assert( len(set(api_data) - set([ 'api_key', 'api_secret', 'application_name',
+                                          'username' ]) ) == 0 )
+        query = session.query( PlexLastFM.PlexLastFMConfig )
+        val = query.first( )
+        if val is not None:
+            session.delete( val )
+            session.commit( )
+        session.add( PlexLastFM.PlexLastFMConfig( application_name = api_data[ 'application_name' ],
+                                                  api_key = api_data[ 'api_key' ],
+                                                  api_secret = api_data[ 'api_secret' ],
+                                                  username = api_data[ 'username' ] ) )
+        session.commit( )
+    
+    @classmethod
+    def get_lastfm_credentials( cls ):
+        query = session.query( PlexLastFM.PlexLastFMConfig )
+        val = query.first( )
+        if val is None:
+            raise ValueError("ERROR, LASTFM CREDENTIALS NOT FOUND" )
+        return {
+            "api_key" : val.api_key,
+            "api_secret" : val.api_secret,
+            "application_name" : val.application_name,
+            "username" : val.username }
+        
     @classmethod
     def get_album_url( cls, album_url_entries ):
         sorting_list_size = { 'large' : 0,
@@ -232,7 +202,7 @@ class PlexLastFM( object ):
         return sorted_entries[ 0 ][ '#text' ]
     
     def __init__( self ):
-        data = get_lastfm_credentials( )
+        data = PlexLastFM.get_lastfm_credentials( )
         self.api_key = data[ 'api_key' ]
         self.api_secret = data[ 'api_secret' ]
         self.application_name = data[ 'application_name' ]
@@ -341,8 +311,43 @@ class PlexLastFM( object ):
         return album_data_dict, 'SUCCESS'
     
 class PlexMusic( object ):
+
+    class PlexGracenoteConfig( Base ):
+        #
+        ## create the table using Base.metadata.create_all( _engine )
+        __tablename__ = 'plexgracenoteconfig'
+        __table_args__ = { 'extend_existing' : True }
+        clientID = Column( String( 65536 ), index = True, unique = True, primary_key = True )
+        userID = Column( String( 65536 ) )
+    
+    @classmethod
+    def push_gracenote_credentials( cls, client_ID ):
+        try:
+            userID = pygn.register( client_ID )
+            query = session.query( PlexMusic.PlexGracenoteConfig )
+            val = query.first( )
+            if val is not None:
+                session.delete( val )
+                session.commit( )
+            session.add( PlexMusic.PlexGracenoteConfig( clientID = client_ID,
+                                                        userID = userID ) )
+            session.commit( )
+        except:
+            raise ValueError("Error, %s is invalid." % client_ID )
+
+    @classmethod
+    def get_gracenote_credentials( cls ):
+        query = session.query( PlexMusic.PlexGracenoteConfig )
+        val = query.first( )
+        if val is None:
+            raise ValueError("ERROR, GRACENOTE CREDENTIALS NOT FOUND" )
+        clientID = val.clientID
+        userID = val.userID
+        return clientID, userID
+
+    
     def __init__( self ):
-        self.clientID, self.userID = get_gracenote_credentials( )
+        self.clientID, self.userID = PlexMusic.get_gracenote_credentials( )
 
     def get_album_image( self, artist_name, album_name ):
         metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,

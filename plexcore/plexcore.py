@@ -774,6 +774,7 @@ def oauth_generate_google_permission_url( ):
                                     scope = [ 'https://www.googleapis.com/auth/gmail.send',
                                               'https://www.googleapis.com/auth/contacts.readonly',
                                               'https://www.googleapis.com/auth/youtube.readonly',
+                                              'https://spreadsheets.google.com/feeds', # google spreadsheet scope
                                               'https://www.googleapis.com/auth/musicmanager' ], # this is the gmusicapi one
                                     redirect_uri = "urn:ietf:wg:oauth:2.0:oob" )
     auth_uri = flow.step1_get_authorize_url( )

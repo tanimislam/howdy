@@ -1,32 +1,39 @@
 #!/usr/bin/env python3
 
 import os, sys, numpy, subprocess, shlex, time, logging
+from plexcore import session, Base
 from optparse import OptionParser
 from configparser import RawConfigParser
+from sqlalchemy import Column, Integer, String
 
-_mainFile = os.path.join( os.path.expanduser( '~/.config/plexstuff' ),
-                          'plex_creds.conf' )
+class PlexRsyncConfig( Base ):
+    #
+    ## create the table using Base.metadata.create_all( _engine )
+    __tablename__ = 'plexrsyncconfig'
+    __table_args__ = { 'extend_existing' : True }
+    localdir = Column( String( 65536 ), index = True, unique = True, primary_key = True )
+    sshpath = Column( String( 65536 ) )
+    subdir = Column( String( 65536 ) )
                           
 def _push_credentials( local_dir, sshpath, subdir = None ):
     assert( os.path.isdir( os.path.abspath( local_dir ) ) )
-    cparser = RawConfigParser( )
-    if os.path.isfile( _mainFile ):
-        cparser.read( _mainFile )
-    cparser.remove_section( 'RSYNC' )
-    cparser.add_section( 'RSYNC' )
-    cparser.set( 'RSYNC', 'local_dir', os.path.abspath( local_dir ) )
-    cparser.set( 'RSYNC', 'sshpath', sshpath.strip( ) )
-    if subdir is not None: cparser.set( 'RSYNC', 'subdir', subdir.strip( ) )
+    query = session.query( PlexRsyncConfig )
+    val = query.first( )
+    if val is not None:
+        session.delete( val )
+        session.commit( )
+    newval = PlexRsyncConfig( localdir = os.path.abspath( local_dir.strip( ) ),
+                              sshpath = sshpath.strip( ),
+                              subdir = subdir )
+    session.add( newval )
+    session.commit( )
     mystr_split = [
-        'local directory to download to: %s' % os.path.abspath( local_dir ),
+        'local directory to download to: %s' % os.path.abspath( local_dir.strip( ) ),
         'SSH path from which to get files: %s' % sshpath.strip( ),
     ]
     if subdir is not None:
         mystr_split.append( 'sub directory on local machine from which to get files: %s' % subdir )
     logging.debug('\n'.join( mystr_split ) )
-    with open( _mainFile, 'w') as openfile:
-        cparser.write( openfile )
-    os.chmod( _mainFile, 0o600 )
 
 def _get_rsync_command( data, mystr ):
     if data['subdir'] is not None: mainStr = os.path.join( data['subdir'], mystr.strip( ) )
@@ -35,25 +42,19 @@ def _get_rsync_command( data, mystr ):
     return mycmd
     
 def _get_credentials( ):
-    if not os.path.isfile( _mainFile ):
-        logging.debug('ERROR, %s does not exist.' % _mainFile )
+    query = session.query( PlexRsyncConfig )
+    val = query.first( )
+    if val is None:
+        logging.debug('ERROR, RSYNC configuration does not exist.' )
         return None
-    cparser = RawConfigParser( )
-    cparser.read( _mainFile )
-    if not cparser.has_section( 'RSYNC' ):
-        logging.debug( 'ERROR, RSYNC section not in config file.' )
-        return None
-    if any(map(lambda tok: not cparser.has_option( 'RSYNC', tok ),
-               [ 'local_dir', 'sshpath' ] ) ):
-        logging.debug('ERROR, RSYNC section missing one of %s.' % (
-            [ 'local_dir', 'sshpath' ] ) )
-        return None
-    data = dict(map(lambda tok: ( tok, cparser.get( 'RSYNC', tok ).strip( ) ),
-                    [ 'local_dir', 'sshpath' ] ) )
-    if not cparser.has_option( 'RSYNC', 'subdir' ): data['subdir'] = None
-    else: data['subdir'] = cparser.get( 'RSYNC', 'subdir' ).strip( )
+    local_dir = val.localdir
+    sshpath = val.sshpath
+    subdir = val.subdir
+    data = { 'local_dir' : local_dir,
+             'sshpath' : sshpath }
+    if subdir is None: data['subdir'] = None
+    else: data['subdir'] = subdir.strip( )
     return data
-
 
 def main( ):
     parser = OptionParser( )

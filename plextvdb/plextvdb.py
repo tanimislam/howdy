@@ -473,6 +473,15 @@ def did_series_end( series_id, token, verify = True ):
     data = response.json( )['data']
     return data['status'] == 'Ended'
 
+def get_imdb_id( series_id, token, verify = True ):
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
+                             headers = headers, verify = verify )
+    if response.status_code != 200: return None
+    data = response.json( )['data']
+    return data['imdbId']
+
 def get_episode_id( series_id, airedSeason, airedEpisode, token, verify = True ):
     params = { 'page' : 1,
                'airedSeason' : '%d' % airedSeason,
@@ -632,7 +641,40 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
     pool.close( )
     pool.join( )
     return toGet
-                                
+
+def get_tot_epdict_imdb( showName, verify = True ):
+    from imdb import IMDb
+    token = get_token( verify = verify )
+    id = get_series_id( showName, token, verify = verify )
+    if id is None: return None
+    imdbId = get_imdb_id( id, token, verify = verify )
+    if imdbId is None: return None
+    #
+    ## now run imdbpy
+    time0 = time.time( )
+    ia = IMDb( )
+    imdbId = imdbId.replace('tt','').strip( )
+    series = ia.get_movie( imdbId )
+    ia.update( series, 'episodes' )
+    logging.debug('took %0.3f seconds to get episodes for %s.' % (
+        time.time( ) - time0, showName ) )
+    tot_epdict = { }
+    seasons = sorted( set(filter(lambda seasno: seasno != -1, series['episodes'].keys( ) ) ) )
+    tot_epdict_tvdb = get_tot_epdict_tvdb( showName, verify = verify )
+    for season in seasons:
+        tot_epdict.setdefault( season, { } )
+        for epno in series['episodes'][season]:
+            episode = series['episodes'][season][epno]
+            title = episode[ 'title' ].strip( )
+            try:
+                firstAired_s = episode[ 'original air date' ]
+                firstAired = datetime.datetime.strptime(
+                    firstAired_s, '%d %b. %Y' ).date( )
+            except:
+                firstAired = tot_epdict_tvdb[ season ][ epno ][-1]
+            tot_epdict[ season ][ epno ] = ( title, firstAired )
+    return tot_epdict
+
 def get_tot_epdict_tvdb( showName, verify = True, showSpecials = False, showFuture = False ):
     token = get_token( verify = verify )
     id = get_series_id( showName, token, verify = verify )

@@ -125,8 +125,7 @@ def process_magnet_items( name ):
                  Process( target=get_items_torrentz, args=(name, opts.maxnum, shared_list ) ) ]
     else:
         jobs = [ Process( target=get_items_jackett, args=(name, opts.maxnum, shared_list ) ),
-                 Process( target=get_items_zooqle, args=(name, opts.maxnum, shared_list ) ),
-                 Process( target=get_items_rarbg, args=(name, opts.maxnum, shared_list ) ) ]
+                 Process( target=get_items_zooqle, args=(name, opts.maxnum, shared_list ) ) ] # rarbg now works
     for process in jobs: process.start( )
     for process in jobs: process.join( )
     items_split = list( filter( None, shared_list ) )

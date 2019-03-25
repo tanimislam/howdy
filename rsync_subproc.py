@@ -38,7 +38,7 @@ def _push_credentials( local_dir, sshpath, subdir = None ):
 def _get_rsync_command( data, mystr ):
     if data['subdir'] is not None: mainStr = os.path.join( data['subdir'], mystr.strip( ) )
     else: mainStr = mystr.strip( )
-    mycmd = 'rsync -P -avz -e ssh %s:%s .' % ( data[ 'sshpath' ], mainStr )
+    mycmd = 'rsync --remove-source-files -P -avz -e ssh %s:%s .' % ( data[ 'sshpath' ], mainStr )
     return mycmd
     
 def _get_credentials( ):

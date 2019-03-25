@@ -8,6 +8,7 @@ from multiprocessing import Process, Manager, cpu_count
 from optparse import OptionParser
 from plextmdb import plextmdb_torrents
 from plextvdb import plextvdb_torrents
+from plexcore.plexcore import get_jackett_credentials
 
 def _process_items_list( items, shared_list ):
     if shared_list is None: return items
@@ -15,6 +16,14 @@ def _process_items_list( items, shared_list ):
         shared_list.append( items )
         return
 
+def get_items_jackett( name, maxnum = 1000, shared_list = None ):
+    assert( maxnum >= 5 )
+    items, status = plextmdb_torrents.get_movie_torrent_jackett( name, maxnum = maxnum )
+    if status != 'SUCCESS':
+        logging.debug( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
+        return _process_items_list( None, shared_list )
+    return _process_items_list( items, shared_list )
+    
 def get_items_zooqle( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 5)
     items, status = plextmdb_torrents.get_movie_torrent_zooqle( name, maxnum = maxnum )
@@ -184,12 +193,19 @@ def main( ):
     if not opts.do_nozooq: jobs = [
             Process(target=get_items_zooqle, args=(opts.name, opts.maxnum, shared_list ) ) ]
     else: jobs = [ ]
-    jobs += [
-        Process( target=get_items_rarbg, args=(opts.name, opts.maxnum, shared_list ) ),
-        Process( target=get_items_tpb, args=(opts.name, opts.maxnum, opts.do_any, shared_list ) ) ]
-    if opts.do_torrentz:
-        jobs.append( Process( target=get_items_torrentz, args=(opts.name, opts.maxnum, shared_list ) ) )
-    for process in jobs: process.start( )
+    #
+    ## check for jackett
+    if get_jackett_credentials( ) is None:
+        jobs += [
+            Process( target=get_items_rarbg, args=(opts.name, opts.maxnum, shared_list ) ),
+            Process( target=get_items_tpb, args=(opts.name, opts.maxnum, opts.do_any, shared_list ) ) ]
+        if opts.do_torrentz:
+            jobs.append( Process( target=get_items_torrentz, args=(opts.name, opts.maxnum, shared_list ) ) )
+    else:
+        jobs += [
+            Process( target=get_items_jackett, args=(opts.name, opts.maxnum, shared_list ) ),
+            Process( target=get_items_zooqle, args=(opts.name, opts.maxnum, shared_list ) ) ] # rarbg now works
+    for process in jobs: process.start( )    
     for process in jobs: process.join( )
     try: items = reduce(lambda x,y: x+y, list( filter( None, shared_list ) ) )
     except: items = None

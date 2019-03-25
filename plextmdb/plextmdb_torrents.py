@@ -3,8 +3,73 @@ from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
 from requests.compat import urljoin
 from plexemail.plexemail import get_formatted_size
-from plexcore.plexcore import get_maximum_matchval
+from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials
 from . import plextmdb
+
+def _return_error_raw( msg ): return None, msg
+
+def get_movie_torrent_jackett( name, maxnum = 10 ):
+    import validators
+    data = get_jackett_credentials( )
+    if data is None:
+        return _return_error_raw('FAILURE, COULD NOT GET JACKETT SERVER CREDENTIALS')
+    url, apikey = data
+    endpoint = 'api/v2.0/indexers/all/results/torznab/api'
+    response = requests.get( urljoin( url, endpoint ),
+                             params = { 'apikey' : apikey, 'q' : name, 'cat' : '2000' } ) # movies
+    if response.status_code != 200:
+        return _return_error_raw( 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url )
+    html = BeautifulSoup( response.content, 'lxml' )
+    if len( html.find_all('item') ) == 0:
+        return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
+    items = [ ]
+    
+    def _get_magnet_url( item ):
+        magnet_url = item.find( 'torznab:attr', { 'name' : 'magneturl' } )
+        if magnet_url is not None and 'magnet' in magnet_url['value']:
+            return magnet_url['value']
+        #
+        ## not found it here, must go into URL
+        url2 = item.find('guid')
+        if url2 is None: return None
+        url2 = url2.text
+        if not validators.url( url2 ): return None
+        resp2 = requests.get( url2 )
+        if resp2.status_code != 200: return None
+        h2 = BeautifulSoup( resp2.content, 'lxml' )
+        valid_magnet_links = set(map(lambda elem: elem['href'],
+                                     filter(lambda elem: 'href' in elem.attrs and 'magnet' in elem['href'], h2.find_all('a'))))
+        if len( valid_magnet_links ) == 0: return None
+        return max( valid_magnet_links )
+
+    for item in html('item'):
+        title = item.find('title')
+        if title is None: continue
+        title = title.text
+        torrent_size = item.find('size')
+        if torrent_size is not None:
+            torrent_size = float( torrent_size.text ) / 1024**2
+        seeders = item.find( 'torznab:attr', { 'name' : 'seeders' } )
+        if seeders is None: seeders = -1
+        else: seeders = int( seeders[ 'value' ] )
+        leechers = item.find( 'torznab:attr', { 'name' : 'peers' } )
+        if leechers is None: leechers = -1
+        else: leechers = int( leechers[ 'value' ] )
+        #
+        ## now do one of two things to get the magnet URL
+        magnet_url = _get_magnet_url( item )
+        if magnet_url is None: continue
+        myitem = { 'title' : title,
+                   'seeders' : seeders,
+                   'leechers' : leechers,
+                   'link' : magnet_url }
+        if torrent_size is not None:
+            myitem[ 'title' ] = '%s (%0.1f MiB)' % ( title, torrent_size )
+        myitem[ 'torrent_size' ] = torrent_size
+        items.append( myitem )
+        if len( items ) == 0:
+            return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
+        return items[:maxnum], 'SUCCESS'
 
 def get_movie_torrent_zooqle( name, maxnum = 10 ):
     assert( maxnum >= 5 )

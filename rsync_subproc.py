@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 
-import os, sys, numpy, subprocess, shlex, time, logging
+import os, sys, numpy, subprocess, shlex, time, logging, signal
+# code to handle Ctrl+C, convenience method for command line tools
+def _signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Exiting...")
+    sys.exit( 0 )
+signal.signal( signal.SIGINT, _signal_handler )
+#
 from plexcore import session, Base
 from optparse import OptionParser
 from configparser import RawConfigParser

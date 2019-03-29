@@ -464,14 +464,25 @@ def get_possible_ids( series_name, token, verify = True ):
     return list(map(lambda dat: {
         'id' : dat['id'], 'seriesName' : dat['seriesName'] }, data ) )
 
-def did_series_end( series_id, token, verify = True ):
+def did_series_end( series_id, token, verify = True, date_now = None ):
+    """
+    Check on shows that have ended more than 365 days from the last day
+    """
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
                              headers = headers, verify = verify )
     if response.status_code != 200: return None
     data = response.json( )['data']
-    return data['status'] == 'Ended'
+    
+    if data['status'] != 'Ended': return False
+    #
+    ## now check when the last date of the show was
+    if date_now is None: date_now = datetime.datetime.now( ).date( )
+    last_date = max(map(lambda epdata: datetime.datetime.strptime( epdata['firstAired'], '%Y-%m-%d' ).date( ),
+                        get_episodes_series( series_id, token, verify = verify ) ) )
+    td = date_now - last_date
+    return td.days > 365
 
 def get_imdb_id( series_id, token, verify = True ):
     headers = { 'Content-Type' : 'application/json',

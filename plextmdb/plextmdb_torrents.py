@@ -16,7 +16,7 @@ def get_movie_torrent_jackett( name, maxnum = 10 ):
     url, apikey = data
     endpoint = 'api/v2.0/indexers/all/results/torznab/api'
     response = requests.get( urljoin( url, endpoint ),
-                             params = { 'apikey' : apikey, 'q' : name, 'cat' : '2000' } ) # movies
+                             params = { 'apikey' : apikey, 'q' : name } ) # movies, no category filtering
     if response.status_code != 200:
         return _return_error_raw( 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url )
     html = BeautifulSoup( response.content, 'lxml' )

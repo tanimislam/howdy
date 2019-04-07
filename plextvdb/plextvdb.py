@@ -1,5 +1,6 @@
-import requests, os, sys, json, re, logging, calendar
-import multiprocessing, datetime, time, numpy, copy
+import requests, os, sys, json, re, logging
+import datetime, time, numpy, copy, calendar, shutil
+import pathos.multiprocessing as multiprocessing
 from matplotlib.figure import Figure
 from matplotlib.patches import Rectangle, Ellipse
 from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -8,7 +9,25 @@ from PIL import Image
 from io import StringIO
 from dateutil.relativedelta import relativedelta
 from fuzzywuzzy.fuzz import ratio
-from . import get_token
+from . import get_token, plextvdb_torrents
+from plexcore import plexcore_rsync
+
+def _splitall( path_init ):
+    allparts = [ ]
+    path = path_init
+    while True:
+        parts = os.path.split( path )
+        if parts[0] == path:
+            allparts.insert( 0, parts[ 0 ] )
+            break
+        elif parts[1] == path:
+            allparts.insert( 0, parts[ 1 ] )
+            break
+        else:
+            path = parts[0]
+            allparts.insert( 0, parts[ 1 ] )
+    return allparts
+
 
 def _create_season( input_tuple ):
     seriesName, seriesId, token, season, verify = input_tuple
@@ -595,6 +614,102 @@ def get_series_updated_fromdate( date, token, verify = True ):
         series_ids += response.json( )['data']
     return sorted( set( map(lambda elem: elem['id'], series_ids ) ) )
 
+def get_path_data_on_tvshow( tvdata, tvshow ):
+    assert( tvshow in tvdata )
+    num_cols = set(reduce(lambda x,y: x+y, list(
+        map(lambda seasno: list(
+            map(lambda epno: len(_splitall( tvdata[tvshow][seasno][epno]['path'])),
+                tvdata[tvshow][seasno])), tvdata[tvshow]))))
+    #
+    ## only consider tv shows with fixed number of columns
+    if len( num_cols ) != 1: return None
+    num_cols = max( num_cols )
+
+    #
+    ## now find those split directories with only a single value
+    splits_with_len_1 = list(
+        filter(lambda colno:
+               len(set(reduce(lambda x,y: x+y, list(
+                   map(lambda seasno: list(
+                       map(lambda epno: _splitall( tvdata[tvshow][seasno][epno]['path'])[ colno ],
+                           tvdata[ tvshow ][ seasno ])), tvdata[ tvshow ]))))) == 1, range(num_cols)))
+    
+    prefix = os.path.join(
+        *list(map(lambda colno:
+                  max(set(reduce(lambda x,y: x+y, list(
+                      map(lambda seasno: list(
+                          map(lambda epno: _splitall( tvdata[tvshow][seasno][epno]['path'])[ colno ],
+                              tvdata[ tvshow ][ seasno ])), tvdata[ tvshow ]))))), sorted(splits_with_len_1))))
+    #
+    ## average length in seconds of an episode
+    avg_length_secs = numpy.average(
+        reduce(lambda x,y: x+y, list(
+            map(lambda seasno: list(
+                map(lambda epno: tvdata[tvshow][seasno][epno]['duration'], tvdata[tvshow][seasno])),
+                tvdata[tvshow]))))
+    
+    #
+    ## now those extra paths that are not common, but peculiar to each season and episode
+    ## must be 2 or 1 extra columns
+    extra_season_ep_columns = sorted(set(range(num_cols)) - set(splits_with_len_1))
+    assert( len( extra_season_ep_columns ) < 3)
+    assert( min( extra_season_ep_columns ) == max( splits_with_len_1 ) + 1 )
+    #
+    ## now get the main prefix for the file
+    def get_main_file_name( basename ):
+        toks = list(map(lambda tok: tok.strip( ), basename.split(' - ') ) )
+        idx_match = -1
+        for idx in range(len(toks)):
+            if re.match('^s\d{1,}e\d{1,}', toks[idx].lower( ) ) is not None:
+                idx_match = idx
+                break
+        assert( idx_match != -1 ), 'PROBLEM WITH %s' % basename
+        return ' - '.join( toks[:idx_match] )
+    main_file_name = set(reduce(lambda x,y: x+y, list(
+        map(lambda seasno: list(
+            map(lambda epno: get_main_file_name( os.path.basename( tvdata[tvshow][seasno][epno]['path'] ) ),
+                tvdata[ tvshow ][ seasno ])), tvdata[ tvshow ]))))
+    assert(len(main_file_name) == 1), 'ERROR WITH %s, main_file_names = %s' % ( tvshow, sorted(main_file_name) )
+    main_file_name = max( main_file_name )
+    season_prefix_dict = { }
+    if len( extra_season_ep_columns ) == 1:
+        season_col = max( splits_with_len_1 )
+        season_dirs = [ ]
+        for seasno in tvdata[ tvshow ]:
+            season_dir = sorted(set(map(lambda epno: _splitall( tvdata[tvshow][seasno][epno]['path'])[ season_col ],
+                                        tvdata[ tvshow ][ seasno ] ) ) )
+            season_dirs += season_dir
+        season_dirs = set( season_dirs )
+        assert( len( season_dirs ) == 1 ), 'PROBLEM WITH %s' % tvshow
+        last_dir = max( season_dirs )
+        if last_dir.startswith( 'Season' ):
+            prefix, season_dir = os.path.split( prefix )
+            season_prefix_dict = dict(map(lambda seasno: ( seasno, season_dir ),
+                                          tvdata[ tvshow ] ) )            
+    elif len( extra_season_ep_columns ) == 2: # go through each season, assert that all eps in a given season are in a single directory
+        season_col = extra_season_ep_columns[ 0 ]
+        for seasno in tvdata[ tvshow ]:
+            season_dir = set(map(lambda epno: _splitall( tvdata[tvshow][seasno][epno]['path'])[ season_col ],
+                                 tvdata[ tvshow ][ seasno ] ) )
+            assert( len( season_dir ) == 1 ), 'PROBLEM WITH %s' % tvshow
+            #if len( season_dir ) != 1:
+            #    print( '%s, %d, %s' % ( tvshow, seasno, season_dir ) )
+            #    return None
+            season_prefix_dict[ seasno ] = max( season_dir )
+    if len( season_prefix_dict ) != 0:
+        min_inferred_length = min(map(lambda seasno: len( season_prefix_dict[ seasno ].split()[-1]),
+                                      filter(lambda seasno: season_prefix_dict[ seasno ].startswith('Season'),
+                                             season_prefix_dict)))
+    else: min_inferred_length = 0
+    max_num_eps = max(map(lambda seasno: len(tvdata[tvshow][seasno]), tvdata[tvshow]))
+    max_eps_len = max(2, int( numpy.log10( max_num_eps ) + 1 ) )
+    return { 'prefix' : prefix,
+             'showFileName' : main_file_name,
+             'season_prefix_dict' : season_prefix_dict,
+             'min_inferred_length': min_inferred_length,
+             'episode_number_length' : max_eps_len,
+             'avg_length_mins' : avg_length_secs // 60 }
+
 def _get_remaining_eps_perproc( input_tuple ):
     name, series_id, epsForShow, token, showSpecials, fromDate, verify = input_tuple
     eps = get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
@@ -646,12 +761,133 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
     input_tuples = map(lambda name: ( name, tvshow_id_map[ name ], tvdata_copy[ name ], token,
                                       showSpecials, fromDate, verify ), tvshow_id_map )
     pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
-    toGet = dict( filter( lambda tup: tup is not None,
-                          pool.map( _get_remaining_eps_perproc,
-                                    input_tuples ) ) )
+    toGet_sub = dict( filter( lambda tup: tup is not None,
+                              pool.map( _get_remaining_eps_perproc,
+                                        input_tuples ) ) )
     pool.close( )
     pool.join( )
+    tvdata_path_data = dict(filter(None, map(lambda tvshow: (
+        tvshow, get_path_data_on_tvshow( tvdata, tvshow ) ), toGet_sub )))
+    toGet = { }
+    for tvshow in sorted( toGet_sub ):
+        mydict = {
+            'episodes' : toGet_sub[ tvshow ],
+            'prefix' : tvdata_path_data[ tvshow ][ 'prefix' ],
+            'showFileName' : tvdata_path_data[ tvshow ][ 'showFileName' ],
+            'min_inferred_length' : tvdata_path_data[ tvshow ][ 'min_inferred_length' ],
+            'season_prefix_dict' : tvdata_path_data[ tvshow ][ 'season_prefix_dict' ],
+            'episode_number_length' : tvdata_path_data[ tvshow ][ 'episode_number_length' ],
+            'avg_length_mins' : tvdata_path_data[ tvshow ][ 'avg_length_mins' ]
+        }
+        toGet[ tvshow ] = mydict
     return toGet
+
+def get_tvtorrent_candidate_downloads( toGet ):
+    tv_torrent_gets = { }
+    tv_torrent_gets.setdefault( 'nonewdirs', [] )
+    tv_torrent_gets.setdefault( 'newdirs', {} )
+    minSize = 100
+    maxSize = 150
+    for tvshow in toGet:
+        mydict = toGet[ tvshow ]
+        showFileName = mydict[ 'showFileName' ]
+        prefix = mydict[ 'prefix' ]
+        min_inferred_length = mydict[ 'min_inferred_length' ]
+        episode_number_length = mydict[ 'episode_number_length' ]
+        avg_length_mins = mydict[ 'avg_length_mins' ]
+        #
+        ## calc maxsize from avg_length_mins
+        num_in_50 = int( avg_length_mins * 60.0 * 1300 / 8.0 / 1024 / 50 + 1 )
+        maxSize = 50 * num_in_50
+        #
+        torTitle = showFileName.replace("'",'').replace(':','')
+        for seasno, epno, title in mydict[ 'episodes' ]:
+            actTitle = title.replace('/', ', ')
+            candDir = os.path.join( prefix, 'Season %%%02dd' % min_inferred_length % seasno )
+            fname = '%s - s%02de%s - %s' % ( showFileName, seasno, '%%%02dd' % episode_number_length % epno, actTitle )
+            totFname = os.path.join( candDir, fname )
+            torFname = '%s S%02dE%02d' % ( torTitle, seasno, epno )
+            dat = { 'totFname' : totFname, 'torFname' : torFname,
+                    'minSize' : minSize, 'maxSize' : maxSize }
+                
+            if not os.path.isdir( candDir ):
+                tv_torrent_gets[ 'newdirs' ].setdefault( candDir, [] )
+                tv_torrent_gets[ 'newdirs' ][ candDir ].append( dat )
+            else:
+                tv_torrent_gets[ 'nonewdirs' ].append( dat )
+    return tv_torrent_gets
+
+def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, num_iters = 10 ):
+    time0 = time.time( )
+    data = plexcore_rsync.get_credentials( )
+    assert( data is not None ), "error, could not get rsync download settings."
+    assert( maxtime_in_secs >= 60 )
+    assert( num_iters >= 1 )
+    tvTorUnits = reduce(lambda x,y: x+y, [ tv_torrent_gets[ 'nonewdirs' ] ] +
+                        list(map(lambda newdir: tv_torrent_gets[ 'newdirs' ][ newdir ],
+                                 tv_torrent_gets[ 'newdirs' ] ) ) )
+    print( 'started the downloading of %d episodes at %s' % (
+        len( tvTorUnits ), datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ) )
+        
+    #
+    ## first find and make the new directories
+    newdirs = sorted( tv_torrent_gets[ 'newdirs' ] )
+    for newdir in filter(lambda nd: not os.path.isdir( nd ), newdirs ):
+        os.mkdir( newdir )
+    def worker_process_download_tvtorrent_perproc( tvTorUnit ):
+        dat, status_dict = plextvdb_torrents.worker_process_download_tvtorrent(
+            tvTorUnit, maxtime_in_secs = maxtime_in_secs, num_iters = num_iters )
+        if status_dict[ 'status' ] != 'SUCCESS':
+            print( 'PROBLEM', tvTorUnit[ 'torFname' ], status_dict )
+        if dat is None: return None
+        tvTorUnitFin = copy.deepcopy( tvTorUnit )
+        tvTorUnitFin['remoteFileName'] = dat
+        suffix = dat.split('.')[-1].strip( )
+        tvTorUnitFin[ 'totFname' ] = '%s.%s' % ( tvTorUnitFin[ 'totFname' ], suffix )
+        return tvTorUnitFin
+    #
+    ## now create a pool to multiprocess collect those episodes
+    pool = multiprocessing.Pool( processes = min( multiprocessing.cpu_count( ),
+                                                  len( tvTorUnits ) ) )
+    successfulTvTorUnits = list(filter(
+        None, pool.map( worker_process_download_tvtorrent_perproc,
+                        tvTorUnits ) ) )
+    pool.close( )
+    pool.join( )
+    print( 'processed %d / %d tv torrents successfully in %0.3f seconds.' % (
+        len( successfulTvTorUnits ), len( tvTorUnits ), time.time( ) - time0 ) )
+    #
+    ## now rsync those files over
+    if len( successfulTvTorUnits ) == 0: return
+    time1 = time.time( )
+    suffixes = set(map(lambda tvTorUnit: tvTorUnit[ 'remoteFileName' ].split('.')[-1].strip( ),
+                       successfulTvTorUnits ) )
+    all_glob_strings = list(map(lambda suffix: '*.%s' % suffix, suffixes ) )
+    for glob_string in all_glob_strings:
+        plexcore_rsync.download_files( glob_string, numtries = 100, debug_string = True )
+    #
+    ## now check all the files downloaded
+    local_dir = data[ 'local_dir' ].strip( )
+    def did_cleanly_download( tvTorUnit ):
+        lfilename = os.path.join( local_dir, tvTorUnit[ 'remoteFileName' ] )
+        if not os.path.isfile( lfilename ): return False
+        # modification time
+        mtime = os.path.getmtime( lfilename )
+        dat = datetime.datetime.fromtimestamp( mtime ).date( )
+        if dat.year == 1969: return False
+        return True
+    successfulTvTorUnits = list(filter( did_cleanly_download, successfulTvTorUnits ) )
+    print( 'these %d / %d tv torrents cleanly downloaded in %0.3f seconds.' % (
+        len( successfulTvTorUnits ), len( tvTorUnits ), time.time( ) - time1 ) )
+    #
+    ## now move those files that have successfully downloaded into their final destinations
+    time2 = time.time( )
+    for tvTorUnit in successfulTvTorUnits:
+        shutil.move( os.path.join( local_dir, tvTorUnit[ 'remoteFileName' ] ),
+                     tvTorUnit[ 'totFname' ] )
+    print( 'these %d files moved to correct destinations in %0.3f seconds.' % (
+        len( successfulTvTorUnits ), time.time( ) - time2 ) )
+    print( 'processed from start to finish in %0.3f seconds.' % ( time.time( ) - time0 ) )
 
 def get_tot_epdict_imdb( showName, verify = True ):
     from imdb import IMDb

@@ -11,6 +11,22 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
+def splitall( path_init ):
+    allparts = [ ]
+    path = path_init
+    while True:
+        parts = os.path.split( path )
+        if parts[0] == path:
+            allparts.insert( 0, parts[ 0 ] )
+            break
+        elif parts[1] == path:
+            allparts.insert( 0, parts[ 1 ] )
+            break
+        else:
+            path = parts[0]
+            allparts.insert( 0, parts[ 1 ] )
+    return allparts
+
 # resource file
 mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 baseConfDir = xdg.BaseDirectory.save_config_path( 'plexstuff' )

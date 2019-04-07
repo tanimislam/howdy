@@ -9,7 +9,7 @@ from configparser import RawConfigParser
 from functools import reduce
 from contextlib import contextmanager
 from bs4 import BeautifulSoup
-from . import mainDir, Base, session, baseConfDir
+from . import mainDir, Base, session, baseConfDir, splitall
 from sqlalchemy import Column, Date, Boolean, String
 from oauth2client.client import flow_from_clientsecrets
 from plextmdb import plextmdb
@@ -398,8 +398,16 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
                 media_elem = videlem.find('media')
                 bitrate = int( media_elem[ 'bitrate' ] ) * 1e3 / 8.0
                 size = duration * bitrate
+                part_elem = media_elem.find('part')
+                filename = part_elem[ 'file' ]
                 tvdata[ show ].setdefault( seasno, { } )
-                tvdata[ show ][ seasno ][ epno ] = ( title, dateaired, duration, size )
+                tvdata[ show ][ seasno ][ epno ] = {
+                    'title' : title,
+                    'date aired' : dateaired,
+                    'duration' : duration,
+                    'size' : size,
+                    'path' : filename }
+                # tvdata[ show ][ seasno ][ epno ] = ( title, dateaired, duration, size )
     return tvdata
 
 def _get_library_stats_show( key, token, fullURL = 'http://localhost:32400',

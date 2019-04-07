@@ -1,66 +1,14 @@
 #!/usr/bin/env python3
 
-import os, sys, numpy, subprocess, shlex, time, logging, signal
+import os, sys, time, logging, signal, subprocess, shlex
 # code to handle Ctrl+C, convenience method for command line tools
 def _signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, _signal_handler )
 #
-from plexcore import session, Base
+from plexcore import plexcore_rsync
 from optparse import OptionParser
-from configparser import RawConfigParser
-from sqlalchemy import Column, Integer, String
-
-class PlexRsyncConfig( Base ):
-    #
-    ## create the table using Base.metadata.create_all( _engine )
-    __tablename__ = 'plexrsyncconfig'
-    __table_args__ = { 'extend_existing' : True }
-    localdir = Column( String( 65536 ), index = True, unique = True, primary_key = True )
-    sshpath = Column( String( 65536 ) )
-    subdir = Column( String( 65536 ) )
-                          
-def _push_credentials( local_dir, sshpath, subdir = None ):
-    assert( os.path.isdir( os.path.abspath( local_dir ) ) )
-    query = session.query( PlexRsyncConfig )
-    val = query.first( )
-    if val is not None:
-        session.delete( val )
-        session.commit( )
-    newval = PlexRsyncConfig( localdir = os.path.abspath( local_dir.strip( ) ),
-                              sshpath = sshpath.strip( ),
-                              subdir = subdir )
-    session.add( newval )
-    session.commit( )
-    mystr_split = [
-        'local directory to download to: %s' % os.path.abspath( local_dir.strip( ) ),
-        'SSH path from which to get files: %s' % sshpath.strip( ),
-    ]
-    if subdir is not None:
-        mystr_split.append( 'sub directory on local machine from which to get files: %s' % subdir )
-    logging.debug('\n'.join( mystr_split ) )
-
-def _get_rsync_command( data, mystr ):
-    if data['subdir'] is not None: mainStr = os.path.join( data['subdir'], mystr.strip( ) )
-    else: mainStr = mystr.strip( )
-    mycmd = 'rsync --remove-source-files -P -avz -e ssh %s:%s .' % ( data[ 'sshpath' ], mainStr )
-    return mycmd
-    
-def _get_credentials( ):
-    query = session.query( PlexRsyncConfig )
-    val = query.first( )
-    if val is None:
-        logging.debug('ERROR, RSYNC configuration does not exist.' )
-        return None
-    local_dir = val.localdir
-    sshpath = val.sshpath
-    subdir = val.subdir
-    data = { 'local_dir' : local_dir,
-             'sshpath' : sshpath }
-    if subdir is None: data['subdir'] = None
-    else: data['subdir'] = subdir.strip( )
-    return data
 
 def main( ):
     parser = OptionParser( )
@@ -82,50 +30,22 @@ def main( ):
     parser.add_option('--subdir', dest='subdir', action='store', type=str,
                       help = 'name of the remote sub directory from which to get files. Optional.' )
     #
+    ##
     opts, args = parser.parse_args( )
     if opts.do_debug: logging.basicConfig( level = logging.DEBUG )
     if opts.do_push:
         assert( all(map(lambda tok: tok is not None, ( opts.local_dir, opts.sshpath ) ) ) )
         assert( os.path.isdir( os.path.abspath( opts.local_dir ) ) )
-        _push_credentials( opts.local_dir, opts.sshpath, subdir = opts.subdir )
+        plexcore_rsync.push_credentials( opts.local_dir, opts.sshpath, subdir = opts.subdir )
         return
-
+    
     #
-    ## otherwise get credentials and run
-    data = _get_credentials( )
-    if data is None: return
-    local_dir = data[ 'local_dir' ].strip( )
-    sshpath = data[ 'sshpath' ].strip( )
-    if os.path.abspath( os.getcwd( ) ) != local_dir:
-        print('ERROR, not in %s. Exiting...' % local_dir )
-        return
+    ## otherwise run
     assert( opts.numtries > 0 )
     assert( len( opts.string.strip( ).split( ) ) == 1 ) # no spaces in this string
-    #
-    mycmd = _get_rsync_command( data, opts.string.strip( ) )
-    print('STARTING THIS RSYNC CMD: %s' % mycmd )
-    success = False
-    time0 = time.time( )
-    for idx in range( opts.numtries ):
-        time00 = time.time( )
-        proc = subprocess.Popen( shlex.split( mycmd ), stdout = subprocess.PIPE,
-                                 stderr = subprocess.STDOUT )
-        stdout_val, stderr_val = proc.communicate( )
-        if not any(map(lambda line: 'dispatch_run_fatal' in line, stdout_val.decode('utf-8').split('\n'))):
-            print('SUCCESSFUL ATTEMPT %d / %d IN %0.3f SECONDS.' % ( idx + 1, opts.numtries,
-                                                                     time.time( ) - time00 ) )
-            success = True
-            logging.debug( '%s\n' % stdout_val.decode( 'utf-8' ) )
-            break
-        print('FAILED ATTEMPT %d / %d IN %0.3f SECONDS.' % ( idx + 1, opts.numtries,
-                                                             time.time( ) - time00 ) )
-        logging.debug( '%s\n' % stdout_val.decode( 'utf-8' ) )
-
-    if not success:
-        print('ATTEMPTED AND FAILED %d TIMES IN %0.3f SECONDS TOTAL.' % (
-            opts.numtries, time.time( ) - time0 ) )
-        
-    logging.debug('%s\n' % stdout_val.decode( 'utf-8' ) )
-
+    plexcore_rsync.download_files( opts.string.strip( ),
+                                   opts.numtries,
+                                   debug_string = True )
+    
 if __name__=='__main__':
     main( )

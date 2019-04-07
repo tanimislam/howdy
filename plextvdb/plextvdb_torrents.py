@@ -5,6 +5,7 @@ from requests.compat import urljoin
 from plexemail.plexemail import get_formatted_size
 from . import plextvdb
 from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials
+from plexcore import plexcore_deluge
 
 def _return_error_couldnotfind( name ):
     return None, 'FAILURE, COULD NOT FIND ANY TV SHOWS WITH SEARCH TERM %s' % name
@@ -223,7 +224,7 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     items = items[:maxnum]
     return items, 'SUCCESS'
 
-def get_tv_torrent_jackett( name, maxnum = 10 ):
+def get_tv_torrent_jackett( name, maxnum = 10, minsize = None, maxsize = None, keywords = [ ], keywords_exc = [ ] ):
     import validators
     data = get_jackett_credentials( )
     if data is None:
@@ -282,8 +283,23 @@ def get_tv_torrent_jackett( name, maxnum = 10 ):
             myitem[ 'title' ] = '%s (%0.1f MiB)' % ( title, torrent_size )
             myitem[ 'torrent_size' ] = torrent_size
         items.append( myitem )
+
+    items = sorted(items, key = lambda elem: elem['seeders'] + elem['leechers' ] )[::-1]
+    #
+    ## now perform the filtering
+    if any(map(lambda tok: tok is not None, [ minsize, maxsize ])):
+        items = list(filter(lambda elem: 'torrent_size' in elem, items ))
+        if minsize is not None:
+            items = list(filter(lambda elem: elem['torrent_size'] > minsize, items ) )
+        if maxsize is not None:
+            items = list(filter(lambda elem: elem['torrent_size'] < maxsize, items ) )
+    if len( keywords ) != 0:
+        items = list(filter(lambda elem: any(map(lambda tok: tok.lower( ) in elem['title'].lower( ), keywords ) ) and
+                            not any(map(lambda tok: tok.lower( ) in elem['title'].lower( ), keywords_exc ) ),
+                            items ) )
     if len( items ) == 0:
         return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
+        
     return items[:maxnum], 'SUCCESS'
 
 def get_tv_torrent_kickass( name, maxnum = 10 ):
@@ -417,8 +433,8 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
                 continue
             seeders = try_int(cells[labels.index("SE")].get_text(strip=True))
             leechers = try_int(cells[labels.index("LE")].get_text(strip=True))
-            
-            # Convert size after all possible skip scenarios
+            #
+            ## Convert size after all possible skip scenarios
             torrent_size = cells[labels.index("Name")].find(class_="detDesc").get_text(strip=True).split(", ")[1]
             torrent_size = re.sub(r"Size ([\d.]+).+([KMGT]iB)", r"\1 \2", torrent_size)
             #size = convert_size(torrent_size, units = ["B", "KB", "MB", "GB", "TB", "PB"]) or -1
@@ -451,3 +467,99 @@ def get_tv_torrent_best( name, maxnum = 10 ):
         return None, None # could find nothing
     item = max( items, key = lambda item: item['seeders'] + item['leechers'] )
     return item['title'], item[ 'link' ]
+
+def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, tor_info ):
+    from fabric import Connection
+    media_file = max(tor_info[b'files'], key = lambda elem: elem[b'size'] )
+    file_name = os.path.join( 'downloads', media_file[b'path'].decode('utf-8') )
+    suffix = os.path.basename( file_name ).split('.')[-1].strip( )
+    new_file = os.path.join( 'downloads', '%s.%s' % ( os.path.basename( totFname ), suffix ) )
+    uname = client.username
+    host = client.host
+    with Connection( host, user = uname ) as conn:
+        #
+        ## first copy the file from src to destination
+        cmd = 'cp "%s" "%s"' % ( file_name, new_file )
+        try: r = conn.run( cmd, hide = True )
+        except: return None, 'ERROR, could not properly run %s.' % cmd
+        cmd = 'chmod 644 "%s"' % new_file
+        try: r = conn.run( cmd, hide = True )
+        except: None, 'ERROR, could not properly run %s.' % cmd
+        #
+        ## now delete the deluge connection
+        plexcore_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = True )
+        return '%s.%s' % ( os.path.basename( totFname ), suffix ), 'SUCCESS'
+
+def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs = 14400, kill_if_fail = False,
+                                       num_iters = 1 ):
+    time0 = time.time( )
+    assert( maxtime_in_secs > 0 )
+    def create_status_dict( status, status_message ):
+        assert( status in ('SUCCESS', 'FAILURE' ) )
+        return {
+            'status' : status,
+            'message' : status_message,
+            'time' : time.time( ) - time0
+        }
+    torFileName = tvTorUnit[ 'torFname' ]
+    totFname = tvTorUnit[ 'totFname' ]
+    minSize = tvTorUnit[ 'minSize' ]
+    maxSize = tvTorUnit[ 'maxSize' ]
+    if client is None:
+        client, status = plexcore_deluge.get_deluge_client( )
+        if client is None:
+            return None, create_status_dict( 'FAILURE', 'cannot create or run a valid deluge RPC client.' )
+    #
+    ## now get list of torrents, choose "top" one
+    data, status = get_tv_torrent_jackett( torFileName, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
+                                           minsize = minSize, maxsize = maxSize, keywords_exc = [ 'xvid' ])
+    if status != 'SUCCESS': return None, create_status_dict( 'FAILURE', status )
+    print( 'got %d candidates for %s in %0.3f seconds' % ( len(data), torFileName, time.time( ) - time0 ) )
+    failing_reasons = [ ]
+    numiters, rem = divmod( maxtime_in_secs, 30 )
+    if rem != 0: numiters += 1
+    
+    def process_single_iteration( data, idx ):
+        mag_link = data[ idx ]['link']
+        #
+        ## download the top magnet link
+        torrentId = plexcore_deluge.deluge_add_magnet_file( client, mag_link )
+        if torrentId is None:
+            return None, create_status_dict( 'FAILURE',
+                                             'could not add idx = %s, magnet_link = %s, for candidate = %s' % (
+                                                 idx, mag_link, torFileName ) )
+        time00 = time.time( )
+        for jdx in range( numiters ):
+            time.sleep( 30 )
+            torrent_info = plexcore_deluge.deluge_get_torrents_info( client )
+            if torrentId not in torrent_info:
+                return None, create_status_dict( 'FAILURE', 'ERROR, COULD NOT GET IDX = %d, TORRENT ID = %s.' % (
+                    idx, torrentId.decode('utf-8').lower()[:6] ) )
+            tor_info = torrent_info[ torrentId ]
+            status = tor_info[ b'state'].decode('utf-8').upper( )
+            progress = tor_info[ b'progress']
+            print( 'after %0.3f seconds, attempt #%d, for %s: status = %s, progress = %0.1f%%' % (
+                time.time( ) - time00, idx + 1, torFileName, status, progress ) )
+            if status in ( 'SEEDING', 'PAUSED' ): # now let's be ambitious and create the new file
+                fullFname, status = _finish_and_clean_working_tvtorrent_download(
+                    totFname, client, torrentId, tor_info )
+                if status != 'SUCCESS':
+                    return None, create_status_dict( 'FAILURE', status )
+                return fullFname, create_status_dict( 'SUCCESS',
+                                                      'attempt #%d successfully downloaded %s' % (
+                                                          idx + 1, torFileName ) )
+        #
+        ## failure condition
+        plexcore_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = kill_if_fail )
+        return None, create_status_dict( 'FAILURE',
+                                         'failed to download idx = %d, %s after %0.3f seconds' % (
+                                             idx, torFileName, time.time( ) - time00 ) )
+    for idx in range( num_iters ):
+        dat, status_dict = process_single_iteration( data, idx )
+        if dat is not None:
+            return dat, status_dict
+        failing_reasons.append( status_dict[ 'message' ] )
+    #
+    ## final failing condition
+    return None, create_status_dict( 'FAILURE','\n'.join( failing_reasons ) )
+                                     

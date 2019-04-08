@@ -834,12 +834,13 @@ def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, nu
     newdirs = sorted( tv_torrent_gets[ 'newdirs' ] )
     for newdir in filter(lambda nd: not os.path.isdir( nd ), newdirs ):
         os.mkdir( newdir )
+    could_not_download = [ ]
     def worker_process_download_tvtorrent_perproc( tvTorUnit ):
         dat, status_dict = plextvdb_torrents.worker_process_download_tvtorrent(
             tvTorUnit, maxtime_in_secs = maxtime_in_secs, num_iters = num_iters )
-        if status_dict[ 'status' ] != 'SUCCESS':
-            print( 'PROBLEM', tvTorUnit[ 'torFname' ], status_dict )
-        if dat is None: return None
+        if dat is None:
+            could_not_download.append( tvTorUnit[ 'torFname'  ] )
+            return None
         tvTorUnitFin = copy.deepcopy( tvTorUnit )
         tvTorUnitFin['remoteFileName'] = dat
         suffix = dat.split('.')[-1].strip( )
@@ -854,8 +855,11 @@ def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, nu
                         tvTorUnits ) ) )
     pool.close( )
     pool.join( )
-    print( 'processed %d / %d tv torrents successfully in %0.3f seconds.' % (
-        len( successfulTvTorUnits ), len( tvTorUnits ), time.time( ) - time0 ) )
+    print( '\n'.join([
+        'processed %d / %d tv torrents successfully in %0.3f seconds.' % (
+            len( successfulTvTorUnits ), len( tvTorUnits ), time.time( ) - time0 ),
+        'could not download %s.' % ', '.join( sorted( could_not_download ) ) ] ) )
+                     
     #
     ## now rsync those files over
     if len( successfulTvTorUnits ) == 0: return

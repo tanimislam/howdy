@@ -620,7 +620,7 @@ def get_library_stats( key, token, fullURL = 'http://localhost:32400' ):
     else:
         return fullURL, title, mediatype
         
-def get_libraries( fullURL = 'http://localhost:32400', token = None ):
+def get_libraries( fullURL = 'http://localhost:32400', token = None, do_full = False ):
     if token is None:
         if fullURL == 'http://localhost:32400':
             data = checkServerCredentials( doLocal = True )
@@ -635,8 +635,12 @@ def get_libraries( fullURL = 'http://localhost:32400', token = None ):
     if response.status_code != 200:
         return None
     html = BeautifulSoup( response.content, 'lxml' )
-    return dict( map( lambda direlem: ( int( direlem['key'] ), direlem['title'] ),
-                      html.find_all('directory') ) )
+    if not do_full:
+        return dict( map( lambda direlem: ( int( direlem['key'] ), direlem['title'] ),
+                          html.find_all('directory') ) )
+    else:
+        return dict( map( lambda direlem: ( int( direlem['key'] ), ( direlem['title'], direlem['type'] ) ),
+                          html.find_all('directory') ) )
 
 def get_movie_titles_by_year( year, fullURLWithPort = 'http://localhost:32400',
                               token = None ):

@@ -800,7 +800,11 @@ def get_tvtorrent_candidate_downloads( toGet ):
         num_in_50 = int( avg_length_mins * 60.0 * 1300 / 8.0 / 1024 / 50 + 1 )
         maxSize = 50 * num_in_50
         #
-        torTitle = showFileName.replace("'",'').replace(':','')
+        ## being too clever
+        ## doing torTitle = showFileName.replace("'",'').replace(':','').replace('&', 'and').replace('/', '-')
+        torTitle = reduce(lambda x,y: x.replace(y[0], y[1]),
+                          [ showFileName, ] + list(zip([ "'", ":", "&", "/" ],
+                                                       [ '', '', 'and', '-' ]) ) )        
         for seasno, epno, title in mydict[ 'episodes' ]:
             actTitle = title.replace('/', ', ')
             candDir = os.path.join( prefix, 'Season %%%02dd' % min_inferred_length % seasno )
@@ -821,48 +825,52 @@ def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, nu
     time0 = time.time( )
     data = plexcore_rsync.get_credentials( )
     assert( data is not None ), "error, could not get rsync download settings."
-    assert( maxtime_in_secs >= 60 )
-    assert( num_iters >= 1 )
+    assert( maxtime_in_secs >= 60 ), "error, max time to download each torrent >= 60 seconds."
+    assert( num_iters >= 1 ), "error, number of tries on different magnet links >= 1."
     tvTorUnits = reduce(lambda x,y: x+y, [ tv_torrent_gets[ 'nonewdirs' ] ] +
                         list(map(lambda newdir: tv_torrent_gets[ 'newdirs' ][ newdir ],
                                  tv_torrent_gets[ 'newdirs' ] ) ) )
-    print( 'started the downloading of %d episodes at %s' % (
-        len( tvTorUnits ), datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ) )
+    print( 'started downloading %d episodes on %s' % (
+        len( tvTorUnits ), datetime.datetime.now( ).strftime(
+            '%B %d, %Y @ %I:%M:%S %p' ) ) )
         
     #
     ## first find and make the new directories
     newdirs = sorted( tv_torrent_gets[ 'newdirs' ] )
     for newdir in filter(lambda nd: not os.path.isdir( nd ), newdirs ):
         os.mkdir( newdir )
-    could_not_download = [ ]
     def worker_process_download_tvtorrent_perproc( tvTorUnit ):
         dat, status_dict = plextvdb_torrents.worker_process_download_tvtorrent(
             tvTorUnit, maxtime_in_secs = maxtime_in_secs, num_iters = num_iters )
-        if dat is None:
-            could_not_download.append( tvTorUnit[ 'torFname'  ] )
-            return None
+        if dat is None: return tvTorUnit[ 'torFname' ] # could not download this
         tvTorUnitFin = copy.deepcopy( tvTorUnit )
         tvTorUnitFin['remoteFileName'] = dat
         suffix = dat.split('.')[-1].strip( )
-        tvTorUnitFin[ 'totFname' ] = '%s.%s' % ( tvTorUnitFin[ 'totFname' ], suffix )
+        tvTorUnitFin[ 'totFname' ] = '%s.%s' % ( tvTorUnit[ 'totFname' ], suffix )
         return tvTorUnitFin
     #
     ## now create a pool to multiprocess collect those episodes
     pool = multiprocessing.Pool( processes = min( multiprocessing.cpu_count( ),
                                                   len( tvTorUnits ) ) )
-    successfulTvTorUnits = list(filter(
-        None, pool.map( worker_process_download_tvtorrent_perproc,
-                        tvTorUnits ) ) )
+    allTvTorUnits = list( pool.map( worker_process_download_tvtorrent_perproc,
+                                    tvTorUnits ) )
     pool.close( )
     pool.join( )
+    successfulTvTorUnits = list(filter(lambda tup: not isinstance( tup, str ),
+                                       allTvTorUnits ) )
+    could_not_download = list(filter(lambda tup: isinstance( tup, str ),
+                                     allTvTorUnits ) )
+    
     print( '\n'.join([
-        'processed %d / %d tv torrents successfully in %0.3f seconds.' % (
+        'successfully processed %d / %d episodes in %0.3f seconds.' % (
             len( successfulTvTorUnits ), len( tvTorUnits ), time.time( ) - time0 ),
         'could not download %s.' % ', '.join( sorted( could_not_download ) ) ] ) )
                      
     #
     ## now rsync those files over
-    if len( successfulTvTorUnits ) == 0: return
+    if len( successfulTvTorUnits ) == 0:
+        print( 'processed from start to finish in %0.3f seconds.' % ( time.time( ) - time0 ) )
+        return
     time1 = time.time( )
     suffixes = set(map(lambda tvTorUnit: tvTorUnit[ 'remoteFileName' ].split('.')[-1].strip( ),
                        successfulTvTorUnits ) )

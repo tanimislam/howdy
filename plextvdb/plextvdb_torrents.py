@@ -484,7 +484,13 @@ def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, t
         except: return None, 'ERROR, could not properly run %s.' % cmd
         cmd = 'chmod 644 "%s"' % new_file
         try: r = conn.run( cmd, hide = True )
-        except: None, 'ERROR, could not properly run %s.' % cmd
+        except: return None, 'ERROR, could not properly run %s.' % cmd
+        #
+        ## if ends in mp4
+        if suffix == 'mp4':
+            cmd = '~/.local/bin/mp4tags -s "" "%s"' % new_file
+            try: r = conn.run( cmd, hide = True )
+            except: return None, 'Error, could not properly run %s.' % cmd
         #
         ## now delete the deluge connection
         plexcore_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = True )

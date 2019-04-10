@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-import os, sys, numpy, glob, signal, time
+import sys, signal
 def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
+import os, numpy, glob, time, datetime
 from functools import reduce
 from plexcore import plexcore
 from plextvdb import plextvdb
@@ -26,11 +27,12 @@ def main( ):
     opts, args = parser.parse_args( )
     assert( opts.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
     assert( opts.num_iters >= 1 ), 'error, must have a positive number of iterations.'
+    print( '0, started on %s' % datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ) 
     #
     ## get plex server token
     dat = plexcore.checkServerCredentials( doLocal = True )
     if dat is None:
-        print('error, could not access local Plex server. Exiting...')
+        print('1, error, could not access local Plex server. Exiting...')
         return
     fullURL, token = dat
     #
@@ -39,10 +41,10 @@ def main( ):
     valid_keys = list(filter(lambda key: library_dict[ key ][ -1 ] ==
                              'show', library_dict ) )
     if len( valid_keys ) == 0:
-        print('error, could not find a TV show library. Exiting...')
+        print('1, Error, could not find a TV show library. Exiting...')
         return
     tvlib_title = library_dict[ max( valid_keys ) ][ 0 ]
-    print( 'found TV library: %s' % tvlib_title )
+    print( '1, found TV library: %s' % tvlib_title )
     #
     ## now get the TV shows
     time0 = time.time( )
@@ -51,9 +53,9 @@ def main( ):
         showSpecials = False,
         showsToExclude = [ 'The Great British Bake Off' ] )
     if len( toGet ) == 0:
-        print('no episodes to collect. Exiting...')
+        print('2, no episodes to download. Exiting...')
         return
-    print( 'took %0.3f seconds to get list of %d episodes to collect.' % (
+    print( '2, took %0.3f seconds to get list of %d episodes to download.' % (
         time.time( ) - time0, sum(map(lambda tvshow: len(toGet[tvshow]['episodes']),
                                       toGet))))
     #
@@ -62,12 +64,13 @@ def main( ):
     tvTorUnits = reduce(lambda x,y: x+y, [ tv_torrent_gets[ 'nonewdirs' ] ] +
                         list(map(lambda newdir: tv_torrent_gets[ 'newdirs' ][ newdir ],
                                 tv_torrent_gets[ 'newdirs' ] ) ) )
-    print('here are the %d episodes to get: %s' % (
+    print('3, here are the %d episodes to get: %s' % (
         len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname' ], tvTorUnits))))
     plextvdb.download_batched_tvtorrent_shows(
         tv_torrent_gets, maxtime_in_secs = opts.maxtime_in_secs,
         num_iters = opts.num_iters )
-    print( 'everything done in %0.3f seconds.' % ( time.time( ) - time0 ) )
+    print( '\n'.join([ '4, everything done in %0.3f seconds.' % ( time.time( ) - time0 ),
+                       'finished on %s.' % datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ] ) )
 
 if __name__=='__main__':
     main( )

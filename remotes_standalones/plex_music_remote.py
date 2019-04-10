@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 
-import codecs, os, sys, base64, requests, time, signal
+import sys, signal
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Just quitting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
+#
+import codecs, os, base64, requests, time
 from optparse import OptionParser
+
+_email = '***REMOVED***_shahriar_islam@yahoo.com'
+_passw = 'initialplexserver'
 
 def get_album( artist, album ):
     url = 'https://***REMOVED***islam.ddns.net/flask/plex/sendmusic'
@@ -14,10 +19,9 @@ def get_album( artist, album ):
              'artist' : artist,
              'album' : album }
     response = requests.post( url, json = data,
-                              auth = ( '***REMOVED***_shahriar_islam@yahoo.com',
-                                       'initialplexserver' ) )
+                              auth = ( _email, _passw ) )
     if response.status_code == 401:
-        print( "ERROR, email '%s' is not known by the Plex Server. Please choose a valid email." % '***REMOVED***_shahriar_islam@yahoo.com' )
+        print( "ERROR, email '%s' is not known by the Plex Server. Please choose a valid email." % _email )
         return
     elif response.status_code == 400:
         message = response.json( )['message']
@@ -38,10 +42,9 @@ def get_song( artist, song ):
              'artist' : artist,
              'song' : song }
     response = requests.post( url, json = data,
-                              auth = ( '***REMOVED***_shahriar_islam@yahoo.com',
-                                       'initialplexserver' ) )
+                              auth = ( _email, _passw ) )
     if response.status_code == 401:
-        print( "ERROR, email '%s' is not known by the Plex Server. Please choose a valid email." % '***REMOVED***_shahriar_islam@yahoo.com' )
+        print( "ERROR, email '%s' is not known by the Plex Server. Please choose a valid email." % _email )
         return
     elif response.status_code == 400:
         message = response.json( )['message']
@@ -79,8 +82,7 @@ def get_song( artist, song ):
               'youtubeURL' : youtubeURL,
               'mode' : 'SENDCHOICE' }
     response2 = requests.post( url, json = data2,
-                               auth = ( '***REMOVED***_shahriar_islam@yahoo.com',
-                                        'initialplexserver' ) )
+                               auth = ( _email, _passw ) )
     if response2.status_code == 400:
         message = response.json( )['message']
         print( message )

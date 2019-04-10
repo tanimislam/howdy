@@ -803,8 +803,9 @@ def get_tvtorrent_candidate_downloads( toGet ):
         ## being too clever
         ## doing torTitle = showFileName.replace("'",'').replace(':','').replace('&', 'and').replace('/', '-')
         torTitle = reduce(lambda x,y: x.replace(y[0], y[1]),
-                          [ showFileName, ] + list(zip([ "'", ":", "&", "/" ],
-                                                       [ '', '', 'and', '-' ]) ) )        
+                          zip([ "'", ":", "&", "/" ],
+                              [ '', '', 'and', ',' ]),
+                          showFileName)
         for seasno, epno, title in mydict[ 'episodes' ]:
             actTitle = title.replace('/', ', ')
             candDir = os.path.join( prefix, 'Season %%%02dd' % min_inferred_length % seasno )

@@ -861,12 +861,16 @@ def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, nu
                                        allTvTorUnits ) )
     could_not_download = list(filter(lambda tup: isinstance( tup, str ),
                                      allTvTorUnits ) )
-    
-    print( '\n'.join([
-        'successfully processed %d / %d episodes in %0.3f seconds.' % (
-            len( successfulTvTorUnits ), len( tvTorUnits ), time.time( ) - time0 ),
-        'could not download %s.' % ', '.join( sorted( could_not_download ) ) ] ) )
-                     
+
+    if len( could_not_download ) != 0:
+        print( '\n'.join([
+            'successfully processed %d / %d episodes in %0.3f seconds.' % (
+                len( successfulTvTorUnits ), len( tvTorUnits ), time.time( ) - time0 ),
+            'could not download %s.' % ', '.join( sorted( could_not_download ) ) ] ) )
+    else:
+        print( 'successfully processed %d / %d episodes in %0.3f seconds.' % (
+            len( successfulTvTorUnits ), len( tvTorUnits ), time.time( ) - time0 ) )
+        
     #
     ## now rsync those files over
     if len( successfulTvTorUnits ) == 0:

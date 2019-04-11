@@ -70,7 +70,7 @@ def main( ):
         tv_torrent_gets, maxtime_in_secs = opts.maxtime_in_secs,
         num_iters = opts.num_iters )
     print( '\n'.join([ '4, everything done in %0.3f seconds.' % ( time.time( ) - time0 ),
-                       'finished on %s.' % datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ] ) )
+                       '5, finished on %s.' % datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ] ) )
 
 if __name__=='__main__':
     main( )

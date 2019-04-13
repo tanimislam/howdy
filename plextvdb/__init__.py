@@ -1,7 +1,10 @@
 # resource file
 import os, requests, json, sys
+from sqlalchemy import Column, String
 mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 sys.path.append( mainDir )
+from plexcore import Base, session
+
 
 _apiKey = '0B3F6D72213D71C8'
 _usrKey = 'AEE839E62568BA63'
@@ -31,3 +34,10 @@ def refresh_token( token, verify = True ):
     if response.status_code != 200:
         return None
     return response.json( )['token']
+
+class ShowsToExclude( Base ): # these are shows you want to exclude
+    #
+    ## create the table using Base.metadata.create_all( _engine )
+    __tablename__ = 'showstoexclude'
+    __table_args__ = { 'extend_existing': True }
+    show = Column( String( 65536 ), index = True, primary_key = True )

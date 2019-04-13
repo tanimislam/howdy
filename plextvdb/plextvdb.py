@@ -9,8 +9,8 @@ from PIL import Image
 from io import StringIO
 from dateutil.relativedelta import relativedelta
 from fuzzywuzzy.fuzz import ratio
-from . import get_token, plextvdb_torrents
-from plexcore import plexcore_rsync
+from . import get_token, plextvdb_torrents, ShowsToExclude
+from plexcore import plexcore_rsync, splitall
 
 def _splitall( path_init ):
     allparts = [ ]
@@ -781,6 +781,36 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
         }
         toGet[ tvshow ] = mydict
     return toGet
+
+def push_shows_to_exclude( tvdata, showsToExclude ):
+    if len( tvdata ) == 0: return
+    showsActExclude = set(showsToExclude) & set( tvdata.keys( ) ) # first get the union of shows to exclude
+    if len( showsActExclude ) != 0:
+        print('found %d shows to exclude from TV database.' % len( showsActExclude ) )
+    showsToExcludeInDB = set( session.query( ShowsToExclude ).all( ) )
+    notHere = set(showsToExcludeInDB) - set( tvdata )
+    for show in notHere: session.delete( show )
+    session.commit( )
+    if len( notHere ) != 0:
+        print( 'had to remove %d excluded shows from DB that were not in TV library.' % len( notHere ) )
+    if len( showsActExclude ) == 0: return
+    showsToExcludeInDB = set( session.query( ShowsToExclude ).all( ) )
+    candShows = showsActExclude - showsToExcludeInDB
+    if len( candShows ) != 0:
+        print('adding %d extra shows to exclusion database.' % candShows )
+    for show in candShows: session.add( ShowsToExclude( show ) )
+    session.commit( )
+
+def get_shows_to_exclude( tvdata = None ):
+    showsToExcludeInDB = sorted( set( session.query( ShowsToExclude ).all( ) ) )
+    if tvdata is None or len( tvdata ) == 0: return
+    notHere = set(showsToExcludeInDB) - set( tvdata )
+    for show in notHere:
+        session.delete( show )
+        session.commit( )
+    if len( notHere ) != 0:
+        print( 'had to remove %d excluded shows from DB that were not in TV library.' %
+               len( notHere ) )
 
 def get_tvtorrent_candidate_downloads( toGet ):
     tv_torrent_gets = { }

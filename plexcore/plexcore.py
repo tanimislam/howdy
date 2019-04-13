@@ -3,7 +3,7 @@ import multiprocessing, tempfile, uuid, requests, pytz, pypandoc
 import xdg.BaseDirectory, urllib, json, oauth2client.file, httplib2
 from html import unescape
 from urllib.request import urlopen
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urljoin
 from fuzzywuzzy.fuzz import partial_ratio
 from configparser import RawConfigParser
 from functools import reduce
@@ -342,7 +342,7 @@ def _get_library_stats_movie( key, token, fullURL ='https://localhost:32400', si
 
 def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
                             sinceDate = None ):
-    from requests.compat import urljoin
+    # from requests.compat import urljoin
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date()
@@ -809,7 +809,6 @@ class PlexJackettCredentials( Base ):
 ## put in the jackett credentials into here
 def store_jackett_credentials( url, apikey ):
     import validators
-    from urllib.parse import urljoin
     endpoint = 'api/v2.0/indexers/all/results/torznab/api'
     #
     ## now check that everything works

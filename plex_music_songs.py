@@ -3,11 +3,22 @@
 import signal
 from plexcore import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
-import codecs, sys, os
+import codecs, sys, os, datetime
 from plexmusic import plexmusic
 from plexcore import plexcore
 from plexemail import plexemail
 from optparse import OptionParser
+
+def _get_final_song_name( song_name, dur ):
+    assert( dur >= 0 )
+    if dur < 3600:
+        return '%s (%s)' % (
+            song_name,
+            datetime.datetime.fromtimestamp( dur ).strftime('%M:%S') )
+    else:
+        return '%s (%s)' % (
+            song_name,
+            datetime.datetime.fromtimestamp( dur ).strftime('%H:%M:%S') )
 
 def _choose_youtube_item( name, maxnum = 10 ):
     youtube = plexmusic.get_youtube_service( )
@@ -34,10 +45,12 @@ def _choose_youtube_item( name, maxnum = 10 ):
         return None
     return youtubeURL
 
-def _download_actual_song( pm, lastfm, s_name, a_name, maxnum ):
+def _download_actual_song( pm, lastfm, s_name, a_name, maxnum, do_lastfm ):
     try:
-        data_dict, status = pm.get_music_metadata( song_name = s_name,
-                                                   artist_name = a_name )
+        if not do_lastfm:
+            data_dict, status = pm.get_music_metadata( song_name = s_name,
+                                                       artist_name = a_name )
+        else: status = 'FAILURE'
         if status != 'SUCCESS':
             data_dict, status = lastfm.get_music_metadata( song_name = s_name,
                                                            artist_name = a_name,
@@ -54,9 +67,13 @@ def _download_actual_song( pm, lastfm, s_name, a_name, maxnum ):
     artist_name = data_dict[ 'artist' ]
     song_name = data_dict[ 'song' ]
     album_name = data_dict[ 'album' ]
+    if 'duration' in data_dict:
+        dur = int( data_dict[ 'duration' ] )
+        song_name_after = _get_final_song_name( song_name, dur )
     print( 'ACTUAL ARTIST: %s' % artist_name )
     print( 'ACTUAL ALBUM: %s' % album_name )
-    print( 'ACTUAL SONG: %s' % song_name )
+    if 'duration' not in data_dict: print( 'ACTUAL SONG: %s' % song_name )
+    else: print( 'ACTUAL SONG: %s' % song_name_after )
     #
     ## now get the youtube song selections
     youtubeURL = _choose_youtube_item( '%s %s' % ( artist_name, song_name ),
@@ -127,7 +144,7 @@ def _download_songs_newformat( opts ):
     song_names = map(lambda song_name: song_name.strip( ), opts.song_names.split(';'))
     artist_names = map(lambda artist_name: artist_name.strip( ), opts.artist_names.split(';'))
     all_songs_downloaded = list(
-        filter(None, map(lambda tup: _download_actual_song( pm, tup[0], tup[1], opts.maxnum ),
+        filter(None, map(lambda tup: _download_actual_song( pm, tup[0], tup[1], opts.maxnum, opts.do_lastfm ),
                          filter(None, zip( song_names, artist_names ) ) ) ) )    
     return all_songs_downloaded
 
@@ -139,8 +156,10 @@ def _download_songs_oldformat( opts ):
     lastfm = plexmusic.PlexLastFM( )
     if opts.album_name is not None:
         all_songs_downloaded = [ ]
-        album_data_dict, status = pm.get_music_metadatas_album( opts.artist_name,
-                                                                opts.album_name )
+        if not opts.do_lastfm:
+            album_data_dict, status = pm.get_music_metadatas_album( opts.artist_name,
+                                                                    opts.album_name )
+        else: status = 'FAILURE'
         if status != 'SUCCESS':
             album_data_dict, status = lastfm.get_music_metadatas_album( opts.artist_name,
                                                                         opts.album_name )
@@ -159,7 +178,11 @@ def _download_songs_oldformat( opts ):
         print( 'ACTUAL NUM TRACKS: %d' % album_tracks )
         for data_dict in album_data_dict:
             song_name = data_dict[ 'song' ]
-            print( 'ACTUAL SONG: %s' % song_name )
+            if 'duration' in data_dict:
+                dur = int( data_dict[ 'duration' ] )
+                song_name_after = _get_final_song_name( song_name, dur )
+                print( 'ACTUAL SONG: %s' % song_name_after )
+            else: print( 'ACTUAL SONG: %s' % song_name )
             #
             ## now get the youtube song selections
             youtubeURL = _choose_youtube_item( '%s %s' % ( artist_name, song_name ),
@@ -181,7 +204,8 @@ def _download_songs_oldformat( opts ):
         assert( opts.song_names is not None )
         song_names = map(lambda song_name: song_name.strip( ), opts.song_names.split(';'))
         all_songs_downloaded = list(filter(
-            None,  map(lambda song_name: _download_actual_song( pm, lastfm, song_name, opts.artist_name, opts.maxnum ),
+            None,  map(lambda song_name: _download_actual_song(
+                pm, lastfm, song_name, opts.artist_name, opts.maxnum, opts.do_lastfm ),
                        song_names ) ) )
     return all_songs_downloaded
 
@@ -208,6 +232,8 @@ def main( ):
                            "Each artist is separated by a ';'." ]))
     parser.add_option( '--artists', dest='artist_names', type=str, action='store',
                        help = "List of artists. Each artist is separated by a ';'.")
+    parser.add_option( '--lastfm', dest='do_lastfm', action='store_true', default = False,
+                       help = 'If chosen, then only use the LastFM API to get song metadata.' )
     opts, args = parser.parse_args( )
 
     if not opts.do_new: all_songs_downloaded = _download_songs_oldformat( opts )

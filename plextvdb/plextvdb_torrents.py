@@ -499,6 +499,10 @@ def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, t
 def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs = 14400, kill_if_fail = False,
                                        num_iters = 1 ):
     time0 = time.time( )
+    def kill_failing( torrentId ):
+        if not kill_if_fail: return
+        plexcore_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = kill_if_fail )
+        
     assert( maxtime_in_secs > 0 )
     def create_status_dict( status, status_message ):
         assert( status in ('SUCCESS', 'FAILURE' ) )
@@ -539,6 +543,7 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
             time.sleep( 30 )
             torrent_info = plexcore_deluge.deluge_get_torrents_info( client )
             if torrentId not in torrent_info:
+                kill_failing( torrentId )
                 return None, create_status_dict( 'FAILURE', 'ERROR, COULD NOT GET IDX = %d, TORRENT ID = %s.' % (
                     idx, torrentId.decode('utf-8').lower()[:6] ) )
             tor_info = torrent_info[ torrentId ]
@@ -550,13 +555,15 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
                 fullFname, status = _finish_and_clean_working_tvtorrent_download(
                     totFname, client, torrentId, tor_info )
                 if status != 'SUCCESS':
+                    kill_failing( torrentId )
                     return None, create_status_dict( 'FAILURE', status )
-                return fullFname, create_status_dict( 'SUCCESS',
-                                                      'attempt #%d successfully downloaded %s' % (
-                                                          idx + 1, torFileName ) )
+                return fullFname, create_status_dict(
+                    'SUCCESS',
+                    'attempt #%d successfully downloaded %s' % (
+                        idx + 1, torFileName ) )
         #
-        ## failure condition
-        plexcore_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = kill_if_fail )
+        ## did not finish in time
+        kill_failing( torrentId )
         return None, create_status_dict( 'FAILURE',
                                          'failed to download idx = %d, %s after %0.3f seconds' % (
                                              idx, torFileName, time.time( ) - time00 ) )

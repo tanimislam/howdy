@@ -44,7 +44,7 @@ def main( ):
         print('1, Error, could not find a TV show library. Exiting...')
         return
     tvlib_title = library_dict[ max( valid_keys ) ][ 0 ]
-    print( '1, found TV library: %s' % tvlib_title )
+    print( '1, found TV library: %s.' % tvlib_title )
     #
     ## now get the TV shows
     time0 = time.time( )
@@ -64,13 +64,13 @@ def main( ):
     tvTorUnits = reduce(lambda x,y: x+y, [ tv_torrent_gets[ 'nonewdirs' ] ] +
                         list(map(lambda newdir: tv_torrent_gets[ 'newdirs' ][ newdir ],
                                 tv_torrent_gets[ 'newdirs' ] ) ) )
-    print('3, here are the %d episodes to get: %s' % (
+    print('3, here are the %d episodes to get: %s.' % (
         len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname' ], tvTorUnits))))
     plextvdb.download_batched_tvtorrent_shows(
         tv_torrent_gets, maxtime_in_secs = opts.maxtime_in_secs,
         num_iters = opts.num_iters )
     print( '\n'.join([ '4, everything done in %0.3f seconds.' % ( time.time( ) - time0 ),
                        '5, finished on %s.' % datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ] ) )
-
+    
 if __name__=='__main__':
     main( )

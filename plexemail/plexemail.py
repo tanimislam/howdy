@@ -221,7 +221,8 @@ def send_individual_email_full( mainHTML, subject, email, name = None, attach = 
     assert( credentials is not None )
     service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
                     cache_discovery = False )
-    message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
+    try: message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
+    except: print('problem with %s' % msg['To'] )
 
 def send_individual_email_full_withsingleattach( mainHTML, subject, email, name = None,
                                                  attachData = None, attachName = None):
@@ -253,8 +254,10 @@ def send_individual_email_full_withsingleattach( mainHTML, subject, email, name 
     assert( credentials is not None )
     service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
                     cache_discovery = False )
-    message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
-    
+    try:
+        message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
+    except: print('problem with %s' % msg['To'] )
+        
 def send_individual_email_full_withattachs( mainHTML, subject, email, name = None,
                                             attachNames = None, attachDatas = None):
     fromEmail = 'Tanim Islam <tanim.islam@gmail.com>'

@@ -12,23 +12,6 @@ from fuzzywuzzy.fuzz import ratio
 from . import get_token, plextvdb_torrents, ShowsToExclude
 from plexcore import plexcore_rsync, splitall
 
-def _splitall( path_init ):
-    allparts = [ ]
-    path = path_init
-    while True:
-        parts = os.path.split( path )
-        if parts[0] == path:
-            allparts.insert( 0, parts[ 0 ] )
-            break
-        elif parts[1] == path:
-            allparts.insert( 0, parts[ 1 ] )
-            break
-        else:
-            path = parts[0]
-            allparts.insert( 0, parts[ 1 ] )
-    return allparts
-
-
 def _create_season( input_tuple ):
     seriesName, seriesId, token, season, verify = input_tuple
     return season, TVSeason( seriesName, seriesId, token, season, verify = verify )
@@ -618,7 +601,7 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
     assert( tvshow in tvdata )
     num_cols = set(reduce(lambda x,y: x+y, list(
         map(lambda seasno: list(
-            map(lambda epno: len(_splitall( tvdata[tvshow][seasno][epno]['path'])),
+            map(lambda epno: len(splitall( tvdata[tvshow][seasno][epno]['path'])),
                 tvdata[tvshow][seasno])), tvdata[tvshow]))))
     #
     ## only consider tv shows with fixed number of columns
@@ -631,14 +614,14 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
         filter(lambda colno:
                len(set(reduce(lambda x,y: x+y, list(
                    map(lambda seasno: list(
-                       map(lambda epno: _splitall( tvdata[tvshow][seasno][epno]['path'])[ colno ],
+                       map(lambda epno: splitall( tvdata[tvshow][seasno][epno]['path'])[ colno ],
                            tvdata[ tvshow ][ seasno ])), tvdata[ tvshow ]))))) == 1, range(num_cols)))
     
     prefix = os.path.join(
         *list(map(lambda colno:
                   max(set(reduce(lambda x,y: x+y, list(
                       map(lambda seasno: list(
-                          map(lambda epno: _splitall( tvdata[tvshow][seasno][epno]['path'])[ colno ],
+                          map(lambda epno: splitall( tvdata[tvshow][seasno][epno]['path'])[ colno ],
                               tvdata[ tvshow ][ seasno ])), tvdata[ tvshow ]))))), sorted(splits_with_len_1))))
     #
     ## average length in seconds of an episode
@@ -676,7 +659,7 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
         season_col = max( splits_with_len_1 )
         season_dirs = [ ]
         for seasno in tvdata[ tvshow ]:
-            season_dir = sorted(set(map(lambda epno: _splitall( tvdata[tvshow][seasno][epno]['path'])[ season_col ],
+            season_dir = sorted(set(map(lambda epno: splitall( tvdata[tvshow][seasno][epno]['path'])[ season_col ],
                                         tvdata[ tvshow ][ seasno ] ) ) )
             season_dirs += season_dir
         season_dirs = set( season_dirs )
@@ -689,7 +672,7 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
     elif len( extra_season_ep_columns ) == 2: # go through each season, assert that all eps in a given season are in a single directory
         season_col = extra_season_ep_columns[ 0 ]
         for seasno in tvdata[ tvshow ]:
-            season_dir = set(map(lambda epno: _splitall( tvdata[tvshow][seasno][epno]['path'])[ season_col ],
+            season_dir = set(map(lambda epno: splitall( tvdata[tvshow][seasno][epno]['path'])[ season_col ],
                                  tvdata[ tvshow ][ seasno ] ) )
             assert( len( season_dir ) == 1 ), 'PROBLEM WITH %s' % tvshow
             #if len( season_dir ) != 1:
@@ -872,7 +855,8 @@ def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, nu
         os.mkdir( newdir )
     def worker_process_download_tvtorrent_perproc( tvTorUnit ):
         dat, status_dict = plextvdb_torrents.worker_process_download_tvtorrent(
-            tvTorUnit, maxtime_in_secs = maxtime_in_secs, num_iters = num_iters )
+            tvTorUnit, maxtime_in_secs = maxtime_in_secs, num_iters = num_iters,
+            kill_if_fail = True )
         if dat is None: return tvTorUnit[ 'torFname' ] # could not download this
         tvTorUnitFin = copy.deepcopy( tvTorUnit )
         tvTorUnitFin['remoteFileName'] = dat

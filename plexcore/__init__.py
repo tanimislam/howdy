@@ -27,7 +27,7 @@ def splitall( path_init ):
             allparts.insert( 0, parts[ 1 ] )
     return allparts
 
-# resource file
+# resource file and stuff
 mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 baseConfDir = xdg.BaseDirectory.save_config_path( 'plexstuff' )
 sys.path.append( mainDir )

@@ -93,15 +93,12 @@ def fill_m4a_metadata( filename, data_dict ):
     mp4tags[ 'trkn' ] = [ ( data_dict[ 'tracknumber' ],
                             data_dict[ 'total tracks' ] ), ]
     if data_dict[ 'album url' ] != '':
-        csio = BytesIO( requests.get( data_dict[ 'album url' ] ).content )
-        csio2 = BytesIO( )
-        img = Image.open( csio )
-        img.save( csio2, format = 'png' )
-        mp4tags[ 'covr' ] = [
-            mutagen.mp4.MP4Cover( csio2.getvalue( ),
-                                  mutagen.mp4.MP4Cover.FORMAT_PNG ), ]
-        csio.close( )
-        csio2.close( )
+        with BytesIO( requests.get( data_dict[ 'album_url' ] ).content ) as csio, BytesIO( ) as csio2:
+            img = Image.open( csio )
+            img.save( csio2, format = 'png' )
+            mp4tags[ 'covr' ] = [
+                mutagen.mp4.MP4Cover( csio2.getvalue( ),
+                                      mutagen.mp4.MP4Cover.FORMAT_PNG ), ]
     mp4tags.save( )
 
 def get_youtube_file( youtube_URL, outputfile ):
@@ -395,14 +392,13 @@ class PlexMusic( object ):
                                       album = album_name,
                                       artist = titlecase.titlecase( artist_name ) )
         if 'album_art_url' not in metadata_album or len( metadata_album[ 'album_art_url' ].strip( ) ) == 0:
-            print( 'Could not find album = %s for artist = %s.' % (
-                album_name, titlecase.titlecase( artist_name ) ) )
-            return None
+            return None, 'Could not find album = %s for artist = %s.' % (
+                album_name, titlecase.titlecase( artist_name ) )
         filename = '%s.%s.png' % ( artist_name, album_name.replace('/', '-') )
         img = Image.open( BytesIO( requests.get( metadata_album[ 'album_art_url' ] ).content ) )
         img.save( filename, format = 'png' )
         os.chmod( filename, 0o644 )
-        return True, filename
+        return filename, 'SUCCESS'
     
     def get_song_listing( self, artist_name, album_name ):
         metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,

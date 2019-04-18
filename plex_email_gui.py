@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 
-import os, logging, sys
+import os, logging, sys, signal, qdarkstyle
+# code to handle Ctrl+C, convenience method for command line tools
+def signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Exiting...")
+    sys.exit( 0 )
+signal.signal( signal.SIGINT, signal_handler )
+from plexcore import mainDir
 from plexemail.plexemail_gui import PlexEmailGUI
 from plexemail.plexemail_mygui import PlexEmailMyGUI
 from plexcore.plexcore_gui import returnServerToken, returnGoogleAuthentication
 from optparse import OptionParser
-from PyQt4.QtGui import QApplication
+from PyQt4.QtGui import QApplication, QStyleFactory
 
 if __name__=='__main__':
     parser = OptionParser( )
@@ -20,7 +26,9 @@ if __name__=='__main__':
     opts, args = parser.parse_args( )
     if opts.do_debug:
         logging.basicConfig( level = logging.DEBUG )
-    app = QApplication([])
+    app = QApplication( [] )
+    app.setStyleSheet(
+        open( os.path.join( mainDir, 'resources', 'ubuntu.qss' ), 'r' ).read( ) )
     _, token = returnServerToken( )
     val = returnGoogleAuthentication( )
     if not opts.do_onlyemail:

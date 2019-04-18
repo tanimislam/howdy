@@ -127,7 +127,7 @@ def getTokenForUsernamePassword( username, password, verify = True ):
 
 def checkClientCredentials( ):
     query = session.query( PlexLoginCredentials )
-    val = query.filter( PlexLoginCredentials.serverType == 'SERVER' ).first( )
+    val = query.filter( PlexLoginCredentials.servertype == 'SERVER' ).first( )
     if val is None: return None
     username = val.username.strip( )
     password = val.password.strip( )

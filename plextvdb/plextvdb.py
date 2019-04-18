@@ -616,6 +616,14 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
                    map(lambda seasno: list(
                        map(lambda epno: splitall( tvdata[tvshow][seasno][epno]['path'])[ colno ],
                            tvdata[ tvshow ][ seasno ])), tvdata[ tvshow ]))))) == 1, range(num_cols)))
+    if len( tvdata[ tvshow ] ) == 1: # only one season
+        ## just get the non-episode, non-season name
+        splits_with_len_1.pop(-1)
+        season = max( tvdata[ tvshow ] )
+        epno = max( tvdata[ tvshow ][ season ] )
+        fullpath_split = tvdata[ tvshow ][ season ][ epno ]['path'].split('/')
+        if 'Season' or 'Special' in fullpath_split[-1]:
+            splits_with_len_1.pop(-1)
     
     prefix = os.path.join(
         *list(map(lambda colno:
@@ -635,7 +643,7 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
     ## now those extra paths that are not common, but peculiar to each season and episode
     ## must be 2 or 1 extra columns
     extra_season_ep_columns = sorted(set(range(num_cols)) - set(splits_with_len_1))
-    assert( len( extra_season_ep_columns ) < 3)
+    assert( len( extra_season_ep_columns ) in (2,1)), "problem with %s" % tvshow
     assert( min( extra_season_ep_columns ) == max( splits_with_len_1 ) + 1 )
     #
     ## now get the main prefix for the file

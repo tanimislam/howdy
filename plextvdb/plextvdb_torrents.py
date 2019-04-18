@@ -13,6 +13,8 @@ def _return_error_couldnotfind( name ):
 def _return_error_raw( msg ):
     return None, msg
 
+_num_to_quit = 5
+
 def get_tv_torrent_zooqle( name, maxnum = 10 ):
     assert( maxnum >= 5 )
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
@@ -539,6 +541,7 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
                                              'could not add idx = %s, magnet_link = %s, for candidate = %s' % (
                                                  idx, mag_link, torFileName ) )
         time00 = time.time( )
+        progresses = [ ]
         for jdx in range( numiters ):
             time.sleep( 30 )
             torrent_info = plexcore_deluge.deluge_get_torrents_info( client )
@@ -551,6 +554,13 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
             progress = tor_info[ b'progress']
             print( 'after %0.3f seconds, attempt #%d, for %s: status = %s, progress = %0.1f%%' % (
                 time.time( ) - time00, idx + 1, torFileName, status, progress ) )
+            progresses.append( progress )
+            # quit after too many no-progress iterations?
+            if len( progresses ) > _num_to_quit and numpy.allclose( progresses, [ 0.0 ] * len( progresses ) ):
+                kill_failing( torrentId )
+                return None, create_status_dict( 'FAILURE',
+                                                 'attempt #%d, magnet_link = %s, for candidate = %s, is probably not downloading' % (
+                                                     idx, mag_link, torFileName ) )
             if status in ( 'SEEDING', 'PAUSED' ): # now let's be ambitious and create the new file
                 fullFname, status = _finish_and_clean_working_tvtorrent_download(
                     totFname, client, torrentId, tor_info )

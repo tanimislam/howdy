@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 
-import logging, PyQt4.QtGui, sys, pickle, gzip
-from plexcore import plexcore_gui
+import logging, PyQt4.QtGui, sys, pickle, gzip, signal, os
+# code to handle Ctrl+C, convenience method for command line tools
+def signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Exiting...")
+    sys.exit( 0 )
+signal.signal( signal.SIGINT, signal_handler )
+from plexcore import plexcore_gui, mainDir
 from plextmdb import plextmdb_totgui
 from optparse import OptionParser
 
 def main(debug = False, checkLocal = True, doLarge = False):
     app = PyQt4.QtGui.QApplication([])
+    app.setStyleSheet(
+        open( os.path.join( mainDir, 'resources', 'ubuntu.qss' ), 'r' ).read( ) )
     if debug:
         logging.basicConfig( level = logging.DEBUG )
     if checkLocal: fullurl, token = plexcore_gui.returnClientToken( )

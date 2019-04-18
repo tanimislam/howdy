@@ -81,12 +81,7 @@ class MainGUI( QWidget ):
         self.statusLabel = QLabel( )
         for fontFile in glob.glob( os.path.join( mainDir, 'resources', '*.ttf' ) ):
             QFontDatabase.addApplicationFont( fontFile )
-        self.setStyleSheet("""
-        QWidget {
-        font-family: Consolas;
-        font-size: 11;
-        }""")
-        #
+        self.setStyleSheet( open( os.path.join( mainDir, 'resources', 'ubuntu.qss' ), 'r' ).read( ) )
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         #
@@ -105,7 +100,7 @@ class MainGUI( QWidget ):
         quitAction.triggered.connect( sys.exit )
         self.addAction( quitAction )
         def printHTML( ):
-            mainText = """
+            mainText = r"""
             \documentclass[12pt, fleqn]{article}
             \usepackage{amsmath, amsfonts, graphicx, hyperref}
 
@@ -114,10 +109,10 @@ class MainGUI( QWidget ):
             %s
 
             \end{document}
-            """ % str( self.latexOutput.toPlainText( ) ).strip( )
+            """ % ( self.latexOutput.toPlainText( ).strip( ) )
             printString( mainText, self.statusLabel, toHTML = True )
         def printMarkdown( ):
-            mainText = """
+            mainText = r"""
             \documentclass[12pt, fleqn]{article}
             \usepackage{amsmath, amsfonts, graphicx, hyperref}
 
@@ -126,7 +121,7 @@ class MainGUI( QWidget ):
             %s
 
             \end{document}
-            """ % str( self.latexOutput.toPlainText( ) ).strip( )
+            """ % ( self.latexOutput.toPlainText( ).strip( ) )
             printString( mainText, self.statusLabel, toHTML = False )
         self.toHTML.clicked.connect( printHTML )
         self.toMarkdown.clicked.connect( printMarkdown )

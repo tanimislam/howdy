@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
-import codecs, os, sys
+import codecs, os, sys, signal
+def signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Exiting...")
+    sys.exit( 0 )
+signal.signal( signal.SIGINT, signal_handler )
 from plexmusic import plexmusic
 from optparse import OptionParser
 
@@ -21,7 +25,8 @@ if __name__=='__main__':
     ##    
     pm = plexmusic.PlexMusic( )
     if not opts.do_songs:
-        pm.get_album_image( opts.artist_name, opts.album_name )        
+        _, status = pm.get_album_image( opts.artist_name, opts.album_name )
+        if status != 'SUCCESS': print( status )
     else:
         track_listing = pm.get_song_listing( opts.artist_name, album_name = opts.album_name )
         if not opts.do_formatted:

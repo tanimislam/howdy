@@ -1,6 +1,7 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import logging
+from plexcore import mainDir
 from plexcore.plexcore_gui import returnToken, returnEmailAuthentication
 from PyQt4.QtGui import QApplication
 from optparse import OptionParser

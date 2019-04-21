@@ -27,12 +27,14 @@ def main( ):
     opts, args = parser.parse_args( )
     assert( opts.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
     assert( opts.num_iters >= 1 ), 'error, must have a positive number of iterations.'
-    print( '0, started on %s' % datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ) 
+    step = 0
+    print( '%d, started on %s' % ( step, datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ) )
+    step += 1
     #
     ## get plex server token
     dat = plexcore.checkServerCredentials( doLocal = True )
     if dat is None:
-        print('1, error, could not access local Plex server. Exiting...')
+        print('%d, error, could not access local Plex server. Exiting...' % step)
         return
     fullURL, token = dat
     #
@@ -41,36 +43,45 @@ def main( ):
     valid_keys = list(filter(lambda key: library_dict[ key ][ -1 ] ==
                              'show', library_dict ) )
     if len( valid_keys ) == 0:
-        print('1, Error, could not find a TV show library. Exiting...')
+        print('%d, Error, could not find a TV show library. Exiting...' % step)
         return
     tvlib_title = library_dict[ max( valid_keys ) ][ 0 ]
-    print( '1, found TV library: %s.' % tvlib_title )
+    print( '%d, found TV library: %s.' % ( step, tvlib_title ) )
+    step += 1
     #
     ## now get the TV shows
     time0 = time.time( )
+    tvdata = plexcore.get_library_data( tvlib_title, token = token )
+    showsToExclude = plextvdb.get_shows_to_exclude( tvdata )
+    if len( showsToExclude ) != 0:
+        print( '%d, excluding these TV shows: %s.' % (
+            step, '; '.join( showsToExclude ) ) )
+        step += 1
     toGet = plextvdb.get_remaining_episodes(
-        plexcore.get_library_data( tvlib_title, token = token ),
+        tvdata,
         showSpecials = False,
-        showsToExclude = [ 'The Great British Bake Off' ] )
+        showsToExclude = showsToExclude )
     if len( toGet ) == 0:
-        print('2, no episodes to download. Exiting...')
+        print('%d, no episodes to download. Exiting...' % step )
         return
-    print( '2, took %0.3f seconds to get list of %d episodes to download.' % (
-        time.time( ) - time0, sum(map(lambda tvshow: len(toGet[tvshow]['episodes']),
-                                      toGet))))
+    print( '%d, took %0.3f seconds to get list of %d episodes to download.' % (
+        step, time.time( ) - time0, sum(map(lambda tvshow: len(toGet[tvshow]['episodes']),
+                                            toGet))))
+    step += 1
     #
     ## now download these episodes
     tv_torrent_gets = plextvdb.get_tvtorrent_candidate_downloads( toGet )
     tvTorUnits = reduce(lambda x,y: x+y, [ tv_torrent_gets[ 'nonewdirs' ] ] +
                         list(map(lambda newdir: tv_torrent_gets[ 'newdirs' ][ newdir ],
                                 tv_torrent_gets[ 'newdirs' ] ) ) )
-    print('3, here are the %d episodes to get: %s.' % (
+    print('%d, here are the %d episodes to get: %s.' % ( step,
         len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname' ], tvTorUnits))))
+    step += 1
     plextvdb.download_batched_tvtorrent_shows(
         tv_torrent_gets, maxtime_in_secs = opts.maxtime_in_secs,
         num_iters = opts.num_iters )
-    print( '\n'.join([ '4, everything done in %0.3f seconds.' % ( time.time( ) - time0 ),
-                       '5, finished on %s.' % datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ] ) )
+    print( '\n'.join([ '%d, everything done in %0.3f seconds.' % ( step, time.time( ) - time0 ),
+                       '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ) ] ) )
     
 if __name__=='__main__':
     main( )

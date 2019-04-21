@@ -1,26 +1,20 @@
 import os, subprocess, time, logging, shlex
-from . import session, Base
+from . import session, Base, PlexConfig
 from sqlalchemy import Column, Integer, String
-
-class PlexRsyncConfig( Base ):
-    #
-    ## create the table using Base.metadata.create_all( _engine )
-    __tablename__ = 'plexrsyncconfig'
-    __table_args__ = { 'extend_existing' : True }
-    localdir = Column( String( 65536 ), index = True, unique = True, primary_key = True )
-    sshpath = Column( String( 65536 ) )
-    subdir = Column( String( 65536 ) )
 
 def push_credentials( local_dir, sshpath, subdir = None ):
     assert( os.path.isdir( os.path.abspath( local_dir ) ) )
-    query = session.query( PlexRsyncConfig )
-    val = query.first( )
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'rsync' ).first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = PlexRsyncConfig( localdir = os.path.abspath( local_dir.strip( ) ),
-                              sshpath = sshpath.strip( ),
-                              subdir = subdir )
+    newval = PlexConfig(
+        service = 'rsync',
+        data = {
+            'localdir' : os.path.abspath( local_dir.strip( ) ),
+            'sshpath' : sshpath.strip( ),
+            'subdir' : subdir } )
     session.add( newval )
     session.commit( )
     mystr_split = [
@@ -41,14 +35,15 @@ def get_rsync_command( data, mystr ):
     return mycmd
 
 def get_credentials( ):
-    query = session.query( PlexRsyncConfig )
-    val = query.first( )
+    query = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'rsync' ).first( )
     if val is None:
         logging.debug('ERROR, RSYNC configuration does not exist.' )
         return None
-    local_dir = val.localdir
-    sshpath = val.sshpath
-    subdir = val.subdir
+    data = val.data
+    local_dir = data['localdir']
+    sshpath = data['sshpath']
+    subdir = data['subdir']
     data = { 'local_dir' : local_dir,
              'sshpath' : sshpath }
     if subdir is None: data['subdir'] = None

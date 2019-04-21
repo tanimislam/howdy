@@ -1,7 +1,6 @@
 import os, sys, numpy, logging, magic, base64, subprocess
 from configparser import RawConfigParser
-from . import baseConfDir, session, Base
-from sqlalchemy import Integer, String, Column
+from . import baseConfDir, session, PlexConfig
 
 #
 ## copied from deluge.common
@@ -129,28 +128,20 @@ def create_deluge_client( url, port, username, password ):
     client.connect( )
     assert( client.connected ) # make sure we can connect
     return client
-
-class PlexDelugeCredentials( Base ):
-    #
-    ## create the table using Base.metadata.create_all( _engine )
-    __tablename__ = 'plexdelugecredentials'
-    __table_args__ = { 'extend_existing' : True }
-    url = Column( String( 65536 ), index = True, unique = True, primary_key = True )
-    port = Column( Integer )
-    username = Column( String( 65536 ) )
-    password = Column( String( 65536 ) )
     
 def get_deluge_client( ):
-    query = session.query( PlexDelugeCredentials )
+    query = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'deluge' )
     val = query.first( )
     if val is None:
         error_message = "ERROR, DELUGE CLIENT SETTINGS NOT DEFINED."
         logging.debug( error_message )
         return None, error_message
-    url = val.url
-    port = val.port
-    username = val.username
-    password = val.password
+    data = val.data
+    url = data['url']
+    port = data['port']
+    username = data['username']
+    password = data['password']
     #
     ## now check that we have the correct info
     try:
@@ -161,12 +152,6 @@ def get_deluge_client( ):
         return None, error_message
 
 def push_deluge_credentials( url, port, username, password ):
-    filename = 'plex_creds.conf'
-    secname = 'DELUGE_CREDENTIALS'
-    absPath = os.path.join( baseConfDir, filename )
-    cparser = RawConfigParser( )
-    if os.path.isfile( absPath ):
-        cparser.read( absPath )
     #
     ## first check that the configurations are valid
     try:
@@ -177,15 +162,18 @@ def push_deluge_credentials( url, port, username, password ):
         return error_message
     #
     ## now put into the database
-    query = session.query( PlexDelugeCredentials )
+    query = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'deluge' )
     val = query.first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = PlexDelugeCredentials( url = url,
-                                    port = port,
-                                    username = username,
-                                    password = password )
+    newval = PlexConfig(
+        service = 'deluge',
+        data = { 'url' : url,
+                 'port' : port,
+                 'username' : username,
+                 'password' : password } )
     session.add( newval )
     session.commit( )
     return 'SUCCESS'

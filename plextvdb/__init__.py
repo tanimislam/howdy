@@ -5,14 +5,9 @@ mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 sys.path.append( mainDir )
 from plexcore import Base, session
 
-
 _apiKey = '0B3F6D72213D71C8'
 _usrKey = 'AEE839E62568BA63'
 _usname = 'tanimislam1978'
-
-# change this later
-_apiKey_jackett = '0cstpcrrdx7wrihtij3jbe461t0uk3l6'
-_url_jackett = 'https://dark.seedhost.eu/tanimislam/jackett'
 
 def get_token( verify = True ):
     data = { 'apikey' : _apiKey,

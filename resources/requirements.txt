@@ -9,6 +9,7 @@ gmusicapi
 google-api-python-client
 gspread
 httplib2
+isodate
 KickassAPI
 ThePirateBay
 lxml

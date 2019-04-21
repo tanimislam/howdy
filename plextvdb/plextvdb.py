@@ -616,12 +616,12 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
                    map(lambda seasno: list(
                        map(lambda epno: splitall( tvdata[tvshow][seasno][epno]['path'])[ colno ],
                            tvdata[ tvshow ][ seasno ])), tvdata[ tvshow ]))))) == 1, range(num_cols)))
-    if len( tvdata[ tvshow ] ) == 1: # only one season
+    if sum(map(lambda seasno: len(tvdata[tvshow][seasno]), tvdata[tvshow])) == 1: # only one episode
         ## just get the non-episode, non-season name
         splits_with_len_1.pop(-1)
         season = max( tvdata[ tvshow ] )
         epno = max( tvdata[ tvshow ][ season ] )
-        fullpath_split = tvdata[ tvshow ][ season ][ epno ]['path'].split('/')
+        fullpath_split = os.path.dirname( tvdata[ tvshow ][ season ][ epno ]['path'] ).split('/')
         if 'Season' or 'Special' in fullpath_split[-1]:
             splits_with_len_1.pop(-1)
     
@@ -631,6 +631,8 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
                       map(lambda seasno: list(
                           map(lambda epno: splitall( tvdata[tvshow][seasno][epno]['path'])[ colno ],
                               tvdata[ tvshow ][ seasno ])), tvdata[ tvshow ]))))), sorted(splits_with_len_1))))
+    
+    
     #
     ## average length in seconds of an episode
     avg_length_secs = numpy.average(

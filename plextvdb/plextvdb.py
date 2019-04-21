@@ -527,6 +527,91 @@ def get_episode_name( series_id, airedSeason, airedEpisode, token, verify = True
     
     return ( data[ 'episodeName' ], firstAired )
 
+def get_series_image( series_id, token, verify = True ):
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/series/%d/images/query/params' % series_id,
+                             headers = headers, verify = verify )
+    if response.status_code != 200: return None, "COULD NOT ACCESS IMAGE URL FOR SERIES"
+    data = response.json( )['data']
+    #
+    ## first look for poster entries
+    poster_ones = list(
+        filter(lambda elem: 'keyType' in elem.keys() and elem['keyType'] == 'poster', data ) )
+    if len( poster_ones ) != 0:
+        poster_one = poster_ones[ 0 ]
+        params = { 'keyType' : 'poster' }
+        if 'resolution' in poster_one and len( poster_one['resolution'] ) != 0:
+            params['resolution'] = poster_one['resolution'][0]
+        response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
+                                 headers = headers, params = params, verify = verify )
+        if response.status_code == 200:
+            data = response.json( )['data']
+            firstPoster = data[0]
+            #assert( 'fileName' in firstPoster )
+            if 'fileName' in firstPoster:
+                return 'https://thetvdb.com/banners/%s' % firstPoster['fileName'], "SUCCESS"
+    fanart_ones = list(
+        filter(lambda elem: 'keyType' in elem.keys( ) and elem['keyType'] == 'fanart', data ) )
+    if len( fanart_ones ) != 0:
+        fanart_one = fanart_ones[ 0 ]
+        params = { 'keyType' : 'fanart' }
+        if 'resolution' in fanart_one and len( fanart_one['resolution'] ) != 0:
+            params['resolution'] = fanart_one['resolution'][0]
+        response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
+                                 headers = headers, params = params, verify = verify )
+        if response.status_code == 200:
+            data = response.json( )['data']
+            firstFanart = data[0]
+            if 'fileName' in firstFanart:
+                return 'https://thetvdb.com/banners/%s' % firstFanart['fileName'], "SUCCESS"
+    series_ones = list(
+        filter(lambda elem: 'keyType' in elem.keys( ) and elem['keyType'] == 'series') )
+    if len( series_ones ) != 0:
+        series_one = series_ones[ 0 ]
+        params = { 'keyType' : 'series' }
+        if 'resolution' in series_one and len( series_one['resolution'] ) != 0:
+            params['resolution'] = series_one['resolution'][0]
+        response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
+                                 headers = headers, params = params, verify = verify )
+        if response.status_code == 200:
+            data = response.json( )['data']
+            firstSeries = data[0]
+            if 'fileName' in firstSeries:
+                return 'https://thetvdb.com/banners/%s' % firstSeries['fileName'], "SUCCESS"
+    return None, "COULD NOT DOWNLOAD SERIES INFO FOR SERIES_ID = %d" % series_id ## nothing happened
+
+def get_series_season_image( series_id, airedSeason, token, verify = True ):
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/series/%d/images/query/params' % series_id,
+                             headers = headers, verify = verify )
+    if response.status_code != 200:
+        return None, "COULD NOT FIND IMAGES FOR SERIES_ID = %d" % series_id
+    data = response.json( )['data']
+    #
+    ## look for season keytype
+    season_ones = list( filter(lambda elem: 'keyType' in elem.keys( ) and elem['keyType'] == 'season' and
+                               'subKey' in elem and '%d' % airedSeason in elem['subKey'], data ) )
+    if len( season_ones ) == 0:
+        return None, "COULD NOT FIND SEASON IMAGE FOR SERIES_ID = %d AND SEASON = %d" % (
+            series_id, airedSeason )
+    #
+    ## now get that image for season
+    params = { 'keyType' : 'season', 'subKey' : '%d' % airedSeason }
+    if 'resolution' in season_one.keys( ) and len( season_one[ 'resolution' ] ) != 0:
+        params[ 'resolution' ] = season_one[ 'resolution' ][ 0 ]
+    response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % series_id,
+                             headers = headers, params = params, verify = verify )
+    if response.status_code != 200:
+        return None, "COULD NOT GET PROPER IMAGE FROM VALID IMAGE QUERY FOR SERIES_ID = %d AND SEASON = %d" % (
+            series_id, airedSeason )
+    season_data = response.json( )['data'][ 0 ]
+    if 'fileName' not in season_data:
+        return None, "COULD NOT FIND APPROPRIATE IMAGE URL FROM VALID IMAGE QUERY FOR SERIES_ID = %d AND SEASON = %d" % (
+            series_id, airedSeason )
+    return 'https://thetvdb.com/banners/%s' % season_data[ 'fileName' ], "SUCCESS"
+
 def get_episodes_series( series_id, token, showSpecials = True, fromDate = None, verify = True, showFuture = False ):
     params = { 'page' : 1 }
     headers = { 'Content-Type' : 'application/json',
@@ -705,17 +790,17 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
 
 def _get_remaining_eps_perproc( input_tuple ):
     name, series_id, epsForShow, token, showSpecials, fromDate, verify = input_tuple
-    eps = get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
-                               fromDate = fromDate )
-    # tvdb_eps = set(map(lambda ep: ( ep['airedSeason'], ep['airedEpisodeNumber' ], ep['episodeName'] ), eps ) )
+    eps = list(
+        filter(lambda ep: 'episodeName' in ep,
+               get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
+                                    fromDate = fromDate ) ) )
     tvdb_eps = set(map(lambda ep: ( ep['airedSeason'], ep['airedEpisodeNumber' ] ), eps ) )
     tvdb_eps_dict = { ( ep['airedSeason'], ep['airedEpisodeNumber' ] ) :
                       ( ep['airedSeason'], ep['airedEpisodeNumber' ], ep['episodeName'] ) for ep in eps }
     here_eps = set([ ( seasno, epno ) for seasno in epsForShow for
                      epno in epsForShow[ seasno ] ] )
     tuples_to_get = tvdb_eps - here_eps
-    if len( tuples_to_get ) == 0:
-        return None
+    if len( tuples_to_get ) == 0: return None
     tuples_to_get_act = list(map(lambda tup: tvdb_eps_dict[ tup ], tuples_to_get ) )
     return name, sorted( tuples_to_get_act, key = lambda tup: (tup[0], tup[1]))
 
@@ -755,16 +840,20 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
                                       showSpecials, fromDate, verify ), tvshow_id_map )
     pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
     toGet_sub = dict( filter( lambda tup: tup is not None,
-                              pool.map( _get_remaining_eps_perproc,
-                                        input_tuples ) ) )
+                              pool.map( _get_remaining_eps_perproc, input_tuples ) ) )
     pool.close( )
     pool.join( )
+    #
+    ## guard code for now -- only include those tv shows that have titles of new episodes to download
+    tvshows_act = set(filter(lambda tvshow: len(list(
+        filter(lambda epdata: epdata[-1] is not None, toGet_sub[ tvshow ] ) ) ) != 0, toGet_sub ) )
     tvdata_path_data = dict(filter(None, map(lambda tvshow: (
-        tvshow, get_path_data_on_tvshow( tvdata, tvshow ) ), toGet_sub )))
+        tvshow, get_path_data_on_tvshow( tvdata, tvshow ) ), tvshows_act ) ) )
     toGet = { }
-    for tvshow in sorted( toGet_sub ):
+    for tvshow in sorted( tvshows_act ):
         mydict = {
-            'episodes' : toGet_sub[ tvshow ],
+            'episodes' : list(
+                filter(lambda epdata: epdata[-1] is not None, toGet_sub[ tvshow ] ) ),
             'prefix' : tvdata_path_data[ tvshow ][ 'prefix' ],
             'showFileName' : tvdata_path_data[ tvshow ][ 'showFileName' ],
             'min_inferred_length' : tvdata_path_data[ tvshow ][ 'min_inferred_length' ],
@@ -829,6 +918,7 @@ def get_tvtorrent_candidate_downloads( toGet ):
                           zip([ "'", ":", "&", "/" ],
                               [ '', '', 'and', ',' ]),
                           showFileName)
+        print( 'started for %s' % tvshow )
         for seasno, epno, title in mydict[ 'episodes' ]:
             actTitle = title.replace('/', ', ')
             candDir = os.path.join( prefix, 'Season %%%02dd' % min_inferred_length % seasno )
@@ -841,8 +931,7 @@ def get_tvtorrent_candidate_downloads( toGet ):
             if not os.path.isdir( candDir ):
                 tv_torrent_gets[ 'newdirs' ].setdefault( candDir, [] )
                 tv_torrent_gets[ 'newdirs' ][ candDir ].append( dat )
-            else:
-                tv_torrent_gets[ 'nonewdirs' ].append( dat )
+            else: tv_torrent_gets[ 'nonewdirs' ].append( dat )
     return tv_torrent_gets
 
 def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, num_iters = 10 ):

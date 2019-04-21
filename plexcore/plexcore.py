@@ -9,7 +9,7 @@ from configparser import RawConfigParser
 from functools import reduce
 from contextlib import contextmanager
 from bs4 import BeautifulSoup
-from . import mainDir, Base, session, baseConfDir, splitall
+from . import mainDir, Base, session, baseConfDir, splitall, PlexConfig
 from sqlalchemy import Column, Date, Boolean, String
 from oauth2client.client import flow_from_clientsecrets
 from plextmdb import plextmdb
@@ -101,15 +101,6 @@ def processValidHTMLWithPNG( html, pngDataDict, doEmbed = False ):
         img['width'] = "%d" % ( widthInCM / 2.54 * 300 )
     return htmlData.prettify( )
 
-class PlexLoginCredentials( Base ):
-    #
-    ## create the table using Base.metadata.create_all( _engine )
-    __tablename__ = 'plexlogincredentials'
-    __table_args__ = { 'extend_existing' : True }
-    servertype = Column( String( 256 ), index = True, unique = True, primary_key = True ) # one of CLIENT or SERVER
-    username = Column( String( 65536 ) )
-    password = Column( String( 65536 ) )
-
 def getTokenForUsernamePassword( username, password, verify = True ):
     with requests.Session( ) as session:
         response = session.post( 'https://plex.tv/users/sign_in.json',
@@ -126,11 +117,14 @@ def getTokenForUsernamePassword( username, password, verify = True ):
         return token
 
 def checkClientCredentials( ):
-    query = session.query( PlexLoginCredentials )
-    val = query.filter( PlexLoginCredentials.servertype == 'SERVER' ).first( )
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'login' ).first( )
     if val is None: return None
-    username = val.username.strip( )
-    password = val.password.strip( )
+    data = val.data
+    if 'CLIENT' not in data: return None
+    data_sub = data['CLIENT']
+    username = data['username'].strip( )
+    password = data['password'].strip( )
     response = requests.get( 'https://***REMOVED***islam.ddns.net/flask/plex/tokenurl',
                              auth = ( username, password ) )
     if response.status_code != 200: return None
@@ -139,11 +133,13 @@ def checkClientCredentials( ):
     return fullurl, token
     
 def checkServerCredentials( doLocal = False ):
-    query = session.query( PlexLoginCredentials )
-    val = query.filter( PlexLoginCredentials.servertype == 'SERVER' ).first( )
-    if val is None: return None
-    username = val.username.strip( )
-    password = val.password.strip( )
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'login' ).first( )
+    data = val.data
+    if 'SERVER' not in data: return None
+    data_sub = data['SERVER']
+    username = data_sub['username'].strip( )
+    password = data_sub['password'].strip( )
     token = getTokenForUsernamePassword( username, password )
     if token is None:
         return None
@@ -155,15 +151,17 @@ def checkServerCredentials( doLocal = False ):
     return fullurl, token
 
 def pushCredentials( username, password, name = 'CLIENT' ):
-    assert( name in ( 'CLIENT', 'SERVER' ) )
-    query = session.query( PlexLoginCredentials )
-    val = query.filter( PlexLoginCredentials.servertype == name ).first( )
+    assert( name in ( 'CLIENT', 'SERVER' ) ), "ERROR, MUST BE ONE OF SERVER OR CLIENT"
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'login' ).first( )
     if val is not None:
+        data = val.data
         session.delete( val )
         session.commit( )
-    newval = PlexLoginCredentials( servertype = name,
-                                   username = username.strip( ),
-                                   password = password.strip( ) )
+    else: data = { }
+    data[ name ] = { 'username' : username.strip( ),
+                     'password' : password.strip( ) }
+    newval = PlexConfig( service = 'login', data = data )
     session.add( newval )
     session.commit( )
 
@@ -796,14 +794,6 @@ def oauth_store_google_credentials( credentials ):
     filename = 'google_authentication.json'
     absPath = os.path.join( baseConfDir, filename )
     oauth2client.file.Storage( absPath ).put( credentials )
-
-class PlexJackettCredentials( Base ):
-    #
-    ## create the table using Base.metadata.create_all( _engine )
-    __tablename__ = 'plexjackettcredentials'
-    __table_args__ = { 'extend_existing' : True }
-    url = Column( String( 65536 ), index = True, unique = True, primary_key = True )
-    apikey = Column( String( 65536 ) )
     
 #
 ## put in the jackett credentials into here
@@ -833,23 +823,27 @@ def store_jackett_credentials( url, apikey ):
     
     #
     ## now put the stuff inside
-    query = session.query( PlexJackettCredentials )
+    query = session.query( PlexConfig ).filter( PlexConfig.service == 'jackett' )
     val = query.first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = PlexJackettCredentials( url = actURL.strip( ), apikey = apikey.strip( ) )
+    newval = PlexConfig(
+        service = 'jackett',
+        data = { 'url' : actURL.strip( ),
+                 'apikey' : apikey.strip( ) } )
     session.add( newval )
     session.commit( )
 
 #
 ## read in JACKETT credentials here
 def get_jackett_credentials( ):
-    query = session.query( PlexJackettCredentials )
+    query = session.query( PlexConfig ).filter( PlexConfig.service == 'jackett' )
     val = query.first( )
     if val is None: return None
-    url = val.url.strip( )
-    apikey = val.apikey.strip( )
+    data = val.data
+    url = data['url'].strip( )
+    apikey = data['apikey'].strip( )
     return url, apikey
         
 #

@@ -29,3 +29,4 @@ six
 SQLAlchemy
 titlecase
 validators
+youtube_dl

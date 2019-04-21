@@ -10,6 +10,7 @@ def _choose_install_local( requirements ):
                               '\n'.join(map(lambda key: '%d: %s' % ( key, choicedict[key] ),
                                             sorted( choicedict.keys( ) ) ) ) ] ) )
     try:
+        iidx = int( iidx.strip( ) )
         if iidx not in choicedict:
             print('YOU HAVE CHOSEN NEITHER 1 (YES) OR 2 (NO). EXITING...')
             sys.exit( 0 )
@@ -24,13 +25,13 @@ def _choose_install_local( requirements ):
     sys.exit( 0 )
 
 def _install_packages_local( requirements ):
-    import pip
+    from pip._internal import main
     try:
-        pip.main( [ 'install', '--user', '--upgrade' ] + requirements +
-                  [ '--trusted-host', 'pypi.python.org' ] )
+        main( [ 'install', '--user', '--upgrade' ] + requirements +
+              [ '--trusted-host', 'pypi.python.org' ] )
     except:
-        pip.main( [ 'install', '--user', '--upgrade' ] + requirements )
-
+        main( [ 'install', '--user', '--upgrade' ] + requirements )
+        
 def _choose_install_pip( ):
     print('COULD NOT FIND pip MODULE ON YOUR MACHINE.')
     sortdict = { 1 : 'YES, INSTALL pip.',
@@ -39,23 +40,23 @@ def _choose_install_pip( ):
                               '\n'.join(map(lambda key: '%d: %s' % ( key, sortdict[key] ),
                                             sorted( sortdict.keys( ) ) ) ) ] ) )
     try:
-        # iidx = int( iidx.strip( ) )
+        iidx = int( iidx.strip( ) )
         if iidx not in sortdict:
             print('ERROR, DID NOT CHOOSE 1 (YES) OR 2 (NO). EXITING...')
             sys.exit( 0 )
-        if iidx == 1:
-            _bootout_pip( )
+        if iidx == 1: _bootout_pip( )
     except ValueError:
         print('ERROR, DID NOT CHOOSE 1 (YES) OR 2 (NO). EXITING...')
         sys.exit( 0 )
 
 def _bootout_pip( ):
-    import shutil, tempfile
-    import urllib, pkgutil
+    import shutil, tempfile, pkgutil
+    from urllib.request import urlopen
+    from pip._internal import main
     #
     tmpdir0 = tempfile.mkdtemp( )
     with open( os.path.join( tmpdir0, 'get_pip.py' ), 'wb' ) as openfile:
-        openfile.write( urllib.urlopen(
+        openfile.write( urlopen(
             'https://bootstrap.pypa.io/get-pip.py' ).read( ) )
     sys.path.append( tmpdir0 )
     from get_pip import b85decode, DATA
@@ -76,8 +77,8 @@ def _bootout_pip( ):
     
     #
     ## also put other packages in there..
-    pip.main([ 'install', '--user', '--upgrade', '--cert', cert_path,
-               'pip', 'setuptools', 'wheel' ])
+    main([ 'install', '--user', '--upgrade', '--cert', cert_path,
+           'pip', 'setuptools', 'wheel' ])
     shutil.rmtree( tmpdir )
     print('INSTALLED pip AND NECESSARY DEPENDENCIES.')
     print('RERUN THIS APP TO INSTALL REST OF DEPENDENCIES.')
@@ -88,11 +89,11 @@ class PlexInitialization( object ):
         def __init__( self ):
             #
             ## first see if we have PyQt4
-            #try:
-            #    val = imp.find_module( 'PyQt4' )
-            #except ImportError:
-            #    print('ERROR, YOU NEED TO INSTALL PyQt4 ON YOUR MACHINE.')
-            #    sys.exit( 0 )
+            try:
+                val = imp.find_module( 'PyQt4' )
+            except ImportError:
+                print('ERROR, YOU NEED TO INSTALL PyQt4 ON YOUR MACHINE.')
+                sys.exit( 0 )
             
             #
             ## first see if we have pip on this machine

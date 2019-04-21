@@ -1,13 +1,22 @@
+apiclient
 beautifulsoup4
+cfscrape
+deluge_client
+fabric
 fuzzywuzzy
 gdata
+gmusicapi
+google-api-python-client
 gspread
 httplib2
 KickassAPI
 ThePirateBay
 lxml
+matplotlib
 mutagen
+numpy
 oauth2client
+pathos
 pyasn1
 pyasn1-modules
 pypandoc
@@ -19,3 +28,4 @@ rsa
 six
 SQLAlchemy
 titlecase
+validators

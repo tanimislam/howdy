@@ -1,5 +1,9 @@
 import logging, glob, os, requests, datetime, fuzzywuzzy.fuzz
-from . import mainDir, tmdb_apiKey
+from . import mainDir, get_tmdb_api
+
+#
+## have to fix this 
+tmdb_apiKey = get_tmdb_api( )
 
 def get_movies_by_actors( actor_names ):
     actor_name_dict = { }
@@ -21,8 +25,7 @@ def get_movies_by_actors( actor_names ):
                             'page' : pageno }
             response = requests.get( 'https://api.themoviedb.org/3/search/person',
                                      params = params )
-            if response.status_code != 200:
-                continue
+            if response.status_code != 200: continue
             data = response.json( )
             actor_ids += list( map(lambda result: result['id'], data['results'] ) )
         actor_name_dict[ actor_name ] = min(set( actor_ids ) )

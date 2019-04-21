@@ -10,7 +10,7 @@ from io import StringIO
 from dateutil.relativedelta import relativedelta
 from fuzzywuzzy.fuzz import ratio
 from . import get_token, plextvdb_torrents, ShowsToExclude
-from plexcore import plexcore_rsync, splitall
+from plexcore import plexcore_rsync, splitall, session
 
 def _create_season( input_tuple ):
     seriesName, seriesId, token, season, verify = input_tuple
@@ -879,13 +879,14 @@ def push_shows_to_exclude( tvdata, showsToExclude ):
     showsToExcludeInDB = set( session.query( ShowsToExclude ).all( ) )
     candShows = showsActExclude - showsToExcludeInDB
     if len( candShows ) != 0:
-        print('adding %d extra shows to exclusion database.' % candShows )
-    for show in candShows: session.add( ShowsToExclude( show ) )
+        print('adding %d extra shows to exclusion database.' % len( candShows ) )
+    for show in candShows: session.add( ShowsToExclude( show = show ) )
     session.commit( )
 
 def get_shows_to_exclude( tvdata = None ):
-    showsToExcludeInDB = sorted( set( session.query( ShowsToExclude ).all( ) ) )
-    if tvdata is None or len( tvdata ) == 0: return
+    showsToExcludeInDB = sorted( set( map(lambda val: val.show, session.query( ShowsToExclude ).all( ) ) ) )
+    if tvdata is None: return showsToExcludeInDB
+    if len( tvdata ) == 0: return [ ]
     notHere = set(showsToExcludeInDB) - set( tvdata )
     for show in notHere:
         session.delete( show )
@@ -893,6 +894,8 @@ def get_shows_to_exclude( tvdata = None ):
     if len( notHere ) != 0:
         print( 'had to remove %d excluded shows from DB that were not in TV library.' %
                len( notHere ) )
+    showsToExcludeInDB = sorted( set( showsToExcludeInDB ) & set( tvdata ) )
+    return showsToExcludeInDB
 
 def get_tvtorrent_candidate_downloads( toGet ):
     tv_torrent_gets = { }

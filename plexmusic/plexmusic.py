@@ -6,16 +6,8 @@ from PIL import Image
 from io import StringIO, BytesIO
 from urllib.parse import urljoin
 from . import mainDir, pygn, parse_youtube_date, format_youtube_date
-from plexcore import plexcore, baseConfDir, Base, session
+from plexcore import plexcore, baseConfDir, session, PlexConfig, Base
 from sqlalchemy import Integer, String, Column
-
-class PlexGMusicConfig( Base ):
-    #
-    ## create the table using Base.metadata.create_all( _engine )
-    __tablename__ = 'plexgmusicconfig'
-    __table_args__ = { 'extend_existing' : True }
-    email = Column( String( 65536 ), index = True, unique = True, primary_key = True )
-    password = Column( String( 65536 ) )
 
 @contextmanager
 def gmusicmanager( useMobileclient = False ):
@@ -42,13 +34,15 @@ def get_gmusicmanager( useMobileclient = False ):
 Took stuff from http://unofficial-google-music-api.readthedocs.io/en/latest/usage.html#usage                                                                    
 """
 def save_gmusic_creds( email, password ):
-    query = session.query( PlexGMusicConfig )
+    query = session.query( PlexConfig ).filter( PlexConfig.service == 'gmusic' )
     val = query.first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = PlexGMusicConfig( email = email.strip( ),
-                               password = password.strip( ) )
+    newval = PlexConfig(
+        service = 'gmusic',
+        data = { 'email' : email.strip( ),
+                 'password' : password.strip( ) } )
     session.add( newval )
     session.commit( )
 
@@ -147,43 +141,33 @@ def youtube_search(youtube, query, max_results = 10):
     return videos
 
 class PlexLastFM( object ):
-
-    class PlexLastFMConfig( Base ):
-        #
-        ## create the table using Base.metadata.create_all( _engine )
-        __tablename__ = 'plexlastfmconfig'
-        __table_args__ = { 'extend_existing' : True }
-        application_name = Column( String( 65536 ), index = True, unique = True, primary_key = True )
-        api_secret = Column( String( 65536 ) )
-        api_key = Column( String( 65536 ) )
-        username = Column( String( 65536 ) )
     
     @classmethod
     def push_lastfm_credentials( cls, api_data ):
         assert( len(set(api_data) - set([ 'api_key', 'api_secret', 'application_name',
                                           'username' ]) ) == 0 )
-        query = session.query( PlexLastFM.PlexLastFMConfig )
+        query = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'lastfm' )
         val = query.first( )
         if val is not None:
             session.delete( val )
             session.commit( )
-        session.add( PlexLastFM.PlexLastFMConfig( application_name = api_data[ 'application_name' ],
-                                                  api_key = api_data[ 'api_key' ],
-                                                  api_secret = api_data[ 'api_secret' ],
-                                                  username = api_data[ 'username' ] ) )
+        session.add(
+            PlexConfig( service = 'lastfm',
+                        data = { key : api_data[key] for key in
+                                 ( 'api_key', 'api_secret', 'application_name', 'username' ) } ) )
         session.commit( )
     
     @classmethod
     def get_lastfm_credentials( cls ):
-        query = session.query( PlexLastFM.PlexLastFMConfig )
+        query = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'lastfm' )
         val = query.first( )
         if val is None:
             raise ValueError("ERROR, LASTFM CREDENTIALS NOT FOUND" )
-        return {
-            "api_key" : val.api_key,
-            "api_secret" : val.api_secret,
-            "application_name" : val.application_name,
-            "username" : val.username }
+        data = val.data
+        return { key : data[key] for key in
+                 ( 'api_key', 'api_secret', 'application_name', 'username' ) }
         
     @classmethod
     def get_album_url( cls, album_url_entries ):
@@ -349,40 +333,36 @@ class PlexLastFM( object ):
         return album_data_dict, 'SUCCESS'
     
 class PlexMusic( object ):
-
-    class PlexGracenoteConfig( Base ):
-        #
-        ## create the table using Base.metadata.create_all( _engine )
-        __tablename__ = 'plexgracenoteconfig'
-        __table_args__ = { 'extend_existing' : True }
-        clientID = Column( String( 65536 ), index = True, unique = True, primary_key = True )
-        userID = Column( String( 65536 ) )
     
     @classmethod
     def push_gracenote_credentials( cls, client_ID ):
         try:
             userID = pygn.register( client_ID )
-            query = session.query( PlexMusic.PlexGracenoteConfig )
+            query = session.query( PlexConfig ).filter(
+                PlexConfig.service == 'gracenote' )
             val = query.first( )
             if val is not None:
                 session.delete( val )
                 session.commit( )
-            session.add( PlexMusic.PlexGracenoteConfig( clientID = client_ID,
-                                                        userID = userID ) )
+            session.add(
+                PlexConfig( service = 'gracenote',
+                            data = { 'clientID' : client_ID,
+                                     'userID' : userID } ) )
             session.commit( )
         except:
             raise ValueError("Error, %s is invalid." % client_ID )
 
     @classmethod
     def get_gracenote_credentials( cls ):
-        query = session.query( PlexMusic.PlexGracenoteConfig )
+        query = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'gracenote' )
         val = query.first( )
         if val is None:
             raise ValueError("ERROR, GRACENOTE CREDENTIALS NOT FOUND" )
-        clientID = val.clientID
-        userID = val.userID
+        data = val.data
+        clientID = data['clientID']
+        userID = data['userID']
         return clientID, userID
-
     
     def __init__( self ):
         self.clientID, self.userID = PlexMusic.get_gracenote_credentials( )

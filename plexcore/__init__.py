@@ -9,7 +9,7 @@ pi = plexinitialization.PlexInitialization( )
 import os, sys, xdg.BaseDirectory, signal
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Column, String, JSON
 
 def splitall( path_init ):
     allparts = [ ]
@@ -37,3 +37,17 @@ _engine = create_engine( 'sqlite:///%s' % os.path.join( baseConfDir, 'app.db') )
 Base = declarative_base( )
 Base.metadata.bind = _engine
 session = sessionmaker( bind = _engine )( )
+
+#
+## this will be used to replace all the existing credentials stored in separate tables
+class PlexConfig( Base ):
+    #
+    ## create the table using Base.metadata.create_all( _engine )
+    __tablename__ = 'plexconfig'
+    __table_args__ = { 'extend_existing' : True }
+    service = Column( String( 65536 ), index = True, unique = True, primary_key = True )
+    data = Column( JSON )
+
+def create_all( ):
+    Base.metadata.create_all( _engine )
+    session.commit( )

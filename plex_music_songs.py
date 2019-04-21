@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
-import signal
-from plexcore import signal_handler
+import signal, sys
+# code to handle Ctrl+C, convenience method for command line tools
+def signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Exiting...")
+    sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 import codecs, sys, os, datetime
 from plexmusic import plexmusic

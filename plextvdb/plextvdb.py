@@ -918,7 +918,6 @@ def get_tvtorrent_candidate_downloads( toGet ):
                           zip([ "'", ":", "&", "/" ],
                               [ '', '', 'and', ',' ]),
                           showFileName)
-        print( 'started for %s' % tvshow )
         for seasno, epno, title in mydict[ 'episodes' ]:
             actTitle = title.replace('/', ', ')
             candDir = os.path.join( prefix, 'Season %%%02dd' % min_inferred_length % seasno )

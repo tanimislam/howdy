@@ -3,28 +3,27 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PIL import Image
 from io import StringIO
-
-_clientID = 'c3d1a164052f816'
-_clientSECRET = 'e654905e2777aceb01c62af6305edc4e271ab1a4'
-_clientREFRESHTOKEN = '71e35e184a38e5f6923833ce1d599da8e51fe206'
-_mainALBUMID = 'G0dnx'
-_mainALBUMTITLE = 'temporary images'
+from plexcore import PlexConfig, session
 
 class PlexIMGClient( object ):    
     def __init__( self, verify = True ):
         #
         ## https://api.imgur.com/oauth2 advice on using refresh tokens
         self.verify = verify
+        val = session.query( PlexConfig ).filter( PlexConfig.service == 'imgurl' ).first( )
+        if val is None:
+            raise ValueError( "ERROR, COULD NOT GET ACCESS TOKEN." )
+        data_imgurl = val.data
         response = requests.post( 'https://api.imgur.com/oauth2/token',
-                                  data = {'client_id': _clientID,
-                                          'client_secret': _clientSECRET,
+                                  data = {'client_id': data_imgurl[ 'clientID' ],
+                                          'client_secret': data_imgurl[ 'clientSECRET' ],
                                           'grant_type': 'refresh_token',
-                                          'refresh_token': _clientREFRESHTOKEN },
+                                          'refresh_token': data_imgurl[ 'clientREFRESHTOKEN' ] },
                                   verify = self.verify )
         if response.status_code != 200:
             raise ValueError( "ERROR, COULD NOT GET ACCESS TOKEN." )
         self.access_token = response.json()[ 'access_token' ]
-        self.albumID = _mainALBUMID
+        self.albumID = data_imgurl['mainALBUMID']
         #
         ## now get all the images in that album
         ## remember: Authorization: Bearer YOUR_ACCESS_TOKEN

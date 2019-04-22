@@ -46,7 +46,7 @@ def _format_progressbar(progress, width):
     :param progress: float, a value between 0-100
 
     :returns: str, a progress bar based on width
-
+    
     """
 
     w = width - 2 # we use a [] for the beginning and end

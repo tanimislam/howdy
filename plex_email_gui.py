@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-import os, logging, sys, signal, qdarkstyle
+import os, logging, sys, signal, warnings
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
+warnings.simplefilter( 'ignore' )
 from plexcore import mainDir
 from plexemail.plexemail_gui import PlexEmailGUI
 from plexemail.plexemail_mygui import PlexEmailMyGUI

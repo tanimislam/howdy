@@ -106,7 +106,7 @@ def set_date_newsletter( ):
 def get_email_contacts_dict( emailList ):
     if len( emailList ) == 0: return [ ]
     credentials = plexcore.oauthGetGoogleCredentials( )
-    people_service = build( 'people', 'v1', http = credentials.authorize( httplib2.Http( ) ),
+    people_service = build( 'people', 'v1', credentials = credentials,
                             cache_discovery = False )
     connections = people_service.people( ).connections( ).list(
         resourceName='people/me', personFields='names,emailAddresses',
@@ -177,6 +177,16 @@ def send_individual_email_perproc( input_tuple ):
             else:
                 print('Problem sending to %s <%s>. Trying again...' % ( name, email ) )
 
+def _send_email_lowlevel( msg ):
+    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
+    #
+    credentials = plexcore.oauthGetGoogleCredentials( )
+    assert( credentials is not None )
+    email_service = build('gmail', 'v1', credentials = credentials,
+                          cache_discovery = False )
+    try: message = email_service.users( ).messages( ).send( userId='me', body = data ).execute( )
+    except: print('problem with %s' % msg['To'] )
+                
 def test_email( subject = None, htmlstring = None ):
     fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
     if subject is None:
@@ -188,13 +198,7 @@ def test_email( subject = None, htmlstring = None ):
     if htmlstring is None: body = MIMEText( 'This is a test.' )
     else: body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
-    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
-    #
-    credentials = plexcore.oauthGetGoogleCredentials( )
-    assert( credentials is not None )
-    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
-                    cache_discovery = False )
-    message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
+    _send_email_lowlevel( msg )
 
 def send_individual_email_full( mainHTML, subject, email, name = None, attach = None,
                                 attachName = None, attachType = 'txt'):
@@ -215,14 +219,7 @@ def send_individual_email_full( mainHTML, subject, email, name = None, attach = 
         att = MIMEApplication( attach, _subtype = 'text' )
         att.add_header( 'content-disposition', 'attachment', filename = attachName )
         msg.attach( att )
-    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
-    #
-    credentials = plexcore.oauthGetGoogleCredentials( )
-    assert( credentials is not None )
-    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
-                    cache_discovery = False )
-    try: message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
-    except: print('problem with %s' % msg['To'] )
+    _send_email_lowlevel( msg )
 
 def send_individual_email_full_withsingleattach( mainHTML, subject, email, name = None,
                                                  attachData = None, attachName = None):
@@ -249,14 +246,7 @@ def send_individual_email_full_withsingleattach( mainHTML, subject, email, name 
         att = MIMEApplication( attachData, _subtype = sub_type )
         att.add_header( 'content-disposition', 'attachment', filename = attachName )
         msg.attach( att )
-    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
-    credentials = plexcore.oauthGetGoogleCredentials( )
-    assert( credentials is not None )
-    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
-                    cache_discovery = False )
-    try:
-        message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
-    except: print('problem with %s' % msg['To'] )
+    _send_email_lowlevel( msg )
         
 def send_individual_email_full_withattachs( mainHTML, subject, email, name = None,
                                             attachNames = None, attachDatas = None):
@@ -291,10 +281,11 @@ def send_individual_email_full_withattachs( mainHTML, subject, email, name = Non
                 att.set_payload(data)
             att.add_header( 'content-disposition', 'attachment', filename = attachName )
             msg.attach( att )
+    #_send_email_lowlevel( msg )
     #data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
     #credentials = plexcore.oauthGetGoogleCredentials( )
     #assert( credentials is not None )
-    #service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
+    #service = build('gmail', 'v1', credentials = credentials,
     #                cache_discovery = False )
     #message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
     smtp_conn = smtplib.SMTP('localhost', 25 )
@@ -319,13 +310,7 @@ def send_individual_email( mainHTML, email, name = None,
     #
     body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
-    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
-    #
-    credentials = plexcore.oauthGetGoogleCredentials( )
-    assert( credentials is not None )
-    service = build('gmail', 'v1', http = credentials.authorize( httplib2.Http( ) ),
-                    cache_discovery = False )
-    message = service.users( ).messages( ).send( userId='me', body = data ).execute( )
+    _send_email_lowlevel( msg )
 
 def get_summary_html( preambleText = '', postambleText = '', pngDataDict = { },
                       name = None, token = None, doLocal = True ):

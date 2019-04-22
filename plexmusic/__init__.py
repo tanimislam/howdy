@@ -1,8 +1,5 @@
-# resource file
 import os, sys, datetime, re, isodate
 from dateutil.relativedelta import relativedelta
-from sqlalchemy import Column, String
-from plexcore import Base, session, _engine
 mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 sys.path.append( mainDir )
 
@@ -26,4 +23,3 @@ def format_youtube_date( dt_duration ):
     else:
         dstring = dt_duration.strftime("%S")
     return dstring
-

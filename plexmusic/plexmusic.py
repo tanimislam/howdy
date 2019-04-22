@@ -6,7 +6,7 @@ from PIL import Image
 from io import StringIO, BytesIO
 from urllib.parse import urljoin
 from . import mainDir, pygn, parse_youtube_date, format_youtube_date
-from plexcore import plexcore, baseConfDir, session, PlexConfig, Base
+from plexcore import plexcore, baseConfDir, session, PlexConfig
 from sqlalchemy import Integer, String, Column
 
 @contextmanager
@@ -18,15 +18,19 @@ def gmusicmanager( useMobileclient = False ):
 def get_gmusicmanager( useMobileclient = False ):
     if not useMobileclient:
         mmg = gmusicapi.Musicmanager( )
-        mmg.login( oauth_credentials = os.path.join( baseConfDir, 'google_authentication.json' ) )
+        credentials = plexcore.oauthGetOauth2ClientGoogleCredentials( )
+        if credentials is None:
+            raise ValueError( "Error, do not have Google Music credentials." )
+        mmg.login( oauth_credentials = credentials )
     else:
         mmg = gmusicapi.Mobileclient( )
-        query = session.query( PlexGMusicConfig )
-        val = query.first( )
+        val = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'gmusic' ).first( )
         if val is None:
             raise ValueError( "Error, do not have Google Music credentials." )
-        email = val.email.strip( )
-        password = val.password.strip( )
+        data = val.data
+        email = data['email'].strip( )
+        password = data['password'].strip( )
         mmg.login( email, password, gmusicapi.Mobileclient.FROM_MAC_ADDRESS )
     return mmg
 
@@ -70,7 +74,8 @@ def get_youtube_service( ):
     credentials = plexcore.oauthGetGoogleCredentials( )
     if credentials is None:
         raise ValueError( "Error, could not build the YouTube service." )
-    youtube = build( "youtube", "v3", http = credentials.authorize(httplib2.Http()))                     
+    youtube = build( "youtube", "v3", credentials = credentials ) 
+    #outube = build( "youtube", "v3", http = credentials.authorize(httplib2.Http()))
     return youtube
 
 def fill_m4a_metadata( filename, data_dict ):
@@ -87,7 +92,7 @@ def fill_m4a_metadata( filename, data_dict ):
     mp4tags[ 'trkn' ] = [ ( data_dict[ 'tracknumber' ],
                             data_dict[ 'total tracks' ] ), ]
     if data_dict[ 'album url' ] != '':
-        with BytesIO( requests.get( data_dict[ 'album_url' ] ).content ) as csio, BytesIO( ) as csio2:
+        with BytesIO( requests.get( data_dict[ 'album url' ] ).content ) as csio, BytesIO( ) as csio2:
             img = Image.open( csio )
             img.save( csio2, format = 'png' )
             mp4tags[ 'covr' ] = [

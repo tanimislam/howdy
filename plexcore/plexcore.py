@@ -1,6 +1,11 @@
 import sqlite3, shutil, os, glob, datetime, gspread, logging, sys
-import multiprocessing, tempfile, uuid, requests, pytz, pypandoc
-import xdg.BaseDirectory, urllib, json, oauth2client.file, httplib2
+import tempfile, uuid, requests, pytz, pypandoc
+import xdg.BaseDirectory, json, pytz, pypandoc
+from google_auth_oauthlib.flow import Flow # does not yet work
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+import oauth2client.file, httplib2
+from oauth2client.client import flow_from_clientsecrets
 from html import unescape
 from urllib.request import urlopen
 from urllib.parse import urlencode, urljoin
@@ -11,7 +16,6 @@ from contextlib import contextmanager
 from bs4 import BeautifulSoup
 from . import mainDir, Base, session, baseConfDir, splitall, PlexConfig
 from sqlalchemy import Column, Date, Boolean, String
-from oauth2client.client import flow_from_clientsecrets
 from plextmdb import plextmdb
 
 # disable insecure request warnings, because do not recall how to get the name of the certificate for a 
@@ -764,36 +768,61 @@ def fill_out_movies_stuff( token, fullurl = 'http://localhost:32400' ):
     return movie_data_rows, genres
 
 def oauthCheckGoogleCredentials( ):
-    filename = 'google_authentication.json'
-    absPath = os.path.join( baseConfDir, filename )
-    if not os.path.isfile( absPath ):
-        return False, 'GOOGLE AUTHENTICATION FILE DOES NOT EXIST.'
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
+    if val is None:
+        return False, 'GOOGLE AUTHENTICATION CREDENTIALS DO NOT EXIST.'
     return True, 'SUCCESS'
 
 def oauthGetGoogleCredentials( ):
-    filename = 'google_authentication.json'
-    absPath = os.path.join( baseConfDir, filename )
-    if not os.path.isfile( absPath ):
-        return None
-    credentials = oauth2client.file.Storage( absPath ).get( )
-    credentials.refresh( httplib2.Http( ) )
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
+    if val is None: return None
+    cred_data = val.data
+    credentials = Credentials.from_authorized_user_info( cred_data )
+    credentials.refresh( Request( ) )
+    return credentials
+
+def oauthGetOauth2ClientGoogleCredentials( ):
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
+    if val is None: return None
+    cred_data = val.data
+    credentials = oauth2client.client.OAuth2Credentials.from_json(
+        json.dumps( cred_data ) )
     return credentials
 
 def oauth_generate_google_permission_url( ):
-    flow = flow_from_clientsecrets( os.path.join( mainDir, 'resources', 'client_secrets.json' ),
-                                    scope = [ 'https://www.googleapis.com/auth/gmail.send',
-                                              'https://www.googleapis.com/auth/contacts.readonly',
-                                              'https://www.googleapis.com/auth/youtube.readonly',
-                                              'https://spreadsheets.google.com/feeds', # google spreadsheet scope
-                                              'https://www.googleapis.com/auth/musicmanager' ], # this is the gmusicapi one
-                                    redirect_uri = "urn:ietf:wg:oauth:2.0:oob" )
+    #flow = Flow.from_client_secrets_file(
+    #    os.path.join( mainDir, 'resources', 'client_secrets.json' ),
+    #    scopes = [ 'https://www.googleapis.com/auth/gmail.send',
+    #               'https://www.googleapis.com/auth/contacts.readonly',
+    #               'https://www.googleapis.com/auth/youtube.readonly',
+    #               'https://spreadsheets.google.com/feeds', # google spreadsheet scope
+    #               'https://www.googleapis.com/auth/musicmanager' ], # this is the gmusicapi one
+    #    redirect_uri = "urn:ietf:wg:oauth:2.0:oob" )
+    #auth_uri = flow.authorization_url( )
+    flow = flow_from_clientsecrets(
+        os.path.join( mainDir, 'resources', 'client_secrets.json' ),
+        scope = [ 'https://www.googleapis.com/auth/gmail.send',
+                  'https://www.googleapis.com/auth/contacts.readonly',
+                  'https://www.googleapis.com/auth/youtube.readonly',
+                  'https://spreadsheets.google.com/feeds', # google spreadsheet scope
+                  'https://www.googleapis.com/auth/musicmanager' ], # this is the gmusicapi one
+        redirect_uri = "urn:ietf:wg:oauth:2.0:oob" )
     auth_uri = flow.step1_get_authorize_url( )
     return flow, auth_uri
 
 def oauth_store_google_credentials( credentials ):
-    filename = 'google_authentication.json'
-    absPath = os.path.join( baseConfDir, filename )
-    oauth2client.file.Storage( absPath ).put( credentials )
+    #filename = 'google_authentication.json'
+    #absPath = os.path.join( baseConfDir, filename )
+    #oauth2client.file.Storage( absPath ).put( credentials )
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
+    if val is not None:
+        session.delete( val )
+        session.commit( )
+    newval = PlexConfig(
+        service = 'google',
+        data = json.loads( credentials.to_json( ) ) )
+    session.add( newval )
+    session.commit( )
     
 #
 ## put in the jackett credentials into here

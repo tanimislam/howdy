@@ -35,7 +35,7 @@ def get_rsync_command( data, mystr ):
     return mycmd
 
 def get_credentials( ):
-    query = session.query( PlexConfig ).filter(
+    val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'rsync' ).first( )
     if val is None:
         logging.debug('ERROR, RSYNC configuration does not exist.' )

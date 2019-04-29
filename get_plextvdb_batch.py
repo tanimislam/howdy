@@ -14,13 +14,13 @@ from optparse import OptionParser
 def main( ):
     time0 = time.time( )
     parser = OptionParser( )
-    parser.add_option('--maxtime', dest='maxtime_in_secs', type=int, action='store', default=120,
+    parser.add_option('--maxtime', dest='maxtime_in_secs', type=int, action='store', default=1000,
                       help = ' '.join([
                           'The maximum amount of time to spend (in seconds),',
                           'per candidate magnet link,',
                           'trying to download a TV show.',
                           'Default is 120 seconds.' ] ) )
-    parser.add_option('--num', dest='num_iters', type=int, action='store', default=5,
+    parser.add_option('--num', dest='num_iters', type=int, action='store', default=2,
                       help = ' '.join([ 
                           'The maximum number of different magnet links to try',
                           'before giving up. Default is 5.' ]) )

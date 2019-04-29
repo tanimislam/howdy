@@ -197,7 +197,8 @@ class PlexLastFM( object ):
         if response.status_code != 200: return None
         data = response.json( )
         if 'date' not in data: return None
-        release_date = datetime.datetime.strptime( data['date'], '%Y-%m-%d' ).date( )
+        try: release_date = datetime.datetime.strptime( data['date'], '%Y-%m-%d' ).date( )
+        except: release_date = datetime.datetime.strptime( data['date'], '%Y' ).date( )
         return release_date.year
     
     def __init__( self ):

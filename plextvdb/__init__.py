@@ -42,6 +42,7 @@ def get_tvdb_api( ):
              'userkey' : data['userkey'] }
 
 def get_token( verify = True ):
+    data = json.dumps( get_tvdb_api( ) )
     headers = { 'Content-Type' : 'application/json' }
     response = requests.post( 'https://api.thetvdb.com/login',
                               data = json.dumps( get_tvdb_api( ) ),

@@ -790,6 +790,7 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
 
 def _get_remaining_eps_perproc( input_tuple ):
     name, series_id, epsForShow, token, showSpecials, fromDate, verify = input_tuple
+    time0 = time.time( )
     eps = list(
         filter(lambda ep: 'episodeName' in ep,
                get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
@@ -802,6 +803,7 @@ def _get_remaining_eps_perproc( input_tuple ):
     tuples_to_get = tvdb_eps - here_eps
     if len( tuples_to_get ) == 0: return None
     tuples_to_get_act = list(map(lambda tup: tvdb_eps_dict[ tup ], tuples_to_get ) )
+    print( 'finished processing %s in %0.3f seconds.' % ( name, time.time( ) - time0 ) )
     return name, sorted( tuples_to_get_act, key = lambda tup: (tup[0], tup[1]))
 
 def _get_series_id_perproc( input_tuple ):
@@ -823,12 +825,10 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
     if showsToExclude is not None:
         showsExclude = set( showsToExclude ) & set( tvdata_copy.keys( ) )
         for show in showsExclude: tvdata_copy.pop( show )
-    pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
-    tvshow_id_map = dict(filter(lambda tup: tup is not None, 
-                                pool.map( _get_series_id_perproc,
-                                          map(lambda show: ( show, token, verify, doShowEnded ), tvdata_copy ) ) ) )
-    pool.close( )
-    pool.join( )
+    with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
+        tvshow_id_map = dict(filter(lambda tup: tup is not None, 
+                                    pool.map( _get_series_id_perproc,
+                                              map(lambda show: ( show, token, verify, doShowEnded ), tvdata_copy ) ) ) )
     if fromDate is not None:
         series_ids = set( get_series_updated_fromdate( fromDate, token ) )
         ids_tvshows = dict(map(lambda name_seriesId: ( name_seriesId[1], name_seriesId[0] ), tvshow_id_map.items( ) ) )
@@ -838,11 +838,9 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
     tvshows = sorted( set( tvshow_id_map.keys( ) ) )
     input_tuples = map(lambda name: ( name, tvshow_id_map[ name ], tvdata_copy[ name ], token,
                                       showSpecials, fromDate, verify ), tvshow_id_map )
-    pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
-    toGet_sub = dict( filter( lambda tup: tup is not None,
-                              pool.map( _get_remaining_eps_perproc, input_tuples ) ) )
-    pool.close( )
-    pool.join( )
+    with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
+        toGet_sub = dict( filter( lambda tup: tup is not None,
+                                  pool.map( _get_remaining_eps_perproc, input_tuples ) ) )
     #
     ## guard code for now -- only include those tv shows that have titles of new episodes to download
     tvshows_act = set(filter(lambda tvshow: len(list(
@@ -901,18 +899,20 @@ def get_tvtorrent_candidate_downloads( toGet ):
     tv_torrent_gets = { }
     tv_torrent_gets.setdefault( 'nonewdirs', [] )
     tv_torrent_gets.setdefault( 'newdirs', {} )
-    minSize = 100
-    maxSize = 150
     for tvshow in toGet:
         mydict = toGet[ tvshow ]
         showFileName = mydict[ 'showFileName' ]
         prefix = mydict[ 'prefix' ]
         min_inferred_length = mydict[ 'min_inferred_length' ]
         episode_number_length = mydict[ 'episode_number_length' ]
-        avg_length_mins = mydict[ 'avg_length_mins' ]
+        avg_length_mins = mydict[ 'avg_length_mins']
+        #
+        ## calc minsize from avg_length_mins
+        num_in_50 = int( avg_length_mins * 60.0 * 1100 / 8.0 / 1024 / 50 + 1)
+        minSize = 50 * num_in_50        
         #
         ## calc maxsize from avg_length_mins
-        num_in_50 = int( avg_length_mins * 60.0 * 1300 / 8.0 / 1024 / 50 + 1 )
+        num_in_50 = int( avg_length_mins * 60.0 * 1500 / 8.0 / 1024 / 50 + 1 )
         maxSize = 50 * num_in_50
         #
         ## being too clever
@@ -966,12 +966,10 @@ def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, nu
         return tvTorUnitFin
     #
     ## now create a pool to multiprocess collect those episodes
-    pool = multiprocessing.Pool( processes = min( multiprocessing.cpu_count( ),
-                                                  len( tvTorUnits ) ) )
-    allTvTorUnits = list( pool.map( worker_process_download_tvtorrent_perproc,
-                                    tvTorUnits ) )
-    pool.close( )
-    pool.join( )
+    with multiprocessing.Pool( processes = min(
+            multiprocessing.cpu_count( ), len( tvTorUnits ) ) ) as pool:
+        allTvTorUnits = list( pool.map( worker_process_download_tvtorrent_perproc,
+                                        tvTorUnits ) )
     successfulTvTorUnits = list(filter(lambda tup: not isinstance( tup, str ),
                                        allTvTorUnits ) )
     could_not_download = list(filter(lambda tup: isinstance( tup, str ),

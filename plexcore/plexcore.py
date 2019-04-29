@@ -181,7 +181,7 @@ def get_all_servers( token ):
     server_dict = { }
     for server_elem in filter(lambda se: len(set([ 'product', 'publicaddress', 'owned' ]) - set( se.attrs ) ) == 0 and
                               se['product'] == 'Plex Media Server', myxml.find_all('device') ):
-        connections = filter(lambda elem: elem['local'] == '0', server_elem.find_all('connection') )
+        connections = list( filter(lambda elem: elem['local'] == '0', server_elem.find_all('connection') ) )
         if len( connections ) != 1:
             continue
         connection = max( connections )

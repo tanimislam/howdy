@@ -2,8 +2,7 @@ import threading, requests, fuzzywuzzy, re, os, time
 from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
 from requests.compat import urljoin
-from plexemail.plexemail import get_formatted_size
-from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials
+from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials, get_formatted_size
 from . import plextmdb
 
 def _return_error_raw( msg ): return None, msg

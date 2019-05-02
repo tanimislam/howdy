@@ -13,17 +13,20 @@ from optparse import OptionParser
 
 def main( ):
     time0 = time.time( )
+    default_time = 1000
+    default_iters = 2
+    
     parser = OptionParser( )
-    parser.add_option('--maxtime', dest='maxtime_in_secs', type=int, action='store', default=1000,
+    parser.add_option('--maxtime', dest='maxtime_in_secs', type=int, action='store', default = default_time,
                       help = ' '.join([
                           'The maximum amount of time to spend (in seconds),',
                           'per candidate magnet link,',
                           'trying to download a TV show.',
-                          'Default is 120 seconds.' ] ) )
-    parser.add_option('--num', dest='num_iters', type=int, action='store', default=2,
+                          'Default is %d seconds.' % default_time ] ) )
+    parser.add_option('--num', dest='num_iters', type=int, action='store', default = default_iters,
                       help = ' '.join([ 
                           'The maximum number of different magnet links to try',
-                          'before giving up. Default is 5.' ]) )
+                          'before giving up. Default is %d.' % default_iters ]) )
     opts, args = parser.parse_args( )
     assert( opts.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
     assert( opts.num_iters >= 1 ), 'error, must have a positive number of iterations.'

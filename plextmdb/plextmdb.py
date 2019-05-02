@@ -5,6 +5,34 @@ from . import mainDir, get_tmdb_api
 ## have to fix this 
 tmdb_apiKey = get_tmdb_api( )
 
+def get_tv_ids_by_series_name( series_name ):
+    response = requests.get( 'https://api.themoviedb.org/3/search/tv',
+                             params = { 'api_key' : tmdb_apiKey,
+                                        'append_to_response': 'images',
+                                        'include_image_language': 'en',
+                                        'language': 'en',
+                                        'sort_by': 'popularity.desc',
+                                        'query' : '+'.join( series_name.split( ) ),
+                                        'page' : 1 } )
+    if response.status_code != 200:
+        return [ ]
+    data = response.json( )
+    valid_results = list(filter(
+        lambda result: 'name' in result and result['name'] == series_name and 'id' in result,
+        data[ 'results' ] ) )
+    return list(map(lambda result: result[ 'id' ], valid_results ) )
+
+def get_tv_info_for_epsiode( tv_id, season, epno ):
+    response = requests.get( 'https://api.themoviedb.org/3/tv/%d/season/%d/episode/%d' % (
+        tv_id, season, epno ), params = { 'api_key' : tmdb_apiKey,
+                                          'append_to_response': 'images',
+                                          'language': 'en' } )
+    if response.status_code != 200:
+        print( response.content )
+        return None
+    data = response.json( )
+    return data
+                                        
 def get_movies_by_actors( actor_names ):
     actor_name_dict = { }
     for actor_name in set(actor_names):

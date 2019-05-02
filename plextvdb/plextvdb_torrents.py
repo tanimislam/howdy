@@ -226,7 +226,8 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     items = items[:maxnum]
     return items, 'SUCCESS'
 
-def get_tv_torrent_jackett( name, maxnum = 10, minsize = None, maxsize = None, keywords = [ ], keywords_exc = [ ] ):
+def get_tv_torrent_jackett( name, maxnum = 10, minsize = None, maxsize = None, keywords = [ ], keywords_exc = [ ],
+                            must_have = [ ]):
     import validators
     data = get_jackett_credentials( )
     if data is None:
@@ -297,7 +298,8 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsize = None, maxsize = None, k
             items = list(filter(lambda elem: elem['torrent_size'] < maxsize, items ) )
     if len( keywords ) != 0:
         items = list(filter(lambda elem: any(map(lambda tok: tok.lower( ) in elem['title'].lower( ), keywords ) ) and
-                            not any(map(lambda tok: tok.lower( ) in elem['title'].lower( ), keywords_exc ) ),
+                            not any(map(lambda tok: tok.lower( ) in elem['title'].lower( ), keywords_exc ) ) and
+                            all(map(lambda tok: tok.lower( ) in elem['title'].lower( ), must_have ) ),
                             items ) )
     if len( items ) == 0:
         return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
@@ -517,6 +519,7 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
     totFname = tvTorUnit[ 'totFname' ]
     minSize = tvTorUnit[ 'minSize' ]
     maxSize = tvTorUnit[ 'maxSize' ]
+    mustHaveString = torFileName.split()[-1]
     if client is None:
         client, status = plexcore_deluge.get_deluge_client( )
         if client is None:
@@ -524,9 +527,11 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
     #
     ## now get list of torrents, choose "top" one
     data, status = get_tv_torrent_jackett( torFileName, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
-                                           minsize = minSize, maxsize = maxSize, keywords_exc = [ 'xvid' ])
+                                           minsize = minSize, maxsize = maxSize, keywords_exc = [ 'xvid' ],
+                                           must_have = [ mustHaveString ] )
     if status != 'SUCCESS': return None, create_status_dict( 'FAILURE', status )
-    print( 'got %d candidates for %s in %0.3f seconds' % ( len(data), torFileName, time.time( ) - time0 ) )
+    print( 'got %d candidates for %s in %0.3f seconds.' % (
+        len(data), torFileName, time.time( ) - time0 ) )
     failing_reasons = [ ]
     numiters, rem = divmod( maxtime_in_secs, 30 )
     if rem != 0: numiters += 1
@@ -577,7 +582,7 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
         return None, create_status_dict( 'FAILURE',
                                          'failed to download idx = %d, %s after %0.3f seconds' % (
                                              idx, torFileName, time.time( ) - time00 ) )
-    for idx in range( num_iters ):
+    for idx in range( min( len( data ), num_iters ) ):
         dat, status_dict = process_single_iteration( data, idx )
         if dat is not None:
             return dat, status_dict

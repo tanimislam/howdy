@@ -1,9 +1,146 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
-import os, sys, numpy, glob, datetime, logging
-from . import mainDir, plextvdb, get_token
-sys.path.append( mainDir )
+import os, sys, numpy, glob, datetime
+import multiprocessing, logging
+from PIL import Image
+from io import StringIO
+from . import plextvdb, get_token, plextvdb_torrents
 from plexcore import plexcore
+
+class TVShow( object ):
+
+    @classmethod
+    def _create_season( cls, input_tuple ):
+            seriesName, seriesId, token, season, verify, epdicts = input_tuple
+            return season, TVSeason( seriesName, seriesId, token, season, verify = verify,
+                                     epdicts = epdicts )
+    
+    def _get_series_seasons( self, token, verify = True ):
+        headers = { 'Content-Type' : 'application/json',
+                    'Authorization' : 'Bearer %s' % token }
+        response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/summary' % self.seriesId,
+                                 headers = headers, verify = verify )
+        if response.status_code != 200:
+            return None
+        data = response.json( )['data']
+        if 'airedSeasons' not in data:
+            return None
+        return sorted( map(lambda tok: int(tok), data['airedSeasons'] ) )
+        
+    def __init__( self, seriesName, token, verify = True ):
+        self.seriesId = get_series_id( seriesName, token, verify = verify )
+        self.seriesName = seriesName
+        if self.seriesId is None:
+            raise ValueError("Error, could not find TV Show named %s." % seriesName )
+        #
+        ## check if status ended
+        self.statusEnded = plextvdb.did_series_end( self.seriesId, token, verify = verify )
+        if self.statusEnded is None:
+             raise ValueError("Error, could not find whether TV Show named %s ended or not." %
+                              seriesName )
+        #
+        ## get Image URL and Image
+        self.imageURL, status = plextvdb.get_series_image( self.seriesId, token, verify = verify )
+        self.img = None
+        if status == 'SUCCESS':
+            response = requests.get( self.imageURL )
+            if response.status_code == 200: 
+                self.img = Image.open( StringIO( response.content ) )
+        #
+        ## get every season defined
+        epdicts = plextvdb.get_episodes_series(
+            self.seriesId, token, showSpecials = True,
+            fromdate = datetime.datetime.now( ).date( ),
+            verify = verify )
+        allSeasons = sorted( epdicts )
+        with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
+            input_tuples = map(lambda seasno: (
+                self.seriesName, self.seriesId, token, seasno, verify, epdicts ), allSeasons)
+            self.seasonDict = dict( filter(lambda seasno_tvseason: len( seasno_tvseason[1].episodes ) != 0,
+                                           pool.map( TVShow._create_season, input_tuples ) ) )
+            self.startDate = min(filter(None, map(lambda tvseason: tvseason.get_min_date( ),
+                                                  self.seasonDict.values( ) ) ) )
+            self.endDate = max(filter(None, map(lambda tvseason: tvseason.get_max_date( ),
+                                                self.seasonDict.values( ) ) ) )
+
+    def get_episode_name( self, airedSeason, airedEpisode ):
+        if airedSeason not in self.seasonDict:
+            raise ValueError("Error, season %d not a valid season." % airedSeason )
+        if airedEpisode not in self.seasonDict[ airedSeason ].episodes:
+            raise ValueError("Error, episode %d in season %d not a valid episode number." % (
+                airedEpisode, airedSeason ) )
+        epStruct = self.seasonDict[ airedSeason ].episode[ airedEpisode ]
+        return ( epStruct['name'], epStruct['airedDate'] )
+
+    def get_episodes_series( self, showSpecials = True, fromDate = None ):
+        seasons = set( self.seasonDict.keys( ) )
+        print('all seasons: %s' % seasons )
+        if not showSpecials:
+            seasons = seasons - set([0,])
+        sData = reduce(lambda x,y: x+y,
+                       map(lambda seasno:
+                           map(lambda epno: ( seasno, epno ),
+                               self.seasonDict[ seasno ].episodes.keys( ) ),
+                           seasons ) )
+        if fromDate is not None:
+            sData = filter(lambda seasno_epno:
+                           self.seasonDict[ seasno_epno[0] ].episodes[ seasno_epno[1] ][ 'airedDate' ] >=
+                           fromDate, sData )
+        return sData
+
+    def get_tot_epdict_tvdb( self ):
+        tot_epdict = { }
+        seasons = set( self.seasonDict.keys( ) ) - set([0,])
+        for seasno in sorted(seasons):
+            tot_epdict.setdefault( seasno, {} )
+            for epno in sorted(self.seasonDict[ seasno ].episodes):
+                epStruct = self.seasonDict[ seasno ].episodes[ epno ]
+                title = epStruct[ 'name' ]
+                airedDate = epStruct[ 'airedDate' ]
+                tot_epdict[ seasno ][ epno ] = ( title, airedDate )
+        return tot_epdict
+
+
+class TVSeason( object ):
+    def get_num_episodes( self ):
+        return len( self.episodes )
+    
+    def get_max_date( self ):
+        if self.get_num_episodes( ) == 0: return None            
+        return max(map(lambda epelem: epelem['airedDate'], self.episodes.values( ) ) )
+
+    def get_min_date( self ):
+        if self.get_num_episodes( ) == 0: return None
+        return min(map(lambda epelem: epelem['airedDate'], self.episodes.values( ) ) )
+    
+    def __init__( self, seriesName, seriesId, token, seasno, verify = True,
+                  epdicts = None ):
+        self.seriesName = seriesName
+        self.seriesId = seriesId
+        self.seasno = seasno
+        #
+        ## first get the image associated with this season
+        self.imageURL, status = plextvdb.get_series_season_image(
+            self.seriesId, self.seasno, token, verify = verify )
+        self.img = None
+        if status == 'SUCCESS':
+            response = requests.get( self.imageURL )
+            if response.status_code == 200:
+                self.img = Image.open( StringIO( response.content ) )
+        
+        #
+        ## now get the specific episodes for that season
+        if epdicts is None:
+            epdicts = plextvdb.get_episodes_series(
+                self.seriesId, token, showSpecials = True,
+                fromdate = datetime.datetime.now( ).date( ),
+                verify = verify )
+        self.episodes = dict(map(
+            lambda episode: ( episode[ 'airedEpisodeNumber' ], episode ).
+            filter(lambda episode: episode[ 'airedSeason' ] == self.seasno,
+                   epdicts ) ) )
+
+
 
 class TVDBGUI( QWidget ):
     mySignal = pyqtSignal( list )

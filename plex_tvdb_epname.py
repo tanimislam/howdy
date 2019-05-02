@@ -18,6 +18,12 @@ def main( ):
                       help = 'If chosen, get a list of all episode titles for this season of the SERIES.')
     parser.add_option('--noverify', dest='do_noverify', action='store_true', default = False,
                       help = 'If chosen, do not verify the SSL connection.')
+    #
+    ## big option
+    parser.add_option('--add', dest='do_add', action='store_true', default = False,
+                      help = ' '.join([
+                          'BIG CHANGE. If chosen, allows you to choose and download',
+                          'an episode given a valid series name and episode name.' ]))
     opts, args = parser.parse_args( )
     assert( opts.series is not None )
     if opts.do_summary:
@@ -80,6 +86,9 @@ def main( ):
             return
         epname, fa = data
         print('%s (%s)' % ( epname, fa.strftime('%A, %d %B %Y' ) ) )
+        # not yet implemented
+        #if do_add:
+        #    plextvdb.download_single_episode_to_folder( series_id, seasno, epno data )
             
 if __name__=='__main__':
     main( )

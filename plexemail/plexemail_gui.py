@@ -108,7 +108,7 @@ class PlexEmailGUI( QWidget ):
             #
             ## if I have sent out ALL EMAILS, then I mean to update the newsletter
             if len(validLists) == len( self.allRadioButtons ):
-                plexemail.set_date_newsletter( )
+                plexcore.set_date_newsletter( )
             
     class PrePostAmbleDialog( QDialog ):
         def screenGrab( self ):

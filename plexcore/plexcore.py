@@ -882,3 +882,56 @@ def get_maximum_matchval( check_string, input_string ):
     istring = input_string.strip( ).lower( )
     return partial_ratio( check_string.strip( ).lower( ),
                           input_string.strip( ).lower( ) )
+
+def get_formatted_duration( totdur ):
+    dt = datetime.datetime.utcfromtimestamp( totdur )
+    durstringsplit = []
+    month_off = 1
+    day_off = 1
+    hour_off = 1
+    min_off = 1
+    if dt.year - 1970 != 0:
+        durstringsplit.append('%d years' % ( dt.year - 1970 ) )
+        month_off = 0
+    if dt.month != month_off:
+        durstringsplit.append('%d months' % ( dt.month - month_off ) )
+        day_off = 0
+    if dt.day != day_off:
+        durstringsplit.append('%d days' % ( dt.day - day_off ) )
+        hour_off = 0
+    if dt.hour != hour_off:
+        durstringsplit.append('%d hours' % ( dt.hour - hour_off ) )
+        min_off = 0
+    if dt.minute != min_off:
+        durstringsplit.append('%d minutes' % ( dt.minute - min_off ) )
+    if len(durstringsplit) != 0:
+        durstringsplit.append('and %0.3f seconds' % ( dt.second + 1e-6 * dt.microsecond ) )
+    else:
+        durstringsplit.append('%0.3f seconds' % ( dt.second + 1e-6 * dt.microsecond ) )
+    return ', '.join( durstringsplit )
+
+def get_formatted_size( totsizebytes ):
+    sizestring = ''
+    if totsizebytes >= 1024**3:
+        size_in_gb = totsizebytes * 1.0 / 1024**3
+        sizestring = '%0.3f GB' % size_in_gb
+    elif totsizebytes >= 1024**2:
+        size_in_mb = totsizebytes * 1.0 / 1024**2
+        sizestring = '%0.3f MB' % size_in_mb
+    elif totsizebytes >= 1024:
+        size_in_kb = totsizebytes * 1.0 / 1024
+        sizestring = '%0.3f kB' % size_in_kb
+    return sizestring
+
+def set_date_newsletter( ):
+    query = session.query( LastNewsletterDate )
+    backthen = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
+    val = query.filter( LastNewsletterDate.date >= backthen ).first( )
+    if val:
+        session.delete( val )
+        session.commit( )
+    datenow = datetime.datetime.now( ).date( )
+    lastnewsletterdate = LastNewsletterDate( date = datenow )
+    session.add( lastnewsletterdate )
+    session.commit( )
+        

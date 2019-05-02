@@ -2,9 +2,8 @@ import requests, re, threading, cfscrape, os, time, numpy
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
-from plexemail.plexemail import get_formatted_size
 from . import plextvdb
-from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials
+from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials, get_formatted_size
 from plexcore import plexcore_deluge
 
 def _return_error_couldnotfind( name ):

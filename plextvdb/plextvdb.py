@@ -627,6 +627,7 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
         response = requests.get( 'https://api.thetvdb.com/series/%d/episodes' % series_id,
                                  params = { 'page' : pageno }, headers = headers,
                                  verify = verify )
+        if response.status_code != 200: continue
         data = response.json( )
         seriesdata += data[ 'data' ]
     currentDate = datetime.datetime.now( ).date( )
@@ -791,8 +792,10 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
 def _get_remaining_eps_perproc( input_tuple ):
     name, series_id, epsForShow, token, showSpecials, fromDate, verify = input_tuple
     time0 = time.time( )
+    #
+    ## only record those episodes that have an episodeName that is not None
     eps = list(
-        filter(lambda ep: 'episodeName' in ep,
+        filter(lambda ep: 'episodeName' in ep and ep['episodeName'] is not None,
                get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
                                     fromDate = fromDate ) ) )
     tvdb_eps = set(map(lambda ep: ( ep['airedSeason'], ep['airedEpisodeNumber' ] ), eps ) )
@@ -899,6 +902,7 @@ def get_tvtorrent_candidate_downloads( toGet ):
     tv_torrent_gets = { }
     tv_torrent_gets.setdefault( 'nonewdirs', [] )
     tv_torrent_gets.setdefault( 'newdirs', {} )
+    minSize = 100
     for tvshow in toGet:
         mydict = toGet[ tvshow ]
         showFileName = mydict[ 'showFileName' ]
@@ -909,7 +913,7 @@ def get_tvtorrent_candidate_downloads( toGet ):
         #
         ## calc minsize from avg_length_mins
         num_in_50 = int( avg_length_mins * 60.0 * 1100 / 8.0 / 1024 / 50 + 1)
-        minSize = 50 * num_in_50        
+        # minSize = 50 * num_in_50        
         #
         ## calc maxsize from avg_length_mins
         num_in_50 = int( avg_length_mins * 60.0 * 1500 / 8.0 / 1024 / 50 + 1 )
@@ -955,15 +959,18 @@ def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, nu
     for newdir in filter(lambda nd: not os.path.isdir( nd ), newdirs ):
         os.mkdir( newdir )
     def worker_process_download_tvtorrent_perproc( tvTorUnit ):
-        dat, status_dict = plextvdb_torrents.worker_process_download_tvtorrent(
-            tvTorUnit, maxtime_in_secs = maxtime_in_secs, num_iters = num_iters,
-            kill_if_fail = True )
-        if dat is None: return tvTorUnit[ 'torFname' ] # could not download this
-        tvTorUnitFin = copy.deepcopy( tvTorUnit )
-        tvTorUnitFin['remoteFileName'] = dat
-        suffix = dat.split('.')[-1].strip( )
-        tvTorUnitFin[ 'totFname' ] = '%s.%s' % ( tvTorUnit[ 'totFname' ], suffix )
-        return tvTorUnitFin
+        try:
+            dat, status_dict = plextvdb_torrents.worker_process_download_tvtorrent(
+                tvTorUnit, maxtime_in_secs = maxtime_in_secs, num_iters = num_iters,
+                kill_if_fail = True )
+            if dat is None: return tvTorUnit[ 'torFname' ] # could not download this
+            tvTorUnitFin = copy.deepcopy( tvTorUnit )
+            tvTorUnitFin['remoteFileName'] = dat
+            suffix = dat.split('.')[-1].strip( )
+            tvTorUnitFin[ 'totFname' ] = '%s.%s' % ( tvTorUnit[ 'totFname' ], suffix )
+            return tvTorUnitFin
+        except Exception as e:
+            return None
     #
     ## now create a pool to multiprocess collect those episodes
     with multiprocessing.Pool( processes = min(

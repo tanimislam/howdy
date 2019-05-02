@@ -5,253 +5,10 @@ from matplotlib.figure import Figure
 from matplotlib.patches import Rectangle, Ellipse
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from functools import reduce
-from PIL import Image
-from io import StringIO
 from dateutil.relativedelta import relativedelta
 from fuzzywuzzy.fuzz import ratio
 from . import get_token, plextvdb_torrents, ShowsToExclude
 from plexcore import plexcore_rsync, splitall, session
-
-def _create_season( input_tuple ):
-    seriesName, seriesId, token, season, verify = input_tuple
-    return season, TVSeason( seriesName, seriesId, token, season, verify = verify )
-
-class TVSeason( object ):
-    def get_num_episodes( self ):
-        return len( self.episodes )
-    
-    def get_max_date( self ):
-        if self.get_num_episodes( ) == 0: return None            
-        return max(map(lambda epelem: epelem['airedDate'], self.episodes.values( ) ) )
-
-    def get_min_date( self ):
-        if self.get_num_episodes( ) == 0: return None
-        return min(map(lambda epelem: epelem['airedDate'], self.episodes.values( ) ) )
-        
-    def _get_season_episodes( self, token, verify = True ):
-        currentDate = datetime.datetime.now( ).date( )
-        headers = { 'Content-Type' : 'application/json',
-                    'Authorization' : 'Bearer %s' % token }
-        params = { 'airedSeason' : self.seasno, 'page' : 1 }
-        response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/query' % self.seriesId,
-                                 headers = headers, params = params, verify = verify )
-        if response.status_code != 200:
-            raise ValueError("Error, could find no episodes for season %02d in series %s." %
-                             ( self.seasno, self.seriesName ) )
-        data = response.json( )['data']
-        links = response.json( )['links']
-        lastpage = links[ 'last' ]
-        seriesdata = data
-        for pageno in range( 2, lastpage + 1 ):
-            params = {  'airedSeason' : self.seasno, 'page' : pageno }
-            response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/query' % self.seriesId,
-                                     headers = headers, params = params, verify = verify )                                     
-            if response.status_code != 200:
-                continue
-            seriesdata += response.json( )['data']
-        sData = { }
-        for episode in seriesdata:
-            try:
-                 date = datetime.datetime.strptime( episode['firstAired'], '%Y-%m-%d' ).date( )
-                 if date > currentDate:
-                     continue
-            except Exception:
-                continue
-            airedDate = datetime.datetime.strptime( episode['firstAired'], '%Y-%m-%d' ).date( )
-            epno = int( episode[ 'airedEpisodeNumber' ] )
-            name = episode[ 'episodeName' ]
-            overview = episode[ 'overview' ]
-            sData[ epno ] = { 'name' : name,
-                              'overview' : overview,
-                              'airedDate': airedDate }
-        return sData        
-    
-    def _get_season_image( self, token, verify = True ):
-        headers = { 'Content-Type' : 'application/json',
-                    'Authorization' : 'Bearer %s' % token }
-        response = requests.get( 'https://api.thetvdb.com/series/%d/images/query/params' % self.seriesId,
-                                 headers = headers, verify = verify )
-        if response.status_code != 200:
-            return None
-        data = response.json( )['data']
-        #
-        ## look for season keytype
-        season_ones = filter(lambda elem: 'keyType' in elem.keys( ) and elem['keyType'] == 'season', data )
-        if len( season_ones ) == 0:
-            return None
-        season_one = season_ones[ 0 ]
-        if 'subKey' not in season_one:
-            return None
-        #
-        ## now look to see if season in subkey
-        if '%d' % self.seasno not in season_one['subKey']:
-            return None
-        #
-        ## now get that image for season
-        params = { 'keyType' : 'season', 'subKey' : '%d' % self.seasno }
-        if 'resolution' in season_one.keys( ) and len( season_one[ 'resolution' ] ) != 0:
-            params[ 'resolution' ] = season_one[ 'resolution' ][ 0 ]
-        response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
-                                 headers = headers, params = params, verify = verify )
-        if response.status_code != 200:
-            return None
-        data = response.json( )['data']
-        firstSeason = data[ 0 ]
-        assert( 'fileName' in firstSeason )
-        return 'https://thetvdb.com/banners/%s' % firstSeason[ 'fileName' ]        
-    
-    def __init__( self, seriesName, seriesId, token, seasno, verify = True ):
-        self.seriesName = seriesName
-        self.seriesId = seriesId
-        self.seasno = seasno
-        #
-        ## first get the image associated with this season
-        self.imageURL = self._get_season_image( token, verify = verify )
-        self.img = None
-        if self.imageURL is not None:
-            response = requests.get( self.imageURL )
-            if response.status_code == 200:
-                self.img = Image.open( StringIO( response.content ) )
-
-        #
-        ## now get the specific episodes for that season
-        self.episodes = self._get_season_episodes( token )
-
-class TVShow( object ):
-    def _get_series_seasons( self, token, verify = True ):
-        headers = { 'Content-Type' : 'application/json',
-                    'Authorization' : 'Bearer %s' % token }
-        response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/summary' % self.seriesId,
-                                 headers = headers, verify = verify )
-        if response.status_code != 200:
-            return None
-        data = response.json( )['data']
-        if 'airedSeasons' not in data:
-            return None
-        return sorted( map(lambda tok: int(tok), data['airedSeasons'] ) )
-        
-    def _get_series_image( self, token, verify = True ):
-        headers = { 'Content-Type' : 'application/json',
-                    'Authorization' : 'Bearer %s' % token }
-        response = requests.get( 'https://api.thetvdb.com/series/%d/images/query/params' % self.seriesId,
-                                 headers = headers, verify = verify )
-        if response.status_code != 200:
-            return None
-        data = response.json( )['data']
-        #
-        ## first look for poster entries
-        poster_ones = filter(lambda elem: 'keyType' in elem.keys() and elem['keyType'] == 'poster', data )
-        if len( poster_ones ) != 0:
-            poster_one = poster_ones[ 0 ]
-            params = { 'keyType' : 'poster' }
-            if 'resolution' in poster_one and len( poster_one['resolution'] ) != 0:
-                params['resolution'] = poster_one['resolution'][0]
-            response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
-                                     headers = headers, params = params, verify = verify )
-            if response.status_code == 200:
-                data = response.json( )['data']
-                firstPoster = data[0]
-                assert( 'fileName' in firstPoster )
-                return 'https://thetvdb.com/banners/%s' % firstPoster['fileName']
-        fanart_ones = filter(lambda elem: 'keyType' in elem.keys( ) and
-                             elem['keyType'] == 'fanart', data )
-        if len( fanart_ones ) != 0:
-            fanart_one = fanart_ones[ 0 ]
-            params = { 'keyType' : 'fanart' }
-            if 'resolution' in fanart_one and len( fanart_one['resolution'] ) != 0:
-                params['resolution'] = fanart_one['resolution'][0]
-            response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
-                                     headers = headers, params = params, verify = verify )
-            if response.status_code == 200:
-                data = response.json( )['data']
-                firstFanart = data[0]
-                assert( 'fileName' in firstFanart )
-                return 'https://thetvdb.com/banners/%s' % firstFanart['fileName']
-        series_ones = filter(lambda elem: 'keyType' in elem.keys( ) and
-                             elem['keyType'] == 'series')
-        if len( series_ones ) != 0:
-            series_one = series_ones[ 0 ]
-            params = { 'keyType' : 'series' }
-            if 'resolution' in series_one and len( series_one['resolution'] ) != 0:
-                params['resolution'] = series_one['resolution'][0]
-            response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
-                                     headers = headers, params = params, verify = verify )
-            if response.status_code == 200:
-                data = response.json( )['data']
-                firstSeries = data[0]
-                assert( 'fileName' in firstSeries )
-                return 'https://thetvdb.com/banners/%s' % firstSeries['fileName']
-        return None ## nothing happened
-        
-    def __init__( self, seriesName, token, verify = True ):
-        self.seriesId = get_series_id( seriesName, token, verify = verify )
-        self.seriesName = seriesName
-        if self.seriesId is None:
-            raise ValueError("Error, could not find TV Show named %s." % seriesName )
-        #
-        ## check if status ended
-        self.statusEnded = did_series_end( self.seriesId, token, verify = verify )
-        if self.statusEnded is None:
-             raise ValueError("Error, could not find whether TV Show named %s ended or not." %
-                              seriesName )
-        #
-        ## get Image URL and Image
-        self.imageURL = self._get_series_image( token )
-        self.img = None
-        if self.imageURL is not None:
-            response = requests.get( self.imageURL )
-            if response.status_code == 200: 
-                self.img = Image.open( StringIO( response.content ) )
-        #
-        ## get every season defined
-        allSeasons = self._get_series_seasons( token )
-        pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
-        input_tuples = map(lambda seasno: (
-            self.seriesName, self.seriesId, token, seasno, verify ),
-                           allSeasons)
-        self.seasonDict = dict( filter(lambda seasno_tvseason: len( seasno_tvseason[1].episodes ) != 0,
-                                       pool.map( _create_season, input_tuples ) ) )
-        self.startDate = min(filter(None, map(lambda tvseason: tvseason.get_min_date( ),
-                                              self.seasonDict.values( ) ) ) )
-        self.endDate = max(filter(None, map(lambda tvseason: tvseason.get_max_date( ),
-                                            self.seasonDict.values( ) ) ) )
-
-    def get_episode_name( self, airedSeason, airedEpisode ):
-        if airedSeason not in self.seasonDict:
-            raise ValueError("Error, season %d not a valid season." % airedSeason )
-        if airedEpisode not in self.seasonDict[ airedSeason ].episodes:
-            raise ValueError("Error, episode %d in season %d not a valid episode number." % (
-                airedEpisode, airedSeason ) )
-        epStruct = self.seasonDict[ airedSeason ].episode[ airedEpisode ]
-        return ( epStruct['name'], epStruct['airedDate'] )
-
-    def get_episodes_series( self, showSpecials = True, fromDate = None ):
-        seasons = set( self.seasonDict.keys( ) )
-        print('all seasons: %s' % seasons )
-        if not showSpecials:
-            seasons = seasons - set([0,])
-        sData = reduce(lambda x,y: x+y,
-                       map(lambda seasno:
-                           map(lambda epno: ( seasno, epno ),
-                               self.seasonDict[ seasno ].episodes.keys( ) ),
-                           seasons ) )
-        if fromDate is not None:
-            sData = filter(lambda seasno_epno:
-                           self.seasonDict[ seasno_epno[0] ].episodes[ seasno_epno[1] ][ 'airedDate' ] >=
-                           fromDate, sData )
-        return sData
-
-    def get_tot_epdict_tvdb( self ):
-        tot_epdict = { }
-        seasons = set( self.seasonDict.keys( ) ) - set([0,])
-        for seasno in sorted(seasons):
-            tot_epdict.setdefault( seasno, {} )
-            for epno in sorted(self.seasonDict[ seasno ].episodes):
-                epStruct = self.seasonDict[ seasno ].episodes[ epno ]
-                title = epStruct[ 'name' ]
-                airedDate = epStruct[ 'airedDate' ]
-                tot_epdict[ seasno ][ epno ] = ( title, airedDate )
-        return tot_epdict
 
 #
 ## method to get all the shows organized by date.
@@ -850,19 +607,15 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
         filter(lambda epdata: epdata[-1] is not None, toGet_sub[ tvshow ] ) ) ) != 0, toGet_sub ) )
     tvdata_path_data = dict(filter(None, map(lambda tvshow: (
         tvshow, get_path_data_on_tvshow( tvdata, tvshow ) ), tvshows_act ) ) )
-    toGet = { }
-    for tvshow in sorted( tvshows_act ):
-        mydict = {
-            'episodes' : list(
-                filter(lambda epdata: epdata[-1] is not None, toGet_sub[ tvshow ] ) ),
-            'prefix' : tvdata_path_data[ tvshow ][ 'prefix' ],
-            'showFileName' : tvdata_path_data[ tvshow ][ 'showFileName' ],
-            'min_inferred_length' : tvdata_path_data[ tvshow ][ 'min_inferred_length' ],
-            'season_prefix_dict' : tvdata_path_data[ tvshow ][ 'season_prefix_dict' ],
-            'episode_number_length' : tvdata_path_data[ tvshow ][ 'episode_number_length' ],
-            'avg_length_mins' : tvdata_path_data[ tvshow ][ 'avg_length_mins' ]
-        }
-        toGet[ tvshow ] = mydict
+    toGet = { tvshow : {
+        'episodes' : list(
+            filter(lambda epdata: epdata[-1] is not None, toGet_sub[ tvshow ] ) ),
+        'prefix' : tvdata_path_data[ tvshow ][ 'prefix' ],
+        'showFileName' : tvdata_path_data[ tvshow ][ 'showFileName' ],
+        'min_inferred_length' : tvdata_path_data[ tvshow ][ 'min_inferred_length' ],
+        'season_prefix_dict' : tvdata_path_data[ tvshow ][ 'season_prefix_dict' ],
+        'episode_number_length' : tvdata_path_data[ tvshow ][ 'episode_number_length' ],
+        'avg_length_mins' : tvdata_path_data[ tvshow ][ 'avg_length_mins' ] } for tvshow in sorted( tvshows_act ) }
     return toGet
 
 def push_shows_to_exclude( tvdata, showsToExclude ):
@@ -1061,8 +814,8 @@ def get_tot_epdict_imdb( showName, verify = True ):
 
 def get_tot_epdict_tvdb( showName, verify = True, showSpecials = False, showFuture = False ):
     token = get_token( verify = verify )
-    id = get_series_id( showName, token, verify = verify )
-    eps = get_episodes_series( id, token, verify = verify, showFuture = showFuture )
+    series_id = get_series_id( showName, token, verify = verify )
+    eps = get_episodes_series( series_id, token, verify = verify, showFuture = showFuture )
     totseasons = max( map(lambda episode: int( episode['airedSeason' ] ), eps ) )
     tot_epdict = { }
     for episode in eps:

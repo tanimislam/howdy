@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 
-import re, codecs, requests, sys, signal, time, logging
-from plexcore import signal_handler, plexcore_deluge
+import sys, signal
+# code to handle Ctrl+C, convenience method for command line tools
+def signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Exiting...")
+    sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
+import re, codecs, requests, time, logging
+from plexcore import plexcore_deluge
 from functools import reduce
 from multiprocessing import Process, Manager, cpu_count
 from optparse import OptionParser

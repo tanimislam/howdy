@@ -306,6 +306,9 @@ class PlexLastFM( object ):
                                              album_name = album_name )
         if status != 'SUCCESS':
             return None, status
+        if len( album[ 'tracks' ][ 'track' ] ) == 0:
+            return None, "Error, could find no tracks for artist = %s, album = %s." % (
+                artist_name, album_name )
         track_listing = sorted(map(lambda track: ( titlecase.titlecase( track['name'] ),
                                                    int( track[ '@attr' ][ 'rank' ] ),
                                                    float( track[ 'duration' ] ) ),

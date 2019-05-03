@@ -96,10 +96,12 @@ if __name__=='__main__':
                       help = 'Maximum number of torrents to look through. Default is 10.')
     parser.add_option('-f', '--filename', dest='filename', action='store', type=str, default = 'eng.srt',
                       help = 'Name of the subtitle file. Default is eng.srt.')
-    parser.add_option('-b', '--bypass', dest='do_bypass', action='store_true', default = True,
+    parser.add_option('-b', '--bypass', dest='do_bypass', action='store_true', default = False,
                       help = 'If chosen, then bypass yts subtitles.')
     parser.add_option('-k', '--keywords', dest='keywords', action='store', type=str,
-                      help = 'Optional definition of a list of keywords to look for, in the subscene search for movie subtitles.')
+                      help = ' '.join([
+                          'Optional definition of a list of keywords to look for,',
+                          'in the subscene search for movie subtitles.' ]) )
     parser.add_option('-d', '--debug', dest='do_debug', action='store_true', default = False,
                       help = 'If chosen, run in debug mode.' )
     opts, args = parser.parse_args( )
@@ -116,11 +118,12 @@ if __name__=='__main__':
     manager = Manager( )
     num_processes = cpu_count( )
     shared_list = manager.list( )
-    if not opts.do_bypass: jobs = [
+    if not opts.do_bypass:
+        jobs = [
             Process( target=get_items_yts, args=(opts.name, opts.maxnum, shared_list ) ) ]
     else: jobs = [ ]
     jobs += [
-        Process( target=get_items_subscene, args = ( opts.name, opts.maxnum, keywords_set, shared_list ) ),
+        # Process( target=get_items_subscene, args = ( opts.name, opts.maxnum, keywords_set, shared_list ) ),
         Process( target=get_items_opensubtitles, args = ( opts.name, opts.maxnum, keywords_set, shared_list ) ) ]
     for process in jobs: process.start( )
     for process in jobs: process.join( )

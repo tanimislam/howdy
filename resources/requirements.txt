@@ -30,6 +30,7 @@ requests
 rsa
 six
 SQLAlchemy
+termcolor
 titlecase
 validators
 youtube_dl

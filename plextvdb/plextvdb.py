@@ -563,7 +563,7 @@ def _get_remaining_eps_perproc( input_tuple ):
     tuples_to_get = tvdb_eps - here_eps
     if len( tuples_to_get ) == 0: return None
     tuples_to_get_act = list(map(lambda tup: tvdb_eps_dict[ tup ], tuples_to_get ) )
-    print( 'finished processing %s in %0.3f seconds.' % ( name, time.time( ) - time0 ) )
+    logging.debug( 'finished processing %s in %0.3f seconds.' % ( name, time.time( ) - time0 ) )
     return name, sorted( tuples_to_get_act, key = lambda tup: (tup[0], tup[1]))
 
 def _get_series_id_perproc( input_tuple ):

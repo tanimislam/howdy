@@ -19,33 +19,29 @@ def send_email_movie_torrent( movieName, data, isJackett = False):
     msg['Subject'] = 'Tanim, can you download this movie, %s, requested on %s?' % (
         movieName, dtstring )
     if not isJackett:
-        torfile = '%s.torrent' % '_'.join( movieName.split( ) ) 
-        tup_formatting = ( '%s.' % torfile, '%s.' % dtstring )                           
+        torfile = '%s.torrent' % '_'.join( movieName.split( ) ) # change to get to work
+        torfile_mystr = '%s.torrent' % '\_'.join( movieName.split( ) ) # change to get to work
+        #
+        tup_formatting = ( '%s.' % torfile_mystr, '%s.' % dtstring )
         wholestr = open( os.path.join( mainDir, 'resources',
                                        'plextmdb_sendmovie_torrent.tex' ), 'r' ).read( )
         wholestr = wholestr % tup_formatting
         htmlString = plexcore.latexToHTML( wholestr )
-        htmlString = unicode( htmlString.replace('strong>', 'B>') )
+        htmlString = htmlString.replace('strong>', 'B>')
         body = MIMEText( htmlString, 'html', 'utf-8' )
         att = MIMEApplication( data, _subtype = 'torrent' )
         att.add_header( 'content-disposition', 'attachment', filename = torfile )
         msg.attach( body )
         msg.attach( att )
     else:
-        tree = lxml.html.fromstring( requests.get( data ).content )
-        mag_elems = filter(lambda elem: 'href' in elem.keys() and
-                           elem.get('href').startswith('magnet:'),
-                           tree.iter('a'))
-        if len(mag_elems) == 0:
-            return 'FALURE, COULD FIND NO MAGNET LINKS FOR %s.' % movieName
-        mag_link = mag_elems[0].get('href').strip()
+        mag_link = data
         wholestr = open( os.path.join( mainDir, 'resources',
                                        'plextmdb_sendmovie_magnet.tex' ), 'r' ).read( )
         wholestr = wholestr.replace('ZZZZ', dtstring )
         htmlString = plexcore.latexToHTML( wholestr )
         htmlString = htmlString.replace('XXXX', mag_link )
         htmlString = htmlString.replace('YYYY', movieName )
-        htmlString = unicode( htmlString.replace('strong>', 'B>') )
+        htmlString = htmlString.replace('strong>', 'B>')
         body = MIMEText( htmlString, 'html', 'utf-8' )
         msg.attach( body )
     #
@@ -66,7 +62,7 @@ def send_email_movie_none( movieName ):
     wholestr = wholestr.replace('XXXX', movieName )
     wholestr = wholestr.replace('YYYY', dtstring )
     htmlString = plexcore.latexToHTML( wholestr )
-    htmlString = unicode( htmlString.replace('strong>', 'B>') )
+    htmlString = htmlString.replace('strong>', 'B>')
     body = MIMEText( htmlString, 'html', 'utf-8' )
     msg.attach( body )
     #

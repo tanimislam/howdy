@@ -16,6 +16,7 @@ KickassAPI
 ThePirateBay
 lxml
 matplotlib
+musicbrainzngs
 mutagen
 numpy
 oauth2client

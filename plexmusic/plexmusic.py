@@ -1,5 +1,6 @@
-import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2, json
-import requests, youtube_dl, gmusicapi, datetime
+import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2, json, logging
+import requests, youtube_dl, gmusicapi, datetime, musicbrainzngs, time
+import pathos.multiprocessing as multiprocessing
 from contextlib import contextmanager
 from googleapiclient.discovery import build
 from PIL import Image
@@ -8,6 +9,100 @@ from urllib.parse import urljoin
 from . import mainDir, pygn, parse_youtube_date, format_youtube_date
 from plexcore import plexcore, baseConfDir, session, PlexConfig
 from sqlalchemy import Integer, String, Column
+
+#
+## get all the tracks, by order, of all the official albums of an artist.
+## this is not tested all that much, but perhaps it is useful to some people
+class MusicInfo( object ):
+
+    @classmethod
+    def get_artist_datas_LL( cls, artist_name, min_score = 100, do_strict = True ):
+        assert( min_score <= 100 and min_score >= 0 )
+        adata = list(filter(lambda entry: int(entry['ext:score']) >= min_score,
+                            musicbrainzngs.search_artists(
+                                artist=artist_name, strict = do_strict )['artist-list'] ) )
+        return adata
+
+    
+    def __init__( self, artist_name ):
+        time0 = time.time( )
+        #
+        ## first get out artist MBID, called ambid, with score = 100
+        adata = MusicInfo.get_artist_datas_LL( artist_name, min_score = 100 )
+        if len(adata) == 0:
+            raise ValueError( 'Could not find artist = %s in MusicBrainz.' % artist_name )
+        self.artist = adata[ 0 ]
+        self.ambid = self.artist[ 'id' ]
+        self.artist_name = artist_name
+        logging.debug('found artist %s with artist mbid = %s.' % (
+            artist_name, self.ambid ) )
+        rgdata = self.get_albums_lowlevel( )
+        albums = list( filter(lambda dat: dat['type'] == 'Album', rgdata ) )
+        with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
+            self.alltrackdata = dict(
+                pool.map( self.get_album_info, albums  ) )
+        logging.debug( 'processed %d albums for %s in %0.3f seconds.' % (
+            len( self.alltrackdata ), artist_name, time.time( ) - time0 ) )
+        
+    #
+    ## now get all the albums of this artist.
+    ## musicbrainz probably does a "make functionality so general that easy use cases
+    ## are much harder than expected" implementation.
+    ##
+    ## first, get all the release-groups of the artist
+    def get_albums_lowlevel( self ):
+        rgdata = musicbrainzngs.get_artist_by_id(
+            self.ambid, includes='release-groups',
+            release_type=['album'] )['artist']['release-group-list']
+        return rgdata
+
+    def get_album_info( self, album ):
+        time0 = time.time( )
+        rgid = album['id']
+        rgdate = album['first-release-date']
+        rtitle = album['title']
+        rgdate_date = None
+        for fmt in ( '%Y-%m-%d', '%Y-%m', '%Y' ):
+            try:
+                rgdata_date = datetime.datetime.strptime(
+                    rgdate, fmt ).date( )
+            except: pass
+        if rgdate is None:
+            print("Error, could not find correct release info for %s because no date defined." % rtitle )
+            return None
+        rdata = musicbrainzngs.get_release_group_by_id( rgid, includes=['releases'] )[
+            'release-group']['release-list']
+        try:
+            release = list(filter(lambda dat: 'date' in dat and dat['date'] == rgdate, rdata ) )
+            if len( release ) == 0:
+                logging.debug("Error, could not find correct release info for %s." % rtitle )
+                return None
+            release = release[ 0 ]
+        except Exception as e:
+            logging.debug("Error, could not find correct release info for %s." % rtitle )
+            return None
+        rid = release['id']
+        trackinfo = musicbrainzngs.get_release_by_id( rid, includes = ['recordings'] )[
+            'release']['medium-list']
+        #
+        ## collapse multiple discs into single disk with more tracknumbers
+        track_counts = list(map(lambda cd_for_track: cd_for_track['track-count'], trackinfo))
+        act_counts = numpy.concatenate([ [ 0, ], numpy.cumsum( track_counts ) ])
+        albumdata = { 'release-date' : rgdata_date }
+        albumdata[ 'tracks' ] = { }
+        alltracknos = set(range(1, 1 + act_counts[-1]))
+        for idx, cd_for_track in enumerate( trackinfo ):
+            assert( len( cd_for_track[ 'track-list' ]) == cd_for_track[ 'track-count' ] )
+            for track in cd_for_track[ 'track-list' ]:
+                try: number = int( track[ 'position' ] )
+                except:
+                    logging.debug( 'error, track = %s does not have defined position.' % track )
+                    return None
+                title = track[ 'recording' ][ 'title' ]
+                albumdata[ 'tracks' ][ act_counts[ idx ] + number ] = title
+        assert( set( albumdata[ 'tracks' ] ) == alltracknos )
+        logging.debug( 'processed %s in %0.3f seconds.' % ( rtitle, time.time( ) - time0 ) )
+        return rtitle, albumdata
 
 @contextmanager
 def gmusicmanager( useMobileclient = False ):
@@ -209,6 +304,19 @@ class PlexLastFM( object ):
         self.username = data[ 'username' ]
         self.endpoint = 'http://ws.audioscrobbler.com/2.0'
 
+    def get_collection_album_info( self, album_name ):
+        response = requests.get( self.endpoint,
+                                 params = { 'method' : 'album.search',
+                                            'album' : album_name,
+                                            'api_key' : self.api_key,
+                                            'format' : 'json',
+                                            'lang' : 'en' } )
+        data = response.json( )
+        if 'error' in data:
+            return None, "ERROR: %s" % data['message']
+        return data, 'SUCCESS'
+        
+        
     def get_album_info( self, artist_name, album_name ):
         response = requests.get( self.endpoint,
                                  params = { 'method' : 'album.getinfo',

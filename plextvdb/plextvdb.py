@@ -546,6 +546,30 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
              'episode_number_length' : max_eps_len,
              'avg_length_mins' : avg_length_secs // 60 }
 
+def get_all_series_didend( tvdata, verify = True ):
+    with multiprocessing.Pool(
+            processes = multiprocessing.cpu_count( ) ) as pool:
+        date_now = datetime.datetime.now( ).date( )
+        token = get_token( verify = verify )  
+        tvshow_id_map = dict(filter(
+            lambda tup: tup is not None,
+            pool.map(lambda seriesName: (
+                seriesName, get_series_id( seriesName, token, verify = verify ) ),
+                     tvdata ) ) )
+        tvshows_notfound = set( tvdata ) - set( tvshow_id_map )
+        tvid_didend_map = dict(filter(
+            lambda tup: tup is not None,
+            pool.map(lambda seriesName: (
+                tvshow_id_map[ seriesName ],
+                did_series_end( tvshow_id_map[ seriesName ], token, verify = verify,
+                                date_now = date_now ) ),
+                     tvshow_id_map ) ) )
+        didend_map = { seriesName : tvid_didend_map[ tvshow_id_map[ seriesName ] ] for
+                       seriesName in tvshow_id_map }
+        for seriesName in tvshows_notfound:
+            didend_map[ seriesName ] = True
+        return didend_map                                
+    
 def _get_remaining_eps_perproc( input_tuple ):
     name, series_id, epsForShow, token, showSpecials, fromDate, verify = input_tuple
     time0 = time.time( )

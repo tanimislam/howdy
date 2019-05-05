@@ -73,18 +73,15 @@ class TMDBMyGUI( QWidget ):
         self.movieLineEdit.textChanged.connect( self.myTableView.tm.setFilterString )            
         #
         ##
-        self.fill_out_movies( movie_data_rows )
-        #
-        ##
-        self.show( )
-
-    def fill_out_movies( self, movie_data_rows ):
         genres = sorted( set( map(lambda row: row[-3], movie_data_rows ) ) )
         self.genreComboBox.addItems( genres )
         self.genreComboBox.addItem( 'ALL' )
         self.genreComboBox.setCurrentIndex( len( genres ) )
         self.myTableView.tm.filloutMyMovieData( movie_data_rows )
         self.myTableView.tm.setFilterStatus( str( self.genreComboBox.currentText( ) ) )
+        #
+        ##
+        self.show( )
 
     def setGenreStatus( self, genre, num ):
         if genre == 'ALL':

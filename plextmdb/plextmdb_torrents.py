@@ -2,7 +2,8 @@ import threading, requests, fuzzywuzzy, re, os, time
 from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
 from requests.compat import urljoin
-from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials, get_formatted_size
+from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials
+from plexcore import plexcore
 from . import plextmdb
 
 def _return_error_raw( msg ): return None, msg
@@ -17,7 +18,9 @@ def get_movie_torrent_jackett( name, maxnum = 10 ):
     response = requests.get( urljoin( url, endpoint ),
                              params = { 'apikey' : apikey, 'q' : name } ) # movies, no category filtering
     if response.status_code != 200:
-        return _return_error_raw( 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url )
+        return _return_error_raw(
+            ' '.join([ 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url,
+                       'ERROR CODE = %d. ERROR DATA = %s.' % ( response.status_code, response.content ) ] ) )
     html = BeautifulSoup( response.content, 'lxml' )
     if len( html.find_all('item') ) == 0:
         return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
@@ -66,9 +69,9 @@ def get_movie_torrent_jackett( name, maxnum = 10 ):
             myitem[ 'title' ] = '%s (%0.1f MiB)' % ( title, torrent_size )
         myitem[ 'torrent_size' ] = torrent_size
         items.append( myitem )
-        if len( items ) == 0:
-            return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
-        return items[:maxnum], 'SUCCESS'
+    if len( items ) == 0:
+        return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
+    return items[:maxnum], 'SUCCESS'
 
 def get_movie_torrent_zooqle( name, maxnum = 10 ):
     assert( maxnum >= 5 )
@@ -122,12 +125,14 @@ def get_movie_torrent_zooqle( name, maxnum = 10 ):
         valid_elm = valid_elm[ 0 ]
         return valid_elm.get_text( ).lower( )
     
-    items_toshow = list( map(lambda elem: { 'title' : '%s (%s)' % ( max( elem.find_all('title' ) ).get_text( ),
-                                                                    get_formatted_size( get_num_forelem( elem, 'contentlength' ) ) ),
-                                            'seeders' : get_num_forelem( elem, 'seeds' ),
-                                            'leechers' : get_num_forelem( elem, 'peers' ),
-                                            'link' : _get_magnet_link( get_infohash( elem ),
-                                                                       max( elem.find_all('title' ) ).get_text( ) ) },
+    items_toshow = list( map(lambda elem: {
+        'title' : '%s (%s)' % (
+            max( elem.find_all('title' ) ).get_text( ),
+            plexcore.get_formatted_size( get_num_forelem( elem, 'contentlength' ) ) ),
+        'seeders' : get_num_forelem( elem, 'seeds' ),
+        'leechers' : get_num_forelem( elem, 'peers' ),
+        'link' : _get_magnet_link( get_infohash( elem ),
+                                   max( elem.find_all('title' ) ).get_text( ) ) },
                        cand_items ) )
     if len( items_toshow ) == 0:
         return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
@@ -174,7 +179,7 @@ def get_movie_torrent_rarbg( name, maxnum = 10 ):
         return 1
     def get_title( elem ):
         if 'size' in elem:
-            return '%s (%s)' % ( elem['title'], get_formatted_size( elem[ 'size' ] ) )
+            return '%s (%s)' % ( elem['title'], plexcore.get_formatted_size( elem[ 'size' ] ) )
         return '%s ()' % elem['title']
     actdata = list( map(lambda elem: { 'title' : get_title( elem ),
                                        'seeders' : get_num_seeders( elem ),

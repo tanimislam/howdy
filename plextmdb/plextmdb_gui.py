@@ -99,23 +99,23 @@ class TMDBMovieInfo( QDialog ):
         result = tmdbt.exec_( )
 
 class TMDBRadioButton( QRadioButton ):
-    def __init__( self, text, value, parent = None ):
+    def __init__( self, text, value = None, parent = None ):
         super( TMDBRadioButton, self ).__init__( text, parent = parent )
-        self.value = value
+        if value is not None: self.value = value
+        else: self.value = text
         
 class TMDBTorrents( QDialog ):
     def screenGrab( self ):
         fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
                                                   os.path.expanduser( '~' ),
                                                   filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
+        if len( os.path.basename( fname.strip( ) ) ) == 0: return
+        if not fname.lower( ).endswith( '.png' ): fname = '%s.png' % fname
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
-            
-    def __init__( self, parent, token, movie_name, bypass = False, maxnum = 10 ):
+    
+    def __init__( self, parent, token, movie_name, bypass = False, maxnum = 10,
+                  do_debug = False ):
         super( TMDBTorrents, self ).__init__( parent )
         self.setModal( True )
         self.token = token
@@ -130,12 +130,12 @@ class TMDBTorrents( QDialog ):
         mainLayout = QVBoxLayout( )
         self.setLayout( mainLayout )
         self.torrentStatus = -1
+        self.do_debug = do_debug
         #
         ##
         if not bypass:
             data, status = plextmdb_torrents.get_movie_torrent( movie_name )
-        else:
-            status = 'FALURE'
+        else: status = 'FALURE'
         if status == 'SUCCESS':
             self.torrentStatus = 0
             self.data = { }
@@ -153,11 +153,11 @@ class TMDBTorrents( QDialog ):
                                              TMDBRadioButton( name, name, self ),
                                              sorted( self.data.keys( ) ) ) )
             self.statusLabel.setText( 'SUCCESS' )
-        else:
+        else: # now use Jackett for downloading movies
             #data, status = plextmdb.get_movie_torrent_kickass( movie_name, maxnum = maxnum )
-            data, status = plextmdb_torrents.get_movie_torrent_tpb( movie_name, maxnum = maxnum, doAny = False )
-            if status != 'SUCCESS':
-                data, status = plextmdb_torrents.get_movie_torrent_rarbg( movie_name, maxnum = maxnum )
+            #data, status = plextmdb_torrents.get_movie_torrent_rarbg( movie_name, maxnum = maxnum )
+            data, status = plextmdb_torrents.get_movie_torrent_jackett(
+                movie_name, maxnum = maxnum )
             if status == 'SUCCESS':
                 self.torrentStatus = 1
                 self.data = { }
@@ -170,9 +170,7 @@ class TMDBTorrents( QDialog ):
                     self.data[ name ] = ( seeders, leechers, link )
                 self.allRadioButtons = list(
                     map(lambda name:
-                        TMDBRadioButton( '%s ( %d, %d )' % ( name, self.data[ name ][0],
-                                                             self.data[ name ][1] ),
-                                         name, self ),
+                        TMDBRadioButton( name, name, self ),
                         sorted( self.data.keys( ),
                                 key = lambda nm: sum( self.data[nm][:2] ) ) ) )
                 self.statusLabel.setText( 'SUCCESS' )
@@ -248,7 +246,8 @@ class TMDBTorrents( QDialog ):
                                            self.allRadioButtons ) ) )
         if self.torrentStatus == 0:
             jsondata['movie'] = whichChosen
-            jsondata['data'] = base64.b64encode( self.data[ whichChosen ] )
+            jsondata['data'] = base64.b64encode(
+                self.data[ whichChosen ] ).decode('utf-8')
         elif self.torrentStatus == 1:
             _, _, url = self.data[ whichChosen ]
             jsondata[ 'movie' ] = self.movie
@@ -256,13 +255,18 @@ class TMDBTorrents( QDialog ):
         else:
             jsondata[ 'movie' ] = self.movie
 
-        response = requests.post( 'https://tanimislam.ddns.net/flask/plex/sendmovieemail',
-                                  json = jsondata )
+        if self.do_debug:
+            json.dump(
+                jsondata, open(
+                    '%s.json' % '_'.join( os.path.basename( self.movie ).split( ) ), 'w' ) )
+
+        response = requests.post(
+            'https://tanimislam.ddns.net/flask/plex/sendmovieemail', json = jsondata )
         if response.status_code == 200:
-            self.statusLabel.setText( 'SENT REQUEST FOR %s' % jsondata['movie'] )
+            self.statusLabel.setText( 'sent request for "%s"' % jsondata['movie'] )
         else:
-            message = response.json()['message']
-            self.statusLabel.setText( 'ERROR: %s' % message )
+            # message = response.json()['message']
+            self.statusLabel.setText( 'ERROR: %s' % response.content )
 
     def chooseDownloadTorrent( self ):
         if self.torrentStatus not in ( 0, 1 ):

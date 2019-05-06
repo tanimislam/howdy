@@ -73,15 +73,19 @@ class TMDBMyGUI( QWidget ):
         self.movieLineEdit.textChanged.connect( self.myTableView.tm.setFilterString )            
         #
         ##
+        self.fill_out_movies( movie_data_rows )
+        #
+        ##
+        self.show( )
+
+    def fill_out_movies( self, movie_data_rows ):
         genres = sorted( set( map(lambda row: row[-3], movie_data_rows ) ) )
         self.genreComboBox.addItems( genres )
         self.genreComboBox.addItem( 'ALL' )
         self.genreComboBox.setCurrentIndex( len( genres ) )
         self.myTableView.tm.filloutMyMovieData( movie_data_rows )
         self.myTableView.tm.setFilterStatus( str( self.genreComboBox.currentText( ) ) )
-        #
-        ##
-        self.show( )
+        
 
     def setGenreStatus( self, genre, num ):
         if genre == 'ALL':
@@ -238,11 +242,9 @@ class MyMovieTableModel( QAbstractTableModel ):
         ## color background role
         if role == Qt.BackgroundRole:
             popularity = self.myMovieData[ row ][ 1 ]
-            h = popularity * 0.095
-            h = min( h, 0.995 )
-            h = max( h, 0.005 )
-            s = 0.2
-            v = 1.0
+            h = min( 1.0, popularity * 0.1 ) * ( 0.81 - 0.55 ) + 0.55
+            s = 0.85
+            v = 0.31
             alpha = 1.0
             color = QColor( 'white' )
             color.setHsvF( h, s, v, alpha )
@@ -274,10 +276,10 @@ class MyMovieTableModel( QAbstractTableModel ):
         myLayout.addWidget( QLabel( 'POPULARITY: %0.3f' % popularity ) )
         qte = QTextEdit( full_info )
         qte.setReadOnly( True )
-        qte.setStyleSheet("""
-        QTextEdit {
-        background-color: %s;
-        }""" % mainColor.name( ) )
+        # qte.setStyleSheet("""
+        # QTextEdit {
+        # background-color: %s;
+        # }""" % mainColor.name( ) )
         qte.setFrameStyle( QFrame.NoFrame )
         myLayout.addWidget( qte )
         #

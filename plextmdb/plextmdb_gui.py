@@ -66,10 +66,10 @@ class TMDBMovieInfo( QDialog ):
         myLayout.addWidget( QLabel( 'POPULARITY: %0.3f' % popularity ) )
         qte = QTextEdit( full_info )
         qte.setReadOnly( True )
-        qte.setStyleSheet("""
-        QTextEdit {
-        background-color: %s;
-        }""" % mainColor.name( ) )
+        # qte.setStyleSheet("""
+        # QTextEdit {
+        # background-color: %s;
+        # }""" % mainColor.name( ) )
         qte.setFrameStyle( QFrame.NoFrame )
         myLayout.addWidget( qte )
         if movie_full_path is not None:
@@ -172,7 +172,7 @@ class TMDBTorrents( QDialog ):
                     map(lambda name:
                         TMDBRadioButton( name, name, self ),
                         sorted( self.data.keys( ),
-                                key = lambda nm: sum( self.data[nm][:2] ) ) ) )
+                                key = lambda nm: sum( self.data[nm][:2] ) )[::-1] ) )
                 self.statusLabel.setText( 'SUCCESS' )
             else:
                 self.torrentStatus = 2
@@ -218,19 +218,16 @@ class TMDBTorrents( QDialog ):
         whichChosen = max( map(lambda qbut: qbut.value,
                                filter( lambda qbut: qbut.isChecked( ),
                                        self.allRadioButtons ) ) )
-        size, url = self.data[ whichChosen ]
+        numSeeds, numLeeches, url = self.data[ whichChosen ]
         qdl = QDialog( self )
         mainColor = qdl.palette().color( QPalette.Background )
         qlayout = QVBoxLayout( )
         qte = QTextEdit( textwrap.fill( 'URL: %s' % url ) )
-        qte.setStyleSheet("""
-        QTextEdit {
-        background-color: %s;
-        }""" % mainColor.name( ) )
         qte.setReadOnly( True )
         qdl.setLayout( qlayout )
         qdl.setWindowTitle( whichChosen )
-        qlayout.addWidget( QLabel( 'SIZE: %0.2f MB' % size ) )
+        qlayout.addWidget( QLabel( 'SEEDS + LEECHES: %d' % (
+            numSeeds + numLeeches ) ) )
         qlayout.addWidget( qte )
         qdl.setFixedWidth( qdl.sizeHint( ).width( ) )
         qdl.setFixedHeight( qdl.sizeHint( ).height( ) )
@@ -419,10 +416,10 @@ class StatusDialogWidget( QWidget ):
             #
             qte = QTextEdit('\n'.join([ '%d movies in library\n\n' % len( movieList ),
                                         '\n'.join(movieList) ]) )
-            qte.setStyleSheet("""
-            QTextEdit {
-            background-color: %s;
-            }""" % self.palette().color( QPalette.Background ).name( ) )
+            # qte.setStyleSheet("""
+            # QTextEdit {
+            # background-color: %s;
+            # }""" % self.palette().color( QPalette.Background ).name( ) )
             qte.setReadOnly( True )
             myLayout = QVBoxLayout( )
             self.setLayout( myLayout )
@@ -527,10 +524,10 @@ class StatusDialogWidget( QWidget ):
             qfm = QFontMetrics( qf )
             qte.setFixedWidth( 60 * qfm.width( 'A' ) )
             qte.setReadOnly( True )
-            qte.setStyleSheet("""
-            QTextEdit {
-            background-color: %s;
-            }""" % colr.name( ) )
+            # qte.setStyleSheet("""
+            # QTextEdit {
+            # background-color: %s;
+            # }""" % colr.name( ) )
             myLayout.addWidget( qte )
             dlg.setFixedWidth( dlg.sizeHint( ).width( ) )
             dlg.setFixedHeight( 450 )
@@ -876,18 +873,16 @@ class TMDBTableModel( QAbstractTableModel ):
             isFound = self.actualMovieData[ row ][ -1 ]
             if not isFound:
                 popularity = self.actualMovieData[ row ][ 2 ]
-                h = numpy.log10( min( 100.0, popularity ) ) * 0.25
-                h = min( h, 0.995 )
-                h = max( h, 0.005 )
-                s = 0.2
-                v = 1.0
-                alpha = 1.0
+                h = min(1.0, numpy.log10( min( 100.0, popularity ) ) * 0.25 ) * (
+                    0.81 - 0.55 ) + 0.55
+                s = 0.85
+                v = 0.31
                 color = QColor( 'white' )
-                color.setHsvF( h, s, v, alpha )
+                color.setHsvF( h, s, v, 1.0 )
                 return QBrush( color )
             else:
                 color = QColor( 'white' )
-                color.setHsvF( 0.75, 0.15, 1.0, 1.0 )
+                color.setHsvF( 0.45, 0.85, 0.31, 1.0 )
                 return QBrush( color )
         elif role == Qt.DisplayRole:
             if col in (0, 2, 3):

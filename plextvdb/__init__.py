@@ -1,4 +1,3 @@
-# resource file
 import os, requests, json, sys
 from sqlalchemy import Column, String
 mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
@@ -55,6 +54,5 @@ def refresh_token( token, verify = True ):
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/refresh_token',
                              headers = headers, verify = verify )
-    if response.status_code != 200:
-        return None
+    if response.status_code != 200: return None
     return response.json( )['token']

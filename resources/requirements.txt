@@ -27,6 +27,7 @@ pypandoc
 python-Levenshtein
 pytz
 pyxdg
+qdarkstyle
 requests
 rsa
 six

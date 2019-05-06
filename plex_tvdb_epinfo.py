@@ -16,12 +16,12 @@ def main( ):
     parser.add_option('-j', '--jsonfile', type=str, action='store', dest='jsonfile', default = 'eps.json',
                       help = 'Name of the JSON file into which to store the episode information. Default is eps.json.' )
     opts, args = parser.parse_args( )
-    assert( opts.show is not None ), "ERROR, SHOW NAME NOT DEFINED."
-    assert( opts.jsonfile.endswith('.json' ) ), "ERROR, JSON FILE DOES NOT END WITH JSON."
+    assert( opts.show is not None ), "error, show name not defined."
+    assert( opts.jsonfile.endswith('.json' ) ), "error, JSON file does not end with json."
     #
     client, status = plexcore_deluge.get_deluge_client( )
     if status != 'SUCCESS':
-        print( "ERROR, COULD NOT FIND REMOTE SERVER TO PUSH SERIES INFO.")
+        print( "error, could not find remote server to push series info.")
         return
     username = client.username
     server = client.host
@@ -29,7 +29,7 @@ def main( ):
     ## now get episode information
     try: epdicts = plextvdb.get_tot_epdict_tvdb( opts.show.strip( ) )
     except Exception as e:
-        print( "ERROR, COULD NOT GET SHOW %s." % opts.show.strip( ) )
+        print( "error, could not get show %s." % opts.show.strip( ) )
         return
     epdicts_sub = { seasno : {
         epno : epdicts[seasno][epno][0] for epno in epdicts[seasno] } for seasno in epdicts }

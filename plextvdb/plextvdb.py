@@ -300,7 +300,7 @@ def get_series_image( series_id, token, verify = True ):
         params = { 'keyType' : 'poster' }
         if 'resolution' in poster_one and len( poster_one['resolution'] ) != 0:
             params['resolution'] = poster_one['resolution'][0]
-        response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
+        response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % series_id,
                                  headers = headers, params = params, verify = verify )
         if response.status_code == 200:
             data = response.json( )['data']
@@ -315,7 +315,7 @@ def get_series_image( series_id, token, verify = True ):
         params = { 'keyType' : 'fanart' }
         if 'resolution' in fanart_one and len( fanart_one['resolution'] ) != 0:
             params['resolution'] = fanart_one['resolution'][0]
-        response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
+        response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % series_id,
                                  headers = headers, params = params, verify = verify )
         if response.status_code == 200:
             data = response.json( )['data']
@@ -329,7 +329,7 @@ def get_series_image( series_id, token, verify = True ):
         params = { 'keyType' : 'series' }
         if 'resolution' in series_one and len( series_one['resolution'] ) != 0:
             params['resolution'] = series_one['resolution'][0]
-        response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % self.seriesId,
+        response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % series_id,
                                  headers = headers, params = params, verify = verify )
         if response.status_code == 200:
             data = response.json( )['data']
@@ -348,11 +348,14 @@ def get_series_season_image( series_id, airedSeason, token, verify = True ):
     data = response.json( )['data']
     #
     ## look for season keytype
-    season_ones = list( filter(lambda elem: 'keyType' in elem.keys( ) and elem['keyType'] == 'season' and
-                               'subKey' in elem and '%d' % airedSeason in elem['subKey'], data ) )
+    season_ones = list( filter(lambda elem: 'keyType' in elem.keys( ) and
+                               elem['keyType'] == 'season' and
+                               'subKey' in elem and
+                               '%d' % airedSeason in elem['subKey'], data ) )
     if len( season_ones ) == 0:
         return None, "COULD NOT FIND SEASON IMAGE FOR SERIES_ID = %d AND SEASON = %d" % (
             series_id, airedSeason )
+    season_one = season_ones[ 0 ]
     #
     ## now get that image for season
     params = { 'keyType' : 'season', 'subKey' : '%d' % airedSeason }
@@ -522,7 +525,8 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
             prefix, season_dir = os.path.split( prefix )
             season_prefix_dict = dict(map(lambda seasno: ( seasno, season_dir ),
                                           tvdata[ tvshow ] ) )            
-    elif len( extra_season_ep_columns ) == 2: # go through each season, assert that all eps in a given season are in a single directory
+    # go through each season, assert that all eps in a given season are in a single directory    
+    elif len( extra_season_ep_columns ) == 2:
         season_col = extra_season_ep_columns[ 0 ]
         for seasno in tvdata[ tvshow ]:
             season_dir = set(map(lambda epno: splitall( tvdata[tvshow][seasno][epno]['path'])[ season_col ],
@@ -849,11 +853,11 @@ def get_tot_epdict_tvdb( showName, verify = True, showSpecials = False, showFutu
         title = episode[ 'episodeName' ]
         try:
             firstAired_s = episode[ 'firstAired' ]
-            firstAired = datetime.datetime.strptime( firstAired_s,
-                                                     '%Y-%m-%d' ).date( )
+            firstAired = datetime.datetime.strptime(
+                firstAired_s, '%Y-%m-%d' ).date( )
         except:
-            firstAired = datetime.datetime.strptime('1900-01-01',
-                                                    '%Y-%m-%d' ).date( )
+            firstAired = datetime.datetime.strptime(
+                '1900-01-01', '%Y-%m-%d' ).date( )
         tot_epdict.setdefault( seasnum, { } )
         tot_epdict[ seasnum ][ epno ] = ( title, firstAired )
     return tot_epdict
@@ -865,22 +869,15 @@ def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):
     #
     def is_epelem(elem):
         if elem.tag == 'span':
-            if 'class' not in elem.keys():
-                return False
-            if 'id' not in elem.keys():
-                return False
-            if elem.get('class') != 'mw-headline':
-                return False
-            if 'Season' not in elem.get('id'):
-                return False
+            if 'class' not in elem.keys(): return False
+            if 'id' not in elem.keys(): return False
+            if elem.get('class') != 'mw-headline': return False
+            if 'Season' not in elem.get('id'): return False
             return True
         elif elem.tag == 'td':
-            if 'class' not in elem.keys():
-                return False
-            if 'style' not in elem.keys():
-                return False
-            if elem.get('class') != 'summary':
-                return False
+            if 'class' not in elem.keys(): return False
+            if 'style' not in elem.keys(): return False
+            if elem.get('class') != 'summary': return False
             return True
         return False
     #

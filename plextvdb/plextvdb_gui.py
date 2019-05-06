@@ -1,20 +1,27 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import os, sys, numpy, glob, datetime, time
-import multiprocessing, logging
+import multiprocessing, logging, requests
 from PIL import Image
-from io import StringIO
-from . import plextvdb, get_token, plextvdb_torrents, mainDir
+from io import BytesIO
+from . import plextvdb, mainDir
 from plexcore import plexcore
-from plextvdb import plextvdb
 
 class TVShow( object ):
-
+    
+    @classmethod
+    def _create_image( cls, imageURL ):
+        try:
+            response = requests.get( imageURL )
+            if response.status_code != 200: return None
+            return Image.open( BytesIO( response.content ) )
+        except: return None
+    
     @classmethod
     def _create_season( cls, input_tuple ):
-            seriesName, seriesId, token, season, verify, epdicts = input_tuple
-            return season, TVSeason( seriesName, seriesId, token, season, verify = verify,
-                                     epdicts = epdicts )
+        seriesName, seriesId, token, season, verify, eps = input_tuple
+        return season, TVSeason( seriesName, seriesId, token, season, verify = verify,
+                                 eps = eps )
     
     def _get_series_seasons( self, token, verify = True ):
         headers = { 'Content-Type' : 'application/json',
@@ -29,7 +36,7 @@ class TVShow( object ):
         return sorted( map(lambda tok: int(tok), data['airedSeasons'] ) )
         
     def __init__( self, seriesName, token, verify = True ):
-        self.seriesId = get_series_id( seriesName, token, verify = verify )
+        self.seriesId = plextvdb.get_series_id( seriesName, token, verify = verify )
         self.seriesName = seriesName
         if self.seriesId is None:
             raise ValueError("Error, could not find TV Show named %s." % seriesName )
@@ -37,32 +44,30 @@ class TVShow( object ):
         ## check if status ended
         self.statusEnded = plextvdb.did_series_end( self.seriesId, token, verify = verify )
         if self.statusEnded is None:
-             raise ValueError("Error, could not find whether TV Show named %s ended or not." %
-                              seriesName )
+            self.statusEnded = True # yes, show ended
+            #raise ValueError("Error, could not find whether TV Show named %s ended or not." %
+            #                 seriesName )
         #
         ## get Image URL and Image
         self.imageURL, status = plextvdb.get_series_image( self.seriesId, token, verify = verify )
-        self.img = None
-        if status == 'SUCCESS':
-            response = requests.get( self.imageURL )
-            if response.status_code == 200: 
-                self.img = Image.open( StringIO( response.content ) )
+        self.img = TVShow._create_image( self.imageURL )
+        
         #
         ## get every season defined
-        epdicts = plextvdb.get_episodes_series(
+        eps = plextvdb.get_episodes_series(
             self.seriesId, token, showSpecials = True,
-            fromdate = datetime.datetime.now( ).date( ),
-            verify = verify )
-        allSeasons = sorted( epdicts )
-        with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
-            input_tuples = map(lambda seasno: (
-                self.seriesName, self.seriesId, token, seasno, verify, epdicts ), allSeasons)
-            self.seasonDict = dict( filter(lambda seasno_tvseason: len( seasno_tvseason[1].episodes ) != 0,
-                                           pool.map( TVShow._create_season, input_tuples ) ) )
-            self.startDate = min(filter(None, map(lambda tvseason: tvseason.get_min_date( ),
-                                                  self.seasonDict.values( ) ) ) )
-            self.endDate = max(filter(None, map(lambda tvseason: tvseason.get_max_date( ),
-                                                self.seasonDict.values( ) ) ) )
+            showFuture = False, verify = verify )
+        allSeasons = sorted( set( map(lambda episode: int( episode['airedSeason' ] ), eps ) ) )
+        #with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
+        input_tuples = map(lambda seasno: (
+            self.seriesName, self.seriesId, token, seasno, verify, eps ), allSeasons)
+        self.seasonDict = dict(
+            filter(lambda seasno_tvseason: len( seasno_tvseason[1].episodes ) != 0,
+                   map( TVShow._create_season, input_tuples ) ) )
+        self.startDate = min(filter(None, map(lambda tvseason: tvseason.get_min_date( ),
+                                              self.seasonDict.values( ) ) ) )
+        self.endDate = max(filter(None, map(lambda tvseason: tvseason.get_max_date( ),
+                                            self.seasonDict.values( ) ) ) )
 
     def get_episode_name( self, airedSeason, airedEpisode ):
         if airedSeason not in self.seasonDict:
@@ -107,14 +112,18 @@ class TVSeason( object ):
     
     def get_max_date( self ):
         if self.get_num_episodes( ) == 0: return None            
-        return max(map(lambda epelem: epelem['airedDate'], self.episodes.values( ) ) )
+        return max(map(lambda epelem: epelem['airedDate'],
+                       filter(lambda epelem: 'airedDate' in epelem,
+                              self.episodes.values( ) ) ) )
 
     def get_min_date( self ):
         if self.get_num_episodes( ) == 0: return None
-        return min(map(lambda epelem: epelem['airedDate'], self.episodes.values( ) ) )
+        return min(map(lambda epelem: epelem['airedDate'],
+                       filter(lambda epelem: 'airedDate' in epelem,
+                              self.episodes.values( ) ) ) )
     
     def __init__( self, seriesName, seriesId, token, seasno, verify = True,
-                  epdicts = None ):
+                  eps = None ):
         self.seriesName = seriesName
         self.seriesId = seriesId
         self.seasno = seasno
@@ -124,22 +133,36 @@ class TVSeason( object ):
             self.seriesId, self.seasno, token, verify = verify )
         self.img = None
         if status == 'SUCCESS':
-            response = requests.get( self.imageURL )
-            if response.status_code == 200:
-                self.img = Image.open( StringIO( response.content ) )
-        
+            try:
+                response = requests.get( self.imageURL )
+                if response.status_code == 200:
+                    self.img = Image.open( BytesIO( response.content ) )
+            except: pass
         #
         ## now get the specific episodes for that season
-        if epdicts is None:
-            epdicts = plextvdb.get_episodes_series(
+        if eps is None:
+            eps = plextvdb.get_episodes_series(
                 self.seriesId, token, showSpecials = True,
-                fromdate = datetime.datetime.now( ).date( ),
-                verify = verify )
-        self.episodes = dict(map(
-            lambda episode: ( episode[ 'airedEpisodeNumber' ], episode ).
-            filter(lambda episode: episode[ 'airedSeason' ] == self.seasno,
-                   epdicts ) ) )
-
+                showFuture = False, verify = verify )
+        epelems = list(
+            filter(lambda episode: episode[ 'airedSeason' ] == self.seasno, eps ) )
+        self.episodes = { }
+        for epelem in epelems:
+            datum = {
+                'airedEpisodeNumber' : epelem[ 'airedEpisodeNumber' ],
+                'airedSeason' : self.seasno,
+                'title' : epelem[ 'episodeName' ].strip( )
+            }
+            try:
+                firstAired_s = epelem[ 'firstAired' ]
+                firstAired = datetime.datetime.strptime(
+                    firstAired_s, '%Y-%m-%d' ).date( )
+                datum[ 'airedDate' ] = firstAired
+            except: pass
+            if 'overview' in epelem: datum[ 'overview' ] = epelem[ 'overview' ]
+            self.episodes[ epelem[ 'airedEpisodeNumber' ] ] = datum            
+        maxep = max( self.episodes )
+        minep = min( self.episodes )            
 
 class TVDBGUI( QWidget ):
     mySignal = pyqtSignal( list )
@@ -193,7 +216,7 @@ class TVDBGUI( QWidget ):
             for seriesName in what_missing: did_end.pop( seriesName )
         self.did_end = did_end
         assert( set( self.did_end ) == set( self.tvdata_on_plex ) )
-        
+        #
         print('TVDBGUI: took %0.3f seconds to get tvdata_on_plex' %
               ( time.time( ) - time0 ) )
         self.token = token
@@ -206,12 +229,14 @@ class TVDBGUI( QWidget ):
         #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
+        self.refreshButton = QPushButton( "REFRESH TV SHOWS" )
         #
         topWidget = QWidget( )
-        topLayout = QHBoxLayout( )
+        topLayout = QGridLayout( )
         topWidget.setLayout( topLayout )
-        topLayout.addWidget( QLabel( 'TV SHOW FILTER' ) )
-        topLayout.addWidget( self.filterOnTVShows )
+        topLayout.addWidget( QLabel( 'TV SHOW FILTER' ), 0, 0, 1, 1 )
+        topLayout.addWidget( self.filterOnTVShows, 0, 1, 1, 3 )
+        topLayout.addWidget( self.refreshButton, 0, 4, 1, 3 )
         myLayout.addWidget( topWidget )
         myLayout.addWidget( self.tv )
         #
@@ -221,10 +246,11 @@ class TVDBGUI( QWidget ):
         font-family: Consolas;
         font-size: %d;
         }""" % ( int( 11 * 1.0 ) ) )
-        self.setFixedWidth( self.tv.frameGeometry( ).width( ) * 0.9 )
+        self.setFixedWidth( self.tv.frameGeometry( ).width( ) * 1.05 )
         #
         ## connect actions
         self.filterOnTVShows.textChanged.connect( self.tm.setFilterString )
+        # self.refreshButton.clicked.connect( self.refreshTVShows ) ## don't do this yet
         #
         ## global actions
         quitAction = QAction( self )
@@ -275,8 +301,9 @@ class TVDBShowsTableView( QTableView ):
         self.setColumnWidth(1, 120 )
         self.setColumnWidth(2, 120 )
         self.setColumnWidth(3, 120 )
-        self.setColumnWidth(4, 210 )
-        self.setFixedWidth( 1.05 * ( 210 * 2 + 120 * 4 ) )
+        self.setColumnWidth(4, 120 )
+        self.setColumnWidth(5, 120 )
+        self.setFixedWidth( 1.05 * ( 210 * 1 + 120 * 5 ) )
         toBotAction = QAction( self )
         toBotAction.setShortcut( 'End' )
         toBotAction.triggered.connect( self.scrollToBottom )
@@ -320,7 +347,7 @@ class TVDBShowsQSortFilterProxyModel( QSortFilterProxyModel ):
 
 class TVDBShowsTableModel( QAbstractTableModel ):
     _headers = [ "TV Series", "Start Date", "Last Date",
-                 "Seasons", "Tot Episodes So Far" ]
+                 "Seasons", "Episodes", "Missing" ]
     emitFilterChanged = pyqtSignal( )
     
     def __init__( self, parent = None ):
@@ -365,7 +392,7 @@ class TVDBShowsTableModel( QAbstractTableModel ):
         return len( self.actualTVSeriesData )
 
     def columnCount( self, parent ):
-        return 5
+        return 6
 
     def headerData( self, col, orientation, role ):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
@@ -430,8 +457,8 @@ class TVDBShowsTableModel( QAbstractTableModel ):
         ## color background role
         if role == Qt.BackgroundRole:
             if data[ 'didEnd' ]:
-                return QBrush( QColor( 'white' ) ) # change using cwheet to yellow-like
-            else: return QBrush( QColor( 'yellow' ) )
+                return QBrush( QColor( '#282a36' ) ) # change using cwheet to yellow-like
+            else: return QBrush( QColor( '#6272a4' ) )
         elif role == Qt.DisplayRole:
             if col == 0: # series name
                 return data[ 'seriesName' ]
@@ -441,5 +468,7 @@ class TVDBShowsTableModel( QAbstractTableModel ):
                 return data[ 'endDate' ].strftime('%Y %b %d')
             elif col == 3: # number of seasons
                 return data[ 'seasons' ]
-            elif col == 4: # number missing, number of eps
-                return "%d / %d" % ( data[ 'numMissing' ], data[ 'numEps' ] )
+            elif col == 4: # number of eps
+                return data[ 'numEps' ]
+            elif col == 5:
+                return data[ 'numMissing' ]

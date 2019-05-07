@@ -277,10 +277,10 @@ class MyMovieTableModel( QAbstractTableModel ):
         myLayout.addWidget( QLabel( 'POPULARITY: %0.3f' % popularity ) )
         qte = QTextEdit( full_info )
         qte.setReadOnly( True )
-        # qte.setStyleSheet("""
-        # QTextEdit {
-        # background-color: %s;
-        # }""" % mainColor.name( ) )
+        qte.setStyleSheet("""
+        QTextEdit {
+        background-color: #373949;
+        }""" )
         qte.setFrameStyle( QFrame.NoFrame )
         myLayout.addWidget( qte )
         #

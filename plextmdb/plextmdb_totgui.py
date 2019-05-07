@@ -19,13 +19,14 @@ class TMDBTotGUI( QWidget ):
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
     
-    def __init__( self, fullurl, token, movie_data_rows = None, doLarge = False ):
+    def __init__( self, fullurl, token, movie_data_rows = None, doLarge = False,
+                  verify = True ):
         super( TMDBTotGUI, self ).__init__( )
         self.resolution = 1.0
         if doLarge:
             self.resolution = 2.0
         self.setWindowTitle('PLEX MOVIE GUI')
-        tmdbEngine = plextmdb.TMDBEngine( )
+        tmdbEngine = plextmdb.TMDBEngine( verify = verify )
         self.fullurl = fullurl
         self.token = token
         self.setStyleSheet("""
@@ -35,9 +36,12 @@ class TMDBTotGUI( QWidget ):
         }""" % ( int( 11 * self.resolution ) ) )
         #
         if movie_data_rows is None:
-            movie_data_rows, _ = plexcore.fill_out_movies_stuff( self.token, fullurl = self.fullurl )
-        self.tmdb_gui = plextmdb_gui.TMDBGUI( token, fullurl, movie_data_rows, isIsolated = False )
-        self.tmdb_mygui = plextmdb_mygui.TMDBMyGUI( token, movie_data_rows, isIsolated = False )
+            movie_data_rows, _ = plexcore.fill_out_movies_stuff(
+                self.token, fullurl = self.fullurl )            
+        self.tmdb_gui = plextmdb_gui.TMDBGUI( token, fullurl, movie_data_rows, isIsolated = False,
+                                              verify = verify )
+        self.tmdb_mygui = plextmdb_mygui.TMDBMyGUI( token, movie_data_rows, isIsolated = False,
+                                                    verify = verify )
         self.tmdb_gui.movieRefreshRows.connect( self.tmdb_mygui.fill_out_movies )
         self.helpDialog = HelpDialog( self )
         self.statusDialog = QLabel( )

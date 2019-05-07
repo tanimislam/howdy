@@ -5,7 +5,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 #
 sys.path.append( mainDir )
-from plexcore import plexcore, plexcore_gui
+from plexcore import plexcore
 
 _headers = [ 'title', 'release date', 'popularity', 'rating', 'overview' ]
 
@@ -21,11 +21,12 @@ class TMDBMovieInfo( QDialog ):
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
     
-    def __init__( self, parent, currentRow ):
+    def __init__( self, parent, currentRow, verify = True ):
         super( TMDBMovieInfo, self ).__init__( parent )
         self.token = parent.token
         self.title = currentRow[ 0 ]
         self.setModal( True )
+        self.verify = verify
         #
         full_info = currentRow[ -3 ]
         movie_full_path = currentRow[ -2 ]
@@ -134,7 +135,8 @@ class TMDBTorrents( QDialog ):
         #
         ##
         if not bypass:
-            data, status = plextmdb_torrents.get_movie_torrent( movie_name )
+            data, status = plextmdb_torrents.get_movie_torrent(
+                movie_name, verify = parent.verify )
         else: status = 'FALURE'
         if status == 'SUCCESS':
             self.torrentStatus = 0
@@ -157,7 +159,7 @@ class TMDBTorrents( QDialog ):
             #data, status = plextmdb.get_movie_torrent_kickass( movie_name, maxnum = maxnum )
             #data, status = plextmdb_torrents.get_movie_torrent_rarbg( movie_name, maxnum = maxnum )
             data, status = plextmdb_torrents.get_movie_torrent_jackett(
-                movie_name, maxnum = maxnum )
+                movie_name, maxnum = maxnum, verify = parent.verify )
             if status == 'SUCCESS':
                 self.torrentStatus = 1
                 self.data = { }
@@ -179,7 +181,7 @@ class TMDBTorrents( QDialog ):
                 self.statusLabel.setText( 'FAILURE, COULD NOT FIND.' )
                 self.sendButton.setEnabled( False )
                 self.downloadButton.setEnabled( False )
-
+        #
         topWidget = QWidget( self )
         topLayout = QHBoxLayout( )
         topWidget.setLayout( topLayout )
@@ -301,9 +303,11 @@ class TMDBGUI( QWidget ):
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
     
-    def __init__( self, token, fullURL, movie_data_rows, isIsolated = True ):
+    def __init__( self, token, fullURL, movie_data_rows, isIsolated = True,
+                  verify = True ):
         super( TMDBGUI, self ).__init__( )
-        tmdbEngine = plextmdb.TMDBEngine( )
+        tmdbEngine = plextmdb.TMDBEngine( verify = verify )
+        self.verify = verify
         self.all_movies = [ ]
         self.token = token
         self.fullURL = fullURL
@@ -349,13 +353,14 @@ class TMDBGUI( QWidget ):
         self.movieSendList.connect( self.tmdbtv.tm.emitMoviesHere )
 
     def _connectSelectYearGenreWidget( self ):
-        self.sygWidget.mySignal.connect( self.tmdbtv.tm.setCurrentStatus )
+        self.sygWidget.mySignalSYG.connect( self.tmdbtv.tm.currentStatus )
+        self.sygWidget.mySignalAndFill.connect( self.tmdbtv.tm.currentStatusAndFill )
         self.sygWidget.pushDataButton.clicked.connect( self.tmdbtv.tm.fillOutCalculation )
         self.sygWidget.pushDataButton.clicked.connect( self.sdWidget.enableMatching )
         self.sygWidget.pushDataButton.clicked.connect( self.emitMovieList )
         self.sygWidget.refreshDataButton.clicked.connect( self.refreshMovies )
-        self.sygWidget.mySignal.connect( self.sdWidget.setYearGenre )
-        self.sygWidget.emitSignal( )
+        self.sygWidget.mySignalSYG.connect( self.sdWidget.setYearGenre )
+        self.sygWidget.emitSignalSYG( )
 
     def _connectStatusDialogWidget( self ):
         self.sdWidget.emitStatusToShow.connect( self.tmdbtv.tm.setFilterStatus )
@@ -450,11 +455,11 @@ class StatusDialogWidget( QWidget ):
         self.showStatusComboBox.setCurrentIndex( 2 )
         myLayout = QGridLayout( )
         self.setLayout( myLayout )
-        myLayout.addWidget( self.statusLabel, 0, 0, 2, 1 )
-        myLayout.addWidget( self.progressLabel, 0, 2, 1, 1 )
-        myLayout.addWidget( self.showStatusComboBox, 0, 3, 1, 1 )
-        myLayout.addWidget( QLabel( 'MOVIE NAME:' ), 1, 0, 1, 1 )
-        myLayout.addWidget( self.movieNameLineEdit, 1, 1, 1, 3 )
+        myLayout.addWidget( self.statusLabel, 0, 0, 2, 2 )
+        myLayout.addWidget( self.progressLabel, 0, 2, 2, 2 )
+        myLayout.addWidget( self.showStatusComboBox, 0, 4, 2, 2 )
+        myLayout.addWidget( QLabel( 'MOVIE NAME:' ), 2, 0, 1, 1 )
+        myLayout.addWidget( self.movieNameLineEdit, 2, 1, 1, 3 )
         #
         printAction = QAction( self )
         printAction.setShortcut( 'Shift+Ctrl+P' )
@@ -538,7 +543,8 @@ class StatusDialogWidget( QWidget ):
             result = dlg.exec_( )
         
 class SelectYearGenreWidget( QWidget ):
-    mySignal = pyqtSignal( int, tuple )
+    mySignalSYG = pyqtSignal( int, tuple )
+    mySignalAndFill = pyqtSignal( int, tuple )
 
     def screenGrab( self ):
         fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
@@ -568,7 +574,7 @@ class SelectYearGenreWidget( QWidget ):
         self.yearSpinBox.setValue( dtnow_year )
         self.yearSpinBox.setSingleStep( 1 )
         self.genreComboBox = QComboBox( self )
-        self.genreComboBox.addItems( sorted( plextmdb.TMDBEngine( ).getGenres( ) ) )
+        self.genreComboBox.addItems( sorted( plextmdb.TMDBEngine( parent.verify ).getGenres( ) ) )
         self.genreComboBox.setEditable( False )
         self.genreComboBox.setCurrentIndex( 0 )
         self.pushDataButton = QPushButton( 'GET MOVIES' )
@@ -623,13 +629,18 @@ class SelectYearGenreWidget( QWidget ):
         printAction.setShortcut( 'Shift+Ctrl+P' )
         printAction.triggered.connect( self.screenGrab )
         self.addAction( printAction )
+        self.isFinished = False
         #
-        self.yearSpinBox.valueChanged.connect( self.emitSignal )
-        self.genreComboBox.currentIndexChanged.connect( self.emitSignal )
+        self.yearSpinBox.valueChanged.connect( self.emitSignalSYG )
+        self.genreComboBox.currentIndexChanged.connect( self.emitSignalSYG )
         self.yearSpinBox.installEventFilter( self )
         self.genreComboBox.installEventFilter( self )
-        self.actorNamesLineEdit.returnPressed.connect( self.emitSignal )
-        self.movieNameLineEdit.returnPressed.connect( self.emitSignal )
+        #
+        ## now another signal but this time also fill TMDBDataModel
+        self.actorNamesLineEdit.returnPressed.connect( self.emitSignalAndFill )
+        self.actorNamesLineEdit.returnPressed.connect( self.parent.emitMovieList )
+        self.movieNameLineEdit.returnPressed.connect( self.emitSignalAndFill )
+        self.movieNameLineEdit.returnPressed.connect( self.parent.emitMovieList )
 
     def setEnabledState( self, qrb ):
         state = self.qbg.checkedId( )
@@ -645,22 +656,33 @@ class SelectYearGenreWidget( QWidget ):
         elif state == 2:
             self.movieNameLineEdit.setEnabled( True )
             
-    def emitSignal( self ):
+    def emitSignalSYG( self ):
         state = self.qbg.checkedId( )
         if state == 0:
             year = self.yearSpinBox.value( )
             genre = str(self.genreComboBox.currentText( ))
-            genre_id = plextmdb.TMDBEngine( ).getGenreIdFromGenre( genre )
-            self.mySignal.emit( state, ( year, genre_id, genre ) )
+            genre_id = plextmdb.TMDBEngine( self.parent.verify ).getGenreIdFromGenre( genre )
+            self.mySignalSYG.emit( state, ( year, genre_id, genre ) )
         elif state == 1:
             actors = tuple(map(lambda tok: titlecase.titlecase( ' '.join( tok.strip( ).split( ) ) ),
                                str( self.actorNamesLineEdit.text( ) ).strip( ).split(',') ) )
-            self.mySignal.emit( state, actors )
-            #self.parent.tmdbtv.tm.fillOutCalculation( )
+            self.mySignalSYG.emit( state, actors )
         elif state == 2:
             movieName = str( self.movieNameLineEdit.text( ) ).strip( )
-            self.mySignal.emit( state, ( movieName, ) )
-            #self.parent.tmdbtv.tm.fillOutCalculation( )            
+            self.mySignalSYG.emit( state, ( movieName, ) )
+
+    def emitSignalAndFill( self ):
+        state = self.qbg.checkedId( )
+        if state == 0: return
+        if state == 1:
+            actors = tuple(map(lambda tok: titlecase.titlecase( ' '.join( tok.strip( ).split( ) ) ),
+                               str( self.actorNamesLineEdit.text( ) ).strip( ).split(',') ) )
+            self.mySignalAndFill.emit( state, actors )
+        elif state == 2:
+            movieName = str( self.movieNameLineEdit.text( ) ).strip( )
+            self.mySignalAndFill.emit( state, ( movieName, ) )
+        
+            
 #
 ## now the table, table model, and cell objects.
 class TMDBTableView( QTableView ):
@@ -668,7 +690,7 @@ class TMDBTableView( QTableView ):
         super(TMDBTableView, self).__init__( parent )
         #
         self.token = parent.token
-        self.tm = TMDBTableModel( self )
+        self.tm = TMDBTableModel( self, parent.verify )
         self.proxy = TMDBQSortFilterProxyModel( self, self.tm )
         self.setModel( self.proxy )
         self.setItemDelegateForColumn(0, DescriptionDelegate( self ) )
@@ -741,24 +763,26 @@ class TMDBTableModel( QAbstractTableModel ):
     emitMoviesHave = pyqtSignal( list )
     emitFilterChanged = pyqtSignal( )
     
-    def __init__( self, parent = None ):
+    def __init__( self, parent = None, verify = True ):
         super(TMDBTableModel, self).__init__( parent )
         self.parent = parent
-        self.actualMovieData = []
-        self.currentStatus = 0
-        self.year = -1
-        self.genre_id = -1
-        self.genre = ''
-        self.actors = [ ]
-        self.movieName = ''
+        self.verify = verify
+        self.actualMovieData = [ ]
         self.sortColumn = 2
         self.filterStatus = 2
         self.filterRegexp = QRegExp( '.', Qt.CaseInsensitive,
                                      QRegExp.RegExp )
+        #
+        ## stuff passed through
+        self.status = -1
+        self.year = -1
+        self.genre_id = -1
+        self.genre = ''
+        self.movieName = ''
 
     def infoOnMovieAtRow( self, actualRow ):
         currentRow = self.actualMovieData[ actualRow ]
-        tmdbmi = TMDBMovieInfo( self.parent, currentRow )        
+        tmdbmi = TMDBMovieInfo( self.parent, currentRow, verify = self.verify )
         result = tmdbmi.exec_( )
 
     def filterRow( self, rowNumber ):
@@ -770,15 +794,6 @@ class TMDBTableModel( QAbstractTableModel ):
             return self.actualMovieData[ rowNumber ][ -1 ] == False
         elif self.filterStatus == 0:
             return self.actualMovieData[ rowNumber ][ -1 ] == True
-        
-    def setCurrentStatus( self, status, tup):
-        self.currentStatus = status
-        if status == 0:
-            self.year, self.genre_id, self.genre = tup
-        elif status == 1:
-            self.actors = list( tup )
-        elif status == 2:
-            self.movieName = max( tup )
 
     def setFilterStatus( self, filterStatus ):
         self.filterStatus = filterStatus
@@ -787,11 +802,9 @@ class TMDBTableModel( QAbstractTableModel ):
 
     def setFilterString( self, text ):
         mytext = str( text ).strip( )
-        if len( mytext ) == 0:
-            mytext = '.'
-        self.filterRegexp = QRegExp( mytext,
-                                     Qt.CaseInsensitive,
-                                     QRegExp.RegExp )
+        if len( mytext ) == 0: mytext = '.'
+        self.filterRegexp = QRegExp(
+            mytext, Qt.CaseInsensitive, QRegExp.RegExp )
         self.emitFilterChanged.emit( )
 
     def rowCount( self, parent ):
@@ -804,21 +817,46 @@ class TMDBTableModel( QAbstractTableModel ):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return _headers[ col ]
         return None
+
+    def currentStatus( self, status, tup ):
+        assert( status in ( 0, 1, 2, ) )
+        self.status = status
+        if status == 0:
+            self.year, self.genre_id, self.genre = tup
+        elif status == 1:
+            self.actors = list( tup )
+        elif status == 2:
+            self.movieName = max( tup )
+
+    def currentStatusAndFill( self, status, tup ):
+        assert( status in ( 0, 1, 2, ) )
+        if status == 0: return
+        self.status = status
+        if status == 1:
+            self.actors = list( tup )
+        elif status == 2:
+            self.movieName = max( tup )
+        self.fillOutCalculation( )
         
+    
     #
     ## engine code, actually do the calculation
     def fillOutCalculation( self ):
-        if self.currentStatus == 0:
+        if self.status == 0:
             assert( self.year >= 1980 )
             assert( self.year <= datetime.datetime.now( ).year )
-            assert( self.genre_id in plextmdb.TMDBEngine( ).getGenreIds( ) )
+            assert( self.genre_id in plextmdb.TMDBEngine(
+                self.verify ).getGenreIds( ) )
             #
             ## now do the stuff...
-            actualMovieData = plextmdb.getMovieData( self.year, self.genre_id )
-        elif self.currentStatus == 1:
-            actualMovieData = plextmdb.get_movies_by_actors( self.actors )
-        elif self.currentStatus == 2:
-            actualMovieData = plextmdb.get_movies_by_title( self.movieName )
+            actualMovieData = plextmdb.getMovieData(
+                self.year, self.genre_id, verify = self.verify )
+        elif self.status == 1:
+            actualMovieData = plextmdb.get_movies_by_actors(
+                self.actors, verify = self.verify )
+        elif self.status == 2:
+            actualMovieData = plextmdb.get_movies_by_title(
+                self.movieName, verify = self.verify )
 
         #
         ## first remove all rows that exist
@@ -831,12 +869,12 @@ class TMDBTableModel( QAbstractTableModel ):
         self.actualMovieData = actualMovieData
         self.endInsertRows( )
         self.sort(2, Qt.AscendingOrder )
-        if self.currentStatus == 0:
+        if self.status == 0:
             self.mySummarySignal.emit( 0, ( self.year, self.genre,
                                             len( self.actualMovieData ) ) )
-        elif self.currentStatus == 1:
+        elif self.status == 1:
             self.mySummarySignal.emit( 1, ( self.actors, len( self.actualMovieData ) ) )
-        elif self.currentStatus == 2:
+        elif self.status == 2:
             self.mySummarySignal.emit( 2, ( self.movieName, len( self.actualMovieData ) ) )
 
     def emitMoviesHere( self, allMovieTitles ):
@@ -873,17 +911,19 @@ class TMDBTableModel( QAbstractTableModel ):
             isFound = self.actualMovieData[ row ][ -1 ]
             if not isFound:
                 popularity = self.actualMovieData[ row ][ 2 ]
-                h = min(1.0, numpy.log10( min( 100.0, popularity ) ) * 0.25 ) * (
-                    0.81 - 0.55 ) + 0.55
+                hpop = numpy.log10( max( 1.0, popularity ) ) * 0.5
+                hpop = min( 1.0, hpop )
+                h = hpop * ( 0.81 - 0.45 ) + 0.45
                 s = 0.85
                 v = 0.31
                 color = QColor( 'white' )
                 color.setHsvF( h, s, v, 1.0 )
                 return QBrush( color )
             else:
-                color = QColor( 'white' )
-                color.setHsvF( 0.45, 0.85, 0.31, 1.0 )
-                return QBrush( color )
+                #color = QColor( 'white' )
+                #color.setHsvF( 0.45, 0.85, 0.31, 1.0 )
+                return QBrush( QColor( "#873600" ) )
+            
         elif role == Qt.DisplayRole:
             if col in (0, 2, 3):
                 return self.actualMovieData[ row ][ col ]

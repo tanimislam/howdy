@@ -8,22 +8,23 @@ from . import plextmdb
 
 def _return_error_raw( msg ): return None, msg
 
-def get_movie_torrent_jackett( name, maxnum = 10 ):
+def get_movie_torrent_jackett( name, maxnum = 10, verify = True ):
     import validators
     data = get_jackett_credentials( )
     if data is None:
-        return _return_error_raw('FAILURE, COULD NOT GET JACKETT SERVER CREDENTIALS')
+        return _return_error_raw('failure, could not get jackett server credentials')
     url, apikey = data
     endpoint = 'api/v2.0/indexers/all/results/torznab/api'
-    response = requests.get( urljoin( url, endpoint ),
+    response = requests.get( urljoin( url, endpoint ), verify = verify,
                              params = { 'apikey' : apikey, 'q' : name } ) # movies, no category filtering
     if response.status_code != 200:
         return _return_error_raw(
-            ' '.join([ 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url,
-                       'ERROR CODE = %d. ERROR DATA = %s.' % ( response.status_code, response.content ) ] ) )
+            ' '.join([ 'failure, problem with jackett server accessible at %s.' % url,
+                       'Error code = %d. Error data = %s.' % ( response.status_code, response.content ) ] ) )
     html = BeautifulSoup( response.content, 'lxml' )
     if len( html.find_all('item') ) == 0:
-        return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
+        return _return_error_raw(
+            'failure, no tv shows or series satisfying criteria for getting %s.' % name )
     items = [ ]
     
     def _get_magnet_url( item ):
@@ -36,11 +37,12 @@ def get_movie_torrent_jackett( name, maxnum = 10 ):
         if url2 is None: return None
         url2 = url2.text
         if not validators.url( url2 ): return None
-        resp2 = requests.get( url2 )
+        resp2 = requests.get( url2, verify = verify )
         if resp2.status_code != 200: return None
         h2 = BeautifulSoup( resp2.content, 'lxml' )
         valid_magnet_links = set(map(lambda elem: elem['href'],
-                                     filter(lambda elem: 'href' in elem.attrs and 'magnet' in elem['href'], h2.find_all('a'))))
+                                     filter(lambda elem: 'href' in elem.attrs and
+                                            'magnet' in elem['href'], h2.find_all('a'))))
         if len( valid_magnet_links ) == 0: return None
         return max( valid_magnet_links )
 

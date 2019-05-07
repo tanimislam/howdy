@@ -39,7 +39,6 @@ class TMDBMovieInfo( QDialog ):
         isFound = datum[ 'isFound' ]
         #
         myLayout = QVBoxLayout( )
-        mainColor = self.palette().color( QPalette.Background )
         self.setLayout( myLayout )
         if not isFound:
             self.getTorrentButton = QPushButton( 'GET MOVIE TORRENT' )
@@ -71,10 +70,10 @@ class TMDBMovieInfo( QDialog ):
         myLayout.addWidget( QLabel( 'POPULARITY: %0.3f' % popularity ) )
         qte = QTextEdit( full_info )
         qte.setReadOnly( True )
-        # qte.setStyleSheet("""
-        # QTextEdit {
-        # background-color: %s;
-        # }""" % mainColor.name( ) )
+        qte.setStyleSheet("""
+        QTextEdit {
+        background-color: #373949;
+        }""" )
         qte.setFrameStyle( QFrame.NoFrame )
         myLayout.addWidget( qte )
         if movie_full_path is not None:
@@ -362,6 +361,10 @@ class TMDBGUI( QWidget ):
         self.sygWidget.pushDataButton.clicked.connect( self.tmdbtv.tm.fillOutCalculation )
         self.sygWidget.pushDataButton.clicked.connect( self.sdWidget.enableMatching )
         self.sygWidget.pushDataButton.clicked.connect( self.emitMovieList )
+        self.sygWidget.actorNamesLineEdit.returnPressed.connect( self.emitMovieList )
+        self.sygWidget.actorNamesLineEdit.returnPressed.connect( self.sdWidget.enableMatching )
+        self.sygWidget.movieNameLineEdit.returnPressed.connect( self.emitMovieList )
+        self.sygWidget.movieNameLineEdit.returnPressed.connect( self.sdWidget.enableMatching )
         self.sygWidget.refreshDataButton.clicked.connect( self.refreshMovies )
         self.sygWidget.mySignalSYG.connect( self.sdWidget.setYearGenre )
         self.sygWidget.emitSignalSYG( )
@@ -424,12 +427,13 @@ class StatusDialogWidget( QWidget ):
             self.setWindowTitle( 'MOVIE LIST FOR %d.' % parent.currentYear )
             self.setModal( True )
             #
-            qte = QTextEdit('\n'.join([ '%d movies in library\n\n' % len( movieList ),
-                                        '\n'.join(movieList) ]) )
-            # qte.setStyleSheet("""
-            # QTextEdit {
-            # background-color: %s;
-            # }""" % self.palette().color( QPalette.Background ).name( ) )
+            qte = QTextEdit('\n'.join( [
+                '%d movies in library\n\n' % len( movieList ),
+                '\n'.join(movieList) ] ) )
+            qte.setStyleSheet("""
+            QTextEdit {
+            background-color: #373949;
+            }""" )
             qte.setReadOnly( True )
             myLayout = QVBoxLayout( )
             self.setLayout( myLayout )
@@ -504,7 +508,7 @@ class StatusDialogWidget( QWidget ):
         elif status == 2:
             self.movieTitle = max( tup )
 
-    def enableMatching( self ): 
+    def enableMatching( self ):
         self.showStatusComboBox.setEnabled( True )
         self.showStatusComboBox.setCurrentIndex( 2 )
         self.emitStatusToShow.emit( 2 )
@@ -520,8 +524,6 @@ class StatusDialogWidget( QWidget ):
         
     def showMatchingMovies( self ):
         if len( self.movieTitles ) > 0:
-            colr = QColor( 'white' )
-            colr.setHsvF( 0.75, 0.15, 1.0, 1.0 )
             dlg = QDialog( self )
             dlg.setWindowTitle( '%d Matching Movies For %d' % (
                 len( self.movieTitles ), self.currentYear ) )
@@ -534,16 +536,17 @@ class StatusDialogWidget( QWidget ):
             qfm = QFontMetrics( qf )
             qte.setFixedWidth( 60 * qfm.width( 'A' ) )
             qte.setReadOnly( True )
-            # qte.setStyleSheet("""
-            # QTextEdit {
-            # background-color: %s;
-            # }""" % colr.name( ) )
+            qte.setStyleSheet("""
+            QTextEdit {
+            background-color: #373949;
+            }""" )
             myLayout.addWidget( qte )
             dlg.setFixedWidth( dlg.sizeHint( ).width( ) )
             dlg.setFixedHeight( 450 )
-            qte.setPlainText('\n'.join([ '%02d: %s' % ( idx + 1, title ) for
-                                         (idx, title ) in
-                                         enumerate( self.movieTitles )  ]) )
+            qte.setPlainText('\n'.join([
+                '%02d: %s' % ( idx + 1, title ) for
+                (idx, title ) in
+                enumerate( self.movieTitles )  ]) )
             dlg.show( )
             result = dlg.exec_( )
         
@@ -643,9 +646,7 @@ class SelectYearGenreWidget( QWidget ):
         #
         ## now another signal but this time also fill TMDBDataModel
         self.actorNamesLineEdit.returnPressed.connect( self.emitSignalAndFill )
-        self.actorNamesLineEdit.returnPressed.connect( self.parent.emitMovieList )
         self.movieNameLineEdit.returnPressed.connect( self.emitSignalAndFill )
-        self.movieNameLineEdit.returnPressed.connect( self.parent.emitMovieList )
 
     def setEnabledState( self, qrb ):
         state = self.qbg.checkedId( )

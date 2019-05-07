@@ -6,21 +6,26 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import logging, PyQt4.QtGui, os, qdarkstyle
+import logging, PyQt4.QtGui, os, qdarkstyle, pickle, gzip
+mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
+sys.path.append( mainDir )
+from optparse import OptionParser
 from plexcore import plexcore
 from plextmdb import plextmdb_totgui
-from optparse import OptionParser
 
-def main(debug = False, doLocal = True, doLarge = False, verify = True):
+def main(debug = False, doLocal = True, doLarge = False,
+         verify = True ):
     app = PyQt4.QtGui.QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
     if debug: logging.basicConfig( level = logging.DEBUG )
-    fullurl, token = plexcore.checkServerCredentials(
-        doLocal = doLocal, verify = verify )    
-    tmdb_mygui = plextmdb_totgui.TMDBTotGUI( fullurl, token, doLarge = doLarge,
-                                             verify = verify )
+    fullURL, token = plexcore.checkServerCredentials(
+        doLocal = doLocal, verify = verify )
+    tmdb_totgui = plextmdb_totgui.TMDBTotGUI(
+        fullURL, token, movie_data_rows = pickle.load( gzip.open(
+            'movie_data_rows_20190506.pkl.gz', 'rb' ) ),
+        doLarge = doLarge, verify = verify )
     result = app.exec_( )
-    return tmdb_mygui
+    return tmdb_totgui
 
 if __name__=='__main__':
     parser = OptionParser( )

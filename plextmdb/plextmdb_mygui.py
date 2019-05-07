@@ -20,9 +20,9 @@ class TMDBMyGUI( QWidget ):
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
     
-    def __init__( self, token, movie_data_rows, isIsolated = True ):
+    def __init__( self, token, movie_data_rows, isIsolated = True, verify = True ):
         super( TMDBMyGUI, self ).__init__( )
-        tmdbEngine = plextmdb.TMDBEngine( )
+        tmdbEngine = plextmdb.TMDBEngine( verify = verify )
         self.setStyleSheet("""
         QWidget {
         font-family: Consolas;        
@@ -31,6 +31,7 @@ class TMDBMyGUI( QWidget ):
             self.setWindowTitle( 'My Own Movies' )
         #
         self.token = token
+        self.verify = verify
         self.myTableView = MyMovieTableView( self )
         self.genreComboBox = QComboBox( self )
         self.genreComboBox.setEditable( False )
@@ -242,7 +243,7 @@ class MyMovieTableModel( QAbstractTableModel ):
         ## color background role
         if role == Qt.BackgroundRole:
             popularity = self.myMovieData[ row ][ 1 ]
-            h = min( 1.0, popularity * 0.1 ) * ( 0.81 - 0.55 ) + 0.55
+            h = min( 1.0, popularity * 0.1 ) * ( 0.81 - 0.45 ) + 0.45
             s = 0.85
             v = 0.31
             alpha = 1.0

@@ -136,7 +136,7 @@ def checkClientCredentials( ):
     fullurl = response.json( )[ 'url' ]
     return fullurl, token
     
-def checkServerCredentials( doLocal = False ):
+def checkServerCredentials( doLocal = False, verify = True ):
     val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'login' ).first( )
     data = val.data
@@ -144,11 +144,12 @@ def checkServerCredentials( doLocal = False ):
     data_sub = data['SERVER']
     username = data_sub['username'].strip( )
     password = data_sub['password'].strip( )
-    token = getTokenForUsernamePassword( username, password )
+    token = getTokenForUsernamePassword(
+        username, password, verify = verify )
     if token is None:
         return None
     if not doLocal:
-        _, fullurl = max( get_owned_servers( token ).items( ) )
+        _, fullurl = max( get_owned_servers( token, verify = verify ).items( ) )
         fullurl = 'https://%s' % fullurl
     else:
         fullurl = 'http://localhost:32400'
@@ -172,9 +173,10 @@ def pushCredentials( username, password, name = 'CLIENT' ):
 """
 get_all_servers and get_owned_servers don't work. Something wrong with servers.xml endpoint
 """
-def get_all_servers( token ):
+def get_all_servers( token, verify = True ):
     response = requests.get( 'https://plex.tv/api/resources',
-                             params = { 'X-Plex-Token' : token } )
+                             params = { 'X-Plex-Token' : token },
+                             verify = verify )
     if response.status_code != 200:
         return None
     myxml = BeautifulSoup( response.content, 'lxml' )
@@ -191,9 +193,10 @@ def get_all_servers( token ):
         server_dict[ name ] = '%s:%d' % ( host, port )
     return server_dict
     
-def get_owned_servers( token ):
+def get_owned_servers( token, verify = True ):
     response = requests.get( 'https://plex.tv/api/resources',
-                             params = { 'X-Plex-Token' : token } )
+                             params = { 'X-Plex-Token' : token },
+                             verify = verify )
     if response.status_code != 200:
         return None
     myxml = BeautifulSoup( response.content, 'lxml' )

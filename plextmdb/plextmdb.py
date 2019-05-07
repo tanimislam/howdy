@@ -5,7 +5,7 @@ from . import mainDir, get_tmdb_api
 ## have to fix this 
 tmdb_apiKey = get_tmdb_api( )
 
-def get_tv_ids_by_series_name( series_name ):
+def get_tv_ids_by_series_name( series_name, verify = True ):
     response = requests.get( 'https://api.themoviedb.org/3/search/tv',
                              params = { 'api_key' : tmdb_apiKey,
                                         'append_to_response': 'images',
@@ -13,34 +13,34 @@ def get_tv_ids_by_series_name( series_name ):
                                         'language': 'en',
                                         'sort_by': 'popularity.desc',
                                         'query' : '+'.join( series_name.split( ) ),
-                                        'page' : 1 } )
+                                        'page' : 1 }, verify = verify )
     if response.status_code != 200:
         return [ ]
     data = response.json( )
     valid_results = list(filter(
-        lambda result: 'name' in result and result['name'] == series_name and 'id' in result,
-        data[ 'results' ] ) )
+        lambda result: 'name' in result and
+        result['name'] == series_name and
+        'id' in result, data[ 'results' ] ) )
     return list(map(lambda result: result[ 'id' ], valid_results ) )
 
-def get_tv_info_for_epsiode( tv_id, season, epno ):
+def get_tv_info_for_epsiode( tv_id, season, epno, verify = True ):
     response = requests.get( 'https://api.themoviedb.org/3/tv/%d/season/%d/episode/%d' % (
         tv_id, season, epno ), params = { 'api_key' : tmdb_apiKey,
                                           'append_to_response': 'images',
-                                          'language': 'en' } )
+                                          'language': 'en' }, verify = verify )
     if response.status_code != 200:
         print( response.content )
         return None
-    data = response.json( )
-    return data
+    return response.json( )
                                         
-def get_movies_by_actors( actor_names ):
+def get_movies_by_actors( actor_names, verify = True ):
     actor_name_dict = { }
     for actor_name in set(actor_names):
         actor_ids = [ ]
         params = { 'api_key' : tmdb_apiKey,
                    'query' : '+'.join( actor_name.split( ) ), }
         response = requests.get( 'https://api.themoviedb.org/3/search/person',
-                                 params = params )
+                                 params = params, verify = verify )
         if response.status_code != 200:
             continue
         data = response.json()
@@ -52,7 +52,7 @@ def get_movies_by_actors( actor_names ):
                             'query' : '+'.join( actor_name.split( ) ),
                             'page' : pageno }
             response = requests.get( 'https://api.themoviedb.org/3/search/person',
-                                     params = params )
+                                     params = params, verify = verify )
             if response.status_code != 200: continue
             data = response.json( )
             actor_ids += list( map(lambda result: result['id'], data['results'] ) )
@@ -66,9 +66,9 @@ def get_movies_by_actors( actor_names ):
                                         'page': 1,
                                         'sort_by': 'popularity.desc',
                                         'with_cast' : ','.join(map(lambda num: '%d' % num,
-                                                                   actor_name_dict.values( ) ) ) } )
-    if response.status_code != 200:
-        return [ ]
+                                                                   actor_name_dict.values( ) ) ) },
+                             verify = verify )
+    if response.status_code != 200: return [ ]
     data = response.json( )
     total_pages = data['total_pages']
     results = data['results']
@@ -82,7 +82,7 @@ def get_movies_by_actors( actor_names ):
                                                 'sort_by': 'popularity.desc',
                                                 'with_cast' : ','.join(map(lambda num: '%d' % num,
                                                                            actor_name_dict.values( ) ) ),
-                                                'page' : pageno } )
+                                                'page' : pageno }, verify = verify )
             if response.status_code != 200:
                 continue
             data = response.json( )
@@ -117,7 +117,7 @@ def get_movies_by_actors( actor_names ):
         actualMovieData.append( row )
     return actualMovieData
 
-def get_movies_by_title( title ):
+def get_movies_by_title( title, verify = True ):
     response = requests.get( 'https://api.themoviedb.org/3/search/movie',
                              params = { 'api_key' : tmdb_apiKey,
                                         'append_to_response': 'images',
@@ -125,9 +125,8 @@ def get_movies_by_title( title ):
                                         'language': 'en',
                                         'sort_by': 'popularity.desc',
                                         'query' : '+'.join( title.split( ) ),
-                                        'page' : 1 } )
-    if response.status_code != 200:
-        return [ ]
+                                        'page' : 1 }, verify = verify )
+    if response.status_code != 200: return [ ]
     data = response.json( )
     total_pages = data['total_pages']
     results = list( filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 10.0,
@@ -142,12 +141,13 @@ def get_movies_by_title( title ):
                                                 'language': 'en',
                                                 'sort_by': 'popularity.desc',
                                                 'query' : '+'.join( title.split( ) ),
-                                                'page' : pageno } )
+                                                'page' : pageno }, verify = verify )
             if response.status_code != 200:
                 continue
             data = response.json( )
-            newresults = list( filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 10.0,
-                                      data['results'] ) )
+            newresults = list(
+                filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 10.0,
+                       data['results'] ) )
             if len( newresults ) > 0:
                 results += sorted( newresults, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
     #return results
@@ -181,14 +181,12 @@ def get_movies_by_title( title ):
     return actualMovieData
 
 # Followed advice from https://www.themoviedb.org/talk/5493b2b59251416e18000826?language=en
-def get_imdbid_from_id( id ):
+def get_imdbid_from_id( id, verify = True ):
     response = requests.get( 'https://api.themoviedb.org/3/movie/%d' % id,
-                             params = { 'api_key' : tmdb_apiKey } )
-    if response.status_code != 200:
-        return None
+                             params = { 'api_key' : tmdb_apiKey }, verify = verify )
+    if response.status_code != 200: return None
     data = response.json( )
-    if 'imdb_id' not in data:
-        return None
+    if 'imdb_id' not in data: return None
     return data['imdb_id']
 
 def get_movie( title, year = None, checkMultiple = True, getAll = False ):
@@ -202,15 +200,15 @@ def get_movie( title, year = None, checkMultiple = True, getAll = False ):
                'page' : 1 }
     if year is not None:
         params[ 'primary_release_year' ] = int( year )
-    response = requests.get( movieSearchMainURL, params = params )
+    response = requests.get( movieSearchMainURL, params = params,
+                             verify = verify )
     data = response.json( )
     if 'total_pages' in data:
         total_pages = data['total_pages']
         results = list( filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 90.0,
                          data['results'] ) )
         results = sorted( results, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
-    else:
-        return None
+    else: return None
     if len(results) == 0:
         if checkMultiple:
             indices = range(len(title.split()))
@@ -228,8 +226,9 @@ def get_movie( title, year = None, checkMultiple = True, getAll = False ):
     else:
         return results
 
-def get_movie_tmdbids( title, year = None, getAll = False ):
-    results = get_movie( title, year = year, checkMultiple = True, getAll = True )
+def get_movie_tmdbids( title, year = None, getAll = False, verify = True ):
+    results = get_movie( title, year = year, checkMultiple = True, getAll = True,
+                         verify = verify )
     if results is None: return None
     ids = list(map(lambda result: result['id'], results ) )
     if not getAll: return ids[0]
@@ -237,14 +236,15 @@ def get_movie_tmdbids( title, year = None, getAll = False ):
 
 #
 ## funky logic needed here...
-def get_genre_movie( title, year = None, checkMultiple = True ):
+def get_genre_movie( title, year = None, checkMultiple = True, verify = True ):
     movieSearchMainURL = 'http://api.themoviedb.org/3/search/movie'
     params = { 'api_key' : tmdb_apiKey,
                'query' : '+'.join( title.split( ) ),
                'page' : 1 }
     if year is not None:
         params[ 'primary_release_year' ] = int( year )
-    response = requests.get( movieSearchMainURL, params = params )
+    response = requests.get( movieSearchMainURL, params = params,
+                             verify = verify )
     data = response.json( )
     if 'total_pages' in data:
         total_pages = data['total_pages']
@@ -266,7 +266,7 @@ def get_genre_movie( title, year = None, checkMultiple = True ):
     first_movie = results[0]
     genre_ids = first_movie['genre_ids']
     for genre_id in genre_ids:
-        val = TMDBEngineSimple( ).getGenreFromGenreId( genre_id ).lower( )
+        val = TMDBEngineSimple( verify ).getGenreFromGenreId( genre_id ).lower( )
         if val in ( 'horror', 'comedy', 'animation', 'documentary', 'drama',
                     'action', 'hindi', 'horror', 'science fiction' ):
             return val
@@ -297,8 +297,7 @@ def get_main_genre_movie( movie_elem ):
     
     if len(movie_elem.find_all('genre') ) == 0:
         val = get_genre_movie( movie_elem[ 'title' ] )
-        if val is None:
-            return 'unclassified'
+        if val is None: return 'unclassified'
         return val
     classic_genres = [ 'horror', 'comedy', 'animation', 'documentary', 'drama',
                        'action', 'hindi', 'horror', 'science fiction' ]
@@ -311,7 +310,7 @@ def get_main_genre_movie( movie_elem ):
         return val
     return postprocess_genre( genres[ 0 ] )
                              
-def getMovieData( year, genre_id ):
+def getMovieData( year, genre_id, verify = True ):
     moviePosterMainURL = 'https://image.tmdb.org/t/p/w500'
     movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'
     params = { 'api_key' : tmdb_apiKey,
@@ -323,7 +322,8 @@ def getMovieData( year, genre_id ):
                'sort_by': 'popularity.desc',
                'with_genres': genre_id }
     if genre_id == -1: params.pop( 'with_genres' )
-    response = requests.get( movieListMainURL, params = params )
+    response = requests.get( movieListMainURL, params = params,
+                             verify = verify )
     logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
     total_pages = response.json()['total_pages']
     data = list( filter(lambda datum: datum['title'] is not None and
@@ -331,7 +331,7 @@ def getMovieData( year, genre_id ):
                         datum['popularity'] is not None, response.json( )['results'] ) )
     for pageno in range( 2, total_pages + 1 ):
         params['page'] = pageno
-        response = requests.get( movieListMainURL, params = params )
+        response = requests.get( movieListMainURL, params = params, verify = verify )
         if response.status_code != 200: continue
         logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
         data += list( filter(lambda datum: datum['title'] is not None and
@@ -362,11 +362,11 @@ def getMovieData( year, genre_id ):
 
 class TMDBEngine( object ):
     class __TMDBEngine( object ):
-        def __init__( self ):
+        def __init__( self, verify = True ):
             from PyQt4.QtGui import QFontDatabase
             mainURL = 'https://api.themoviedb.org/3/genre/movie/list'
             params = { 'api_key' : tmdb_apiKey }
-            response = requests.get( mainURL, params = params )
+            response = requests.get( mainURL, params = params, verify = verify )
             data = response.json( )
             genres_tup = data['genres']
             self._genres = { genre_row['name'] : genre_row['id'] for genre_row in genres_tup }
@@ -390,19 +390,19 @@ class TMDBEngine( object ):
         def getGenres( self ):
             return self._genres.keys( )
 
-    _instance = None
+    _instances = { }
 
-    def __new__( cls ):
-        if not TMDBEngine._instance:
-            TMDBEngine._instance = TMDBEngine.__TMDBEngine( )
-        return TMDBEngine._instance
+    def __new__( cls, verify = True ):
+        if verify not in TMDBEngine._instances:
+            TMDBEngine._instances[ verify ] = TMDBEngine.__TMDBEngine( verify = verify )
+        return TMDBEngine._instances[ verify ]
 
 class TMDBEngineSimple( object ):
     class __TMDBEngine( object ):
-        def __init__( self ):
+        def __init__( self, verify = True ):
             mainURL = 'http://api.themoviedb.org/3/genre/movie/list'
             params = { 'api_key' : tmdb_apiKey }
-            response = requests.get( mainURL, params = params )
+            response = requests.get( mainURL, params = params, verify = verify )
             data = response.json( )
             genres_tup = data['genres']
             self._genres = { genre_row['name'] : genre_row['id'] for genre_row in genres_tup }
@@ -420,9 +420,9 @@ class TMDBEngineSimple( object ):
         def getGenres( self ):
             return self._genres.keys( )
 
-    _instance = None
+    _instances = { }
 
-    def __new__( cls ):
-        if not TMDBEngineSimple._instance:
-            TMDBEngineSimple._instance = TMDBEngineSimple.__TMDBEngine( )
-        return TMDBEngineSimple._instance
+    def __new__( cls, verify = True ):
+        if verify not in TMDBEngineSimple._instances:
+            TMDBEngineSimple._instances[ verify ] = TMDBEngineSimple.__TMDBEngine( verify )
+        return TMDBEngineSimple._instances[ verify ]

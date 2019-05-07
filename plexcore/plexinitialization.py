@@ -28,7 +28,9 @@ def _install_packages_local( requirements ):
     from pip._internal import main
     try:
         main( [ 'install', '--user', '--upgrade' ] + requirements +
-              [ '--trusted-host', 'pypi.python.org' ] )
+              [ '--trusted-host', 'pypi.python.org' ] +
+              [ '--trusted-host', 'pypi.org' ] +
+              [ '--trusted-host', 'files.pythonhosted.org' ] )
     except:
         main( [ 'install', '--user', '--upgrade' ] + requirements )
         

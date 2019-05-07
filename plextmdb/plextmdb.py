@@ -105,13 +105,17 @@ def get_movies_by_actors( actor_names, verify = True ):
                 vote_average = float( datum[ 'vote_average' ] )
         try:
             datetime.datetime.strptime( datum['release_date'], '%Y-%m-%d' ),
-            row = [ datum['title'],
-                    datetime.datetime.strptime( datum['release_date'], '%Y-%m-%d' ),
-                    datum['popularity'],
-                    vote_average,
-                    datum['overview'],                    
-                    poster_path,
-                    False ]
+            row = {
+                'title' : datum[ 'title' ],
+                'release_date' : datetime.datetime.strptime(
+                    datum['release_date'], '%Y-%m-%d' ),
+                'popularity' : datum[ 'popularity' ],
+                'vote_average' : vote_average,
+                'overview' : datum[ 'overview' ],
+                'poster_path' : poster_path,
+                'isFound' : False
+            }
+            if 'id' in datum: row[ 'tmdb_id' ] = datum[ 'id' ]
         except Exception:
             pass
         actualMovieData.append( row )
@@ -168,13 +172,16 @@ def get_movies_by_title( title, verify = True ):
                 vote_average = float( datum[ 'vote_average' ] )
         try:
             datetime.datetime.strptime( datum['release_date'], '%Y-%m-%d' ),
-            row = [ datum['title'],
-                    datetime.datetime.strptime( datum['release_date'], '%Y-%m-%d' ),
-                    datum['popularity'],
-                    vote_average,
-                    datum['overview'],                    
-                    poster_path,
-                    False ]
+            row = {
+                'title' : datum[ 'title' ],
+                'release_date' : datetime.datetime.strptime( datum['release_date'], '%Y-%m-%d' ),
+                'popularity' : datum[ 'popularity' ],
+                'vote_average' : vote_average,
+                'overview' : datum[ 'overview' ],
+                'poster_path' : poster_path,
+                'isFound' : False
+            }
+            if 'id' in datum: row[ 'tmdb_id' ] = datum[ 'id' ]
         except Exception:
             pass
         actualMovieData.append( row )
@@ -350,13 +357,17 @@ def getMovieData( year, genre_id, verify = True ):
                 vote_average = 0.0
             else:
                 vote_average = float( datum[ 'vote_average' ] )
-        row = [ datum['title'],
-                datetime.datetime.strptime( datum['release_date'], '%Y-%m-%d' ),
-                datum['popularity'],
-                vote_average,
-                datum['overview'],                    
-                poster_path,
-                False ]
+        row = {
+            'title' : datum[ 'title' ],
+            'release_date' : datetime.datetime.strptime(
+                datum['release_date'], '%Y-%m-%d' ),
+            'popularity' : datum[ 'popularity' ],
+            'vote_average' : vote_average,
+            'overview' : datum[ 'overview' ],
+            'poster_path' : poster_path,
+            'isFound' : False
+        }
+        if 'id' in datum: row[ 'tmdb_id' ] = datum[ 'id' ]
         actualMovieData.append( row )
     return actualMovieData
 

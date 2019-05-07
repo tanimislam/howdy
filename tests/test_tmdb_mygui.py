@@ -6,19 +6,22 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import logging, PyQt4.QtGui, os, qdarkstyle
+import logging, PyQt4.QtGui, pickle, gzip, os, qdarkstyle
+mainDir = os.path.dirname(
+    os.path.dirname( os.path.abspath( __file__ ) ) )
+sys.path.append( mainDir )
 from plexcore import plexcore
-from plextmdb import plextmdb_totgui
+from plextmdb import plextmdb_mygui
 from optparse import OptionParser
 
-def main(debug = False, doLocal = True, doLarge = False, verify = True):
+def main(debug = False, doLocal = True, verify = True ):
     app = PyQt4.QtGui.QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
     if debug: logging.basicConfig( level = logging.DEBUG )
     fullurl, token = plexcore.checkServerCredentials(
-        doLocal = doLocal, verify = verify )    
-    tmdb_mygui = plextmdb_totgui.TMDBTotGUI( fullurl, token, doLarge = doLarge,
-                                             verify = verify )
+        doLocal = doLocal, verify = verify )
+    movie_data_rows = pickle.load( gzip.open( 'movie_data_rows_20190506.pkl.gz', 'rb' ) )
+    tmdb_mygui = plextmdb_mygui.TMDBMyGUI( token, movie_data_rows, verify = verify )
     result = app.exec_( )
     return tmdb_mygui
 
@@ -29,6 +32,6 @@ if __name__=='__main__':
     parser.add_option('--debug', dest='do_debug', action='store_true',
                       default = False, help = 'Run debug mode if chosen.')
     parser.add_option('--noverify', dest='do_verify', action='store_false',
-                      default = True, help = 'Do not verify SSL transactions if chosen.')    
+                      default = True, help = 'Do not verify SSL transactions if chosen.')
     opts, args = parser.parse_args( )
-    main( debug = opts.do_debug, doLocal = opts.do_local, verify = opts.do_verify )
+    main( debug = opts.do_debug, doLocal = opts.do_local, verify = opts.do_verify  )

@@ -10,7 +10,6 @@ import qdarkstyle, pickle, gzip
 mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 sys.path.append( mainDir )
 from PyQt4.QtGui import QApplication
-from optparse import OptionParser
 from plextvdb import plextvdb_gui
 from plexcore import plexcore
 
@@ -21,7 +20,8 @@ app = QApplication([])
 #    open( os.path.join( mainDir, 'resources', 'ubuntu.qss' ), 'r' ).read( ) )
 app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
 #if opts.do_debug: logging.basicConfig( level = logging.DEBUG )
-fullURL, token = plexcore.checkServerCredentials( doLocal = True )
+fullURL, token = plexcore.checkServerCredentials(
+    doLocal = False, verify = False )
 tvdbg = plextvdb_gui.TVDBGUI(
     token, fullURL, tvdata_on_plex = pickle.load(
         gzip.open('tvdata_20190504.pkl.gz', 'rb' ) ),

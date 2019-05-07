@@ -23,8 +23,7 @@ class TMDBTotGUI( QWidget ):
                   verify = True ):
         super( TMDBTotGUI, self ).__init__( )
         self.resolution = 1.0
-        if doLarge:
-            self.resolution = 2.0
+        if doLarge: self.resolution = 2.0
         self.setWindowTitle('PLEX MOVIE GUI')
         tmdbEngine = plextmdb.TMDBEngine( verify = verify )
         self.fullurl = fullurl
@@ -91,10 +90,8 @@ class TMDBTotGUI( QWidget ):
         loginAction.triggered.connect( self.refresh_tokens )
         self.addAction( loginAction )
         #
-        def leftTab( ):
-            self.tabWidget.setCurrentIndex( 0 )
-        def rightTab( ):
-            self.tabWidget.setCurrentIndex( 1 )
+        def leftTab( ): self.tabWidget.setCurrentIndex( 0 )
+        def rightTab( ): self.tabWidget.setCurrentIndex( 1 )
         def refresh( ):
             qdl = QDialog( self )
             qdl.setModal( True )
@@ -104,8 +101,8 @@ class TMDBTotGUI( QWidget ):
             qlb = QLabel( '\n'.join([ "REFRESHING MOVIE LIST", "BE PATIENT!" ]) )
             qlb.setStyleSheet("""
             QLabel {
-            background-color: %s;
-            }""" % mainColor.name( ) )
+            background-color: #373949;
+            }""" )
             myLayout.addWidget( qlb )
             qdl.setFixedWidth( 450 )
             qdl.setFixedHeight( qdl.sizeHint( ).height( ) )

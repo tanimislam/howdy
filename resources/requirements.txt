@@ -25,6 +25,7 @@ pyasn1
 pyasn1-modules
 pypandoc
 python-Levenshtein
+python-magic
 pytz
 pyxdg
 qdarkstyle

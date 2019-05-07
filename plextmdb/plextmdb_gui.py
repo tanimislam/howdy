@@ -8,6 +8,10 @@ sys.path.append( mainDir )
 from plexcore import plexcore
 
 _headers = [ 'title', 'release date', 'popularity', 'rating', 'overview' ]
+_colmap = { 0 : 'title',
+            1 : 'release_date',
+            2 : 'popularity',
+            3 : 'vote_average' }
 
 class TMDBMovieInfo( QDialog ):
     def screenGrab( self ):
@@ -21,18 +25,18 @@ class TMDBMovieInfo( QDialog ):
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
     
-    def __init__( self, parent, currentRow, verify = True ):
+    def __init__( self, parent, datum, verify = True ):
         super( TMDBMovieInfo, self ).__init__( parent )
         self.token = parent.token
-        self.title = currentRow[ 0 ]
+        self.title = datum[ 'title' ]
         self.setModal( True )
         self.verify = verify
         #
-        full_info = currentRow[ -3 ]
-        movie_full_path = currentRow[ -2 ]
-        release_date = currentRow[ 1 ]
-        popularity = currentRow[ 2 ]
-        isFound = currentRow[ -1 ]
+        full_info = datum[ 'overview' ]
+        movie_full_path = datum[ 'poster_path' ]
+        release_date = datum[ 'release_date' ]
+        popularity = datum[ 'popularity' ]
+        isFound = datum[ 'isFound' ]
         #
         myLayout = QVBoxLayout( )
         mainColor = self.palette().color( QPalette.Background )
@@ -376,7 +380,8 @@ class TMDBGUI( QWidget ):
             self.movieSendList.emit( self.all_movies )
 
     def fill_out_movies( self, movie_data_rows ):
-        self.all_movies = sorted(set(map(lambda row: row[0], movie_data_rows )))
+        self.all_movies = list(map(
+            lambda row: { 'title' : row[0], 'year' : row[3].year }, movie_data_rows ))
         self.tmdbtv.tm.layoutAboutToBeChanged.emit( )
         self.tmdbtv.tm.layoutChanged.emit( ) # change the colors in the rows, if already there
 
@@ -781,19 +786,20 @@ class TMDBTableModel( QAbstractTableModel ):
         self.movieName = ''
 
     def infoOnMovieAtRow( self, actualRow ):
-        currentRow = self.actualMovieData[ actualRow ]
-        tmdbmi = TMDBMovieInfo( self.parent, currentRow, verify = self.verify )
+        datum = self.actualMovieData[ actualRow ]
+        tmdbmi = TMDBMovieInfo( self.parent, datum, verify = self.verify )
         result = tmdbmi.exec_( )
 
     def filterRow( self, rowNumber ):
-        if self.filterRegexp.indexIn( self.actualMovieData[ rowNumber ][ 0 ] ) == -1:
+        datum = self.actualMovieData[ rowNumber ]
+        if self.filterRegexp.indexIn( datum[ 'title' ] ) == -1:
             return False
         if self.filterStatus == 2:
             return True
         elif self.filterStatus == 1:
-            return self.actualMovieData[ rowNumber ][ -1 ] == False
+            return datum[ 'isFound' ] == False
         elif self.filterStatus == 0:
-            return self.actualMovieData[ rowNumber ][ -1 ] == True
+            return datum[ 'isFound' ] == True
 
     def setFilterStatus( self, filterStatus ):
         self.filterStatus = filterStatus
@@ -837,7 +843,6 @@ class TMDBTableModel( QAbstractTableModel ):
         elif status == 2:
             self.movieName = max( tup )
         self.fillOutCalculation( )
-        
     
     #
     ## engine code, actually do the calculation
@@ -870,21 +875,31 @@ class TMDBTableModel( QAbstractTableModel ):
         self.endInsertRows( )
         self.sort(2, Qt.AscendingOrder )
         if self.status == 0:
-            self.mySummarySignal.emit( 0, ( self.year, self.genre,
-                                            len( self.actualMovieData ) ) )
+            self.mySummarySignal.emit(
+                0, ( self.year, self.genre,
+                     len( self.actualMovieData ) ) )
         elif self.status == 1:
-            self.mySummarySignal.emit( 1, ( self.actors, len( self.actualMovieData ) ) )
+            self.mySummarySignal.emit(
+                1, ( self.actors, len( self.actualMovieData ) ) )
         elif self.status == 2:
-            self.mySummarySignal.emit( 2, ( self.movieName, len( self.actualMovieData ) ) )
+            self.mySummarySignal.emit(
+                2, ( self.movieName, len( self.actualMovieData ) ) )
 
-    def emitMoviesHere( self, allMovieTitles ):
-        tmdbmovietitles = set(map(lambda row: row[0], self.actualMovieData ) )
-        self.emitMoviesHave.emit( sorted( tmdbmovietitles & set(allMovieTitles) ) )
-        for row in self.actualMovieData:
-            if row[0] in allMovieTitles:
-                row[-1] = True
+    def emitMoviesHere( self, allMoviesInPlex ):
+        tmdbmovietitles = set(map(
+            lambda datum: ( datum[ 'title' ],
+                            datum[ 'release_date' ].year ),
+            self.actualMovieData ) )
+        allmoviesinplex_set = set(map(
+            lambda datum: ( datum[ 'title' ],
+                            datum[ 'year' ] ), allMoviesInPlex ) )
+        self.emitMoviesHave.emit( sorted( tmdbmovietitles & allmoviesinplex_set ) )
+        for datum in self.actualMovieData:
+            tup = ( datum['title'], datum['release_date'].year )
+            if tup in allmoviesinplex_set:
+                datum[ 'isFound' ] = True
             else:
-                row[-1] = False
+                datum[ 'isFound' ] = False
         self.sort( -1, Qt.AscendingOrder )
         
     def sort( self, ncol, order ):
@@ -892,12 +907,16 @@ class TMDBTableModel( QAbstractTableModel ):
         #    return
         self.sortColumn = ncol
         self.layoutAboutToBeChanged.emit( )
+        
         if ncol == 2:
-            self.actualMovieData.sort( key = lambda row: -row[2] )
+            self.actualMovieData.sort(
+                key = lambda datum: -datum[ 'popularity' ] )
         elif ncol in (0, 1 ):
-            self.actualMovieData.sort( key = lambda row: row[ ncol ] )
+            self.actualMovieData.sort(
+                key = lambda datum: datum[ _colmap[ ncol ] ] )
         elif ncol == 3:
-            self.actualMovieData.sort( key = lambda row: -float( row[ 3 ] ) )
+            self.actualMovieData.sort(
+                key = lambda datum: -datum[ 'vote_average' ] )
         self.layoutChanged.emit( )
 
     def data( self, index, role ):
@@ -905,12 +924,13 @@ class TMDBTableModel( QAbstractTableModel ):
             return ""
         row = index.row( )
         col = index.column( )
+        datum = self.actualMovieData[ row ]
         #
         ## color background role
         if role == Qt.BackgroundRole:
-            isFound = self.actualMovieData[ row ][ -1 ]
+            isFound = datum[ 'isFound' ]
             if not isFound:
-                popularity = self.actualMovieData[ row ][ 2 ]
+                popularity = datum[ 'popularity' ]
                 hpop = numpy.log10( max( 1.0, popularity ) ) * 0.5
                 hpop = min( 1.0, hpop )
                 h = hpop * ( 0.81 - 0.45 ) + 0.45
@@ -926,10 +946,10 @@ class TMDBTableModel( QAbstractTableModel ):
             
         elif role == Qt.DisplayRole:
             if col in (0, 2, 3):
-                return self.actualMovieData[ row ][ col ]
+                return datum[ _colmap[ col ] ]
             else:
-                dt = self.actualMovieData[ row ][ 1 ]
-                return dt.strftime('%d %b %Y')
+                return datum[ 'release_date' ].strftime(
+                    '%d %b %Y' )
         
 #
 ## long description delegate, creates an unmodifiable QTextEdit

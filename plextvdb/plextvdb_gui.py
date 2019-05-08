@@ -6,6 +6,7 @@ from PIL import Image
 from io import BytesIO
 from . import plextvdb, mainDir
 from plexcore import plexcore
+from plextmdb import plextmdb
 
 class TVShow( object ):
     
@@ -57,6 +58,13 @@ class TVShow( object ):
         eps = plextvdb.get_episodes_series(
             self.seriesId, token, showSpecials = True,
             showFuture = False, verify = verify )
+        if any(filter(lambda episode: episode['episodeName'] is None,
+                      eps ) ):
+            tmdb_id = plextmdb.get_tv_ids_by_series_name( seriesName, verify = verify )
+            if len( tmdb_id ) == 0:
+                raise ValueError("Error, could not find TV Show named %s." % seriesName )
+            tmdb_id = tmdb_id[ 0 ]
+            eps = plextmdb.get_episodes_series_tmdb( tmdb_id, verify = verify )
         allSeasons = sorted( set( map(lambda episode: int( episode['airedSeason' ] ), eps ) ) )
         #with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
         input_tuples = map(lambda seasno: (

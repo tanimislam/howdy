@@ -1,4 +1,6 @@
-import logging, glob, os, requests, datetime, fuzzywuzzy.fuzz
+import logging, glob, os, requests, datetime, fuzzywuzzy.fuzz, time
+import pathos.multiprocessing as multiprocessing
+from functools import reduce
 from . import mainDir, get_tmdb_api
 
 #
@@ -23,16 +25,62 @@ def get_tv_ids_by_series_name( series_name, verify = True ):
         'id' in result, data[ 'results' ] ) )
     return list(map(lambda result: result[ 'id' ], valid_results ) )
 
-def get_tv_info_for_epsiode( tv_id, season, epno, verify = True ):
-    response = requests.get( 'https://api.themoviedb.org/3/tv/%d/season/%d/episode/%d' % (
-        tv_id, season, epno ), params = { 'api_key' : tmdb_apiKey,
-                                          'append_to_response': 'images',
-                                          'language': 'en' }, verify = verify )
+def get_tv_info_for_series( tv_id, verify = True ):
+    response = requests.get( 'https://api.themoviedb.org/3/tv/%d' % tv_id,
+                             params = { 'api_key' : tmdb_apiKey,
+                                        'append_to_response': 'images',
+                                        'language': 'en' }, verify = verify )
     if response.status_code != 200:
         print( response.content )
         return None
     return response.json( )
-                                        
+
+
+def get_tv_info_for_season( tv_id, season, verify = True ):
+    response = requests.get(
+        'https://api.themoviedb.org/3/tv/%d/season/%d' % ( tv_id, season ),
+        params = { 'api_key' : tmdb_apiKey,
+                   'append_to_response': 'images',
+                   'language': 'en' }, verify = verify )
+    if response.status_code != 200:
+        print( response.content )
+        return None
+    return response.json( )
+
+#
+## right now do not show specials
+def get_episodes_series_tmdb( tv_id, verify = True ):
+    tmdb_tv_info = get_tv_info_for_series( tv_id, verify = verify )
+    valid_seasons = sorted(filter(lambda seasno: seasno != 0,
+                                  map(lambda season: season['season_number'],
+                                      tmdb_tv_info[ 'seasons' ] ) ) )
+    def _process_tmdb_epinfo( seasno ):
+        #
+        # must define 'airedSeason', 'airedEpisodeNumber', 'firstAired', 'overview', 'imageURL', 'episodeName'
+        seasinfo = get_tv_info_for_season( tv_id, seasno, verify = verify )
+        epelems = [ ]
+        for epinfo in seasinfo[ 'episodes']:
+            if len( set([ 'air_date', 'name', 'episode_number' ]) -
+                    set( epinfo.keys( ) ) ) != 0:
+                continue
+            epelem = {
+                'airedSeason' : seasno,
+                'airedEpisodeNumber' : epinfo[ 'episode_number' ],
+                'firstAired' : epinfo[ 'air_date' ],
+                'episodeName' : epinfo[ 'name' ]
+            }
+            #'imageURL' : 'https://image.tmdb.org/t/p/w500%s' % epinfo['profile_path'] }
+            if 'overview' in epinfo: epelem['overview'] = epinfo[ 'overview' ]
+            if 'profile_path' in epinfo:
+                epelem[ 'imageURL' ] = 'https://image.tmdb.org/t/p/w500%s' % epinfo['profile_path']
+            epelems.append( epelem )
+        return epelems
+    #
+    with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
+        episodes = reduce(lambda x,y: x+y, list(
+            map( _process_tmdb_epinfo, valid_seasons ) ) )
+        return episodes
+    
 def get_movies_by_actors( actor_names, verify = True ):
     actor_name_dict = { }
     for actor_name in set(actor_names):

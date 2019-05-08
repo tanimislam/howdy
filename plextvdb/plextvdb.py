@@ -372,7 +372,27 @@ def get_series_season_image( series_id, airedSeason, token, verify = True ):
             series_id, airedSeason )
     return 'https://thetvdb.com/banners/%s' % season_data[ 'fileName' ], "SUCCESS"
 
-def get_episodes_series( series_id, token, showSpecials = True, fromDate = None, verify = True, showFuture = False ):
+def fix_missing_unnamed_episodes( seriesName, eps, verify = True, showFuture = False ):
+    from plextmdb import plextmdb
+    eps_copy = copy.deepcopy( eps )
+    tmdb_id = plextmdb.get_tv_ids_by_series_name( seriesName, verify = verify )
+    if len( tmdb_id ) == 0: return
+    tmdb_id = tmdb_id[ 0 ]
+    tmdb_tv_info = plextmdb.get_tv_info_for_series( tmdb_id, verify = verify )
+    numeps_in_season = { }
+    for season in tmdb_tv_info['seasons']:
+        if season['season_number'] == 0: continue
+        season_number = season['season_number']
+        numeps = season['episode_count']
+        
+    #
+    ## only fix the non-specials
+    for episode in eps_copy:
+        if episode['airedSeason'] == 0: continue
+
+
+def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
+                         verify = True, showFuture = False ):
     params = { 'page' : 1 }
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
@@ -392,7 +412,7 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
         seriesdata += data[ 'data' ]
     currentDate = datetime.datetime.now( ).date( )
     sData = [ ]
-    logging.debug( 'GET_EPISODES_SERIES: %s' % seriesdata )
+    logging.debug( 'get_episodes_series: %s' % seriesdata )
     for episode in seriesdata:
         try:
             date = datetime.datetime.strptime( episode['firstAired'], '%Y-%m-%d' ).date( )
@@ -412,6 +432,13 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
         if episode[ 'airedEpisodeNumber' ] == 0:
             continue
         sData.append( episode )
+
+    #
+    ## now postprocess for all problematic shows, use tmdbId
+    problem_eps = list(filter(lambda episode: episode['episodeName'] is None,
+                              sData ) )
+    
+        
     return sData
 
 """

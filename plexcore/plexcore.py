@@ -891,8 +891,8 @@ def get_formatted_duration( totdur ):
     durstringsplit = []
     month_off = 1
     day_off = 1
-    hour_off = 1
-    min_off = 1
+    hour_off = 0
+    min_off = 0
     if dt.year - 1970 != 0:
         durstringsplit.append('%d years' % ( dt.year - 1970 ) )
         month_off = 0

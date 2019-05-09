@@ -3,7 +3,9 @@ from PyQt4.QtCore import *
 import os, sys, numpy, glob, datetime
 import logging, requests, time, io, PIL
 import pathos.multiprocessing as multiprocessing
-from . import plextvdb, mainDir, get_token
+from bs4 import BeautifulSoup
+from functools import reduce
+from . import plextvdb, mainDir, get_token, plextvdb_season_gui
 from plexcore import plexcore
 from plextmdb import plextmdb
 
@@ -24,9 +26,9 @@ class TVShow( object ):
             return tvshow_dict
     
     @classmethod
-    def _create_image( cls, imageURL ):
+    def _create_image( cls, imageURL, verify = True ):
         try:
-            response = requests.get( imageURL )
+            response = requests.get( imageURL, verify = verify )
             if response.status_code != 200: return None
             return PIL.Image.open( io.BytesIO( response.content ) )
         except: return None
@@ -64,7 +66,14 @@ class TVShow( object ):
         #
         ## get Image URL and Image
         self.imageURL, status = plextvdb.get_series_image( self.seriesId, token, verify = verify )
-        self.img = TVShow._create_image( self.imageURL )
+        # self.img = TVShow._create_image( self.imageURL, verify = verify )
+
+        #
+        ## get series overview
+        data, status = plextvdb.get_series_info( self.seriesId, token, verify = verify )
+        self.overview = ''
+        if status == 'SUCCESS' and 'overview' in data:
+            self.overview = data[ 'overview' ]
         
         #
         ## get every season defined
@@ -101,7 +110,6 @@ class TVShow( object ):
 
     def get_episodes_series( self, showSpecials = True, fromDate = None ):
         seasons = set( self.seasonDict.keys( ) )
-        print('all seasons: %s' % seasons )
         if not showSpecials:
             seasons = seasons - set([0,])
         sData = reduce(lambda x,y: x+y,
@@ -185,10 +193,76 @@ class TVSeason( object ):
         maxep = max( self.episodes )
         minep = min( self.episodes )            
 
-class TVDBGUI( QWidget ):
+class TVDBGUI( QDialog ):
     mySignal = pyqtSignal( list )
     tvSeriesSendList = pyqtSignal( list )
     tvSeriesRefreshRows = pyqtSignal( list )
+
+    @classmethod
+    def getShowSummary( cls, seriesName, tvshow_dict, tvdata_on_plex, missing_eps ):
+        tvshow = tvshow_dict[ seriesName ]
+        tvshow_plex = tvdata_on_plex[ seriesName ]
+        overview = tvshow.overview.strip( )
+        num_total = sum(list(
+            map(lambda seasno: len( tvshow_plex[ seasno ] ),
+                set( tvshow_plex ) - set([0]) ) ) )
+        num_missing = len( missing_eps[ seriesName ] )
+        if tvshow.statusEnded: show_status = "Show has ended"
+        else: show_status = "Show is still ongoing"
+        minDate = min(
+            map(lambda seasno: min(
+                map(lambda epno: tvshow_plex[ seasno ][epno]['date aired' ],
+                    tvshow_plex[ seasno ] ) ), set( tvshow_plex ) - set([0])))
+        maxDate = max(
+            map(lambda seasno: max(
+                map(lambda epno: tvshow_plex[ seasno ][epno]['date aired' ],
+                    tvshow_plex[ seasno ] ) ), set( tvshow_plex ) - set([0])))
+        
+        html = BeautifulSoup("""
+        <html>
+        <p>Summary for %s.</p>
+        <p>%s.</p>
+        <p>%02d episodes, %02d missing.</p>
+        <p>First episode aired on %s.</p>
+        <p>Last episode aired on %s.</p>
+        <p>
+        </html>""" % ( seriesName, show_status,
+                       num_total, num_missing,
+                       minDate.strftime( '%B %d, %Y' ),
+                       maxDate.strftime( '%B %d, %Y' ) ), 'lxml' )
+        body_elem = html.find_all('body')[0]
+        if len( overview ) != 0:
+            summary_tag = html.new_tag("p")
+            summary_tag.string = overview
+            body_elem.append( summary_tag )
+        average_duration_in_secs = numpy.array(
+            reduce(lambda x,y: x+y,
+                   list(map(lambda seasno: list(
+                       map(lambda epno: tvshow_plex[ seasno ][ epno ][ 'duration' ],
+                           tvshow_plex[ seasno ] ) ), tvshow_plex ) ) ) ).mean( )
+        average_size_in_bytes = numpy.array(
+            reduce(lambda x,y: x+y,
+                   list(map(lambda seasno: list(
+                       map(lambda epno: tvshow_plex[ seasno ][ epno ][ 'size' ],
+                           tvshow_plex[ seasno ] ) ), tvshow_plex ) ) ) ).mean( )
+        dur_tag = html.new_tag( "p" )
+        dur_tag.string = "average duration of %02d episodes: %s." % (
+            num_total, plexcore.get_formatted_duration( average_duration_in_secs ) )
+        siz_tag = html.new_tag( "p" )
+        siz_tag.string = "average size of %02d episodes: %s." % (
+            num_total, plexcore.get_formatted_size( average_size_in_bytes ) )
+        body_elem.append( dur_tag )
+        body_elem.append( siz_tag )
+        return html.prettify( )
+
+    @classmethod
+    def getSummaryImg( cls, imageURL, verify = True ):
+        if imageURL is None: return None
+        try:
+            response = requests.get( imageURL, verify = verify )
+            if response.status_code != 200: return None
+            return response.content
+        except: return None
 
     def screenGrab( self ):
         fname = str( QFileDialog.getSaveFileName(
@@ -201,9 +275,33 @@ class TVDBGUI( QWidget ):
             fname = fname + '.png'
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
-    
-    def __init__( self, token, fullURL, tvdata_on_plex = None, missing_eps = None,
-                  did_end = None, tvshow_dict = None, verify = True ):
+
+    def processTVShow( self, seriesName ):
+        assert( seriesName in self.tvshow_dict )
+        assert( seriesName in self.tvdata_on_plex )
+        if seriesName not in self.summaryShowInfo:
+            self.summaryShowInfo[ seriesName ] = TVDBGUI.getShowSummary(
+                seriesName, self.tvshow_dict, self.tvdata_on_plex,
+                self.missing_eps )
+            
+        if seriesName not in self.showImages:
+            self.showImages[ seriesName ] = TVDBGUI.getSummaryImg(
+                self.tvshow_dict[ seriesName ].imageURL, verify = self.verify )
+
+        showSummary = self.summaryShowInfo[ seriesName ]
+        showImg = self.showImages[ seriesName ]
+        #
+        ## now put this into summary image on left, summary info on right
+        if showImg is not None:
+            qpm = QPixmap.fromImage( QImage.fromData( showImg ) )
+            qpm = qpm.scaledToWidth( 200 )
+            self.summaryShowImage.setPixmap( qpm )
+        else: self.summaryShowImage.setPixmap( )
+        self.summaryShowInfoArea.setHtml( showSummary )
+        
+                                
+    def __init__( self, token, fullURL, tvdata_on_plex = None,
+                  tvshow_dict = None, verify = True ):
         super( TVDBGUI, self ).__init__( )
         libraries_dict = plexcore.get_libraries( fullURL = fullURL, token = token )
         if not any(map(lambda value: 'TV' in value, libraries_dict.values( ) ) ):
@@ -218,54 +316,69 @@ class TVDBGUI( QWidget ):
         self.tvdata_on_plex = tvdata_on_plex
         #
         showsToExclude = plextvdb.get_shows_to_exclude( tvdata_on_plex )
-        if missing_eps is None:
-            missing_eps = plextvdb.get_remaining_episodes(
-                tvdata_on_plex, showSpecials = False,
-                showsToExclude = showsToExclude, verify = verify )
-        else:
-            # find episodes here not in there
-            showsToRemove = set( missing_eps ) - set( tvdata_on_plex )
-            for show in showsToRemove: missing_eps.pop( show )
-            showsToRemove = set( missing_eps ) & set( showsToExclude )
-            for show in showsToRemove: missing_eps.pop( show )
-        self.missing_eps = missing_eps
-        if did_end is None:
-            did_end = plextvdb.get_all_series_didend(
-                self.tvdata_on_plex, verify = verify )
-        else:
-            what_missing = set( did_end ) - set( self.tvdata_on_plex )
-            for seriesName in what_missing: did_end.pop( seriesName )
-        self.did_end = did_end
-        assert( set( self.did_end ) == set( self.tvdata_on_plex ) )
         if tvshow_dict is None:
             tvshow_dict = TVShow.create_tvshow_dict(
                 self.tvdata_on_plex, verify = verify )
         self.tvshow_dict = tvshow_dict
         #
+        ## now do the did_end and missing_eps
+        self.did_end = { }
+        self.missing_eps = { }
+        for seriesName in self.tvdata_on_plex:
+            if seriesName not in self.tvshow_dict:
+                self.did_end[ seriesName ] = True
+                self.missing_eps[ seriesName ] = [ ]
+                continue
+            tvshow = self.tvshow_dict[ seriesName ]                
+            self.did_end[ seriesName ] = tvshow.statusEnded
+            if seriesName in showsToExclude:
+                self.missing_eps[ seriesName ] = [ ]
+                continue
+            missing_eps = reduce(lambda x,y: x+y,
+                map(lambda seasno: list(map(lambda epno: ( seasno, epno ),
+                    set( tvshow.seasonDict[ seasno ].episodes ) -
+                                            set( self.tvdata_on_plex[ seriesName ][ seasno ] ) ) ),
+                    set( tvshow.seasonDict ) & set( self.tvdata_on_plex[ seriesName ] ) - set([0]) ) )
+            self.missing_eps[ seriesName ] = missing_eps
+                                  
+        #
         self.verify = verify
         #
         print('TVDBGUI: took %0.3f seconds to get tvdata_on_plex' %
               ( time.time( ) - time0 ) )
-        self.token = token
+        self.instantiatedTVShows = { }
         self.dt = datetime.datetime.now( ).date( )
-        self.tm = TVDBShowsTableModel( self )
-        self.tv = TVDBShowsTableView( self )
         self.filterOnTVShows = QLineEdit( '' )
         self.setWindowTitle( 'The List of TV Shows on the Plex Server' )
-        self.tm.fillOutCalculation( )
+        self.showImages = { }
+        self.summaryShowInfo = { }
         #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         self.refreshButton = QPushButton( "REFRESH TV SHOWS" )
         #
+        self.tm = TVDBTableModel( self )
+        self.tv = TVDBTableView( self )
+        self.tm.fillOutCalculation( )
         topWidget = QWidget( )
         topLayout = QGridLayout( )
         topWidget.setLayout( topLayout )
         topLayout.addWidget( QLabel( 'TV SHOW FILTER' ), 0, 0, 1, 1 )
         topLayout.addWidget( self.filterOnTVShows, 0, 1, 1, 3 )
         topLayout.addWidget( self.refreshButton, 0, 4, 1, 3 )
-        myLayout.addWidget( topWidget )
         myLayout.addWidget( self.tv )
+        myLayout.addWidget( topWidget )
+        #
+        botWidget = QWidget( )
+        botLayout = QHBoxLayout( )
+        botWidget.setLayout( botLayout )
+        self.summaryShowImage = QLabel( )
+        self.summaryShowImage.setFixedWidth( 200 )
+        botLayout.addWidget( self.summaryShowImage )
+        self.summaryShowInfoArea = QTextEdit( )
+        self.summaryShowInfoArea.setReadOnly( True )
+        botLayout.addWidget( self.summaryShowInfoArea )
+        myLayout.addWidget( botWidget )
         #
         ## set size, make sure not resizable
         self.setStyleSheet("""
@@ -274,6 +387,7 @@ class TVDBGUI( QWidget ):
         font-size: %d;
         }""" % ( int( 11 * 1.0 ) ) )
         self.setFixedWidth( self.tv.frameGeometry( ).width( ) * 1.05 )
+        self.setFixedHeight( 800 )
         #
         ## connect actions
         self.filterOnTVShows.textChanged.connect( self.tm.setFilterString )
@@ -302,27 +416,38 @@ class TVDBGUI( QWidget ):
             return
         self.tvdata_on_plex = plexcore._get_library_data_show(
             self.key, fullURL = fullURL, token = token )
-        showsToExclude = plextvdb.get_shows_to_exclude(
-            self.tvdata_on_plex, verify = self.verify )
-        self.missing_eps = plextvdb.get_remaining_episodes(
-            self.tvdata_on_plex, showSpecials = False,
-            showsToExclude = showsToExclude,
-            verify = self.verify )
-        self.did_end = plextvdb.get_all_series_didend(
-            self.tvdata_on_plex, verify = self.verify )
-        assert( set( self.did_end ) == set( self.tvdata_on_plex ) )
         self.tvshows_dict = TVShow.create_tvshow_dict(
             self.tvdata_on_plex, verify = self.verify )
+        self.did_end = { }
+        self.missing_eps = { }
+        for seriesName in self.tvdata_on_plex:
+            if seriesName not in self.tvshow_dict:
+                self.did_end[ seriesName ] = True
+                self.missing_eps[ seriesName ] = [ ]
+                continue
+            tvshow = self.tvshow_dict[ seriesName ]                
+            self.did_end[ seriesName ] = tvshow.statusEnded
+            if seriesName in showsToExclude:
+                self.missing_eps[ seriesName ] = [ ]
+                continue
+            missing_eps = reduce(lambda x,y: x+y,
+                map(lambda seasno: list(map(lambda epno: ( seasno, epno ),
+                    set( tvshow.seasonDict[ seasno ].episodes ) -
+                                            set( self.tvdata_on_plex[ seriesName ][ seasno ] ) ) ),
+                    set( tvshow.seasonDict ) & set( self.tvdata_on_plex[ seriesName ] ) - set([0]) ) )
+            self.missing_eps[ seriesName ] = missing_eps
         self.tm.fillOutCalculation( )
         logging.debug( 'refreshed all TV shows in %0.3f seconds.' % (
             time.time( ) - time0 ) )
 
-class TVDBShowsTableView( QTableView ):
+class TVDBTableView( QTableView ):
     def __init__( self, parent ):
-        super( TVDBShowsTableView, self ).__init__( parent )
+        super( TVDBTableView, self ).__init__( parent )
         self.parent = parent
-        self.proxy = TVDBShowsQSortFilterProxyModel( self, self.parent.tm )
+        self.proxy = TVDBQSortFilterProxyModel( self, self.parent.tm )
         self.setModel( self.proxy )
+        self.selectionModel( ).currentRowChanged.connect(
+            self.processCurrentRow )
         #
         self.setShowGrid( True )
         self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
@@ -367,9 +492,15 @@ class TVDBShowsTableView( QTableView ):
         index_valid = self.proxy.mapToSource( index_valid_proxy )
         self.parent.tm.infoOnTVSeriesAtRow( index_valid.row( ) )
 
-class TVDBShowsQSortFilterProxyModel( QSortFilterProxyModel ):
+    def processCurrentRow( self, newIndex, oldIndex = None ):
+        row_valid = self.proxy.mapToSource( newIndex ).row( )
+        #
+        ## episode data emit this row here
+        self.parent.tm.emitRowSelected.emit( row_valid )
+
+class TVDBQSortFilterProxyModel( QSortFilterProxyModel ):
     def __init__( self, parent, model ):
-        super( TVDBShowsQSortFilterProxyModel, self ).__init__( parent )
+        super( TVDBQSortFilterProxyModel, self ).__init__( parent )
         self.setSourceModel( model )
         model.emitFilterChanged.connect( self.filterChanged )
 
@@ -379,29 +510,41 @@ class TVDBShowsQSortFilterProxyModel( QSortFilterProxyModel ):
     def filterAcceptsRow( self, rowNumber, sourceParent ):
         return self.sourceModel( ).filterRow( rowNumber )
 
-class TVDBShowsTableModel( QAbstractTableModel ):
+class TVDBTableModel( QAbstractTableModel ):
     _headers = [ "TV Series", "Start Date", "Last Date",
                  "Seasons", "Episodes", "Missing" ]
     emitFilterChanged = pyqtSignal( )
+    emitRowSelected = pyqtSignal( int )
     
     def __init__( self, parent = None ):
-        super( TVDBShowsTableModel, self ).__init__( parent )
+        super( TVDBTableModel, self ).__init__( parent )
         self.parent = parent # is the GUI that contains all the data
         self.actualTVSeriesData = [ ]
         self.sortColumn = 0
         self.filterStatus = 0 # 0, show everything; 1, show only tv series w/missing eps
         self.filterRegexp = QRegExp(
             '.', Qt.CaseInsensitive, QRegExp.RegExp )
+        self.emitRowSelected.connect( self.summaryOnTVShowAtRow )
         self.fillOutCalculation( )
 
     def infoOnTVSeriesAtRow( self, actualRow ):
         seriesData = self.actualTVSeriesData[ actualRow ]
         seriesName = seriesData[ 'seriesName' ]
-        tvshow = self.parent.tvshow_dict[ seriesName ]
-        plex_tv_data = self.parent.tvdata_on_plex[ seriesName ]
-        assert( seriesName == tvshow.seriesName )
-        tvdbsi = TVDBSeriesInfo( seriesName, plex_tv_data, tvshow )
+        self.parent.setEnabled( False )
+        if seriesName not in self.parent.instantiatedTVShows:
+            self.parent.instantiatedTVShows[ seriesName ] = TVDBShowGUI(
+                seriesName, self.parent.tvdata_on_plex,
+                self.parent.tvshow_dict, parent = self.parent,
+                verify = self.parent.verify )
+        tvdbsi = self.parent.instantiatedTVShows[ seriesName ]
+        tvdbsi.setEnabled( True )
         result = tvdbsi.exec_( )
+        self.parent.setEnabled( True )
+
+    def summaryOnTVShowAtRow( self, actualRow ):
+        self.parent.processTVShow(
+            self.actualTVSeriesData[
+                actualRow ][ 'seriesName' ] )
 
     def filterRow( self, rowNumber ):
         data = self.actualTVSeriesData[ rowNumber ]        
@@ -510,137 +653,64 @@ class TVDBShowsTableModel( QAbstractTableModel ):
             elif col == 5:
                 return data[ 'numMissing' ]
 
-class TVDBSeriesInfo( QWidget ):
-    #
-    ## column names: episode, name, date
-    class TVDBSeasonTableView( QTableView ):
-        def __init__( self, parent, season = 1 ):
-            super( TVDBSeasonTableView, self ).__init__( parent )
-            self.parent = parent
-            self.season = season
-            self.proxy = TVDBSeasonQSortFilterProxy( self, self.parent.tm )
-            self.setModel( self.proxy )
-            #
-            self.setShowGrid( True )
-            self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
-            self.horizontalHeader( ).setResizeMode( QHeaderView.Fixed )
-            self.setSelectionBehavior( QAbstractItemView.SelectRows )
-            self.setSelectionMode( QAbstractItemView.SingleSelection ) # single row        
-            self.setSortingEnabled( True )
-            #
-            self.setColumnWidth( 0, 120 )
-            self.setColumnWidth( 1, 210 )
-            self.setColumnWidth( 2, 120 )
-            self.setFixedWidth( 1.05 * ( 120 * 2 + 210 ) )
-            self.setFixedHeight( 400 )
-            #
-            toBotAction = QAction( self )
-            toBotAction.setShortcut( 'End' )
-            toBotAction.triggered.connect( self.scrollToBottom )
-            self.addAction( toBotAction )
-            #
-            toTopAction = QAction( self )
-            toTopAction.setShortcut( 'Home' )
-            toTopAction.triggered.connect( self.scrollToTop )
-            self.addAction( toTopAction )
-            #
-            ## now do the same thing for contextMenuEvent with action
-            popupAction = QAction( self )
-            popupAction.setShortcut( 'Ctrl+Shift+S' )
-            popupAction.triggered.connect( self.popupTVEpisode )
-            self.addAction( popupAction )
-
-        def contextMenuEvent( self, event ):
-            menu = QMenu( self )
-            infoAction = QAction( 'Information', menu )
-            infoAction.triggered.connect( self.popupTVEpisode )
-            menu.addAction( infoAction )
-            menu.popup( QCursor.pos( ) )
-
-        def popupTVEpisode( self ):
-            index_valid_proxy = max(filter(
-                lambda index: index.column == 0,
-                self.selectionModel( ).selectedIndexes( ) ) )
-            index_valid = self.proxy.mapToSource( index_valid_proxy )
-            self.parent.tm.infoOnTVEpisodeAtRow( index_valid.row( ) )
-
-    class TVDBSeasonQSortFilterProxyModel( QSortFilterProxyModel ):
-        def __init__( self, parent, model ):
-            super( TVDBSeasonQSortFilterProxyModel, self ).__init__( parent )
-            self.setSourceModel( model )
-            model.emitFilterChanged.connect( self.filterChanged )
-
-        def filterAcceptsRow( self, rowNumber, sourceParent ):
-            return self.sourceModel( ).filterRow( rowNumber )
-
-    class TVDBSeasonTableModel( QAbstractTableModel ):
-        _headers = [ 'Episode', 'Name', 'Date' ]
-        emitFilterChanged = pyqtSignal( )
-
-        def __init__( self, parent = None ):
-            super( TVDBSeasonTableModel, self ).__init__( parent )
-            self.parent = parent
-            self.actualTVSeasonData = [ ]
-            self.sortColumn = 0
-            self.filterStatus = 0 # 0, show everything; 2, show only missing episodes
-            self.filterRegexp = QRegExp(
-                '.', Qt.CaseInsensitive, QRegExp.RegExp )
-            self.fillOutCalculation( )
-
-        def intoOnTVEpisodeAtRow( self, actualRow ):
-            episodeData = self.actualTVSeasonData[ actualRow ]
-            epno = episodeData[ 'episode' ]
-            tvdbei = TVDBEpisodeInfo( epno )
-            result = tvdbei.exec_( )
-
-        def filterRow( self, rowNumber ):
-            episodeData = self.actualTVSeasonData[ rowNumber ]
-            if self.filterStatus == 0:
-                return .filterRegexp.indexIn( episodeData[ 'name' ] ) != -1
-            elif self.filterStatus == 1:
-                return episodeData[ 'missing' ]
-            else: return False
-
-        def setFilterStatus( self, filterStatus ):
-            self.filterStatus = filterStatus
-            self.emitFilterChanged.emit( )
-
-        def setFilterString( self, text ):
-            mytext = str( text ).strip( )
-            if len( mytext ) == 0: mytext = '.'
-            self.filterRegexp = QRegExp(
-                mytext, Qt.CaseInsensitive, QRegExp.RegExp )
-            self.emitFilterChanged.emit( )
-
-        def rowCount( self, parent ):
-            return len( self.actualTVSeasonData )
-
-        def columnCount( self, parent ):
-            return 3
-
-        def headerData( self, col, orientation, role ):
-            if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-                return self._headers[ col ]
-            return None
-
+class TVDBShowGUI( QDialog ):
+    def __init__( self, seriesName, tvdata, tvshow_dict,
+                  parent = None, verify = True ):
+        super( TVDBShowGUI, self ).__init__( parent )
+        if parent is not None:
+            assert( isinstance( parent, QDialog ) )
+        assert( seriesName in tvdata )
+        assert( seriesName in tvshow_dict )
+        self.setWindowTitle( seriesName )
+        myLayout = QVBoxLayout( )
+        self.setLayout( myLayout )
         #
-        ## get data from parent
-        def fillOutCalculation( self ):
-            self.actualTVSeasonData = sorted(
-                self.parent.episodes, key = lambda episode:
-                episode[ 'episode' ] )
-            #
-            ## first remove all rows that exist
-            initRowCount = self.rowCount( None )
-            self.beginRemoveRows( QModelIndex( ), 0, initRowCount - 1 )
-            self.endRemoveRows( )
-            #
-            ## now add in the data
-            self.beginInsertRows( QModelIndex( ), 0, len( self.actualTVSeasonData ) - 1 )
-            self.endInsertRows( )
-            
-    
-    def __init__( self, seriesName, plex_tv_data, tvshow ):
-        super( TVDBSeriesInfo, self ).__init__( )
-        assert( tvshow.seriesName == seriesName )
-        self.seriesName = seriesName
+        ## top widget contains a set of seasons in a QComboBox
+        topWidget = QWidget( )
+        topLayout = QHBoxLayout( )
+        topWidget.setLayout( topLayout )
+        topLayout.addWidget( QLabel( "SEASON" ) )
+        seasonSelected = QComboBox( self )
+        seasonSelected.addItems(
+            list(map(lambda seasno: '%d' % seasno,
+                     filter(lambda season: season != 0,
+                            sorted( tvdata[ seriesName ] ) ) ) ) )
+        seasonSelected.setEnabled( True )
+        seasonSelected.setEditable( False )
+        seasonSelected.setCurrentIndex( 0 )
+        topLayout.addWidget( seasonSelected )
+        myLayout.addWidget( topWidget )
+        #
+        ## now a stacked layout
+        self.seasonWidget = QStackedWidget( )
+        self.series_widgets = { }
+        for season in filter(lambda season: season != 0,
+                             sorted( tvdata[ seriesName ] ) ): 
+            num_seasons = len(list(filter(lambda season: season != 0,
+                                          sorted( tvdata[ seriesName ]))))
+            self.series_widgets[ season ] = plextvdb_season_gui.TVDBSeasonGUI(
+                seriesName, season, tvdata, tvshow_dict, verify = verify,
+                parent = parent )
+            self.seasonWidget.addWidget( self.series_widgets[ season ] )
+            logging.debug( 'added %s season %d / %d.' % (
+                seriesName, season, num_seasons ) )
+        first_season = min( self.series_widgets )
+        myLayout.addWidget( self.seasonWidget )
+        #
+        ## set size
+        self.setFixedWidth( self.series_widgets[ first_season ].sizeHint( ).width( ) * 1.05 )
+        self.setFixedHeight( 800 )
+        #
+        ## connect
+        seasonSelected.installEventFilter( self )
+        seasonSelected.currentIndexChanged.connect( self.selectSeason )
+        quitAction = QAction( self )
+        quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
+        quitAction.triggered.connect( self.close )
+        self.addAction( quitAction )
+        #
+        ##
+        self.show( )
+
+    def selectSeason( self, idx ):
+        self.seasonWidget.setCurrentIndex( idx )

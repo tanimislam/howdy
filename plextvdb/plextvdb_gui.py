@@ -193,6 +193,32 @@ class TVSeason( object ):
         maxep = max( self.episodes )
         minep = min( self.episodes )            
 
+class CustomDialog( QDialog ):
+    def __init__( self, parent ):
+        super( CustomDialog, self ).__init__( parent )
+        myLayout = QVBoxLayout( )
+        self.setLayout( myLayout )
+        self.textArea = QTextEdit( )
+        self.textArea.setReadOnly( True )
+        myLayout.addWidget( self.textArea )
+        self.parsedHTML = BeautifulSoup("""
+        <html>
+        <body>
+        </body>
+        </html>""", 'lxml' )
+        self.textArea.setHtml( self.parsedHTML.prettify( ) )
+        self.setFixedWidth( 250 )
+        self.setFixedHeight( 300 )
+        self.show( )
+
+    def addText( self, text ):
+        body_elem = self.parsedHTML.find_all('body')[0]
+        txt_tag = self.parsedHTML.new_tag("p")
+        txt_tag.string = text
+        body_elem.append( txt_tag )
+        self.textArea.setHtml( self.parsedHTML.prettify( ) )
+
+        
 class TVDBGUI( QDialog ):
     mySignal = pyqtSignal( list )
     tvSeriesSendList = pyqtSignal( list )
@@ -303,23 +329,45 @@ class TVDBGUI( QDialog ):
     def __init__( self, token, fullURL, tvdata_on_plex = None,
                   tvshow_dict = None, verify = True ):
         super( TVDBGUI, self ).__init__( )
+        time0 = time.time( )
+        #cdg = CustomDialog( self )
+        dtnow = datetime.datetime.now( )
+        mytxt = '0, started loading in data on %s.' % (
+            datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
+        #cdg.addText( mytxt )
+        print( mytxt )
         libraries_dict = plexcore.get_libraries( fullURL = fullURL, token = token )
         if not any(map(lambda value: 'TV' in value, libraries_dict.values( ) ) ):
             raise ValueError( 'Error, could not find TV shows.' )
         self.key = max(map(lambda key: 'TV' in libraries_dict[ key ], libraries_dict ) )
-        time0 = time.time( )
+        mytxt = '1, found TV library in %0.3f seconds.' % ( time.time( ) - time0 )
+        #cdg.addText( mytxt )
+        print( mytxt )
         if tvdata_on_plex is None:
             tvdata_on_plex = plexcore._get_library_data_show(
                 self.key, fullURL = fullURL, token = token )
         if tvdata_on_plex is None:
             raise ValueError( 'Error, could not find TV shows on the server.' )
         self.tvdata_on_plex = tvdata_on_plex
+        mytxt = '2, loaded TV data from Plex server in %0.3f seconds.' % (
+            time.time( ) - time0 )
+        #cdg.addText( mytxt )
+        print( mytxt )
         #
         showsToExclude = plextvdb.get_shows_to_exclude( tvdata_on_plex )
         if tvshow_dict is None:
             tvshow_dict = TVShow.create_tvshow_dict(
                 self.tvdata_on_plex, verify = verify )
         self.tvshow_dict = tvshow_dict
+        mytxt = '3, loaded TV data from TVDB and TMDB in %0.3f seconds.' % (
+            time.time( ) - time0 )
+        #cdg.addText( mytxt )
+        print( mytxt )
+        mytxt = '4, finished loading in all data on %s.' % (
+            datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
+        #cdg.addText( mytxt )
+        print( mytxt )
+        #cdg.close( )
         #
         ## now do the did_end and missing_eps
         self.did_end = { }

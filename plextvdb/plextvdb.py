@@ -284,6 +284,16 @@ def get_episode_name( series_id, airedSeason, airedEpisode, token, verify = True
     
     return ( data[ 'episodeName' ], firstAired )
 
+def get_series_info( series_id, token, verify = True ):
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
+                             headers = headers, verify = verify )
+    if response.status_code != 200: return None, "COULD NOT ACCESS TV INFO SERIES"
+    data = response.json( )[ 'data' ]
+    return data, 'SUCCESS'
+    
+
 def get_series_image( series_id, token, verify = True ):
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
@@ -359,8 +369,8 @@ def get_series_season_image( series_id, airedSeason, token, verify = True ):
     #
     ## now get that image for season
     params = { 'keyType' : 'season', 'subKey' : '%d' % airedSeason }
-    if 'resolution' in season_one.keys( ) and len( season_one[ 'resolution' ] ) != 0:
-        params[ 'resolution' ] = season_one[ 'resolution' ][ 0 ]
+    #if 'resolution' in season_one and len( season_one[ 'resolution' ] ) != 0:
+    #    params[ 'resolution' ] = season_one[ 'resolution' ][ 0 ]
     response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % series_id,
                              headers = headers, params = params, verify = verify )
     if response.status_code != 200:

@@ -7,6 +7,17 @@ from plexcore import plexcore
 
 _headers = [ 'title',  'popularity', 'rating', 'release date', 'added date',
              'genre' ]
+# data = {
+#     'title' : title,
+#     'rating' : rating,
+#     'contentrating' : contentrating,
+#     'picurl' : picurl,
+#     'releasedate' : releasedate,
+#     'addedat' : addedat,
+#     'summary' : summary,
+#     'duration' : duration,
+#     'totsize' : totsize }
+
 
 class TMDBMyGUI( QWidget ):
     def screenGrab( self ):
@@ -109,7 +120,8 @@ class MyMovieTableView( QTableView ):
         self.proxy = MyMovieQSortFilterProxyModel( self, self.tm )
         self.setModel( self.proxy )
         for idx in range(6):
-            self.setItemDelegateForColumn( idx, StringEntryDelegate( self ) )
+            self.setItemDelegateForColumn(
+                idx, StringEntryDelegate( self ) )
         self.setShowGrid( True )
         self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
         self.horizontalHeader( ).setResizeMode( QHeaderView.Fixed )
@@ -170,6 +182,14 @@ class MyMovieTableModel( QAbstractTableModel ):
     emitGenreNumMovies = pyqtSignal( str, int )
     emitFilterChanged = pyqtSignal( )
 
+    columnMapping = {
+        0 : 'title',
+        1 : 'rating',
+        2 : 'contentrating',
+        3 : 'releasedate',
+        4 : 'addedat',
+        5 : 'genre' }
+
     def __init__( self, parent = None ):
         super(MyMovieTableModel, self).__init__( parent )
         self.parent = parent
@@ -219,11 +239,10 @@ class MyMovieTableModel( QAbstractTableModel ):
 
     def setFilterString( self, text ):
         mytext = str( text ).strip( )
-        if len( mytext ) == 0:
-            mytext = '.'
-        self.filterRegexp = QRegExp( mytext,
-                                     Qt.CaseInsensitive,
-                                     QRegExp.RegExp )
+        if len( mytext ) == 0: mytext = '.'
+        self.filterRegexp = QRegExp(
+            mytext, Qt.CaseInsensitive,
+            QRegExp.RegExp )
         self.emitFilterChanged.emit( )
 
     def sort( self, ncol, order ):
@@ -235,15 +254,16 @@ class MyMovieTableModel( QAbstractTableModel ):
         self.layoutChanged.emit( )
 
     def data( self, index, role ):
-        if not index.isValid( ):
-            return ""
+        if not index.isValid( ): return None
         row = index.row( )
         col = index.column( )
         #
         ## color background role
+        data = self.myMovieData[ row ]
         if role == Qt.BackgroundRole:
-            popularity = self.myMovieData[ row ][ 1 ]
-            h = min( 1.0, popularity * 0.1 ) * ( 0.81 - 0.45 ) + 0.45
+            popularity = data[ 'rating' ]
+            h = min( 1.0, popularity * 0.1 ) * (
+                0.81 - 0.45 ) + 0.45
             s = 0.85
             v = 0.31
             alpha = 1.0
@@ -252,21 +272,20 @@ class MyMovieTableModel( QAbstractTableModel ):
             return QBrush( color )
         elif role == Qt.DisplayRole:
             if col in (0, 1, 2, 5):
-                return self.myMovieData[ row ][ col ]
+                return data[ columnMapping[ col ] ]
             else:
-                dt = self.myMovieData[ row ][ col ]
-                return dt.strftime('%d %b %Y')
+                return data[ columnMapping[ col ] ].strftime( '%d %b %Y' )
             
     def infoOnMovieAtRow( self, currentRowIdx ):
         # first determine the actual movie row based on the current row number
-        currentRow = self.myMovieData[ currentRowIdx ]
+        data = self.myMovieData[ currentRowIdx ]
         qdl = QDialog( self.parent )
         qdl.setModal( True )
-        full_info = currentRow[ -2 ]
-        movie_full_path = currentRow[ -1 ]
-        title = currentRow[ 0 ]
-        release_date = currentRow[ 3 ]
-        popularity = currentRow[ 1 ]
+        full_info = data[ 'summary' ]
+        movie_full_path = data[ 'picurl' ]
+        title = data[ 'title' ]
+        release_date = data[ 'releasedate' ]
+        popularity = data[ 'rating' ]
         #
         myLayout = QVBoxLayout( )
         mainColor = qdl.palette().color( QPalette.Background )
@@ -284,17 +303,19 @@ class MyMovieTableModel( QAbstractTableModel ):
         qte.setFrameStyle( QFrame.NoFrame )
         myLayout.addWidget( qte )
         #
-        qpm = QPixmap.fromImage( QImage.fromData(
-            plexcore.get_pic_data( movie_full_path, token = self.parent.token ) ) )
-        qpm = qpm.scaledToWidth( 450 )
         qlabel = QLabel( )
+        qpm = QPixmap.fromImage( QImage.fromData(
+            plexcore.get_pic_data(
+                movie_full_path, token = self.parent.token ) ) )
+        qpm = qpm.scaledToWidth( 450 )
         qlabel.setPixmap( qpm )
         myLayout.addWidget( qlabel )
         #
         def screenGrab( ):
-            fname = str( QFileDialog.getSaveFileName( qdl, 'Save Screenshot',
-                                                      os.path.expanduser( '~' ),
-                                                      filter = '*.png' ) )
+            fname = str( QFileDialog.getSaveFileName(
+                qdl, 'Save Screenshot',
+                os.path.expanduser( '~' ),
+                filter = '*.png' ) )
             if len( os.path.basename( fname.strip( ) ) ) == 0:
                 return
             if not fname.lower( ).endswith( '.png' ):

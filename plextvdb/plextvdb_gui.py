@@ -1,7 +1,7 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import os, sys, numpy, glob, datetime
-import logging, requests, time, io, PIL
+import logging, requests, time, io, PIL.Image
 import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
 from functools import reduce
@@ -12,26 +12,22 @@ from plextmdb import plextmdb
 class TVShow( object ):
     
     @classmethod
-    def create_tvshow_dict( cls, tvdata, token = None, verify = True ):
+    def create_tvshow_dict( cls, tvdata, token = None, verify = True,
+                            debug = False ):
         time0 = time.time( )
         if token is None: token = get_token( verify = verify )
         def _create_tvshow( seriesName ):
-            try: return ( seriesName, TVShow( seriesName, token, verify = verify ) )
+            try: return ( seriesName, TVShow( seriesName, tvdata[ seriesName ],
+                                              token, verify = verify ) )
             except: return None
         with multiprocessing.Pool(
-                max( 32, processes = multiprocessing.cpu_count( ) ) ) as pool:
-            tvshow_dict = dict(filter(None, pool.map(_create_tvshow, sorted( tvdata ) ) ) )
-            logging.debug('took %0.3f seconds to get a dictionary of %d / %d TV Shows.' % (
-                time.time( ) - time0, len( tvshow_dict ), len( tvdata ) ) )
+                processes = max( 32, multiprocessing.cpu_count( ) ) ) as pool:
+            tvshow_dict = dict(filter(None, pool.map(_create_tvshow, sorted( tvdata[:60] ) ) ) )
+            mystr = 'took %0.3f seconds to get a dictionary of %d / %d TV Shows.' % (
+                time.time( ) - time0, len( tvshow_dict ), len( tvdata ) )
+            logging.debug( mystr )
+            if debug: print( mystr )
             return tvshow_dict
-    
-    @classmethod
-    def _create_image( cls, imageURL, verify = True ):
-        try:
-            response = requests.get( imageURL, verify = verify )
-            if response.status_code != 200: return None
-            return PIL.Image.open( io.BytesIO( response.content ) )
-        except: return None
     
     @classmethod
     def _create_season( cls, input_tuple ):
@@ -51,7 +47,7 @@ class TVShow( object ):
             return None
         return sorted( map(lambda tok: int(tok), data['airedSeasons'] ) )
         
-    def __init__( self, seriesName, token, verify = True ):
+    def __init__( self, seriesName, seriesInfo, token, verify = True ):
         self.seriesId = plextvdb.get_series_id( seriesName, token, verify = verify )
         self.seriesName = seriesName
         if self.seriesId is None:
@@ -65,15 +61,23 @@ class TVShow( object ):
             #                 seriesName )
         #
         ## get Image URL and Image
-        self.imageURL, status = plextvdb.get_series_image( self.seriesId, token, verify = verify )
+        if seriesInfo['picurl'] is not None:
+            self.imageURL = seriesInfo['picurl']
+            self.isPlexImage = True
+        else:
+            self.imageURL, _ = plextvdb.get_series_image( self.seriesId, token, verify = verify )
+            self.isPlexImage = False
         # self.img = TVShow._create_image( self.imageURL, verify = verify )
 
         #
         ## get series overview
-        data, status = plextvdb.get_series_info( self.seriesId, token, verify = verify )
-        self.overview = ''
-        if status == 'SUCCESS' and 'overview' in data:
-            self.overview = data[ 'overview' ]
+        if seriesInfo['summary'] != '':
+            self.overview = seriesInfo['summary']
+        else:
+            data, status = plextvdb.get_series_info( self.seriesId, token, verify = verify )
+            self.overview = ''
+            if status == 'SUCCESS' and 'overview' in data:
+                self.overview = data[ 'overview' ]
         
         #
         ## get every season defined

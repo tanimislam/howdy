@@ -1,6 +1,6 @@
 import sqlite3, shutil, os, glob, datetime, gspread, logging, sys
-import tempfile, uuid, requests, pytz, pypandoc
-import xdg.BaseDirectory, json, pytz, pypandoc
+import tempfile, uuid, requests, pytz, pypandoc, time, json, pytz
+import xdg.BaseDirectory, json, pytz
 import pathos.multiprocessing as multiprocessing
 from google_auth_oauthlib.flow import Flow # does not yet work
 from google.auth.transport.requests import Request
@@ -171,9 +171,6 @@ def pushCredentials( username, password, name = 'CLIENT' ):
     session.add( newval )
     session.commit( )
 
-"""
-get_all_servers and get_owned_servers don't work. Something wrong with servers.xml endpoint
-"""
 def get_all_servers( token, verify = True ):
     response = requests.get( 'https://plex.tv/api/resources',
                              params = { 'X-Plex-Token' : token },
@@ -202,13 +199,13 @@ def get_owned_servers( token, verify = True ):
         return None
     myxml = BeautifulSoup( response.content, 'lxml' )
     server_dict = { }
-    for server_elem in filter(lambda se: len(set([ 'product', 'publicaddress', 'owned' ]) - set( se.attrs ) ) == 0 and
-                              se['product'] == 'Plex Media Server', myxml.find_all('device') ):
+    for server_elem in filter(
+            lambda se: len(set([ 'product', 'publicaddress', 'owned' ]) - set( se.attrs ) ) == 0 and
+            se['product'] == 'Plex Media Server', myxml.find_all('device') ):
         owned = int( server_elem['owned'] )
         if owned != 1: continue
         connections = list( filter(lambda elem: elem['local'] == '0', server_elem.find_all('connection') ) )
-        if len( connections ) != 1:
-            continue
+        if len( connections ) != 1: continue
         connection = max( connections )
         name = server_elem[ 'name' ]
         host = connection[ 'address' ]
@@ -217,10 +214,8 @@ def get_owned_servers( token, verify = True ):
     return server_dict
 
 def get_pic_data( plexPICURL, token = None ):
-    if token is None:
-        params = { }
-    else:
-        params = { 'X-Plex-Token' : token }
+    if token is None: params = { }
+    else: params = { 'X-Plex-Token' : token }
     response = requests.get( plexPICURL, params = params, verify = False )
     logging.debug( 'FULLMOVIEPATH: %s, size = %d' %
                    ( plexPICURL, len( response.content ) ) )
@@ -271,17 +266,17 @@ def get_current_date_newsletter( ):
         return None
     return val.date
 
-def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', sinceDate = None ):
+def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', sinceDate = None,
+                             num_threads = 16 ):
+    assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
 
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
                              params = params, verify = False )
-    if response.status_code != 200:
-        return None
-    html = BeautifulSoup( response.content, 'lxml' )
-    movie_data = { }
+    if response.status_code != 200: return None
+    len_movie_elems = len( BeautifulSoup( response.content, 'lxml' ).find_all('video') )
     def _get_bitrate_size( movie_elem ):
         bitrate_elem = list(filter(lambda elem: 'bitrate' in elem.attrs, movie_elem.find_all('media')))
         if len( bitrate_elem ) != 0: bitrate = int( bitrate_elem[0]['bitrate'] ) * 1e3 / 8.0
@@ -292,45 +287,59 @@ def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', si
         if len(size_elem) != 0: totsize = int( size_elem[0]['size'] ) * 1.0
         else: totsize = -1
         return bitrate, totsize
-    for movie_elem in html.find_all( 'video' ):
-        if datetime.datetime.fromtimestamp( float( movie_elem.get('addedat') ) ).date() < sinceDate:
-            continue
-        first_genre = plextmdb.get_main_genre_movie( movie_elem )
-        title = movie_elem['title']
-        if 'rating' in movie_elem.attrs:
-            rating = float( movie_elem.get('rating') )
-        else:
-            rating = None
-        summary = movie_elem.get('summary')
-        #
-        ## to get the Image, use the following code from Stackoverflow
-        ## http://stackoverflow.com/questions/13137817/how-to-download-image-using-requests
-        ##
-        ## from io import StringIO
-        ## from PIL import Image
-        ## response = requests.get( picurl, params = params )
-        ## img = Image.open( StringIO( response.content ) )
-        ##
-        ## maybe need to do something to convert to QImage from Image
-        if 'art' in movie_elem.attrs: picurl = '%s%s' % ( fullURL, movie_elem.get('art') )
-        else: picurl = None
-        if 'originallyavailableat' in movie_elem.attrs:
-            releasedate = datetime.datetime.strptime( movie_elem.get( 'originallyavailableat' ), '%Y-%m-%d' ).date( )
-        else:
-            releasedate = None
-        addedat = datetime.datetime.fromtimestamp( float( movie_elem.get( 'addedat' ) ) ).date( )
-        if 'contentrating' in movie_elem.attrs:
-            contentrating = movie_elem.get('contentrating')
-        else:
-            contentrating = 'NR'
-        duration = 1e-3 * int( movie_elem[ 'duration' ] )
-        bitrate, totsize = _get_bitrate_size( movie_elem )
-        if bitrate == -1 and totsize != -1:
-            bitrate = 1.0 * totsize / duration
-        data = ( title, rating, contentrating, picurl, releasedate, addedat, summary,
-                 duration, totsize )
-        movie_data.setdefault( first_genre, [] ).append( data )
-    return key, movie_data
+    def _get_movie_data( input_tuple ):
+        cont, indices = input_tuple
+        html = BeautifulSoup( cont, 'lxml' )
+        movie_elems = html.find_all('video' )
+        movie_data_sub = [ ]
+        for idx in indices:
+            movie_elem = movie_elems[ idx ]
+            if datetime.datetime.fromtimestamp( float( movie_elem.get('addedat') ) ).date() < sinceDate:
+                continue
+            first_genre = plextmdb.get_main_genre_movie( movie_elem )
+            title = movie_elem['title']
+            if 'rating' in movie_elem.attrs:
+                rating = float( movie_elem.get('rating') )
+            else: rating = None
+            summary = movie_elem.get('summary')
+            if 'art' in movie_elem.attrs: picurl = '%s%s' % ( fullURL, movie_elem.get('art') )
+            else: picurl = None
+            if 'originallyavailableat' in movie_elem.attrs:
+                releasedate = datetime.datetime.strptime(
+                    movie_elem.get( 'originallyavailableat' ), '%Y-%m-%d' ).date( )
+            else: releasedate = None
+            addedat = datetime.datetime.fromtimestamp( float( movie_elem.get( 'addedat' ) ) ).date( )
+            if 'contentrating' in movie_elem.attrs:
+                contentrating = movie_elem.get('contentrating')
+            else: contentrating = 'NR'
+            duration = 1e-3 * int( movie_elem[ 'duration' ] )
+            bitrate, totsize = _get_bitrate_size( movie_elem )
+            if bitrate == -1 and totsize != -1: bitrate = 1.0 * totsize / duration
+            data = {
+                'title' : title,
+                'rating' : rating,
+                'contentrating' : contentrating,
+                'picurl' : picurl,
+                'releasedate' : releasedate,
+                'addedat' : addedat,
+                'summary' : summary,
+                'duration' : duration,
+                'totsize' : totsize }
+            movie_data_sub.append( ( first_genre, data ) )
+        return movie_data_sub
+
+    act_num_threads = max( num_threads, multiprocessing.cpu_count( ) )
+    with multiprocessing.Pool( processes = act_num_threads ) as pool:
+        input_tuples = list(
+            map(lambda idx: ( response.content, list(
+                range(idx, len_movie_elems, act_num_threads ) ) ),
+                range( act_num_threads ) ) )
+        movie_data = { }
+        movie_data_list = reduce(lambda x,y: x+y,
+            map( _get_movie_data, input_tuples ) )
+        for first_genre, data in movie_data_list:
+            movie_data.setdefault( first_genre, [ ] ).append( data )
+        return key, movie_data
         
 def _get_library_stats_movie( key, token, fullURL ='https://localhost:32400', sinceDate = None ):
     tup = _get_library_data_movie( key, token, fullURL = fullURL, sinceDate = sinceDate )
@@ -347,17 +356,16 @@ def _get_library_stats_movie( key, token, fullURL ='https://localhost:32400', si
     return key, totnum, totdur, totsize, sorted_by_genres
 
 def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
-                            sinceDate = None ):
+                            sinceDate = None, num_threads = 16 ):
+    assert( num_threads >= 1 )
     # from requests.compat import urljoin
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date()
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
                              params = params, verify = False )
-    if response.status_code != 200:
-        return None
-    html = BeautifulSoup( response.content, 'lxml' )
-    def valid_videlem( elem ):
+    if response.status_code != 200: return None
+    def _valid_videlem( elem ):
         if elem.name != 'video':
             return False
         if len( elem.find_all('media')) != 1:
@@ -373,65 +381,84 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
     ## videlem.get('index') == episode # in season
     ## videlem.get('parentindex') == season # of show ( season 0 means Specials )
     ## videlem.get('originallyavailableat') == when first aired
-    tvdata = { }
-    #for direlem in html.find_all( 'directory' ):
-    def _get_show_data( direlem ):
-        show = unescape( direlem['title'] )
-        #tvdata.setdefault( show, { } )
-        showdata = { }
-        newURL = urljoin( fullURL, direlem['key'] )
-        resp2 = requests.get( newURL, params = params, verify = False )
-        if resp2.status_code != 200:
-            #continue
-            return None
-        h2 = BeautifulSoup( resp2.content, 'lxml' )
-        leafElems = list( filter(lambda le: 'allLeaves' not in le['key'], h2.find_all('directory') ) )
-        if len(leafElems) == 0:
-            #continue
-            return None
-        for leafElem in leafElems:
-            newURL = urljoin( fullURL, leafElem[ 'key' ] )
-            resp3 = requests.get( newURL, params = params, verify = False )
-            h3 = BeautifulSoup( resp3.content, 'lxml' )
-            for videlem in h3.find_all( valid_videlem ):
-                if datetime.datetime.fromtimestamp( float( videlem['addedat'] ) ).date() < sinceDate:
-                    continue
-                seasno = int( videlem['parentindex'] )
-                epno = int( videlem[ 'index' ] )
-                try:
-                    dateaired = datetime.datetime.strptime(
-                        videlem['originallyavailableat'], '%Y-%m-%d' ).date( )
-                except:
-                    dateaired = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
-                title = videlem[ 'title' ]
-                duration = 1e-3 * int( videlem[ 'duration' ] )
-                media_elem = videlem.find('media')
-                bitrate = int( media_elem[ 'bitrate' ] ) * 1e3 / 8.0
-                size = duration * bitrate
-                part_elem = media_elem.find('part')
-                filename = part_elem[ 'file' ]
-                #tvdata[ show ].setdefault( seasno, { } )
-                showdata.setdefault( seasno, { } )
-                #tvdata[ show ][ seasno ][ epno ] = {
-                showdata[ seasno ][ epno ] = {
-                    'title' : title,
-                    'date aired' : dateaired,
-                    'duration' : duration,
-                    'size' : size,
-                    'path' : filename }
-                # tvdata[ show ][ seasno ][ epno ] = ( title, dateaired, duration, size )
-            return (show, showdata)
-        
-        with multiprocessing.Pool(
-                processes = max(8, multiprocessing.cpu_count( ) ) ) as pool:
-            tvdata = dict(filter(None, pool.map(
-                _get_show_data, html.find_all( 'directory' ) ) ) )
-            return tvdata
+    def _get_show_data( input_tuple ):
+        cont, indices = input_tuple
+        html = BeautifulSoup( cont, 'lxml' )
+        direlems = html.find_all('directory')
+        tvdata_tup = [ ]
+        for idx in indices:
+            direlem = direlems[ idx ]
+            show = unescape( direlem['title'] )
+            if 'summary' in direlem.attrs: summary = direlem['summary']
+            else: summary = ''
+            if 'art' in direlem.attrs: picurl = '%s%s' % ( fullURL, direlem.get('art') )
+            else: picurl = None
+            newURL = urljoin( fullURL, direlem['key'] )
+            resp2 = requests.get( newURL, params = params, verify = False )
+            if resp2.status_code != 200: continue
+            h2 = BeautifulSoup( resp2.content, 'lxml' )
+            leafElems = list( filter(lambda le: 'allLeaves' not in le['key'], h2.find_all('directory') ) )
+            if len(leafElems) == 0: continue
+            seasons = { }
+            showdata = {
+                'title' : show,
+                'summary' : summary,
+                'picurl' : picurl
+            }
+            for idx, leafElem in enumerate(leafElems):
+                newURL = urljoin( fullURL, leafElem[ 'key' ] )
+                resp3 = requests.get( newURL, params = params, verify = False )
+                h3 = BeautifulSoup( resp3.content, 'lxml' )
+                for videlem in h3.find_all( _valid_videlem ):
+                    if datetime.datetime.fromtimestamp( float( videlem['addedat'] ) ).date() < sinceDate:
+                        continue
+                    seasno = int( videlem['parentindex'] )
+                    epno = int( videlem[ 'index' ] )
+                    seasonpicurl = '%s%s' % ( fullURL, videlem.get( 'parentthumb' ) )
+                    episodepicurl = '%s%s' % ( fullURL, videlem.get( 'thumb' ) )
+                    try:
+                        dateaired = datetime.datetime.strptime(
+                            videlem['originallyavailableat'], '%Y-%m-%d' ).date( )
+                    except:
+                        dateaired = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
+                    title = videlem[ 'title' ]
+                    duration = 1e-3 * int( videlem[ 'duration' ] )
+                    media_elem = videlem.find('media')
+                    bitrate = int( media_elem[ 'bitrate' ] ) * 1e3 / 8.0
+                    size = duration * bitrate
+                    part_elem = media_elem.find('part')
+                    filename = part_elem[ 'file' ]
+                    seasons.setdefault( seasno, { } )
+                    if 'episodes' not in seasons[ seasno ]:
+                        seasons[ seasno ].setdefault( 'episodes', { } )
+                        seasons[ seasno ][ 'seasonpicurl' ] = seasonpicurl
+                    seasons[ seasno ]['episodes'][ epno ] = {
+                        'title' : title,
+                        'episodepicurl' : episodepicurl,
+                        'date aired' : dateaired,
+                        'duration' : duration,
+                        'size' : size,
+                        'path' : filename }
+            showdata[ 'seasons' ] = seasons
+            tvdata_tup.append( ( show, showdata ) )
+        return tvdata_tup
+    
+    act_num_threads = max( num_threads, multiprocessing.cpu_count( ) )
+    num_direlems = len( BeautifulSoup( response.content, 'lxml' ).find_all('directory' ) )
+    with multiprocessing.Pool( processes = act_num_threads ) as pool:
+        input_tuples = list(
+            map(lambda idx: ( response.content,
+                              list( range( idx, num_direlems, act_num_threads ) ) ),
+                range( act_num_threads ) ) )
+        tvdata = dict(
+            reduce(lambda x,y: x+y, filter(None, pool.map(
+                _get_show_data, input_tuples ) ) ) )
+        return key, tvdata
 
 def _get_library_stats_show( key, token, fullURL = 'http://localhost:32400',
                              sinceDate = None ):
-    tvdata = _get_library_data_show( key, token, fullURL = fullURL,
-                                     sinceDate = sinceDate )
+    _, tvdata = _get_library_data_show( key, token, fullURL = fullURL,
+                                        sinceDate = sinceDate )
     numTVshows = len( tvdata )
     numTVeps = 0
     totdur = 0.0
@@ -505,18 +532,15 @@ def _get_library_stats_artist( key, token, fullURL = 'http://localhost:32400',
     return key, num_songs, num_albums, num_artists, totdur, totsize
 
 def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
-                              sinceDate = None ):
+                              sinceDate = None, num_threads = 16 ):
+    assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
         
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
                              params = params, verify = False )
-    if response.status_code != 200:
-        return None
-    html = BeautifulSoup( response.content, 'lxml' )
-    artistelems = list(html.find_all('directory'))
-    song_data = { }
+    if response.status_code != 200: return None
     def valid_track( track_elem ):
         if len(list(track_elem.find_all('media'))) != 1:
             return False
@@ -525,38 +549,70 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                set(media_elem.attrs)) != 0:
             return False
         return True
-    for artist_elem in artistelems:
-        newURL = '%s%s' % ( fullURL, artist_elem.get('key') )
-        resp2 = requests.get( newURL, params = params, verify = False )        
-        if resp2.status_code != 200:
-            continue
-        h2 = BeautifulSoup( resp2.content, 'lxml' )
-        album_elems = list( h2.find_all('directory') )
-        artist_name = artist_elem[ 'title' ]
-        song_data.setdefault( artist_name, { } )
-        for album_elem in album_elems:
-            newURL = '%s%s' % ( fullURL, album_elem.get('key') )
-            resp3 = requests.get( newURL, params = params, verify = False )
-            if resp3.status_code != 200:
-                continue
-            h3 = BeautifulSoup( resp3.content, 'lxml' )
-            track_elems = filter(valid_track, h3.find_all( 'track' ) )
-            album_name = album_elem[ 'title' ]
-            song_data[ artist_name ].setdefault( album_name, [ ] )
-            for track_elem in track_elems:
-                if datetime.datetime.fromtimestamp( float( track_elem.get('addedat') ) ).date() < sinceDate:
-                    continue
-                media_elem = max(track_elem.find_all('media'))
-                duration = 1e-3 * int( media_elem[ 'duration' ] )
-                bitrate = int( media_elem[ 'bitrate' ] ) * 1e3 / 8.0
-                curdate = datetime.datetime.fromtimestamp( float( track_elem[ 'addedat' ] ) ).date( )
-                track_name = track_elem[ 'title' ]
-                song_data[ artist_name ][ album_name ].append( ( track_name, curdate, duration, bitrate * duration ) )
-            if len( song_data[ artist_name ][ album_name ] ) == 0:
-                song_data[ artist_name ].pop( album_name )
-        if len( song_data[ artist_name ] ) == 0:
-            song_data.pop( artist_name )
-    return key, song_data
+    #
+    def _get_artist_data( input_tuple ):
+        cont, indices = input_tuple
+        html = BeautifulSoup( cont, 'lxml' )
+        artist_elems = html.find_all('directory')
+        song_data_sub = [ ]
+        for idx in indices:
+            artist_elem = artist_elems[ idx ]
+            newURL = '%s%s' % ( fullURL, artist_elem.get('key') )
+            resp2 = requests.get( newURL, params = params, verify = False )        
+            if resp2.status_code != 200: continue
+            h2 = BeautifulSoup( resp2.content, 'lxml' )
+            album_elems = list( h2.find_all('directory') )
+            artist_name = artist_elem[ 'title' ]
+            artist_data = { }
+            for album_elem in album_elems:
+                newURL = '%s%s' % ( fullURL, album_elem.get('key') )
+                resp3 = requests.get( newURL, params = params, verify = False )
+                if resp3.status_code != 200: continue
+                h3 = BeautifulSoup( resp3.content, 'lxml' )
+                track_elems = filter(valid_track, h3.find_all( 'track' ) )
+                album_name = album_elem[ 'title' ]
+                artist_data.setdefault( album_name, [ ] )
+                tracks = [ ]
+                if 'thumb' in album_elem.attrs: picurl = '%s%s' % ( fullURL, album_elem.get('thumb') )
+                else: picurl = None
+                if 'year' in album_elem.attrs: year = int( album_elem.get('year'))
+                else: year = 1900
+                for track_elem in track_elems:
+                    if datetime.datetime.fromtimestamp( float(
+                            track_elem.get('addedat') ) ).date() < sinceDate:
+                        continue
+                    media_elem = max(track_elem.find_all('media'))
+                    duration = 1e-3 * int( media_elem[ 'duration' ] )
+                    bitrate = int( media_elem[ 'bitrate' ] ) * 1e3 / 8.0
+                    curdate = datetime.datetime.fromtimestamp( float( track_elem[ 'addedat' ] ) ).date( )
+                    track_name = track_elem[ 'title' ]
+                    if 'index' in track_elem.attrs: track = int( track_elem.get('index'))
+                    else: track = 0
+                    tracks.append(
+                        { 'track_name' : track_name,
+                          'curdate' : curdate,
+                          'duration' : duration,
+                          'size' : bitrate * duration,
+                          'track' : track } )
+                if len( tracks ) == 0: continue
+                artist_data[ album_name ] = {
+                    'year' : year,
+                    'picurl' : picurl,
+                    'tracks' : sorted(tracks, key = lambda track: track[ 'track' ] ) }
+            if len( artist_data ) == 0: continue
+            song_data_sub.append( ( artist_name, artist_data ) )
+        return song_data_sub
+
+    act_num_threads = max( num_threads, multiprocessing.cpu_count( ) )
+    len_artistelems = len( BeautifulSoup( response.content, 'lxml' ).find_all('directory') )
+    with multiprocessing.Pool( processes=act_num_threads ) as pool:
+        input_tuples = list(
+            map(lambda idx: ( response.content, list(range(
+                idx, len_artistelems, act_num_threads ) ) ),
+                range(act_num_threads)))
+        song_data = dict(reduce(lambda x,y: x+y, pool.map(
+            _get_artist_data, input_tuples ) ) )
+        return key, song_data
 
 def get_movie_data( key, token, fullURL = 'http://localhost:32400' ):
     params = { 'X-Plex-Token' : token }
@@ -575,21 +631,21 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
     params = { 'X-Plex-Token' : token }
     response = requests.get( '%s/library/sections' % fullURL, params = params,
                              verify = False )
-    if response.status_code != 200:
-        return None
-    if response.status_code != 200:
-        return None
+    if response.status_code != 200: return None
     html = BeautifulSoup( response.content, 'lxml' )
     library_dict = { int( direlem['key'] ) : ( direlem['title'], direlem['type'] ) for
                      direlem in html.find_all('directory') }
-    keys = sorted(set(filter(lambda key: library_dict[ key ][1] == 'movie', library_dict.keys( ) ) ) )
-    return keys
+    return sorted(set(filter(lambda key: library_dict[ key ][1] == 'movie',
+                             library_dict ) ) )
 
-def get_library_data( title, token, fullURL = 'http://localhost:32400' ):
+def get_library_data( title, token, fullURL = 'http://localhost:32400', debug = False ):
+    time0 = time.time( )
     params = { 'X-Plex-Token' : token }
     response = requests.get( '%s/library/sections' % fullURL, params = params,
                              verify = False )
     if response.status_code != 200:
+        if debug: print( "took %0.3f seconds to gete here in get_library_data, library = %s." %
+                         ( time.time( ) - time0, title ) )
         return None
     html = BeautifulSoup( response.content, 'lxml' )
     library_dict = { direlem[ 'title' ] : ( int( direlem['key'] ), direlem['type'] ) for
@@ -599,11 +655,15 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400' ):
     if mediatype == 'movie':
         _, data = _get_library_data_movie( key, token, fullURL = fullURL )
     elif mediatype == 'show':
-        data =  _get_library_data_show( key, token, fullURL = fullURL )
+        _, data =  _get_library_data_show( key, token, fullURL = fullURL )
     elif mediatype == 'artist':
         _, data = _get_library_data_artist( key, token, fullURL = fullURL )
     else:
+        if debug: print( "took %0.3f seconds to gete here in get_library_data, library = %s." %
+                         ( time.time( ) - time0, title ) )
         return None
+    if debug: print( "took %0.3f seconds to gete here in get_library_data, library = %s." %
+                     ( time.time( ) - time0, title ) )
     return data
 
 def get_library_stats( key, token, fullURL = 'http://localhost:32400' ):

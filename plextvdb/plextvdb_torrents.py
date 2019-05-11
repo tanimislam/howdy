@@ -2,7 +2,6 @@ import requests, re, threading, cfscrape, os, time, numpy
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
-from . import plextvdb
 from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials, get_formatted_size
 from plexcore import plexcore_deluge
 
@@ -78,6 +77,7 @@ def get_tv_torrent_zooqle( name, maxnum = 10 ):
     return sorted( items_toshow, key = lambda item: -item['seeders'] - item['leechers'] )[:maxnum], 'SUCCESS'
 
 def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
+    from .plextvdb import get_token, get_series_id, get_possible_ids
     candidate_seriesname = ' '.join( name.strip().split()[:-1] )
     epstring = name.strip().split()[-1].upper()
     if not epstring[0] == 'S':
@@ -99,12 +99,12 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
         status = 'Error, invalid episode number.'
         return None, status
     
-    tvdb_token = plextvdb.get_token( verify = verify )
-    series_id = plextvdb.get_series_id( candidate_seriesname, tvdb_token,
-                                        verify = verify )
+    tvdb_token = get_token( verify = verify )
+    series_id = get_series_id( candidate_seriesname, tvdb_token,
+                               verify = verify )
     if series_id is None:
-        series_ids = plextvdb.get_possible_ids( candidate_seriesname,
-                                                tvdb_token, verify = verify )
+        series_ids = get_possible_ids( candidate_seriesname,
+                                       tvdb_token, verify = verify )
         if series_ids is None or len( series_ids ) == 0:
             status = 'ERROR, PLEXTVDB could find no candidate series that match %s' % \
                      candidate_seriesname

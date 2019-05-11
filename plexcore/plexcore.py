@@ -1,6 +1,7 @@
 import sqlite3, shutil, os, glob, datetime, gspread, logging, sys
 import tempfile, uuid, requests, pytz, pypandoc
 import xdg.BaseDirectory, json, pytz, pypandoc
+import pathos.multiprocessing as multiprocessing
 from google_auth_oauthlib.flow import Flow # does not yet work
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -373,17 +374,21 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
     ## videlem.get('parentindex') == season # of show ( season 0 means Specials )
     ## videlem.get('originallyavailableat') == when first aired
     tvdata = { }
-    for direlem in html.find_all( 'directory' ):
+    #for direlem in html.find_all( 'directory' ):
+    def _get_show_data( direlem ):
         show = unescape( direlem['title'] )
-        tvdata.setdefault( show, { } )
+        #tvdata.setdefault( show, { } )
+        showdata = { }
         newURL = urljoin( fullURL, direlem['key'] )
         resp2 = requests.get( newURL, params = params, verify = False )
         if resp2.status_code != 200:
-            continue
+            #continue
+            return None
         h2 = BeautifulSoup( resp2.content, 'lxml' )
         leafElems = list( filter(lambda le: 'allLeaves' not in le['key'], h2.find_all('directory') ) )
         if len(leafElems) == 0:
-            continue
+            #continue
+            return None
         for leafElem in leafElems:
             newURL = urljoin( fullURL, leafElem[ 'key' ] )
             resp3 = requests.get( newURL, params = params, verify = False )
@@ -405,15 +410,23 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
                 size = duration * bitrate
                 part_elem = media_elem.find('part')
                 filename = part_elem[ 'file' ]
-                tvdata[ show ].setdefault( seasno, { } )
-                tvdata[ show ][ seasno ][ epno ] = {
+                #tvdata[ show ].setdefault( seasno, { } )
+                showdata.setdefault( seasno, { } )
+                #tvdata[ show ][ seasno ][ epno ] = {
+                showdata[ seasno ][ epno ] = {
                     'title' : title,
                     'date aired' : dateaired,
                     'duration' : duration,
                     'size' : size,
                     'path' : filename }
                 # tvdata[ show ][ seasno ][ epno ] = ( title, dateaired, duration, size )
-    return tvdata
+            return (show, showdata)
+        
+        with multiprocessing.Pool(
+                processes = max(8, multiprocessing.cpu_count( ) ) ) as pool:
+            tvdata = dict(filter(None, pool.map(
+                _get_show_data, html.find_all( 'directory' ) ) ) )
+            return tvdata
 
 def _get_library_stats_show( key, token, fullURL = 'http://localhost:32400',
                              sinceDate = None ):

@@ -624,7 +624,7 @@ def _get_remaining_eps_perproc( input_tuple ):
     tvdb_eps_dict = { ( ep['airedSeason'], ep['airedEpisodeNumber' ] ) :
                       ( ep['airedSeason'], ep['airedEpisodeNumber' ], ep['episodeName'] ) for ep in eps }
     here_eps = set([ ( seasno, epno ) for seasno in epsForShow for
-                     epno in epsForShow[ seasno ] ] )
+                     epno in epsForShow[ seasno ][ 'episodes' ] ] )
     tuples_to_get = tvdb_eps - here_eps
     if len( tuples_to_get ) == 0: return None
     tuples_to_get_act = list(map(lambda tup: tvdb_eps_dict[ tup ], tuples_to_get ) )
@@ -635,7 +635,7 @@ def _get_series_id_perproc( input_tuple ):
     show, token, verify, doShowEnded = input_tuple
     series_id = get_series_id( show, token, verify = verify )
     if series_id is None:
-        print( 'SOMETHING HAPPENED WITH SHOW %s' % show )
+        logging.debug( 'SOMETHING HAPPENED WITH SHOW %s' % show )
         return None
     if not doShowEnded:
         didEnd = did_series_end( series_id, token, verify = verify )
@@ -660,10 +660,12 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
         updated_ids = set( ids_tvshows.keys( ) ) & series_ids
         tvshow_id_map = { ids_tvshows[ series_id ] : series_id for series_id in
                           updated_ids }
-    tvshows = sorted( set( tvshow_id_map.keys( ) ) )
-    input_tuples = map(lambda name: ( name, tvshow_id_map[ name ], tvdata_copy[ name ], token,
-                                      showSpecials, fromDate, verify ), tvshow_id_map )
-    with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
+    tvshows = sorted( set( tvshow_id_map ) )
+    input_tuples = list(map(lambda name: (
+        name, tvshow_id_map[ name ],
+        tvdata_copy[ name ][ 'seasons' ], token,
+        showSpecials, fromDate, verify ), tvshow_id_map ) )
+    with multiprocessing.Pool( processes = max(16, multiprocessing.cpu_count( ) ) ) as pool:
         toGet_sub = dict( filter( lambda tup: tup is not None,
                                   pool.map( _get_remaining_eps_perproc, input_tuples ) ) )
     #

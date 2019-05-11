@@ -19,7 +19,7 @@ class TVShow( object ):
             try: return ( seriesName, TVShow( seriesName, token, verify = verify ) )
             except: return None
         with multiprocessing.Pool(
-                processes = multiprocessing.cpu_count( ) ) as pool:
+                max( 32, processes = multiprocessing.cpu_count( ) ) ) as pool:
             tvshow_dict = dict(filter(None, pool.map(_create_tvshow, sorted( tvdata ) ) ) )
             logging.debug('took %0.3f seconds to get a dictionary of %d / %d TV Shows.' % (
                 time.time( ) - time0, len( tvshow_dict ), len( tvdata ) ) )

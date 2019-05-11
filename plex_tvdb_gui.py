@@ -6,11 +6,11 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import qdarkstyle, logging, os
-from PyQt4.QtGui import QApplication
 from optparse import OptionParser
-from plextvdb import plextvdb_gui
+from plextvdb.plextvdb_gui import TVDBGUI
 from plexcore import plexcore
+from PyQt4.QtGui import QApplication
+import qdarkstyle, logging, os
 
 def main( debug = False, doLocal = True, verify = True ):
     app = QApplication([])
@@ -18,8 +18,8 @@ def main( debug = False, doLocal = True, verify = True ):
     if debug: logging.basicConfig( level = logging.DEBUG )
     fullURL, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
-    tvdb_gui = plextvdb_gui.TVDBGUI(
-        token, fullURL, verify = verify )
+    print( fullURL, token )
+    tvdb_gui = TVDBGUI( token, fullURL, verify = verify )
     result = app.exec_( )
     return tvdb_gui
 

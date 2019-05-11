@@ -21,6 +21,7 @@ mutagen
 numpy
 oauth2client
 pathos
+Pillow
 pyasn1
 pyasn1-modules
 pypandoc

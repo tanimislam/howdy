@@ -10,15 +10,16 @@ from optparse import OptionParser
 from plextvdb.plextvdb_gui import TVDBGUI
 from plexcore import plexcore
 from PyQt4.QtGui import QApplication
-import qdarkstyle, logging, os
+import qdarkstyle, logging, os, warnings
 
-def main( debug = False, doLocal = True, verify = True ):
+warnings.simplefilter("ignore")
+
+def main( info = False, doLocal = True, verify = True ):
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
-    if debug: logging.basicConfig( level = logging.DEBUG )
+    if info: logging.basicConfig( level = logging.INFO )
     fullURL, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
-    print( fullURL, token )
     tvdb_gui = TVDBGUI( token, fullURL, verify = verify )
     result = app.exec_( )
     return tvdb_gui
@@ -29,9 +30,9 @@ if __name__=='__main__':
     parser = OptionParser( )
     parser.add_option('--local', dest='do_local', action='store_true',
                       default = False, help = 'Check for locally running plex server.')
-    parser.add_option('--debug', dest='do_debug', action='store_true',
-                      default = False, help = 'Run debug mode if chosen.')
+    parser.add_option('--info', dest='do_info', action='store_true',
+                      default = False, help = 'Run logging at INFO level if chosen.')
     parser.add_option('--noverify', dest='do_verify', action='store_false',
                       default = True, help = 'Do not verify SSL transactions if chosen.')    
     opts, args = parser.parse_args( )
-    main( debug = opts.do_debug, doLocal = opts.do_local, verify = opts.do_verify )
+    main( info = opts.do_info, doLocal = opts.do_local, verify = opts.do_verify )

@@ -10,6 +10,8 @@ from . import mainDir, pygn, parse_youtube_date, format_youtube_date
 from plexcore import plexcore, baseConfDir, session, PlexConfig
 from sqlalchemy import Integer, String, Column
 
+musicbrainzngs.set_useragent( '***REMOVED***-musicbrainz-app', '1.0', '***REMOVED***.islam@gmail.com' )
+
 #
 ## get all the tracks, by order, of all the official albums of an artist.
 ## this is not tested all that much, but perhaps it is useful to some people

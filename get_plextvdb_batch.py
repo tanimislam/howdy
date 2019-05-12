@@ -37,7 +37,11 @@ def main( ):
     ## get plex server token
     dat = plexcore.checkServerCredentials( doLocal = True )
     if dat is None:
-        print('%d, error, could not access local Plex server. Exiting...' % step)
+        print('\n'.join([
+            '%d, error, could not access local Plex server in %0.3f seconds. Exiting...' % (
+                step, time.time( ) - time0 ),
+            '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
+                '%B %d, %Y @ %I:%M:%S %p' ) ) ] ) )
         return
     fullURL, token = dat
     #
@@ -46,7 +50,11 @@ def main( ):
     valid_keys = list(filter(lambda key: library_dict[ key ][ -1 ] ==
                              'show', library_dict ) )
     if len( valid_keys ) == 0:
-        print('%d, Error, could not find a TV show library. Exiting...' % step)
+        print('\n'.join([
+            '%d, Error, could not find a TV show library in %0.3f seconds. Exiting...' %
+            ( time.time( ) - time0, step ),
+            '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
+                '%B %d, %Y @ %I:%M:%S %p' ) ) ] ) )
         return
     tvlib_title = library_dict[ max( valid_keys ) ][ 0 ]
     print( '%d, found TV library: %s.' % ( step, tvlib_title ) )
@@ -65,18 +73,22 @@ def main( ):
         showSpecials = False,
         showsToExclude = showsToExclude )
     if len( toGet ) == 0:
-        print('%d, no episodes to download. Exiting...' % step )
+        print('\n'.join([
+            '%d, no episodes to download in %0.3f seconds. Exiting...' % (
+                step, time.time( ) - time0 ),
+            '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
+                '%B %d, %Y @ %I:%M:%S %p' ) ) ] ) )        
         return
     print( '%d, took %0.3f seconds to get list of %d episodes to download.' % (
-        step, time.time( ) - time0, sum(map(lambda tvshow: len(toGet[tvshow]['episodes']),
-                                            toGet))))
+        step, time.time( ) - time0, sum(
+            map(lambda tvshow: len(toGet[tvshow]['episodes']), toGet ) ) ) )
     step += 1
     #
     ## now download these episodes
     tv_torrent_gets = plextvdb.get_tvtorrent_candidate_downloads( toGet )
     tvTorUnits = reduce(lambda x,y: x+y, [ tv_torrent_gets[ 'nonewdirs' ] ] +
                         list(map(lambda newdir: tv_torrent_gets[ 'newdirs' ][ newdir ],
-                                tv_torrent_gets[ 'newdirs' ] ) ) )
+                                 tv_torrent_gets[ 'newdirs' ] ) ) )
     print('%d, here are the %d episodes to get: %s.' % ( step,
         len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname' ], tvTorUnits))))
     step += 1
@@ -84,7 +96,8 @@ def main( ):
         tv_torrent_gets, maxtime_in_secs = opts.maxtime_in_secs,
         num_iters = opts.num_iters )
     print( '\n'.join([ '%d, everything done in %0.3f seconds.' % ( step, time.time( ) - time0 ),
-                       '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ) ] ) )
+                       '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
+                           '%B %d, %Y @ %I:%M:%S %p' ) ) ] ) )
     
 if __name__=='__main__':
     main( )

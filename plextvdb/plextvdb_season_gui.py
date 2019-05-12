@@ -24,7 +24,7 @@ class TVDBSeasonGUI( QDialog ):
         </html>""" % ( len( episodes ), season, len( eps_exist ), season,
                        minDate.strftime( '%B %d, %Y' ),
                        maxDate.strftime( '%B %d, %Y' ) ), "lxml" )
-        body_elem = html.find_all('body')[0]
+        body_elem = html.find_all('body')[0]        
         if len( eps_exist ) != 0:
             average_duration_season_in_secs = numpy.array(
                 list(map(lambda epno: episodes[ epno ][ 'duration' ],
@@ -56,42 +56,68 @@ class TVDBSeasonGUI( QDialog ):
         qpm.save( fname )
 
     def __init__( self, seriesName, seasno,
-                  plex_tv_data, tvshow_dict, verify = True, parent = None ):
+                  plex_tv_data, toGet, tvdb_token,
+                  plex_token, verify = True, parent = None ):
         super( TVDBSeasonGUI, self ).__init__( parent )
         self.parent = parent
         assert( seriesName in plex_tv_data )
-        assert( seriesName in tvshow_dict )
-        assert( seasno in plex_tv_data[ seriesName ] )
-        assert( seasno in tvshow_dict[ seriesName ].seasonDict )
-        episodes = plex_tv_data[ seriesName ][ seasno ].copy( )
-        tvdb_season_info = tvshow_dict[ seriesName ].seasonDict[ seasno ]
-        assert( tvdb_season_info.seasno == seasno )
+        assert( seasno in plex_tv_data[ seriesName ]['seasons'] )
+        plex_tv_episodes = plex_tv_data[ seriesName ]['seasons'][ seasno ].copy( )
+        seasonPICURL = plex_tv_episodes['seasonpicurl']
         #
         self.setWindowTitle( '%s season %02d' % ( seriesName, seasno ) )
         #
         ## put in image and season number and seriesName 
         #
         ## put in overview information for episodes I have
-        for epno in set( tvdb_season_info.episodes ) & set( episodes ):
-            tvdb_epinfo = tvdb_season_info.episodes[ epno ]
-            episodes[ epno ][ 'seriesName' ] = seriesName
-            episodes[ epno ][ 'season' ] = seasno
-            episodes[ epno ][ 'have_episode' ] = True
-            episodes[ epno ][ 'episode' ] = epno
-            episodes[ epno ][ 'overview' ] = tvdb_epinfo[ 'overview' ]
-        #
-        ## fill out those episodes don't have
-        for epno in set( tvdb_season_info.episodes ) - set( episodes ):
-            tvdb_epinfo = tvdb_season_info.episodes[ epno ]
-            episodes[ epno] = {
+        episodes = { }
+        for epno in plex_tv_episodes[ 'episodes' ]:
+            episodes[ epno ] = {
                 'seriesName' : seriesName,
                 'season' : seasno,
-                'have_episode' : False,
+                'have_episode' : True,
                 'episode' : epno,
-                'title' : tvdb_epinfo[ 'title' ],
-                'date aired' : tvdb_epinfo[ 'airedDate' ],
-                'overview' : tvdb_epinfo[ 'overview' ]
+                'title' : plex_tv_episodes['episodes'][ epno ][ 'title' ],
+                'date aired' : plex_tv_episodes['episodes'][ epno ][ 'date aired' ],
+                'overview' : plex_tv_episodes['episodes'][ epno ][ 'summary' ],
+                'size' : plex_tv_episodes['episodes'][epno]['size'],
+                'duration' : plex_tv_episodes['episodes'][epno]['duration']
             }
+        #
+        ## fill out those episodes don't have, use TVDB and TMDB stuff
+        ## ONLY on missing episodes
+        def fill_episodes( ):
+            if seriesName not in toGet: return
+            missing_eps = set(filter(lambda tup: tup[0] == seasno,
+                                     toGet[ seriesName ] ) )
+            if len( missing_eps ) == 0: return
+            series_id = plextvdb.get_series_id( seriesName, tvdb_token, verify = verify )
+            eps = plextvdb.get_episodes_series(
+                series_id, token, showSpecials = False,
+                showFuture = False, verify = verify )
+            if any(filter(lambda episode: episode['episodeName'] is None, eps ) ):
+                tmdb_id = plextmdb.get_tv_ids_by_series_name( seriesName, verify = verify )
+                if len( tmdb_id ) == 0: return
+                tmdb_id = tmdb_id[ 0 ]
+                eps = plextmdb.get_episodes_series_tmdb( tmdb_id, verify = verify )
+            tvseason = TVSeason( seriesName, series_id, token, seasno, verify = verify,
+                                 eps = eps )
+            assert( len(set(map(lambda missing_ep: missing_ep[-1], missing_eps ) ) -
+                        set( tvseason.episodes ) ) == 0 )
+            for epno in set(map(lambda missing_ep: missing_ep[-1], missing_eps ) ):
+                tvdb_epinfo = tvseason.episodes[ epno ]
+                episodes[ epno] = {
+                    'seriesName' : seriesName,
+                    'season' : seasno,
+                    'have_episode' : False,
+                    'episode' : epno,
+                    'title' : tvdb_epinfo[ 'title' ],
+                    'date aired' : tvdb_epinfo[ 'airedDate' ],
+                    'overview' : tvdb_epinfo[ 'overview' ]
+                }
+        fill_episodes( )
+        #import pickle, gzip
+        #pickle.dump( episodes, gzip.open('episodes.pkl.gz', 'wb'))
         #
         ## main layout
         myLayout = QVBoxLayout( )
@@ -103,14 +129,12 @@ class TVDBSeasonGUI( QDialog ):
         topWidget.setLayout( topLayout )
         leftImageWidget = QLabel( )
         leftImageWidget.setFixedWidth( 200 )
-        if tvdb_season_info.imageURL is not None:
-            response = requests.get( tvdb_season_info.imageURL,
-                                     verify = verify )
-            if response.status_code == 200:
-                qpm = QPixmap.fromImage(
-                    QImage.fromData( response.content ) )
-                qpm = qpm.scaledToWidth( 200 )
-                leftImageWidget.setPixmap( qpm )
+        if seasonPICURL is not None:
+            qpm = QPixmap.fromImage(
+                QImage.fromData(
+                    plexcore.get_pic_data( seasonPICURL, plex_token ) ) )
+            qpm = qpm.scaledToWidth( 200 )
+            leftImageWidget.setPixmap( qpm )
         topLayout.addWidget( leftImageWidget )
         seasonSummaryArea = QTextEdit( )
         seasonSummaryArea.setReadOnly( True )

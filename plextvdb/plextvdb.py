@@ -14,15 +14,17 @@ class TVShow( object ):
     
     @classmethod
     def create_tvshow_dict( cls, tvdata, token = None, verify = True,
-                            debug = False ):
+                            debug = False, num_threads = 16 ):
         time0 = time.time( )
+        assert( num_threads > 0 )
         if token is None: token = get_token( verify = verify )
         def _create_tvshow( seriesName ):
-            try: return ( seriesName, TVShow( seriesName, tvdata[ seriesName ],
-                                              token, verify = verify ) )
+            try: return ( seriesName,
+                          TVShow( seriesName, tvdata[ seriesName ],
+                                  token, verify = verify ) )
             except: return None
         with multiprocessing.Pool(
-                processes = max( 32, multiprocessing.cpu_count( ) ) ) as pool:
+                processes = max( num_threads, multiprocessing.cpu_count( ) ) ) as pool:
             tvshow_dict = dict(filter(None, pool.map(_create_tvshow, sorted( tvdata[:60] ) ) ) )
             mystr = 'took %0.3f seconds to get a dictionary of %d / %d TV Shows.' % (
                 time.time( ) - time0, len( tvshow_dict ), len( tvdata ) )
@@ -786,17 +788,17 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
              'episode_number_length' : max_eps_len,
              'avg_length_mins' : avg_length_secs // 60 }
 
-def get_all_series_didend( tvdata, verify = True, debug = False ):
+def get_all_series_didend( tvdata, verify = True, debug = False,
+                           num_threads = 16 ):
     time0 = time.time( )
     with multiprocessing.Pool(
-            processes = max(32, multiprocessing.cpu_count( ) ) ) as pool:
+            processes = max(num_threads, multiprocessing.cpu_count( ) ) ) as pool:
         date_now = datetime.datetime.now( ).date( )
         token = get_token( verify = verify )
         tvshow_id_map = dict(filter(
-            lambda tup: tup is not None,
-            pool.map(lambda seriesName: (
+            None, pool.map(lambda seriesName: (
                 seriesName, get_series_id( seriesName, token, verify = verify ) ),
-                     tvdata ) ) )
+                           tvdata ) ) )
         tvshows_notfound = set( tvdata ) - set( tvshow_id_map )
         tvid_didend_map = dict(filter(
             lambda tup: tup is not None,
@@ -815,8 +817,14 @@ def get_all_series_didend( tvdata, verify = True, debug = False ):
         return didend_map                                
     
 def _get_remaining_eps_perproc( input_tuple ):
-    name, series_id, epsForShow, token, showSpecials, fromDate, verify = input_tuple
     time0 = time.time( )
+    name = input_tuple[ 'name' ]
+    series_id = input_tuple[ 'series_id' ]
+    epsForShow = input_tuple[ 'epsForShow' ]
+    token = input_tuple[ 'token' ]
+    showSpecials = input_tuple[ 'showSpecials' ]
+    fromDate = input_tuple[ 'fromDate' ]
+    verify = input_tuple[ 'verify' ]
     #
     ## only record those episodes that have an episodeName that is not None
     eps = list(
@@ -847,36 +855,47 @@ def _get_series_id_perproc( input_tuple ):
     return show, series_id
     
 def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify = True,
-                            doShowEnded = False, showsToExclude = None ):
+                            doShowEnded = False, showsToExclude = None,
+                            num_threads = 16):
+    assert( num_threads >= 1 )
     token = get_token( verify = verify )
     tvdata_copy = copy.deepcopy( tvdata )
     if showsToExclude is not None:
         showsExclude = set( showsToExclude ) & set( tvdata_copy.keys( ) )
         for show in showsExclude: tvdata_copy.pop( show )
-    with multiprocessing.Pool( processes = max( 32, multiprocessing.cpu_count( ) ) ) as pool:
-        tvshow_id_map = dict(filter(lambda tup: tup is not None, 
-                                    pool.map( _get_series_id_perproc,
-                                              map(lambda show: ( show, token, verify, doShowEnded ), tvdata_copy ) ) ) )
+    with multiprocessing.Pool( processes = max( num_threads, multiprocessing.cpu_count( ) ) ) as pool:
+        tvshow_id_map = dict(filter(
+            None, pool.map( _get_series_id_perproc,
+                            map(lambda show: ( show, token, verify, doShowEnded ), tvdata_copy ) ) ) )
     if fromDate is not None:
         series_ids = set( get_series_updated_fromdate( fromDate, token ) )
         ids_tvshows = dict(map(lambda name_seriesId: ( name_seriesId[1], name_seriesId[0] ), tvshow_id_map.items( ) ) )
         updated_ids = set( ids_tvshows.keys( ) ) & series_ids
         tvshow_id_map = dict(map(lambda series_id: ( ids_tvshows[ series_id ], series_id ), updated_ids ) )
     tvshows = sorted( set( tvshow_id_map ) )
-    input_tuples = list(map(lambda name: (
-        name, tvshow_id_map[ name ],
-        tvdata_copy[ name ][ 'seasons' ], token,
-        showSpecials, fromDate, verify ), tvshow_id_map ) )
-    with multiprocessing.Pool( processes = max(32, multiprocessing.cpu_count( ) ) ) as pool:
-        toGet_sub = dict( filter( lambda tup: tup is not None,
-                                  pool.map( _get_remaining_eps_perproc, input_tuples ) ) )
+    input_tuples = list(
+        map(lambda name:
+            { 'name' : name,
+              'token' : token,
+              'showSpecials' : showSpecials,
+              'fromDate' : fromDate,
+              'verify' : verify,
+              'series_id' : tvshow_id_map[ name ],
+              'epsForShow' : tvdata_copy[ name ][ 'seasons' ] }, tvshow_id_map ) )
+        # name, tvshow_id_map[ name ],
+        # tvdata_copy[ name ][ 'seasons' ], token,
+        # showSpecials, fromDate, verify ), tvshow_id_map ) )
+    with multiprocessing.Pool(
+            processes = max(num_threads, multiprocessing.cpu_count( ) ) ) as pool:
+        toGet_sub = dict( filter(
+            None, pool.map( _get_remaining_eps_perproc, input_tuples ) ) )
     #
     ## guard code for now -- only include those tv shows that have titles of new episodes to download
     tvshows_act = set(filter(lambda tvshow: len(list(
         filter(lambda epdata: epdata[-1] is not None, toGet_sub[ tvshow ] ) ) ) != 0, toGet_sub ) )
     tvdata_path_data = dict(filter(None, map(lambda tvshow: (
         tvshow, get_path_data_on_tvshow( tvdata, tvshow ) ), tvshows_act ) ) )
-    toGet = { tvshow : {
+    toGet = dict(map(lambda tvshow: ( tvshow, {
         'episodes' : list(
             filter(lambda epdata: epdata[-1] is not None, toGet_sub[ tvshow ] ) ),
         'prefix' : tvdata_path_data[ tvshow ][ 'prefix' ],
@@ -884,7 +903,8 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
         'min_inferred_length' : tvdata_path_data[ tvshow ][ 'min_inferred_length' ],
         'season_prefix_dict' : tvdata_path_data[ tvshow ][ 'season_prefix_dict' ],
         'episode_number_length' : tvdata_path_data[ tvshow ][ 'episode_number_length' ],
-        'avg_length_mins' : tvdata_path_data[ tvshow ][ 'avg_length_mins' ] } for tvshow in sorted( tvshows_act ) }
+        'avg_length_mins' : tvdata_path_data[ tvshow ][ 'avg_length_mins' ] } ),
+                     sorted( tvshows_act ) ) )
     return toGet
 
 def push_shows_to_exclude( tvdata, showsToExclude ):

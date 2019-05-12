@@ -482,10 +482,11 @@ def get_series_updated_fromdate( date, token, verify = True ):
 
 def get_path_data_on_tvshow( tvdata, tvshow ):
     assert( tvshow in tvdata )
+    seasons_info = tvdata[ tvshow ][ 'seasons' ]
     num_cols = set(reduce(lambda x,y: x+y, list(
         map(lambda seasno: list(
-            map(lambda epno: len(splitall( tvdata[tvshow][seasno][epno]['path'])),
-                tvdata[tvshow][seasno])), tvdata[tvshow]))))
+            map(lambda epno: len(splitall( seasons_info[seasno]['episodes'][epno]['path'])),
+                seasons_info[seasno]['episodes'])), seasons_info))))            
     #
     ## only consider tv shows with fixed number of columns
     if len( num_cols ) != 1: return None
@@ -497,14 +498,16 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
         filter(lambda colno:
                len(set(reduce(lambda x,y: x+y, list(
                    map(lambda seasno: list(
-                       map(lambda epno: splitall( tvdata[tvshow][seasno][epno]['path'])[ colno ],
-                           tvdata[ tvshow ][ seasno ])), tvdata[ tvshow ]))))) == 1, range(num_cols)))
-    if sum(map(lambda seasno: len(tvdata[tvshow][seasno]), tvdata[tvshow])) == 1: # only one episode
+                       map(lambda epno: splitall(
+                           seasons_info[seasno]['episodes'][epno]['path'])[ colno ],
+                           seasons_info[ seasno ]['episodes'])),
+                       seasons_info ))))) == 1, range(num_cols)))
+    if sum(map(lambda seasno: len(seasons_info[seasno]), seasons_info)) == 1: # only one episode
         ## just get the non-episode, non-season name
         splits_with_len_1.pop(-1)
-        season = max( tvdata[ tvshow ] )
-        epno = max( tvdata[ tvshow ][ season ] )
-        fullpath_split = os.path.dirname( tvdata[ tvshow ][ season ][ epno ]['path'] ).split('/')
+        season = max( seasons_info )
+        epno = max( seasons_info[ season ]['episodes'] )
+        fullpath_split = os.path.dirname( seasons_info[ season ]['episodes'][ epno ]['path'] ).split('/')
         if 'Season' or 'Special' in fullpath_split[-1]:
             splits_with_len_1.pop(-1)
     
@@ -512,8 +515,10 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
         *list(map(lambda colno:
                   max(set(reduce(lambda x,y: x+y, list(
                       map(lambda seasno: list(
-                          map(lambda epno: splitall( tvdata[tvshow][seasno][epno]['path'])[ colno ],
-                              tvdata[ tvshow ][ seasno ])), tvdata[ tvshow ]))))), sorted(splits_with_len_1))))
+                          map(lambda epno: splitall(
+                              seasons_info[seasno]['episodes'][epno]['path'])[ colno ],
+                              seasons_info[ seasno ]['episodes'])),
+                          seasons_info))))), sorted(splits_with_len_1))))
     
     
     #
@@ -521,8 +526,9 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
     avg_length_secs = numpy.average(
         reduce(lambda x,y: x+y, list(
             map(lambda seasno: list(
-                map(lambda epno: tvdata[tvshow][seasno][epno]['duration'], tvdata[tvshow][seasno])),
-                tvdata[tvshow]))))
+                map(lambda epno: seasons_info[seasno]['episodes'][epno]['duration'],
+                    seasons_info[seasno]['episodes'])),
+                seasons_info))))
     
     #
     ## now those extra paths that are not common, but peculiar to each season and episode
@@ -539,36 +545,38 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
             if re.match('^s\d{1,}e\d{1,}', toks[idx].lower( ) ) is not None:
                 idx_match = idx
                 break
-        assert( idx_match != -1 ), 'PROBLEM WITH %s' % basename
+        assert( idx_match != -1 ), 'problem with %s' % basename
         return ' - '.join( toks[:idx_match] )
     main_file_name = set(reduce(lambda x,y: x+y, list(
         map(lambda seasno: list(
-            map(lambda epno: get_main_file_name( os.path.basename( tvdata[tvshow][seasno][epno]['path'] ) ),
-                tvdata[ tvshow ][ seasno ])), tvdata[ tvshow ]))))
-    assert(len(main_file_name) == 1), 'ERROR WITH %s, main_file_names = %s' % ( tvshow, sorted(main_file_name) )
+            map(lambda epno: get_main_file_name( os.path.basename(
+                seasons_info[seasno]['episodes'][epno]['path'] ) ),
+                seasons_info[ seasno ]['episodes'])), seasons_info))))
+    assert(len(main_file_name) == 1), 'error with %s, main_file_names = %s' % ( tvshow, sorted(main_file_name) )
     main_file_name = max( main_file_name )
     season_prefix_dict = { }
     if len( extra_season_ep_columns ) == 1:
         season_col = max( splits_with_len_1 )
         season_dirs = [ ]
-        for seasno in tvdata[ tvshow ]:
-            season_dir = sorted(set(map(lambda epno: splitall( tvdata[tvshow][seasno][epno]['path'])[ season_col ],
-                                        tvdata[ tvshow ][ seasno ] ) ) )
-            season_dirs += season_dir
+        for seasno in seasons_info:
+            season_dirs += sorted(set(map(lambda epno: splitall(
+                seasons_info[seasno]['episodes'][epno]['path'])[ season_col ],
+                                          seasons_info[ seasno ]['episodes'] ) ) )
         season_dirs = set( season_dirs )
-        assert( len( season_dirs ) == 1 ), 'PROBLEM WITH %s' % tvshow
+        assert( len( season_dirs ) == 1 ), 'problem with %s' % tvshow
         last_dir = max( season_dirs )
         if last_dir.startswith( 'Season' ):
             prefix, season_dir = os.path.split( prefix )
-            season_prefix_dict = dict(map(lambda seasno: ( seasno, season_dir ),
-                                          tvdata[ tvshow ] ) )            
+            season_prefix_dict = dict(map(
+                lambda seasno: ( seasno, season_dir ), seasons_info ) )            
     # go through each season, assert that all eps in a given season are in a single directory    
     elif len( extra_season_ep_columns ) == 2:
         season_col = extra_season_ep_columns[ 0 ]
-        for seasno in tvdata[ tvshow ]:
-            season_dir = set(map(lambda epno: splitall( tvdata[tvshow][seasno][epno]['path'])[ season_col ],
-                                 tvdata[ tvshow ][ seasno ] ) )
-            assert( len( season_dir ) == 1 ), 'PROBLEM WITH %s' % tvshow
+        for seasno in seasons_info:
+            season_dir = set(map(lambda epno: splitall(
+                seasons_info[seasno]['episodes'][epno]['path'])[ season_col ],
+                                 seasons_info[ seasno ]['episodes'] ) )
+            assert( len( season_dir ) == 1 ), 'problem with %s' % tvshow
             #if len( season_dir ) != 1:
             #    print( '%s, %d, %s' % ( tvshow, seasno, season_dir ) )
             #    return None
@@ -578,7 +586,8 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
                                       filter(lambda seasno: season_prefix_dict[ seasno ].startswith('Season'),
                                              season_prefix_dict)))
     else: min_inferred_length = 0
-    max_num_eps = max(map(lambda seasno: len(tvdata[tvshow][seasno]), tvdata[tvshow]))
+    max_num_eps = max(map(lambda seasno: len(seasons_info[seasno]['episodes']),
+                          seasons_info))
     max_eps_len = max(2, int( numpy.log10( max_num_eps ) + 1 ) )
     return { 'prefix' : prefix,
              'showFileName' : main_file_name,
@@ -590,9 +599,9 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
 def get_all_series_didend( tvdata, verify = True, debug = False ):
     time0 = time.time( )
     with multiprocessing.Pool(
-            processes = max(16, multiprocessing.cpu_count( ) ) ) as pool:
+            processes = max(32, multiprocessing.cpu_count( ) ) ) as pool:
         date_now = datetime.datetime.now( ).date( )
-        token = get_token( verify = verify )  
+        token = get_token( verify = verify )
         tvshow_id_map = dict(filter(
             lambda tup: tup is not None,
             pool.map(lambda seriesName: (
@@ -654,7 +663,7 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
     if showsToExclude is not None:
         showsExclude = set( showsToExclude ) & set( tvdata_copy.keys( ) )
         for show in showsExclude: tvdata_copy.pop( show )
-    with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
+    with multiprocessing.Pool( processes = max( 32, multiprocessing.cpu_count( ) ) ) as pool:
         tvshow_id_map = dict(filter(lambda tup: tup is not None, 
                                     pool.map( _get_series_id_perproc,
                                               map(lambda show: ( show, token, verify, doShowEnded ), tvdata_copy ) ) ) )
@@ -662,14 +671,13 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
         series_ids = set( get_series_updated_fromdate( fromDate, token ) )
         ids_tvshows = dict(map(lambda name_seriesId: ( name_seriesId[1], name_seriesId[0] ), tvshow_id_map.items( ) ) )
         updated_ids = set( ids_tvshows.keys( ) ) & series_ids
-        tvshow_id_map = { ids_tvshows[ series_id ] : series_id for series_id in
-                          updated_ids }
+        tvshow_id_map = dict(map(lambda series_id: ( ids_tvshows[ series_id ], series_id ), updated_ids ) )
     tvshows = sorted( set( tvshow_id_map ) )
     input_tuples = list(map(lambda name: (
         name, tvshow_id_map[ name ],
         tvdata_copy[ name ][ 'seasons' ], token,
         showSpecials, fromDate, verify ), tvshow_id_map ) )
-    with multiprocessing.Pool( processes = max(16, multiprocessing.cpu_count( ) ) ) as pool:
+    with multiprocessing.Pool( processes = max(32, multiprocessing.cpu_count( ) ) ) as pool:
         toGet_sub = dict( filter( lambda tup: tup is not None,
                                   pool.map( _get_remaining_eps_perproc, input_tuples ) ) )
     #
@@ -737,8 +745,8 @@ def get_tvtorrent_candidate_downloads( toGet ):
         #
         ## calc minsize from avg_length_mins
         num_in_50 = int( avg_length_mins * 60.0 * 1100 / 8.0 / 1024 / 50 + 1)
-        # minSize = 50 * num_in_50        
-        #
+        ## minSize = 50 * num_in_50        
+        ##
         ## calc maxsize from avg_length_mins
         num_in_50 = int( avg_length_mins * 60.0 * 1500 / 8.0 / 1024 / 50 + 1 )
         maxSize = 50 * num_in_50

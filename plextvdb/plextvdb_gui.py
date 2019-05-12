@@ -22,19 +22,12 @@ class TVShow( object ):
                                               token, verify = verify ) )
             except: return None
         with multiprocessing.Pool(
-<<<<<<< HEAD
-                max( 32, processes = multiprocessing.cpu_count( ) ) ) as pool:
-            tvshow_dict = dict(filter(None, pool.map(_create_tvshow, sorted( tvdata ) ) ) )
-            logging.debug('took %0.3f seconds to get a dictionary of %d / %d TV Shows.' % (
-                time.time( ) - time0, len( tvshow_dict ), len( tvdata ) ) )
-=======
                 processes = max( 32, multiprocessing.cpu_count( ) ) ) as pool:
             tvshow_dict = dict(filter(None, pool.map(_create_tvshow, sorted( tvdata[:60] ) ) ) )
             mystr = 'took %0.3f seconds to get a dictionary of %d / %d TV Shows.' % (
                 time.time( ) - time0, len( tvshow_dict ), len( tvdata ) )
             logging.debug( mystr )
             if debug: print( mystr )
->>>>>>> 5f6fbe9b370416f6407940ae565d5fc06654655d
             return tvshow_dict
     
     @classmethod

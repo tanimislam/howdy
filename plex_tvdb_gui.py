@@ -10,13 +10,9 @@ from optparse import OptionParser
 from plextvdb.plextvdb_gui import TVDBGUI
 from plexcore import plexcore
 from PyQt4.QtGui import QApplication
-<<<<<<< HEAD
-import qdarkstyle, logging, os
-=======
 import qdarkstyle, logging, os, warnings
 
 warnings.simplefilter("ignore")
->>>>>>> 5f6fbe9b370416f6407940ae565d5fc06654655d
 
 def main( info = False, doLocal = True, verify = True ):
     app = QApplication([])
@@ -24,10 +20,6 @@ def main( info = False, doLocal = True, verify = True ):
     if info: logging.basicConfig( level = logging.INFO )
     fullURL, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
-<<<<<<< HEAD
-    print( fullURL, token )
-=======
->>>>>>> 5f6fbe9b370416f6407940ae565d5fc06654655d
     tvdb_gui = TVDBGUI( token, fullURL, verify = verify )
     result = app.exec_( )
     return tvdb_gui

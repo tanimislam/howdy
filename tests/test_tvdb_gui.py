@@ -21,9 +21,10 @@ app = QApplication([])
 app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
 fullURL, token = plexcore.checkServerCredentials(
     doLocal = False, verify = False )
+tvdata = pickle.load( gzip.open(max(glob.glob('tvdata_*pkl.gz')), 'rb' ))
+toGet = pickle.load( gzip.open(max(glob.glob('toGet_*pkl.gz')), 'rb' ))
+didend= pickle.load( gzip.open(max(glob.glob('didend_*pkl.gz')), 'rb'))
 tvdbg = plextvdb_gui.TVDBGUI(
-    token, fullURL, tvdata_on_plex = pickle.load(
-        gzip.open('tvdata_20190504.pkl.gz', 'rb' ) ),
-    tvshow_dict = pickle.load( gzip.open( 'tvshow_dict_20190507.pkl.gz', 'rb' ) ),
-    verify = False )
+    token, fullURL, tvdata_on_plex = tvdata,
+    toGet = toGet, didend = didend, verify = True )
 result = app.exec_( )

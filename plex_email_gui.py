@@ -13,6 +13,7 @@ from plexemail.plexemail_mygui import PlexEmailMyGUI
 from plexcore.plexcore_gui import returnServerToken, returnGoogleAuthentication
 from optparse import OptionParser
 from PyQt4.QtGui import QApplication, QStyleFactory
+import qdarkstyle
 
 if __name__=='__main__':
     parser = OptionParser( )
@@ -25,11 +26,9 @@ if __name__=='__main__':
     parser.add_option('--large', dest='do_large', action='store_true', default = False,
                       help = 'If chosen, make the GUI (widgets and fonts) LARGER to help with readability.')
     opts, args = parser.parse_args( )
-    if opts.do_debug:
-        logging.basicConfig( level = logging.DEBUG )
+    if opts.do_debug: logging.basicConfig( level = logging.DEBUG )
     app = QApplication( [] )
-    app.setStyleSheet(
-        open( os.path.join( mainDir, 'resources', 'ubuntu.qss' ), 'r' ).read( ) )
+    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
     _, token = returnServerToken( )
     val = returnGoogleAuthentication( )
     if not opts.do_onlyemail:

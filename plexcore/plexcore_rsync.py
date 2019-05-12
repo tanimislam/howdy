@@ -28,10 +28,21 @@ def push_credentials( local_dir, sshpath, subdir = None ):
         mystr_split.append( 'sub directory on local machine from which to get files: %s' % subdir )
     logging.debug('\n'.join( mystr_split ) )
 
-def get_rsync_command( data, mystr ):
-    if data['subdir'] is not None: mainStr = os.path.join( data['subdir'], mystr.strip( ) )
-    else: mainStr = mystr.strip( )
-    mycmd = 'rsync --remove-source-files -P -avz -e ssh %s:%s %s/' % ( data[ 'sshpath' ], mainStr, data['local_dir'] )
+def get_rsync_command( data, mystr, do_download = True ):
+    if do_download:
+        if data['subdir'] is not None:
+            mainStr = os.path.join( data['subdir'], mystr.strip( ) )
+        else: mainStr = mystr.strip( )
+        mycmd = 'rsync --remove-source-files -P -avz -e ssh %s:%s %s/' % (
+            data[ 'sshpath' ], mainStr, data['local_dir'] )
+    else:
+        fullpath = os.path.join( data['local_dir'], mystr )
+        if data['subdir'] is not None:
+            mycmd = 'rsync --remove-source-files -P -avz -e ssh %s %s:%s/' % (
+                fullpath, data[ 'sshpath' ], data['subdir'] )
+        else:
+            mycmd = 'rsync --remove-source-files -P -avz -e ssh %s %s:' % (
+                fullpath, data[ 'sshpath' ] )            
     return mycmd
 
 def get_credentials( ):
@@ -50,16 +61,19 @@ def get_credentials( ):
     else: data['subdir'] = subdir.strip( )
     return data
 
-def download_files( glob_string, numtries = 10, debug_string = False ):
+def download_upload_files( glob_string, numtries = 10, debug_string = False,
+                           do_reverse = False ):
     assert( numtries > 0 )
     data = get_credentials( )
     if data is None:
         return "FAILURE", "could not get credentials for performing rsync operation"
     local_dir = data[ 'local_dir' ].strip( )
     sshpath = data[ 'sshpath' ].strip( )
-    mycmd = get_rsync_command( data, glob_string )
+    mycmd = get_rsync_command( data, glob_string, do_download = not do_reverse )
     mystr_split = [ 'STARTING THIS RSYNC CMD: %s' % mycmd ]
-    if debug_string: print( mystr_split[-1] )
+    if debug_string:
+        print( mystr_split[-1] )
+        print( 'TRYING UP TO %d TIMES.' % numtries )
     time0 = time.time( )
     for idx in range( numtries ):
         time00 = time.time( )

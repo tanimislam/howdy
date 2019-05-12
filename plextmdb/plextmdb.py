@@ -230,8 +230,7 @@ def get_movies_by_title( title, verify = True ):
                 'isFound' : False
             }
             if 'id' in datum: row[ 'tmdb_id' ] = datum[ 'id' ]
-        except Exception:
-            pass
+        except Exception: pass
         actualMovieData.append( row )
     return actualMovieData
 
@@ -361,8 +360,7 @@ def get_main_genre_movie( movie_elem ):
         if genre in classic_genres:
             return genre
     val = get_genre_movie( movie_elem[ 'title' ] )
-    if val is not None:
-        return val
+    if val is not None: return val
     return postprocess_genre( genres[ 0 ] )
                              
 def getMovieData( year, genre_id, verify = True ):

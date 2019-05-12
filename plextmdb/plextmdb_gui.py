@@ -291,7 +291,7 @@ class TMDBTorrents( QDialog ):
                 openfile.write( '%s\n' % url )
             
 
-class TMDBGUI( QWidget ):
+class TMDBGUI( QDialog ):
     movieSendList = pyqtSignal( list )
     movieRefreshRows = pyqtSignal( list )
 
@@ -384,7 +384,7 @@ class TMDBGUI( QWidget ):
 
     def fill_out_movies( self, movie_data_rows ):
         self.all_movies = list(map(
-            lambda row: { 'title' : row[0], 'year' : row[3].year }, movie_data_rows ))
+            lambda row: { 'title' : row['title'], 'year' : row['releasedate'].year }, movie_data_rows ))
         self.tmdbtv.tm.layoutAboutToBeChanged.emit( )
         self.tmdbtv.tm.layoutChanged.emit( ) # change the colors in the rows, if already there
 
@@ -392,7 +392,8 @@ class TMDBGUI( QWidget ):
         self.token = newToken
 
     def refreshMovies( self ):
-        movie_data_rows, _ = plexcore.fill_out_movies_stuff( self.token, fullurl = self.fullURL )
+        movie_data_rows, _ = plexcore.fill_out_movies_stuff(
+            self.token, fullURL = self.fullURL, verify = self.verify )
         self.fill_out_movies( movie_data_rows )
         self.movieRefreshRows.emit( movie_data_rows )
         

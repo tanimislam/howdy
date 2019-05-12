@@ -1,6 +1,6 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
-import os, sys, numpy, glob, datetime
+import os, sys, numpy, glob, datetime, inspect
 import logging, requests, time, io, PIL.Image
 from multiprocessing import Process, Manager
 import pathos.multiprocessing as multiprocessing
@@ -48,7 +48,8 @@ class TVShow( object ):
             return None
         return sorted( map(lambda tok: int(tok), data['airedSeasons'] ) )
         
-    def __init__( self, seriesName, seriesInfo, token, verify = True ):
+    def __init__( self, seriesName, seriesInfo, token, verify = True,
+                  showSpecials = False ):
         self.seriesId = plextvdb.get_series_id( seriesName, token, verify = verify )
         self.seriesName = seriesName
         if self.seriesId is None:
@@ -657,11 +658,11 @@ class TVDBTableModel( QAbstractTableModel ):
             startDate = min( map(
                 lambda seasno: min(
                     map(lambda epno: seasons_info[ seasno ]['episodes'][ epno ][ 'date aired' ],
-                        seasons_info[seasno]['episodes'] ) ), seasons_info ) )
+                        seasons_info[seasno]['episodes'] ) ), set(seasons_info) - set([0]) ) )
             endDate = max( map(
                 lambda seasno: max(
                     map(lambda epno: seasons_info[ seasno ]['episodes'][ epno ][ 'date aired' ],
-                        seasons_info[ seasno ]['episodes'] ) ), seasons_info ) )
+                        seasons_info[ seasno ]['episodes'] ) ), set(seasons_info) - set([0]) ) )
             seasons = len( seasons_info.keys( ) )
             numEps = sum( map(
                 lambda seasno: len( seasons_info[ seasno ][ 'episodes' ] ),
@@ -691,6 +692,10 @@ class TVDBTableModel( QAbstractTableModel ):
     def sort( self, col, order ):
         self.layoutAboutToBeChanged.emit( )
         self.sortColumn = col
+        colMapping = { 0 : 'seriesName', 1 : 'startDate', 2 : 'endDate' }
+        if col in ( 0, 1, 2 ):
+            self.actualTVSeriesData.sort(
+                key = lambda dat: dat[ colMapping[ col ] ] )
         self.layoutChanged.emit( )
         
     #
@@ -768,7 +773,7 @@ class TVDBShowGUI( QDialog ):
         #
         ## set size
         self.setFixedWidth( self.series_widgets[ first_season ].sizeHint( ).width( ) * 1.05 )
-        self.setFixedHeight( 800 )
+        # self.setFixedHeight( 800 )
         #
         ## connect
         seasonSelected.installEventFilter( self )
@@ -778,8 +783,25 @@ class TVDBShowGUI( QDialog ):
         quitAction.triggered.connect( self.close )
         self.addAction( quitAction )
         #
+        printAction = QAction( self )
+        printAction.setShortcut( 'Shift+Ctrl+P' )
+        printAction.triggered.connect( self.screenGrab )
+        self.addAction( printAction )
+        #
         ##
         self.show( )
 
     def selectSeason( self, idx ):
         self.seasonWidget.setCurrentIndex( idx )
+
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName(
+            self, 'Save Screenshot',
+            os.path.expanduser( '~' ),
+            filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0:
+            return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = fname + '.png'
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )

@@ -23,7 +23,8 @@ fullURL, token = plexcore.checkServerCredentials(
     doLocal = False, verify = False )
 tvdbg = plextvdb_gui.TVDBGUI(
     token, fullURL, tvdata_on_plex = pickle.load(
-        gzip.open('tvdata_20190504.pkl.gz', 'rb' ) ),
-    tvshow_dict = pickle.load( gzip.open( 'tvshow_dict_20190507.pkl.gz', 'rb' ) ),
-    verify = False )
+        gzip.open('tvdata_20190511.pkl.gz', 'rb' ) ),
+    toGet = pickle.load( gzip.open( 'toGet_20190511.pkl.gz', 'rb' ) ),
+    didend = pickle.load( gzip.open( 'didend_20190511.pkl.gz', 'rb' ) ),
+    verify = True )
 result = app.exec_( )

@@ -23,7 +23,7 @@ def main(debug = False, doLocal = True, doLarge = False,
         doLocal = doLocal, verify = verify )
     tmdb_totgui = plextmdb_totgui.TMDBTotGUI(
         fullURL, token, movie_data_rows = pickle.load(
-            gzip.open( 'movie_data_rows_20190506.pkl.gz', 'rb' ) ),
+            gzip.open( 'movie_data_rows_20190511.pkl.gz', 'rb' ) ),
         doLarge = doLarge, verify = verify )
     result = app.exec_( )
     return tmdb_totgui

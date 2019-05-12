@@ -2,6 +2,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import os, sys, numpy, glob, datetime
 import logging, requests, time, io, PIL.Image
+from multiprocessing import Process, Manager
 import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
 from functools import reduce
@@ -229,24 +230,25 @@ class TVDBGUI( QDialog ):
     tvSeriesRefreshRows = pyqtSignal( list )
 
     @classmethod
-    def getShowSummary( cls, seriesName, tvshow_dict, tvdata_on_plex, missing_eps ):
-        tvshow = tvshow_dict[ seriesName ]
-        tvshow_plex = tvdata_on_plex[ seriesName ]
-        overview = tvshow.overview.strip( )
+    def getShowSummary( cls, seriesName, tvdata_on_plex, missing_eps ):
+        seasons_info = tvdata_on_plex[ seriesName ][ 'seasons' ]
+        overview = tvdata_on_plex[ seriesName ][ 'summary' ]
+        didend = tvdata_on_plex[ seriesName ][ 'didEnd' ]
         num_total = sum(list(
-            map(lambda seasno: len( tvshow_plex[ seasno ] ),
-                set( tvshow_plex ) - set([0]) ) ) )
-        num_missing = len( missing_eps[ seriesName ] )
-        if tvshow.statusEnded: show_status = "Show has ended"
+            map(lambda seasno: len( seasons_info[ seasno ][ 'episodes' ] ),
+                set( seasons_info ) - set([0]))))
+        if seriesName not in missing_eps: num_missing = 0
+        else: num_missing = len( missing_eps[ seriesName ] )
+        if didend: show_status = "Show has ended"
         else: show_status = "Show is still ongoing"
         minDate = min(
             map(lambda seasno: min(
-                map(lambda epno: tvshow_plex[ seasno ][epno]['date aired' ],
-                    tvshow_plex[ seasno ] ) ), set( tvshow_plex ) - set([0])))
+                map(lambda epno: seasons_info[ seasno ]['episodes'][epno]['date aired' ],
+                    seasons_info[ seasno ]['episodes'] ) ), set( seasons_info ) - set([0])))
         maxDate = max(
             map(lambda seasno: max(
-                map(lambda epno: tvshow_plex[ seasno ][epno]['date aired' ],
-                    tvshow_plex[ seasno ] ) ), set( tvshow_plex ) - set([0])))
+                map(lambda epno: seasons_info[ seasno ]['episodes'][epno]['date aired' ],
+                    seasons_info[ seasno ]['episodes'] ) ), set( seasons_info ) - set([0])))
         
         html = BeautifulSoup("""
         <html>
@@ -268,13 +270,13 @@ class TVDBGUI( QDialog ):
         average_duration_in_secs = numpy.array(
             reduce(lambda x,y: x+y,
                    list(map(lambda seasno: list(
-                       map(lambda epno: tvshow_plex[ seasno ][ epno ][ 'duration' ],
-                           tvshow_plex[ seasno ] ) ), tvshow_plex ) ) ) ).mean( )
+                       map(lambda epno: seasons_info[ seasno ]['episodes'][ epno ][ 'duration' ],
+                           seasons_info[ seasno ]['episodes'] ) ), set( seasons_info ) - set([0]))))).mean( )
         average_size_in_bytes = numpy.array(
             reduce(lambda x,y: x+y,
                    list(map(lambda seasno: list(
-                       map(lambda epno: tvshow_plex[ seasno ][ epno ][ 'size' ],
-                           tvshow_plex[ seasno ] ) ), tvshow_plex ) ) ) ).mean( )
+                       map(lambda epno: seasons_info[ seasno ]['episodes'][ epno ][ 'size' ],
+                           seasons_info[ seasno ]['episodes'] ) ), set( seasons_info ) - set([0]))))).mean( )
         dur_tag = html.new_tag( "p" )
         dur_tag.string = "average duration of %02d episodes: %s." % (
             num_total, plexcore.get_formatted_duration( average_duration_in_secs ) )
@@ -286,13 +288,9 @@ class TVDBGUI( QDialog ):
         return html.prettify( )
 
     @classmethod
-    def getSummaryImg( cls, imageURL, verify = True ):
+    def getSummaryImg( cls, imageURL, token ):
         if imageURL is None: return None
-        try:
-            response = requests.get( imageURL, verify = verify )
-            if response.status_code != 200: return None
-            return response.content
-        except: return None
+        return plexcore.get_pic_data( imageURL, token )
 
     def screenGrab( self ):
         fname = str( QFileDialog.getSaveFileName(
@@ -307,16 +305,15 @@ class TVDBGUI( QDialog ):
         qpm.save( fname )
 
     def processTVShow( self, seriesName ):
-        assert( seriesName in self.tvshow_dict )
         assert( seriesName in self.tvdata_on_plex )
         if seriesName not in self.summaryShowInfo:
             self.summaryShowInfo[ seriesName ] = TVDBGUI.getShowSummary(
-                seriesName, self.tvshow_dict, self.tvdata_on_plex,
-                self.missing_eps )
+                seriesName, self.tvdata_on_plex, self.missing_eps )
             
         if seriesName not in self.showImages:
             self.showImages[ seriesName ] = TVDBGUI.getSummaryImg(
-                self.tvshow_dict[ seriesName ].imageURL, verify = self.verify )
+                self.tvdata_on_plex[ seriesName ][ 'picurl' ],
+                self.token )
 
         showSummary = self.summaryShowInfo[ seriesName ]
         showImg = self.showImages[ seriesName ]
@@ -324,14 +321,14 @@ class TVDBGUI( QDialog ):
         ## now put this into summary image on left, summary info on right
         if showImg is not None:
             qpm = QPixmap.fromImage( QImage.fromData( showImg ) )
-            qpm = qpm.scaledToWidth( 200 )
+            qpm = qpm.scaledToWidth( 600 )
             self.summaryShowImage.setPixmap( qpm )
         else: self.summaryShowImage.setPixmap( )
         self.summaryShowInfoArea.setHtml( showSummary )
         
                                 
     def __init__( self, token, fullURL, tvdata_on_plex = None,
-                  tvshow_dict = None, verify = True ):
+                  didend = None, toGet = None, verify = True ):
         super( TVDBGUI, self ).__init__( )
         time0 = time.time( )
         #cdg = CustomDialog( self )
@@ -339,65 +336,92 @@ class TVDBGUI( QDialog ):
         mytxt = '0, started loading in data on %s.' % (
             datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
         #cdg.addText( mytxt )
-        print( mytxt )
-        libraries_dict = plexcore.get_libraries( fullURL = fullURL, token = token )
-        if not any(map(lambda value: 'TV' in value, libraries_dict.values( ) ) ):
+        logging.info( mytxt )
+        libraries_dict = plexcore.get_libraries( fullURL = fullURL, token = token,
+                                                 do_full = True )
+        if not any(map(lambda value: 'show' in value[-1], libraries_dict.values( ) ) ):
             raise ValueError( 'Error, could not find TV shows.' )
-        self.key = max(map(lambda key: 'TV' in libraries_dict[ key ], libraries_dict ) )
+        self.library_name = max(map(lambda key: libraries_dict[ key ][ 0 ],
+                                    filter(lambda key: libraries_dict[key][1] == 'show',
+                                           libraries_dict ) ) )
+        self.fullURL = fullURL
+        self.token = token
+        self.tvdb_token = get_token( )
+        self.verify = verify
         mytxt = '1, found TV library in %0.3f seconds.' % ( time.time( ) - time0 )
         #cdg.addText( mytxt )
-        print( mytxt )
+        logging.info( mytxt )
         if tvdata_on_plex is None:
-            tvdata_on_plex = plexcore._get_library_data_show(
-                self.key, fullURL = fullURL, token = token )
+            tvdata_on_plex = plexcore.get_library_data(
+                self.library_name, fullURL = self.fullURL, token = self.token )
         if tvdata_on_plex is None:
             raise ValueError( 'Error, could not find TV shows on the server.' )
         self.tvdata_on_plex = tvdata_on_plex
         mytxt = '2, loaded TV data from Plex server in %0.3f seconds.' % (
             time.time( ) - time0 )
         #cdg.addText( mytxt )
-        print( mytxt )
+        logging.info( mytxt )
         #
-        showsToExclude = plextvdb.get_shows_to_exclude( tvdata_on_plex )
-        if tvshow_dict is None:
-            tvshow_dict = TVShow.create_tvshow_dict(
-                self.tvdata_on_plex, verify = verify )
-        self.tvshow_dict = tvshow_dict
-        mytxt = '3, loaded TV data from TVDB and TMDB in %0.3f seconds.' % (
-            time.time( ) - time0 )
-        #cdg.addText( mytxt )
-        print( mytxt )
+        showsToExclude = plextvdb.get_shows_to_exclude(
+            self.tvdata_on_plex )
+
+        #
+        ## using a stupid-ass pattern to shave some seconds off...
+        def _process_didend( dide, tvdon_plex, do_verify, t0, shared_list ):
+            if dide is not None:
+                shared_list.append( ( 'didend', dide ) )
+                return
+            dide = plextvdb.get_all_series_didend(
+                tvdon_plex, verify = do_verify )
+            mytxt = '3b, added information on whether shows ended in %0.3f seconds.' % (
+                time.time( ) - t0 )
+            logging.info( mytxt )
+            shared_list.append( ( 'didend', dide ) )
+
+        def _process_missing( toge, tvdon_plex, showsexc, do_verify, t0, shared_list ):
+            if toge is not None:
+                shared_list.append( ( 'toGet', toge ) )
+                return
+            toge = plextvdb.get_remaining_episodes(
+                tvdon_plex, showSpecials = False, showsToExclude = showsexc,
+                verify = do_verify )
+            mytxt = '3b, found missing episodes in %0.3f seconds.' % ( time.time( ) - t0 )
+            logging.info( mytxt )
+            shared_list.append( ( 'toGet', toge ) )
+
+        manager = Manager( )
+        shared_list = manager.list( )
+        jobs = [ Process( target=_process_didend, args=(
+            didend, self.tvdata_on_plex, self.verify, time0, shared_list ) ),
+                 Process( target=_process_missing, args=(
+                     toGet, self.tvdata_on_plex, showsToExclude, self.verify,
+                     time0, shared_list ) ) ]
+        for process in jobs: process.start( )
+        for process in jobs: process.join( )
+        final_data = dict( shared_list )
+        assert( set( final_data ) == set([ 'didend', 'toGet' ] ) )
+        didend = final_data[ 'didend' ]
+        toGet = final_data[ 'toGet' ]
+        #
+        for seriesName in self.tvdata_on_plex:
+            self.tvdata_on_plex[ seriesName ][ 'didEnd' ] = didend[ seriesName ]
         mytxt = '4, finished loading in all data on %s.' % (
             datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
         #cdg.addText( mytxt )
-        print( mytxt )
+        logging.info( mytxt )
         #cdg.close( )
         #
-        ## now do the did_end and missing_eps
-        self.did_end = { }
+        ## now do the missing_eps
         self.missing_eps = { }
         for seriesName in self.tvdata_on_plex:
-            if seriesName not in self.tvshow_dict:
-                self.did_end[ seriesName ] = True
-                self.missing_eps[ seriesName ] = [ ]
+            if seriesName not in toGet:
                 continue
-            tvshow = self.tvshow_dict[ seriesName ]                
-            self.did_end[ seriesName ] = tvshow.statusEnded
             if seriesName in showsToExclude:
-                self.missing_eps[ seriesName ] = [ ]
                 continue
-            missing_eps = reduce(lambda x,y: x+y,
-                map(lambda seasno: list(map(lambda epno: ( seasno, epno ),
-                    set( tvshow.seasonDict[ seasno ].episodes ) -
-                                            set( self.tvdata_on_plex[ seriesName ][ seasno ] ) ) ),
-                    set( tvshow.seasonDict ) & set( self.tvdata_on_plex[ seriesName ] ) - set([0]) ) )
-            self.missing_eps[ seriesName ] = missing_eps
-                                  
+            self.missing_eps[ seriesName ] = toGet[ seriesName ][ 'episodes' ]
+            
         #
-        self.verify = verify
         #
-        print('TVDBGUI: took %0.3f seconds to get tvdata_on_plex' %
-              ( time.time( ) - time0 ) )
         self.instantiatedTVShows = { }
         self.dt = datetime.datetime.now( ).date( )
         self.filterOnTVShows = QLineEdit( '' )
@@ -422,10 +446,10 @@ class TVDBGUI( QDialog ):
         myLayout.addWidget( topWidget )
         #
         botWidget = QWidget( )
-        botLayout = QHBoxLayout( )
+        botLayout = QVBoxLayout( )
         botWidget.setLayout( botLayout )
         self.summaryShowImage = QLabel( )
-        self.summaryShowImage.setFixedWidth( 200 )
+        self.summaryShowImage.setFixedWidth( 600 )
         botLayout.addWidget( self.summaryShowImage )
         self.summaryShowInfoArea = QTextEdit( )
         self.summaryShowInfoArea.setReadOnly( True )
@@ -439,7 +463,7 @@ class TVDBGUI( QDialog ):
         font-size: %d;
         }""" % ( int( 11 * 1.0 ) ) )
         self.setFixedWidth( self.tv.frameGeometry( ).width( ) * 1.05 )
-        self.setFixedHeight( 800 )
+        self.setFixedHeight( 900 )
         #
         ## connect actions
         self.filterOnTVShows.textChanged.connect( self.tm.setFilterString )
@@ -459,35 +483,28 @@ class TVDBGUI( QDialog ):
         # self.setSize( 800, 800 )
         self.show( )
 
-    def refreshTVShows( self, doLocal = True ):
+    def refreshTVShows( self ):
         time0 = time.time( )
-        fullURL, token = plexcore.checkServerCredentials(
-            doLocal = doLocal )
-        if token is None:
-            logging.debug("ERROR, COULD NOT GET NEW TOKEN.")
-            return
-        self.tvdata_on_plex = plexcore._get_library_data_show(
-            self.key, fullURL = fullURL, token = token )
-        self.tvshows_dict = TVShow.create_tvshow_dict(
-            self.tvdata_on_plex, verify = self.verify )
-        self.did_end = { }
+        self.tvdata_on_plex = plexcore.get_library_data(
+            self.library_name, fullURL = self.fullURL, token = self.token )
+        didend = plexcore.get_all_series_didend(
+            self.tvdata_on_plex, verify = verify )
+        for seriesName in self.tvdata_on_plex:
+            self.tvdata_on_plex[ seriesName ][ 'didEnd' ] = didend[ seriesName ]
+        showsToExclude = plextvdb.get_shows_to_exclude(
+            self.tvdata_on_plex )
+        toGet = plextvdb.get_remaining_episodes(
+                self.tvdata_on_plex, showSpecials = False,
+            showsToExclude = showsToExclude )
         self.missing_eps = { }
         for seriesName in self.tvdata_on_plex:
-            if seriesName not in self.tvshow_dict:
-                self.did_end[ seriesName ] = True
+            if seriesName not in toGet:
                 self.missing_eps[ seriesName ] = [ ]
                 continue
-            tvshow = self.tvshow_dict[ seriesName ]                
-            self.did_end[ seriesName ] = tvshow.statusEnded
             if seriesName in showsToExclude:
                 self.missing_eps[ seriesName ] = [ ]
                 continue
-            missing_eps = reduce(lambda x,y: x+y,
-                map(lambda seasno: list(map(lambda epno: ( seasno, epno ),
-                    set( tvshow.seasonDict[ seasno ].episodes ) -
-                                            set( self.tvdata_on_plex[ seriesName ][ seasno ] ) ) ),
-                    set( tvshow.seasonDict ) & set( self.tvdata_on_plex[ seriesName ] ) - set([0]) ) )
-            self.missing_eps[ seriesName ] = missing_eps
+            self.missing_eps[ seriesName ] = toGet[ seriesName ][ 'episodes' ]
         self.tm.fillOutCalculation( )
         logging.debug( 'refreshed all TV shows in %0.3f seconds.' % (
             time.time( ) - time0 ) )
@@ -582,16 +599,14 @@ class TVDBTableModel( QAbstractTableModel ):
     def infoOnTVSeriesAtRow( self, actualRow ):
         seriesData = self.actualTVSeriesData[ actualRow ]
         seriesName = seriesData[ 'seriesName' ]
-        self.parent.setEnabled( False )
         if seriesName not in self.parent.instantiatedTVShows:
             self.parent.instantiatedTVShows[ seriesName ] = TVDBShowGUI(
                 seriesName, self.parent.tvdata_on_plex,
-                self.parent.tvshow_dict, parent = self.parent,
+                self.parent.missing_eps, self.parent.tvdb_token,
+                self.parent.token, parent = self.parent,
                 verify = self.parent.verify )
         tvdbsi = self.parent.instantiatedTVShows[ seriesName ]
-        tvdbsi.setEnabled( True )
         result = tvdbsi.exec_( )
-        self.parent.setEnabled( True )
 
     def summaryOnTVShowAtRow( self, actualRow ):
         self.parent.processTVShow(
@@ -635,30 +650,31 @@ class TVDBTableModel( QAbstractTableModel ):
         #
         ## now put in the actual data.
         self.actualTVSeriesData = [ ]
-        for seriesName in sorted( self.parent.tvdata_on_plex ):
+        tvdata_on_plex = self.parent.tvdata_on_plex
+        missing_eps = self.parent.missing_eps
+        for seriesName in sorted( tvdata_on_plex ):
+            seasons_info = tvdata_on_plex[ seriesName ][ 'seasons' ]
             startDate = min( map(
                 lambda seasno: min(
-                    map(lambda epno: self.parent.tvdata_on_plex[ seriesName ][ seasno ][ epno ][ 'date aired' ],
-                        self.parent.tvdata_on_plex[ seriesName ][ seasno ] ) ),
-                self.parent.tvdata_on_plex[ seriesName ] ) )
+                    map(lambda epno: seasons_info[ seasno ]['episodes'][ epno ][ 'date aired' ],
+                        seasons_info[seasno]['episodes'] ) ), seasons_info ) )
             endDate = max( map(
                 lambda seasno: max(
-                    map(lambda epno: self.parent.tvdata_on_plex[ seriesName ][ seasno ][ epno ][ 'date aired' ],
-                        self.parent.tvdata_on_plex[ seriesName ][ seasno ] ) ),
-                self.parent.tvdata_on_plex[ seriesName ] ) )
-            seasons = len( self.parent.tvdata_on_plex[ seriesName ] )
+                    map(lambda epno: seasons_info[ seasno ]['episodes'][ epno ][ 'date aired' ],
+                        seasons_info[ seasno ]['episodes'] ) ), seasons_info ) )
+            seasons = len( seasons_info.keys( ) )
             numEps = sum( map(
-                lambda seasno: len( self.parent.tvdata_on_plex[ seriesName ][ seasno ] ),
-                self.parent.tvdata_on_plex[ seriesName ] ) )
+                lambda seasno: len( seasons_info[ seasno ][ 'episodes' ] ),
+                seasons_info ) )
             dat = { 'seriesName' : seriesName,
                     'startDate' : startDate,
                     'endDate' : endDate,
                     'seasons' : seasons,
                     'numEps' : numEps,
-                    'didEnd' : self.parent.did_end[ seriesName ],
+                    'didEnd' : tvdata_on_plex[ seriesName ][ 'didEnd' ],
                     'numMissing' : 0 }
-            if seriesName in self.parent.missing_eps:
-                dat[ 'numMissing' ] = len( self.parent.missing_eps[ seriesName ] )
+            if seriesName in missing_eps:
+                dat[ 'numMissing' ] = len( missing_eps[ seriesName ] )
             self.actualTVSeriesData.append( dat )
 
         #
@@ -706,13 +722,14 @@ class TVDBTableModel( QAbstractTableModel ):
                 return data[ 'numMissing' ]
 
 class TVDBShowGUI( QDialog ):
-    def __init__( self, seriesName, tvdata, tvshow_dict,
+    def __init__( self, seriesName, tvdata, missing_eps,
+                  tvdb_token, plex_token,
                   parent = None, verify = True ):
         super( TVDBShowGUI, self ).__init__( parent )
         if parent is not None:
             assert( isinstance( parent, QDialog ) )
         assert( seriesName in tvdata )
-        assert( seriesName in tvshow_dict )
+        seriesInfo = tvdata[ seriesName ]
         self.setWindowTitle( seriesName )
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
@@ -726,7 +743,7 @@ class TVDBShowGUI( QDialog ):
         seasonSelected.addItems(
             list(map(lambda seasno: '%d' % seasno,
                      filter(lambda season: season != 0,
-                            sorted( tvdata[ seriesName ] ) ) ) ) )
+                            sorted( seriesInfo[ 'seasons' ] ) ) ) ) )
         seasonSelected.setEnabled( True )
         seasonSelected.setEditable( False )
         seasonSelected.setCurrentIndex( 0 )
@@ -737,12 +754,12 @@ class TVDBShowGUI( QDialog ):
         self.seasonWidget = QStackedWidget( )
         self.series_widgets = { }
         for season in filter(lambda season: season != 0,
-                             sorted( tvdata[ seriesName ] ) ): 
+                             sorted( seriesInfo[ 'seasons' ] ) ): 
             num_seasons = len(list(filter(lambda season: season != 0,
-                                          sorted( tvdata[ seriesName ]))))
+                                          sorted( seriesInfo[ 'seasons' ]))))
             self.series_widgets[ season ] = plextvdb_season_gui.TVDBSeasonGUI(
-                seriesName, season, tvdata, tvshow_dict, verify = verify,
-                parent = parent )
+                seriesName, season, tvdata, missing_eps, tvdb_token, plex_token,
+                verify = verify, parent = parent )
             self.seasonWidget.addWidget( self.series_widgets[ season ] )
             logging.debug( 'added %s season %d / %d.' % (
                 seriesName, season, num_seasons ) )

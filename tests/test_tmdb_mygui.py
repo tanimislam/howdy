@@ -20,7 +20,7 @@ def main(debug = False, doLocal = True, verify = True ):
     if debug: logging.basicConfig( level = logging.DEBUG )
     fullurl, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
-    movie_data_rows = pickle.load( gzip.open( 'movie_data_rows_20190506.pkl.gz', 'rb' ) )
+    movie_data_rows = pickle.load( gzip.open( 'movie_data_rows_20190511.pkl.gz', 'rb' ) )
     tmdb_mygui = plextmdb_mygui.TMDBMyGUI( token, movie_data_rows, verify = verify )
     result = app.exec_( )
     return tmdb_mygui

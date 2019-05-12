@@ -7,7 +7,7 @@ from plexcore import plexcore, plexcore_gui
 
 class TMDBTotGUI( QWidget ):
     emitNewToken = pyqtSignal( str )
-
+        
     def screenGrab( self ):
         fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
                                                   os.path.expanduser( '~' ),
@@ -15,7 +15,7 @@ class TMDBTotGUI( QWidget ):
         if len( os.path.basename( fname.strip( ) ) ) == 0:
             return
         if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
+            fname = '%s.png' % fname
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
     
@@ -23,6 +23,7 @@ class TMDBTotGUI( QWidget ):
                   verify = True ):
         super( TMDBTotGUI, self ).__init__( )
         self.resolution = 1.0
+        self.verify = verify
         if doLarge: self.resolution = 2.0
         self.setWindowTitle('PLEX MOVIE GUI')
         tmdbEngine = plextmdb.TMDBEngine( verify = verify )
@@ -36,11 +37,13 @@ class TMDBTotGUI( QWidget ):
         #
         if movie_data_rows is None:
             movie_data_rows, _ = plexcore.fill_out_movies_stuff(
-                self.token, fullurl = self.fullurl )            
-        self.tmdb_gui = plextmdb_gui.TMDBGUI( token, fullurl, movie_data_rows, isIsolated = False,
-                                              verify = verify )
-        self.tmdb_mygui = plextmdb_mygui.TMDBMyGUI( token, movie_data_rows, isIsolated = False,
-                                                    verify = verify )
+                self.fullurl, self.token, verify = self.verify )
+        self.tmdb_gui = plextmdb_gui.TMDBGUI(
+            self.token, self.fullurl, movie_data_rows, isIsolated = False,
+            verify = verify )
+        self.tmdb_mygui = plextmdb_mygui.TMDBMyGUI(
+            self.token, movie_data_rows, isIsolated = False,
+            verify = verify )
         self.tmdb_gui.movieRefreshRows.connect( self.tmdb_mygui.fill_out_movies )
         self.helpDialog = HelpDialog( self )
         self.statusDialog = QLabel( )
@@ -107,7 +110,8 @@ class TMDBTotGUI( QWidget ):
             qdl.setFixedWidth( 450 )
             qdl.setFixedHeight( qdl.sizeHint( ).height( ) )
             qdl.show( )
-            movie_data_rows, _ = plexcore.fill_out_movies_stuff( self.token, fullurl = self.fullurl )
+            movie_data_rows, _ = plexcore.fill_out_movies_stuff(
+                self.fullurl, self.token, verify = self.verify )
             self.tmdb_gui.fill_out_movies( movie_data_rows = movie_data_rows )
             self.tmdb_mygui.fill_out_movies( movie_data_rows = movie_data_rows )
             qdl.close( )
@@ -129,8 +133,8 @@ class TMDBTotGUI( QWidget ):
 
     def refresh_movies( self ):
         self.statusDialog.setText( 'REFRESHING MOVIES' )
-        movie_data_rows, _ = plexcore.fill_out_movie_stuff( fullurl = self.fullurl,
-                                                            token = self.token )
+        movie_data_rows, _ = TVDBTotGUI.fill_out_movie_stuff(
+            fullurl = self.fullurl, token = self.token )
         self.tmdb_gui.fill_out_movies( movie_data_rows )
         self.tmdb_mygui.fill_out_movies( movie_data_rows )
         self.tmdb_gui.emitMovieList( )

@@ -11,7 +11,7 @@ mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 sys.path.append( mainDir )
 sys.path.append( os.path.dirname( mainDir ) )
 from PyQt4.QtGui import QApplication
-from plextvdb import plextvdb_season_gui
+from plextvdb import plextvdb_season_gui, get_token
 from plexcore import plexcore
 from optparse import OptionParser
 
@@ -26,11 +26,10 @@ opts, args = parser.parse_args( )
 assert( opts.season > 0 )
 app = QApplication([])
 app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
-tvdata = pickle.load( gzip.open('tvdata_20190504.pkl.gz', 'rb' ) )
-tvshow_dict = pickle.load( gzip.open( 'tvshow_dict_20190507.pkl.gz', 'rb' ) )
+tvdata = pickle.load( gzip.open('tvdata_20190511.pkl.gz', 'rb' ) )
 assert( opts.series in tvdata )
-assert( opts.season in tvdata[ opts.series ] )
 
+fullURL, token = plexcore.checkServerCredentials( doLocal = False )
 tvdb_season_gui = plextvdb_season_gui.TVDBSeasonGUI(
-    opts.series, opts.season, tvdata, tvshow_dict, verify = False )
+    opts.series, opts.season, tvdata, { }, get_token( ), token, verify = True )
 result = app.exec_( )

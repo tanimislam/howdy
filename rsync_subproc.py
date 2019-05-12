@@ -18,6 +18,11 @@ def main( ):
                       help = 'number of attempts to go through an rsync process. Default is 10.' )
     parser.add_option('-D', '--debug', dest='do_debug', action='store_true', default = False,
                       help = 'if chosen, then write debug output.' )
+    parser.add_option('-R', '--reverse', dest='do_reverse', action='store_true', default = False,
+                      help = ' '.join([ 'If chosen, push files from local server to remote.',
+                                        'Since files are deleted from source once done,',
+                                        'you should probably make a copy of the source files if',
+                                        'you want to still keep them afterwards.' ]))
     #
     ## now pushing credentials
     parser.add_option('-P', '--push', dest='do_push', action='store_true', default = False,
@@ -43,9 +48,9 @@ def main( ):
     ## otherwise run
     assert( opts.numtries > 0 )
     assert( len( opts.string.strip( ).split( ) ) == 1 ) # no spaces in this string
-    plexcore_rsync.download_files( opts.string.strip( ),
-                                   opts.numtries,
-                                   debug_string = True )
-    
+    plexcore_rsync.download_upload_files(
+        opts.string.strip( ), opts.numtries, debug_string = opts.do_debug,
+        do_reverse = opts.do_reverse )
+        
 if __name__=='__main__':
     main( )

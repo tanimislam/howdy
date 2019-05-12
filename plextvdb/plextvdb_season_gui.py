@@ -3,7 +3,7 @@ from PyQt4.QtCore import *
 from bs4 import BeautifulSoup
 import copy, numpy, sys, requests, logging
 import io, PIL.Image, base64
-from . import plextvdb, plextvdb_gui
+from .plextvdb import get_series_id, get_episodes_series, TVSeason
 from plexcore import plexcore
 from plextmdb import plextmdb
 
@@ -99,8 +99,8 @@ class TVDBSeasonGUI( QDialog ):
             if seriesName in toGet:
                 missing_eps = set(filter(lambda tup: tup[0] == seasno,
                                          toGet[ seriesName ] ) )
-            series_id = plextvdb.get_series_id( seriesName, tvdb_token, verify = verify )
-            eps = plextvdb.get_episodes_series(
+            series_id = get_series_id( seriesName, tvdb_token, verify = verify )
+            eps = get_episodes_series(
                 series_id, tvdb_token, showSpecials = False,
                 showFuture = False, verify = verify )
             if any(filter(lambda episode: episode['episodeName'] is None, eps ) ):
@@ -108,7 +108,7 @@ class TVDBSeasonGUI( QDialog ):
                 if len( tmdb_id ) == 0: return
                 tmdb_id = tmdb_id[ 0 ]
                 eps = plextmdb.get_episodes_series_tmdb( tmdb_id, verify = verify )
-            tvseason = plextvdb_gui.TVSeason(
+            tvseason = TVSeason(
                 seriesName, series_id, tvdb_token, seasno, verify = verify,
                 eps = eps )
             #assert( len(set(map(lambda missing_ep: missing_ep[-1], missing_eps ) ) -

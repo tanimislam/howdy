@@ -2,7 +2,8 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from bs4 import BeautifulSoup
 import copy, numpy, sys, requests, logging
-from . import plextvdb
+import io, PIL.Image, base64
+from . import plextvdb, plextvdb_gui
 from plexcore import plexcore
 from plextmdb import plextmdb
 
@@ -71,6 +72,7 @@ class TVDBSeasonGUI( QDialog ):
         #
         ## put in overview information for episodes I have
         episodes = { }
+        bad_eps = [ ]
         for epno in plex_tv_episodes[ 'episodes' ]:
             episodes[ epno ] = {
                 'seriesName' : seriesName,
@@ -81,29 +83,36 @@ class TVDBSeasonGUI( QDialog ):
                 'date aired' : plex_tv_episodes['episodes'][ epno ][ 'date aired' ],
                 'overview' : plex_tv_episodes['episodes'][ epno ][ 'summary' ],
                 'size' : plex_tv_episodes['episodes'][epno]['size'],
-                'duration' : plex_tv_episodes['episodes'][epno]['duration']
+                'duration' : plex_tv_episodes['episodes'][epno]['duration'],
+                'picurl' : plex_tv_episodes[ 'episodes' ][epno]['episodepicurl'],
+                'plex_token' : plex_token,
+                'verify' : verify
             }
+            if episodes[ epno ][ 'date aired' ].year == 1900: # is bad
+                bad_eps.append(( seasno, epno ))
         #
         ## fill out those episodes don't have, use TVDB and TMDB stuff
         ## ONLY on missing episodes
         def fill_episodes( ):
-            if seriesName not in toGet: return
-            missing_eps = set(filter(lambda tup: tup[0] == seasno,
-                                     toGet[ seriesName ] ) )
-            if len( missing_eps ) == 0: return
+            if seriesName not in toGet and len( bad_eps ) == 0: return
+            missing_eps = [ ]
+            if seriesName in toGet:
+                missing_eps = set(filter(lambda tup: tup[0] == seasno,
+                                         toGet[ seriesName ] ) )
             series_id = plextvdb.get_series_id( seriesName, tvdb_token, verify = verify )
             eps = plextvdb.get_episodes_series(
-                series_id, token, showSpecials = False,
+                series_id, tvdb_token, showSpecials = False,
                 showFuture = False, verify = verify )
             if any(filter(lambda episode: episode['episodeName'] is None, eps ) ):
                 tmdb_id = plextmdb.get_tv_ids_by_series_name( seriesName, verify = verify )
                 if len( tmdb_id ) == 0: return
                 tmdb_id = tmdb_id[ 0 ]
                 eps = plextmdb.get_episodes_series_tmdb( tmdb_id, verify = verify )
-            tvseason = TVSeason( seriesName, series_id, token, seasno, verify = verify,
-                                 eps = eps )
-            assert( len(set(map(lambda missing_ep: missing_ep[-1], missing_eps ) ) -
-                        set( tvseason.episodes ) ) == 0 )
+            tvseason = plextvdb_gui.TVSeason(
+                seriesName, series_id, tvdb_token, seasno, verify = verify,
+                eps = eps )
+            #assert( len(set(map(lambda missing_ep: missing_ep[-1], missing_eps ) ) -
+            #            set( tvseason.episodes ) ) == 0 )
             for epno in set(map(lambda missing_ep: missing_ep[-1], missing_eps ) ):
                 tvdb_epinfo = tvseason.episodes[ epno ]
                 episodes[ epno] = {
@@ -113,8 +122,14 @@ class TVDBSeasonGUI( QDialog ):
                     'episode' : epno,
                     'title' : tvdb_epinfo[ 'title' ],
                     'date aired' : tvdb_epinfo[ 'airedDate' ],
-                    'overview' : tvdb_epinfo[ 'overview' ]
+                    'overview' : tvdb_epinfo[ 'overview' ],
+                    'tvdb_token' : tvdb_token,
+                    'verify' : verify
                 }
+            for epno in map(lambda tup: tup[1], bad_eps ):
+                if epno not in tvseason.episodes: continue
+                tvdb_epinfo = tvseason.episodes[epno]
+                episodes[epno]['date aired'] = tvdb_epinfo[ 'airedDate' ]
         fill_episodes( )
         #import pickle, gzip
         #pickle.dump( episodes, gzip.open('episodes.pkl.gz', 'wb'))
@@ -218,6 +233,20 @@ class TVDBSeasonGUI( QDialog ):
             siz_tag.string = "size: %s." % (
                 plexcore.get_formatted_size( episode[ 'size' ] ) )
             body_elem.append( siz_tag )
+        if len(set([ 'picurl', 'plex_token' ]) -
+               set( episode ) ) == 0: # not add in the picture
+            img_content = plexcore.get_pic_data(
+                episode[ 'picurl' ], token = episode[ 'plex_token' ] )
+            img = PIL.Image.open( io.BytesIO( img_content ) )
+            mimetype = PIL.Image.MIME[ img.format ]
+            par_img_tag = html.new_tag('p')
+            img_tag = html.new_tag( 'img' )
+            img_tag['width'] = 350
+            img_tag['src'] = "data:%s;base64,%s" % (
+                mimetype, base64.b64encode( img_content ).decode('utf-8') )
+            par_img_tag.append( img_tag )
+            body_elem.append( par_img_tag )
+                                             
         self.episodeSummaryArea.setHtml( html.prettify( ) )
 #
 ## column names: episode, name, date

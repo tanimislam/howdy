@@ -587,9 +587,10 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
              'episode_number_length' : max_eps_len,
              'avg_length_mins' : avg_length_secs // 60 }
 
-def get_all_series_didend( tvdata, verify = True ):
+def get_all_series_didend( tvdata, verify = True, debug = False ):
+    time0 = time.time( )
     with multiprocessing.Pool(
-            processes = multiprocessing.cpu_count( ) ) as pool:
+            processes = max(16, multiprocessing.cpu_count( ) ) ) as pool:
         date_now = datetime.datetime.now( ).date( )
         token = get_token( verify = verify )  
         tvshow_id_map = dict(filter(
@@ -609,6 +610,9 @@ def get_all_series_didend( tvdata, verify = True ):
                        seriesName in tvshow_id_map }
         for seriesName in tvshows_notfound:
             didend_map[ seriesName ] = True
+        if debug:
+            print( 'processed %d series to check if they ended, in %0.3f seconds.' % (
+                len( tvdata ), time.time( ) - time0 ) )
         return didend_map                                
     
 def _get_remaining_eps_perproc( input_tuple ):
@@ -708,14 +712,14 @@ def get_shows_to_exclude( tvdata = None ):
     showsToExcludeInDB = sorted( set( map(lambda val: val.show, session.query( ShowsToExclude ).all( ) ) ) )
     if tvdata is None: return showsToExcludeInDB
     if len( tvdata ) == 0: return [ ]
-    notHere = set(showsToExcludeInDB) - set( tvdata )
-    for show in notHere:
-        session.delete( show )
-        session.commit( )
-    if len( notHere ) != 0:
-        print( 'had to remove %d excluded shows from DB that were not in TV library.' %
-               len( notHere ) )
-    showsToExcludeInDB = sorted( set( showsToExcludeInDB ) & set( tvdata ) )
+    # notHere = set(showsToExcludeInDB) - set( tvdata )
+    # for show in notHere:
+    #     session.delete( show )
+    #     session.commit( )
+    # if len( notHere ) != 0:
+    #     print( 'had to remove %d excluded shows from DB that were not in TV library.' %
+    #            len( notHere ) )
+    # showsToExcludeInDB = sorted( set( showsToExcludeInDB ) & set( tvdata ) )
     return showsToExcludeInDB
 
 def get_tvtorrent_candidate_downloads( toGet ):

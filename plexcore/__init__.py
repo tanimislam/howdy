@@ -6,10 +6,10 @@ def signal_handler( signal, frame ):
 from . import plexinitialization
 pi = plexinitialization.PlexInitialization( )
 
-import os, sys, xdg.BaseDirectory, signal
+import os, sys, xdg.BaseDirectory, signal, datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine, Column, String, JSON
+from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
 
 def splitall( path_init ):
     allparts = [ ]
@@ -48,6 +48,25 @@ class PlexConfig( Base ):
     service = Column( String( 65536 ), index = True, unique = True, primary_key = True )
     data = Column( JSON )
 
+class LastNewsletterDate( Base ):
+    #
+    ## create the table using Base.metadata.create_all( _engine )
+    __tablename__ = 'lastnewsletterdate'
+    __table_args__ = {'extend_existing': True}
+    date = Column( Date, onupdate = datetime.datetime.now, index = True, primary_key = True )
+    
+class PlexGuestEmailMapping( Base ):
+    #
+    ## create the table using Base.metadata.create_all( _engine )
+    __tablename__ = 'plexguestemailmapping'
+    __table_args__ = { 'extend_existing' : True }
+    plexemail = Column( String( 256 ), index = True, unique = True, primary_key = True )
+    plexmapping = Column( String( 65536 ) )
+    plexreplaceexisting = Column( Boolean )
+
+    
 def create_all( ):
     Base.metadata.create_all( _engine )
     session.commit( )
+
+create_all( )

@@ -202,6 +202,21 @@ class TVDBGUI( QDialog ):
             logging.info( mytxt )
             shared_list.append( ( 'toGet', toge ) )
 
+        def _process_plot_tvshowstats( tvdon_plex, t0, shared_list ):
+            tvdata_date_dict = plextvdb.get_tvdata_ordered_by_date(
+                tvdon_plex )
+            years_have = set(map(lambda date: date.year, tvdata_date_dict ) )
+            with multiprocessing.Pool(
+                    processes = multiprocessing.cpu_count( ) ) as pool:
+                figdictdata = dict( pool.map(
+                    lambda year: ( year, plextvdb.create_plot_year_tvdata(
+                        tvdata_date_dict, year, shouldPlot = False ) ),
+                    years_have ) )
+                mytxt = '3b, made plots of tv shows added in %d years in %0.3f seconcds.' % (
+                    len( years_have ), time.time( ) - time0 )
+                logging.info( mytxt )
+                shared_list.append( ( 'plotYears', figdictdata ) )
+
         manager = Manager( )
         shared_list = manager.list( )
         jobs = [ Process( target=_process_didend, args=(
@@ -209,12 +224,16 @@ class TVDBGUI( QDialog ):
                  Process( target=_process_missing, args=(
                      toGet, self.tvdata_on_plex, showsToExclude, self.verify,
                      time0, shared_list ) ) ]
+                 # Process( target=_process_plot_tvshowstats, args=(
+                 #     self.tvdata_on_plex, time0, shared_list ) ) ]
         for process in jobs: process.start( )
         for process in jobs: process.join( )
         final_data = dict( shared_list )
-        assert( set( final_data ) == set([ 'didend', 'toGet' ] ) )
+        #assert( set( final_data ) == set([ 'didend', 'toGet', 'plotYears' ] ) )
+        assert( set( final_data ) == set([ 'didend', 'toGet' ]) )
         didend = final_data[ 'didend' ]
         toGet = final_data[ 'toGet' ]
+        # self.figdictdata = final_data[ 'plotYears' ]
         #
         for seriesName in self.tvdata_on_plex:
             self.tvdata_on_plex[ seriesName ][ 'didEnd' ] = didend[ seriesName ]
@@ -231,10 +250,9 @@ class TVDBGUI( QDialog ):
                 continue
             if seriesName in showsToExclude:
                 continue
-            self.missing_eps[ seriesName ] = toGet[ seriesName ][ 'episodes' ]
-            
+            self.missing_eps[ seriesName ] = toGet[ seriesName ][ 'episodes' ]            
         #
-        #
+        ##
         self.instantiatedTVShows = { }
         self.dt = datetime.datetime.now( ).date( )
         self.filterOnTVShows = QLineEdit( '' )

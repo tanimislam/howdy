@@ -7,10 +7,20 @@ from . import plexinitialization
 pi = plexinitialization.PlexInitialization( )
 
 import os, sys, xdg.BaseDirectory, signal, datetime
+import geoip2.database, _geoip_geolite2
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
 
+#
+## geoip stuff, exposes a single geop_reader from plexcore
+_geoip_database = os.path.join(
+    os.path.dirname( _geoip_geolite2.__file__ ),
+    _geoip_geolite2.database_name )
+assert( os.path.isfile( _geoip_database ) )
+geoip_reader = geoip2.database.Reader( _geoip_database )
+
+# split paths 
 def splitall( path_init ):
     allparts = [ ]
     path = path_init

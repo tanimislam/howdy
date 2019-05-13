@@ -5,6 +5,7 @@ deluge_client
 fabric
 fuzzywuzzy
 gdata
+geoip2
 gmusicapi
 google-api-python-client
 google-auth-oauthlib
@@ -25,6 +26,7 @@ Pillow
 pyasn1
 pyasn1-modules
 pypandoc
+python-geoip-geolite2
 python-Levenshtein
 python-magic
 pytz

@@ -104,7 +104,8 @@ def get_movies_by_actors( actor_names, verify = True ):
             if response.status_code != 200: continue
             data = response.json( )
             actor_ids += list( map(lambda result: result['id'], data['results'] ) )
-        actor_name_dict[ actor_name ] = min(set( actor_ids ) )
+        if len( set( actor_ids ) ) != 0:
+            actor_name_dict[ actor_name ] = min(set( actor_ids ) )
     #
     response = requests.get( 'https://api.themoviedb.org/3/discover/movie',
                              params = { 'api_key' : tmdb_apiKey,

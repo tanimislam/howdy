@@ -46,7 +46,7 @@ def main( ):
     fullURL, token = dat
     #
     ## first find out which libraries are the TV show ones
-    library_dict = plexcore.get_libraries( token = token, do_full = True )
+    library_dict = plexcore.get_libraries( fullURL = fullURL, token = token, do_full = True )
     valid_keys = list(filter(lambda key: library_dict[ key ][ -1 ] ==
                              'show', library_dict ) )
     if len( valid_keys ) == 0:
@@ -69,8 +69,7 @@ def main( ):
             step, '; '.join( showsToExclude ) ) )
         step += 1
     toGet = plextvdb.get_remaining_episodes(
-        tvdata,
-        showSpecials = False,
+        tvdata, showSpecials = False,
         showsToExclude = showsToExclude )
     if len( toGet ) == 0:
         print('\n'.join([

@@ -93,46 +93,44 @@ class TVDBSeasonGUI( QDialog ):
         #
         ## fill out those episodes don't have, use TVDB and TMDB stuff
         ## ONLY on missing episodes
-        def fill_episodes( ):
-            if seriesName not in toGet and len( bad_eps ) == 0: return
-            missing_eps = [ ]
-            if seriesName in toGet:
-                missing_eps = set(filter(lambda tup: tup[0] == seasno,
-                                         toGet[ seriesName ] ) )
-            series_id = get_series_id( seriesName, tvdb_token, verify = verify )
-            eps = get_episodes_series(
-                series_id, tvdb_token, showSpecials = False,
-                showFuture = False, verify = verify )
-            if any(filter(lambda episode: episode['episodeName'] is None, eps ) ):
-                tmdb_id = plextmdb.get_tv_ids_by_series_name( seriesName, verify = verify )
-                if len( tmdb_id ) == 0: return
-                tmdb_id = tmdb_id[ 0 ]
-                eps = plextmdb.get_episodes_series_tmdb( tmdb_id, verify = verify )
-            tvseason = TVSeason(
-                seriesName, series_id, tvdb_token, seasno, verify = verify,
-                eps = eps )
-            #assert( len(set(map(lambda missing_ep: missing_ep[-1], missing_eps ) ) -
-            #            set( tvseason.episodes ) ) == 0 )
-            for epno in set(map(lambda missing_ep: missing_ep[-1], missing_eps ) ):
-                tvdb_epinfo = tvseason.episodes[ epno ]
-                episodes[ epno] = {
-                    'seriesName' : seriesName,
-                    'season' : seasno,
-                    'have_episode' : False,
-                    'episode' : epno,
-                    'title' : tvdb_epinfo[ 'title' ],
-                    'date aired' : tvdb_epinfo[ 'airedDate' ],
-                    'overview' : tvdb_epinfo[ 'overview' ],
-                    'tvdb_token' : tvdb_token,
-                    'verify' : verify
-                }
-            for epno in map(lambda tup: tup[1], bad_eps ):
-                if epno not in tvseason.episodes: continue
-                tvdb_epinfo = tvseason.episodes[epno]
-                episodes[epno]['date aired'] = tvdb_epinfo[ 'airedDate' ]
-        fill_episodes( )
-        #import pickle, gzip
-        #pickle.dump( episodes, gzip.open('episodes.pkl.gz', 'wb'))
+        if seriesName not in toGet and len( bad_eps ) == 0: return
+        missing_eps = [ ]
+        if seriesName in toGet:
+            missing_eps = set(
+                map(lambda tup: tup[1],
+                    filter(lambda tup: tup[0] == seasno,
+                           toGet[ seriesName ] ) ) )
+        series_id = get_series_id( seriesName, tvdb_token, verify = verify )
+        eps = get_episodes_series(
+            series_id, tvdb_token, showSpecials = False,
+            showFuture = False, verify = verify )
+        if any(filter(lambda episode: episode['episodeName'] is None, eps ) ):
+            tmdb_id = plextmdb.get_tv_ids_by_series_name( seriesName, verify = verify )
+            if len( tmdb_id ) == 0: return
+            tmdb_id = tmdb_id[ 0 ]
+            eps = plextmdb.get_episodes_series_tmdb( tmdb_id, verify = verify )
+        tvseason = TVSeason(
+            seriesName, series_id, tvdb_token, seasno, verify = verify,
+            eps = eps )
+        assert( len(set( missing_eps ) -
+                    set( tvseason.episodes.keys( ) ) ) == 0 )
+        for epno in missing_eps:
+            tvdb_epinfo = tvseason.episodes[ epno ]
+            episodes[ epno] = {
+                'seriesName' : seriesName,
+                'season' : seasno,
+                'have_episode' : False,
+                'episode' : epno,
+                'title' : tvdb_epinfo[ 'title' ],
+                'date aired' : tvdb_epinfo[ 'airedDate' ],
+                'overview' : tvdb_epinfo[ 'overview' ],
+                'tvdb_token' : tvdb_token,
+                'verify' : verify
+            }
+        for epno in map(lambda tup: tup[1], bad_eps ):
+            if epno not in tvseason.episodes: continue
+            tvdb_epinfo = tvseason.episodes[epno]
+            episodes[epno]['date aired'] = tvdb_epinfo[ 'airedDate' ]
         #
         ## main layout
         myLayout = QVBoxLayout( )

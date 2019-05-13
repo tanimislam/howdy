@@ -6,9 +6,10 @@ from multiprocessing import Process, Manager
 import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
 from functools import reduce
+from urllib.parse import urlparse
 from . import plextvdb, mainDir, get_token
 from .plextvdb_season_gui import TVDBSeasonGUI
-from plexcore import plexcore
+from plexcore import plexcore, geoip_reader
 from plextmdb import plextmdb
 
 class CustomDialog( QDialog ):
@@ -138,7 +139,6 @@ class TVDBGUI( QDialog ):
             self.summaryShowImage.setPixmap( qpm )
         else: self.summaryShowImage.setPixmap( )
         self.summaryShowInfoArea.setHtml( showSummary )
-        
                                 
     def __init__( self, token, fullURL, tvdata_on_plex = None,
                   didend = None, toGet = None, verify = True ):
@@ -177,7 +177,6 @@ class TVDBGUI( QDialog ):
         #
         showsToExclude = plextvdb.get_shows_to_exclude(
             self.tvdata_on_plex )
-
         #
         ## using a stupid-ass pattern to shave some seconds off...
         def _process_didend( dide, tvdon_plex, do_verify, t0, shared_list ):
@@ -216,7 +215,7 @@ class TVDBGUI( QDialog ):
                     len( years_have ), time.time( ) - time0 )
                 logging.info( mytxt )
                 shared_list.append( ( 'plotYears', figdictdata ) )
-
+        
         manager = Manager( )
         shared_list = manager.list( )
         jobs = [ Process( target=_process_didend, args=(
@@ -229,7 +228,6 @@ class TVDBGUI( QDialog ):
         for process in jobs: process.start( )
         for process in jobs: process.join( )
         final_data = dict( shared_list )
-        #assert( set( final_data ) == set([ 'didend', 'toGet', 'plotYears' ] ) )
         assert( set( final_data ) == set([ 'didend', 'toGet' ]) )
         didend = final_data[ 'didend' ]
         toGet = final_data[ 'toGet' ]
@@ -263,18 +261,34 @@ class TVDBGUI( QDialog ):
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         self.refreshButton = QPushButton( "REFRESH TV SHOWS" )
+        self.tokenLabel = QLabel( )
+        self.plexURLLabel = QLabel( )
+        self.locationLabel = QLabel( )
+        self.processPlexInfo( )
         #
         self.tm = TVDBTableModel( self )
         self.tv = TVDBTableView( self )
         self.tm.fillOutCalculation( )
+        #
         topWidget = QWidget( )
         topLayout = QGridLayout( )
         topWidget.setLayout( topLayout )
-        topLayout.addWidget( QLabel( 'TV SHOW FILTER' ), 0, 0, 1, 1 )
-        topLayout.addWidget( self.filterOnTVShows, 0, 1, 1, 3 )
-        topLayout.addWidget( self.refreshButton, 0, 4, 1, 3 )
-        myLayout.addWidget( self.tv )
+        topLayout.addWidget( QLabel( 'PLEX TOKEN:' ), 0, 0, 1, 1 )
+        topLayout.addWidget( self.tokenLabel, 0, 1, 1, 1 )
+        topLayout.addWidget( QLabel( 'PLEX URL:' ), 1, 0, 1, 1 )
+        topLayout.addWidget( self.plexURLLabel, 1, 1, 1, 1 )
+        topLayout.addWidget( QLabel( 'LOCATION:' ), 2, 0, 1, 1 )
+        topLayout.addWidget( self.locationLabel, 2, 1, 1, 1 )
         myLayout.addWidget( topWidget )
+        #
+        midWidget = QWidget( )
+        midLayout = QGridLayout( )
+        midWidget.setLayout( midLayout )
+        midLayout.addWidget( QLabel( 'TV SHOW FILTER' ), 0, 0, 1, 1 )
+        midLayout.addWidget( self.filterOnTVShows, 0, 1, 1, 3 )
+        midLayout.addWidget( self.refreshButton, 0, 4, 1, 3 )
+        myLayout.addWidget( midWidget )
+        myLayout.addWidget( self.tv )
         #
         botWidget = QWidget( )
         botLayout = QVBoxLayout( )
@@ -337,8 +351,19 @@ class TVDBGUI( QDialog ):
                 continue
             self.missing_eps[ seriesName ] = toGet[ seriesName ][ 'episodes' ]
         self.tm.fillOutCalculation( )
-        logging.debug( 'refreshed all TV shows in %0.3f seconds.' % (
+        logging.info( 'refreshed all TV shows in %0.3f seconds.' % (
             time.time( ) - time0 ) )
+
+    def processPlexInfo( self ):
+        self.tokenLabel.setText( self.token )
+        self.plexURLLabel.setText( self.fullURL )
+        ipaddr = urlparse( self.fullURL ).netloc.split(':')[0]
+        if ipaddr not in ( '127.0.0.1', 'localhost' ):
+            myloc = geoip_reader.city( ipaddr )
+            self.locationLabel.setText( '%s, %s, %s.' % (
+                myloc.city.name, myloc.subdivisions.most_specific.iso_code,
+                myloc.country.name ) )
+        else: self.locationLabel.setText( 'LOCALHOST' )
 
 class TVDBTableView( QTableView ):
     def __init__( self, parent ):

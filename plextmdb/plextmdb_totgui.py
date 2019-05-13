@@ -1,4 +1,4 @@
-import numpy, os, sys, requests
+import numpy, os, sys, requests, time
 import logging, glob, datetime, pickle, gzip
 from . import plextmdb, plextmdb_mygui, plextmdb_gui
 from PyQt4.QtCore import *
@@ -21,6 +21,7 @@ class TMDBTotGUI( QDialog ):
     
     def __init__( self, fullurl, token, movie_data_rows = None,
                   doLarge = False, verify = True ):
+        time0 = time.time( )
         super( TMDBTotGUI, self ).__init__( )
         self.resolution = 1.0
         self.verify = verify
@@ -38,6 +39,8 @@ class TMDBTotGUI( QDialog ):
         if movie_data_rows is None:
             movie_data_rows, _ = plexcore.fill_out_movies_stuff(
                 self.fullurl, self.token, verify = self.verify )
+        logging.info( 'processed existing movie data in %0.3f seconds.' % (
+            time.time( ) - time0 ) )
         self.tmdb_gui = plextmdb_gui.TMDBGUI(
             self.token, self.fullurl, movie_data_rows, isIsolated = False,
             verify = verify )

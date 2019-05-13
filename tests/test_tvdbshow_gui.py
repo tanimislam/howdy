@@ -13,16 +13,23 @@ sys.path.append( os.path.dirname( mainDir ) )
 from PyQt4.QtGui import QApplication
 from plextvdb import plextvdb_gui, get_token
 from plexcore import plexcore
+from optparse import OptionParser
 
 #
 ## start the application here
+parser = OptionParser( )
+parser.add_option('-s', '--series', type=str, dest='series', action='store', default='The Simpsons',
+                  help = 'Name of the series to choose. Default is "The Simpsons".' )
+opts, args = parser.parse_args( )
 app = QApplication([])
 app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
-tvdata = pickle.load( gzip.open('tvdata_20190512.pkl.gz', 'rb' ) )
-toGet = pickle.load( gzip.open( 'toGet_20190512.pkl.gz', 'rb' ) )
-_, plex_token = plexcore.checkServerCredentials( doLocal = False )
+tvdata = pickle.load( gzip.open(max(glob.glob('tvdata_*pkl.gz')), 'rb' ))
+toGet = pickle.load( gzip.open(max(glob.glob('toGet_*pkl.gz')), 'rb' ))
+didend= pickle.load( gzip.open(max(glob.glob('didend_*pkl.gz')), 'rb'))
+assert( opts.series in tvdata )
+_, plex_token = plexcore.checkServerCredentials( doLocal = True )
 tvdb_token = get_token( )
 tvdb_show_gui = plextvdb_gui.TVDBShowGUI(
-    "Bob's Burgers", tvdata, toGet, tvdb_token, plex_token,
+    opts.series, tvdata, toGet, tvdb_token, plex_token,
     verify = True)
 result = tvdb_show_gui.exec_( )

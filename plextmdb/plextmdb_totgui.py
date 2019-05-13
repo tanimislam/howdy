@@ -5,13 +5,13 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from plexcore import plexcore, plexcore_gui
 
-class TMDBTotGUI( QWidget ):
+class TMDBTotGUI( QDialog ):
     emitNewToken = pyqtSignal( str )
         
     def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                  os.path.expanduser( '~' ),
-                                                  filter = '*.png' ) )
+        fname = str( QFileDialog.getSaveFileName(
+            self, 'Save Screenshot', os.path.expanduser( '~' ),
+            filter = '*.png' ) )
         if len( os.path.basename( fname.strip( ) ) ) == 0:
             return
         if not fname.lower( ).endswith( '.png' ):
@@ -19,8 +19,8 @@ class TMDBTotGUI( QWidget ):
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
     
-    def __init__( self, fullurl, token, movie_data_rows = None, doLarge = False,
-                  verify = True ):
+    def __init__( self, fullurl, token, movie_data_rows = None,
+                  doLarge = False, verify = True ):
         super( TMDBTotGUI, self ).__init__( )
         self.resolution = 1.0
         self.verify = verify
@@ -179,7 +179,8 @@ class HelpDialog( QDialog ):
         #
         myTextArea = QTextEdit( )
         myTextArea.setReadOnly( True )
-        myTextArea.setHtml( open( os.path.join( mainDir, 'docs', 'plex_tmdb_totgui_help.html' ), 'r' ).read( ) )
+        myTextArea.setHtml( open( os.path.join(
+            mainDir, 'docs', 'plex_tmdb_totgui_help.html' ), 'r' ).read( ) )
         layout.addWidget( myTextArea )
         self.hide( )
         #

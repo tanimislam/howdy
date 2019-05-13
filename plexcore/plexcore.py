@@ -81,31 +81,13 @@ def getTokenForUsernamePassword( username, password, verify = True ):
         logging.debug( 'content = %s' %  response.content )
         return None
     return response.json()['user']['authentication_token']
-
-def checkClientCredentials( ):
-    val = session.query( PlexConfig ).filter(
-        PlexConfig.service == 'login' ).first( )
-    if val is None: return None
-    data = val.data
-    if 'CLIENT' not in data: return None
-    data_sub = data['CLIENT']
-    username = data['username'].strip( )
-    password = data['password'].strip( )
-    response = requests.get( 'https://tanimislam.ddns.net/flask/plex/tokenurl',
-                             auth = ( username, password ) )
-    if response.status_code != 200: return None
-    token = response.json( )[ 'token' ]
-    fullurl = response.json( )[ 'url' ]
-    return fullurl, token
     
 def checkServerCredentials( doLocal = False, verify = True ):
     val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'login' ).first( )
     data = val.data
-    if 'SERVER' not in data: return None
-    data_sub = data['SERVER']
-    username = data_sub['username'].strip( )
-    password = data_sub['password'].strip( )
+    username = data['username'].strip( )
+    password = data['password'].strip( )
     token = getTokenForUsernamePassword(
         username, password, verify = verify )
     if token is None: return None
@@ -115,20 +97,25 @@ def checkServerCredentials( doLocal = False, verify = True ):
     else: fullurl = 'http://localhost:32400'
     return fullurl, token
 
-def pushCredentials( username, password, name = 'CLIENT' ):
-    assert( name in ( 'CLIENT', 'SERVER' ) ), "ERROR, MUST BE ONE OF SERVER OR CLIENT"
+def pushCredentials( username, password ):
+    #
+    ## first see if these work
+    token = getTokenForUsernamePassword( username, password )
+    if token is None:
+        return "error, username and password do not work."
     val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'login' ).first( )
     if val is not None:
         data = val.data
         session.delete( val )
         session.commit( )
-    else: data = { }
-    data[ name ] = { 'username' : username.strip( ),
-                     'password' : password.strip( ) }
+    data = { 'username' : username.strip( ),
+             'password' : password.strip( ) }
     newval = PlexConfig( service = 'login', data = data )
     session.add( newval )
     session.commit( )
+    return "SUCCESS"
+    
 
 def get_all_servers( token, verify = True ):
     response = requests.get( 'https://plex.tv/api/resources',

@@ -32,38 +32,8 @@ def returnToken( shouldCheckLocal = True ):
     if val is not None:
         fullurl, token = val
         return fullurl, token
-    #
-    ## now check if we have client credentials
-    val = plexcore.checkClientCredentials( )
-    if val is not None:
-        fullurl, token = val
-        return fullurl, token
     
     dlg = UsernamePasswordDialog( )
-    result = dlg.exec_( )
-    if result != QDialog.Accepted:
-        sys.exit( 0 )
-    return dlg.fullurl, dlg.token
-
-def returnServerToken( ):
-    val = plexcore.checkServerCredentials( )
-    if val is not None:
-        fullurl, token = val
-        return fullurl, token
-    
-    dlg = UsernamePasswordServerDialog( )
-    result = dlg.exec_( )
-    if result != QDialog.Accepted:
-        sys.exit( 0 )
-    return dlg.fullurl, dlg.token
-
-def returnClientToken( ):
-    val = plexcore.checkClientCredentials( )
-    if val is not None:
-        fullurl, token = val
-        return fullurl, token
-    
-    dlg = UsernamePasswordClientDialog( )
     result = dlg.exec_( )
     if result != QDialog.Accepted:
         sys.exit( 0 )
@@ -129,58 +99,6 @@ class UsernamePasswordServerDialog( QDialog ):
         self.clearCreds( )
         self.accept( )
 
-class UsernamePasswordClientDialog( QDialog ):
-    def __init__( self ):
-        super( UsernamePasswordClientDialog, self ).__init__( )
-        self.fullurl = ''
-        self.token = None
-        self.setModal( True )
-        self.setWindowTitle( 'PLEX CLIENT USERNAME/PASSWORD' )
-        mainLayout = QGridLayout( )
-        self.setLayout( mainLayout )
-        #
-        self.client_usernameBox = QLineEdit( )
-        self.client_passwordBox = QLineEdit( )
-        self.client_statusLabel = QLabel( "" )
-        self.client_passwordBox.setEchoMode( QLineEdit.Password )
-        mainLayout.addWidget( QLabel( "USERNAME" ), 0, 0, 1, 1 )
-        mainLayout.addWidget( self.client_usernameBox, 0, 1, 1, 2 )
-        mainLayout.addWidget( QLabel( "PASSWORD" ), 1, 0, 1, 1 )
-        mainLayout.addWidget( self.client_passwordBox, 1, 1, 1, 2 )
-        mainLayout.addWidget( self.client_statusLabel, 2, 0, 1, 3 )
-        self.client_usernameBox.returnPressed.connect( self.client_checkUsernamePassword )
-        self.client_passwordBox.returnPressed.connect( self.client_checkUsernamePassword )
-        #
-        ##
-        self.setFixedWidth( self.sizeHint().width() )
-        self.setFixedHeight( self.sizeHint().height() )
-
-    #
-    ## clear all credential information
-    def clearCreds( self ):
-        self.client_usernameBox.setText( '' )
-        self.client_passwordBox.setText( '' )
-        
-    #
-    ## do plex client checking
-    def client_checkUsernamePassword( self ):
-        self.client_usernameBox.setText( str( self.client_usernameBox.text( ) ).strip( ) )
-        self.client_passwordBox.setText( str( self.client_passwordBox.text( ) ).strip( ) )
-        #
-        ## now check that this is a valid username and password
-        username = str( self.client_usernameBox.text( ) ).strip( )
-        password = str( self.client_passwordBox.text( ) ).strip( )
-        response = requests.get( 'https://tanimislam.ddns.net/flask/plex/tokenurl',
-                                 auth = ( username, password ) )
-        if response.status_code != 200:
-            self.client_statusLabel.setText( 'ERROR: wrong credentials.' )
-            return
-        self.token = response.json( )['token']
-        self.fullurl = response.json( )['url']
-        plexcore.pushCredentials( username, password, name = 'CLIENT' )
-        self.clearCreds( )
-        self.accept( )
-
 class UsernamePasswordDialog( QDialog ):
     def __init__( self ):
         super( UsernamePasswordDialog, self ).__init__( )
@@ -188,42 +106,20 @@ class UsernamePasswordDialog( QDialog ):
         self.token = None
         self.setModal( True )
         self.setWindowTitle( 'PLEX ACCOUNT USERNAME/PASSWORD' )
-        mainWidget = QTabWidget( self )
-        mainLayout = QVBoxLayout( )
+        mainLayout = QGridLayout( )
         self.setLayout( mainLayout )
-        mainLayout.addWidget( mainWidget )
         #
-        leftWidget = QWidget( self )
-        leftLayout = QGridLayout( )
-        leftWidget.setLayout( leftLayout )
         self.server_usernameBox = QLineEdit( )
         self.server_passwordBox = QLineEdit( )
         self.server_statusLabel = QLabel( "" )
         self.server_passwordBox.setEchoMode( QLineEdit.Password )
-        leftLayout.addWidget( QLabel( "USERNAME" ), 0, 0, 1, 1 )
-        leftLayout.addWidget( self.server_usernameBox, 0, 1, 1, 2 )
-        leftLayout.addWidget( QLabel( "PASSWORD" ), 1, 0, 1, 1 )
-        leftLayout.addWidget( self.server_passwordBox, 1, 1, 1, 2 )
-        leftLayout.addWidget( self.server_statusLabel, 2, 0, 1, 3 )
+        mainLayout.addWidget( QLabel( "USERNAME" ), 0, 0, 1, 1 )
+        mainLayout.addWidget( self.server_usernameBox, 0, 1, 1, 2 )
+        mainLayout.addWidget( QLabel( "PASSWORD" ), 1, 0, 1, 1 )
+        mainLayout.addWidget( self.server_passwordBox, 1, 1, 1, 2 )
+        mainLayout.addWidget( self.server_statusLabel, 2, 0, 1, 3 )
         self.server_usernameBox.returnPressed.connect( self.server_checkUsernamePassword )
         self.server_passwordBox.returnPressed.connect( self.server_checkUsernamePassword )
-        mainWidget.addTab( leftWidget, 'PLEX SERVER CREDS' )
-        #
-        rightWidget = QWidget( self )
-        rightLayout = QGridLayout( )
-        rightWidget.setLayout( rightLayout )
-        self.client_usernameBox = QLineEdit( )
-        self.client_passwordBox = QLineEdit( )
-        self.client_statusLabel = QLabel( "" )
-        self.client_passwordBox.setEchoMode( QLineEdit.Password )
-        rightLayout.addWidget( QLabel( "USERNAME" ), 0, 0, 1, 1 )
-        rightLayout.addWidget( self.client_usernameBox, 0, 1, 1, 2 )
-        rightLayout.addWidget( QLabel( "PASSWORD" ), 1, 0, 1, 1 )
-        rightLayout.addWidget( self.client_passwordBox, 1, 1, 1, 2 )
-        rightLayout.addWidget( self.client_statusLabel, 2, 0, 1, 3 )
-        self.client_usernameBox.returnPressed.connect( self.client_checkUsernamePassword )
-        self.client_passwordBox.returnPressed.connect( self.client_checkUsernamePassword )
-        mainWidget.addTab( rightWidget, 'PLEX CLIENT CREDS' )
         #
         ##
         self.setFixedWidth( self.sizeHint().width() )
@@ -253,27 +149,7 @@ class UsernamePasswordDialog( QDialog ):
         self.token = token
         _, fullurl = max( plexcore.get_owned_servers( token ).items( ) )
         self.fullurl = 'https://%s' % fullurl
-        plexcore.pushCredentials( username, password, name = 'SERVER' )
-        self.clearCreds( )
-        self.accept( )
-        
-    #
-    ## do plex client checking
-    def client_checkUsernamePassword( self ):
-        self.client_usernameBox.setText( str( self.client_usernameBox.text( ) ).strip( ) )
-        self.client_passwordBox.setText( str( self.client_passwordBox.text( ) ).strip( ) )
-        #
-        ## now check that this is a valid username and password
-        username = str( self.client_usernameBox.text( ) ).strip( )
-        password = str( self.client_passwordBox.text( ) ).strip( )
-        response = requests.get( 'https://tanimislam.ddns.net/flask/plex/tokenurl',
-                                 auth = ( username, password ) )
-        if response.status_code != 200:
-            self.client_statusLabel.setText( 'ERROR: wrong credentials.' )
-            return
-        self.token = response.json( )['token']
-        self.fullurl = response.json( )['url']
-        plexcore.pushCredentials( username, password, name = 'CLIENT' )
+        plexcore.pushCredentials( username, password )
         self.clearCreds( )
         self.accept( )
 

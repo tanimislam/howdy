@@ -110,9 +110,9 @@ class TMDBRadioButton( QRadioButton ):
         
 class TMDBTorrents( QDialog ):
     def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                  os.path.expanduser( '~' ),
-                                                  filter = '*.png' ) )
+        fname = str( QFileDialog.getSaveFileName(
+            self, 'Save Screenshot', os.path.expanduser( '~' ),
+            filter = '*.png' ) )
         if len( os.path.basename( fname.strip( ) ) ) == 0: return
         if not fname.lower( ).endswith( '.png' ): fname = '%s.png' % fname
         qpm = QPixmap.grabWidget( self )

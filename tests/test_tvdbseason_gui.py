@@ -23,13 +23,14 @@ parser.add_option('-s', '--series', type=str, dest='series', action='store', def
 parser.add_option('-S', '--season', type=int, dest='season', action='store', default=1,
                   help = 'Season number to examine. Default is 1.' )
 opts, args = parser.parse_args( )
-assert( opts.season > 0 )
 app = QApplication([])
 app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
-tvdata = pickle.load( gzip.open('tvdata_20190511.pkl.gz', 'rb' ) )
+tvdata = pickle.load( gzip.open(max(glob.glob('tvdata_*pkl.gz')), 'rb' ))
+toGet = pickle.load( gzip.open(max(glob.glob('toGet_*pkl.gz')), 'rb' ))
+assert( opts.season > 0 )
 assert( opts.series in tvdata )
 
 fullURL, token = plexcore.checkServerCredentials( doLocal = False )
 tvdb_season_gui = plextvdb_season_gui.TVDBSeasonGUI(
-    opts.series, opts.season, tvdata, { }, get_token( ), token, verify = True )
+    opts.series, opts.season, tvdata, toGet, get_token( ), token, verify = True )
 result = app.exec_( )

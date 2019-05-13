@@ -843,15 +843,17 @@ def _get_remaining_eps_perproc( input_tuple ):
     return name, sorted( tuples_to_get_act, key = lambda tup: (tup[0], tup[1]))
 
 def _get_series_id_perproc( input_tuple ):
-    show, token, verify, doShowEnded = input_tuple
+    show = input_tuple[ 'show' ]
+    token = input_tuple[ 'token' ]
+    verify = input_tuple[ 'verify' ]
+    doShowEnded = input_tuple[ 'doShowEnded' ]
     series_id = get_series_id( show, token, verify = verify )
     if series_id is None:
-        logging.debug( 'SOMETHING HAPPENED WITH SHOW %s' % show )
+        logging.debug( 'something happened with show %s' % show )
         return None
     if not doShowEnded:
         didEnd = did_series_end( series_id, token, verify = verify )
-        if didEnd is None: return None
-        if didEnd: return None
+        if didEnd is None or didEnd: return None
     return show, series_id
     
 def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify = True,
@@ -864,12 +866,17 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
         showsExclude = set( showsToExclude ) & set( tvdata_copy.keys( ) )
         for show in showsExclude: tvdata_copy.pop( show )
     with multiprocessing.Pool( processes = max( num_threads, multiprocessing.cpu_count( ) ) ) as pool:
+        input_tuples = list(
+            map(lambda show: {
+                'show' : show, 'token' : token, 'verify' : verify, 'doShowEnded' : doShowEnded },
+                tvdata_copy ) )
         tvshow_id_map = dict(filter(
-            None, pool.map( _get_series_id_perproc,
-                            map(lambda show: ( show, token, verify, doShowEnded ), tvdata_copy ) ) ) )
+            None, pool.map( _get_series_id_perproc, input_tuples ) ) )
+        
     if fromDate is not None:
         series_ids = set( get_series_updated_fromdate( fromDate, token ) )
-        ids_tvshows = dict(map(lambda name_seriesId: ( name_seriesId[1], name_seriesId[0] ), tvshow_id_map.items( ) ) )
+        ids_tvshows = dict(map(lambda name_seriesId: ( name_seriesId[1], name_seriesId[0] ),
+                               tvshow_id_map.items( ) ) )
         updated_ids = set( ids_tvshows.keys( ) ) & series_ids
         tvshow_id_map = dict(map(lambda series_id: ( ids_tvshows[ series_id ], series_id ), updated_ids ) )
     tvshows = sorted( set( tvshow_id_map ) )
@@ -882,9 +889,6 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
               'verify' : verify,
               'series_id' : tvshow_id_map[ name ],
               'epsForShow' : tvdata_copy[ name ][ 'seasons' ] }, tvshow_id_map ) )
-        # name, tvshow_id_map[ name ],
-        # tvdata_copy[ name ][ 'seasons' ], token,
-        # showSpecials, fromDate, verify ), tvshow_id_map ) )
     with multiprocessing.Pool(
             processes = max(num_threads, multiprocessing.cpu_count( ) ) ) as pool:
         toGet_sub = dict( filter(
@@ -1043,7 +1047,8 @@ def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, nu
                        successfulTvTorUnits ) )
     all_glob_strings = list(map(lambda suffix: '*.%s' % suffix, suffixes ) )
     for glob_string in all_glob_strings:
-        plexcore_rsync.download_files( glob_string, numtries = 100, debug_string = True )
+        plexcore_rsync.download_upload_files(
+            glob_string, numtries = 100, debug_string = True )
     #
     ## now check all the files downloaded
     local_dir = data[ 'local_dir' ].strip( )

@@ -11,10 +11,10 @@ from plextmdb import plextmdb_totgui
 from optparse import OptionParser
 import logging, PyQt4.QtGui, os, qdarkstyle
 
-def main(debug = False, doLocal = True, doLarge = False, verify = True):
+def main(info = False, doLocal = True, doLarge = False, verify = True):
     app = PyQt4.QtGui.QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
-    if debug: logging.basicConfig( level = logging.DEBUG )
+    if info: logging.basicConfig( level = logging.INFO )
     fullurl, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )    
     tmdb_mygui = plextmdb_totgui.TMDBTotGUI( fullurl, token, doLarge = doLarge,
@@ -28,9 +28,9 @@ if __name__=='__main__':
                       default = False, help = 'Run with large fonts to help with readability.' )
     parser.add_option('--local', dest='do_local', action='store_true',
                       default = False, help = 'Check for locally running plex server.')
-    parser.add_option('--debug', dest='do_debug', action='store_true',
-                      default = False, help = 'Run debug mode if chosen.')
+    parser.add_option('--info', dest='do_info', action='store_true',
+                      default = False, help = 'Run info mode if chosen.')
     parser.add_option('--noverify', dest='do_verify', action='store_false',
                       default = True, help = 'Do not verify SSL transactions if chosen.')    
     opts, args = parser.parse_args( )
-    main( debug = opts.do_debug, doLocal = opts.do_local, doLarge = opts.do_large, verify = opts.do_verify )
+    main( info = opts.do_info, doLocal = opts.do_local, doLarge = opts.do_large, verify = opts.do_verify )

@@ -52,13 +52,13 @@ class TVShow( object ):
         
     def __init__( self, seriesName, seriesInfo, token, verify = True,
                   showSpecials = False ):
-        self.seriesId = plextvdb.get_series_id( seriesName, token, verify = verify )
+        self.seriesId = get_series_id( seriesName, token, verify = verify )
         self.seriesName = seriesName
         if self.seriesId is None:
             raise ValueError("Error, could not find TV Show named %s." % seriesName )
         #
         ## check if status ended
-        self.statusEnded = plextvdb.did_series_end( self.seriesId, token, verify = verify )
+        self.statusEnded = did_series_end( self.seriesId, token, verify = verify )
         if self.statusEnded is None:
             self.statusEnded = True # yes, show ended
             #raise ValueError("Error, could not find whether TV Show named %s ended or not." %
@@ -69,7 +69,7 @@ class TVShow( object ):
             self.imageURL = seriesInfo['picurl']
             self.isPlexImage = True
         else:
-            self.imageURL, _ = plextvdb.get_series_image( self.seriesId, token, verify = verify )
+            self.imageURL, _ = get_series_image( self.seriesId, token, verify = verify )
             self.isPlexImage = False
         # self.img = TVShow._create_image( self.imageURL, verify = verify )
 
@@ -78,19 +78,19 @@ class TVShow( object ):
         if seriesInfo['summary'] != '':
             self.overview = seriesInfo['summary']
         else:
-            data, status = plextvdb.get_series_info( self.seriesId, token, verify = verify )
+            data, status = get_series_info( self.seriesId, token, verify = verify )
             self.overview = ''
             if status == 'SUCCESS' and 'overview' in data:
                 self.overview = data[ 'overview' ]
         
         #
         ## get every season defined
-        eps = plextvdb.get_episodes_series(
+        eps = get_episodes_series(
             self.seriesId, token, showSpecials = True,
             showFuture = False, verify = verify )
         if any(filter(lambda episode: episode['episodeName'] is None,
                       eps ) ):
-            tmdb_id = plextmdb.get_tv_ids_by_series_name( seriesName, verify = verify )
+            tmdb_id = get_tv_ids_by_series_name( seriesName, verify = verify )
             if len( tmdb_id ) == 0:
                 raise ValueError("Error, could not find TV Show named %s." % seriesName )
             tmdb_id = tmdb_id[ 0 ]
@@ -166,7 +166,7 @@ class TVSeason( object ):
         self.seasno = seasno
         #
         ## first get the image associated with this season
-        self.imageURL, status = plextvdb.get_series_season_image(
+        self.imageURL, status = get_series_season_image(
             self.seriesId, self.seasno, token, verify = verify )
         self.img = None
         if status == 'SUCCESS':
@@ -178,7 +178,7 @@ class TVSeason( object ):
         #
         ## now get the specific episodes for that season
         if eps is None:
-            eps = plextvdb.get_episodes_series(
+            eps = get_episodes_series(
                 self.seriesId, token, showSpecials = True,
                 showFuture = False, verify = verify )
         epelems = list(
@@ -210,24 +210,29 @@ class TVSeason( object ):
 def get_tvdata_ordered_by_date( tvdata ):
     def _get_tuple_list_season( show, seasno ):
         assert( show in tvdata )
-        assert( seasno in tvdata[ show ] )
-        episodes_dict = tvdata[ show ][ seasno ]
-        return list( filter(lambda tup: tup[0].year > 1900,
-                            map(lambda epno: (
-                                episodes_dict[ epno ][ 1 ], show,
-                                seasno, epno,
-                                episodes_dict[ epno ][ 0 ] ), episodes_dict ) ) )
+        assert( seasno in tvdata[ show ]['seasons'] )
+        seasons_info = tvdata[ show ][ 'seasons' ]
+        episodes_dict = seasons_info[ seasno ]['episodes']
+        return list( filter(
+            lambda tup: tup[0].year > 1900,
+            map(lambda epno: (
+                episodes_dict[ epno ]['date aired'],
+                show, seasno, epno,
+                episodes_dict[ epno ][ 'title'] ), episodes_dict ) ) )
     def _get_tuple_list_show( show ):
         assert( show in tvdata )
-        return reduce(lambda x,y: x+y, list( map(lambda seasno: _get_tuple_list_season( show, seasno ),
-                                           tvdata[ show ] ) ) )
-    tvdata_tuples = reduce(lambda x,y: x+y, list( map(lambda show: _get_tuple_list_show( show ), tvdata) ) )
+        return reduce(lambda x,y: x+y, list(
+            map(lambda seasno: _get_tuple_list_season( show, seasno ),
+                tvdata[ show ]['seasons'] ) ) )
+    tvdata_tuples = reduce(lambda x,y: x+y, list(
+        map(_get_tuple_list_show, tvdata) ) )
     tvdata_date_dict = { }
     for tup in tvdata_tuples:
         tvdata_date_dict.setdefault( tup[0], [ ] ).append( tup[1:] )
     return tvdata_date_dict
 
-def create_plot_year_tvdata( tvdata_date_dict, year = 2010 ):
+def create_plot_year_tvdata( tvdata_date_dict, year = 2010,
+                             shouldPlot = True ):
     calendar.setfirstweekday( 6 )
     def suncal( mon, year = 2010, current_date = None ):
         if current_date is None:
@@ -377,8 +382,12 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010 ):
             numshows = len(set(map(lambda tup: tup[0], mondata)))
             monname = '%s (%d eps., %d shows)' % ( monname, len(mondata), numshows )
         ax.set_title( monname, fontsize = 18, fontweight = 'bold' )
-    canvas = FigureCanvasAgg(fig)
-    canvas.print_figure( 'tvdata.%d.svgz' % year, bbox_inches = 'tight' )
+    #
+    ## plotting
+    if shouldPlot:
+        canvas = FigureCanvasAgg(fig)
+        canvas.print_figure( 'tvdata.%d.svgz' % year, bbox_inches = 'tight' )
+    return fig
     
 def get_series_id( series_name, token, verify = True ):
     data_ids = get_possible_ids( series_name, token, verify = verify )

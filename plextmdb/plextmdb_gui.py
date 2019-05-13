@@ -15,13 +15,12 @@ _colmap = { 0 : 'title',
 
 class TMDBMovieInfo( QDialog ):
     def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                  os.path.expanduser( '~' ),
-                                                  filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
+        fname = str( QFileDialog.getSaveFileName(
+            self, 'Save Screenshot', os.path.expanduser( '~' ),
+            filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0: return
         if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
+            fname = '%s.png' % fname
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
     
@@ -65,9 +64,10 @@ class TMDBMovieInfo( QDialog ):
             myLayout.addWidget( topWidget )
             self.getTorrentButton.clicked.connect( self.launchTorrentWindow )
         myLayout.addWidget( QLabel( 'TITLE: %s' % self.title ) )
-        myLayout.addWidget( QLabel( 'RELEASE DATE: %s' %
-                                    release_date.strftime( '%d %b %Y' ) ) )
-        myLayout.addWidget( QLabel( 'POPULARITY: %0.3f' % popularity ) )
+        myLayout.addWidget(
+            QLabel( 'RELEASE DATE: %s' % release_date.strftime( '%d %b %Y' ) ) )
+        myLayout.addWidget( QLabel(
+            'POPULARITY: %0.3f' % popularity ) )
         qte = QTextEdit( full_info )
         qte.setReadOnly( True )
         qte.setStyleSheet("""
@@ -98,8 +98,9 @@ class TMDBMovieInfo( QDialog ):
     def launchTorrentWindow( self ):
         maxnum = int( self.numEntriesComboBox.currentText( ) )
         bypass = self.yesRadioButton.isChecked( )
-        tmdbt = TMDBTorrents( self, self.token, self.title,
-                              bypass = bypass, maxnum = maxnum )
+        tmdbt = TMDBTorrents(
+            self, self.token, self.title,
+            bypass = bypass, maxnum = maxnum )
         result = tmdbt.exec_( )
 
 class TMDBRadioButton( QRadioButton ):
@@ -129,6 +130,7 @@ class TMDBTorrents( QDialog ):
         self.summaryButton = QPushButton( 'SUMMARY' )
         self.sendButton = QPushButton( 'SEND' )
         self.downloadButton = QPushButton( 'DOWNLOAD' )
+        send.addButton = QPushButton( 'ADD' )
         self.summaryButton.setEnabled( False )
         myButtonGroup = QButtonGroup( self )
         mainLayout = QVBoxLayout( )
@@ -146,17 +148,18 @@ class TMDBTorrents( QDialog ):
             self.data = { }
             for actmovie in data:
                 title = actmovie[ 'title' ]
-                allmovies = list( filter(lambda tor: 'quality' in tor and '3D' not in tor['quality'],
-                                         actmovie['torrents'] ) )
-                if len( allmovies ) == 0:
-                    continue
-                allmovies2 = list( filter(lambda tor: '720p' in tor['quality'], allmovies ) )
+                allmovies = list(
+                    filter(lambda tor: 'quality' in tor and '3D' not in tor['quality'],
+                           actmovie['torrents'] ) )
+                if len( allmovies ) == 0: continue
+                allmovies2 = list(
+                    filter(lambda tor: '720p' in tor['quality'], allmovies ) )
                 if len( allmovies2 ) == 0: allmovies2 = allmovies
                 url = allmovies2[0]['url']
                 self.data[ title ] = requests.get( url ).content
-            self.allRadioButtons = list( map(lambda name:
-                                             TMDBRadioButton( name, name, self ),
-                                             sorted( self.data.keys( ) ) ) )
+            self.allRadioButtons = list(
+                map(lambda name: TMDBRadioButton( name, name, self ),
+                    sorted( self.data.keys( ) ) ) )
             self.statusLabel.setText( 'SUCCESS' )
         else: # now use Jackett for downloading movies
             #data, status = plextmdb.get_movie_torrent_kickass( movie_name, maxnum = maxnum )
@@ -191,6 +194,7 @@ class TMDBTorrents( QDialog ):
         topLayout.addWidget( self.summaryButton )
         topLayout.addWidget( self.sendButton )
         topLayout.addWidget( self.downloadButton )
+        topLayout.addWidget( self.addButton )
         mainLayout.addWidget( topWidget )
         if self.torrentStatus in ( 0, 1 ):
             for button in self.allRadioButtons:
@@ -220,9 +224,10 @@ class TMDBTorrents( QDialog ):
         self.show( )
 
     def showSummaryChosen( self ):
-        whichChosen = max( map(lambda qbut: qbut.value,
-                               filter( lambda qbut: qbut.isChecked( ),
-                                       self.allRadioButtons ) ) )
+        whichChosen = max(
+            map(lambda qbut: qbut.value,
+                filter( lambda qbut: qbut.isChecked( ),
+                        self.allRadioButtons ) ) )
         numSeeds, numLeeches, url = self.data[ whichChosen ]
         qdl = QDialog( self )
         mainColor = qdl.palette().color( QPalette.Background )
@@ -243,9 +248,10 @@ class TMDBTorrents( QDialog ):
         jsondata = { 'torrentStatus' : self.torrentStatus,
                      'token' : self.token }
         if self.torrentStatus in ( 0, 1 ):
-            whichChosen = max( map(lambda qbut: str( qbut.text( ) ),
-                                   filter( lambda qbut: qbut.isChecked( ),
-                                           self.allRadioButtons ) ) )
+            whichChosen = max(
+                map(lambda qbut: str( qbut.text( ) ),
+                    filter( lambda qbut: qbut.isChecked( ),
+                            self.allRadioButtons ) ) )
         if self.torrentStatus == 0:
             jsondata['movie'] = whichChosen
             jsondata['data'] = base64.b64encode(
@@ -254,8 +260,7 @@ class TMDBTorrents( QDialog ):
             _, _, url = self.data[ whichChosen ]
             jsondata[ 'movie' ] = self.movie
             jsondata[ 'data' ] = url
-        else:
-            jsondata[ 'movie' ] = self.movie
+        else: jsondata[ 'movie' ] = self.movie
 
         if self.do_debug:
             json.dump(
@@ -265,10 +270,9 @@ class TMDBTorrents( QDialog ):
         response = requests.post(
             'https://tanimislam.ddns.net/flask/plex/sendmovieemail', json = jsondata )
         if response.status_code == 200:
-            self.statusLabel.setText( 'sent request for "%s"' % jsondata['movie'] )
-        else:
-            # message = response.json()['message']
-            self.statusLabel.setText( 'ERROR: %s' % response.content )
+            self.statusLabel.setText(
+                'sent request for "%s"' % jsondata['movie'] )
+        else: self.statusLabel.setText( 'ERROR: %s' % response.content )
 
     def chooseDownloadTorrent( self ):
         if self.torrentStatus not in ( 0, 1 ):
@@ -990,18 +994,18 @@ class StringEntryDelegate( QStyledItemDelegate ):
         model = index.model( )
         colNumber = index.column( )
         assert( colNumber in (1, 2) )
-        if colNumber == 1:
-            myText = model.data( index, Qt.DisplayRole ).toString( )
-        else:
-            myText = '%0.3f' % model.data( index, Qt.DisplayRole).toFloat()[0]
+        if colNumber == 1: myText = model.data(
+                index, Qt.DisplayRole ).toString( )
+        else: myText = '%0.3f' % model.data(
+                index, Qt.DisplayRole ).toFloat( )[0]
         return QLabel( myText )
 
     def setEditorData( self, editor, index ):
         model = index.model( )
         colNumber = index.column( )
         assert( colNumber in (1, 2) )
-        if colNumber == 1:
-            myText = model.data( index, Qt.DisplayRole ).toString( )
-        else:
-            myText = '%0.3f' % model.data( index, Qt.DisplayRole).toFloat()[0]
-        editor.setText( myText ) 
+        if colNumber == 1: myText = model.data(
+                index, Qt.DisplayRole ).toString( )
+        else: myText = '%0.3f' % model.data(
+                index, Qt.DisplayRole).toFloat()[0]
+        editor.setText( myText )

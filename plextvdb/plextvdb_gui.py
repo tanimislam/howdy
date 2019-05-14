@@ -159,7 +159,7 @@ class TVDBGUI( QDialog ):
                                            libraries_dict ) ) )
         self.fullURL = fullURL
         self.token = token
-        self.tvdb_token = get_token( )
+        self.tvdb_token = get_token( verify = verify )
         self.verify = verify
         mytxt = '1, found TV library in %0.3f seconds.' % ( time.time( ) - time0 )
         #cdg.addText( mytxt )

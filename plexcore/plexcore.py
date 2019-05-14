@@ -396,16 +396,18 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
             tvdata_tup.append( ( show, showdata ) )
         return tvdata_tup
     
-    act_num_threads = max( num_threads, multiprocessing.cpu_count( ) )
     num_direlems = len( BeautifulSoup( response.content, 'lxml' ).find_all('directory' ) )
+    max_of_num_vals = max( num_direlems, multiprocessing.cpu_count( ) )
+    act_num_threads = min( num_threads, max_of_num_vals )
     with multiprocessing.Pool( processes = act_num_threads ) as pool:
         input_tuples = list(
             map(lambda idx: ( response.content,
                               list( range( idx, num_direlems, act_num_threads ) ) ),
                 range( act_num_threads ) ) )
         tvdata = dict(
-            reduce(lambda x,y: x+y, filter(None, pool.map(
-                _get_show_data, input_tuples ) ) ) )
+            reduce(lambda x,y: x+y, filter(
+                lambda tup: tup is not None, pool.map(
+                    _get_show_data, input_tuples ) ) ) )
         return key, tvdata
 
 def _get_library_stats_show( key, token, fullURL = 'http://localhost:32400',
@@ -979,4 +981,3 @@ def set_date_newsletter( ):
     lastnewsletterdate = LastNewsletterDate( date = datenow )
     session.add( lastnewsletterdate )
     session.commit( )
-        

@@ -20,6 +20,7 @@ def main( info = False, doLocal = True, verify = True ):
     if info: logging.basicConfig( level = logging.INFO )
     fullURL, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
+    print('verify = %s.' % verify )
     tvdb_gui = TVDBGUI( token, fullURL, verify = verify )
     result = app.exec_( )
     return tvdb_gui

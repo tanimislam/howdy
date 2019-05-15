@@ -16,7 +16,7 @@ class ShowsToExclude( Base ): # these are shows you want to exclude
 ## commit all tables
 create_all( )
     
-def save_tvdb_api( username, apikey, userkey ):
+def save_tvdb_api( username: str, apikey: str, userkey: str ):
     query = session.query( PlexConfig ).filter( PlexConfig.service == 'tvdb' )
     val = query.first( )
     if val is not None:
@@ -30,7 +30,7 @@ def save_tvdb_api( username, apikey, userkey ):
     session.add( newval )
     session.commit( )
 
-def get_tvdb_api( ):
+def get_tvdb_api( ) -> dict:
     query = session.query( PlexConfig ).filter( PlexConfig.service == 'tvdb' )
     val = query.first( )
     if val is None:
@@ -40,7 +40,7 @@ def get_tvdb_api( ):
              'apikey' : data['apikey'],
              'userkey' : data['userkey'] }
 
-def get_token( verify = True ):
+def get_token( verify: bool = True ) -> dict:
     data = json.dumps( get_tvdb_api( ) )
     headers = { 'Content-Type' : 'application/json' }
     response = requests.post( 'https://api.thetvdb.com/login',
@@ -49,7 +49,7 @@ def get_token( verify = True ):
     if response.status_code != 200: return None
     return response.json( )[ 'token' ]
 
-def refresh_token( token, verify = True ):
+def refresh_token( token: str, verify: bool = True ):
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/refresh_token',

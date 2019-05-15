@@ -4,7 +4,7 @@ mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 sys.path.append( mainDir )
 from plexcore import session, PlexConfig
 
-def save_tmdb_api( apikey ):
+def save_tmdb_api( apikey: str ):
     """
     Saves the provided TMDB API key into the database, stored on disk at ~/.config/plexstuff/app.db.
 
@@ -29,7 +29,7 @@ def save_tmdb_api( apikey ):
     session.add( newval )
     session.commit( )
 
-def get_tmdb_api( ):
+def get_tmdb_api( ) -> str:
     """
     Returns the TMDB API key found in the database, stored on disk at ~/.config/plexstuff/app.dbself.
 

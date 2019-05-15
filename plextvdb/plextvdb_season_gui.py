@@ -3,12 +3,20 @@ from PyQt4.QtCore import *
 from bs4 import BeautifulSoup
 import copy, numpy, sys, requests, logging
 import io, PIL.Image, base64
-from .plextvdb import get_series_id, get_episodes_series, TVSeason
+from . import plextvdb
 from plexcore import plexcore
 from plextmdb import plextmdb
 
 class TVDBSeasonGUI( QDialog ):
 
+    @classmethod
+    def find_missing_eps( cls, toGet, seriesName, season ):
+        if seriesName not in toGet: return { }
+        return set( map(lambda tup: tup[1],
+                        filter(lambda tup: tup[0] == seasno,
+                               toGet[ seriesName ] ) ) )
+        
+    
     @classmethod
     def processSeasonSummary( cls, season, episodes ):
         if len( episodes ) == 0: return ""
@@ -93,15 +101,9 @@ class TVDBSeasonGUI( QDialog ):
         #
         ## fill out those episodes don't have, use TVDB and TMDB stuff
         ## ONLY on missing episodes
-        if seriesName not in toGet and len( bad_eps ) == 0: return
-        missing_eps = [ ]
-        if seriesName in toGet:
-            missing_eps = set(
-                map(lambda tup: tup[1],
-                    filter(lambda tup: tup[0] == seasno,
-                           toGet[ seriesName ] ) ) )
-        series_id = get_series_id( seriesName, tvdb_token, verify = verify )
-        eps = get_episodes_series(
+        missing_eps = TVDBSeasonGUI.find_missing_eps( toGet, seriesName, seasno )
+        series_id = plextvdb.get_series_id( seriesName, tvdb_token, verify = verify )
+        eps = plextvdb.get_episodes_series(
             series_id, tvdb_token, showSpecials = False,
             showFuture = False, verify = verify )
         if any(filter(lambda episode: episode['episodeName'] is None, eps ) ):
@@ -109,7 +111,7 @@ class TVDBSeasonGUI( QDialog ):
             if len( tmdb_id ) == 0: return
             tmdb_id = tmdb_id[ 0 ]
             eps = plextmdb.get_episodes_series_tmdb( tmdb_id, verify = verify )
-        tvseason = TVSeason(
+        tvseason = plextvdb.TVSeason(
             seriesName, series_id, tvdb_token, seasno, verify = verify,
             eps = eps )
         assert( len(set( missing_eps ) -

@@ -242,13 +242,10 @@ class TVDBGUI( QDialog ):
         #cdg.close( )
         #
         ## now do the missing_eps
-        self.missing_eps = { }
-        for seriesName in self.tvdata_on_plex:
-            if seriesName not in toGet:
-                continue
-            if seriesName in showsToExclude:
-                continue
-            self.missing_eps[ seriesName ] = toGet[ seriesName ][ 'episodes' ]            
+        self.missing_eps = dict(map(
+            lambda seriesName: ( seriesName, toGet[ seriesName ][ 'episodes' ] ),
+            filter( lambda sname: sname in toGet and sname not in showsToExclude,
+                    self.tvdata_on_plex ) ) )
         #
         ##
         self.instantiatedTVShows = { }
@@ -341,15 +338,9 @@ class TVDBGUI( QDialog ):
         toGet = plextvdb.get_remaining_episodes(
                 self.tvdata_on_plex, showSpecials = False,
             showsToExclude = showsToExclude )
-        self.missing_eps = { }
-        for seriesName in self.tvdata_on_plex:
-            if seriesName not in toGet:
-                self.missing_eps[ seriesName ] = [ ]
-                continue
-            if seriesName in showsToExclude:
-                self.missing_eps[ seriesName ] = [ ]
-                continue
-            self.missing_eps[ seriesName ] = toGet[ seriesName ][ 'episodes' ]
+        self.missing_eps = dict(map(
+            lambda seriesName: ( seriesName, toGet[ seriesName ][ 'episodes' ] ),
+            set( toGet ) - set( showsToExclude ) ) )
         self.tm.fillOutCalculation( )
         logging.info( 'refreshed all TV shows in %0.3f seconds.' % (
             time.time( ) - time0 ) )
@@ -595,6 +586,7 @@ class TVDBShowGUI( QDialog ):
         self.setLayout( myLayout )
         #
         ## top widget contains a set of seasons in a QComboBox
+        seasons_sorted = sorted( set( seriesInfo[ 'seasons' ] ) - set([ 0 ]) )
         topWidget = QWidget( )
         topLayout = QHBoxLayout( )
         topWidget.setLayout( topLayout )
@@ -602,8 +594,7 @@ class TVDBShowGUI( QDialog ):
         seasonSelected = QComboBox( self )
         seasonSelected.addItems(
             list(map(lambda seasno: '%d' % seasno,
-                     filter(lambda season: season != 0,
-                            sorted( seriesInfo[ 'seasons' ] ) ) ) ) )
+                     sorted_seasons)))
         seasonSelected.setEnabled( True )
         seasonSelected.setEditable( False )
         seasonSelected.setCurrentIndex( 0 )
@@ -613,22 +604,21 @@ class TVDBShowGUI( QDialog ):
         ## now a stacked layout
         self.seasonWidget = QStackedWidget( )
         self.series_widgets = { }
-        for season in filter(lambda season: season != 0,
-                             sorted( seriesInfo[ 'seasons' ] ) ): 
-            num_seasons = len(list(filter(lambda season: season != 0,
-                                          sorted( seriesInfo[ 'seasons' ]))))
+        num_seasons = len(sorted_seasons):
+        for season in sorted_seasons:
             self.series_widgets[ season ] = TVDBSeasonGUI(
                 seriesName, season, tvdata, missing_eps, tvdb_token, plex_token,
                 verify = verify, parent = parent )
             self.seasonWidget.addWidget( self.series_widgets[ season ] )
-            logging.debug( 'added %s season %d / %d.' % (
+            logging.info( 'added %s season %d / %d.' % (
                 seriesName, season, num_seasons ) )
         first_season = min( self.series_widgets )
         myLayout.addWidget( self.seasonWidget )
         #
         ## set size
         self.setFixedWidth( self.series_widgets[ first_season ].sizeHint( ).width( ) * 1.05 )
-        # self.setFixedHeight( 800 )
+        #self.setFixedWidth( 800 )
+        self.setFixedHeight( 800 )
         #
         ## connect
         seasonSelected.installEventFilter( self )

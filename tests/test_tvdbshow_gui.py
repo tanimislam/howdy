@@ -17,6 +17,7 @@ from optparse import OptionParser
 
 #
 ## start the application here
+logging.basicConfig( level = logging.INFO )
 parser = OptionParser( )
 parser.add_option('-s', '--series', type=str, dest='series', action='store', default='The Simpsons',
                   help = 'Name of the series to choose. Default is "The Simpsons".' )
@@ -27,9 +28,9 @@ tvdata = pickle.load( gzip.open(max(glob.glob('tvdata_*pkl.gz')), 'rb' ))
 toGet = pickle.load( gzip.open(max(glob.glob('toGet_*pkl.gz')), 'rb' ))
 didend= pickle.load( gzip.open(max(glob.glob('didend_*pkl.gz')), 'rb'))
 assert( opts.series in tvdata )
-_, plex_token = plexcore.checkServerCredentials( doLocal = True )
-tvdb_token = get_token( )
+_, plex_token = plexcore.checkServerCredentials( doLocal = False, verify = False )
+tvdb_token = get_token( verify = False )
 tvdb_show_gui = plextvdb_gui.TVDBShowGUI(
     opts.series, tvdata, toGet, tvdb_token, plex_token,
-    verify = True)
+    verify = False )
 result = tvdb_show_gui.exec_( )

@@ -47,6 +47,14 @@ def main( ):
     #
     ## first find out which libraries are the TV show ones
     library_dict = plexcore.get_libraries( fullURL = fullURL, token = token, do_full = True )
+    if library_dict is None:
+        print('\n'.join([
+            '%d, error, could not access libraries in plex server in %0.3f seconds. Exiting...' % (
+                step, time.time( ) - time0 ),
+            '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
+                '%B %d, %Y @ %I:%M:%S %p' ) ) ] ) )
+        return
+    #
     valid_keys = list(filter(lambda key: library_dict[ key ][ -1 ] ==
                              'show', library_dict ) )
     if len( valid_keys ) == 0:

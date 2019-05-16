@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 
 import os, sys, glob, logging, signal
-from . import signal_handler
+ # code to handle Ctrl+C, convenience method for command line tools
+def signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Exiting...")
+    sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
+from functools import reduce
+mainDir = reduce(lambda x,y: os.path.dirname( x ), range(2),
+                 os.path.abspath( __file__ ) )
+sys.path.append( mainDir )
 import qdarkstyle, pickle, gzip
 from PyQt4.QtGui import QApplication
 from plextvdb import plextvdb_gui

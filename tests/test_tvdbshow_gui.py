@@ -7,13 +7,14 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 import qdarkstyle, pickle, gzip
-mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
+from functools import reduce
+mainDir = reduce(lambda x,y: os.path.dirname( x ), range(2),
+                 os.path.abspath( __file__ ) )
 sys.path.append( mainDir )
-sys.path.append( os.path.dirname( mainDir ) )
 from PyQt4.QtGui import QApplication
-from plextvdb import plextvdb_gui, get_token
+from plextvdb import plextvdb_gui, plextvdb_season_gui, get_token
 from plexcore import plexcore
-from optparse import OptionParser
+from test_plexcore import get_token_fullURL
 
 #
 ## start the application here

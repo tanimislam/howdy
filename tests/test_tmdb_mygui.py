@@ -1,29 +1,22 @@
 #!/usr/bin/env python3
 
-import sys, signal
-# code to handle Ctrl+C, convenience method for command line tools
-def signal_handler( signal, frame ):
-    print( "You pressed Ctrl+C. Exiting...")
-    sys.exit( 0 )
+import signal, logging
+from . import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
-import logging, PyQt4.QtGui, pickle, gzip, os, qdarkstyle
-mainDir = os.path.dirname(
-    os.path.dirname( os.path.abspath( __file__ ) ) )
-sys.path.append( mainDir )
 from plexcore import plexcore
 from plextmdb import plextmdb_mygui
 from optparse import OptionParser
+from . import test_plexcore, test_tmdbgui
 
 def main(debug = False, doLocal = True, verify = True ):
-    app = PyQt4.QtGui.QApplication([])
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
+    app = test_tmdbgui.get_app_standalone( )
     if debug: logging.basicConfig( level = logging.DEBUG )
     fullurl, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
-    movie_data_rows = pickle.load( gzip.open( 'movie_data_rows_20190511.pkl.gz', 'rb' ) )
-    tmdb_mygui = plextmdb_mygui.TMDBMyGUI( token, movie_data_rows, verify = verify )
+    movie_data_rows = test_tmdbgui.get_movie_data_rows_standalone( )
+    tmdb_mygui = plextmdb_mygui.TMDBMyGUI(
+        token, movie_data_rows, verify = verify )
     result = app.exec_( )
-    return tmdb_mygui
 
 if __name__=='__main__':
     parser = OptionParser( )

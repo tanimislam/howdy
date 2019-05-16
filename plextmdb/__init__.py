@@ -4,17 +4,12 @@ mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 sys.path.append( mainDir )
 from plexcore import session, PlexConfig
 
-def save_tmdb_api( apikey: str ):
+def save_tmdb_api( apikey: str ) -> None:
     """
     Saves the provided TMDB API key into the database, stored on disk at ~/.config/plexstuff/app.db.
 
-    Parameters
-    ----------
-    apikey (string): The TMDB API string, whose format is described in `The TMDB API`_.
-
-    Returns
-    -------
-    None
+    Args:
+        apikey (string): The TMDB API string, whose format is described in `The TMDB API`_.
 
     .._The TMDB API:
        https://developers.themoviedb.org/3/getting-started/introduction
@@ -31,13 +26,14 @@ def save_tmdb_api( apikey: str ):
 
 def get_tmdb_api( ) -> str:
     """
-    Returns the TMDB API key found in the database, stored on disk at ~/.config/plexstuff/app.dbself.
+    Returns the TMDB API key found in the database, stored on disk at
+    ``~/.config/plexstuff/app.db``.
 
     Returns
         string: the TMDB API key stored in the database.
-    -------
     """
-    query = session.query( PlexConfig ).filter( PlexConfig.service == 'tmdb' )
+    query = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'tmdb' )
     val = query.first( )
     if val is None:
         raise ValueError("ERROR, NO TMDB API CREDENTIALS FOUND")

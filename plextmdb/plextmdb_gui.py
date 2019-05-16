@@ -267,7 +267,8 @@ class TMDBTorrents( QDialog ):
         if self.do_debug:
             json.dump(
                 jsondata, open(
-                    '%s.json' % '_'.join( os.path.basename( self.movie ).split( ) ), 'w' ) )
+                    '%s.json' % '_'.join( os.path.basename( self.movie ).split( ) ), 'w' ),
+                indent = 1 )
 
         response = requests.post(
             'https://tanimislam.ddns.net/flask/plex/sendmovieemail', json = jsondata,

@@ -1,4 +1,4 @@
-import threading, requests, fuzzywuzzy, re, os, time
+import threading, requests, fuzzywuzzy, re, os, time, logging
 from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
 from requests.compat import urljoin
@@ -9,6 +9,7 @@ from . import plextmdb
 def _return_error_raw( msg ): return None, msg
 
 def get_movie_torrent_jackett( name, maxnum = 10, verify = True ):
+    time0 = time.time( )
     import validators
     data = get_jackett_credentials( )
     if data is None:
@@ -20,7 +21,10 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True ):
     if response.status_code != 200:
         return _return_error_raw(
             ' '.join([ 'failure, problem with jackett server accessible at %s.' % url,
-                       'Error code = %d. Error data = %s.' % ( response.status_code, response.content ) ] ) )
+                       'Error code = %d. Error data = %s.' % (
+                           response.status_code, response.content ) ] ) )
+    logging.info( 'processed jackett torrents for %s in %0.3f seconds.' % (
+        name, time.time( ) - time0 ) )
     html = BeautifulSoup( response.content, 'lxml' )
     if len( html.find_all('item') ) == 0:
         return _return_error_raw(

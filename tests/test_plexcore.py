@@ -1,11 +1,8 @@
-import os, sys, pytest, logging, warnings
+import os, sys, pytest, logging, warnings, time
 from plexcore import plexcore
+from plextvdb import plextvdb
+from plextmdb import plextmdb_totgui
 
-def get_token_fullURL_standalone( doLocal = False, verify = True ):
-    fullURL, token = plexcore.checkServerCredentials(
-        doLocal = doLocal, verify = verify )
-    return fullURL, token
-    
 @pytest.fixture(scope="module")
 def get_token_fullURL( request ):
     doLocal = request.config.option.do_local

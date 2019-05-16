@@ -244,7 +244,8 @@ def get_imdbid_from_id( id, verify = True ):
     if 'imdb_id' not in data: return None
     return data['imdb_id']
 
-def get_movie( title, year = None, checkMultiple = True, getAll = False ):
+def get_movie( title, year = None, checkMultiple = True, getAll = False,
+               verify = True ):
     movieSearchMainURL = 'https://api.themoviedb.org/3/search/movie'
     params = { 'api_key' : tmdb_apiKey,
                'append_to_response': 'images',

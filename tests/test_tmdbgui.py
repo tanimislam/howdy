@@ -25,29 +25,39 @@ def get_movie_data_rows( ):
     yield movie_data_rows
 
 def test_tmdb_mygui( get_token_fullURL, get_movie_data_rows,
-                     get_app ):
+                     get_app, request ):
+    verify = request.config.option.do_verify
     fullurl, token = get_token_fullURL
     app = get_app
     movie_data_rows = get_movie_data_rows
     tmdb_mygui = plextmdb_mygui.TMDBMyGUI(
-        token, movie_data_rows, verify = True )
+        token, movie_data_rows, verify = verify )
 
 def test_tmdb_gui( get_token_fullURL, get_movie_data_rows,
-                   get_app ):
+                   get_app, request ):
+    verify = request.config.option.do_verify
     fullurl, token = get_token_fullURL
     app = get_app
     movie_data_rows = get_movie_data_rows
     tmdbgui = plextmdb_gui.TMDBGUI(
-        token, fullurl, movie_data_rows, verify = True )
+        token, fullurl, movie_data_rows, verify = verify )
 
 def test_tmdb_totgui( get_token_fullURL, get_movie_data_rows,
-                      get_app ):
+                      get_app, request ):
+    verify = request.config.option.do_verify
     fullurl, token = get_token_fullURL
     app = get_app
     movie_data_rows = get_movie_data_rows
     tmdb_totgui = plextmdb_totgui.TMDBTotGUI(
         fullurl, token, movie_data_rows = movie_data_rows,
-        doLarge = True, verify = True )
+        doLarge = True, verify = verify )
 
-
-
+def test_tmdb_torrents( get_token_fullURL, get_app, request ):
+    movie = 'Big Hero 6'
+    bypass = request.config.option.do_bypass
+    fullurl, token = get_token_fullURL
+    app = get_app
+    tmdbt = plextmdb_gui.TMDBTorrents(
+        None, token, movie, bypass = bypass )
+    
+                        

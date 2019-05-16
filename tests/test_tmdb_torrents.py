@@ -22,17 +22,18 @@ parser.add_option('--movie', dest='movie', type=str, action='store',
                              'Default is Big Hero 6.' ]) )
 parser.add_option('--bypass', dest='do_bypass', action='store_true',
                   default = False, help = 'If chosen, then bypass using YTS Movies.' )
-parser.add_option('--info', dest='do_info', action='store_true', default = False,
-                  help = 'If chosen, then run with info mode.' )
+parser.add_option('--debug', dest='do_debug', action='store_true', default = False,
+                  help = 'If chosen, dump the JSON representation of the data.' )
 opts, args = parser.parse_args( )
 #
+if opts.do_debug: logging.basicConfig( level = logging.INFO )
 app = QApplication([])
 app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
-if opts.do_info: logging.basicConfig( level = logging.INFO )
 fullURL, token = plexcore.checkServerCredentials(
     doLocal = False, verify = False )
 tmdbt = plextmdb_gui.TMDBTorrents( None, token, opts.movie,
-                                   bypass = opts.do_bypass )
+                                   bypass = opts.do_bypass,
+                                   do_debug = opts.do_debug )
 tmdbt.setStyleSheet("""
 QWidget {
 font-family: Consolas;

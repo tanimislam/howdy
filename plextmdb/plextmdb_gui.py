@@ -130,7 +130,7 @@ class TMDBTorrents( QDialog ):
         self.summaryButton = QPushButton( 'SUMMARY' )
         self.sendButton = QPushButton( 'SEND' )
         self.downloadButton = QPushButton( 'DOWNLOAD' )
-        send.addButton = QPushButton( 'ADD' )
+        self.addButton = QPushButton( 'ADD' )
         self.summaryButton.setEnabled( False )
         myButtonGroup = QButtonGroup( self )
         mainLayout = QVBoxLayout( )
@@ -139,9 +139,11 @@ class TMDBTorrents( QDialog ):
         self.do_debug = do_debug
         #
         ##
+        if parent is not None: self.verify = parent.verify
+        else: self.verify = False
         if not bypass:
             data, status = plextmdb_torrents.get_movie_torrent(
-                movie_name, verify = parent.verify )
+                movie_name, verify = self.verify )
         else: status = 'FALURE'
         if status == 'SUCCESS':
             self.torrentStatus = 0
@@ -165,7 +167,7 @@ class TMDBTorrents( QDialog ):
             #data, status = plextmdb.get_movie_torrent_kickass( movie_name, maxnum = maxnum )
             #data, status = plextmdb_torrents.get_movie_torrent_rarbg( movie_name, maxnum = maxnum )
             data, status = plextmdb_torrents.get_movie_torrent_jackett(
-                movie_name, maxnum = maxnum, verify = parent.verify )
+                movie_name, maxnum = maxnum, verify = verify )
             if status == 'SUCCESS':
                 self.torrentStatus = 1
                 self.data = { }
@@ -268,7 +270,8 @@ class TMDBTorrents( QDialog ):
                     '%s.json' % '_'.join( os.path.basename( self.movie ).split( ) ), 'w' ) )
 
         response = requests.post(
-            'https://***REMOVED***islam.ddns.net/flask/plex/sendmovieemail', json = jsondata )
+            'https://***REMOVED***islam.ddns.net/flask/plex/sendmovieemail', json = jsondata,
+            verify = self.verify )
         if response.status_code == 200:
             self.statusLabel.setText(
                 'sent request for "%s"' % jsondata['movie'] )
@@ -282,7 +285,8 @@ class TMDBTorrents( QDialog ):
                                         self.allRadioButtons ) ) )
         #
         ## followed advice from http://stackoverflow.com/questions/4286036/how-to-have-a-directory-dialog-in-pyqt
-        dirName = str( QFileDialog.getExistingDirectory( self, 'Choose directory to put torrent or magnet.') )
+        dirName = str( QFileDialog.getExistingDirectory(
+            self, 'Choose directory to put torrent or magnet.') )
         if self.torrentStatus == 0:
             data = self.data[ whichChosen ]
             torrentFile = os.path.join( dirName, '%s.torrent' % whichChosen )
@@ -300,9 +304,9 @@ class TMDBGUI( QDialog ):
     movieRefreshRows = pyqtSignal( list )
 
     def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                  os.path.expanduser( '~' ),
-                                                  filter = '*.png' ) )
+        fname = str( QFileDialog.getSaveFileName(
+            self, 'Save Screenshot', os.path.expanduser( '~' ),
+            filter = '*.png' ) )
         if len( os.path.basename( fname.strip( ) ) ) == 0:
             return
         if not fname.lower( ).endswith( '.png' ):

@@ -580,14 +580,15 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
     return sorted(set(filter(lambda key: library_dict[ key ][1] == 'movie',
                              library_dict ) ) )
 
-def get_library_data( title, token, fullURL = 'http://localhost:32400', debug = False ):
+def get_library_data( title, token, fullURL = 'http://localhost:32400' ):
     time0 = time.time( )
     params = { 'X-Plex-Token' : token }
     response = requests.get( '%s/library/sections' % fullURL, params = params,
                              verify = False )
     if response.status_code != 200:
-        if debug: print( "took %0.3f seconds to gete here in get_library_data, library = %s." %
-                         ( time.time( ) - time0, title ) )
+        logging.info( "took %0.3f seconds to get here in get_library_data, library = %s." %
+                      ( time.time( ) - time0, title ) )
+        logging.info( "no data found. Exiting..." )
         return None
     html = BeautifulSoup( response.content, 'lxml' )
     library_dict = { direlem[ 'title' ] : ( int( direlem['key'] ), direlem['type'] ) for
@@ -601,11 +602,12 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400', debug = 
     elif mediatype == 'artist':
         _, data = _get_library_data_artist( key, token, fullURL = fullURL )
     else:
-        if debug: print( "took %0.3f seconds to gete here in get_library_data, library = %s." %
-                         ( time.time( ) - time0, title ) )
+        logging.info( "took %0.3f seconds to gete here in get_library_data, library = %s." %
+                      ( time.time( ) - time0, title ) )
+        logging.info( "could not find a library with name = %s. Exiting..." % title )
         return None
-    if debug: print( "took %0.3f seconds to gete here in get_library_data, library = %s." %
-                     ( time.time( ) - time0, title ) )
+    logging.info( "took %0.3f seconds to gete here in get_library_data, library = %s." %
+                  ( time.time( ) - time0, title ) )
     return data
 
 def get_library_stats( key, token, fullURL = 'http://localhost:32400' ):

@@ -167,7 +167,7 @@ class TMDBTorrents( QDialog ):
             #data, status = plextmdb.get_movie_torrent_kickass( movie_name, maxnum = maxnum )
             #data, status = plextmdb_torrents.get_movie_torrent_rarbg( movie_name, maxnum = maxnum )
             data, status = plextmdb_torrents.get_movie_torrent_jackett(
-                movie_name, maxnum = maxnum, verify = verify )
+                movie_name, maxnum = maxnum, verify = self.verify )
             if status == 'SUCCESS':
                 self.torrentStatus = 1
                 self.data = { }

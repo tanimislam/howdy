@@ -161,6 +161,11 @@ class TVDBGUI( QDialog ):
         self.token = token
         self.tvdb_token = get_token( verify = verify )
         self.verify = verify
+        self.setStyleSheet("""
+        QWidget {
+        font-family: Consolas;
+        font-size: 11;
+        }""" )
         mytxt = '1, found TV library in %0.3f seconds.' % ( time.time( ) - time0 )
         #cdg.addText( mytxt )
         logging.info( mytxt )

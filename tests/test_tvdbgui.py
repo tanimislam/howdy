@@ -28,7 +28,9 @@ def get_app( ):
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
     yield app
 
-def test_tvdbseason_gui( get_token_fullURL, get_tvdata_toGet_didend, get_app ):
+def test_tvdbseason_gui( get_token_fullURL, get_tvdata_toGet_didend, get_app,
+                         request ):
+    verify = request.config.option.do_verify
     series = 'The Simpsons'
     season = 1
     fullURL, plex_token = get_token_fullURL
@@ -41,24 +43,28 @@ def test_tvdbseason_gui( get_token_fullURL, get_tvdata_toGet_didend, get_app ):
         lambda seriesName: ( seriesName, toGet[ seriesName ][ 'episodes' ] ),
         toGet ) )#
     tvdb_season_gui = plextvdb_season_gui.TVDBSeasonGUI(
-        series, season, tvdata, missing_eps, get_token( True ),
-        plex_token, verify = True )
+        series, season, tvdata, missing_eps, get_token( verify = verify ),
+        plex_token, verify = verify )
 
-def test_tvdbshow_gui( get_token_fullURL, get_tvdata_toGet_didend, get_app ):
+def test_tvdbshow_gui( get_token_fullURL, get_tvdata_toGet_didend, get_app,
+                       request ):
+    verify = request.config.option.do_verify
     series = 'The Simpsons'
     fullURL, plex_token = get_token_fullURL
     app = get_app
     tvdata, toGet, _ = get_tvdata_toGet_didend
     assert( series in tvdata )
-    tvdb_token = get_token( verify = True )
+    tvdb_token = get_token( verify = verify )
     tvdb_show_gui = plextvdb_gui.TVDBShowGUI(
         series, tvdata, toGet, tvdb_token, plex_token,
-        verify = True )
+        verify = verify )
 
-def test_tvdb_gui( get_token_fullURL, get_tvdata_toGet_didend, get_app ):
+def test_tvdb_gui( get_token_fullURL, get_tvdata_toGet_didend, get_app,
+                   request ):
+    verify = request.config.option.do_verify
     fullURL, plex_token = get_token_fullURL
     app = get_app
     tvdata, toGet, didend = get_tvdata_toGet_didend
     tvdbg = plextvdb_gui.TVDBGUI(
         plex_token, fullURL, tvdata_on_plex = tvdata,
-        toGet = toGet, didend = didend, verify = True )
+        toGet = toGet, didend = didend, verify = verify )

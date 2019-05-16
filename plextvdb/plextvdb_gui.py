@@ -586,7 +586,7 @@ class TVDBShowGUI( QDialog ):
         self.setLayout( myLayout )
         #
         ## top widget contains a set of seasons in a QComboBox
-        seasons_sorted = sorted( set( seriesInfo[ 'seasons' ] ) - set([ 0 ]) )
+        sorted_seasons = sorted( set( seriesInfo[ 'seasons' ] ) - set([ 0 ]) )
         topWidget = QWidget( )
         topLayout = QHBoxLayout( )
         topWidget.setLayout( topLayout )
@@ -604,7 +604,7 @@ class TVDBShowGUI( QDialog ):
         ## now a stacked layout
         self.seasonWidget = QStackedWidget( )
         self.series_widgets = { }
-        num_seasons = len(sorted_seasons):
+        num_seasons = len(sorted_seasons)
         for season in sorted_seasons:
             self.series_widgets[ season ] = TVDBSeasonGUI(
                 seriesName, season, tvdata, missing_eps, tvdb_token, plex_token,

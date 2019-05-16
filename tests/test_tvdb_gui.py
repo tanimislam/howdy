@@ -6,11 +6,11 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
+from functools import reduce
+mainDir = reduce(lambda x,y: os.path.dirname( x ), range(2),
+                 os.path.abspath( __file__ ) )
+sys.path.append( mainDir )
 import qdarkstyle, pickle, gzip
-mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
-sys.path.append( mainDir )
-mainDir = os.path.dirname( os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) ) )
-sys.path.append( mainDir )
 from PyQt4.QtGui import QApplication
 from plextvdb import plextvdb_gui
 from plexcore import plexcore

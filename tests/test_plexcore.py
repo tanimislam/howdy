@@ -1,16 +1,25 @@
 import os, sys, pytest, logging, warnings
 from plexcore import plexcore
 
-def get_token_fullURL_standalone( ):
+def get_token_fullURL_standalone( doLocal = False, verify = True ):
     fullURL, token = plexcore.checkServerCredentials(
-        doLocal = False, verify = True )
+        doLocal = doLocal, verify = verify )
     return fullURL, token
     
 @pytest.fixture(scope="module")
-def get_token_fullURL( ):
-    logging.basicConfig( level = logging.INFO )
-    print( 'getting fullURL and token, nonLocal and verify SSL' )
-    fullURL, token = plexcore.checkServerCredentials( doLocal = False, verify = True )
+def get_token_fullURL( request ):
+    doLocal = request.config.option.do_local
+    verify = request.config.option.do_verify
+    doInfo = request.config.option.do_info
+    if doInfo: logging.basicConfig( level = logging.INFO )
+    if doLocal: localString = "local"
+    else: localString = "non-local"
+    if verify: verifyString = "verify"
+    else: verifyString = "no-verify"
+    print( 'getting fullURL and token, %s and %s SSL' %
+           ( localString, verifyString ) )
+    fullURL, token = plexcore.checkServerCredentials(
+        doLocal = doLocal, verify = verify )
     yield fullURL, token
     print( 'after tests, finished giving out tokens, fullURL = %s, token = %s.' % (
         fullURL, token ) )

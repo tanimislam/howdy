@@ -1,25 +1,44 @@
 import os, sys, glob, logging, pytest, warnings
-import qdarkstyle, pickle, gzip, requests
+import qdarkstyle, pickle, gzip, requests, time
 from PyQt4.QtGui import QApplication
-from plextvdb import plextvdb_gui, plextvdb_season_gui, get_token
-from .test_plexcore import get_token_fullURL
-
-def get_tvdata_toGet_didend_standalone( ):
-    tvdata = pickle.load( gzip.open(max(glob.glob('tvdata*pkl.gz')), 'rb' ))
-    toGet  = pickle.load( gzip.open(max(glob.glob('toGet*pkl.gz')), 'rb' ))
-    didend = pickle.load( gzip.open(max(glob.glob('didend*pkl.gz')), 'rb'))
-    return tvdata, toGet, didend
-
-def get_app_standalone( ):
-    app = QApplication([])
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
-    return app
+from plexcore import plexcore
+from plextvdb import plextvdb_gui, plextvdb_season_gui, get_token, plextvdb
+from .test_plexcore import get_token_fullURL, get_libraries_dict
 
 @pytest.fixture( scope="module" )
-def get_tvdata_toGet_didend( ):
-    tvdata = pickle.load( gzip.open(max(glob.glob('tvdata*pkl.gz')), 'rb' ))
-    toGet  = pickle.load( gzip.open(max(glob.glob('toGet*pkl.gz')), 'rb' ))
-    didend = pickle.load( gzip.open(max(glob.glob('didend*pkl.gz')), 'rb'))
+def get_tvdata_toGet_didend( request, get_token_fullURL, get_libraries_dict ):
+    time0 = time.time( )
+    rebuild = request.config.option.do_rebuild
+    doLocal = request.config.option.do_local
+    verify = request.config.option.do_verify
+    fullURL, token = get_token_fullURL
+    libraries_dict = get_libraries_dict
+    if rebuild:
+        #
+        ## tv library
+        key = list(filter(lambda k: libraries_dict[k][-1] == 'show',
+                          libraries_dict))
+        assert( len( key ) != 0 )
+        key = max( key )
+        library_name = libraries_dict[ key ][ 0 ]
+        tvdata = plexcore.get_library_data( library_name, token = token, fullURL = fullURL )
+        pickle.dump( tvdata, gzip.open( 'tvdata.pkl.gz', 'wb' ) )
+        #
+        ## toGet
+        toGet = plextvdb.get_remaining_episodes(
+            tvdata, showSpecials=False, showsToExclude = plextvdb.get_shows_to_exclude( ),
+            verify = verify )
+        pickle.dump( toGet, gzip.open( 'toGet.pkl.gz', 'wb' ) )
+        #
+        ## didend
+        didend = plextvdb.get_all_series_didend( tvdata, verify = verify )
+        pickle.dump( didend, gzip.open( 'didend.pkl.gz', 'wb' ) )
+        print( 'processed and stored new TV data in %0.3f seconds.' % (
+            time.time( ) - time0 ) )
+    else:
+        tvdata = pickle.load( gzip.open(max(glob.glob('tvdata*pkl.gz')), 'rb' ))
+        toGet  = pickle.load( gzip.open(max(glob.glob('toGet*pkl.gz')), 'rb' ))
+        didend = pickle.load( gzip.open(max(glob.glob('didend*pkl.gz')), 'rb'))
     yield tvdata, toGet, didend
 
 @pytest.fixture( scope="module" )

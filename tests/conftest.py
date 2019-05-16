@@ -9,4 +9,6 @@ def pytest_addoption( parser ):
                      help = 'If chosen, then run in INFO mode using the logger.')
     parser.addoption('--bypass', dest='do_bypass', action='store_true',
                      default = False, help = 'If chosen, then bypass using YTS Movies.' )
+    parser.addoption('--rebuild', dest='do_rebuild', action='store_true',
+                     default = False, help = 'If chosen, then rebuild the local store of data used in the tests.' )
 

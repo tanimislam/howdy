@@ -3,11 +3,9 @@ import pathos.multiprocessing as multiprocessing
 from functools import reduce
 from . import mainDir, get_tmdb_api
 
-#
-## have to fix this 
 tmdb_apiKey = get_tmdb_api( )
 
-def get_tv_ids_by_series_name( series_name, verify = True ):
+def get_tv_ids_by_series_name( series_name: str, verify = True ) -> list:
     response = requests.get( 'https://api.themoviedb.org/3/search/tv',
                              params = { 'api_key' : tmdb_apiKey,
                                         'append_to_response': 'images',
@@ -16,8 +14,7 @@ def get_tv_ids_by_series_name( series_name, verify = True ):
                                         'sort_by': 'popularity.desc',
                                         'query' : '+'.join( series_name.split( ) ),
                                         'page' : 1 }, verify = verify )
-    if response.status_code != 200:
-        return [ ]
+    if response.status_code != 200: return [ ]
     data = response.json( )
     valid_results = list(filter(
         lambda result: 'name' in result and
@@ -25,7 +22,7 @@ def get_tv_ids_by_series_name( series_name, verify = True ):
         'id' in result, data[ 'results' ] ) )
     return list(map(lambda result: result[ 'id' ], valid_results ) )
 
-def get_tv_info_for_series( tv_id, verify = True ):
+def get_tv_info_for_series( tv_id: int, verify: bool = True ):
     response = requests.get( 'https://api.themoviedb.org/3/tv/%d' % tv_id,
                              params = { 'api_key' : tmdb_apiKey,
                                         'append_to_response': 'images',
@@ -35,8 +32,7 @@ def get_tv_info_for_series( tv_id, verify = True ):
         return None
     return response.json( )
 
-
-def get_tv_info_for_season( tv_id, season, verify = True ):
+def get_tv_info_for_season( tv_id: int, season: int, verify: bool = True ):
     response = requests.get(
         'https://api.themoviedb.org/3/tv/%d/season/%d' % ( tv_id, season ),
         params = { 'api_key' : tmdb_apiKey,
@@ -49,12 +45,12 @@ def get_tv_info_for_season( tv_id, season, verify = True ):
 
 #
 ## right now do not show specials
-def get_episodes_series_tmdb( tv_id, verify = True ):
+def get_episodes_series_tmdb( tv_id: int, verify: bool = True ) -> list:
     tmdb_tv_info = get_tv_info_for_series( tv_id, verify = verify )
     valid_seasons = sorted(filter(lambda seasno: seasno != 0,
                                   map(lambda season: season['season_number'],
                                       tmdb_tv_info[ 'seasons' ] ) ) )
-    def _process_tmdb_epinfo( seasno ):
+    def _process_tmdb_epinfo( seasno: int ) -> list:
         #
         # must define 'airedSeason', 'airedEpisodeNumber', 'firstAired', 'overview', 'imageURL', 'episodeName'
         seasinfo = get_tv_info_for_season( tv_id, seasno, verify = verify )
@@ -81,7 +77,7 @@ def get_episodes_series_tmdb( tv_id, verify = True ):
             map( _process_tmdb_epinfo, valid_seasons ) ) )
         return episodes
     
-def get_movies_by_actors( actor_names, verify = True ):
+def get_movies_by_actors( actor_names: list, verify = True ) -> list:
     actor_name_dict = { }
     for actor_name in set(actor_names):
         actor_ids = [ ]
@@ -170,7 +166,7 @@ def get_movies_by_actors( actor_names, verify = True ):
         actualMovieData.append( row )
     return actualMovieData
 
-def get_movies_by_title( title, verify = True ):
+def get_movies_by_title( title: str, verify = True ) -> list:
     response = requests.get( 'https://api.themoviedb.org/3/search/movie',
                              params = { 'api_key' : tmdb_apiKey,
                                         'append_to_response': 'images',
@@ -236,15 +232,17 @@ def get_movies_by_title( title, verify = True ):
     return actualMovieData
 
 # Followed advice from https://www.themoviedb.org/talk/5493b2b59251416e18000826?language=en
-def get_imdbid_from_id( id, verify = True ):
+def get_imdbid_from_id( id: int, verify = True ):
     response = requests.get( 'https://api.themoviedb.org/3/movie/%d' % id,
                              params = { 'api_key' : tmdb_apiKey }, verify = verify )
-    if response.status_code != 200: return None
+    if response.status_code != 200:
+        print( 'problem here, %s.' % response.content )
+        return None
     data = response.json( )
     if 'imdb_id' not in data: return None
     return data['imdb_id']
 
-def get_movie( title, year = None, checkMultiple = True, getAll = False,
+def get_movie( title: str, year = None, checkMultiple = True, getAll = False,
                verify = True ):
     movieSearchMainURL = 'https://api.themoviedb.org/3/search/movie'
     params = { 'api_key' : tmdb_apiKey,
@@ -282,7 +280,7 @@ def get_movie( title, year = None, checkMultiple = True, getAll = False,
     else:
         return results
 
-def get_movie_tmdbids( title, year = None, getAll = False, verify = True ):
+def get_movie_tmdbids( title: str, year: int = None, getAll = False, verify = True ):
     results = get_movie( title, year = year, checkMultiple = True, getAll = True,
                          verify = verify )
     if results is None: return None
@@ -292,7 +290,7 @@ def get_movie_tmdbids( title, year = None, getAll = False, verify = True ):
 
 #
 ## funky logic needed here...
-def get_genre_movie( title, year = None, checkMultiple = True, verify = True ):
+def get_genre_movie( title: str, year: int = None, checkMultiple = True, verify = True ) -> str:
     movieSearchMainURL = 'http://api.themoviedb.org/3/search/movie'
     params = { 'api_key' : tmdb_apiKey,
                'query' : '+'.join( title.split( ) ),
@@ -331,7 +329,7 @@ def get_genre_movie( title, year = None, checkMultiple = True, verify = True ):
         if val == 'family':
             return 'drama'
 
-def get_main_genre_movie( movie_elem ):
+def get_main_genre_movie( movie_elem: str ) -> str:
     def postprocess_genre( genre ):
         if 'sci-fi' in genre:
             return 'science fiction'
@@ -365,7 +363,7 @@ def get_main_genre_movie( movie_elem ):
     if val is not None: return val
     return postprocess_genre( genres[ 0 ] )
                              
-def getMovieData( year, genre_id, verify = True ):
+def getMovieData( year: int, genre_id: str, verify = True ) -> list:
     moviePosterMainURL = 'https://image.tmdb.org/t/p/w500'
     movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'
     params = { 'api_key' : tmdb_apiKey,

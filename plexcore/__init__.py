@@ -4,7 +4,7 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 
 from . import plexinitialization
-pi = plexinitialization.PlexInitialization( )
+_ = plexinitialization.PlexInitialization( )
 
 import os, sys, xdg.BaseDirectory, signal, datetime
 import geoip2.database, _geoip_geolite2
@@ -18,10 +18,25 @@ _geoip_database = os.path.join(
     os.path.dirname( _geoip_geolite2.__file__ ),
     _geoip_geolite2.database_name )
 assert( os.path.isfile( _geoip_database ) )
-geoip_reader = geoip2.database.Reader( _geoip_database )
 
-# split paths 
+geoip_reader = geoip2.database.Reader( _geoip_database )
+"""This contains an on-disk _`MaxMind` database containing location information for IP addresses.
+
+.. _MaxMind: https://www.maxmind.com/en/geoip2-services-and-databases
+"""
+
+
 def splitall( path_init ):
+    """
+    This routine is used by ``plextvdb.plextvdb.get_path_data_on_tvshow`` to split a TV show file path
+    into separate directory delimited tokens
+    
+    Args:
+        path_init (string): The absolute path of the file.
+
+    Returns:
+        list: each subdirectory, and file basename, in the path
+    """
     allparts = [ ]
     path = path_init
     while True:
@@ -51,6 +66,21 @@ session = sessionmaker( bind = _engine )( )
 #
 ## this will be used to replace all the existing credentials stored in separate tables
 class PlexConfig( Base ):
+    """
+    This SQLAlchemy ORM class contains the configuration data used for running all the plexstuff tools.
+    Stored into the ``plexconfig`` table in the ``app.db`` SQLITE database.
+
+    Attributes:
+        service: the name of the configuration service we store. Index on this unique key.
+        data: JSON formatted information on the data stored here. For instance, username and password can be
+        stored in the following way::
+
+            { 'username' : ``username``,
+              'password' : ``password``
+            }
+
+    """
+    
     #
     ## create the table using Base.metadata.create_all( _engine )
     __tablename__ = 'plexconfig'
@@ -59,6 +89,17 @@ class PlexConfig( Base ):
     data = Column( JSON )
 
 class LastNewsletterDate( Base ):
+    """
+    This SQLAlchemy ORM class contains the date at which the last newsletter was sent.
+    It is not used much, and now that `Tautulli`_ has newsletter functionality, I
+    very likely won't use this at all. Stored into the ``plexconfig`` table in the
+    ``app.db`` SQLITE database.
+        
+    Attributes:
+        date: the name of the configuration service we store.
+
+    .. _Tautulli: https://tautulli.com/#features
+    """
     #
     ## create the table using Base.metadata.create_all( _engine )
     __tablename__ = 'lastnewsletterdate'

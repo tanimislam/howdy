@@ -69,7 +69,8 @@ def get_items_kickass( name, maxnum = 10, shared_list = None ):
         return _process_items_list( None, shared_list )
     return _process_items_list( items, shared_list )
 
-def get_tv_torrent_items( items, filename = None, to_torrent = False ):
+def get_tv_torrent_items(
+        items, filename = None, to_torrent_server = False ):
     if len( items ) != 1:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate(items) }
         bs = 'Choose TV episode or series:\n%s\n' % '\n'.join(
@@ -93,7 +94,7 @@ def get_tv_torrent_items( items, filename = None, to_torrent = False ):
         magnet_link = max( items )[ 'link' ]
 
     print('Chosen TV show: %s' % actmov )
-    if to_torrent: # upload to deluge server
+    if to_torrent_server: # upload to deluge server
         client, status = plexcore_deluge.get_deluge_client( )
         if status != 'SUCCESS':
             print( status )
@@ -145,18 +146,19 @@ if __name__=='__main__':
     parser.add_option('--any', dest='do_any', action='store_true', default = False,
                       help = 'If chosen, make no filter on TV show format.')
     parser.add_option('-f', '--filename', dest='filename', action='store', type=str,
-                      help = 'If defined, put option into filename.')
+                      help = 'If defined, put torrent or magnet link into filename.')
     parser.add_option('--add', dest='do_add', action='store_true', default = False,
                       help = 'If chosen, push the magnet link into the deluge server.' )
-    parser.add_option('--debug', dest='do_debug', action='store_true', default = False,
-                      help = 'If chosen, run in debug mode.' )
+    parser.add_option('--info', dest='do_info', action='store_true', default = False,
+                      help = 'If chosen, run in info mode.' )
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
-    if opts.do_debug: logging.basicConfig( level = logging.INFO )
+    if opts.do_info: logging.basicConfig( level = logging.INFO )
     #
     items = process_magnet_items( opts.name )
     if items is not None:
         #
         ## sort from most seeders + leecher to least
-        items_sorted = sorted( items, key = lambda tup: tup['seeders'] + tup['leechers'] )[::-1][:opts.maxnum]
-        get_tv_torrent_items( items_sorted, filename = opts.filename, to_torrent = opts.do_add )
+        items_sorted = sorted( items, key = lambda tup: (
+            tup['seeders'] + tup['leechers'], tup['title'] ) )[::-1][:opts.maxnum]
+        get_tv_torrent_items( items_sorted, filename = opts.filename, to_torrent_server = opts.do_add )

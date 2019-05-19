@@ -25,7 +25,7 @@ def get_items_jackett( name, maxnum = 1000, shared_list = None ):
     assert( maxnum >= 5 )
     items, status = plextmdb_torrents.get_movie_torrent_jackett( name, maxnum = maxnum )
     if status != 'SUCCESS':
-        logging.debug( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
+        logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
         return _process_items_list( None, shared_list )
     return _process_items_list( items, shared_list )
     
@@ -65,7 +65,7 @@ def get_items_torrentz( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 5 )
     items, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
     if status != 'SUCCESS':
-        logging.debug( 'ERROR, TORRENTZ COULD NOT FIND %s.' % name )
+        logging.info( 'ERROR, TORRENTZ COULD NOT FIND %s.' % name )
         return _process_items_list( None, shared_list )
     return _process_items_list( items, shared_list )
 
@@ -174,13 +174,13 @@ def main( ):
                       help = 'If chosen, bypass ZOOQLE.')
     parser.add_option('--torrentz', dest='do_torrentz', action='store_true', default=False,
                       help = 'If chosen, also look through TORRENTZ to get magnet link.')
-    parser.add_option('--debug', dest='do_debug', action='store_true', default = False,
-                      help = 'If chosen, run in debug mode.' )
+    parser.add_option('--info', dest='do_info', action='store_true', default = False,
+                      help = 'If chosen, run in info mode.' )
     parser.add_option('--add', dest='do_add', action='store_true', default = False,
                       help = 'If chosen, push the magnet link into the deluge server.' )
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
-    if opts.do_debug: logging.basicConfig( level = logging.INFO )
+    if opts.do_info: logging.basicConfig( level = logging.INFO )
     #
     time0 = time.time( )
     if not opts.do_bypass:

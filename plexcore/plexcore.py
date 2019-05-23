@@ -971,6 +971,13 @@ def get_formatted_size( totsizebytes ):
         sizestring = '%0.3f kB' % size_in_kb
     return sizestring
 
+def get_formatted_size_MB( totsizeMB ):
+    if totsizeMB >= 1024:
+        size_in_gb = totsizeMB * 1.0 / 1024
+        return '%0.3f GB' % size_in_gb
+    elif totsizeMB > 0: return '%0.3f MB' % totsizeMB
+    else: return ""
+
 def set_date_newsletter( ):
     query = session.query( LastNewsletterDate )
     backthen = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )

@@ -683,8 +683,7 @@ def fill_out_movies_stuff( fullURL = 'http://localhost:32400', token = None,
                             plex_libraries ) )
     library_names = list(map(lambda key: plex_libraries[ key ][ 0 ], movie_keys ) )
     for library_name in library_names:
-        movie_data = get_library_data(
-            library_name, token, fullURL, debug = debug )
+        movie_data = get_library_data( library_name, token, fullURL )
         for genre in movie_data:
             unified_movie_data.setdefault( genre, [] )
             unified_movie_data[ genre ] += movie_data[ genre ]

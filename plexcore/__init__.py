@@ -11,8 +11,8 @@ import geoip2.database, _geoip_geolite2
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
-from PyQt4.QtGui import QWidget, QFileDialog, QDialog
-from PyQt4.QtCore import QPixmap, QAction
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
 
 #
 ## geoip stuff, exposes a single geop_reader from plexcore
@@ -65,7 +65,7 @@ class QDialogWithPrinting( QDialog ):
         qpm.save( fname )
 
     def __init__( self, parent, isIsolated = True, doQuit = False ):
-        super( QWidgetWithPrinting, self ).__init__( parent )
+        super( QDialogWithPrinting, self ).__init__( parent )
         if isIsolated:
             printAction = QAction( self )
             printAction.setShortcut( 'Shift+Ctrl+P' )

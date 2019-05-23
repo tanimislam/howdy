@@ -67,10 +67,12 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True ):
         ## now do one of two things to get the magnet URL
         magnet_url = _get_magnet_url( item )
         if magnet_url is None: continue
-        myitem = { 'title' : title,
-                   'seeders' : seeders,
-                   'leechers' : leechers,
-                   'link' : magnet_url }
+        myitem = {
+            'raw_title' : title,
+            'title' : title,
+            'seeders' : seeders,
+            'leechers' : leechers,
+            'link' : magnet_url }
         if torrent_size is not None:
             myitem[ 'title' ] = '%s (%0.1f MiB)' % ( title, torrent_size )
         myitem[ 'torrent_size' ] = torrent_size

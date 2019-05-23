@@ -1,12 +1,9 @@
 import numpy, os, sys, requests, json, base64
 import logging, glob, datetime, textwrap, titlecase
 from . import plextmdb, mainDir, plextmdb_torrents
-from . import QDialogWithPrinting, QWidgetWithPrinting
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-#
-sys.path.append( mainDir )
-from plexcore import plexcore
+from plexcore import QDialogWithPrinting, QWidgetWithPrinting, plexcore
 
 _headers = [ 'title', 'release date', 'popularity', 'rating', 'overview' ]
 _colmap = { 0 : 'title',
@@ -90,10 +87,11 @@ class TMDBMovieInfo( QDialogWithPrinting ):
             bypass = bypass, maxnum = maxnum )
         result = tmdbt.exec_( )
 
-class TMDBTorrents2( QDialogWithPrinting ):
+class TMDBTorrents( QDialogWithPrinting ):
+    
     class TMDBTorrentsTableView( QTableView ):
-        def __init__( self, parent ):
-            super( TMDBTorrents2.TMDBTorrentsTableView,
+        def __init__( self, parent, torrentStatus ):
+            super( TMDBTorrents.TMDBTorrentsTableView,
                    self ).__init__( parent )
             self.token = parent.token
             self.parent = parent
@@ -105,11 +103,15 @@ class TMDBTorrents2( QDialogWithPrinting ):
             self.setSelectionMode( QAbstractItemView.SingleSelection )
             self.setSortingEnabled( True )
             #
-            self.setColumnWidth( 0, 210 )
-            self.setColumnWidth( 1, 120 )
-            self.setColumnWidth( 2, 120 )
-            self.setColumnWidth( 3, 120 )
-            self.setFixedWidth( 1.1 * ( 210 + 3 * 120 ) )
+            if torrentStatus == 1:
+                self.setColumnWidth( 0, 360 )
+                self.setColumnWidth( 1, 120 )
+                self.setColumnWidth( 2, 120 )
+                self.setColumnWidth( 3, 120 )
+            elif torrentStatus == 0:
+                self.setColumnWidth( 0, 360 + 3 * 120 )
+            self.setFixedWidth( 1.1 * ( 360 + 3 * 120 ) )
+            self.torrentStatus = torrentStatus
             #
             toBotAction = QAction( self )
             toBotAction.setShortcut( 'End' )
@@ -117,7 +119,7 @@ class TMDBTorrents2( QDialogWithPrinting ):
             self.addAction( toBotAction )
             #
             toTopAction = QAction( self )
-            toTopAction.setShorcut( 'Home' )
+            toTopAction.setShortcut( 'Home' )
             toTopAction.triggered.connect( self.scrollToTop )
             self.addAction( toTopAction )
 
@@ -127,9 +129,10 @@ class TMDBTorrents2( QDialogWithPrinting ):
                 self.selectionModel( ).selectedIndexes( ) ) )
             menu = QMenu( self )
             #
-            summaryAction = QAction( 'Summary', menu )
-            summaryAction.triggered.connect( self.showSummary )
-            menu.addAction( summaryAction )
+            if self.torrentStatus == 1:
+                summaryAction = QAction( 'Summary', menu )
+                summaryAction.triggered.connect( self.showSummary )
+                menu.addAction( summaryAction )
             #
             sendAction = QAction( 'Send', menu )
             sendAction.triggered.connect( self.sendTorrentOrMagnet )
@@ -163,9 +166,6 @@ class TMDBTorrents2( QDialogWithPrinting ):
                 self.getValidIndexRow( ) )
 
         def addTorrentOrMagnet( self ):
-            index_valid = max(
-                filter( lambda index: index.column( ) == 0,
-                        self.selectionModel( ).selectedIndexes( ) ) )
             self.parent.tmdbTorrentModel.addTorrentOrMagnetAtRow(
                 self.getValidIndexRow( ) )
 
@@ -174,23 +174,133 @@ class TMDBTorrents2( QDialogWithPrinting ):
                          0 : [ 'title' ] }
 
         def __init__( self, parent, data_torrents, torrentStatus ):
-            super( TMDBTorrents2.TMDBTorrentsTableModel,
+            super( TMDBTorrents.TMDBTorrentsTableModel,
                    self ).__init__( parent )
             self.parent = parent
             self.torrentStatus = torrentStatus
+            #
+            ## now add in the data
             self.data_torrents = data_torrents
-            if self.torrentStatus == -1: # error or null case
-                self.data_torrents = [ ]
-                return
+            self.beginInsertRows( QModelIndex( ), 0, len( self.data_torrents ) - 1 )
+            self.endInsertRows( )
+            
+        def rowCount( self, parent ):
+            return len( self.data_torrents )
 
-    def _createTMDBTorrentsTableModel( self, movie_name, bypass = False ):
+        def columnCount( self, parent ):
+            return len( self._columnNames[ self.torrentStatus ] )
+
+        def headerData( self, col, orientation, role ):
+            if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+                return self._columnNames[ self.torrentStatus ][ col ]
+
+        def sort( self, ncol, order ):
+            self.layoutAboutToBeChanged.emit( )
+            if self.torrentStatus == 0:
+                self.data_torrents.sort(
+                    key = lambda datum: datum['title'] )
+            else:
+                if ncol == 0: # title
+                    self.data_torrents.sort(
+                        key = lambda datum: datum['title'] )
+                elif ncol in (1, 2):
+                    self.data_torrents.sort(
+                        key = lambda datum: -datum['seeders'] - datum['leechers'] )
+                else:
+                    self.data_torrents.sort(
+                        key = lambda datum: -datum['torrent_size'] )
+            self.layoutChanged.emit( )
+
+        def data( self, index, role ):
+            if not index.isValid( ): return None
+            row = index.row( )
+            col = index.column( )
+            datum = self.data_torrents[ row ]
+            if role == Qt.DisplayRole:
+                if self.torrentStatus == 0:
+                    return datum['title']
+                else:
+                    if col == 0: return datum['title']
+                    elif col == 1: return datum['seeders']
+                    elif col == 2: return datum['leechers']
+                    else: return plexcore.get_formatted_size_MB( datum[ 'torrent_size' ] )
+
+        def showSummaryAtRow( self, row ):
+            datum = self.data_torrents[ row ]
+            numSeeds = datum[ 'seeders' ]
+            numLeeches = datum[ 'leechers' ]
+            url = datum[ 'link' ]
+            qdl = QDialog( self.parent )
+            mainColor = qdl.palette().color( QPalette.Background )
+            qlayout = QVBoxLayout( )
+            qtetitle = QTextEdit( textwrap.fill( datum[ 'title' ] ) )
+            qtetitle.setReadOnly( True )
+            qte = QTextEdit( textwrap.fill( 'URL: %s' % url ) )
+            qte.setReadOnly( True )
+            qdl.setLayout( qlayout )
+            qdl.setWindowTitle( datum[ 'title' ] )
+            qlayout.addWidget( qtetitle )
+            qlayout.addWidget( QLabel( 'SEEDS + LEECHES: %d' % (
+                numSeeds + numLeeches ) ) )
+            qlayout.addWidget( qte )
+            qdl.setFixedWidth( qdl.sizeHint( ).width( ) )
+            qdl.setFixedHeight( qdl.sizeHint( ).height( ) )
+            qdl.show( )
+            result = qdl.exec_( )
+
+        def sendTorrentOrMagnetAtRow( self, row ):
+            datum = self.data_torrents[ row ]
+            jsondata = { 'torrentStatus' : self.torrentStatus,
+                         'token' : self.parent.token }
+            if self.torrentStatus == 0:
+                jsondata['movie'] = datum[ 'title' ]
+                jsondata['data'] = base64.b64encode(
+                    datum[ 'content' ].decode('utf-8') )
+            elif self.torrentStatus == 1:
+                jsondata[ 'movie' ] = self.parent.movie
+                jsondata[ 'data' ] = datum[ 'link' ]
+            if self.parent.do_debug:
+                fname = '%s.json' % '_'.join(
+                    os.path.basename( self.parent.movie ).split( ) )
+                json.dump( jsondata, open( fname, 'w' ), indent = 1 )
+            response = requests.post(
+                'https://***REMOVED***islam.ddns.net/flask/plex/sendmovieemail',
+                json = jsondata, verify = self.parent.verify )
+            if response.status_code == 200:
+                self.parent.statusLabel.setText(
+                    'sent request for "%s"' % jsondata['movie'] )
+            else: self.parent.statusLabel.setText( 'ERROR: %s' % response.content )
+
+        def downloadTorrentOrMagnetAtRow( self, row ):
+            datum = self.data_torrents[ row ]
+            dirName = str( QFileDialog.getExistingDirectory(
+                self.parent, 'Choose directory to put torrent or magnet.') )
+            if self.torrentStatus == 0:
+                title = datum[ 'title' ]
+                torrentFile = os.path.join( dirName, '%s.torrent' % title )
+                with open( torrentFile, 'wb' ) as openfile:
+                    openfile.write( datum[ 'content' ] )
+            elif self.torrentStatus == 1:
+                title = self.parent.movie
+                magnetURLFile = os.path.join( dirName, '%s.url' % title )
+                url = datum[ 'link' ]
+                with open( magnetURLFile, 'w' ) as openfile:
+                    openfile.write('%s\n' % url )
+            
+        def addTorrentOrMagnetAtRow( self, row ):
+            datum = self.data_torrents[ row ]
+            print( 'adding torrent or magnet = %d, %s' % (
+                row, datum['title'] ) )
+
+    def _createTMDBTorrentsTableModel(
+            self, movie_name, bypass = False, maxnum = 10 ):
+        data_torrents = [ ]
         if not bypass:
             data, status = plextmdb_torrents.get_movie_torrent(
                 movie_name, verify = self.verify )
         else: status == 'FAILURE'
         
         if status == 'SUCCESS': # have torrent files
-            data_torrents = [ ]
             for actmovie in data:
                 title = actmovie[ 'title' ]
                 allmovies = list(
@@ -204,15 +314,13 @@ class TMDBTorrents2( QDialogWithPrinting ):
                 data_torrents.append(
                     { 'title' : title,
                       'content' : requests.get( url, verify = self.verify ).content } )
-            if len( data_torrents ) == 0:
-                return TMDBTorrents2.TMDBTorrentsTableModel( self, [ ], -1 )
-            return TMDBTorrents2.TMDBTorrentsTableModel( self, data_torrents, 0 )
+            return TMDBTorrents.TMDBTorrentsTableModel( self, data_torrents, 0 )
 
         # get magnet links, now use Jackett for downloading movies
         data, status = plextmdb_torrents.get_movie_torrent_jackett(
             movie_name, maxnum = maxnum, verify = self.verify )
         if status != 'SUCCESS':
-            return TMDBTorrents2.TMDBTorrentsTableModel( self, [ ], 0 )
+            return TMDBTorrents.TMDBTorrentsTableModel( self, [ ], -1 )
             
         torrentStatus = 1
         logging.debug( 'DATA = %s' % data )
@@ -228,19 +336,19 @@ class TMDBTorrents2( QDialogWithPrinting ):
                 data_torrent[ 'torrent_size' ] = -1
             data_torrents.append( data_torrent ) 
         if len( data_torrents ) == 0:
-            return TMDBTorrents2.TMDBTorrentsTableModel( self, [ ], -1 )
-        return TMDBTorrents2.TMDBTorrentsTableModel( self, data_torrents, 1 )
-                    
+            return TMDBTorrents.TMDBTorrentsTableModel( self, [ ], 0 )
+        return TMDBTorrents.TMDBTorrentsTableModel( self, data_torrents, 1 )
 
     def __init__( self, parent, token, movie_name, bypass = False, maxnum = 10,
                   do_debug = False ):
-        super( TMDBTorrents2, self ).__init__( parent )
+        super( TMDBTorrents, self ).__init__( parent )
         self.setModal( True )
         self.token = token
         self.movie = movie_name
-        self.setWindowTitle( 'MOVIE TORRENT DOWNLOAD' )
+        self.setWindowTitle( 'MOVIE TORRENT DOWNLOAD: %s' % movie_name )
         mainLayout = QVBoxLayout( self )
         self.setLayout( mainLayout )
+        self.do_debug = do_debug
         #
         ##
         if parent is not None: self.verify = parent.verify
@@ -249,209 +357,32 @@ class TMDBTorrents2( QDialogWithPrinting ):
         #
         ## now make the local tablemodel
         self.tmdbTorrentModel = self._createTMDBTorrentsTableModel(
-            movie_name, bypass )
-        self.tmdbTorrentView = TMDBTorrentsTableView( self )
+            movie_name, bypass = bypass, maxnum = maxnum )
+        self.tmdbTorrentView = TMDBTorrents.TMDBTorrentsTableView(
+            self, self.tmdbTorrentModel.torrentStatus )
         mainLayout.addWidget( self.tmdbTorrentView )
         self.statusLabel = QLabel( )
         mainLayout.addWidget( self.statusLabel )
-        if self.tmdbTorrentModel.torrentStatus not in ( 0, 1 ):
+        #
+        if self.tmdbTorrentModel.rowCount( None ) == 0:
             self.statusLabel.setLabel( "FAILURE, COULD NOT FIND" )
             self.setEnabled( False )
-        
-class TMDBTorrents( QDialogWithPrinting ):
-    """This class launches a torrent window that is exposed 
-    """
-    class TMDBRadioButton( QRadioButton ):
-        def __init__( self, text, value = None, parent = None ):
-            super( TMDBTorrents.TMDBRadioButton, self ).__init__( text, parent = parent )
-            if value is not None: self.value = value
-            else: self.value = text    
-    
-    def __init__( self, parent, token, movie_name, bypass = False, maxnum = 10,
-                  do_debug = False ):
-        super( TMDBTorrents, self ).__init__( parent )
-        self.setModal( True )
-        self.token = token
-        self.movie = movie_name
-        self.setWindowTitle( 'MOVIE TORRENT DOWNLOAD' )
-        self.statusLabel = QLabel( )
-        self.summaryButton = QPushButton( 'SUMMARY' )
-        self.sendButton = QPushButton( 'SEND' )
-        self.downloadButton = QPushButton( 'DOWNLOAD' )
-        self.addButton = QPushButton( 'ADD' )
-        self.summaryButton.setEnabled( False )
-        myButtonGroup = QButtonGroup( self )
-        mainLayout = QVBoxLayout( )
-        self.setLayout( mainLayout )
-        self.torrentStatus = -1
-        self.do_debug = do_debug
+        self.tmdbTorrentModel.sort( 1, Qt.DescendingOrder )
         #
-        ##
-        if parent is not None: self.verify = parent.verify
-        else: self.verify = False
-        if not bypass:
-            data, status = plextmdb_torrents.get_movie_torrent(
-                movie_name, verify = self.verify )
-        else: status = 'FALURE'
-        if status == 'SUCCESS':
-            self.torrentStatus = 0
-            self.data = { }
-            for actmovie in data:
-                title = actmovie[ 'title' ]
-                allmovies = list(
-                    filter(lambda tor: 'quality' in tor and '3D' not in tor['quality'],
-                           actmovie['torrents'] ) )
-                if len( allmovies ) == 0: continue
-                allmovies2 = list(
-                    filter(lambda tor: '720p' in tor['quality'], allmovies ) )
-                if len( allmovies2 ) == 0: allmovies2 = allmovies
-                url = allmovies2[0]['url']
-                self.data[ title ] = requests.get( url ).content
-            self.allRadioButtons = list(
-                map(lambda name: TMDBTorrents.TMDBRadioButton( name, name, self ),
-                    sorted( self.data.keys( ) ) ) )
-            self.statusLabel.setText( 'SUCCESS' )
-        else: # now use Jackett for downloading movies
-            #data, status = plextmdb.get_movie_torrent_kickass( movie_name, maxnum = maxnum )
-            #data, status = plextmdb_torrents.get_movie_torrent_rarbg( movie_name, maxnum = maxnum )
-            data, status = plextmdb_torrents.get_movie_torrent_jackett(
-                movie_name, maxnum = maxnum, verify = self.verify )
-            if status == 'SUCCESS':
-                self.torrentStatus = 1
-                self.data = { }
-                logging.debug('DATA = %s' % data )
-                for datum in data:
-                    name = datum['title']
-                    seeders = datum['seeders']
-                    leechers = datum['leechers']
-                    link = datum['link']
-                    self.data[ name ] = ( seeders, leechers, link )
-                self.allRadioButtons = list(
-                    map(lambda name:
-                        TMDBTorrents.TMDBRadioButton( name, name, self ),
-                        sorted( self.data.keys( ),
-                                key = lambda nm: sum( self.data[nm][:2] ) )[::-1] ) )
-                self.statusLabel.setText( 'SUCCESS' )
-            else:
-                self.torrentStatus = 2
-                self.statusLabel.setText( 'FAILURE, COULD NOT FIND.' )
-                self.sendButton.setEnabled( False )
-                self.downloadButton.setEnabled( False )
-        #
-        topWidget = QWidget( self )
-        topLayout = QHBoxLayout( )
-        topWidget.setLayout( topLayout )
-        topLayout.addWidget( self.summaryButton )
-        topLayout.addWidget( self.sendButton )
-        topLayout.addWidget( self.downloadButton )
-        topLayout.addWidget( self.addButton )
-        mainLayout.addWidget( topWidget )
-        if self.torrentStatus in ( 0, 1 ):
-            for button in self.allRadioButtons:
-                myButtonGroup.addButton( button )
-            myButtonGroup.setExclusive( True )
-            self.allRadioButtons[0].setChecked( True )
-            myButtonsWidget = QWidget( self )
-            myButtonsLayout = QVBoxLayout( )
-            myButtonsWidget.setLayout( myButtonsLayout )
-            for button in self.allRadioButtons:
-                myButtonsLayout.addWidget( button )
-            mainLayout.addWidget( myButtonsWidget )
-            if self.torrentStatus == 1: self.summaryButton.setEnabled( True )
-        mainLayout.addWidget( self.statusLabel )
-        #
-        self.summaryButton.clicked.connect( self.showSummaryChosen )
-        self.sendButton.clicked.connect( self.chooseSentTorrent )
-        self.downloadButton.clicked.connect( self.chooseDownloadTorrent )
-        #
-        self.setFixedWidth( 550 )
-        self.setFixedWidth( max( 650, self.sizeHint( ).height( ) ) )
+        ## now set the final sizes
+        self.setFixedWidth( self.sizeHint( ).width( ) )
+        self.setFixedHeight( self.sizeHint( ).height( ) )
         self.show( )
-
-    def showSummaryChosen( self ):
-        whichChosen = max(
-            map(lambda qbut: qbut.value,
-                filter( lambda qbut: qbut.isChecked( ),
-                        self.allRadioButtons ) ) )
-        numSeeds, numLeeches, url = self.data[ whichChosen ]
-        qdl = QDialog( self )
-        mainColor = qdl.palette().color( QPalette.Background )
-        qlayout = QVBoxLayout( )
-        qte = QTextEdit( textwrap.fill( 'URL: %s' % url ) )
-        qte.setReadOnly( True )
-        qdl.setLayout( qlayout )
-        qdl.setWindowTitle( whichChosen )
-        qlayout.addWidget( QLabel( 'SEEDS + LEECHES: %d' % (
-            numSeeds + numLeeches ) ) )
-        qlayout.addWidget( qte )
-        qdl.setFixedWidth( qdl.sizeHint( ).width( ) )
-        qdl.setFixedHeight( qdl.sizeHint( ).height( ) )
-        qdl.show( )
-        result = qdl.exec_( )
-
-    def chooseSentTorrent( self ):
-        jsondata = { 'torrentStatus' : self.torrentStatus,
-                     'token' : self.token }
-        if self.torrentStatus in ( 0, 1 ):
-            whichChosen = max(
-                map(lambda qbut: str( qbut.text( ) ),
-                    filter( lambda qbut: qbut.isChecked( ),
-                            self.allRadioButtons ) ) )
-        if self.torrentStatus == 0:
-            jsondata['movie'] = whichChosen
-            jsondata['data'] = base64.b64encode(
-                self.data[ whichChosen ] ).decode('utf-8')
-        elif self.torrentStatus == 1:
-            _, _, url = self.data[ whichChosen ]
-            jsondata[ 'movie' ] = self.movie
-            jsondata[ 'data' ] = url
-        else: jsondata[ 'movie' ] = self.movie
-
-        if self.do_debug:
-            json.dump(
-                jsondata, open(
-                    '%s.json' % '_'.join( os.path.basename( self.movie ).split( ) ), 'w' ),
-                indent = 1 )
-
-        response = requests.post(
-            'https://***REMOVED***islam.ddns.net/flask/plex/sendmovieemail', json = jsondata,
-            verify = self.verify )
-        if response.status_code == 200:
-            self.statusLabel.setText(
-                'sent request for "%s"' % jsondata['movie'] )
-        else: self.statusLabel.setText( 'ERROR: %s' % response.content )
-
-    def chooseDownloadTorrent( self ):
-        if self.torrentStatus not in ( 0, 1 ):
-            return
-        whichChosen = max( map( lambda qbut: qbut.value,
-                                filter( lambda qbut: qbut.isChecked( ),
-                                        self.allRadioButtons ) ) )
-        #
-        ## followed advice from http://stackoverflow.com/questions/4286036/how-to-have-a-directory-dialog-in-pyqt
-        dirName = str( QFileDialog.getExistingDirectory(
-            self, 'Choose directory to put torrent or magnet.') )
-        if self.torrentStatus == 0:
-            data = self.data[ whichChosen ]
-            torrentFile = os.path.join( dirName, '%s.torrent' % whichChosen )
-            with open( torrentFile, 'wb') as openfile:
-                openfile.write( data )
-        elif self.torrentStatus == 1:
-            _, _, url = self.data[ whichChosen ]
-            magnetURLFile = os.path.join( dirName, '%s.url' % whichChosen )
-            with open( magnetURLFile, 'w') as openfile:
-                openfile.write( '%s\n' % url )
             
-
 class TMDBGUI( QDialogWithPrinting ):
     movieSendList = pyqtSignal( list )
     movieRefreshRows = pyqtSignal( list )
     
     def __init__( self, token, fullURL, movie_data_rows, isIsolated = True,
                   verify = True ):
-        super( TMDBGUI, self ).__init__( parent, isIsolated = isIsolated,
-                                         doQuit = isIsolated )
-        tmdbEngine = plextmdb.TMDBEngine( verify = verify, isIsolated = isIsolated )
+        super( TMDBGUI, self ).__init__(
+            None, isIsolated = isIsolated, doQuit = isIsolated )
+        tmdbEngine = plextmdb.TMDBEngine( verify = verify )
         self.verify = verify
         self.all_movies = [ ]
         self.token = token
@@ -514,7 +445,9 @@ class TMDBGUI( QDialogWithPrinting ):
 
     def fill_out_movies( self, movie_data_rows ):
         self.all_movies = list(map(
-            lambda row: { 'title' : row['title'], 'year' : row['releasedate'].year }, movie_data_rows ))
+            lambda row: { 'title' : row['title'],
+                          'year' : row['releasedate'].year },
+            movie_data_rows ))
         self.tmdbtv.tm.layoutAboutToBeChanged.emit( )
         self.tmdbtv.tm.layoutChanged.emit( ) # change the colors in the rows, if already there
 
@@ -825,14 +758,11 @@ class TMDBTableView( QTableView ):
     def contextMenuEvent( self, event ):
         indices_valid = list(
             filter(lambda index: index.column( ) == 0,
-                   self.selectionModel().selectedIndexes( ) )
+                   self.selectionModel().selectedIndexes( ) ) )
         menu = QMenu( self )
-        #
         summaryAction = QAction( 'Summary', menu )
-        summaryAction.triggered.connect( self.showSummary )
+        summaryAction.triggered.connect( self.popupMovie )
         menu.addAction( summaryAction )
-        
-        #
         menu.popup( QCursor.pos( ) )
 
     def popupMovie( self ):
@@ -1034,8 +964,6 @@ class TMDBTableModel( QAbstractTableModel ):
                 color.setHsvF( h, s, v, 1.0 )
                 return QBrush( color )
             else:
-                #color = QColor( 'white' )
-                #color.setHsvF( 0.45, 0.85, 0.31, 1.0 )
                 return QBrush( QColor( "#873600" ) )
             
         elif role == Qt.DisplayRole:

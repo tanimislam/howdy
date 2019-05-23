@@ -26,7 +26,7 @@ parser.add_option('--debug', dest='do_debug', action='store_true', default = Fal
                   help = 'If chosen, dump the JSON representation of the data.' )
 opts, args = parser.parse_args( )
 #
-if opts.do_debug: logging.basicConfig( level = logging.INFO )
+logging.basicConfig( level = logging.INFO )
 app = QApplication([])
 app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
 fullURL, token = plexcore.checkServerCredentials(

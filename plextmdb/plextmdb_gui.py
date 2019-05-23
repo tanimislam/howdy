@@ -1,6 +1,7 @@
 import numpy, os, sys, requests, json, base64
 import logging, glob, datetime, textwrap, titlecase
 from . import plextmdb, mainDir, plextmdb_torrents
+from . import QDialogWithPrinting, QWidgetWithPrinting
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 #
@@ -13,16 +14,7 @@ _colmap = { 0 : 'title',
             2 : 'popularity',
             3 : 'vote_average' }
 
-class TMDBMovieInfo( QDialog ):
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName(
-            self, 'Save Screenshot', os.path.expanduser( '~' ),
-            filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0: return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = '%s.png' % fname
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
+class TMDBMovieInfo( QDialogWithPrinting ):
     
     def __init__( self, parent, datum, verify = True ):
         super( TMDBMovieInfo, self ).__init__( parent )
@@ -86,11 +78,6 @@ class TMDBMovieInfo( QDialog ):
             qlabel.setPixmap( qpm )
             myLayout.addWidget( qlabel )
         #
-        printAction = QAction( self )
-        printAction.setShortcut( 'Shift+Ctrl+P' )
-        printAction.triggered.connect( self.screenGrab )
-        self.addAction( printAction )
-        #
         self.setFixedWidth( 450 )
         self.setFixedHeight( self.sizeHint( ).height( ) )
         self.show( )
@@ -103,21 +90,182 @@ class TMDBMovieInfo( QDialog ):
             bypass = bypass, maxnum = maxnum )
         result = tmdbt.exec_( )
 
-class TMDBRadioButton( QRadioButton ):
-    def __init__( self, text, value = None, parent = None ):
-        super( TMDBRadioButton, self ).__init__( text, parent = parent )
-        if value is not None: self.value = value
-        else: self.value = text
+class TMDBTorrents2( QDialogWithPrinting ):
+    class TMDBTorrentsTableView( QTableView ):
+        def __init__( self, parent ):
+            super( TMDBTorrents2.TMDBTorrentsTableView,
+                   self ).__init__( parent )
+            self.token = parent.token
+            self.parent = parent
+            self.setModel( parent.tmdbTorrentModel )
+            self.setShowGrid( True )
+            self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
+            self.horizontalHeader( ).setResizeMode( QHeaderView.Fixed )
+            self.setSelectionBehavior( QAbstractItemView.SelectRows )
+            self.setSelectionMode( QAbstractItemView.SingleSelection )
+            self.setSortingEnabled( True )
+            #
+            self.setColumnWidth( 0, 210 )
+            self.setColumnWidth( 1, 120 )
+            self.setColumnWidth( 2, 120 )
+            self.setColumnWidth( 3, 120 )
+            self.setFixedWidth( 1.1 * ( 210 + 3 * 120 ) )
+            #
+            toBotAction = QAction( self )
+            toBotAction.setShortcut( 'End' )
+            toBotAction.triggered.connect( self.scrollToBottom )
+            self.addAction( toBotAction )
+            #
+            toTopAction = QAction( self )
+            toTopAction.setShorcut( 'Home' )
+            toTopAction.triggered.connect( self.scrollToTop )
+            self.addAction( toTopAction )
+
+        def contextMenuEvent( self, event ):
+            indices_valid = list(filter(
+                lambda index: index.column( ) == 0,
+                self.selectionModel( ).selectedIndexes( ) ) )
+            menu = QMenu( self )
+            #
+            summaryAction = QAction( 'Summary', menu )
+            summaryAction.triggered.connect( self.showSummary )
+            menu.addAction( summaryAction )
+            #
+            sendAction = QAction( 'Send', menu )
+            sendAction.triggered.connect( self.sendTorrentOrMagnet )
+            menu.addAction( sendAction )
+            #
+            downloadAction = QAction( 'Download', menu )
+            downloadAction.triggered.connect( self.downloadTorrentOrMagnet )
+            menu.addAction( downloadAction )
+            #
+            addAction = QAction( 'Add', menu )
+            addAction.triggered.connect( self.addTorrentOrMagnet )
+            menu.addAction( addAction )
+            #
+            menu.popup( QCursor.pos( ) )
+
+        def getValidIndexRow( self ):
+            return max(
+                filter( lambda index: index.column( ) == 0,
+                        self.selectionModel( ).selectedIndexes( ) ) ).row( )
+
+        def showSummary( self ):
+            self.parent.tmdbTorrentModel.showSummaryAtRow(
+                self.getValidIndexRow( ) )
+
+        def sendTorrentOrMagnet( self ):
+            self.parent.tmdbTorrentModel.sendTorrentOrMagnetAtRow(
+                self.getValidIndexRow( ) )
+
+        def downloadTorrentOrMagnet( self ):
+            self.parent.tmdbTorrentModel.downloadTorrentOrMagnetAtRow(
+                self.getValidIndexRow( ) )
+
+        def addTorrentOrMagnet( self ):
+            index_valid = max(
+                filter( lambda index: index.column( ) == 0,
+                        self.selectionModel( ).selectedIndexes( ) ) )
+            self.parent.tmdbTorrentModel.addTorrentOrMagnetAtRow(
+                self.getValidIndexRow( ) )
+
+    class TMDBTorrentsTableModel( QAbstractTableModel ):
+        _columnNames = { 1 : [ 'title', 'seeds', 'leeches', 'size' ],
+                         0 : [ 'title' ] }
+
+        def __init__( self, parent, data_torrents, torrentStatus ):
+            super( TMDBTorrents2.TMDBTorrentsTableModel,
+                   self ).__init__( parent )
+            self.parent = parent
+            self.torrentStatus = torrentStatus
+            self.data_torrents = data_torrents
+            if self.torrentStatus == -1: # error or null case
+                self.data_torrents = [ ]
+                return
+
+    def _createTMDBTorrentsTableModel( self, movie_name, bypass = False ):
+        if not bypass:
+            data, status = plextmdb_torrents.get_movie_torrent(
+                movie_name, verify = self.verify )
+        else: status == 'FAILURE'
         
-class TMDBTorrents( QDialog ):
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName(
-            self, 'Save Screenshot', os.path.expanduser( '~' ),
-            filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0: return
-        if not fname.lower( ).endswith( '.png' ): fname = '%s.png' % fname
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
+        if status == 'SUCCESS': # have torrent files
+            data_torrents = [ ]
+            for actmovie in data:
+                title = actmovie[ 'title' ]
+                allmovies = list(
+                    filter(lambda tor: 'quality' in tor and '3D' not in tor['quality'],
+                           actmovie[ 'torrents' ] ) )
+                if len( allmovies ) == 0: continue
+                allmovies2 = list(
+                    filter(lambda tor: '720p' in tor['quality'], allmovies ) )
+                if len( allmovies2 ) == 0: allmovies2 = allmovies
+                url = allmovies2[ 0 ][ 'url' ]
+                data_torrents.append(
+                    { 'title' : title,
+                      'content' : requests.get( url, verify = self.verify ).content } )
+            if len( data_torrents ) == 0:
+                return TMDBTorrents2.TMDBTorrentsTableModel( self, [ ], -1 )
+            return TMDBTorrents2.TMDBTorrentsTableModel( self, data_torrents, 0 )
+
+        # get magnet links, now use Jackett for downloading movies
+        data, status = plextmdb_torrents.get_movie_torrent_jackett(
+            movie_name, maxnum = maxnum, verify = self.verify )
+        if status != 'SUCCESS':
+            return TMDBTorrents2.TMDBTorrentsTableModel( self, [ ], 0 )
+            
+        torrentStatus = 1
+        logging.debug( 'DATA = %s' % data )
+        for datum in data:
+            data_torrent = {
+                'title' : datum['raw_title'],
+                'seeders' : datum['seeders'],
+                'leechers' : datum['leechers'],
+                'link' : datum['link'] }
+            if 'torrent_size' in datum:
+                data_torrent[ 'torrent_size' ] = datum[ 'torrent_size' ]
+            else:
+                data_torrent[ 'torrent_size' ] = -1
+            data_torrents.append( data_torrent ) 
+        if len( data_torrents ) == 0:
+            return TMDBTorrents2.TMDBTorrentsTableModel( self, [ ], -1 )
+        return TMDBTorrents2.TMDBTorrentsTableModel( self, data_torrents, 1 )
+                    
+
+    def __init__( self, parent, token, movie_name, bypass = False, maxnum = 10,
+                  do_debug = False ):
+        super( TMDBTorrents2, self ).__init__( parent )
+        self.setModal( True )
+        self.token = token
+        self.movie = movie_name
+        self.setWindowTitle( 'MOVIE TORRENT DOWNLOAD' )
+        mainLayout = QVBoxLayout( self )
+        self.setLayout( mainLayout )
+        #
+        ##
+        if parent is not None: self.verify = parent.verify
+        else: self.verify = False
+       
+        #
+        ## now make the local tablemodel
+        self.tmdbTorrentModel = self._createTMDBTorrentsTableModel(
+            movie_name, bypass )
+        self.tmdbTorrentView = TMDBTorrentsTableView( self )
+        mainLayout.addWidget( self.tmdbTorrentView )
+        self.statusLabel = QLabel( )
+        mainLayout.addWidget( self.statusLabel )
+        if self.tmdbTorrentModel.torrentStatus not in ( 0, 1 ):
+            self.statusLabel.setLabel( "FAILURE, COULD NOT FIND" )
+            self.setEnabled( False )
+        
+class TMDBTorrents( QDialogWithPrinting ):
+    """This class launches a torrent window that is exposed 
+    """
+    class TMDBRadioButton( QRadioButton ):
+        def __init__( self, text, value = None, parent = None ):
+            super( TMDBTorrents.TMDBRadioButton, self ).__init__( text, parent = parent )
+            if value is not None: self.value = value
+            else: self.value = text    
     
     def __init__( self, parent, token, movie_name, bypass = False, maxnum = 10,
                   do_debug = False ):
@@ -160,7 +308,7 @@ class TMDBTorrents( QDialog ):
                 url = allmovies2[0]['url']
                 self.data[ title ] = requests.get( url ).content
             self.allRadioButtons = list(
-                map(lambda name: TMDBRadioButton( name, name, self ),
+                map(lambda name: TMDBTorrents.TMDBRadioButton( name, name, self ),
                     sorted( self.data.keys( ) ) ) )
             self.statusLabel.setText( 'SUCCESS' )
         else: # now use Jackett for downloading movies
@@ -180,7 +328,7 @@ class TMDBTorrents( QDialog ):
                     self.data[ name ] = ( seeders, leechers, link )
                 self.allRadioButtons = list(
                     map(lambda name:
-                        TMDBRadioButton( name, name, self ),
+                        TMDBTorrents.TMDBRadioButton( name, name, self ),
                         sorted( self.data.keys( ),
                                 key = lambda nm: sum( self.data[nm][:2] ) )[::-1] ) )
                 self.statusLabel.setText( 'SUCCESS' )
@@ -215,11 +363,6 @@ class TMDBTorrents( QDialog ):
         self.summaryButton.clicked.connect( self.showSummaryChosen )
         self.sendButton.clicked.connect( self.chooseSentTorrent )
         self.downloadButton.clicked.connect( self.chooseDownloadTorrent )
-        #
-        printAction = QAction( self )
-        printAction.setShortcut( 'Shift+Ctrl+P' )
-        printAction.triggered.connect( self.screenGrab )
-        self.addAction( printAction )
         #
         self.setFixedWidth( 550 )
         self.setFixedWidth( max( 650, self.sizeHint( ).height( ) ) )
@@ -300,25 +443,15 @@ class TMDBTorrents( QDialog ):
                 openfile.write( '%s\n' % url )
             
 
-class TMDBGUI( QDialog ):
+class TMDBGUI( QDialogWithPrinting ):
     movieSendList = pyqtSignal( list )
     movieRefreshRows = pyqtSignal( list )
-
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName(
-            self, 'Save Screenshot', os.path.expanduser( '~' ),
-            filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
     
     def __init__( self, token, fullURL, movie_data_rows, isIsolated = True,
                   verify = True ):
-        super( TMDBGUI, self ).__init__( )
-        tmdbEngine = plextmdb.TMDBEngine( verify = verify )
+        super( TMDBGUI, self ).__init__( parent, isIsolated = isIsolated,
+                                         doQuit = isIsolated )
+        tmdbEngine = plextmdb.TMDBEngine( verify = verify, isIsolated = isIsolated )
         self.verify = verify
         self.all_movies = [ ]
         self.token = token
@@ -345,18 +478,6 @@ class TMDBGUI( QDialog ):
         self._connectStatusDialogWidget( )
         self._connectTMDBTableView( )
         self._connectSelectYearGenreWidget( )
-        #
-        ## global actions
-        if isIsolated:
-            quitAction = QAction( self )
-            quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
-            quitAction.triggered.connect( sys.exit )
-            self.addAction( quitAction )
-            #
-            printAction = QAction( self )
-            printAction.setShortcut( 'Shift+Ctrl+P' )
-            printAction.triggered.connect( self.screenGrab )
-            self.addAction( printAction )
         #
         ##
         self.show( )
@@ -406,31 +527,10 @@ class TMDBGUI( QDialog ):
         self.fill_out_movies( movie_data_rows )
         self.movieRefreshRows.emit( movie_data_rows )
         
-class StatusDialogWidget( QWidget ):
+class StatusDialogWidget( QWidgetWithPrinting ):
     emitStatusToShow = pyqtSignal( int )
-
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                  os.path.expanduser( '~' ),
-                                                  filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
     
-    class MovieListDialog( QDialog ):
-        def screenGrab( self ):
-            fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                      os.path.expanduser( '~' ),
-                                                      filter = '*.png' ) )
-            if len( os.path.basename( fname.strip( ) ) ) == 0:
-                return
-            if not fname.lower( ).endswith( '.png' ):
-                fname = fname + '.png'
-            qpm = QPixmap.grabWidget( self )
-            qpm.save( fname )
+    class MovieListDialog( QDialogWithPrinting ):
         
         def __init__( self, parent, movieList ):
             super( StatusDialogWidget.MovieListDialog, self ).__init__( parent )
@@ -447,11 +547,6 @@ class StatusDialogWidget( QWidget ):
             qte.setReadOnly( True )
             myLayout = QVBoxLayout( )
             self.setLayout( myLayout )
-            #
-            printAction = QAction( self )
-            printAction.setShortcut( 'Shift+Ctrl+P' )
-            printAction.triggered.connect( self.screenGrab )
-            self.addAction( printAction )
             #
             myLayout.addWidget( qte )
             self.show( )
@@ -479,11 +574,6 @@ class StatusDialogWidget( QWidget ):
         myLayout.addWidget( self.showStatusComboBox, 0, 4, 2, 2 )
         myLayout.addWidget( QLabel( 'MOVIE NAME:' ), 2, 0, 1, 1 )
         myLayout.addWidget( self.movieNameLineEdit, 2, 1, 1, 3 )
-        #
-        printAction = QAction( self )
-        printAction.setShortcut( 'Shift+Ctrl+P' )
-        printAction.triggered.connect( self.screenGrab )
-        self.addAction( printAction )
         #
         self.showStatusComboBox.installEventFilter( self )
         self.showStatusComboBox.currentIndexChanged.connect( self.sendStatus )
@@ -560,20 +650,9 @@ class StatusDialogWidget( QWidget ):
             dlg.show( )
             result = dlg.exec_( )
         
-class SelectYearGenreWidget( QWidget ):
+class SelectYearGenreWidget( QWidgetWithPrinting ):
     mySignalSYG = pyqtSignal( int, tuple )
     mySignalAndFill = pyqtSignal( int, tuple )
-
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                  os.path.expanduser( '~' ),
-                                                  filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
     
     def eventFilter( self, receiver, event ):
         if event.type( ) == QEvent.KeyPress:
@@ -744,12 +823,16 @@ class TMDBTableView( QTableView ):
         self.addAction( popupAction )
 
     def contextMenuEvent( self, event ):
-        indices_valid = filter(lambda index: index.column( ) == 0,
-                               self.selectionModel().selectedIndexes( ) )
+        indices_valid = list(
+            filter(lambda index: index.column( ) == 0,
+                   self.selectionModel().selectedIndexes( ) )
         menu = QMenu( self )
-        infoAction = QAction( 'Information', menu )
-        infoAction.triggered.connect( self.popupMovie )
-        menu.addAction( infoAction )
+        #
+        summaryAction = QAction( 'Summary', menu )
+        summaryAction.triggered.connect( self.showSummary )
+        menu.addAction( summaryAction )
+        
+        #
         menu.popup( QCursor.pos( ) )
 
     def popupMovie( self ):

@@ -11,6 +11,8 @@ import geoip2.database, _geoip_geolite2
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
+from PyQt4.QtGui import QWidget, QFileDialog, QDialog
+from PyQt4.QtCore import QPixmap, QAction
 
 #
 ## geoip stuff, exposes a single geop_reader from plexcore
@@ -24,6 +26,59 @@ geoip_reader = geoip2.database.Reader( _geoip_database )
 
 .. _MaxMind: https://www.maxmind.com/en/geoip2-services-and-databases
 """
+
+#
+## now make a QWidget subclass that automatically allows for printing and quitting
+class QWidgetWithPrinting( QWidget ):
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName(
+            self, 'Save Screenshot', os.path.expanduser( '~' ),
+            filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0: return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = '%s.png' % fname
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
+
+    def __init__( self, parent, isIsolated = True, doQuit = False ):
+        super( QWidgetWithPrinting, self ).__init__( parent )
+        if isIsolated:
+            printAction = QAction( self )
+            printAction.setShortcut( 'Shift+Ctrl+P' )
+            printAction.triggered.connect( self.screenGrab )
+            self.addAction( printAction )
+        if doQuit:
+            quitAction = QAction( self )
+            quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
+            quitAction.triggered.connect( sys.exit )
+            self.addAction( quitAction )
+
+class QDialogWithPrinting( QDialog ):
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName(
+            self, 'Save Screenshot', os.path.expanduser( '~' ),
+            filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0: return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = '%s.png' % fname
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
+
+    def __init__( self, parent, isIsolated = True, doQuit = False ):
+        super( QWidgetWithPrinting, self ).__init__( parent )
+        if isIsolated:
+            printAction = QAction( self )
+            printAction.setShortcut( 'Shift+Ctrl+P' )
+            printAction.triggered.connect( self.screenGrab )
+            self.addAction( printAction )
+        #
+        if doQuit:
+            quitAction = QAction( self )
+            quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
+            quitAction.triggered.connect( sys.exit )
+            self.addAction( quitAction )
+
+        
 
 
 def splitall( path_init ):

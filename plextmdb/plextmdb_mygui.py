@@ -3,7 +3,7 @@ import logging, glob, datetime, pickle, gzip
 from . import plextmdb
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from plexcore import plexcore
+from plexcore import plexcore, QDialogWithPrinting
 
 _headers = [ 'title',  'popularity', 'rating', 'release date', 'added date',
              'genre' ]
@@ -27,27 +27,11 @@ _columnMapping = {
 #     'totsize' : totsize }
 
 
-class TMDBMyGUI( QWidget ):
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                  os.path.expanduser( '~' ),
-                                                  filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
-    
+class TMDBMyGUI( QDialogWithPrinting ):    
     def __init__( self, token, movie_data_rows, isIsolated = True, verify = True ):
-        super( TMDBMyGUI, self ).__init__( )
+        super( TMDBMyGUI, self ).__init__( None, isIsolated = isIsolated )
         tmdbEngine = plextmdb.TMDBEngine( verify = verify )
-        self.setStyleSheet("""
-        QWidget {
-        font-family: Consolas;        
-        }""")
-        if isIsolated:
-            self.setWindowTitle( 'My Own Movies' )
+        if isIsolated: self.setWindowTitle( 'My Own Movies' )
         #
         self.token = token
         self.verify = verify
@@ -74,18 +58,6 @@ class TMDBMyGUI( QWidget ):
         #
         ## set size, make sure not resizable
         self.setFixedWidth( 680 )
-        #
-        ## global actions
-        if isIsolated:
-            quitAction = QAction( self )
-            quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
-            quitAction.triggered.connect( sys.exit )
-            self.addAction( quitAction )
-            #
-            printAction = QAction( self )
-            printAction.setShortcut( 'Shift+Ctrl+P' )
-            printAction.triggered.connect( self.screenGrab )
-            self.addAction( printAction )
         #
         self.genreComboBox.installEventFilter( self )
         self.genreComboBox.currentIndexChanged.connect( self.changeGenre )

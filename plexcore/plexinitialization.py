@@ -1,4 +1,4 @@
-import imp, sys, os, pkg_resources, subprocess, shlex
+import imp, sys, os, pkg_resources, subprocess, shlex, glob
 
 def _choose_install_local( requirements ):
     print('YOU NEED TO INSTALL THESE PACKAGES: %s.' % ' '.join( sorted( requirements ) ) )
@@ -91,11 +91,11 @@ class PlexInitialization( object ):
         def __init__( self ):
             #
             ## first see if we have PyQt4
-            try:
-                val = imp.find_module( 'PyQt4' )
+            try: val = imp.find_module( 'PyQt4' )
             except ImportError:
                 print('ERROR, YOU NEED TO INSTALL PyQt4 ON YOUR MACHINE.')
                 sys.exit( 0 )
+            from PyQt4.QtGui import QFontDatabase
             
             #
             ## first see if we have pip on this machine
@@ -122,7 +122,7 @@ class PlexInitialization( object ):
             #
             if len( reqs_remain ) != 0:
                 _choose_install_local( reqs_remain )
-    
+
     _instance = None
 
     def __new__( cls ):

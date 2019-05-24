@@ -6,8 +6,9 @@ def signal_handler( signal, frame ):
 from . import plexinitialization
 _ = plexinitialization.PlexInitialization( )
 
-import os, sys, xdg.BaseDirectory, signal, datetime
+import os, sys, xdg.BaseDirectory, signal, datetime, glob
 import geoip2.database, _geoip_geolite2
+from sqlalchemy.pool import SingletonThreadPool
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
@@ -26,6 +27,8 @@ geoip_reader = geoip2.database.Reader( _geoip_database )
 
 .. _MaxMind: https://www.maxmind.com/en/geoip2-services-and-databases
 """
+
+
 
 #
 ## now make a QWidget subclass that automatically allows for printing and quitting
@@ -78,8 +81,6 @@ class QDialogWithPrinting( QDialog ):
             quitAction.triggered.connect( sys.exit )
             self.addAction( quitAction )
 
-        
-
 
 def splitall( path_init ):
     """
@@ -111,6 +112,14 @@ def splitall( path_init ):
 mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 baseConfDir = xdg.BaseDirectory.save_config_path( 'plexstuff' )
 sys.path.append( mainDir )
+
+
+def returnQAppWithFonts( ):
+    app = QApplication([])
+    fontNames = sorted(glob.glob( os.path.join( mainDir, 'resources', '*.tff' ) ) )
+    for fontName in fontNames: QFontDatabase.addApplicationFont( fontName )
+    return app
+
 
 # follow directions in http://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
 _engine = create_engine( 'sqlite:///%s' % os.path.join( baseConfDir, 'app.db') )

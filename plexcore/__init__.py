@@ -7,7 +7,8 @@ from . import plexinitialization
 _ = plexinitialization.PlexInitialization( )
 
 import os, sys, xdg.BaseDirectory, signal, datetime, glob
-import geoip2.database, _geoip_geolite2
+import geoip2.database, _geoip_geolite2, time
+from bs4 import BeautifulSoup
 from sqlalchemy.pool import SingletonThreadPool
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -43,7 +44,7 @@ class QWidgetWithPrinting( QWidget ):
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
 
-    def __init__( self, parent, isIsolated = True ):
+    def __init__( self, parent, isIsolated = True, doQuit = False ):
         super( QWidgetWithPrinting, self ).__init__( parent )
         if isIsolated:
             printAction = QAction( self )
@@ -53,7 +54,8 @@ class QWidgetWithPrinting( QWidget ):
             #
             quitAction = QAction( self )
             quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
-            quitAction.triggered.connect( self.close )
+            if not doQuit: quitAction.triggered.connect( self.close )
+            else: quitAction.triggered.connect( sys.exit )
             self.addAction( quitAction )
 
 class QDialogWithPrinting( QDialog ):
@@ -67,7 +69,7 @@ class QDialogWithPrinting( QDialog ):
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
 
-    def __init__( self, parent, isIsolated = True ):
+    def __init__( self, parent, isIsolated = True, doQuit = False ):
         super( QDialogWithPrinting, self ).__init__( parent )
         if isIsolated:
             printAction = QAction( self )
@@ -77,9 +79,60 @@ class QDialogWithPrinting( QDialog ):
             #
             quitAction = QAction( self )
             quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
-            quitAction.triggered.connect( self.close )
+            if not doQuit: quitAction.triggered.connect( self.close )
+            else: quitAction.triggered.connect( sys.exit )
             self.addAction( quitAction )
 
+class ProgressDialog( QDialogWithPrinting ): # replace with QProgressDialog in the future?
+    def __init__( self, parent, windowTitle = "" ):
+        super( ProgressDialog, self ).__init__(
+            parent, doQuit = True )
+        self.setModal( True )
+        self.setWindowTitle( windowTitle )
+        myLayout = QVBoxLayout( )
+        self.setLayout( myLayout )
+        self.setFixedWidth( 300 )
+        self.setFixedHeight( 300 )
+        self.errorDialog = QTextEdit( )
+        self.parsedHTML = BeautifulSoup("""
+        <html>
+        <body>
+        </body>
+        </html>""", 'lxml' )
+        self.errorDialog.setHtml( self.parsedHTML.prettify( ) )
+        self.errorDialog.setReadOnly( True )
+        self.errorDialog.setStyleSheet("""
+        QTextEdit {
+        background-color: #373949;
+        }""" )
+        myLayout.addWidget( self.errorDialog )
+        #
+        self.elapsedTime = QLabel( )
+        self.elapsedTime.setStyleSheet("""
+        QLabel {
+        background-color: #373949;
+        }""" )
+        self.timer = QTimer( )
+        self.t0 = time.time( )
+        self.timer.timeout.connect( self.showTime )
+        self.timer.start( 5000 ) # every 5 seconds
+        myLayout.addWidget( self.elapsedTime )
+        self.show( )
+
+    def showTime( self ):
+        self.elapsedTime.setText(
+            '%0.1f seconds passed' % ( time.time( ) - self.t0 ) )
+
+    def addText( self, text ):
+        body_elem = self.parsedHTML.find_all('body')[0]
+        txt_tag = self.parsedHTML.new_tag("p")
+        txt_tag.string = text
+        body_elem.append( txt_tag )
+        self.errorDialog.setHtml( self.parsedHTML.prettify( ) )
+
+    def stopDialog( self ):
+        self.timer.stop( )
+        self.hide( )
 
 def splitall( path_init ):
     """

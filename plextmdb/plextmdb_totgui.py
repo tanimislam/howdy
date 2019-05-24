@@ -4,21 +4,11 @@ from . import plextmdb, plextmdb_mygui, plextmdb_gui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from plexcore import plexcore, plexcore_gui
-    
-class TMDBTotGUI( QDialog ):
-    emitNewToken = pyqtSignal( str )
-        
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName(
-            self, 'Save Screenshot', os.path.expanduser( '~' ),
-            filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = '%s.png' % fname
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
+from plexcore import QDialogWithPrinting
 
+class TMDBTotGUI( QDialogWithPrinting ):
+    emitNewToken = pyqtSignal( str )
+    
     class TMDBTotGUIThread( QThread ):
 
         movieDataRowsSignal = pyqtSignal( list )
@@ -34,6 +24,10 @@ class TMDBTotGUI( QDialog ):
             self.time0 = time0
 
         def run( self ):
+            mystr = 'started loading in movie data on %s.' % (
+                datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
+            logging.info( mystr )
+            self.emitString.emit( mystr )
             if self.movie_data_rows is None:
                 self.movie_data_rows, _ = plexcore.fill_out_movies_stuff(
                     self.fullURL, self.token, verify = self.verify )
@@ -42,6 +36,10 @@ class TMDBTotGUI( QDialog ):
             logging.info( mystr )
             self.emitString.emit( mystr )
             time.sleep( 0.5 )
+            mystr = 'processed all movie data on %s.' % (
+                datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
+            logging.info( mystr )
+            self.emitString.emit( mystr )
             self.movieDataRowsSignal.emit( self.movie_data_rows )
 
     def _process_movie_data_rows_init( self, movie_data_rows ):
@@ -71,11 +69,6 @@ class TMDBTotGUI( QDialog ):
         self.myLayout.addWidget( self.tabWidget )
         self.myLayout.addWidget( self.statusDialog )
         #
-        printAction = QAction( self )
-        printAction.setShortcut( 'Ctrl+P' )
-        printAction.triggered.connect( self.screenGrab )
-        self.addAction( printAction )
-        #
         ##
         self._setupActions( )
         #
@@ -101,7 +94,7 @@ class TMDBTotGUI( QDialog ):
     def __init__( self, fullurl, token, movie_data_rows = None,
                   doLarge = False, verify = True ):
         time0 = time.time( )
-        super( TMDBTotGUI, self ).__init__( )
+        super( TMDBTotGUI, self ).__init__( None )
         self.verify = verify
         self.resolution = 1.0
         if doLarge: self.resolution = 2.0
@@ -141,11 +134,6 @@ class TMDBTotGUI( QDialog ):
         self.mainInitThread.start( ) # make the magic start...
 
     def _setupActions( self ):
-        quitAction = QAction( self )
-        quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
-        quitAction.triggered.connect( sys.exit )
-        self.addAction( quitAction )
-        #
         helpAction = QAction( self )
         helpAction.setShortcut( 'Shift+Ctrl+H' )
         helpAction.triggered.connect( self.helpDialog.show )
@@ -210,16 +198,6 @@ class TMDBTotGUI( QDialog ):
         self.statusDialog.setText( 'FINISHED RELOGGING CREDENTIALS' )
 
 class HelpDialog( QDialog ):
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                  os.path.expanduser( '~' ),
-                                                  filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
     
     def __init__( self, parent ):
         from . import mainDir
@@ -234,11 +212,6 @@ class HelpDialog( QDialog ):
         width = qfm.boundingRect( ''.join(['A'] * 55)).width( )
         self.setFixedWidth( width )
         self.setFixedHeight( 450 )
-        #
-        printAction = QAction( self )
-        printAction.setShortcut( 'Shift+Ctrl+P' )
-        printAction.triggered.connect( self.screenGrab )
-        self.addAction( printAction )
         #
         myTextArea = QTextEdit( )
         myTextArea.setReadOnly( True )

@@ -39,7 +39,7 @@ def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
 def get_date_from_datestring( dstring ):
     try: return datetime.datetime.strptime( dstring, '%B %d, %Y' ).date( )
     except Exception: return None
-        
+
 #
 ## now convert this into HTML using pandoc, then BeautifulSoup :)
 def latexToHTML( latexString ):

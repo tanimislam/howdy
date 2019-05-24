@@ -36,7 +36,6 @@ class CustomDialog( QDialog ):
         txt_tag.string = text
         body_elem.append( txt_tag )
         self.textArea.setHtml( self.parsedHTML.prettify( ) )
-
         
 class TVDBGUI( QDialog ):
     mySignal = pyqtSignal( list )
@@ -125,7 +124,7 @@ class TVDBGUI( QDialog ):
                         lambda year: ( year, plextvdb.create_plot_year_tvdata(
                             tvdata_date_dict, year, shouldPlot = False ) ),
                         years_have ) )
-                mytxt = '3b, made plots of tv shows added in %d years in %0.3f seconcds.' % (
+                mytxt = '3b, made plots of tv shows added in %d years in %0.3f seconds.' % (
                     len( years_have ), time.time( ) - time0 )
                 logging.info( mytxt )
                 self.emitString.emit( mytxt )
@@ -626,6 +625,18 @@ class TVDBTableModel( QAbstractTableModel ):
                 return data[ 'numMissing' ]
 
 class TVDBShowGUI( QDialog ):
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName(
+            self, 'Save Screenshot',
+            os.path.expanduser( '~' ),
+            filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0:
+            return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = fname + '.png'
+        qpm = QPixmap.grabWidget( self )
+        qpm.save( fname )
+    
     def __init__( self, seriesName, tvdata, missing_eps,
                   tvdb_token, plex_token,
                   parent = None, verify = True ):
@@ -676,11 +687,11 @@ class TVDBShowGUI( QDialog ):
         ## connect
         seasonSelected.installEventFilter( self )
         seasonSelected.currentIndexChanged.connect( self.selectSeason )
+        #
         quitAction = QAction( self )
         quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
         quitAction.triggered.connect( self.close )
         self.addAction( quitAction )
-        #
         printAction = QAction( self )
         printAction.setShortcut( 'Shift+Ctrl+P' )
         printAction.triggered.connect( self.screenGrab )
@@ -691,15 +702,3 @@ class TVDBShowGUI( QDialog ):
 
     def selectSeason( self, idx ):
         self.seasonWidget.setCurrentIndex( idx )
-
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName(
-            self, 'Save Screenshot',
-            os.path.expanduser( '~' ),
-            filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )

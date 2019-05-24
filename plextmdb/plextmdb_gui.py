@@ -378,10 +378,10 @@ class TMDBGUI( QDialogWithPrinting ):
     movieSendList = pyqtSignal( list )
     movieRefreshRows = pyqtSignal( list )
     
-    def __init__( self, token, fullURL, movie_data_rows, isIsolated = True,
-                  verify = True ):
+    def __init__( self, token, fullURL, movie_data_rows,
+                  isIsolated = True, verify = True ):
         super( TMDBGUI, self ).__init__(
-            None, isIsolated = isIsolated, doQuit = isIsolated )
+            None, isIsolated = isIsolated )
         tmdbEngine = plextmdb.TMDBEngine( verify = verify )
         self.verify = verify
         self.all_movies = [ ]
@@ -709,7 +709,6 @@ class SelectYearGenreWidget( QWidgetWithPrinting ):
         elif state == 2:
             movieName = str( self.movieNameLineEdit.text( ) ).strip( )
             self.mySignalAndFill.emit( state, ( movieName, ) )
-        
             
 #
 ## now the table, table model, and cell objects.

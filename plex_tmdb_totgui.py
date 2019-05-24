@@ -6,17 +6,19 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-from plexcore import plexcore
+from plexcore import plexcore, returnQAppWithFonts
 from plextmdb import plextmdb_totgui
 from optparse import OptionParser
-import logging, PyQt4.QtGui, os, qdarkstyle
+import logging, os, qdarkstyle, time, numpy
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 def main(info = False, doLocal = True, doLarge = False, verify = True):
-    app = PyQt4.QtGui.QApplication([])
+    app = returnQAppWithFonts( )
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
     if info: logging.basicConfig( level = logging.INFO )
     fullurl, token = plexcore.checkServerCredentials(
-        doLocal = doLocal, verify = verify )    
+        doLocal = doLocal, verify = verify )
     tmdb_mygui = plextmdb_totgui.TMDBTotGUI( fullurl, token, doLarge = doLarge,
                                              verify = verify )
     result = app.exec_( )

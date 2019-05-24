@@ -43,6 +43,124 @@ class TVDBGUI( QDialog ):
     tvSeriesSendList = pyqtSignal( list )
     tvSeriesRefreshRows = pyqtSignal( list )
 
+    class TVDBGUIThread( QThread ):
+        emitString = pyqtSignal( str )
+        finalData = pyqtSignal( dict )
+        
+        def __init__( self, fullURL, token, tvdata_on_plex = None,
+                      didend = None, toGet = None, verify = False ):
+            super( QThread, self ).__init__( )
+            self.fullURL = fullURL
+            self.token = token
+            self.tvdata_on_plex = tvdata_on_plex
+            self.didend = didend
+            self.toGet = toGet
+            self.verify = verify
+
+        def run( self ):
+            time0 = time.time( )
+            dtnow = datetime.datetime.now( )
+            final_data_out = { }
+            mytxt = '0, started loading in data on %s.' % (
+                datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
+            logging.info( mytxt )
+            self.emitString.emit( mytxt )
+            libraries_dict = plexcore.get_libraries(
+                fullURL = self.fullURL, token = self.token, do_full = True )
+            if not any(map(lambda value: 'show' in value[-1], libraries_dict.values( ) ) ):
+                raise ValueError( 'Error, could not find TV shows.' )
+            library_name = max(map(lambda key: libraries_dict[ key ][ 0 ],
+                                    filter(lambda key: libraries_dict[key][1] == 'show',
+                                           libraries_dict ) ) )
+            final_data_out[ 'library_name'] = library_name
+            mytxt = '1, found TV library in %0.3f seconds.' % ( time.time( ) - time0 )
+            logging.info( mytxt )
+            self.emitString.emit( mytxt )
+            #
+            if self.tvdata_on_plex is None:
+                tvdata_on_plex = plexcore.get_library_data(
+                    library_name, fullURL = self.fullURL, token = self.token )
+            if self.tvdata_on_plex is None:
+                raise ValueError( 'Error, could not find TV shows on the server.' )
+            mytxt = '2, loaded TV data from Plex server in %0.3f seconds.' % (
+                time.time( ) - time0 )
+            logging.info( mytxt )
+            self.emitString.emit( mytxt )
+            #
+            showsToExclude = plextvdb.get_shows_to_exclude(
+                self.tvdata_on_plex )
+            #
+            ## using a stupid-ass pattern to shave some seconds off...
+            def _process_didend( dide, tvdon_plex, do_verify, t0, shared_list ):
+                if dide is not None:
+                    shared_list.append( ( 'didend', dide ) )
+                    return
+                dide = plextvdb.get_all_series_didend(
+                    tvdon_plex, verify = do_verify )
+                mytxt = '3b, added information on whether shows ended in %0.3f seconds.' % (
+                    time.time( ) - t0 )
+                logging.info( mytxt )
+                self.emitString.emit( mytxt )
+                shared_list.append( ( 'didend', dide ) )
+
+            def _process_missing( toge, tvdon_plex, showsexc, do_verify, t0, shared_list ):
+                if toge is not None:
+                    shared_list.append( ( 'toGet', toge ) )
+                    return
+                toge = plextvdb.get_remaining_episodes(
+                    tvdon_plex, showSpecials = False, showsToExclude = showsexc,
+                    verify = do_verify )
+                mytxt = '3b, found missing episodes in %0.3f seconds.' % ( time.time( ) - t0 )
+                logging.info( mytxt )
+                self.emitString.emit( mytxt )
+                shared_list.append( ( 'toGet', toge ) )
+
+            def _process_plot_tvshowstats( tvdon_plex, t0, shared_list ):
+                tvdata_date_dict = plextvdb.get_tvdata_ordered_by_date(
+                    tvdon_plex )
+                years_have = set(map(lambda date: date.year, tvdata_date_dict ) )
+                with multiprocessing.Pool(
+                        processes = multiprocessing.cpu_count( ) ) as pool:
+                    figdictdata = dict( pool.map(
+                        lambda year: ( year, plextvdb.create_plot_year_tvdata(
+                            tvdata_date_dict, year, shouldPlot = False ) ),
+                        years_have ) )
+                mytxt = '3b, made plots of tv shows added in %d years in %0.3f seconcds.' % (
+                    len( years_have ), time.time( ) - time0 )
+                logging.info( mytxt )
+                self.emitString.emit( mytxt )
+                shared_list.append( ( 'plotYears', figdictdata ) )
+
+            manager = Manager( )
+            shared_list = manager.list( )
+            jobs = [ Process( target=_process_didend, args=(
+                self.didend, self.tvdata_on_plex, self.verify, time0, shared_list ) ),
+                     Process( target=_process_missing, args=(
+                         self.toGet, self.tvdata_on_plex, showsToExclude, self.verify,
+                         time0, shared_list ) ) ]
+            # Process( target=_process_plot_tvshowstats, args=(
+            #     self.tvdata_on_plex, time0, shared_list ) ) ]
+            for process in jobs: process.start( )
+            for process in jobs: process.join( )
+            final_data = dict( shared_list )
+            assert( set( final_data ) == set([ 'didend', 'toGet' ]) )
+            self.didend = final_data[ 'didend' ]
+            self.toGet = final_data[ 'toGet' ]
+            for seriesName in self.tvdata_on_plex:
+                self.tvdata_on_plex[ seriesName ][ 'didEnd' ] = self.didend[ seriesName ]
+            final_data_out[ 'tvdata_on_plex' ] = self.tvdata_on_plex
+            mytxt = '4, finished loading in all data on %s.' % (
+                datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
+            logging.info( mytxt )
+            self.emitString.emit( mytxt )
+            missing_eps = dict(map(
+                lambda seriesName: ( seriesName, self.toGet[ seriesName ][ 'episodes' ] ),
+                filter( lambda sname: sname in self.toGet and sname not in showsToExclude,
+                        self.tvdata_on_plex ) ) )
+            final_data_out[ 'missing_eps' ] = missing_eps
+            self.finalData.emit( final_data_out )
+            
+
     @classmethod
     def getShowSummary( cls, seriesName, tvdata_on_plex, missing_eps ):
         seasons_info = tvdata_on_plex[ seriesName ][ 'seasons' ]
@@ -139,120 +257,29 @@ class TVDBGUI( QDialog ):
             self.summaryShowImage.setPixmap( qpm )
         else: self.summaryShowImage.setPixmap( )
         self.summaryShowInfoArea.setHtml( showSummary )
-                                
-    def __init__( self, token, fullURL, tvdata_on_plex = None,
-                  didend = None, toGet = None, verify = True ):
-        super( TVDBGUI, self ).__init__( )
-        time0 = time.time( )
-        #cdg = CustomDialog( self )
-        dtnow = datetime.datetime.now( )
-        mytxt = '0, started loading in data on %s.' % (
-            datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
-        #cdg.addText( mytxt )
-        logging.info( mytxt )
-        libraries_dict = plexcore.get_libraries( fullURL = fullURL, token = token,
-                                                 do_full = True )
-        if not any(map(lambda value: 'show' in value[-1], libraries_dict.values( ) ) ):
-            raise ValueError( 'Error, could not find TV shows.' )
-        self.library_name = max(map(lambda key: libraries_dict[ key ][ 0 ],
-                                    filter(lambda key: libraries_dict[key][1] == 'show',
-                                           libraries_dict ) ) )
-        self.fullURL = fullURL
-        self.token = token
-        self.tvdb_token = get_token( verify = verify )
-        self.verify = verify
-        self.setStyleSheet("""
-        QWidget {
-        font-family: Consolas;
-        font-size: 11;
-        }""" )
-        mytxt = '1, found TV library in %0.3f seconds.' % ( time.time( ) - time0 )
-        #cdg.addText( mytxt )
-        logging.info( mytxt )
-        if tvdata_on_plex is None:
-            tvdata_on_plex = plexcore.get_library_data(
-                self.library_name, fullURL = self.fullURL, token = self.token )
-        if tvdata_on_plex is None:
-            raise ValueError( 'Error, could not find TV shows on the server.' )
-        self.tvdata_on_plex = tvdata_on_plex
-        mytxt = '2, loaded TV data from Plex server in %0.3f seconds.' % (
-            time.time( ) - time0 )
-        #cdg.addText( mytxt )
-        logging.info( mytxt )
-        #
-        showsToExclude = plextvdb.get_shows_to_exclude(
-            self.tvdata_on_plex )
-        #
-        ## using a stupid-ass pattern to shave some seconds off...
-        def _process_didend( dide, tvdon_plex, do_verify, t0, shared_list ):
-            if dide is not None:
-                shared_list.append( ( 'didend', dide ) )
-                return
-            dide = plextvdb.get_all_series_didend(
-                tvdon_plex, verify = do_verify )
-            mytxt = '3b, added information on whether shows ended in %0.3f seconds.' % (
-                time.time( ) - t0 )
-            logging.info( mytxt )
-            shared_list.append( ( 'didend', dide ) )
 
-        def _process_missing( toge, tvdon_plex, showsexc, do_verify, t0, shared_list ):
-            if toge is not None:
-                shared_list.append( ( 'toGet', toge ) )
-                return
-            toge = plextvdb.get_remaining_episodes(
-                tvdon_plex, showSpecials = False, showsToExclude = showsexc,
-                verify = do_verify )
-            mytxt = '3b, found missing episodes in %0.3f seconds.' % ( time.time( ) - t0 )
-            logging.info( mytxt )
-            shared_list.append( ( 'toGet', toge ) )
+    def _primordial_put_strings( self, extra_string ):
+        self.primordialErrorStrings.append( extra_string )
+        myHTML = """
+        <html>
+          %s
+        </html>""" % '\n'.join(map(lambda estring: '<p>%s</p>' % estring,
+                                   self.primordialErrorStrings ) )
+        self.primordialErrorDialog.setHtml( myHTML )
 
-        def _process_plot_tvshowstats( tvdon_plex, t0, shared_list ):
-            tvdata_date_dict = plextvdb.get_tvdata_ordered_by_date(
-                tvdon_plex )
-            years_have = set(map(lambda date: date.year, tvdata_date_dict ) )
-            with multiprocessing.Pool(
-                    processes = multiprocessing.cpu_count( ) ) as pool:
-                figdictdata = dict( pool.map(
-                    lambda year: ( year, plextvdb.create_plot_year_tvdata(
-                        tvdata_date_dict, year, shouldPlot = False ) ),
-                    years_have ) )
-                mytxt = '3b, made plots of tv shows added in %d years in %0.3f seconcds.' % (
-                    len( years_have ), time.time( ) - time0 )
-                logging.info( mytxt )
-                shared_list.append( ( 'plotYears', figdictdata ) )
-        
-        manager = Manager( )
-        shared_list = manager.list( )
-        jobs = [ Process( target=_process_didend, args=(
-            didend, self.tvdata_on_plex, self.verify, time0, shared_list ) ),
-                 Process( target=_process_missing, args=(
-                     toGet, self.tvdata_on_plex, showsToExclude, self.verify,
-                     time0, shared_list ) ) ]
-                 # Process( target=_process_plot_tvshowstats, args=(
-                 #     self.tvdata_on_plex, time0, shared_list ) ) ]
-        for process in jobs: process.start( )
-        for process in jobs: process.join( )
-        final_data = dict( shared_list )
-        assert( set( final_data ) == set([ 'didend', 'toGet' ]) )
-        didend = final_data[ 'didend' ]
-        toGet = final_data[ 'toGet' ]
-        # self.figdictdata = final_data[ 'plotYears' ]
+    def _process_final_state( self, final_data_out ):
+        self.hide( )
+        self.setWindowTitle( 'The List of TV Shows on the Plex Server' )
         #
-        for seriesName in self.tvdata_on_plex:
-            self.tvdata_on_plex[ seriesName ][ 'didEnd' ] = didend[ seriesName ]
-        mytxt = '4, finished loading in all data on %s.' % (
-            datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
-        #cdg.addText( mytxt )
-        logging.info( mytxt )
-        #cdg.close( )
+        ## delete all widgets in current layout
+        while self.myLayout.count( ):
+            myWidget = self.myLayout.takeAt( 0 ).widget( )
+            myWidget.deleteLater( )
         #
-        ## now do the missing_eps
-        self.missing_eps = dict(map(
-            lambda seriesName: ( seriesName, toGet[ seriesName ][ 'episodes' ] ),
-            filter( lambda sname: sname in toGet and sname not in showsToExclude,
-                    self.tvdata_on_plex ) ) )
+        self.library_name = final_data_out[ 'library_name' ]
+        self.tvdata_on_plex = final_data_out[ 'tvdata_on_plex' ]
+        self.missing_eps = final_data_out[ 'missing_eps' ]
         #
-        ##
         self.instantiatedTVShows = { }
         self.dt = datetime.datetime.now( ).date( )
         self.filterOnTVShows = QLineEdit( '' )
@@ -260,8 +287,6 @@ class TVDBGUI( QDialog ):
         self.showImages = { }
         self.summaryShowInfo = { }
         #
-        myLayout = QVBoxLayout( )
-        self.setLayout( myLayout )
         self.refreshButton = QPushButton( "REFRESH TV SHOWS" )
         self.tokenLabel = QLabel( )
         self.plexURLLabel = QLabel( )
@@ -281,16 +306,15 @@ class TVDBGUI( QDialog ):
         topLayout.addWidget( self.plexURLLabel, 1, 1, 1, 1 )
         topLayout.addWidget( QLabel( 'LOCATION:' ), 2, 0, 1, 1 )
         topLayout.addWidget( self.locationLabel, 2, 1, 1, 1 )
-        myLayout.addWidget( topWidget )
+        self.myLayout.addWidget( topWidget )
         #
         midWidget = QWidget( )
         midLayout = QGridLayout( )
-        midWidget.setLayout( midLayout )
         midLayout.addWidget( QLabel( 'TV SHOW FILTER' ), 0, 0, 1, 1 )
         midLayout.addWidget( self.filterOnTVShows, 0, 1, 1, 3 )
         midLayout.addWidget( self.refreshButton, 0, 4, 1, 3 )
-        myLayout.addWidget( midWidget )
-        myLayout.addWidget( self.tv )
+        self.myLayout.addWidget( midWidget )
+        self.myLayout.addWidget( self.tv )
         #
         botWidget = QWidget( )
         botLayout = QVBoxLayout( )
@@ -301,14 +325,9 @@ class TVDBGUI( QDialog ):
         self.summaryShowInfoArea = QTextEdit( )
         self.summaryShowInfoArea.setReadOnly( True )
         botLayout.addWidget( self.summaryShowInfoArea )
-        myLayout.addWidget( botWidget )
+        self.myLayout.addWidget( botWidget )
         #
         ## set size, make sure not resizable
-        self.setStyleSheet("""
-        QWidget {
-        font-family: Consolas;
-        font-size: %d;
-        }""" % ( int( 11 * 1.0 ) ) )
         self.setFixedWidth( self.tv.frameGeometry( ).width( ) * 1.05 )
         self.setFixedHeight( 900 )
         #
@@ -327,8 +346,37 @@ class TVDBGUI( QDialog ):
         printAction.triggered.connect( self.screenGrab )
         self.addAction( printAction )
         #
-        # self.setSize( 800, 800 )
         self.show( )
+                                
+    def __init__( self, token, fullURL, tvdata_on_plex = None,
+                  didend = None, toGet = None, verify = True ):
+        super( TVDBGUI, self ).__init__( )
+        self.fullURL = fullURL
+        self.token = token
+        self.tvdb_token = get_token( verify = verify )
+        self.verify = verify
+        self.setStyleSheet("""
+        QWidget {
+        font-family: Consolas;
+        font-size: 11;
+        }""" )
+        self.setWindowTitle( 'PLEX TV GUI PROGRESS WINDOW' )
+        self.myLayout = QVBoxLayout( )
+        self.setLayout( self.myLayout )
+        self.setFixedWidth( 300 )
+        self.setFixedHeight( 300 )
+        self.primordialErrorDialog = QTextEdit( )
+        self.primordialErrorDialog.setReadOnly( True )
+        self.primordialErrorStrings = [ ]
+        self.myLayout.addWidget( self.primordialErrorDialog )
+        self.show( )
+        #
+        self.initThread = TVDBGUI.TVDBGUIThread(
+            fullURL, token, tvdata_on_plex = tvdata_on_plex,
+            didend = didend, toGet = toGet, verify = verify )
+        self.initThread.emitString.connect( self._primordial_put_strings )
+        self.initThread.finalData.connect( self._process_final_state )
+        self.initThread.start( )
 
     def refreshTVShows( self ):
         time0 = time.time( )

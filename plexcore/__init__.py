@@ -43,17 +43,17 @@ class QWidgetWithPrinting( QWidget ):
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
 
-    def __init__( self, parent, isIsolated = True, doQuit = False ):
+    def __init__( self, parent, isIsolated = True ):
         super( QWidgetWithPrinting, self ).__init__( parent )
         if isIsolated:
             printAction = QAction( self )
             printAction.setShortcut( 'Shift+Ctrl+P' )
             printAction.triggered.connect( self.screenGrab )
             self.addAction( printAction )
-        if doQuit:
+            #
             quitAction = QAction( self )
             quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
-            quitAction.triggered.connect( sys.exit )
+            quitAction.triggered.connect( self.close )
             self.addAction( quitAction )
 
 class QDialogWithPrinting( QDialog ):
@@ -67,18 +67,17 @@ class QDialogWithPrinting( QDialog ):
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
 
-    def __init__( self, parent, isIsolated = True, doQuit = False ):
+    def __init__( self, parent, isIsolated = True ):
         super( QDialogWithPrinting, self ).__init__( parent )
         if isIsolated:
             printAction = QAction( self )
             printAction.setShortcut( 'Shift+Ctrl+P' )
             printAction.triggered.connect( self.screenGrab )
             self.addAction( printAction )
-        #
-        if doQuit:
+            #
             quitAction = QAction( self )
             quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
-            quitAction.triggered.connect( sys.exit )
+            quitAction.triggered.connect( self.close )
             self.addAction( quitAction )
 
 

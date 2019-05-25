@@ -1,15 +1,13 @@
 import os, sys, titlecase, datetime, re, time, requests, mimetypes
-import mutagen.mp3, mutagen.mp4, glob, multiprocessing, lxml.html
+import mutagen.mp3, mutagen.mp4, glob, multiprocessing, re
 from apiclient.discovery import build
-import smtplib, re, base64, httplib2
-from email import encoders
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from email.mime.audio import MIMEAudio
 from email.mime.image import MIMEImage
 from plexcore import session, plexcore
-from . import mainDir
+from . import mainDir, send_email_lowlevel, send_email_localsmtp
 
 def send_email_movie_torrent( movieName, data, isJackett = False):
     dtstring = datetime.datetime.now( ).strftime('%d %B %Y, %I:%M %p')
@@ -46,7 +44,7 @@ def send_email_movie_torrent( movieName, data, isJackett = False):
         msg.attach( body )
     #
     ## now send the email
-    _send_email_lowlevel( msg )
+    send_email_lowlevel( msg )
     return 'SUCCESS'
 
 def send_email_movie_none( movieName ):
@@ -66,7 +64,7 @@ def send_email_movie_none( movieName ):
     body = MIMEText( htmlString, 'html', 'utf-8' )
     msg.attach( body )
     #
-    _send_email_lowlevel( msg )
+    send_email_lowlevel( msg )
     return 'SUCCESS'
 
 def get_email_contacts_dict( emailList ):
@@ -142,22 +140,6 @@ def send_individual_email_perproc( input_tuple ):
                 print('Problem sending to %s. Trying again...' % email)
             else:
                 print('Problem sending to %s <%s>. Trying again...' % ( name, email ) )
-
-def _send_email_lowlevel( msg ):
-    data = { 'raw' : base64.urlsafe_b64encode( msg.as_bytes( ) ).decode('utf-8') }
-    #
-    credentials = plexcore.oauthGetGoogleCredentials( )
-    assert( credentials is not None )
-    email_service = build('gmail', 'v1', credentials = credentials,
-                          cache_discovery = False )
-    try: message = email_service.users( ).messages( ).send( userId='me', body = data ).execute( )
-    except: print('problem with %s' % msg['To'] )
-
-def _send_email_localsmtp( msg ):
-    smtp_conn = smtplib.SMTP('localhost', 25 )
-    smtp_conn.ehlo( 'test' )
-    smtp_conn.sendmail( msg['From'], [ msg["To"], ], msg.as_string( ) )
-    smtp_conn.quit( )
     
 def test_email( subject = None, htmlstring = None ):
     fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
@@ -170,7 +152,7 @@ def test_email( subject = None, htmlstring = None ):
     if htmlstring is None: body = MIMEText( 'This is a test.' )
     else: body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
-    _send_email_lowlevel( msg )
+    send_email_lowlevel( msg )
 
 def send_individual_email_full( mainHTML, subject, email, name = None, attach = None,
                                 attachName = None, attachType = 'txt'):
@@ -191,10 +173,11 @@ def send_individual_email_full( mainHTML, subject, email, name = None, attach = 
         att = MIMEApplication( attach, _subtype = 'text' )
         att.add_header( 'content-disposition', 'attachment', filename = attachName )
         msg.attach( att )
-    _send_email_lowlevel( msg )
+    send_email_lowlevel( msg )
 
-def send_individual_email_full_withsingleattach( mainHTML, subject, email, name = None,
-                                                 attachData = None, attachName = None):
+def send_individual_email_full_withsingleattach(
+        mainHTML, subject, email, name = None,
+        attachData = None, attachName = None):
     fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
@@ -218,10 +201,11 @@ def send_individual_email_full_withsingleattach( mainHTML, subject, email, name 
         att = MIMEApplication( attachData, _subtype = sub_type )
         att.add_header( 'content-disposition', 'attachment', filename = attachName )
         msg.attach( att )
-    _send_email_lowlevel( msg )
+    send_email_lowlevel( msg )
         
-def send_individual_email_full_withattachs( mainHTML, subject, email, name = None,
-                                            attachNames = None, attachDatas = None):
+def send_individual_email_full_withattachs(
+        mainHTML, subject, email, name = None,
+        attachNames = None, attachDatas = None):
     fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
@@ -253,8 +237,8 @@ def send_individual_email_full_withattachs( mainHTML, subject, email, name = Non
                 att.set_payload(data)
             att.add_header( 'content-disposition', 'attachment', filename = attachName )
             msg.attach( att )
-    #_send_email_lowlevel( msg )
-    _send_email_localsmtp( msg ) # google has big problems sending "bad" emails
+    #send_email_lowlevel( msg )
+    send_email_localsmtp( msg ) # google has big problems sending "bad" emails
 
 def send_individual_email( mainHTML, email, name = None,
                            mydate = datetime.datetime.now().date() ):
@@ -273,7 +257,7 @@ def send_individual_email( mainHTML, email, name = None,
     #
     body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
-    _send_email_lowlevel( msg )
+    send_email_lowlevel( msg )
 
 def get_summary_html( preambleText = '', postambleText = '', pngDataDict = { },
                       name = None, token = None, doLocal = True ):
@@ -371,16 +355,6 @@ def get_summary_data_freshair_remote( token, fullURLWithPort = 'http://localhost
             return ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
     return ' '.join([ mainstring, sizestring, durstring ])
 
-def get_summary_data_freshair( allrows ):
-    freshair_rows = list(filter(lambda row: '/mnt/media/freshair' in row[5] and
-                                row[7] is not None and row[8] is not None, allrows ) )
-    totdur = 1e-3 * sum([ row[8] for row in freshair_rows ])
-    totsizebytes = sum([ row[7] for row in freshair_rows ])
-    mainstring = 'There are %d episodes of NPR Fresh Air.' % len(freshair_rows)
-    sizestring = 'The total size of Fresh Air media is %s.' % plexcore.get_formatted_size( totsizebytes )
-    durstring = 'The total duration of Fresh Air media is %s.' % plexcore.get_formatted_duration( totdur )
-    return ' '.join([ mainstring, sizestring, durstring ])
-
 def get_summary_data_thisamericanlife_remote( token, fullURLWithPort = 'http://localhost:32400' ):
     libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'This American Life' ])
@@ -475,64 +449,14 @@ def get_summary_data_thisamericanlife_remote( token, fullURLWithPort = 'http://l
     pristrings.append( catpristrings )
     return pristrings
 
-def get_summary_data_thisamericanlife( allrows ):
-    pri_rows = list(filter(lambda row: '/mnt/media/thisamericanlife' in row[5] and
-                           row[7] is not None and row[8] is not None, allrows ) )
-    rowdict = { row[5] : row for row in pri_rows }
-    albumdata = dict(filter(None, map(_get_album_prifile, rowdict.keys() ) ) )
-    albums = set( albumdata.values( ) )
-    albumdict = {}
-    for prifile in albumdata:
-        albumdict.setdefault( albumdata[ prifile ], []).append( prifile )
-    mainstring = 'There are %d episodes in %d series in This American Life.' % (
-        len( pri_rows ), len( albums ) )        
-    totdur = 1e-3 * sum([ row[8] for row in pri_rows ])
-    totsizebytes = sum([ row[7] for row in pri_rows ])
-    sizestring = 'The total size of This American Life media is %s.' % \
-        plexcore.get_formatted_size( totsizebytes )
-    durstring = 'The total duration of This American Life media is %s.' % \
-        plexcore.get_formatted_duration( totdur )
-    pristrings = [ ' '.join([ mainstring, sizestring, durstring ]), ]
-    catpristrings = {}
-    for album in albumdict:
-        totdur = 1e-3 * sum([ rowdict[ prifile ][ 8 ] for prifile in albumdict[ album ] ])
-        totsizebytes = sum([ rowdict[ prifile ][ 7 ] for prifile in albumdict[ album ] ] )
-        mainstring = 'There are %d episodes in this category.' % len( albumdict[ album ] )
-        sizestring = 'The total size of media here is %s.' % \
-            plexcore.get_formatted_size( totsizebytes )
-        durstring = 'The total duration of media here is %s.' % \
-            plexcore.get_formatted_duration( totdur )
-        catpristrings[ album ] = ' '.join([ mainstring, sizestring, durstring ])
-    pristrings.append( catpristrings )
-    return pristrings
-
-def get_summary_data_music( allrows ):
-    music_rows = list(filter(lambda row:  '/mnt/media/aacmusic' in row[5] and
-                             row[8] is not None and row[7] is not None, allrows ) )
-    allmusicfiles = [ row[5] for row in music_rows ]
-    #pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
-    #artists, albums = zip(*filter(None, pool.map( _get_artistalbum, allmusicfiles )))
-    artists, albums = zip(*list(filter(None, map( _get_artistalbum, allmusicfiles ) ) ) )
-    artists = set( artists )
-    albums = set( albums )
-    mainstring = 'There are %d songs made by %d artists in %d albums.' % ( len( music_rows ),
-                                                                           len( artists),
-                                                                           len( albums ) )
-    totdur = 1e-3 * sum([ row[8] for row in music_rows ])
-    totsizebytes = sum([ row[7] for row in music_rows ])
-    sizestring = 'The total size of music media is %s.' % \
-        plexcore.get_formatted_size( totsizebytes )
-    durstring = 'The total duration of music media is %s.' % \
-        plexcore.get_formatted_duration( totdur )
-    musicstring = ' '.join([ mainstring, sizestring, durstring ])
-    return musicstring
-
 def get_summary_data_music_remote( token, fullURLWithPort = 'http://localhost:32400' ):
     libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'Music' ])
     sinceDate = plexcore.get_current_date_newsletter( )
-    key, num_songs, num_albums, num_artists, totdur, totsizebytes = plexcore._get_library_stats_artist( keynum, token, fullURL = fullURLWithPort )
-    mainstring = 'There are %d songs made by %d artists in %d albums.' % ( num_songs, num_artists, num_albums )
+    key, num_songs, num_albums, num_artists, totdur, totsizebytes = plexcore._get_library_stats_artist(
+        keynum, token, fullURL = fullURLWithPort )
+    mainstring = 'There are %d songs made by %d artists in %d albums.' % (
+        num_songs, num_artists, num_albums )
     sizestring = 'The total size of music media is %s.' % plexcore.get_formatted_size( totsizebytes )
     durstring = 'The total duration of music media is %s.' % plexcore.get_formatted_duration( totdur )
     if sinceDate is not None:
@@ -552,26 +476,12 @@ def get_summary_data_music_remote( token, fullURLWithPort = 'http://localhost:32
     musicstring = ' '.join([ mainstring, sizestring, durstring ])
     return musicstring
 
-def get_summary_data_television( allrows ):
-    tv_rows = list( filter(lambda row: '/mnt/media/television' in row[5] and
-                           row[8] is not None and row[7] is not None, allrows ) )
-    tvshows = sorted(set([ row[5].split('/')[4].strip( ) for row in tv_rows ]) )
-    totdur = 1e-3 * sum([ row[8] for row in tv_rows ])
-    totsizebytes = sum([ row[7] for row in tv_rows ])    
-    #
-    sizestring = 'The total size of TV media is %s.' % \
-        plexcore.get_formatted_size( totsizebytes )
-    durstring = 'The total duration of TV media is %s.' % \
-        plexcore.get_formatted_duration( totdur )
-    mainstring = 'There are %d TV files in %d TV shows.' % ( len(tv_rows), len(tvshows) )
-    tvstring = ' '.join([ mainstring, sizestring, durstring ])
-    return tvstring
-
 def get_summary_data_television_remote( token, fullURLWithPort = 'http://localhost:32400' ):
     libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'TV Shows' ])
     sinceDate = plexcore.get_current_date_newsletter( )
-    key, numTVeps, numTVshows, totdur, totsizebytes = plexcore._get_library_stats_show( keynum, token, fullURL = fullURLWithPort )
+    key, numTVeps, numTVshows, totdur, totsizebytes = plexcore._get_library_stats_show(
+        keynum, token, fullURL = fullURLWithPort )
     sizestring = 'The total size of TV media is %s.' % \
         plexcore.get_formatted_size( totsizebytes )
     durstring = 'The total duration of TV media is %s.' % \
@@ -579,8 +489,8 @@ def get_summary_data_television_remote( token, fullURLWithPort = 'http://localho
     mainstring = 'There are %d TV files in %d TV shows.' % ( numTVeps, numTVshows )
     if sinceDate is not None:
         key, numTVeps_since, numTVshows_since, \
-            totdur_since, totsizebytes_since = plexcore._get_library_stats_show( keynum, token, fullURL = fullURLWithPort,
-                                                                                 sinceDate = sinceDate )
+            totdur_since, totsizebytes_since = plexcore._get_library_stats_show(
+                keynum, token, fullURL = fullURLWithPort, sinceDate = sinceDate )
         if numTVeps_since > 0:
             mainstring_since = ' '.join([
                 'Since %s, I have added %d TV files in %d TV shows.' %

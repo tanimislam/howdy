@@ -1,6 +1,6 @@
 import numpy, os, sys, requests, time
 import logging, glob, datetime, pickle, gzip
-from . import plextmdb, plextmdb_mygui, plextmdb_gui
+from . import plextmdb, plextmdb_mygui, plextmdb_gui, mainDir
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from plexcore import plexcore, plexcore_gui
@@ -177,10 +177,8 @@ class TMDBTotGUI( QDialogWithPrinting ):
         self.emitNewToken.emit( self.token )
         self.statusDialog.setText( 'FINISHED RELOGGING CREDENTIALS' )
 
-class HelpDialog( QDialog ):
-    
+class HelpDialog( QDialog ):    
     def __init__( self, parent ):
-        from . import mainDir
         super( HelpDialog, self ).__init__( parent )
         self.setModal( True )
         self.setWindowTitle( 'HELP WINDOW' )

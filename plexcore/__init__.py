@@ -88,11 +88,12 @@ class ProgressDialog( QDialogWithPrinting ): # replace with QProgressDialog in t
         super( ProgressDialog, self ).__init__(
             parent, doQuit = True )
         self.setModal( True )
-        self.setWindowTitle( windowTitle )
+        self.setWindowTitle( 'PROGRESS' )
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         self.setFixedWidth( 300 )
-        self.setFixedHeight( 300 )
+        self.setFixedHeight( 400 )
+        myLayout.addWidget( QLabel( windowTitle ) )
         self.errorDialog = QTextEdit( )
         self.parsedHTML = BeautifulSoup("""
         <html>
@@ -112,11 +113,11 @@ class ProgressDialog( QDialogWithPrinting ): # replace with QProgressDialog in t
         QLabel {
         background-color: #373949;
         }""" )
+        myLayout.addWidget( self.elapsedTime )
         self.timer = QTimer( )
         self.t0 = time.time( )
         self.timer.timeout.connect( self.showTime )
         self.timer.start( 5000 ) # every 5 seconds
-        myLayout.addWidget( self.elapsedTime )
         self.show( )
 
     def showTime( self ):

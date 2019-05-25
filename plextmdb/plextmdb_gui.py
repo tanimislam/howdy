@@ -4,6 +4,7 @@ from . import plextmdb, mainDir, plextmdb_torrents
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from plexcore import QDialogWithPrinting, QWidgetWithPrinting, plexcore
+from plexemail import plexemail
 
 _headers = [ 'title', 'release date', 'popularity', 'rating', 'overview' ]
 _colmap = { 0 : 'title',
@@ -259,17 +260,27 @@ class TMDBTorrents( QDialogWithPrinting ):
             elif self.torrentStatus == 1:
                 jsondata[ 'movie' ] = self.parent.movie
                 jsondata[ 'data' ] = datum[ 'link' ]
+            #
+            ## very much a debugging thing
             if self.parent.do_debug:
                 fname = '%s.json' % '_'.join(
                     os.path.basename( self.parent.movie ).split( ) )
                 json.dump( jsondata, open( fname, 'w' ), indent = 1 )
-            response = requests.post(
-                'https://tanimislam.ddns.net/flask/plex/sendmovieemail',
-                json = jsondata, verify = self.parent.verify )
-            if response.status_code == 200:
+            #
+            ## now send the email
+            if self.torrentStatus == 0:
+                status = plexemail.send_email_movie_torrent(
+                    jsondata[ 'movie' ], datum['content'], isJackett = False )
+            elif self.torrentStatus == 1:
+                status = plexemail.send_email_movie_torrent(
+                    jsondata[ 'movie' ], datum[ 'link' ], isJackett = True )
+            else: status = plexemail.send_email_movie_none( jsondata[ 'movie' ] )
+            #
+            if status != 'SUCCESS':
+                self.parent.statusLabel.setText( 'ERROR: COULD NOT SEND TORRENT' )
+            else:
                 self.parent.statusLabel.setText(
-                    'sent request for "%s"' % jsondata['movie'] )
-            else: self.parent.statusLabel.setText( 'ERROR: %s' % response.content )
+                    'emailed request for "%s"' % jsondata['movie'] )
 
         def downloadTorrentOrMagnetAtRow( self, row ):
             datum = self.data_torrents[ row ]
@@ -289,7 +300,7 @@ class TMDBTorrents( QDialogWithPrinting ):
             
         def addTorrentOrMagnetAtRow( self, row ):
             datum = self.data_torrents[ row ]
-            print( 'adding torrent or magnet = %d, %s' % (
+            print( 'FIXME adding torrent or magnet = %d, %s' % (
                 row, datum['title'] ) )
 
     def _createTMDBTorrentsTableModel(
@@ -342,7 +353,6 @@ class TMDBTorrents( QDialogWithPrinting ):
     def __init__( self, parent, token, movie_name, bypass = False, maxnum = 10,
                   do_debug = False ):
         super( TMDBTorrents, self ).__init__( parent )
-        self.setModal( True )
         self.token = token
         self.movie = movie_name
         self.setWindowTitle( 'MOVIE TORRENT DOWNLOAD: %s' % movie_name )
@@ -377,6 +387,7 @@ class TMDBTorrents( QDialogWithPrinting ):
 class TMDBGUI( QDialogWithPrinting ):
     movieSendList = pyqtSignal( list )
     movieRefreshRows = pyqtSignal( list )
+    emitRating = pyqtSignal( float )
     
     def __init__( self, token, fullURL, movie_data_rows,
                   isIsolated = True, verify = True ):
@@ -415,17 +426,21 @@ class TMDBGUI( QDialogWithPrinting ):
 
     def _connectTMDBGUIActions( self ):
         self.movieSendList.connect( self.tmdbtv.tm.emitMoviesHere )
+        self.emitRating.connect( self.tmdbtv.tm.setFilterRating )
 
     def _connectSelectYearGenreWidget( self ):
         self.sygWidget.mySignalSYG.connect( self.tmdbtv.tm.currentStatus )
         self.sygWidget.mySignalAndFill.connect( self.tmdbtv.tm.currentStatusAndFill )
         self.sygWidget.pushDataButton.clicked.connect( self.tmdbtv.tm.fillOutCalculation )
         self.sygWidget.pushDataButton.clicked.connect( self.sdWidget.enableMatching )
+        self.sygWidget.pushDataButton.clicked.connect( self.sdWidget.enableMinimumRating )
         self.sygWidget.pushDataButton.clicked.connect( self.emitMovieList )
         self.sygWidget.actorNamesLineEdit.returnPressed.connect( self.emitMovieList )
         self.sygWidget.actorNamesLineEdit.returnPressed.connect( self.sdWidget.enableMatching )
+        self.sygWidget.actorNamesLineEdit.returnPressed.connect( self.sdWidget.enableMinimumRating )
         self.sygWidget.movieNameLineEdit.returnPressed.connect( self.emitMovieList )
         self.sygWidget.movieNameLineEdit.returnPressed.connect( self.sdWidget.enableMatching )
+        self.sygWidget.movieNameLineEdit.returnPressed.connect( self.sdWidget.enableMinimumRating )
         self.sygWidget.refreshDataButton.clicked.connect( self.refreshMovies )
         self.sygWidget.mySignalSYG.connect( self.sdWidget.setYearGenre )
         self.sygWidget.emitSignalSYG( )
@@ -434,6 +449,10 @@ class TMDBGUI( QDialogWithPrinting ):
         self.sdWidget.emitStatusToShow.connect( self.tmdbtv.tm.setFilterStatus )
         self.sdWidget.movieNameLineEdit.textChanged.connect(
             self.tmdbtv.tm.setFilterString )
+        self.sdWidget.minimumRatingEdit.returnPressed.connect(
+            self.sendNewRating )
+        self.sdWidget.minimumRatingEdit.returnPressed.connect(
+            self.sdWidget.enableMinimumRating )
 
     def _connectTMDBTableView( self ):
         self.tmdbtv.tm.mySummarySignal.connect( self.sdWidget.processStatus )
@@ -442,6 +461,19 @@ class TMDBGUI( QDialogWithPrinting ):
     def emitMovieList( self ):
         if len( self.all_movies ) > 0:
             self.movieSendList.emit( self.all_movies )
+
+    def sendNewRating( self ): # error correction
+        currentValInt = int( 10 * self.tmdbtv.tm.minRating )
+        try:
+            newValInt = max(
+                0, int( 10 * float( self.sdWidget.minimumRatingEdit.text( ) ) ) )
+            self.sdWidget.minimumRatingEdit.setText( '%0.1f' % ( 0.1 * newValInt ) )
+            self.tmdbtv.tm.setFilterRating( 0.1 * newValInt )
+        except:
+            self.sdWidget.minimumRatingEdit.setText(
+                '%0.1f' % ( currentValInt * 0.1 ) )
+            self.tmdbtv.tm.setFilterRating( 0.1 * currentValInt )
+        
 
     def fill_out_movies( self, movie_data_rows ):
         self.all_movies = list(map(
@@ -460,7 +492,7 @@ class TMDBGUI( QDialogWithPrinting ):
         self.fill_out_movies( movie_data_rows )
         self.movieRefreshRows.emit( movie_data_rows )
         
-class StatusDialogWidget( QWidgetWithPrinting ):
+class StatusDialogWidget( QWidget ):
     emitStatusToShow = pyqtSignal( int )
     
     class MovieListDialog( QDialogWithPrinting ):
@@ -489,6 +521,8 @@ class StatusDialogWidget( QWidgetWithPrinting ):
         self.statusLabel = QLabel( )
         self.progressLabel = QLabel( )
         self.movieNameLineEdit = QLineEdit( )
+        self.minimumRatingEdit = QLineEdit( '0.0' )
+        self.minimumRatingEdit.setEnabled( False )
         self.status = -1
         self.currentYear = -1
         self.actors = [ ]
@@ -502,11 +536,19 @@ class StatusDialogWidget( QWidgetWithPrinting ):
         self.showStatusComboBox.setCurrentIndex( 2 )
         myLayout = QGridLayout( )
         self.setLayout( myLayout )
-        myLayout.addWidget( self.statusLabel, 0, 0, 2, 2 )
-        myLayout.addWidget( self.progressLabel, 0, 2, 2, 2 )
-        myLayout.addWidget( self.showStatusComboBox, 0, 4, 2, 2 )
-        myLayout.addWidget( QLabel( 'MOVIE NAME:' ), 2, 0, 1, 1 )
-        myLayout.addWidget( self.movieNameLineEdit, 2, 1, 1, 3 )
+        #
+        myLayout.addWidget( self.statusLabel, 0, 0, 1, 5 )
+        myLayout.addWidget( self.progressLabel, 0, 5, 1, 4 )
+        myLayout.addWidget( self.showStatusComboBox, 0, 9, 1, 1 )
+        #
+        myLayout.addWidget( QLabel( 'MOVIE NAME:' ), 1, 0, 1, 1 )
+        myLayout.addWidget( self.movieNameLineEdit, 1, 1, 1, 7 )
+        sideWidget = QWidget( )
+        sideLayout = QHBoxLayout( )
+        sideWidget.setLayout( sideLayout )
+        sideLayout.addWidget( QLabel( 'MINIMUM RATING:') )
+        sideLayout.addWidget( self.minimumRatingEdit )
+        myLayout.addWidget( sideWidget, 1, 8, 1, 2 )
         #
         self.showStatusComboBox.installEventFilter( self )
         self.showStatusComboBox.currentIndexChanged.connect( self.sendStatus )
@@ -546,6 +588,9 @@ class StatusDialogWidget( QWidgetWithPrinting ):
         self.showStatusComboBox.setCurrentIndex( 2 )
         self.emitStatusToShow.emit( 2 )
 
+    def enableMinimumRating( self ):
+        self.minimumRatingEdit.setEnabled( True )
+
     def sendStatus( self ):
         movieShowStatus = str( self.showStatusComboBox.currentText( ) )
         vals = { 'MINE' : 0, 'NOT MINE' : 1, 'ALL' : 2 }
@@ -583,7 +628,7 @@ class StatusDialogWidget( QWidgetWithPrinting ):
             dlg.show( )
             result = dlg.exec_( )
         
-class SelectYearGenreWidget( QWidgetWithPrinting ):
+class SelectYearGenreWidget( QWidget ):
     mySignalSYG = pyqtSignal( int, tuple )
     mySignalAndFill = pyqtSignal( int, tuple )
     
@@ -654,11 +699,6 @@ class SelectYearGenreWidget( QWidgetWithPrinting ):
         botLayout.addWidget( QLabel( 'MOVIE:' ) )
         botLayout.addWidget( self.movieNameLineEdit )
         myLayout.addWidget( botWidget )
-        #
-        printAction = QAction( self )
-        printAction.setShortcut( 'Shift+Ctrl+P' )
-        printAction.triggered.connect( self.screenGrab )
-        self.addAction( printAction )
         self.isFinished = False
         #
         self.yearSpinBox.valueChanged.connect( self.emitSignalSYG )
@@ -807,6 +847,7 @@ class TMDBTableModel( QAbstractTableModel ):
         self.genre_id = -1
         self.genre = ''
         self.movieName = ''
+        self.minRating = -1.0
 
     def infoOnMovieAtRow( self, actualRow ):
         datum = self.actualMovieData[ actualRow ]
@@ -817,12 +858,14 @@ class TMDBTableModel( QAbstractTableModel ):
         datum = self.actualMovieData[ rowNumber ]
         if self.filterRegexp.indexIn( datum[ 'title' ] ) == -1:
             return False
-        if self.filterStatus == 2:
-            return True
-        elif self.filterStatus == 1:
-            return datum[ 'isFound' ] == False
+        if self.filterStatus == 1:
+            if not datum[ 'isFound' ] == False: return False
         elif self.filterStatus == 0:
-            return datum[ 'isFound' ] == True
+            if not datum[ 'isFound' ] == True: return False
+        #
+        ## now check on rating
+        return datum[ 'vote_average' ] >= self.minRating
+            
 
     def setFilterStatus( self, filterStatus ):
         self.filterStatus = filterStatus
@@ -834,6 +877,10 @@ class TMDBTableModel( QAbstractTableModel ):
         if len( mytext ) == 0: mytext = '.'
         self.filterRegexp = QRegExp(
             mytext, Qt.CaseInsensitive, QRegExp.RegExp )
+        self.emitFilterChanged.emit( )
+
+    def setFilterRating( self, minRating ):
+        self.minRating = minRating
         self.emitFilterChanged.emit( )
 
     def rowCount( self, parent ):

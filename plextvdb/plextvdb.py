@@ -987,7 +987,8 @@ def get_tvtorrent_candidate_downloads( toGet ):
             totFname = os.path.join( candDir, fname )
             torFname = '%s S%02dE%02d' % ( torTitle, seasno, epno )
             dat = { 'totFname' : totFname, 'torFname' : torFname,
-                    'minSize' : minSize, 'maxSize' : maxSize }
+                    'minSize' : minSize, 'maxSize' : maxSize,
+                    'tvshow' : tvshow }
                 
             if not os.path.isdir( candDir ):
                 tv_torrent_gets[ 'newdirs' ].setdefault( candDir, [] )

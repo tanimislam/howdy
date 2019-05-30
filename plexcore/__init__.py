@@ -9,7 +9,6 @@ _ = plexinitialization.PlexInitialization( )
 import os, sys, xdg.BaseDirectory, signal, datetime, glob
 import geoip2.database, _geoip_geolite2, time
 from bs4 import BeautifulSoup
-from sqlalchemy.pool import SingletonThreadPool
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean

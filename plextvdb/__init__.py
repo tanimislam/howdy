@@ -40,7 +40,7 @@ def get_tvdb_api( ) -> dict:
              'apikey' : data['apikey'],
              'userkey' : data['userkey'] }
 
-def get_token( verify: bool = True ) -> dict:
+def get_token( verify: bool = True ) -> str:
     data = json.dumps( get_tvdb_api( ) )
     headers = { 'Content-Type' : 'application/json' }
     response = requests.post( 'https://api.thetvdb.com/login',

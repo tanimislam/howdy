@@ -2,8 +2,10 @@ import requests, re, threading, cfscrape, os, time, numpy
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
+from multiprocessing import Process, Manager, cpu_count
 from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials, get_formatted_size
 from plexcore import plexcore_deluge
+from . import get_token, plextvdb
 
 def _return_error_couldnotfind( name ):
     return None, 'FAILURE, COULD NOT FIND ANY TV SHOWS WITH SEARCH TERM %s' % name
@@ -13,7 +15,66 @@ def _return_error_raw( msg ):
 
 _num_to_quit = 5
 
-def get_tv_torrent_zooqle( name, maxnum = 10 ):
+def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None ):
+    assert( maxnum >= 5 )
+    name_split = name.split()
+    last_tok = name_split[-1]
+    status = re.match('^s[0-9]{2}e[0-9]{2}',
+                      last_tok.lower( ) )
+    if status is None:
+        return _return_error_raw(
+            'ERROR, LAST TOKEN %s IS NOT SEASON-EPISODE TOKEN.' % last_tok )
+    if series_name is None: series_name = ' '.join( name_split[:-1] )
+    tvdb_token = get_token( verify = verify )
+    series_id = plextvdb.get_series_id( series_name, tvdb_token, verify = verify )
+    if series_id is None:
+        return _return_error_raw(
+            'ERROR, COULD NOT FIND SERIES %s.' % series_name )
+    imdb_id = plextvdb.get_imdb_id( series_id, tvdb_token, verify = verify )
+    if imdb_id is None:
+        return _return_error_raw(
+            'ERROR, COULD NOT FIND IMDB ID FOR SERIES %s.' % series_name )
+    response = requests.get( 'https://eztv.io/api/get-torrents',
+                             params = { 'imdb_id' : int( imdb_id.replace('t','')),
+                                        'limit' : 100, 'page' : 0 },
+                             verify = verify )
+    if response.status_code != 200:
+        return _return_error_raw(
+            'ERROR, COULD NOT FIND ANY TORRENTS FOR %s IN EZTV.IO' % name )
+    alldat = response.json( )
+    if alldat['torrents_count'] == 0:
+        return _return_error_raw(
+            'ERROR, COULD NOT FIND ANY TORRENTS FOR %s IN EZTV.IO' % name )
+    all_torrents = alldat[ 'torrents' ]
+    for pageno in range( 1, 101 ):
+        if alldat[ 'torrents_count' ] < 100: break
+        response = requests.get( 'https://eztv.io/api/get-torrents',
+                             params = { 'imdb_id' : int( imdb_id.replace('t','')),
+                                        'limit' : 100, 'page' : pageno },
+                             verify = verify )
+        if response.status_code != 200: break
+        alldat = response.json( )
+        if alldat['torrents_count'] == 0: break
+        all_torrents += alldat[ 'torrents' ]
+    #
+    ## now filter on those torrents that have sXXeYY in them
+    all_torrents_mine = list(filter(
+        lambda tor: last_tok.lower( ) in tor['title'].lower( ), all_torrents ) )[:maxnum]
+    if len( all_torrents_mine ) == 0:
+        return _return_error_raw(
+            'ERROR, COULD NOT FIND %s IN EZTV.IO' % name )
+    return list(
+        map(lambda tor: {
+            'title' : tor[ 'title' ],
+            'seeders' : int( tor[ 'seeds' ] ),
+            'leechers' : int( tor[ 'peers' ] ),
+            'link' : tor[ 'magnet_url' ],
+            'torrent_size' : int( tor[ 'size_bytes' ] ) },
+            all_torrents_mine ) ), 'SUCCESS'
+            
+    
+
+def get_tv_torrent_zooqle( name, maxnum = 10, verify = True ):
     assert( maxnum >= 5 )
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
         'udp://tracker.opentrackr.org:1337/announce',
@@ -40,9 +101,10 @@ def get_tv_torrent_zooqle( name, maxnum = 10 ):
     paramurl = '?' + '&'.join(map(lambda tok: '%s=%s' % ( tok, params[ tok ] ),
                                   params ) )
     fullurl = urljoin( url, paramurl )
-    response = requests.get( fullurl )
+    response = requests.get( fullurl, verify = verify )
     if response.status_code != 200:
-        return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
+        return _return_error_raw(
+            'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname)
     myxml = BeautifulSoup( response.content, 'lxml' )
     def is_valid_elem( elem ):
         names = set(map(lambda elm: elm.name, elem.find_all( ) ) )
@@ -65,39 +127,39 @@ def get_tv_torrent_zooqle( name, maxnum = 10 ):
         valid_elm = valid_elm[ 0 ]
         return valid_elm.get_text( ).lower( )
     
-    items_toshow = list( map(lambda elem: { 'title' : '%s (%s)' % ( max( elem.find_all('title' ) ).get_text( ),
-                                                                    get_formatted_size( get_num_forelem( elem, 'contentlength' ) ) ),
-                                            'seeders' : get_num_forelem( elem, 'seeds' ),
-                                            'leechers' : get_num_forelem( elem, 'peers' ),
-                                            'link' : _get_magnet_link( get_infohash( elem ),
-                                                                       max( elem.find_all('title' ) ).get_text( ) ) },
+    items_toshow = list( map(lambda elem: {
+        'title' : max( elem.find_all('title' ) ).get_text( ),
+        'seeders' : get_num_forelem( elem, 'seeds' ),
+        'leechers' : get_num_forelem( elem, 'peers' ),
+        'link' : _get_magnet_link(
+            get_infohash( elem ),
+            max( elem.find_all('title' ) ).get_text( ) ),
+        'torrent_size' : get_num_forelem( elem, 'contentlength' ) },
                              cand_items ) )
     if len( items_toshow ) == 0:
-        return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
-    return sorted( items_toshow, key = lambda item: -item['seeders'] - item['leechers'] )[:maxnum], 'SUCCESS'
+        return _return_error_raw(
+            'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname )
+    items = sorted( items_toshow, key = lambda item: -item['seeders'] - item['leechers'] )[:maxnum]
+    return items, 'SUCCESS'
 
 def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     from .plextvdb import get_token, get_series_id, get_possible_ids
     candidate_seriesname = ' '.join( name.strip().split()[:-1] )
     epstring = name.strip().split()[-1].upper()
     if not epstring[0] == 'S':
-        status = 'Error, first string must be an s or S.'
-        return None, status
+        return _return_error_raw( 'Error, first string must be an s or S.' )
     epstring = epstring[1:]
     splitseaseps = epstring.split('E')[:2]
     if len( splitseaseps ) != 2:
-        status = 'Error, string must have a SEASON and EPISODE part.'
-        return None, status
+        return _return_error_raw( 'Error, string must have a SEASON and EPISODE part.' )
     try:
         seasno = int( splitseaseps[0] )
     except:
-        status = 'Error, invalid season number.'
-        return None, status
+        return _return_error_raw( 'Error, invalid season number.' )
     try:
         epno = int( splitseaseps[1] )
     except:
-        status = 'Error, invalid episode number.'
-        return None, status
+        return _return_error_raw( 'Error, invalid episode number.' )
     
     tvdb_token = get_token( verify = verify )
     series_id = get_series_id( candidate_seriesname, tvdb_token,
@@ -106,9 +168,9 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
         series_ids = get_possible_ids( candidate_seriesname,
                                        tvdb_token, verify = verify )
         if series_ids is None or len( series_ids ) == 0:
-            status = 'ERROR, PLEXTVDB could find no candidate series that match %s' % \
-                     candidate_seriesname
-            return None, status
+            return _return_error_raw(
+                'ERROR, PLEXTVDB could find no candidate series that match %s' %
+                candidate_seriesname )
         series_id = series_ids[ 0 ]
     #
     ## got app_id and apiurl from https://www.rubydoc.info/github/epistrephein/rarbg/master/RARBG/API
@@ -120,7 +182,7 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     if response.status_code != 200:
         status = '. '.join([ 'ERROR, problem with rarbg.to: %d' % response.status_code,
                              'Unable to connect to provider.' ])
-        return None, status
+        return _return_error_raw( status )
     token = response.json( )[ 'token' ]
     params = { 'mode' : 'search', 'search_tvdb' : series_id, 'token' : token,
                'format' : 'json_extended', 'category' : 'tv', 'app_id' : 'rarbg-rubygem',
@@ -133,13 +195,13 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     if response.status_code != 200:
         status = '. '.join([ 'ERROR, problem with rarbg.to: %d' % response.status_code,
                              'Unable to connect to provider.' ])
-        return None, status
+        return _return_error_raw( status )
     data = response.json( )
     if 'torrent_results' not in data:
         status = '\n'.join([ 'ERROR, RARBG.TO could not find any torrents for %s %s.' %
                              ( candidate_seriesname, 'E'.join( splitseaseps ) ),
                              'data = %s' % data ])
-        return None, status
+        return _return_error_raw( status )
     data = list( filter(lambda elem: 'title' in elem, data['torrent_results']) )
     filtered_data = list( filter(lambda elem: 'E'.join( splitseaseps ) in elem['title'] and
                                  '720p' in elem['title'] and 'HDTV' in elem['title'], data ) )
@@ -149,7 +211,7 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     if len( filtered_data ) == 0:
         status = 'ERROR, RARBG.TO could not find any torrents for %s %s.' % (
             candidate_seriesname, 'E'.join( splitseaseps ) )
-        return None, status
+        return _return_error_raw( status )
     def get_num_seeders( elem ):
         if 'seeders' in elem: return elem['seeders']
         return 1
@@ -225,16 +287,36 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     items = items[:maxnum]
     return items, 'SUCCESS'
 
-def get_tv_torrent_jackett( name, maxnum = 10, minsize = None, maxsize = None, keywords = [ ], keywords_exc = [ ],
-                            must_have = [ ]):
+def get_tv_torrent_jackett( name, maxnum = 10, minsize = None, maxsize = None, keywords = [ ],
+                            keywords_exc = [ ], must_have = [ ], verify = True, series_name = None ):
     import validators
     data = get_jackett_credentials( )
     if data is None:
         return _return_error_raw('FAILURE, COULD NOT GET JACKETT SERVER CREDENTIALS')
     url, apikey = data
     endpoint = 'api/v2.0/indexers/all/results/torznab/api'
+    tvdb_token = get_token( verify = verify )
+    name_split = name.split()
+    last_tok = name_split[-1].lower( )
+    status = re.match('^s[0-9]{2}e[0-9]{2}',
+                      last_tok )
+    
+    def _return_params( name ):
+        params = { 'apikey' : apikey, 'q' : name, 'cat' : '5000' }
+        if tvdb_token is None: return params
+        if series_name is None:
+            if status is None: sname = name
+            else: sname = ' '.join( name_split[:-1] )
+        else: sname = series_name
+        series_id = plextvdb.get_series_id( sname, tvdb_token, verify = verify )
+        if series_id is None: return params
+        imdb_id = plextvdb.get_imdb_id( series_id, tvdb_token, verify = verify )
+        if imdb_id is None: return params
+        params[ 'imdbid' ] = imdb_id
+        return params
+            
     response = requests.get( urljoin( url, endpoint ),
-                             params = { 'apikey' : apikey, 'q' : name, 'cat' : '5000' } ) # tv shows
+                             params = _return_params( name ), verify = verify ) # tv shows
     if response.status_code != 200:
         return _return_error_raw( 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url )
     html = BeautifulSoup( response.content, 'lxml' )
@@ -252,18 +334,24 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsize = None, maxsize = None, k
         if url2 is None: return None
         url2 = url2.text
         if not validators.url( url2 ): return None
-        resp2 = requests.get( url2 )
+        resp2 = requests.get( url2, verify = verify )
         if resp2.status_code != 200: return None
         h2 = BeautifulSoup( resp2.content, 'lxml' )
         valid_magnet_links = set(map(lambda elem: elem['href'],
-                                     filter(lambda elem: 'href' in elem.attrs and 'magnet' in elem['href'], h2.find_all('a'))))
+                                     filter(lambda elem: 'href' in elem.attrs and 'magnet' in elem['href'],
+                                            h2.find_all('a'))))
         if len( valid_magnet_links ) == 0: return None
         return max( valid_magnet_links )
-        
+
+    if status is None: last_tok = None
     for item in html('item'):
         title = item.find('title')
         if title is None: continue
         title = title.text
+        #
+        ## now check if the sXXeYY in name
+        if last_tok is not None:
+            if last_tok not in title.lower( ): continue
         torrent_size = item.find('size')
         if torrent_size is not None:
             torrent_size = float( torrent_size.text ) / 1024**2
@@ -518,6 +606,7 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
     totFname = tvTorUnit[ 'totFname' ]
     minSize = tvTorUnit[ 'minSize' ]
     maxSize = tvTorUnit[ 'maxSize' ]
+    series_name = tvTorUnit[ 'tvshow' ]
     mustHaveString = torFileName.split()[-1]
     if client is None:
         client, status = plexcore_deluge.get_deluge_client( )
@@ -525,10 +614,61 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
             return None, create_status_dict( 'FAILURE', 'cannot create or run a valid deluge RPC client.' )
     #
     ## now get list of torrents, choose "top" one
-    data, status = get_tv_torrent_jackett( torFileName, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
-                                           minsize = minSize, maxsize = maxSize, keywords_exc = [ 'xvid' ],
-                                           must_have = [ mustHaveString ] )
-    if status != 'SUCCESS': return None, create_status_dict( 'FAILURE', status )
+    manager = Manager( )
+    shared_list = manager.list( )
+    def _process_jackett_items( ):
+        data, status = get_tv_torrent_jackett(
+            mustHaveString, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
+            minsize = minSize, maxsize = maxSize, keywords_exc = [ 'xvid' ],
+            must_have = [ mustHaveString ], series_name = series_name )
+        if status != 'SUCCESS':
+            shared_list.append([ 'jackett', create_status_dict( 'FAILURE', status ), 'FAILURE' ])
+            return
+        shared_list.append([ 'jackett', data, 'SUCCESS' ])
+        #return None, create_status_dict( 'FAILURE', status )
+    def _process_eztv_io_items( ):
+        data, status = get_tv_torrent_eztv_io( torFileName, maxnum = 100,
+                                               series_name = series_name )
+        if status != 'SUCCESS':
+            shared_list.append([ 'eztv.io', create_status_dict( 'FAILURE', status ), 'FAILURE' ])
+            return
+        data_filt = list(filter(
+            lambda elem: any(map(lambda tok: tok in elem['title'].lower( ),
+                                 ( 'x264', 'x265', '720p' ) ) ) and
+            'xvid' not in elem['title'].lower( ) and
+            elem['torrent_size'] >= minSize and
+            elem['torrent_size'] <= maxSize, data ) )
+        if len( data_filt ) == 0:
+            shared_list.append([ 'eztv.io', create_status_dict(
+                'FAILURE', 'ERROR, COULD NOT FIND %s IN EZTV.IO.' % torFileName ), 'FAILURE' ] )
+            return
+        shared_list.append([ 'eztv.io', data_filt, 'SUCCESS' ])
+    def _process_zooqle_items( ):
+        data, status = get_tv_torrent_zooqle( torFileName, maxnum = 100 )
+        if status != 'SUCCESS':
+            shared_list.append([ 'zooqle', create_status_dict( 'FAILURE', status ), 'FAILURE' ])
+            return
+        data_filt = list(filter(
+            lambda elem: any(map(lambda tok: tok in elem['title'].lower( ),
+                                 ( 'x264', 'x265', '720p' ) ) ) and
+            'xvid' not in elem['title'].lower( ) and
+            elem['torrent_size'] >= minSize and
+            elem['torrent_size'] <= maxSize, data ) )
+        if len( data_filt ) == 0:
+            shared_list.append([ 'zooqle', create_status_dict(
+                'FAILURE', 'ERROR, COULD NOT FIND %s IN ZOOQLE.' % torFileName ), 'FAILURE' ] )
+            return
+        shared_list.append([ 'zooqle', data_filt, 'SUCCESS' ])
+    jobs = [ Process( target=_process_jackett_items ),
+             Process( target=_process_eztv_io_items ),
+             Process( target=_process_zooqle_items ) ]
+    for process in jobs: process.start( )
+    for process in jobs: process.join( )
+    all_success = list(filter(lambda tup: tup[-1] == 'SUCCESS', shared_list ) )
+    if len( all_success) == 0:
+        return None, dict(map(lambda tup: ( tup[0], tup[1] ), shared_list ) )
+    data = sorted(reduce(lambda x,y: x+y, list(map(lambda tup: tup[1], all_success ) ) ),
+                  key = lambda elem: elem['seeders'] + elem['leechers'] )[::-1]
     print( 'got %d candidates for %s in %0.3f seconds.' % (
         len(data), torFileName, time.time( ) - time0 ) )
     failing_reasons = [ ]
@@ -541,9 +681,10 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
         ## download the top magnet link
         torrentId = plexcore_deluge.deluge_add_magnet_file( client, mag_link )
         if torrentId is None:
-            return None, create_status_dict( 'FAILURE',
-                                             'could not add idx = %s, magnet_link = %s, for candidate = %s' % (
-                                                 idx, mag_link, torFileName ) )
+            return None, create_status_dict(
+                'FAILURE',
+                'could not add idx = %s, magnet_link = %s, for candidate = %s' % (
+                    idx, mag_link, torFileName ) )
         time00 = time.time( )
         progresses = [ ]
         for jdx in range( numiters ):
@@ -562,9 +703,10 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
             # quit after too many no-progress iterations?
             if len( progresses ) > _num_to_quit and numpy.allclose( progresses, [ 0.0 ] * len( progresses ) ):
                 kill_failing( torrentId )
-                return None, create_status_dict( 'FAILURE',
-                                                 'attempt #%d, magnet_link = %s, for candidate = %s, is probably not downloading' % (
-                                                     idx, mag_link, torFileName ) )
+                return None, create_status_dict(
+                    'FAILURE',
+                    'attempt #%d, magnet_link = %s, for candidate = %s, is probably not downloading' % (
+                        idx, mag_link, torFileName ) )
             if status in ( 'SEEDING', 'PAUSED' ): # now let's be ambitious and create the new file
                 fullFname, status = _finish_and_clean_working_tvtorrent_download(
                     totFname, client, torrentId, tor_info )
@@ -578,9 +720,10 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
         #
         ## did not finish in time
         kill_failing( torrentId )
-        return None, create_status_dict( 'FAILURE',
-                                         'failed to download idx = %d, %s after %0.3f seconds' % (
-                                             idx, torFileName, time.time( ) - time00 ) )
+        return None, create_status_dict(
+            'FAILURE',
+            'failed to download idx = %d, %s after %0.3f seconds' % (
+                idx, torFileName, time.time( ) - time00 ) )
     for idx in range( min( len( data ), num_iters ) ):
         dat, status_dict = process_single_iteration( data, idx )
         if dat is not None:

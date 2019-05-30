@@ -19,6 +19,15 @@ def _process_items_list( items, shared_list ):
         shared_list.append( items )
         return
 
+def get_items_eztv_io( name, maxnum = 10, shared_list = None ):
+    assert( maxnum >= 5 )
+    items, status = plextvdb_torrents.get_tv_torrent_eztv_io(
+        name, maxnum = maxnum )
+    if status != 'SUCCESS':
+        logging.debug( 'ERROR, EZTV.IO COULD NOT FIND %s.' % name )
+        return _process_items_list( None, shared_list )
+    return _process_items_list( items, shared_list )
+
 def get_items_jackett( name, maxnum = 1000, shared_list = None ):
     assert( maxnum >= 5 )
     items, status = plextvdb_torrents.get_tv_torrent_jackett( name, maxnum = maxnum )
@@ -126,10 +135,12 @@ def process_magnet_items( name ):
                  Process( target=get_items_tpb, args=(name, opts.maxnum, opts.do_any, False, shared_list ) ),
                  Process( target=get_items_rarbg, args=(name, opts.maxnum, shared_list) ),
                  Process( target=get_items_kickass, args=(name, opts.maxnum, shared_list ) ),
-                 Process( target=get_items_torrentz, args=(name, opts.maxnum, shared_list ) ) ]
+                 Process( target=get_items_torrentz, args=(name, opts.maxnum, shared_list ) ),
+                 Process( target=get_items_eztv_io, args=(name, opts.maxnum, shared_list ) ) ]
     else:
         jobs = [ Process( target=get_items_jackett, args=(name, opts.maxnum, shared_list ) ),
-                 Process( target=get_items_zooqle, args=(name, opts.maxnum, shared_list ) ) ] # rarbg now works
+                 Process( target=get_items_zooqle, args=(name, opts.maxnum, shared_list ) ),
+                 Process( target=get_items_eztv_io, args=(name, opts.maxnum, shared_list ) ) ] # rarbg now works
     for process in jobs: process.start( )
     for process in jobs: process.join( )
     items_split = list( filter( None, shared_list ) )

@@ -439,7 +439,8 @@ def did_series_end( series_id, token, verify = True, date_now = None ):
     #
     ## now check when the last date of the show was
     if date_now is None: date_now = datetime.datetime.now( ).date( )
-    last_date = max(map(lambda epdata: datetime.datetime.strptime( epdata['firstAired'], '%Y-%m-%d' ).date( ),
+    last_date = max(map(lambda epdata: datetime.datetime.strptime(
+        epdata['firstAired'], '%Y-%m-%d' ).date( ),
                         get_episodes_series( series_id, token, verify = verify ) ) )
     td = date_now - last_date
     return td.days > 365
@@ -996,15 +997,19 @@ def get_tvtorrent_candidate_downloads( toGet ):
             else: tv_torrent_gets[ 'nonewdirs' ].append( dat )
     return tv_torrent_gets
 
+def create_tvTorUnits( tv_torrent_gets ):
+    tvTorUnits = reduce(lambda x,y: x+y, [ tv_torrent_gets[ 'nonewdirs' ] ] +
+                        list(map(lambda newdir: tv_torrent_gets[ 'newdirs' ][ newdir ],
+                                 tv_torrent_gets[ 'newdirs' ] ) ) )
+    return tvTorUnits
+
 def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, num_iters = 10 ):
     time0 = time.time( )
     data = plexcore_rsync.get_credentials( )
     assert( data is not None ), "error, could not get rsync download settings."
     assert( maxtime_in_secs >= 60 ), "error, max time to download each torrent >= 60 seconds."
     assert( num_iters >= 1 ), "error, number of tries on different magnet links >= 1."
-    tvTorUnits = reduce(lambda x,y: x+y, [ tv_torrent_gets[ 'nonewdirs' ] ] +
-                        list(map(lambda newdir: tv_torrent_gets[ 'newdirs' ][ newdir ],
-                                 tv_torrent_gets[ 'newdirs' ] ) ) )
+    tvTorUnits = create_tvTorUnits( tv_torrent_gets )
     print( 'started downloading %d episodes on %s' % (
         len( tvTorUnits ), datetime.datetime.now( ).strftime(
             '%B %d, %Y @ %I:%M:%S %p' ) ) )
@@ -1026,18 +1031,21 @@ def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, nu
             tvTorUnitFin[ 'totFname' ] = '%s.%s' % ( tvTorUnit[ 'totFname' ], suffix )
             return tvTorUnitFin
         except Exception as e:
-            return None
+            return 'filename = %s, error_message = %s.' % (
+                tvTorUnit[ 'torFname' ], str( e ) )
     #
     ## now create a pool to multiprocess collect those episodes
     with multiprocessing.Pool( processes = min(
             multiprocessing.cpu_count( ), len( tvTorUnits ) ) ) as pool:
-        allTvTorUnits = list( pool.map( worker_process_download_tvtorrent_perproc,
-                                        tvTorUnits ) )
+        allTvTorUnits = list(pool.map(
+            worker_process_download_tvtorrent_perproc, tvTorUnits ) )
     successfulTvTorUnits = list(filter(lambda tup: not isinstance( tup, str ),
                                        allTvTorUnits ) )
     could_not_download = list(filter(lambda tup: isinstance( tup, str ),
                                      allTvTorUnits ) )
-
+    logging.info('successful TV Tor Units: %s.' % successfulTvTorUnits )
+    logging.info('could not downloads: %s' % could_not_download )
+    
     if len( could_not_download ) != 0:
         print( '\n'.join([
             'successfully processed %d / %d episodes in %0.3f seconds.' % (

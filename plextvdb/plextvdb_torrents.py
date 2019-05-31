@@ -1,8 +1,10 @@
-import requests, re, threading, cfscrape, os, time, numpy
+import requests, re, threading, cfscrape
+import os, time, numpy, logging
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
+from functools import reduce
 from requests.compat import urljoin
-from multiprocessing import Process, Manager, cpu_count
+from pathos.multiprocessing import Pool
 from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials, get_formatted_size
 from plexcore import plexcore_deluge
 from . import get_token, plextvdb
@@ -587,8 +589,9 @@ def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, t
         plexcore_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = True )
         return '%s.%s' % ( os.path.basename( totFname ), suffix ), 'SUCCESS'
 
-def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs = 14400, kill_if_fail = False,
-                                       num_iters = 1 ):
+def worker_process_download_tvtorrent(
+        tvTorUnit, client = None, maxtime_in_secs = 14400, 
+        num_iters = 1, kill_if_fail = False ):
     time0 = time.time( )
     def kill_failing( torrentId ):
         if not kill_if_fail: return
@@ -614,24 +617,26 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
             return None, create_status_dict( 'FAILURE', 'cannot create or run a valid deluge RPC client.' )
     #
     ## now get list of torrents, choose "top" one
-    manager = Manager( )
-    shared_list = manager.list( )
     def _process_jackett_items( ):
+        t0 = time.time( )
+        logging.debug( 'jackett: %s' % torFileName )
         data, status = get_tv_torrent_jackett(
             mustHaveString, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
             minsize = minSize, maxsize = maxSize, keywords_exc = [ 'xvid' ],
             must_have = [ mustHaveString ], series_name = series_name )
         if status != 'SUCCESS':
-            shared_list.append([ 'jackett', create_status_dict( 'FAILURE', status ), 'FAILURE' ])
-            return
-        shared_list.append([ 'jackett', data, 'SUCCESS' ])
+            return ( 'jackett', create_status_dict( 'FAILURE', status ), 'FAILURE' )
+        logging.debug( 'successfully processed jackett on %s in %0.3f seconds.' % (
+            torFileName, time.time( ) - t0 ) )
+        return ( 'jackett', data, 'SUCCESS' )
         #return None, create_status_dict( 'FAILURE', status )
     def _process_eztv_io_items( ):
+        t0 = time.time( )
+        logging.debug( 'eztv.io: %s' % torFileName )
         data, status = get_tv_torrent_eztv_io( torFileName, maxnum = 100,
                                                series_name = series_name )
         if status != 'SUCCESS':
-            shared_list.append([ 'eztv.io', create_status_dict( 'FAILURE', status ), 'FAILURE' ])
-            return
+            return ( 'eztv.io', create_status_dict( 'FAILURE', status ), 'FAILURE' )
         data_filt = list(filter(
             lambda elem: any(map(lambda tok: tok in elem['title'].lower( ),
                                  ( 'x264', 'x265', '720p' ) ) ) and
@@ -639,15 +644,17 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
             elem['torrent_size'] >= minSize and
             elem['torrent_size'] <= maxSize, data ) )
         if len( data_filt ) == 0:
-            shared_list.append([ 'eztv.io', create_status_dict(
-                'FAILURE', 'ERROR, COULD NOT FIND %s IN EZTV.IO.' % torFileName ), 'FAILURE' ] )
-            return
-        shared_list.append([ 'eztv.io', data_filt, 'SUCCESS' ])
+            return ( 'eztv.io', create_status_dict(
+                'FAILURE', 'ERROR, COULD NOT FIND %s IN EZTV.IO.' % torFileName ), 'FAILURE' )
+        logging.debug( 'successfully processed eztv.io on %s in %0.3f seconds.' % (
+            torFileName, time.time( ) - t0 ) )
+        return ( 'eztv.io', data_filt, 'SUCCESS' )
     def _process_zooqle_items( ):
+        t0 = time.time( )
+        logging.debug( 'zooqle: %s' % torFileName )
         data, status = get_tv_torrent_zooqle( torFileName, maxnum = 100 )
         if status != 'SUCCESS':
-            shared_list.append([ 'zooqle', create_status_dict( 'FAILURE', status ), 'FAILURE' ])
-            return
+            return ( 'zooqle', create_status_dict( 'FAILURE', status ), 'FAILURE' )
         data_filt = list(filter(
             lambda elem: any(map(lambda tok: tok in elem['title'].lower( ),
                                  ( 'x264', 'x265', '720p' ) ) ) and
@@ -655,20 +662,27 @@ def worker_process_download_tvtorrent( tvTorUnit, client = None, maxtime_in_secs
             elem['torrent_size'] >= minSize and
             elem['torrent_size'] <= maxSize, data ) )
         if len( data_filt ) == 0:
-            shared_list.append([ 'zooqle', create_status_dict(
-                'FAILURE', 'ERROR, COULD NOT FIND %s IN ZOOQLE.' % torFileName ), 'FAILURE' ] )
-            return
-        shared_list.append([ 'zooqle', data_filt, 'SUCCESS' ])
-    jobs = [ Process( target=_process_jackett_items ),
-             Process( target=_process_eztv_io_items ),
-             Process( target=_process_zooqle_items ) ]
-    for process in jobs: process.start( )
-    for process in jobs: process.join( )
-    all_success = list(filter(lambda tup: tup[-1] == 'SUCCESS', shared_list ) )
-    if len( all_success) == 0:
-        return None, dict(map(lambda tup: ( tup[0], tup[1] ), shared_list ) )
-    data = sorted(reduce(lambda x,y: x+y, list(map(lambda tup: tup[1], all_success ) ) ),
-                  key = lambda elem: elem['seeders'] + elem['leechers'] )[::-1]
+            return ( 'zooqle', create_status_dict(
+                'FAILURE', 'ERROR, COULD NOT FIND %s IN ZOOQLE.' % torFileName ), 'FAILURE' )
+        logging.debug( 'successfully processed zooqle on %s in %0.3f seconds.' % (
+            torFileName, time.time( ) - t0 ) )
+        return ( 'zooqle', data_filt, 'SUCCESS' )
+    #with Pool( processes = 3 ) as pool:
+    #    jobs = [ pool.apply_async( proc ) for proc in
+    #             ( _process_jackett_items, _process_eztv_io_items, _process_zooqle_items ) ]
+    #    shared_list = list(map(lambda job: job.get( ), jobs ) )
+    # cannot work under multiple levels of multiprocessing Processes
+    # do this progressively until succeeds
+    # first jackett, second zooqle, then eztv.io
+    error_tup = [ ]
+    for proc in ( _process_jackett_items, _process_zooqle_items, _process_eztv_io_items ):
+        service, data, status = proc( )
+        if status == 'SUCCESS':
+            data = sorted(data, key = lambda elem: elem['seeders'] + elem['leechers'] )[::-1]
+            break
+        error_tup.append( ( service, data ) )
+    if status != 'SUCCESS':
+        return None, dict(error_tup)
     print( 'got %d candidates for %s in %0.3f seconds.' % (
         len(data), torFileName, time.time( ) - time0 ) )
     failing_reasons = [ ]

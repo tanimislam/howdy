@@ -43,21 +43,28 @@ class TVDBGUIThread( QThread ):
     emitString = pyqtSignal( str )
     finalData = pyqtSignal( dict )
     
-    def __init__( self, fullURL, token, tvdata_on_plex = None,
-                  didend = None, toGet = None, verify = False ):
+    def __init__( self, fullURL, token, tvdb_token,
+                  tvdata_on_plex = None,
+                  didend = None, toGet = None, verify = False,
+                  showsToExclude = [ ] ):
         super( QThread, self ).__init__( )
         self.fullURL = fullURL
         self.token = token
+        self.tvdb_token = tvdb_token
         self.tvdata_on_plex = tvdata_on_plex
         self.didend = didend
         self.toGet = toGet
         self.verify = verify
+        self.showsToExclude = showsToExclude
+        
 
     def run( self ):
         time0 = time.time( )
         tvdata_on_plex = self.tvdata_on_plex
         didend = self.didend
         toGet = self.toGet
+        showsToExclude = self.showsToExclude
+        tvdb_token = self.tvdb_token
         final_data_out = { }
         mytxt = '0, started loading in data on %s.' % (
             datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
@@ -85,8 +92,8 @@ class TVDBGUIThread( QThread ):
         logging.info( mytxt )
         self.emitString.emit( mytxt )
         #
-        showsToExclude = plextvdb.get_shows_to_exclude(
-            tvdata_on_plex )
+        #showsToExclude = plextvdb.get_shows_to_exclude(
+        #    tvdata_on_plex )
         #
         ## using a stupid-ass pattern to shave some seconds off...
         def _process_didend( dide, tvdon_plex, do_verify, t0, shared_list ):
@@ -94,7 +101,7 @@ class TVDBGUIThread( QThread ):
                 shared_list.append( ( 'didend', dide ) )
                 return
             dide = plextvdb.get_all_series_didend(
-                tvdon_plex, verify = do_verify )
+                tvdon_plex, verify = do_verify, token = tvdb_token )
             mytxt = '3b, added information on whether shows ended in %0.3f seconds.' % (
                 time.time( ) - t0 )
             logging.info( mytxt )
@@ -107,7 +114,7 @@ class TVDBGUIThread( QThread ):
                 return
             toge = plextvdb.get_remaining_episodes(
                 tvdon_plex, showSpecials = False, showsToExclude = showsexc,
-                verify = do_verify )
+                verify = do_verify, token = tvdb_token )
             mytxt = '3b, found missing episodes in %0.3f seconds.' % ( time.time( ) - t0 )
             logging.info( mytxt )
             self.emitString.emit( mytxt )
@@ -332,9 +339,13 @@ class TVDBGUI( QDialog ):
         self.progress_dialog = ProgressDialog(
             self, 'PLEX TV GUI PROGRESS WINDOW' )
         #
+        showsToExclude = plextvdb.get_shows_to_exclude(
+            tvdata_on_plex )
         self.initThread = TVDBGUIThread(
-            fullURL, token, tvdata_on_plex = tvdata_on_plex,
-            didend = didend, toGet = toGet, verify = verify )
+            fullURL, token, self.tvdb_token,
+            tvdata_on_plex = tvdata_on_plex,
+            didend = didend, toGet = toGet, verify = verify,
+            showsToExclude = showsToExclude )
         self.initThread.emitString.connect( self.progress_dialog.addText )
         self.initThread.finalData.connect( self.process_final_state )
         self.initThread.start( )
@@ -664,3 +675,4 @@ class TVDBShowGUI( QDialog ):
 
     def selectSeason( self, idx ):
         self.seasonWidget.setCurrentIndex( idx )
+        

@@ -10,7 +10,8 @@ from plexcore import plexcore_deluge
 from . import get_token, plextvdb
 
 def _return_error_couldnotfind( name ):
-    return None, 'FAILURE, COULD NOT FIND ANY TV SHOWS WITH SEARCH TERM %s' % name
+    return _return_error_raw(
+        'Failure, could not find any tv shows with search term %s.' % name )
 
 def _return_error_raw( msg ):
     return None, msg
@@ -283,7 +284,8 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
                   'leechers': leechers }
         items.append(myitem)
     if len( items ) == 0:
-        return _return_error_couldnotfind('FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name)
+        return _return_error_raw(
+            'Failure, no tv shows or series satisfying criteria for getting %s.' % name)
     items.sort(key=lambda d: try_int(d.get('seeders', 0)) +
                try_int(d.get('leechers')), reverse=True)
     items = items[:maxnum]
@@ -746,4 +748,3 @@ def worker_process_download_tvtorrent(
     #
     ## final failing condition
     return None, create_status_dict( 'FAILURE','\n'.join( failing_reasons ) )
-                                     

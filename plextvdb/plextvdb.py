@@ -799,12 +799,12 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
              'avg_length_mins' : avg_length_secs // 60 }
 
 def get_all_series_didend( tvdata, verify = True, debug = False,
-                           num_threads = 16 ):
+                           num_threads = 16, token = None ):
     time0 = time.time( )
+    if token is None: token = get_token( verify = verify )
     with multiprocessing.Pool(
             processes = max(num_threads, multiprocessing.cpu_count( ) ) ) as pool:
         date_now = datetime.datetime.now( ).date( )
-        token = get_token( verify = verify )
         tvshow_id_map = dict(filter(
             None, pool.map(lambda seriesName: (
                 seriesName, get_series_id( seriesName, token, verify = verify ) ),
@@ -868,9 +868,9 @@ def _get_series_id_perproc( input_tuple ):
     
 def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify = True,
                             doShowEnded = False, showsToExclude = None,
-                            num_threads = 16):
+                            num_threads = 16, token = None ):
     assert( num_threads >= 1 )
-    token = get_token( verify = verify )
+    if token is None: token = get_token( verify = verify )
     tvdata_copy = copy.deepcopy( tvdata )
     if showsToExclude is not None:
         showsExclude = set( showsToExclude ) & set( tvdata_copy.keys( ) )

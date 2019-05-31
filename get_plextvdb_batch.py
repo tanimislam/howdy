@@ -5,7 +5,7 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import os, numpy, glob, time, datetime
+import os, numpy, glob, time, datetime, logging
 from functools import reduce
 from plexcore import plexcore
 from plextvdb import plextvdb
@@ -27,7 +27,10 @@ def main( ):
                       help = ' '.join([ 
                           'The maximum number of different magnet links to try',
                           'before giving up. Default is %d.' % default_iters ]) )
+    parser.add_option('--info', dest='do_info', action='store_true', default=False,
+                      help = 'If chosen, then run in info mode.' )
     opts, args = parser.parse_args( )
+    if opts.do_info: logging.basicConfig( level = logging.INFO )
     assert( opts.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
     assert( opts.num_iters >= 1 ), 'error, must have a positive number of iterations.'
     step = 0
@@ -93,9 +96,7 @@ def main( ):
     #
     ## now download these episodes
     tv_torrent_gets = plextvdb.get_tvtorrent_candidate_downloads( toGet )
-    tvTorUnits = reduce(lambda x,y: x+y, [ tv_torrent_gets[ 'nonewdirs' ] ] +
-                        list(map(lambda newdir: tv_torrent_gets[ 'newdirs' ][ newdir ],
-                                 tv_torrent_gets[ 'newdirs' ] ) ) )
+    tvTorUnits = plextvdb.create_tvTorUnits( tv_torrent_gets )
     print('%d, here are the %d episodes to get: %s.' % ( step,
         len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname' ], tvTorUnits))))
     step += 1

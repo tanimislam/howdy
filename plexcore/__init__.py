@@ -136,6 +136,21 @@ class ProgressDialog( QDialogWithPrinting ): # replace with QProgressDialog in t
         self.timer.stop( )
         self.hide( )
 
+    def startDialog( self, initString = '' ):
+        self.t0 = time.time( )
+        self.timer.start( )
+        #
+        ## now reset the text
+        self.parsedHTML = BeautifulSoup("""
+        <html>
+        <body>
+        </body>
+        </html>""", 'lxml' )
+        self.errorDialog.setHtml( self.parsedHTML.prettify( ) )
+        if len( initString ) != 0:
+            self.addText( initString )
+        self.show( )
+
 def splitall( path_init ):
     """
     This routine is used by ``plextvdb.plextvdb.get_path_data_on_tvshow`` to split a TV show file path

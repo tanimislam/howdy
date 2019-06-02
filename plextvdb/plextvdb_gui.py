@@ -186,10 +186,16 @@ class TVDBGUI( QDialogWithPrinting ):
                        minDate.strftime( '%B %d, %Y' ),
                        maxDate.strftime( '%B %d, %Y' ) ), 'lxml' )
         body_elem = html.find_all('body')[0]
+        html2 = BeautifulSoup("""
+        <html>
+        <body>
+        </body>
+        </html>""", 'lxml' )
+        body2_elem = html2.find_all('body')[0]
         if len( overview ) != 0:
-            summary_tag = html.new_tag("p")
+            summary_tag = html2.new_tag("p")
             summary_tag.string = overview
-            body_elem.append( summary_tag )
+            body2_elem.append( summary_tag )
         average_duration_in_secs = numpy.array(
             reduce(lambda x,y: x+y,
                    list(map(lambda seasno: list(
@@ -210,7 +216,7 @@ class TVDBGUI( QDialogWithPrinting ):
             num_total, plexcore.get_formatted_size( average_size_in_bytes ) )
         body_elem.append( dur_tag )
         body_elem.append( siz_tag )
-        return html.prettify( )
+        return html.prettify( ), html2.prettify( )
 
     @classmethod
     def getSummaryImg( cls, imageURL, token ):
@@ -228,7 +234,7 @@ class TVDBGUI( QDialogWithPrinting ):
                 self.tvdata_on_plex[ seriesName ][ 'picurl' ],
                 self.token )
 
-        showSummary = self.summaryShowInfo[ seriesName ]
+        showSummary, showSummaryOverview = self.summaryShowInfo[ seriesName ]
         showImg = self.showImages[ seriesName ]
         #
         ## now put this into summary image on left, summary info on right
@@ -237,7 +243,8 @@ class TVDBGUI( QDialogWithPrinting ):
             qpm = qpm.scaledToWidth( 600 )
             self.summaryShowImage.setPixmap( qpm )
         else: self.summaryShowImage.setPixmap( )
-        self.summaryShowInfoArea.setHtml( showSummary )
+        self.summaryShowInfoAreaLeft.setHtml( showSummary )
+        self.summaryShowInfoAreaRight.setHtml( showSummaryOverview )
 
     def process_final_state( self, final_data_out ):
         myLayout = QVBoxLayout( )
@@ -319,9 +326,16 @@ class TVDBGUI( QDialogWithPrinting ):
         self.summaryShowImage = QLabel( )
         self.summaryShowImage.setFixedWidth( 600 )
         botLayout.addWidget( self.summaryShowImage )
-        self.summaryShowInfoArea = QTextEdit( )
-        self.summaryShowInfoArea.setReadOnly( True )
-        botLayout.addWidget( self.summaryShowInfoArea )
+        botLowerWidget = QWidget( )
+        botLowerLayout = QHBoxLayout( )
+        botLowerWidget.setLayout( botLowerLayout )
+        self.summaryShowInfoAreaLeft = QTextEdit( )
+        self.summaryShowInfoAreaLeft.setReadOnly( True )
+        self.summaryShowInfoAreaRight = QTextEdit( )
+        self.summaryShowInfoAreaRight.setReadOnly( True )
+        botLowerLayout.addWidget( self.summaryShowInfoAreaLeft )
+        botLowerLayout.addWidget( self.summaryShowInfoAreaRight )
+        botLayout.addWidget( botLowerWidget )
         myLayout.addWidget( botWidget )
         #
         ## set size, make sure not resizable

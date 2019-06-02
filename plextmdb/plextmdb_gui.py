@@ -591,11 +591,9 @@ class StatusDialogWidget( QWidget ):
     def enableMinimumRating( self ):
         self.minimumRatingEdit.setEnabled( True )
 
-    def sendStatus( self ):
-        movieShowStatus = str( self.showStatusComboBox.currentText( ) )
+    def sendStatus( self, currentIndex ):
         vals = { 'MINE' : 0, 'NOT MINE' : 1, 'ALL' : 2 }
-        assert( movieShowStatus in vals )
-        self.emitStatusToShow.emit( vals[ movieShowStatus ] )
+        self.emitStatusToShow.emit( currentIndex )
                 
     def processMovieTitles( self, movieTitles ):
         self.movieTitles = sorted( movieTitles )
@@ -710,7 +708,7 @@ class SelectYearGenreWidget( QWidget ):
         self.actorNamesLineEdit.returnPressed.connect( self.emitSignalAndFill )
         self.movieNameLineEdit.returnPressed.connect( self.emitSignalAndFill )
 
-    def setEnabledState( self, qrb ):
+    def setEnabledState( self, state ):
         state = self.qbg.checkedId( )
         self.yearSpinBox.setEnabled( False )
         self.genreComboBox.setEnabled( False )
@@ -882,7 +880,7 @@ class TMDBTableModel( QAbstractTableModel ):
     def setFilterRating( self, minRating ):
         self.minRating = minRating
         self.emitFilterChanged.emit( )
-
+        
     def rowCount( self, parent ):
         return len( self.actualMovieData )
 

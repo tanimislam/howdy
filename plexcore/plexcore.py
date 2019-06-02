@@ -580,7 +580,7 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
     return sorted(set(filter(lambda key: library_dict[ key ][1] == 'movie',
                              library_dict ) ) )
 
-def get_library_data( title, token, fullURL = 'http://localhost:32400' ):
+def get_library_data( title, token, fullURL = 'http://localhost:32400', num_threads = 16 ):
     time0 = time.time( )
     params = { 'X-Plex-Token' : token }
     response = requests.get( '%s/library/sections' % fullURL, params = params,
@@ -596,11 +596,14 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400' ):
     assert( title in library_dict )
     key, mediatype = library_dict[ title ]
     if mediatype == 'movie':
-        _, data = _get_library_data_movie( key, token, fullURL = fullURL )
+        _, data = _get_library_data_movie( key, token, fullURL = fullURL,
+                                           num_threads = num_threads )
     elif mediatype == 'show':
-        _, data =  _get_library_data_show( key, token, fullURL = fullURL )
+        _, data =  _get_library_data_show( key, token, fullURL = fullURL,
+                                           num_threads = num_threads )
     elif mediatype == 'artist':
-        _, data = _get_library_data_artist( key, token, fullURL = fullURL )
+        _, data = _get_library_data_artist( key, token, fullURL = fullURL,
+                                            num_threads = num_thrwads )
     else:
         logging.info( "took %0.3f seconds to gete here in get_library_data, library = %s." %
                       ( time.time( ) - time0, title ) )

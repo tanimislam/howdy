@@ -13,32 +13,6 @@ from plexcore import plexcore, geoip_reader
 from plexcore import QDialogWithPrinting, ProgressDialog
 from plextmdb import plextmdb
 
-class CustomDialog( QDialog ):
-    def __init__( self, parent ):
-        super( CustomDialog, self ).__init__( parent )
-        myLayout = QVBoxLayout( )
-        self.setLayout( myLayout )
-        self.textArea = QTextEdit( )
-        self.textArea.setReadOnly( True )
-        myLayout.addWidget( self.textArea )
-        self.parsedHTML = BeautifulSoup("""
-        <html>
-        <body>
-        </body>
-        </html>""", 'lxml' )
-        self.textArea.setHtml( self.parsedHTML.prettify( ) )
-        self.setFixedWidth( 250 )
-        self.setFixedHeight( 300 )
-        self.show( )
-
-    def addText( self, text ):
-        body_elem = self.parsedHTML.find_all('body')[0]
-        txt_tag = self.parsedHTML.new_tag("p")
-        txt_tag.string = text
-        body_elem.append( txt_tag )
-        self.textArea.setHtml( self.parsedHTML.prettify( ) )
-
-
 class TVDBGUIThread( QThread ):
     emitString = pyqtSignal( str )
     finalData = pyqtSignal( dict )
@@ -46,7 +20,7 @@ class TVDBGUIThread( QThread ):
     def __init__( self, fullURL, token, tvdb_token,
                   tvdata_on_plex = None,
                   didend = None, toGet = None, verify = False,
-                  showsToExclude = [ ] ):
+                  showsToExclude = [ ], num_threads = 4 ):
         super( QThread, self ).__init__( )
         self.fullURL = fullURL
         self.token = token
@@ -56,7 +30,13 @@ class TVDBGUIThread( QThread ):
         self.toGet = toGet
         self.verify = verify
         self.showsToExclude = showsToExclude
-        
+        self.num_threads = num_threads
+
+    def reset( self, showsToExclude = [ ] ):
+        self.tvdata_on_plex = None
+        self.didend = None
+        self.toGet = None
+        self.showsToExclude = showsToExclude
 
     def run( self ):
         time0 = time.time( )
@@ -85,7 +65,7 @@ class TVDBGUIThread( QThread ):
         if tvdata_on_plex is None:
             tvdata_on_plex = plexcore.get_library_data(
                 library_name, fullURL = self.fullURL, token = self.token,
-                num_threads = 4 )
+                num_threads = self.num_threads )
         if tvdata_on_plex is None:
             raise ValueError( 'Error, could not find TV shows on the server.' )
         mytxt = '2, loaded TV data from Plex server in %0.3f seconds.' % (
@@ -166,10 +146,11 @@ class TVDBGUIThread( QThread ):
         final_data_out[ 'missing_eps' ] = missing_eps
         self.finalData.emit( final_data_out )
         
-class TVDBGUI( QDialog ):
+class TVDBGUI( QDialogWithPrinting ):
     mySignal = pyqtSignal( list )
     tvSeriesSendList = pyqtSignal( list )
     tvSeriesRefreshRows = pyqtSignal( list )
+    emitStatusToShow = pyqtSignal( int )
 
     @classmethod
     def getShowSummary( cls, seriesName, tvdata_on_plex, missing_eps ):
@@ -279,28 +260,57 @@ class TVDBGUI( QDialog ):
         self.plexURLLabel = QLabel( )
         self.locationLabel = QLabel( )
         self.processPlexInfo( )
+        self.numSeriesFound = QLabel( '%d total shows satisfying criteria' %
+                                      len( self.tvdata_on_plex ) )
         #
         self.tm = TVDBTableModel( self )
         self.tv = TVDBTableView( self )
         self.tm.fillOutCalculation( )
         #
+        allShowsButton = QRadioButton( 'ALL SHOWS', self )
+        runningShowsButton = QRadioButton( 'RUNNING', self )
+        finishedShowsButton = QRadioButton( 'FINISHED', self )
+        self.qbg = QButtonGroup( )
+        self.qbg.setExclusive( True )
+        self.qbg.addButton( allShowsButton, 0 )
+        self.qbg.addButton( runningShowsButton, 1 )
+        self.qbg.addButton( finishedShowsButton, 2 )
+        allShowsButton.click( )
+        self.qbg.buttonClicked.connect( self.updateStatus )
+        ##
         topWidget = QWidget( )
-        topLayout = QGridLayout( )
+        topLayout = QHBoxLayout( )
         topWidget.setLayout( topLayout )
-        topLayout.addWidget( QLabel( 'PLEX TOKEN:' ), 0, 0, 1, 1 )
-        topLayout.addWidget( self.tokenLabel, 0, 1, 1, 1 )
-        topLayout.addWidget( QLabel( 'PLEX URL:' ), 1, 0, 1, 1 )
-        topLayout.addWidget( self.plexURLLabel, 1, 1, 1, 1 )
-        topLayout.addWidget( QLabel( 'LOCATION:' ), 2, 0, 1, 1 )
-        topLayout.addWidget( self.locationLabel, 2, 1, 1, 1 )
-        myLayout.addWidget( topWidget )
         #
-        midWidget = QWidget( )
-        midLayout = QGridLayout( )
-        midLayout.addWidget( QLabel( 'TV SHOW FILTER' ), 0, 0, 1, 1 )
-        midLayout.addWidget( self.filterOnTVShows, 0, 1, 1, 3 )
-        midLayout.addWidget( self.refreshButton, 0, 4, 1, 3 )
-        myLayout.addWidget( midWidget )
+        leftTopWidget = QWidget( )
+        leftTopWidget.setStyleSheet("""
+        QWidget {
+        background-color: #373949;
+        }""" )
+        leftTopLayout = QGridLayout( )
+        leftTopWidget.setLayout( leftTopLayout )
+        leftTopLayout.addWidget( QLabel( 'PLEX TOKEN:' ), 0, 0, 1, 1 )
+        leftTopLayout.addWidget( self.tokenLabel, 0, 1, 1, 1 )
+        leftTopLayout.addWidget( QLabel( 'PLEX URL:' ), 1, 0, 1, 1 )
+        leftTopLayout.addWidget( self.plexURLLabel, 1, 1, 1, 1 )
+        leftTopLayout.addWidget( QLabel( 'LOCATION:' ), 2, 0, 1, 1 )
+        leftTopLayout.addWidget( self.locationLabel, 2, 1, 1, 1 )
+        topLayout.addWidget( leftTopWidget )
+        #
+        rightTopWidget = QWidget( )
+        rightTopLayout = QGridLayout( )
+        rightTopWidget.setLayout( rightTopLayout )
+        rightTopLayout.addWidget( QLabel( 'TV SHOW FILTER' ), 0, 0, 1, 1 )
+        rightTopLayout.addWidget( self.filterOnTVShows, 0, 1, 1, 3 )
+        rightTopLayout.addWidget( self.refreshButton, 1, 0, 1, 1 )
+        rightTopLayout.addWidget( allShowsButton, 1, 1, 1, 1 )
+        rightTopLayout.addWidget( runningShowsButton, 1, 2, 1, 1 )
+        rightTopLayout.addWidget( finishedShowsButton, 1, 3, 1, 1 )
+        rightTopLayout.addWidget( self.numSeriesFound, 2, 0, 1, 4 )
+        topLayout.addWidget( rightTopWidget )
+        #
+        myLayout.addWidget( topWidget )
+        ##
         myLayout.addWidget( self.tv )
         #
         botWidget = QWidget( )
@@ -320,13 +330,21 @@ class TVDBGUI( QDialog ):
         #
         ## connect actions
         self.filterOnTVShows.textChanged.connect( self.tm.setFilterString )
-        self.refreshButton.clicked.connect( self.refreshTVShows ) ## don't do this yet
+        self.refreshButton.clicked.connect( self.refreshTVShows )
+        self.emitStatusToShow.connect( self.tm.setFilterStatus )
+        self.tm.emitNumSatified.connect( self.showNumSatified )
+        #
+        ## now change the initThread to connect to new slot
+        ## do this once done
+        try: self.initThread.finalData.disconnect( )
+        except: pass
+        self.initThread.finalData.connect( self.process_final_state_refresh )
         #
         self.show( )
                                 
     def __init__( self, token, fullURL, tvdata_on_plex = None,
                   didend = None, toGet = None, verify = True ):
-        super( TVDBGUI, self ).__init__( )
+        super( TVDBGUI, self ).__init__( None )
         self.fullURL = fullURL
         self.token = token
         self.tvdb_token = get_token( verify = verify )
@@ -351,26 +369,15 @@ class TVDBGUI( QDialog ):
         self.initThread.finalData.connect( self.process_final_state )
         self.initThread.start( )
 
-    def refreshTVShows( self ):
-        time0 = time.time( )
-        self.tvdata_on_plex = plexcore.get_library_data(
-            self.library_name, fullURL = self.fullURL, token = self.token )
-        didend = plexcore.get_all_series_didend(
-            self.tvdata_on_plex, verify = verify )
-        for seriesName in self.tvdata_on_plex:
-            self.tvdata_on_plex[ seriesName ][ 'didEnd' ] = didend[ seriesName ]
-        showsToExclude = plextvdb.get_shows_to_exclude(
-            self.tvdata_on_plex )
-        toGet = plextvdb.get_remaining_episodes(
-                self.tvdata_on_plex, showSpecials = False,
-            showsToExclude = showsToExclude )
-        self.missing_eps = dict(map(
-            lambda seriesName: ( seriesName, toGet[ seriesName ][ 'episodes' ] ),
-            set( toGet ) - set( showsToExclude ) ) )
+    def process_final_state_refresh( self, final_data_out ):
+        self.library_name = final_data_out[ 'library_name' ]
+        self.tvdata_on_plex = final_data_out[ 'tvdata_on_plex' ]
+        self.missing_eps = final_data_out[ 'missing_eps' ]
+        #
         self.tm.fillOutCalculation( )
-        logging.info( 'refreshed all TV shows in %0.3f seconds.' % (
-            time.time( ) - time0 ) )
-
+        #
+        self.progress_dialog.stopDialog( )
+        
     def processPlexInfo( self ):
         self.tokenLabel.setText( self.token )
         self.plexURLLabel.setText( self.fullURL )
@@ -381,6 +388,22 @@ class TVDBGUI( QDialog ):
                 myloc.city.name, myloc.subdivisions.most_specific.iso_code,
                 myloc.country.name ) )
         else: self.locationLabel.setText( 'LOCALHOST' )
+
+    def refreshTVShows( self ):
+        self.progress_dialog.startDialog( 'REFRESHING TV SHOWS' )
+        showsToExclude = plextvdb.get_shows_to_exclude( )
+        self.initThread.reset( showsToExclude )
+        self.initThread.start( )
+
+    def updateStatus( self, qrb ):
+        mytxt = qrb.text( )
+        mymap = { 'ALL SHOWS' : 0, 'RUNNING' : 1, 'FINISHED' : 2 }
+        self.emitStatusToShow.emit( mymap[ mytxt ] )
+
+    def showNumSatified( self, num ):
+        self.numSeriesFound.setText(
+            '%d total shows satisfying criteria' %
+            num )
 
 class TVDBTableView( QTableView ):
     def __init__( self, parent ):
@@ -457,6 +480,7 @@ class TVDBTableModel( QAbstractTableModel ):
                  "Seasons", "Episodes", "Missing" ]
     emitFilterChanged = pyqtSignal( )
     emitRowSelected = pyqtSignal( int )
+    emitNumSatified = pyqtSignal( int )
     
     def __init__( self, parent = None ):
         super( TVDBTableModel, self ).__init__( parent )
@@ -488,17 +512,19 @@ class TVDBTableModel( QAbstractTableModel ):
 
     def filterRow( self, rowNumber ):
         data = self.actualTVSeriesData[ rowNumber ]        
-        if self.filterStatus == 0:
-            return self.filterRegexp.indexIn( data[ 'seriesName' ] ) != -1
-        elif self.filterStatus == 1:
-            missing = data[ 'numMissing' ]
-            return len( missing ) > 0
-        else: return False
+        if self.filterStatus == 1: # running shows
+            if data[ 'didEnd' ]: return False
+        elif self.filterStatus == 2: # finished shows
+            if not data[ 'didEnd' ]: return False
+        return self.filterRegexp.indexIn( data[ 'seriesName' ] ) != -1
             
     def setFilterStatus( self, filterStatus ):
         self.filterStatus = filterStatus
         self.sort( 0, Qt.AscendingOrder )
         self.emitFilterChanged.emit( )
+        self.emitNumSatified.emit(
+            len(list(filter(lambda row: self.filterRow( row ),
+                            range( len( self.actualTVSeriesData ) ) ) ) ) )
         
     def setFilterString( self, text ):
         mytext = str( text ).strip( )
@@ -507,6 +533,9 @@ class TVDBTableModel( QAbstractTableModel ):
         self.filterRegexp = QRegExp(
             mytext, Qt.CaseInsensitive, QRegExp.RegExp )
         self.emitFilterChanged.emit( )
+        self.emitNumSatified.emit(
+            len(list(filter(lambda row: self.filterRow( row ),
+                            range( len( self.actualTVSeriesData ) ) ) ) ) )
         
     def rowCount( self, parent ):
         return len( self.actualTVSeriesData )
@@ -598,25 +627,15 @@ class TVDBTableModel( QAbstractTableModel ):
             elif col == 5:
                 return data[ 'numMissing' ]
 
-class TVDBShowGUI( QDialog ):
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName(
-            self, 'Save Screenshot',
-            os.path.expanduser( '~' ),
-            filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
-    
+class TVDBShowGUI( QDialogWithPrinting ):
     def __init__( self, seriesName, tvdata, missing_eps,
                   tvdb_token, plex_token,
                   parent = None, verify = True ):
-        super( TVDBShowGUI, self ).__init__( parent )
+        super( TVDBShowGUI, self ).__init__( parent, doQuit = True,
+                                             isIsolated = False )
         if parent is not None:
-            assert( isinstance( parent, QDialog ) )
+            assert( isinstance( parent, QDialogWithPrinting ) )
+        self.setModal( True )
         assert( seriesName in tvdata )
         seriesInfo = tvdata[ seriesName ]
         self.setWindowTitle( seriesName )
@@ -628,7 +647,17 @@ class TVDBShowGUI( QDialog ):
         topWidget = QWidget( )
         topLayout = QHBoxLayout( )
         topWidget.setLayout( topLayout )
-        topLayout.addWidget( QLabel( "SEASON" ) )
+        #
+        topLeftWidget = QWidget( )
+        topLeftLayout = QHBoxLayout( )
+        topLeftWidget.setLayout( topLeftLayout )
+        topLeftLayout.addWidget( QLabel( seriesName ) )
+        topLayout.addWidget( topLeftWidget )
+        #
+        topRightWidget = QWidget( )
+        topRightLayout = QHBoxLayout( )
+        topRightWidget.setLayout( topRightLayout )
+        topRightLayout.addWidget( QLabel( "SEASON" ) )
         seasonSelected = QComboBox( self )
         seasonSelected.addItems(
             list(map(lambda seasno: '%d' % seasno,
@@ -636,7 +665,9 @@ class TVDBShowGUI( QDialog ):
         seasonSelected.setEnabled( True )
         seasonSelected.setEditable( False )
         seasonSelected.setCurrentIndex( 0 )
-        topLayout.addWidget( seasonSelected )
+        topRightLayout.addWidget( seasonSelected )
+        topLayout.addWidget( topRightWidget )
+        #
         myLayout.addWidget( topWidget )
         #
         ## now a stacked layout
@@ -661,16 +692,6 @@ class TVDBShowGUI( QDialog ):
         ## connect
         seasonSelected.installEventFilter( self )
         seasonSelected.currentIndexChanged.connect( self.selectSeason )
-        #
-        quitAction = QAction( self )
-        quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
-        quitAction.triggered.connect( self.close )
-        self.addAction( quitAction )
-        printAction = QAction( self )
-        printAction.setShortcut( 'Shift+Ctrl+P' )
-        printAction.triggered.connect( self.screenGrab )
-        self.addAction( printAction )
-        #
         ##
         self.show( )
 

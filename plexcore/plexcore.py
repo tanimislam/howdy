@@ -337,6 +337,7 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
         html = BeautifulSoup( cont, 'lxml' )
         direlems = html.find_all('directory')
         tvdata_tup = [ ]
+        idx_number = min( indices )
         for idx in indices:
             direlem = direlems[ idx ]
             show = unescape( direlem['title'] )
@@ -365,7 +366,9 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
                         continue
                     seasno = int( videlem['parentindex'] )
                     epno = int( videlem[ 'index' ] )
-                    seasonpicurl = '%s%s' % ( fullURL, videlem.get( 'parentthumb' ) )
+                    pthumb = videlem.get( 'parentthumb' )
+                    if pthumb is not None: seasonpicurl = '%s%s' % ( fullURL, videlem.get( 'parentthumb' ) )
+                    else: seasonpicurl = fullURL
                     episodepicurl = '%s%s' % ( fullURL, videlem.get( 'thumb' ) )
                     episodesummary = videlem.get('summary')
                     try:
@@ -399,7 +402,6 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
     num_direlems = len( BeautifulSoup( response.content, 'lxml' ).find_all('directory' ) )
     max_of_num_vals = max( num_direlems, multiprocessing.cpu_count( ) )
     act_num_threads = min( num_threads, max_of_num_vals )
-    print('got here in get_libraries_shows' )
     with multiprocessing.Pool( processes = act_num_threads ) as pool:
         input_tuples = list(
             map(lambda idx: ( response.content,

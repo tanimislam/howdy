@@ -5,7 +5,8 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import os, numpy, glob, time, datetime, logging
+import os, numpy, glob, time, datetime
+import multiprocessing, logging
 from functools import reduce
 from plexcore import plexcore
 from plextvdb import plextvdb
@@ -29,6 +30,9 @@ def main( ):
                           'before giving up. Default is %d.' % default_iters ]) )
     parser.add_option('--info', dest='do_info', action='store_true', default=False,
                       help = 'If chosen, then run in info mode.' )
+    parser.add_option('--numthreads', dest='numthreads', type=int, action='store', default = multiprocessing.cpu_count( ) * 2,
+                      help = 'Number of threads over which to search for TV shows in my library. Default is %d.' % (
+                          2 * multiprocessing.cpu_count( ) ) )
     opts, args = parser.parse_args( )
     if opts.do_info: logging.basicConfig( level = logging.INFO )
     assert( opts.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
@@ -73,7 +77,8 @@ def main( ):
     #
     ## now get the TV shows
     time0 = time.time( )
-    tvdata = plexcore.get_library_data( tvlib_title, token = token )
+    tvdata = plexcore.get_library_data(
+        tvlib_title, token = token, num_threads = opts.numthreads )
     showsToExclude = plextvdb.get_shows_to_exclude( tvdata )
     if len( showsToExclude ) != 0:
         print( '%d, excluding these TV shows: %s.' % (
@@ -81,7 +86,8 @@ def main( ):
         step += 1
     toGet = plextvdb.get_remaining_episodes(
         tvdata, showSpecials = False,
-        showsToExclude = showsToExclude )
+        showsToExclude = showsToExclude,
+        num_threads = opts.numthreads )
     if len( toGet ) == 0:
         print('\n'.join([
             '%d, no episodes to download in %0.3f seconds. Exiting...' % (

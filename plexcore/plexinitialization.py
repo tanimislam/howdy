@@ -1,4 +1,17 @@
-import imp, sys, os, pkg_resources, subprocess, shlex, glob
+import imp, sys, os, pkg_resources, logging
+import subprocess, shlex, glob, socket
+
+#
+## I have to do this thing because connections
+logging.info('HAVE TO DO THIS IN ORDER TO USE IPV4 WHEN IPV6 DOES NOT WORK')
+_old_getaddrinfo = socket.getaddrinfo
+def _new_getaddrinfo(*args, **kwargs):
+    responses = _old_getaddrinfo(*args, **kwargs)
+    return [
+        response
+        for response in responses
+        if response[0] == socket.AF_INET]
+socket.getaddrinfo = _new_getaddrinfo
 
 def _choose_install_local( requirements ):
     print('YOU NEED TO INSTALL THESE PACKAGES: %s.' % ' '.join( sorted( requirements ) ) )

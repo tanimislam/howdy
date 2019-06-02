@@ -84,7 +84,8 @@ class TVDBGUIThread( QThread ):
         #
         if tvdata_on_plex is None:
             tvdata_on_plex = plexcore.get_library_data(
-                library_name, fullURL = self.fullURL, token = self.token )
+                library_name, fullURL = self.fullURL, token = self.token,
+                num_threads = 4 )
         if tvdata_on_plex is None:
             raise ValueError( 'Error, could not find TV shows on the server.' )
         mytxt = '2, loaded TV data from Plex server in %0.3f seconds.' % (

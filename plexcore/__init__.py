@@ -6,8 +6,8 @@ def signal_handler( signal, frame ):
 from . import plexinitialization
 _ = plexinitialization.PlexInitialization( )
 
-import os, sys, xdg.BaseDirectory, signal, datetime, glob
-import geoip2.database, _geoip_geolite2, time, multiprocessing, multiprocessing.pool
+import os, sys, xdg.BaseDirectory, signal, datetime, glob, logging
+import geoip2.database, _geoip_geolite2, time
 from bs4 import BeautifulSoup
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -27,26 +27,6 @@ geoip_reader = geoip2.database.Reader( _geoip_database )
 
 .. _MaxMind: https://www.maxmind.com/en/geoip2-services-and-databases
 """
-
-class _NoDaemonProcess(multiprocessing.Process):
-    """
-    magic to get multiprocessing to get processes to be able to start daemons
-    I copied the code from http://stackoverflow.com/a/8963618/3362358, without
-    any real understanding EXCEPT that I am extending a Pool using a
-    NoDaemonProcess that always returns False, allowing me to create a pool of
-    workers that can spawn other processes (by default, multiprocessing does not
-    allow this)
-    """
-    # make 'daemon' attribute always return False
-    def _get_daemon(self):
-        return False
-    def _set_daemon(self, value):
-        pass
-    daemon = property(_get_daemon, _set_daemon)
-
-class NoDaemonPool(multiprocessing.pool.Pool):
-    Process = _NoDaemonProcess
-
 
 
 #
@@ -102,9 +82,9 @@ class QDialogWithPrinting( QDialog ):
             self.addAction( quitAction )
 
 class ProgressDialog( QDialogWithPrinting ): # replace with QProgressDialog in the future?
-    def __init__( self, parent, windowTitle = "" ):
+    def __init__( self, parent, windowTitle = "", doQuit = True ):
         super( ProgressDialog, self ).__init__(
-            parent, doQuit = True )
+            parent, doQuit = doQuit )
         self.setModal( True )
         self.setWindowTitle( 'PROGRESS' )
         myLayout = QVBoxLayout( )
@@ -133,14 +113,17 @@ class ProgressDialog( QDialogWithPrinting ): # replace with QProgressDialog in t
         }""" )
         myLayout.addWidget( self.elapsedTime )
         self.timer = QTimer( )
-        self.t0 = time.time( )
         self.timer.timeout.connect( self.showTime )
+        self.t0 = time.time( )
         self.timer.start( 5000 ) # every 5 seconds
         self.show( )
 
     def showTime( self ):
+        dt = time.time( ) - self.t0
         self.elapsedTime.setText(
-            '%0.1f seconds passed' % ( time.time( ) - self.t0 ) )
+            '%0.1f seconds passed' % dt )
+        if dt >= 50.0:
+            logging.basicConfig( level = logging.DEBUG )
 
     def addText( self, text ):
         body_elem = self.parsedHTML.find_all('body')[0]

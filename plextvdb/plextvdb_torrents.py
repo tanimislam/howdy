@@ -570,7 +570,7 @@ def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, t
     suffix = os.path.basename( file_name ).split('.')[-1].strip( )
     new_file = os.path.join( 'downloads', '%s.%s' % ( os.path.basename( totFname ), suffix ) )
     uname = client.username
-    host = client.host
+    host = client.host    
     with Connection( host, user = uname ) as conn:
         #
         ## first copy the file from src to destination
@@ -586,6 +586,13 @@ def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, t
             cmd = '~/.local/bin/mp4tags -s "" "%s"' % new_file
             try: r = conn.run( cmd, hide = True )
             except: return None, 'Error, could not properly run %s.' % cmd
+            #
+            ## check for some ENGLISH srt files. If found, then do the following
+            # 1) locate the SRT file with name ENGLISH in it
+            # 2) if found, then convert file to mkv. Delete old file.
+            # 3) mkvmerge out into a 'defaultXXXX.mkv', then copy over 'defaultXXXX.mkv' to new new file
+            # 4) remove the temporary 'defaultXXXX.mkv' file
+            
         #
         ## now delete the deluge connection
         plexcore_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = True )

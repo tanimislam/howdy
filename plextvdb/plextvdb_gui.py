@@ -711,4 +711,3 @@ class TVDBShowGUI( QDialogWithPrinting ):
 
     def selectSeason( self, idx ):
         self.seasonWidget.setCurrentIndex( idx )
-        

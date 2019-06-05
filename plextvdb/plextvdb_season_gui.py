@@ -4,10 +4,10 @@ from bs4 import BeautifulSoup
 import copy, numpy, sys, requests, logging
 import io, PIL.Image, base64
 from . import plextvdb
-from plexcore import plexcore
+from plexcore import plexcore, QDialogWithPrinting, QLabelWithSave
 from plextmdb import plextmdb
 
-class TVDBSeasonGUI( QDialog ):
+class TVDBSeasonGUI( QDialogWithPrinting ):
 
     @classmethod
     def find_missing_eps( cls, toGet, seriesName, season ):
@@ -52,22 +52,10 @@ class TVDBSeasonGUI( QDialog ):
             body_elem.append( siz_tag )
         return html.prettify( )
 
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName(
-            self, 'Save Screenshot',
-            os.path.expanduser( '~' ),
-            filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
-
     def __init__( self, seriesName, seasno,
                   plex_tv_data, toGet, tvdb_token,
                   plex_token, verify = True, parent = None ):
-        super( TVDBSeasonGUI, self ).__init__( parent )
+        super( TVDBSeasonGUI, self ).__init__( parent, isIsolated = False, doQuit = False )
         self.parent = parent
         assert( seriesName in plex_tv_data )
         assert( seasno in plex_tv_data[ seriesName ]['seasons'] )
@@ -142,7 +130,7 @@ class TVDBSeasonGUI( QDialog ):
         topWidget = QWidget( )
         topLayout = QHBoxLayout( )
         topWidget.setLayout( topLayout )
-        leftImageWidget = QLabel( )
+        leftImageWidget = QLabelWithSave( )
         leftImageWidget.setFixedWidth( 200 )
         if seasonPICURL is not None:
             qpm = QPixmap.fromImage(
@@ -193,17 +181,6 @@ class TVDBSeasonGUI( QDialog ):
         self.filterOnTVEpisodes.textChanged.connect( self.tm.setFilterString )
         self.filterStatusComboBox.installEventFilter( self )
         self.filterStatusComboBox.currentIndexChanged.connect( self.tm.setFilterStatus )
-        #
-        ## global actions
-        #quitAction = QAction( self )
-        #quitAction.setShortcuts( [ 'Ctrl+Q' ] )
-        #quitAction.triggered.connect( sys.exit )
-        #self.addAction( quitAction )
-        #
-        printAction = QAction( self )
-        printAction.setShortcut( 'Shift+Ctrl+P' )
-        printAction.triggered.connect( self.screenGrab )
-        self.addAction( printAction )
         #
         ## all this for now...
         self.show( )

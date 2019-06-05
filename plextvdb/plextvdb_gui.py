@@ -9,7 +9,7 @@ from functools import reduce
 from urllib.parse import urlparse
 from . import plextvdb, mainDir, get_token
 from .plextvdb_season_gui import TVDBSeasonGUI
-from plexcore import plexcore, geoip_reader
+from plexcore import plexcore, geoip_reader, QLabelWithSave
 from plexcore import QDialogWithPrinting, ProgressDialog
 from plextmdb import plextmdb
 
@@ -240,7 +240,7 @@ class TVDBGUI( QDialogWithPrinting ):
         ## now put this into summary image on left, summary info on right
         if showImg is not None:
             qpm = QPixmap.fromImage( QImage.fromData( showImg ) )
-            qpm = qpm.scaledToWidth( 600 )
+            qpm = qpm.scaledToWidth( self.size( ).width( ) * 0.95 )
             self.summaryShowImage.setPixmap( qpm )
         else: self.summaryShowImage.setPixmap( )
         self.summaryShowInfoAreaLeft.setHtml( showSummary )
@@ -323,8 +323,7 @@ class TVDBGUI( QDialogWithPrinting ):
         botWidget = QWidget( )
         botLayout = QVBoxLayout( )
         botWidget.setLayout( botLayout )
-        self.summaryShowImage = QLabel( )
-        self.summaryShowImage.setFixedWidth( 600 )
+        self.summaryShowImage = QLabelWithSave( )
         botLayout.addWidget( self.summaryShowImage )
         botLowerWidget = QWidget( )
         botLowerLayout = QHBoxLayout( )
@@ -340,7 +339,7 @@ class TVDBGUI( QDialogWithPrinting ):
         #
         ## set size, make sure not resizable
         self.setFixedWidth( self.tv.frameGeometry( ).width( ) * 1.05 )
-        self.setFixedHeight( 900 )
+        self.setFixedHeight( 1000 )
         #
         ## connect actions
         self.filterOnTVShows.textChanged.connect( self.tm.setFilterString )
@@ -353,6 +352,9 @@ class TVDBGUI( QDialogWithPrinting ):
         try: self.initThread.finalData.disconnect( )
         except: pass
         self.initThread.finalData.connect( self.process_final_state_refresh )
+        #
+        ## now set the final size
+        self.finalSize = self.size( )
         #
         self.show( )
                                 
@@ -375,7 +377,7 @@ class TVDBGUI( QDialogWithPrinting ):
         showsToExclude = plextvdb.get_shows_to_exclude(
             tvdata_on_plex )
         self.initThread = TVDBGUIThread(
-            fullURL, token, self.tvdb_token,
+            self.fullURL, self.token, self.tvdb_token,
             tvdata_on_plex = tvdata_on_plex,
             didend = didend, toGet = toGet, verify = verify,
             showsToExclude = showsToExclude )

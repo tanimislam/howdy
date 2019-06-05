@@ -18,7 +18,8 @@ def _return_error_raw( msg ):
 
 _num_to_quit = 5
 
-def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None ):
+def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None,
+                            minsize = None, maxsize = None ):
     assert( maxnum >= 5 )
     name_split = name.split()
     last_tok = name_split[-1]
@@ -62,7 +63,17 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
     #
     ## now filter on those torrents that have sXXeYY in them
     all_torrents_mine = list(filter(
-        lambda tor: last_tok.lower( ) in tor['title'].lower( ), all_torrents ) )[:maxnum]
+        lambda tor: last_tok.lower( ) in tor['title'].lower( ), all_torrents ) )
+    
+    ## now perform the filtering
+    if any(map(lambda tok: tok is not None, [ minsize, maxsize ])):
+        if minsize is not None:
+            all_torrents_mine = list(filter(lambda elem: int(elem['size_bytes']) >= minsize*1e6,
+                                            all_torrents_mine ) )
+        if maxsize is not None:
+            all_torrents_mine = list(filter(lambda elem: int(elem['size_bytes']) <= maxsize*1e6,
+                                            all_torrents_mine ) )
+    all_torrents_mine = all_torrents_mine[:maxnum]
     if len( all_torrents_mine ) == 0:
         return _return_error_raw(
             'ERROR, COULD NOT FIND %s IN EZTV.IO' % name )
@@ -628,7 +639,8 @@ def worker_process_download_tvtorrent(
     ## now get list of torrents, choose "top" one
     def _process_jackett_items( ):
         t0 = time.time( )
-        logging.debug( 'jackett: %s' % torFileName )
+        logging.debug( 'jackett: %s, %s, %s' % (
+            torFileName, mustHaveString, series_name ) )
         data, status = get_tv_torrent_jackett(
             mustHaveString, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
             minsize = minSize, maxsize = maxSize, keywords_exc = [ 'xvid' ],
@@ -642,16 +654,15 @@ def worker_process_download_tvtorrent(
     def _process_eztv_io_items( ):
         t0 = time.time( )
         logging.debug( 'eztv.io: %s' % torFileName )
-        data, status = get_tv_torrent_eztv_io( torFileName, maxnum = 100,
-                                               series_name = series_name )
+        data, status = get_tv_torrent_eztv_io(
+            torFileName, maxnum = 100, series_name = series_name,
+            minsize = minSize, maxsize = maxSize )
         if status != 'SUCCESS':
             return ( 'eztv.io', create_status_dict( 'FAILURE', status ), 'FAILURE' )
         data_filt = list(filter(
             lambda elem: any(map(lambda tok: tok in elem['title'].lower( ),
                                  ( 'x264', 'x265', '720p' ) ) ) and
-            'xvid' not in elem['title'].lower( ) and
-            elem['torrent_size'] >= minSize and
-            elem['torrent_size'] <= maxSize, data ) )
+            'xvid' not in elem['title'].lower( ), data ) )
         if len( data_filt ) == 0:
             return ( 'eztv.io', create_status_dict(
                 'FAILURE', 'ERROR, COULD NOT FIND %s IN EZTV.IO.' % torFileName ), 'FAILURE' )
@@ -668,8 +679,8 @@ def worker_process_download_tvtorrent(
             lambda elem: any(map(lambda tok: tok in elem['title'].lower( ),
                                  ( 'x264', 'x265', '720p' ) ) ) and
             'xvid' not in elem['title'].lower( ) and
-            elem['torrent_size'] >= minSize and
-            elem['torrent_size'] <= maxSize, data ) )
+            elem['torrent_size'] >= minSize*1e6 and
+            elem['torrent_size'] <= maxSize*1e6, data ) )
         if len( data_filt ) == 0:
             return ( 'zooqle', create_status_dict(
                 'FAILURE', 'ERROR, COULD NOT FIND %s IN ZOOQLE.' % torFileName ), 'FAILURE' )

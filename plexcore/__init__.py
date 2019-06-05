@@ -30,6 +30,29 @@ geoip_reader = geoip2.database.Reader( _geoip_database )
 
 
 #
+## a QLabel with save option of the pixmap
+class QLabelWithSave( QLabel ):
+    def screenGrab( self ):
+        fname = str( QFileDialog.getSaveFileName(
+            self, 'Save Pixmap', os.path.expanduser( '~' ),
+            filter = '*.png' ) )
+        if len( os.path.basename( fname.strip( ) ) ) == 0: return
+        if not fname.lower( ).endswith( '.png' ):
+            fname = '%s.png' % fname
+        qpm = self.pixmap( )
+        qpm.save( fname )
+
+    def __init__( self, parent = None ):
+        super( QLabel, self ).__init__( parent )
+
+    def contextMenuEvent( self, event ):
+        menu = QMenu( self )
+        savePixmapAction = QAction( 'Save Pixmap', menu )
+        savePixmapAction.triggered.connect( self.screenGrab )
+        menu.addAction( savePixmapAction )
+        menu.popup( QCursor.pos( ) )
+
+#
 ## now make a QWidget subclass that automatically allows for printing and quitting
 class QWidgetWithPrinting( QWidget ):
     def screenGrab( self ):

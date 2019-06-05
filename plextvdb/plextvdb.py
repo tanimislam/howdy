@@ -958,7 +958,6 @@ def get_tvtorrent_candidate_downloads( toGet ):
     tv_torrent_gets = { }
     tv_torrent_gets.setdefault( 'nonewdirs', [] )
     tv_torrent_gets.setdefault( 'newdirs', {} )
-    minSize = 100
     for tvshow in toGet:
         mydict = toGet[ tvshow ]
         showFileName = mydict[ 'showFileName' ]
@@ -968,8 +967,8 @@ def get_tvtorrent_candidate_downloads( toGet ):
         avg_length_mins = mydict[ 'avg_length_mins']
         #
         ## calc minsize from avg_length_mins
-        num_in_50 = int( avg_length_mins * 60.0 * 1100 / 8.0 / 1024 / 50 + 1)
-        ## minSize = 50 * num_in_50        
+        num_in_50 = int( avg_length_mins * 60.0 * 700 / 8.0 / 1024 / 50 + 1)
+        minSize = 50 * num_in_50        
         ##
         ## calc maxsize from avg_length_mins
         num_in_50 = int( avg_length_mins * 60.0 * 1500 / 8.0 / 1024 / 50 + 1 )

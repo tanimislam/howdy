@@ -76,6 +76,14 @@ def get_episodes_series_tmdb( tv_id: int, verify: bool = True ) -> list:
         episodes = reduce(lambda x,y: x+y, list(
             map( _process_tmdb_epinfo, valid_seasons ) ) )
         return episodes
+
+def get_movie_info( tmdb_id: int, verify = True ):
+    response = requests.get(  'https://api.themoviedb.org/3/movie/%d' % tmdb_id,
+                              params = { 'api_key' : tmdb_apiKey },
+                              verify = verify )
+    if response.status_code != 200:
+        return None
+    return response.json( )
     
 def get_movies_by_actors( actor_names: list, verify = True ) -> list:
     actor_name_dict = { }

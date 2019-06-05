@@ -28,6 +28,14 @@ def get_items_jackett( name, maxnum = 1000, shared_list = None ):
         logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
         return _process_items_list( None, shared_list )
     return _process_items_list( items, shared_list )
+
+def get_items_eztv_io( name, maxnum = 1000, shared_list = None ):
+    assert( maxnum >= 5 )
+    items, status = plextmdb_torrents.get_movie_torrent_eztv_io( name, maxnum = maxnum )
+    if status != 'SUCCESS':
+        logging.info( 'ERROR, EZTV.IO COULD NOT FIND %s.' % name )
+        return _process_items_list( None, shared_list )
+    return _process_items_list( items, shared_list )
     
 def get_items_zooqle( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 5)
@@ -209,7 +217,7 @@ def main( ):
     else:
         jobs += [
             Process( target=get_items_jackett, args=(opts.name, opts.maxnum, shared_list ) ),
-            Process( target=get_items_zooqle, args=(opts.name, opts.maxnum, shared_list ) ) ] # rarbg now works
+            Process( target=get_items_eztv_io, args=(opts.name, opts.maxnum, shared_list ) ) ] # rarbg now works
     for process in jobs: process.start( )    
     for process in jobs: process.join( )
     try: items = reduce(lambda x,y: x+y, list( filter( None, shared_list ) ) )

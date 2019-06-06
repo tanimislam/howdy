@@ -234,7 +234,7 @@ def get_tvdata_ordered_by_date( tvdata ):
     return tvdata_date_dict
 
 def create_plot_year_tvdata( tvdata_date_dict, year = 2010,
-                             shouldPlot = True ):
+                             shouldPlot = True, dirname = None ):
     calendar.setfirstweekday( 6 )
     def suncal( mon, year = 2010, current_date = None ):
         if current_date is None:
@@ -387,8 +387,12 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010,
     #
     ## plotting
     if shouldPlot:
+        if dirname is not None: assert( os.path.isdir( dirname ) )
+        else: dirname = os.getcwd( )
         canvas = FigureCanvasAgg(fig)
-        canvas.print_figure( 'tvdata.%d.svgz' % year, bbox_inches = 'tight' )
+        canvas.print_figure(
+            os.path.join( dirname, 'tvdata.%d.svgz' % year ),
+            bbox_inches = 'tight' )
     return fig
     
 def get_series_id( series_name, token, verify = True ):

@@ -217,7 +217,7 @@ def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', si
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
-
+        
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
                              params = params, verify = False )
     if response.status_code != 200: return None
@@ -232,6 +232,7 @@ def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', si
         if len(size_elem) != 0: totsize = int( size_elem[0]['size'] ) * 1.0
         else: totsize = -1
         return bitrate, totsize
+    #
     def _get_movie_data( input_tuple ):
         cont, indices = input_tuple
         html = BeautifulSoup( cont, 'lxml' )
@@ -311,7 +312,6 @@ def _get_library_stats_movie( key, token, fullURL ='https://localhost:32400', si
 def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
                             sinceDate = None, num_threads = 16 ):
     assert( num_threads >= 1 )
-    # from requests.compat import urljoin
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date()
@@ -433,10 +433,10 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
         total_times_requests_given = numpy.sort( numpy.array(
             list( chain.from_iterable( shared_list ) ) ) )
         dts = total_times_requests_given[1:] - total_times_requests_given[:-1]
-        logging.info( 'total number of requests given = %d.' % len( total_times_requests_given ) )
-        logging.info( 'minimum time between requests = %0.3e seconds.' % dts.min( ) )
-        logging.info( 'maximum time between requests = %0.3e seconds.' % dts.max( ) )
-        logging.info( 'average time between requests = %0.3e seconds.' % dts.mean( ) )            
+        logging.debug( 'total number of requests given = %d.' % len( total_times_requests_given ) )
+        logging.debug( 'minimum time between requests = %0.3e seconds.' % dts.min( ) )
+        logging.debug( 'maximum time between requests = %0.3e seconds.' % dts.max( ) )
+        logging.debug( 'average time between requests = %0.3e seconds.' % dts.mean( ) )            
         return key, tvdata
 
 def _get_library_stats_show( key, token, fullURL = 'http://localhost:32400',
@@ -525,6 +525,15 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
                              params = params, verify = False )
     if response.status_code != 200: return None
+    
+    s = requests.Session( )
+    s.mount( 'https://', requests.adapters.HTTPAdapter(
+        pool_connections = num_threads,
+        pool_maxsize = num_threads ) )
+    s.mount( 'http://', requests.adapters.HTTPAdapter(
+        pool_connections = num_threads,
+        pool_maxsize = num_threads ) )
+    
     def valid_track( track_elem ):
         if len(list(track_elem.find_all('media'))) != 1:
             return False
@@ -542,7 +551,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
         for idx in indices:
             artist_elem = artist_elems[ idx ]
             newURL = '%s%s' % ( fullURL, artist_elem.get('key') )
-            resp2 = requests.get( newURL, params = params, verify = False )        
+            resp2 = s.get( newURL, params = params, verify = False )        
             if resp2.status_code != 200: continue
             h2 = BeautifulSoup( resp2.content, 'lxml' )
             album_elems = list( h2.find_all('directory') )
@@ -550,7 +559,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
             artist_data = { }
             for album_elem in album_elems:
                 newURL = '%s%s' % ( fullURL, album_elem.get('key') )
-                resp3 = requests.get( newURL, params = params, verify = False )
+                resp3 = s.get( newURL, params = params, verify = False )
                 if resp3.status_code != 200: continue
                 h3 = BeautifulSoup( resp3.content, 'lxml' )
                 track_elems = filter(valid_track, h3.find_all( 'track' ) )
@@ -609,7 +618,7 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
     return sorted(set(filter(lambda key: library_dict[ key ][1] == 'movie',
                              library_dict ) ) )
 
-def get_library_data( title, token, fullURL = 'http://localhost:32400', num_threads = 16 ):
+def get_library_data( title, token, fullURL = 'https://localhost:32400', num_threads = 16 ):
     time0 = time.time( )
     params = { 'X-Plex-Token' : token }
     response = requests.get( '%s/library/sections' % fullURL, params = params,
@@ -632,7 +641,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400', num_thre
                                            num_threads = num_threads )
     elif mediatype == 'artist':
         _, data = _get_library_data_artist( key, token, fullURL = fullURL,
-                                            num_threads = num_thrwads )
+                                            num_threads = num_threads )
     else:
         logging.info( "took %0.3f seconds to gete here in get_library_data, library = %s." %
                       ( time.time( ) - time0, title ) )

@@ -13,7 +13,7 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
     def find_missing_eps( cls, toGet, seriesName, season ):
         if seriesName not in toGet: return { }
         return set( map(lambda tup: tup[1],
-                        filter(lambda tup: tup[0] == seasno,
+                        filter(lambda tup: tup[0] == season,
                                toGet[ seriesName ] ) ) )
         
     

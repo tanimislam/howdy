@@ -173,6 +173,7 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
         ## now put in the table view and table model
         self.tm = TVDBSeasonTableModel( self, episodes )
         self.tv = TVDBSeasonTableView( self )
+        self.tv.setFixedHeight( topWidget.sizeHint( ).height( ) ) # no clipping of this QTableView
         #
         ## now add the TV season widget table view
         myLayout.addWidget( self.tv )

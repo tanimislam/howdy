@@ -1,48 +1,43 @@
 #!/usr/bin/env python3
 
-import re, codecs, logging, sys, signal, time
+import re, logging, sys, signal, time
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-from functools import reduce
-from multiprocessing import Process, Manager, cpu_count
+from itertools import chain
+from multiprocessing import Pool
 from optparse import OptionParser
 from plexcore import plexcore_deluge
 from plextvdb import plextvdb_torrents
 from plexcore.plexcore import get_jackett_credentials
 
-def _process_items_list( items, shared_list ):
-    if shared_list is None: return items
-    else:
-        shared_list.append( items )
-        return
-
-def get_items_eztv_io( name, maxnum = 10, shared_list = None ):
+def get_items_eztv_io( name, maxnum = 10 ):
     assert( maxnum >= 5 )
     items, status = plextvdb_torrents.get_tv_torrent_eztv_io(
         name, maxnum = maxnum )
     if status != 'SUCCESS':
-        logging.debug( 'ERROR, EZTV.IO COULD NOT FIND %s.' % name )
-        return _process_items_list( None, shared_list )
-    return _process_items_list( items, shared_list )
+        logging.info( 'ERROR, EZTV.IO COULD NOT FIND %s.' % name )
+        return None
+    return items
 
-def get_items_jackett( name, maxnum = 1000, shared_list = None ):
+def get_items_jackett( name, maxnum = 1000 ):
     assert( maxnum >= 5 )
+    logging.info( 'started jackett %s.' % name )
     items, status = plextvdb_torrents.get_tv_torrent_jackett( name, maxnum = maxnum )
     if status != 'SUCCESS':
-        logging.debug( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
-        return _process_items_list( None, shared_list )
-    return _process_items_list( items, shared_list )
+        logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
+        return None
+    return items
     
-def get_items_zooqle( name, maxnum = 10, shared_list = None ):
+def get_items_zooqle( name, maxnum = 10 ):
     assert( maxnum >= 5 )
     items, status = plextvdb_torrents.get_tv_torrent_zooqle( name, maxnum = maxnum )
     if status != 'SUCCESS':
-        logging.debug( 'ERROR, ZOOQLE COULD NOT FIND %s.' % name )
-        return _process_items_list( None, shared_list )
-    return _process_items_list( items, shared_list )
+        logging.info( 'ERROR, ZOOQLE COULD NOT FIND %s.' % name )
+        return None
+    return items
 
 def get_items_tpb(name, maxnum = 10, doAny = False, raiseError = False, shared_list = None):
     assert( maxnum >= 5 )
@@ -50,33 +45,33 @@ def get_items_tpb(name, maxnum = 10, doAny = False, raiseError = False, shared_l
     if status != 'SUCCESS':
         if raiseError:
             raise ValueError('ERROR, TPB COULD NOT FIND %s.' % name)
-        logging.debug( 'ERROR, TPB COULD NOT FIND %s.' % name )
-        return _process_items_list( None, shared_list )
-    return _process_items_list( items, shared_list )
+        logging.info( 'ERROR, TPB COULD NOT FIND %s.' % name )
+        return None
+    return items
 
 def get_items_torrentz( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 5 )
     items, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
     if status != 'SUCCESS':
-        logging.debug( 'ERROR, TORRENTZ COULD NOT FIND %s.' % name )
-        return _process_items_list( None, shared_list )
-    return _process_items_list( items, shared_list )
+        logging.info( 'ERROR, TORRENTZ COULD NOT FIND %s.' % name )
+        return None
+    return items
 
 def get_items_rarbg( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 10 )
     items, status = plextvdb_torrents.get_tv_torrent_rarbg( name, maxnum = maxnum )
     if status != 'SUCCESS':
-        logging.debug( 'ERROR, RARBG COULD NOT FIND %s.' % name )
-        return _process_items_list( None, shared_list )
-    return _process_items_list( items, shared_list )
+        logging.info( 'ERROR, RARBG COULD NOT FIND %s.' % name )
+        return None
+    return items
 
 def get_items_kickass( name, maxnum = 10, shared_list = None ):
     assert( maxnum >= 10 )
     items, status = plextvdb_torrents.get_tv_torrent_kickass( name, maxnum = maxnum )
     if status != 'SUCCESS':
-        logging.debug( 'ERROR, KICKASS COULD NOT FIND %s.' % name )
-        return _process_items_list( None, shared_list )
-    return _process_items_list( items, shared_list )
+        logging.info( 'ERROR, KICKASS COULD NOT FIND %s.' % name )
+        return None
+    return items
 
 def get_tv_torrent_items(
         items, filename = None, to_torrent_server = False ):
@@ -116,36 +111,27 @@ def get_tv_torrent_items(
             openfile.write('%s\n' % magnet_link )
 
 def process_magnet_items( name ):
-    # items = reduce(lambda x,y: x+y, list( filter(
-    #     None,
-    #     [ get_items_zooqle( opts.name, maxnum = opts.maxnum ),
-    #       get_items_tpb( opts.name, doAny = opts.do_any, maxnum = opts.maxnum, raiseError = False ),
-    #       get_items_torrentz( opts.name, maxnum = opts.maxnum ),
-    #       get_items_rarbg( opts.name, maxnum = opts.maxnum ),
-    #       get_items_kickass( opts.name, maxnum = opts.maxnum ) ] ) ) )
-    
     time0 = time.time( )
-    manager = Manager( ) # multiprocessing code is a bit faster than single-process code
-    num_processes = cpu_count( )
-    shared_list = manager.list( )
     #
     ## check for jackett
     if get_jackett_credentials( ) is None:
-        jobs = [ Process( target=get_items_zooqle, args=(name, opts.maxnum, shared_list ) ),
-                 Process( target=get_items_tpb, args=(name, opts.maxnum, opts.do_any, False, shared_list ) ),
-                 Process( target=get_items_rarbg, args=(name, opts.maxnum, shared_list) ),
-                 Process( target=get_items_kickass, args=(name, opts.maxnum, shared_list ) ),
-                 Process( target=get_items_torrentz, args=(name, opts.maxnum, shared_list ) ),
-                 Process( target=get_items_eztv_io, args=(name, opts.maxnum, shared_list ) ) ]
+        pool = Pool( processes = 5 )
+        jobs = list(map(
+            lambda func: pool.apply_async( func, args = ( name, opts.maxnum ) ),
+            ( get_items_zooqle, get_items_rarbg, #get_items_kickass,
+              get_items_torrentz, get_items_eztv_io ) ) )
+        jobs.append( pool.apply_async( get_items_tpb, args = (
+            name, opts.maxnum, opts.do_any, False ) ) )
     else:
-        jobs = [ Process( target=get_items_jackett, args=(name, opts.maxnum, shared_list ) ),
-                 Process( target=get_items_zooqle, args=(name, opts.maxnum, shared_list ) ),
-                 Process( target=get_items_eztv_io, args=(name, opts.maxnum, shared_list ) ) ] # rarbg now works
-    for process in jobs: process.start( )
-    for process in jobs: process.join( )
-    items_split = list( filter( None, shared_list ) )
+        pool = Pool( processes = 3 )
+        jobs = list(map(
+            lambda func: pool.apply_async( func, args = ( name, opts.maxnum ) ),
+            ( get_items_jackett, get_items_zooqle, get_items_eztv_io ) ) )
+    items_all = list( chain.from_iterable( filter( None, map(lambda job: job.get( ), jobs ) ) ) )
     logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )
-    if len( items_split ) != 0: return reduce(lambda x,y: x+y, items_split )
+    pool.close( )
+    pool.join( )
+    if len( items_all ) != 0: return items_all
     return None
             
 if __name__=='__main__':
@@ -171,5 +157,5 @@ if __name__=='__main__':
         #
         ## sort from most seeders + leecher to least
         items_sorted = sorted( items, key = lambda tup: (
-            tup['seeders'] + tup['leechers'], tup['title'] ) )[::-1][:opts.maxnum]
+            -tup['seeders'] - tup['leechers'], tup['title'] ) )[:opts.maxnum]
         get_tv_torrent_items( items_sorted, filename = opts.filename, to_torrent_server = opts.do_add )

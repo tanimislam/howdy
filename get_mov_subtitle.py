@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 
-import re, codecs, requests, zipfile, os, sys, signal, logging, time
-from plexcore import signal_handler, subscene
+import sys, signal
+# code to handle Ctrl+C, convenience method for command line tools
+def signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Exiting...")
+    sys.exit( 0 )
+signal.signal( signal.SIGINT, signal_handler )
+import re, codecs, requests, zipfile, os, logging, time
+from plexcore import subscene
 signal.signal( signal.SIGINT, signal_handler )
 from termcolor import colored
 from io import BytesIO

@@ -2,7 +2,6 @@ import requests, re, threading, cfscrape
 import os, time, numpy, logging
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
-from functools import reduce
 from requests.compat import urljoin
 from pathos.multiprocessing import Pool
 from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials, get_formatted_size

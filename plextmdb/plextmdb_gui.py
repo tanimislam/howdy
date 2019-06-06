@@ -1,7 +1,8 @@
 import numpy, os, sys, requests, json, base64, time
 import logging, glob, datetime, textwrap, titlecase
+from pathos.multiprocessing import Pool
+from itertools import chain
 from . import plextmdb, mainDir, plextmdb_torrents
-from multiprocessing import Process, Manager, Pool
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from plexcore import plexcore
@@ -348,7 +349,7 @@ class TMDBTorrents( QDialogWithPrinting ):
         if not bypass:
             data, status = plextmdb_torrents.get_movie_torrent(
                 movie_name, verify = self.verify )
-        else: status == 'FAILURE'
+        else: status = 'FAILURE'
         
         if status == 'SUCCESS': # have torrent files
             for actmovie in data:
@@ -366,10 +367,25 @@ class TMDBTorrents( QDialogWithPrinting ):
                       'content' : requests.get( url, verify = self.verify ).content } )
             return TMDBTorrents.TMDBTorrentsTableModel( self, data_torrents, 0 )
 
-        # get magnet links, now use Jackett for downloading movies
-        data, status = plextmdb_torrents.get_movie_torrent_jackett(
-            movie_name, maxnum = maxnum, verify = self.verify )
-        if status != 'SUCCESS':
+        # get magnet links, now use Jackett AND OTHERS for downloading movies
+        pool = Pool( processes = 3 )
+        jobs = list(map(
+            lambda func: pool.apply_async( func, args = ( movie_name, maxnum, self.verify ) ),
+            ( plextmdb_torrents.get_movie_torrent_zooqle,
+              plextmdb_torrents.get_movie_torrent_jackett,
+              plextmdb_torrents.get_movie_torrent_eztv_io ) ) )
+        items_lists = [ ]
+        for job in jobs:
+            try:
+                items, status = job.get( 60 ) # 60 second timeout on process
+                if items is None: continue
+                items_lists.append( items )
+            except: pass
+        data = list( chain.from_iterable( items_lists ) )
+        # data, status = plextmdb_torrents.get_movie_torrent_jackett(
+        #     movie_name, maxnum = maxnum, verify = self.verify )
+        # if status != 'SUCCESS':
+        if len( data ) == 0:
             return TMDBTorrents.TMDBTorrentsTableModel( self, [ ], -1 )
             
         torrentStatus = 1
@@ -414,7 +430,7 @@ class TMDBTorrents( QDialogWithPrinting ):
         mainLayout.addWidget( self.statusLabel )
         #
         if self.tmdbTorrentModel.rowCount( None ) == 0:
-            self.statusLabel.setLabel( "FAILURE, COULD NOT FIND" )
+            self.statusLabel.setText( "FAILURE, COULD NOT FIND" )
             self.setEnabled( False )
         self.tmdbTorrentModel.sort( 1, Qt.DescendingOrder )
         #

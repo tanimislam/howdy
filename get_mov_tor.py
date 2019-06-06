@@ -8,74 +8,66 @@ def signal_handler( signal, frame ):
 signal.signal( signal.SIGINT, signal_handler )
 import re, codecs, requests, time, logging
 from plexcore import plexcore_deluge
-from functools import reduce
-from multiprocessing import Process, Manager, cpu_count
+from itertools import chain
+from pathos.multiprocessing import Pool
 from optparse import OptionParser
 from plextmdb import plextmdb_torrents
 from plextvdb import plextvdb_torrents
 from plexcore.plexcore import get_jackett_credentials
 
-def _process_items_list( items, shared_list ):
-    if shared_list is None: return items
-    else:
-        shared_list.append( items )
-        return
-
-def get_items_jackett( name, maxnum = 1000, shared_list = None ):
+def get_items_jackett( name, maxnum = 1000 ):
     assert( maxnum >= 5 )
     items, status = plextmdb_torrents.get_movie_torrent_jackett( name, maxnum = maxnum )
     if status != 'SUCCESS':
         logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
-        return _process_items_list( None, shared_list )
-    return _process_items_list( items, shared_list )
+        return None
+    return items
 
-def get_items_eztv_io( name, maxnum = 1000, shared_list = None ):
+def get_items_eztv_io( name, maxnum = 1000 ):
     assert( maxnum >= 5 )
     items, status = plextmdb_torrents.get_movie_torrent_eztv_io( name, maxnum = maxnum )
     if status != 'SUCCESS':
         logging.info( 'ERROR, EZTV.IO COULD NOT FIND %s.' % name )
-        return _process_items_list( None, shared_list )
-    return _process_items_list( items, shared_list )
+        return None
+    return items
     
-def get_items_zooqle( name, maxnum = 10, shared_list = None ):
+def get_items_zooqle( name, maxnum = 10 ):
     assert( maxnum >= 5)
     items, status = plextmdb_torrents.get_movie_torrent_zooqle( name, maxnum = maxnum )
     if status != 'SUCCESS':
-        return _process_items_list( None, shared_list )
-    return _process_items_list( items, shared_list )
+        return None
+    return items
 
-def get_items_tpb( name, maxnum = 10, doAny = False, shared_list = None ):
+def get_items_tpb( name, maxnum = 10, doAny = False ):
     assert( maxnum >= 5)
     its, status = plextmdb_torrents.get_movie_torrent_tpb( name, maxnum = maxnum, doAny = doAny )
     if status != 'SUCCESS':
-        return _process_items_list( None, shared_list )
+        return None
     items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
               item in its ]
-    return _process_items_list( items, shared_list )
+    return items
 
-def get_items_kickass( name, maxnum = 10, doAny = False, shared_list = None ):
+def get_items_kickass( name, maxnum = 10, doAny = False ):
     assert( maxnum >= 5)
     its, status = plextmdb_torrents.get_movie_torrent_kickass( name, maxnum = maxnum, doAny = doAny )
-    if status != 'SUCCESS':
-        return _process_items_list( None, shared_list )
+    if status != 'SUCCESS': return None
     items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
               item in its ]
-    return _process_items_list( items, shared_list )
+    return items
 
-def get_items_rarbg( name, maxnum = 10, shared_list = None ):
+def get_items_rarbg( name, maxnum = 10 ):
     assert( maxnum >= 5 )
     items, status = plextmdb_torrents.get_movie_torrent_rarbg( name, maxnum = maxnum )
-    if status != 'SUCCESS' :
-        return _process_items_list(None, shared_list )
-    return _process_items_list( items, shared_list )
+    if status != 'SUCCESS' : return None
+    return items
 
-def get_items_torrentz( name, maxnum = 10, shared_list = None ):
+def get_items_torrentz( name, maxnum = 10 ):
     assert( maxnum >= 5 )
     items, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
     if status != 'SUCCESS':
         logging.info( 'ERROR, TORRENTZ COULD NOT FIND %s.' % name )
-        return _process_items_list( None, shared_list )
-    return _process_items_list( items, shared_list )
+        return None
+    return items
 
 def get_movie_torrent_items( items, filename = None, to_torrent = False ):    
     if len( items ) != 1:
@@ -172,6 +164,8 @@ def main( ):
                       help = 'Name of the movie file to get.')
     parser.add_option('--maxnum', dest='maxnum', type=int, action='store', default = 10,
                       help = 'Maximum number of torrents to look through. Default is 10.')
+    parser.add_option('--timeout', dest='timeout', type=int, action='store', default = 60,
+                      help = 'Timeout on when to quit getting torrents (in seconds). Default is 60 seconds..' )
     parser.add_option('--any', dest='do_any', action='store_true', default = False,
                       help = 'If chosen, make no filter on movie format.')
     parser.add_option('-f', '--filename', dest='filename', action='store', type=str,
@@ -185,8 +179,9 @@ def main( ):
     parser.add_option('--info', dest='do_info', action='store_true', default = False,
                       help = 'If chosen, run in info mode.' )
     parser.add_option('--add', dest='do_add', action='store_true', default = False,
-                      help = 'If chosen, push the magnet link into the deluge server.' )
+                      help = 'If chosen, push the magnet link into the deluge server.' )    
     opts, args = parser.parse_args( )
+    assert( opts.timeout >= 10 )
     assert( opts.name is not None )
     if opts.do_info: logging.basicConfig( level = logging.INFO )
     #
@@ -200,35 +195,34 @@ def main( ):
             return
         except ValueError: pass
 
-    manager = Manager( )  # multiprocessing may be a bit faster than single-process code
-    num_processes = cpu_count( )
-    shared_list = manager.list( )
+    pool = Pool( processes = 4 )
     if not opts.do_nozooq: jobs = [
-            Process(target=get_items_zooqle, args=(opts.name, opts.maxnum, shared_list ) ) ]
+            pool.apply_async( get_items_zooqle, args = ( opts.name, opts.maxnum ) ) ]
     else: jobs = [ ]
     #
     ## check for jackett
     if get_jackett_credentials( ) is None:
-        jobs += [
-            Process( target=get_items_rarbg, args=(opts.name, opts.maxnum, shared_list ) ),
-            Process( target=get_items_tpb, args=(opts.name, opts.maxnum, opts.do_any, shared_list ) ) ]
+        jobs += list(map(lambda func: pool.apply_async( func, args = ( opts.name, opts.maxnum ) ),
+                         ( get_items_rarbg, get_items_tpb ) ) )
         if opts.do_torrentz:
-            jobs.append( Process( target=get_items_torrentz, args=(opts.name, opts.maxnum, shared_list ) ) )
-    else:
-        jobs += [
-            Process( target=get_items_jackett, args=(opts.name, opts.maxnum, shared_list ) ),
-            Process( target=get_items_eztv_io, args=(opts.name, opts.maxnum, shared_list ) ) ] # rarbg now works
-    for process in jobs: process.start( )    
-    for process in jobs: process.join( )
-    try: items = reduce(lambda x,y: x+y, list( filter( None, shared_list ) ) )
-    except: items = None
-    
+            jobs.append( pool.apply_async( get_items_torrentz, args = ( opts.name, opts.maxnum ) ) )
+    else:        
+        jobs += list(map(lambda func: pool.apply_async( func, args = ( opts.name, opts.maxnum ) ),
+                         ( get_items_jackett, get_items_eztv_io ) ) )
+    items_lists = [ ]
+    for job in jobs:
+        try:
+            items = job.get( opts.timeout )   # 60 second timeout on process
+            if items is None: continue
+            items_lists.append( items )
+        except: pass
+    items = list( chain.from_iterable( items_lists ) )
     logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )    
-    if items is not None:
+    if len( items ) != 0:
         #
         ## sort from most seeders + leecher to least
-        items_sorted = sorted( items, key = lambda tup: tup['seeders'] + tup['leechers'] )[::-1][:opts.maxnum]
-        get_movie_torrent_items( items, filename = opts.filename, to_torrent = opts.do_add )
+        items_sorted = sorted( items, key = lambda tup: -tup['seeders'] - tup['leechers'] )[:opts.maxnum]
+        get_movie_torrent_items( items_sorted, filename = opts.filename, to_torrent = opts.do_add )
 
 if __name__=='__main__':
     main( )

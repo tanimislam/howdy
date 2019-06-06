@@ -20,7 +20,7 @@ class TVDBGUIThread( QThread ):
     def __init__( self, fullURL, token, tvdb_token,
                   tvdata_on_plex = None,
                   didend = None, toGet = None, verify = False,
-                  showsToExclude = [ ], num_threads = 4 ):
+                  showsToExclude = [ ], num_threads = 16 ):
         super( QThread, self ).__init__( )
         self.fullURL = fullURL
         self.token = token

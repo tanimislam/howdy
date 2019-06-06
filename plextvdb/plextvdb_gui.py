@@ -281,16 +281,18 @@ class TVDBGUI( QDialogWithPrinting ):
         allShowsButton = QRadioButton( 'ALL SHOWS', self )
         runningShowsButton = QRadioButton( 'RUNNING', self )
         finishedShowsButton = QRadioButton( 'FINISHED', self )
+        missingShowsButton = QRadioButton( 'MISSING', self )
         self.qbg = QButtonGroup( )
         self.qbg.setExclusive( True )
         self.qbg.addButton( allShowsButton, 0 )
         self.qbg.addButton( runningShowsButton, 1 )
         self.qbg.addButton( finishedShowsButton, 2 )
+        self.qbg.addButton( missingShowsButton, 3 )
         allShowsButton.click( )
         self.qbg.buttonClicked.connect( self.updateStatus )
         ##
         topWidget = QWidget( )
-        topLayout = QHBoxLayout( )
+        topLayout = QGridLayout( )
         topWidget.setLayout( topLayout )
         #
         leftTopWidget = QWidget( )
@@ -306,19 +308,20 @@ class TVDBGUI( QDialogWithPrinting ):
         leftTopLayout.addWidget( self.plexURLLabel, 1, 1, 1, 1 )
         leftTopLayout.addWidget( QLabel( 'LOCATION:' ), 2, 0, 1, 1 )
         leftTopLayout.addWidget( self.locationLabel, 2, 1, 1, 1 )
-        topLayout.addWidget( leftTopWidget )
+        topLayout.addWidget( leftTopWidget, 0, 0, 1, 2 )
         #
         rightTopWidget = QWidget( )
         rightTopLayout = QGridLayout( )
         rightTopWidget.setLayout( rightTopLayout )
         rightTopLayout.addWidget( QLabel( 'TV SHOW FILTER' ), 0, 0, 1, 1 )
-        rightTopLayout.addWidget( self.filterOnTVShows, 0, 1, 1, 3 )
+        rightTopLayout.addWidget( self.filterOnTVShows, 0, 1, 1, 5 )
         rightTopLayout.addWidget( self.refreshButton, 1, 0, 1, 1 )
         rightTopLayout.addWidget( allShowsButton, 1, 1, 1, 1 )
         rightTopLayout.addWidget( runningShowsButton, 1, 2, 1, 1 )
         rightTopLayout.addWidget( finishedShowsButton, 1, 3, 1, 1 )
-        rightTopLayout.addWidget( self.numSeriesFound, 2, 0, 1, 4 )
-        topLayout.addWidget( rightTopWidget )
+        rightTopLayout.addWidget( missingShowsButton, 1, 4, 1, 1 )
+        rightTopLayout.addWidget( self.numSeriesFound, 2, 0, 1, 5 )
+        topLayout.addWidget( rightTopWidget, 0, 2, 1, 3 )
         #
         myLayout.addWidget( topWidget )
         ##
@@ -417,7 +420,7 @@ class TVDBGUI( QDialogWithPrinting ):
 
     def updateStatus( self, qrb ):
         mytxt = qrb.text( )
-        mymap = { 'ALL SHOWS' : 0, 'RUNNING' : 1, 'FINISHED' : 2 }
+        mymap = { 'ALL SHOWS' : 0, 'RUNNING' : 1, 'FINISHED' : 2, 'MISSING' : 3 }
         self.emitStatusToShow.emit( mymap[ mytxt ] )
 
     def showNumSatified( self, num ):
@@ -536,6 +539,8 @@ class TVDBTableModel( QAbstractTableModel ):
             if data[ 'didEnd' ]: return False
         elif self.filterStatus == 2: # finished shows
             if not data[ 'didEnd' ]: return False
+        elif self.filterStatus == 3: # shows with missing episodes
+            if data[ 'numMissing' ] == 0: return False
         return self.filterRegexp.indexIn( data[ 'seriesName' ] ) != -1
             
     def setFilterStatus( self, filterStatus ):
@@ -632,6 +637,8 @@ class TVDBTableModel( QAbstractTableModel ):
         if role == Qt.BackgroundRole:
             if data[ 'didEnd' ]:
                 return QBrush( QColor( '#282a36' ) ) # change using cwheet to yellow-like
+            elif data[ 'numMissing' ] > 0 and col == 5:
+                return QBrush( QColor( "#873600" ) )
             else: return QBrush( QColor( '#6272a4' ) )
         elif role == Qt.DisplayRole:
             if col == 0: # series name

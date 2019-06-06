@@ -156,7 +156,7 @@ def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True ):
             all_torrents_mine ) ), 'SUCCESS'
     
 
-def get_movie_torrent_zooqle( name, maxnum = 10 ):
+def get_movie_torrent_zooqle( name, maxnum = 10, verify = True ):
     assert( maxnum >= 5 )
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
         'udp://tracker.opentrackr.org:1337/announce',
@@ -182,7 +182,7 @@ def get_movie_torrent_zooqle( name, maxnum = 10 ):
                'fmt' : 'rss' }
     paramurl = '?' + '&'.join(map(lambda tok: '%s=%s' % ( tok, params[ tok ] ), params ) )                                  
     fullurl = urljoin( url, paramurl )
-    response = requests.get( fullurl )
+    response = requests.get( fullurl, verify = ver )
     if response.status_code != 200:
         return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
     myxml = BeautifulSoup( response.content, 'lxml' )
@@ -212,6 +212,7 @@ def get_movie_torrent_zooqle( name, maxnum = 10 ):
         'title' : '%s (%s)' % (
             max( elem.find_all('title' ) ).get_text( ),
             plexcore.get_formatted_size( get_num_forelem( elem, 'contentlength' ) ) ),
+        'raw_title' : max( elem.find_all('title' ) ).get_text( ),
         'seeders' : get_num_forelem( elem, 'seeds' ),
         'leechers' : get_num_forelem( elem, 'peers' ),
         'link' : _get_magnet_link( get_infohash( elem ),

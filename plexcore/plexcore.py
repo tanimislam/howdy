@@ -705,10 +705,10 @@ def get_libraries( fullURL = 'http://localhost:32400', token = None, do_full = F
         return dict( map( lambda direlem: ( int( direlem['key'] ), ( direlem['title'], direlem['type'] ) ),
                           html.find_all('directory') ) )
 
-def fill_out_movies_stuff( fullURL = 'http://localhost:32400', token = None,
+def fill_out_movies_stuff( fullURL = 'https://localhost:32400', token = None,
                            debug = False, verify = True ):
     if token is None:
-        if fullURL == 'http://localhost:32400':
+        if fullURL == 'https://localhost:32400':
             data = checkServerCredentials( doLocal = True )
         else:
             data = checkServerCredentials( doLocal = False )

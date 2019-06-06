@@ -4,6 +4,7 @@ import pathos.multiprocessing as multiprocessing
 from matplotlib.figure import Figure
 from matplotlib.patches import Rectangle, Ellipse
 from matplotlib.backends.backend_agg import FigureCanvasAgg
+from itertools import chain
 from functools import reduce
 from dateutil.relativedelta import relativedelta
 from fuzzywuzzy.fuzz import ratio
@@ -120,15 +121,16 @@ class TVShow( object ):
         seasons = set( self.seasonDict.keys( ) )
         if not showSpecials:
             seasons = seasons - set([0,])
-        sData = reduce(lambda x,y: x+y,
-                       map(lambda seasno:
-                           map(lambda epno: ( seasno, epno ),
-                               self.seasonDict[ seasno ].episodes.keys( ) ),
-                           seasons ) )
+        sData = list(chain.from_iterable(
+            map(lambda seasno:
+                map(lambda epno: ( seasno, epno ),
+                    self.seasonDict[ seasno ].episodes.keys( ) ),
+                seasons ) ) )
         if fromDate is not None:
-            sData = filter(lambda seasno_epno:
-                           self.seasonDict[ seasno_epno[0] ].episodes[ seasno_epno[1] ][ 'airedDate' ] >=
-                           fromDate, sData )
+            sData = filter(
+                lambda seasno_epno:
+                self.seasonDict[ seasno_epno[0] ].episodes[ seasno_epno[1] ][ 'airedDate' ] >=
+                fromDate, sData )
         return sData
 
     def get_tot_epdict_tvdb( self ):
@@ -221,11 +223,11 @@ def get_tvdata_ordered_by_date( tvdata ):
                 episodes_dict[ epno ][ 'title'] ), episodes_dict ) ) )
     def _get_tuple_list_show( show ):
         assert( show in tvdata )
-        return reduce(lambda x,y: x+y, list(
+        return list( chain.from_iterable(
             map(lambda seasno: _get_tuple_list_season( show, seasno ),
                 tvdata[ show ]['seasons'] ) ) )
-    tvdata_tuples = reduce(lambda x,y: x+y, list(
-        map(_get_tuple_list_show, tvdata) ) )
+    tvdata_tuples = list( chain.from_iterable( 
+        map(_get_tuple_list_show, tvdata ) ) )
     tvdata_date_dict = { }
     for tup in tvdata_tuples:
         tvdata_date_dict.setdefault( tup[0], [ ] ).append( tup[1:] )
@@ -259,9 +261,9 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010,
                               filter(lambda mydate: mydate.year == year, tvdata_date_dict))))
         #
         ## now count the number of shows in these new episodes
-        shownames = set(reduce(lambda x,y: x+y,
-                               list( map(lambda mydate: list(map(lambda tup: tup[0], tvdata_date_dict[ mydate ] ) ),
-                                         filter(lambda mydate: mydate.year == year, tvdata_date_dict)))))
+        shownames = set(chain.from_iterable(
+            map(lambda mydate: list(map(lambda tup: tup[0], tvdata_date_dict[ mydate ] ) ),
+                filter(lambda mydate: mydate.year == year, tvdata_date_dict))))
     else:
         numeps = 0
         shownames = { }
@@ -330,9 +332,9 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010,
                                  mydate.month == mon, tvdata_date_dict ) )
         mondata = []
         if len(validdates) != 0:
-            mondata = reduce(lambda x,y: x+y,
-                             map(lambda mydate: tvdata_date_dict[ mydate ],
-                                 validdates))
+            mondata = list(chain.from_iterable(
+                map(lambda mydate: tvdata_date_dict[ mydate ],
+                    validdates ) ) )
         cal = suncal( mon, year )
         ax = fig.add_subplot(5, 3, mon + 3 )
         ax.set_xlim([0,1])
@@ -685,10 +687,10 @@ def get_series_updated_fromdate( date, token, verify = True ):
 def get_path_data_on_tvshow( tvdata, tvshow ):
     assert( tvshow in tvdata )
     seasons_info = tvdata[ tvshow ][ 'seasons' ]
-    num_cols = set(reduce(lambda x,y: x+y, list(
+    num_cols = set( chain.from_iterable(
         map(lambda seasno: list(
             map(lambda epno: len(splitall( seasons_info[seasno]['episodes'][epno]['path'])),
-                seasons_info[seasno]['episodes'])), seasons_info))))            
+                seasons_info[seasno]['episodes'])), seasons_info ) ) )
     #
     ## only consider tv shows with fixed number of columns
     if len( num_cols ) != 1: return None
@@ -698,12 +700,12 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
     ## now find those split directories with only a single value
     splits_with_len_1 = list(
         filter(lambda colno:
-               len(set(reduce(lambda x,y: x+y, list(
+               len(set(chain.from_iterable(
                    map(lambda seasno: list(
                        map(lambda epno: splitall(
                            seasons_info[seasno]['episodes'][epno]['path'])[ colno ],
                            seasons_info[ seasno ]['episodes'])),
-                       seasons_info ))))) == 1, range(num_cols)))
+                       seasons_info )))) == 1, range(num_cols)))
     if sum(map(lambda seasno: len(seasons_info[seasno]), seasons_info)) == 1: # only one episode
         ## just get the non-episode, non-season name
         splits_with_len_1.pop(-1)
@@ -715,18 +717,18 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
     
     prefix = os.path.join(
         *list(map(lambda colno:
-                  max(set(reduce(lambda x,y: x+y, list(
+                  max(set(chain.from_iterable(
                       map(lambda seasno: list(
                           map(lambda epno: splitall(
                               seasons_info[seasno]['episodes'][epno]['path'])[ colno ],
                               seasons_info[ seasno ]['episodes'])),
-                          seasons_info))))), sorted(splits_with_len_1))))
+                          seasons_info)))), sorted(splits_with_len_1))))
     
     
     #
     ## average length in seconds of an episode
     avg_length_secs = numpy.average(
-        reduce(lambda x,y: x+y, list(
+        list( chain.from_iterable(
             map(lambda seasno: list(
                 map(lambda epno: seasons_info[seasno]['episodes'][epno]['duration'],
                     seasons_info[seasno]['episodes'])),
@@ -749,11 +751,11 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
                 break
         assert( idx_match != -1 ), 'problem with %s' % basename
         return ' - '.join( toks[:idx_match] )
-    main_file_name = set(reduce(lambda x,y: x+y, list(
+    main_file_name = set(chain.from_iterable(
         map(lambda seasno: list(
             map(lambda epno: get_main_file_name( os.path.basename(
                 seasons_info[seasno]['episodes'][epno]['path'] ) ),
-                seasons_info[ seasno ]['episodes'])), seasons_info))))
+                seasons_info[ seasno ]['episodes'])), seasons_info)))
     assert(len(main_file_name) == 1), 'error with %s, main_file_names = %s' % ( tvshow, sorted(main_file_name) )
     main_file_name = max( main_file_name )
     season_prefix_dict = { }
@@ -997,9 +999,10 @@ def get_tvtorrent_candidate_downloads( toGet ):
     return tv_torrent_gets
 
 def create_tvTorUnits( tv_torrent_gets ):
-    tvTorUnits = reduce(lambda x,y: x+y, [ tv_torrent_gets[ 'nonewdirs' ] ] +
-                        list(map(lambda newdir: tv_torrent_gets[ 'newdirs' ][ newdir ],
-                                 tv_torrent_gets[ 'newdirs' ] ) ) )
+    tvTorUnits = list(chain.from_iterable(
+        [ tv_torrent_gets[ 'nonewdirs' ] ] +
+        list(map(lambda newdir: tv_torrent_gets[ 'newdirs' ][ newdir ],
+                 tv_torrent_gets[ 'newdirs' ] ) ) ) )
     return tvTorUnits
 
 def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, num_iters = 10 ):

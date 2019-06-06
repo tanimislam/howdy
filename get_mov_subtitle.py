@@ -5,47 +5,34 @@ from plexcore import signal_handler, subscene
 signal.signal( signal.SIGINT, signal_handler )
 from termcolor import colored
 from io import BytesIO
-from functools import reduce
-from multiprocessing import Process, Manager, cpu_count
+from itertools import chain
+from pathos.multiprocessing import Pool
 from optparse import OptionParser
 from plextmdb import plextmdb_subtitles
 
-def _process_items_list( items, shared_list ):
-    if shared_list is None: return items
-    shared_list.append( items )
-
-def get_items_yts( name, maxnum = 10, shared_list = None ):
+def get_items_yts( name, maxnum = 10 ):
     assert( maxnum >= 5 )
     items = plextmdb_subtitles.get_subtitles_yts( name )
-    if items is None:
-        return _process_items_list( None, shared_list )
-    return _process_items_list(
-        list( map(lambda item: { 'title' : item['name'], 'zipurl' : item['url'],
-                                 'content' : 'yts' }, items[:maxnum] ) ),
-        shared_list )
+    if items is None: return None
+    return list( map(lambda item: { 'title' : item['name'], 'zipurl' : item['url'],
+                                    'content' : 'yts' }, items[:maxnum] ) )
 
-def get_items_subscene( name, maxnum = 20, extra_strings = [ ], shared_list = None ):
+def get_items_subscene( name, maxnum = 20, extra_strings = [ ] ):
     assert( maxnum >= 5 )
     subtitles_map = plextmdb_subtitles.get_subtitles_subscene( name, extra_strings = extra_strings )
-    if subtitles_map is None:
-        return _process_items_list( None, shared_list )
-    return _process_items_list(
-         list( map(lambda title: { 'title' : title, 'srtdata' : subtitles_map[ title ],
-                                   'content' : 'subscene' },
-                   sorted( subtitles_map )[:maxnum] ) ),
-        shared_list )
+    if subtitles_map is None: return None
+    return list( map(lambda title: { 'title' : title, 'srtdata' : subtitles_map[ title ],
+                                     'content' : 'subscene' },
+                     sorted( subtitles_map )[:maxnum] ) )
 
-def get_items_opensubtitles( name, maxnum = 20, extra_strings = [ ], shared_list = None ):
+def get_items_opensubtitles( name, maxnum = 20, extra_strings = [ ] ):
     assert( maxnum >= 5 )
     subtitles_map = plextmdb_subtitles.get_subtitles_opensubtitles( name, extra_strings = extra_strings )
-    if subtitles_map is None:
-        return _process_items_list( None, shared_list )
-    return _process_items_list(
-        list( map(lambda title: { 'title' : title,
-                                  'srtdata' : subtitles_map[ title ],
-                                  'content' : 'opensubtitles' },
-                     sorted( subtitles_map )[:maxnum] ) ),
-        shared_list )
+    if subtitles_map is None: return None
+    return list( map(lambda title: { 'title' : title,
+                                     'srtdata' : subtitles_map[ title ],
+                                     'content' : 'opensubtitles' },
+                     sorted( subtitles_map )[:maxnum] ) )
 
 def get_movie_subtitle_items( items, filename = 'eng.srt' ):
     coloration_dict = { 'yts' : 'red',
@@ -85,7 +72,6 @@ def get_movie_subtitle_items( items, filename = 'eng.srt' ):
                     openfile.write( zf.read( name ) )
     except Exception as e:
         print('Error, did not give a valid integer value. Exiting...')
-        print(e)
         return
 
 if __name__=='__main__':
@@ -110,24 +96,26 @@ if __name__=='__main__':
     if opts.do_debug: logging.basicConfig( level = logging.INFO )
     keywords_set = { }
     if opts.keywords is not None:
-        keywords_set = set(map(lambda tok: tok.lower( ), filter(lambda tok: len( tok.strip( ) ) != 0,
-                                                                opts.keywords.strip().split(','))))
+        keywords_set = set(map(lambda tok: tok.lower( ),
+                               filter(lambda tok: len( tok.strip( ) ) != 0,
+                                      opts.keywords.strip().split(','))))
     #
     ## now calculation with multiprocessing
     time0 = time.time( )
-    manager = Manager( )
-    num_processes = cpu_count( )
-    shared_list = manager.list( )
+    pool = Pool( processes = 3 )
     if not opts.do_bypass:
-        jobs = [
-            Process( target=get_items_yts, args=(opts.name, opts.maxnum, shared_list ) ) ]
+        jobs = [ pool.apply_async( get_items_yts, args = ( opts.name, opts.maxnum ) ) ]
     else: jobs = [ ]
-    jobs += [
-        # Process( target=get_items_subscene, args = ( opts.name, opts.maxnum, keywords_set, shared_list ) ),
-        Process( target=get_items_opensubtitles, args = ( opts.name, opts.maxnum, keywords_set, shared_list ) ) ]
-    for process in jobs: process.start( )
-    for process in jobs: process.join( )
-    try: items = reduce(lambda x,y: x+y, list( filter( None, shared_list ) ) )
-    except: items = None
+    jobs += list(map(
+        lambda func: pool.apply_async( func, args = ( opts.name, opts.maxnum, keywords_set ) ),
+        ( get_items_subscene, get_items_opensubtitles ) ) )
+    items_lists = [ ]
+    for job in jobs:
+        try:
+            items = job.get( )
+            if items is None: continue
+            items_lists.append( items )
+        except: pass
+    items = list( chain.from_iterable( items_lists ) )
     logging.info( 'search for movie subtitles took %0.3f seconds.' % ( time.time( ) - time0 ) )    
-    if items is not None: get_movie_subtitle_items( items, filename = opts.filename )
+    if len( items ) != 0: get_movie_subtitle_items( items, filename = opts.filename )

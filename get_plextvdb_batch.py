@@ -7,7 +7,6 @@ def signal_handler( signal, frame ):
 signal.signal( signal.SIGINT, signal_handler )
 import os, numpy, glob, time, datetime
 import multiprocessing, logging
-from functools import reduce
 from plexcore import plexcore
 from plextvdb import plextvdb
 from optparse import OptionParser

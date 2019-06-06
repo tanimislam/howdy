@@ -1,6 +1,6 @@
 import logging, glob, os, requests, datetime, fuzzywuzzy.fuzz, time
 import pathos.multiprocessing as multiprocessing
-from functools import reduce
+from itertools import chain
 from . import mainDir, get_tmdb_api
 
 tmdb_apiKey = get_tmdb_api( )
@@ -73,7 +73,7 @@ def get_episodes_series_tmdb( tv_id: int, verify: bool = True ) -> list:
         return epelems
     #
     with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
-        episodes = reduce(lambda x,y: x+y, list(
+        episodes = list( chain.from_iterable(
             map( _process_tmdb_epinfo, valid_seasons ) ) )
         return episodes
 

@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.parse import urlencode, urljoin
 from fuzzywuzzy.fuzz import partial_ratio
-from functools import reduce
+from itertools import chain
 from . import mainDir, session
 from . import PlexConfig, LastNewsletterDate, PlexGuestEmailMapping
 from plextmdb import plextmdb
@@ -224,8 +224,9 @@ def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', si
         bitrate_elem = list(filter(lambda elem: 'bitrate' in elem.attrs, movie_elem.find_all('media')))
         if len( bitrate_elem ) != 0: bitrate = int( bitrate_elem[0]['bitrate'] ) * 1e3 / 8.0
         else: bitrate = -1
-        size_elem = reduce(lambda x,y: x+y, list(map(lambda media_elem: media_elem.find_all('part'),
-                                                     movie_elem.find_all('media'))))
+        size_elem = list( chain.from_iterable(
+            map(lambda media_elem: media_elem.find_all('part'),
+                movie_elem.find_all('media'))))
         size_elem = list(filter(lambda elem: 'size' in elem.attrs, size_elem) )
         if len(size_elem) != 0: totsize = int( size_elem[0]['size'] ) * 1.0
         else: totsize = -1
@@ -286,8 +287,8 @@ def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', si
                 range(idx, len_movie_elems, act_num_threads ) ) ),
                 range( act_num_threads ) ) )
         movie_data = { }
-        movie_data_list = reduce(lambda x,y: x+y,
-            map( _get_movie_data, input_tuples ) )
+        movie_data_list = list( chain.from_iterable(
+            map( _get_movie_data, input_tuples ) ) )
         for first_genre, data in movie_data_list:
             movie_data.setdefault( first_genre, [ ] ).append( data )
         return key, movie_data
@@ -408,9 +409,8 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
                               list( range( idx, num_direlems, act_num_threads ) ) ),
                 range( act_num_threads ) ) )
         tvdata = dict(
-            reduce(lambda x,y: x+y, filter(
-                lambda tup: tup is not None, pool.map(
-                    _get_show_data, input_tuples ) ) ) )
+            chain.from_iterable(filter(
+                None, pool.map( _get_show_data, input_tuples ) ) ) )
         return key, tvdata
 
 def _get_library_stats_show( key, token, fullURL = 'http://localhost:32400',
@@ -568,7 +568,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
             map(lambda idx: ( response.content, list(range(
                 idx, len_artistelems, act_num_threads ) ) ),
                 range(act_num_threads)))
-        song_data = dict(reduce(lambda x,y: x+y, pool.map(
+        song_data = dict(chain.from_iterable(pool.map(
             _get_artist_data, input_tuples ) ) )
         return key, song_data
 

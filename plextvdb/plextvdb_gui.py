@@ -5,7 +5,7 @@ import logging, requests, time, io, PIL.Image
 from multiprocessing import Process, Manager
 import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
-from functools import reduce
+from itertools import chain
 from urllib.parse import urlparse
 from . import plextvdb, mainDir, get_token
 from .plextvdb_season_gui import TVDBSeasonGUI
@@ -40,11 +40,6 @@ class TVDBGUIThread( QThread ):
 
     def run( self ):
         time0 = time.time( )
-        tvdata_on_plex = self.tvdata_on_plex
-        didend = self.didend
-        toGet = self.toGet
-        showsToExclude = self.showsToExclude
-        tvdb_token = self.tvdb_token
         final_data_out = { }
         mytxt = '0, started loading in data on %s.' % (
             datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
@@ -62,48 +57,58 @@ class TVDBGUIThread( QThread ):
         logging.info( mytxt )
         self.emitString.emit( mytxt )
         #
-        if tvdata_on_plex is None:
-            tvdata_on_plex = plexcore.get_library_data(
+        if self.tvdata_on_plex is None:
+            self.tvdata_on_plex = plexcore.get_library_data(
                 library_name, fullURL = self.fullURL, token = self.token,
                 num_threads = self.num_threads )
-        if tvdata_on_plex is None:
+        if self.tvdata_on_plex is None:
             raise ValueError( 'Error, could not find TV shows on the server.' )
         mytxt = '2, loaded TV data from Plex server in %0.3f seconds.' % (
             time.time( ) - time0 )
         logging.info( mytxt )
         self.emitString.emit( mytxt )
         #
-        #showsToExclude = plextvdb.get_shows_to_exclude(
-        #    tvdata_on_plex )
-        #
         ## using a stupid-ass pattern to shave some seconds off...
-        def _process_didend( dide, tvdon_plex, do_verify, t0, shared_list ):
-            if dide is not None:
-                shared_list.append( ( 'didend', dide ) )
+        manager = Manager( )
+        shared_list = manager.list( )
+        myLock = manager.RLock( )
+        myStage = manager.Value( 'stage', 2 )
+        #
+        def _process_didend( ):
+            if self.didend is not None:
+                shared_list.append( ( 'didend', self.didend ) )
                 return
-            dide = plextvdb.get_all_series_didend(
-                tvdon_plex, verify = do_verify, token = tvdb_token )
-            mytxt = '3b, added information on whether shows ended in %0.3f seconds.' % (
-                time.time( ) - t0 )
+            didEnd = plextvdb.get_all_series_didend(
+                self.tvdata_on_plex, verify = self.verify, token = self.tvdb_token )
+            myLock.acquire( )
+            myStage.value += 1
+            mytxt = '%d, added information on whether shows ended in %0.3f seconds.' % (
+                myStage.value, time.time( ) - time0 )
             logging.info( mytxt )
             self.emitString.emit( mytxt )
-            shared_list.append( ( 'didend', dide ) )
+            myLock.release( )
+            shared_list.append( ( 'didend', didEnd ) )
 
-        def _process_missing( toge, tvdon_plex, showsexc, do_verify, t0, shared_list ):
-            if toge is not None:
-                shared_list.append( ( 'toGet', toge ) )
+        def _process_missing( ):
+            if self.toGet is not None:
+                shared_list.append( ( 'toGet', self.toGet ) )
                 return
-            toge = plextvdb.get_remaining_episodes(
-                tvdon_plex, showSpecials = False, showsToExclude = showsexc,
-                verify = do_verify, token = tvdb_token )
-            mytxt = '3b, found missing episodes in %0.3f seconds.' % ( time.time( ) - t0 )
+            toGet = plextvdb.get_remaining_episodes(
+                self.tvdata_on_plex, showSpecials = False,
+                showsToExclude = self.showsToExclude,
+                verify = self.verify, token = self.tvdb_token )
+            myLock.acquire( )
+            myStage.value += 1
+            mytxt = '%d, found missing episodes in %0.3f seconds.' % (
+                myStage.value, time.time( ) - time0 )
             logging.info( mytxt )
             self.emitString.emit( mytxt )
-            shared_list.append( ( 'toGet', toge ) )
+            myLock.release( )
+            shared_list.append( ( 'toGet', toGet ) )
             
-        def _process_plot_tvshowstats( tvdon_plex, t0, shared_list ):
+        def _process_plot_tvshowstats( ):
             tvdata_date_dict = plextvdb.get_tvdata_ordered_by_date(
-                tvdon_plex )
+                self.tvdata_on_plex )
             years_have = set(map(lambda date: date.year, tvdata_date_dict ) )
             with multiprocessing.Pool(
                     processes = multiprocessing.cpu_count( ) ) as pool:
@@ -111,38 +116,37 @@ class TVDBGUIThread( QThread ):
                     lambda year: ( year, plextvdb.create_plot_year_tvdata(
                         tvdata_date_dict, year, shouldPlot = False ) ),
                     years_have ) )
-            mytxt = '3b, made plots of tv shows added in %d years in %0.3f seconds.' % (
-                len( years_have ), time.time( ) - time0 )
+            myLock.acquire( )
+            myStage.value += 1
+            mytxt = '%d, made plots of tv shows added in %d years in %0.3f seconds.' % (
+                myStage.value, len( years_have ), time.time( ) - time0 )
             logging.info( mytxt )
             self.emitString.emit( mytxt )
+            myLock.release( )
             shared_list.append( ( 'plotYears', figdictdata ) )
             
-        manager = Manager( )
-        shared_list = manager.list( )
-        jobs = [ Process( target=_process_didend, args=(
-            didend, tvdata_on_plex, self.verify, time0, shared_list ) ),
-                 Process( target=_process_missing, args=(
-                     toGet, tvdata_on_plex, showsToExclude, self.verify,
-                     time0, shared_list ) ) ]
-        # Process( target=_process_plot_tvshowstats, args=(
-        #     self.tvdata_on_plex, time0, shared_list ) ) ]
+        jobs = [ Process( target = _process_didend ),
+                 Process( target = _process_missing ) ]
+        #         Process( target = _process_plot_tvshowstats ) ]
         for process in jobs: process.start( )
         for process in jobs: process.join( )
+        #
         final_data = dict( shared_list )
         assert( set( final_data ) == set([ 'didend', 'toGet' ]) )
         didend = final_data[ 'didend' ]
         toGet = final_data[ 'toGet' ]
-        for seriesName in tvdata_on_plex:
-            tvdata_on_plex[ seriesName ][ 'didEnd' ] = didend[ seriesName ]
-        final_data_out[ 'tvdata_on_plex' ] = tvdata_on_plex
-        mytxt = '4, finished loading in all data on %s.' % (
+        for seriesName in self.tvdata_on_plex:
+            self.tvdata_on_plex[ seriesName ][ 'didEnd' ] = didend[ seriesName ]
+        final_data_out[ 'tvdata_on_plex' ] = self.tvdata_on_plex
+        mytxt = '%d, finished loading in all data on %s.' % (
+            myStage.value + 1,
             datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
         logging.info( mytxt )
         self.emitString.emit( mytxt )
         missing_eps = dict(map(
             lambda seriesName: ( seriesName, toGet[ seriesName ][ 'episodes' ] ),
-            filter(lambda sname: sname in toGet and sname not in showsToExclude,
-                   tvdata_on_plex ) ) )
+            filter(lambda sname: sname in toGet and sname not in self.showsToExclude,
+                   self.tvdata_on_plex ) ) )
         final_data_out[ 'missing_eps' ] = missing_eps
         self.finalData.emit( final_data_out )
         
@@ -197,17 +201,17 @@ class TVDBGUI( QDialogWithPrinting ):
             summary_tag.string = overview
             body2_elem.append( summary_tag )
         average_duration_in_secs = numpy.array(
-            reduce(lambda x,y: x+y,
-                   list(map(lambda seasno: list(
-                       map(lambda epno: seasons_info[ seasno ]['episodes'][ epno ][ 'duration' ],
-                           seasons_info[ seasno ]['episodes'] ) ), set( seasons_info ) -
-                            set([0]))))).mean( )
+            list( chain.from_iterable(
+                map(lambda seasno: list(
+                    map(lambda epno: seasons_info[ seasno ]['episodes'][ epno ][ 'duration' ],
+                        seasons_info[ seasno ]['episodes'] ) ), set( seasons_info ) -
+                    set([0]))))).mean( )
         average_size_in_bytes = numpy.array(
-            reduce(lambda x,y: x+y,
-                   list(map(lambda seasno: list(
-                       map(lambda epno: seasons_info[ seasno ]['episodes'][ epno ][ 'size' ],
-                           seasons_info[ seasno ]['episodes'] ) ), set( seasons_info ) -
-                            set([0]))))).mean( )
+            list( chain.from_iterable(
+                map(lambda seasno: list(
+                    map(lambda epno: seasons_info[ seasno ]['episodes'][ epno ][ 'size' ],
+                        seasons_info[ seasno ]['episodes'] ) ), set( seasons_info ) -
+                    set([0]))))).mean( )
         dur_tag = html.new_tag( "p" )
         dur_tag.string = "average duration of %02d episodes: %s." % (
             num_total, plexcore.get_formatted_duration( average_duration_in_secs ) )

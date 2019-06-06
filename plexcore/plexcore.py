@@ -335,6 +335,9 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
     s.mount( 'https://', requests.adapters.HTTPAdapter(
         pool_connections = num_threads,
         pool_maxsize = num_threads ) )
+    s.mount( 'http://', requests.adapters.HTTPAdapter(
+        pool_connections = num_threads,
+        pool_maxsize = num_threads ) )
     
     #
     ## for videlems in shows

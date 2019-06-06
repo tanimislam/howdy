@@ -1,4 +1,4 @@
-import os, glob, datetime, gspread, logging, sys
+import os, glob, datetime, gspread, logging, sys, numpy
 import uuid, requests, pytz, pypandoc, time, json
 import pathos.multiprocessing as multiprocessing
 # oauth2 stuff
@@ -13,6 +13,7 @@ from urllib.request import urlopen
 from urllib.parse import urlencode, urljoin
 from fuzzywuzzy.fuzz import partial_ratio
 from itertools import chain
+from multiprocessing import Manager
 from . import mainDir, session
 from . import PlexConfig, LastNewsletterDate, PlexGuestEmailMapping
 from plextmdb import plextmdb
@@ -327,13 +328,24 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
                set( media_elem.attrs ) ) != 0:
             return False
         return True
+
+    #
+    ## setting up a connection pool to minimize the number of connections we have
+    s = requests.Session( )
+    s.mount( 'https://', requests.adapters.HTTPAdapter(
+        pool_connections = num_threads,
+        pool_maxsize = num_threads ) )
     
     #
     ## for videlems in shows
     ## videlem.get('index') == episode # in season
     ## videlem.get('parentindex') == season # of show ( season 0 means Specials )
     ## videlem.get('originallyavailableat') == when first aired
+    manager = Manager( )
+    shared_list = manager.list( )
+    time0 = time.time( )
     def _get_show_data( input_tuple ):
+        times_requests_given = [ ]
         cont, indices = input_tuple
         html = BeautifulSoup( cont, 'lxml' )
         direlems = html.find_all('directory')
@@ -347,7 +359,8 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
             if 'art' in direlem.attrs: picurl = '%s%s' % ( fullURL, direlem.get('art') )
             else: picurl = None
             newURL = urljoin( fullURL, direlem['key'] )
-            resp2 = requests.get( newURL, params = params, verify = False )
+            resp2 = s.get( newURL, params = params, verify = False )
+            times_requests_given.append( time.time( ) - time0 )
             if resp2.status_code != 200: continue
             h2 = BeautifulSoup( resp2.content, 'lxml' )
             leafElems = list( filter(lambda le: 'allLeaves' not in le['key'], h2.find_all('directory') ) )
@@ -360,7 +373,8 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
             }
             for idx, leafElem in enumerate(leafElems):
                 newURL = urljoin( fullURL, leafElem[ 'key' ] )
-                resp3 = requests.get( newURL, params = params, verify = False )
+                resp3 = s.get( newURL, params = params, verify = False )
+                times_requests_given.append( time.time( ) - time0 )
                 h3 = BeautifulSoup( resp3.content, 'lxml' )
                 for videlem in h3.find_all( _valid_videlem ):
                     if datetime.datetime.fromtimestamp( float( videlem['addedat'] ) ).date() < sinceDate:
@@ -398,6 +412,7 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
                         'path' : filename }
             showdata[ 'seasons' ] = seasons
             tvdata_tup.append( ( show, showdata ) )
+        shared_list.append( times_requests_given )
         return tvdata_tup
     
     num_direlems = len( BeautifulSoup( response.content, 'lxml' ).find_all('directory' ) )
@@ -405,12 +420,20 @@ def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
     act_num_threads = min( num_threads, max_of_num_vals )
     with multiprocessing.Pool( processes = act_num_threads ) as pool:
         input_tuples = list(
-            map(lambda idx: ( response.content,
-                              list( range( idx, num_direlems, act_num_threads ) ) ),
+            map(lambda idx: (
+                response.content,
+                list( range( idx, num_direlems, act_num_threads ) ) ),
                 range( act_num_threads ) ) )
         tvdata = dict(
             chain.from_iterable(filter(
                 None, pool.map( _get_show_data, input_tuples ) ) ) )
+        total_times_requests_given = numpy.sort( numpy.array(
+            list( chain.from_iterable( shared_list ) ) ) )
+        dts = total_times_requests_given[1:] - total_times_requests_given[:-1]
+        logging.info( 'total number of requests given = %d.' % len( total_times_requests_given ) )
+        logging.info( 'minimum time between requests = %0.3e seconds.' % dts.min( ) )
+        logging.info( 'maximum time between requests = %0.3e seconds.' % dts.max( ) )
+        logging.info( 'average time between requests = %0.3e seconds.' % dts.mean( ) )            
         return key, tvdata
 
 def _get_library_stats_show( key, token, fullURL = 'http://localhost:32400',

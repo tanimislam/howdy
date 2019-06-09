@@ -81,11 +81,11 @@ class PlexConfigCredWidget( QDialogWithPrinting ):
         try:
             cred1 = plexcore.oauthGetGoogleCredentials( )
             cred2 = plexcore.oauthGetOauth2ClientGoogleCredentials( )
-            if len(list(filter(None, ( cred1, cred2 ) ) ) ) != 0:
+            if cred1 is None or cred2 is None:
                 raise ValueError( "ERROR, PROBLEMS WITH GOOGLE CREDENTIALS" )
             self.google_status.setText( 'WORKING' )
             self._emitWorkingStatusDict[ 'GOOGLE' ] = True
-        except:
+        except Exception as e:
             self.google_status.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'GOOGLE' ] = False
         self.workingStatus.emit( self._emitWorkingStatusDict )
@@ -264,6 +264,7 @@ class PlexConfigCredWidget( QDialogWithPrinting ):
         googleWidget.setLayout( googleLayout )
         googleLayout.addWidget( QLabel( 'GOOGLE' ) )
         googleLayout.addWidget( self.google_oauth )
+        googleLayout.addWidget( self.google_status )
         myLayout.addWidget( googleWidget )
         self.google_oauth.clicked.connect(
             self.pushGoogleConfig )
@@ -992,60 +993,6 @@ class UsernamePasswordServerDialog( QDialog ):
         self.clearCreds( )
         self.accept( )
 
-class UsernamePasswordDialog( QDialog ):
-    def __init__( self ):
-        super( UsernamePasswordDialog, self ).__init__( )
-        self.fullurl = ''
-        self.token = None
-        self.setModal( True )
-        self.setWindowTitle( 'PLEX ACCOUNT USERNAME/PASSWORD' )
-        mainLayout = QGridLayout( )
-        self.setLayout( mainLayout )
-        #
-        self.server_usernameBox = QLineEdit( )
-        self.server_passwordBox = QLineEdit( )
-        self.server_statusLabel = QLabel( "" )
-        self.server_passwordBox.setEchoMode( QLineEdit.Password )
-        mainLayout.addWidget( QLabel( "USERNAME" ), 0, 0, 1, 1 )
-        mainLayout.addWidget( self.server_usernameBox, 0, 1, 1, 2 )
-        mainLayout.addWidget( QLabel( "PASSWORD" ), 1, 0, 1, 1 )
-        mainLayout.addWidget( self.server_passwordBox, 1, 1, 1, 2 )
-        mainLayout.addWidget( self.server_statusLabel, 2, 0, 1, 3 )
-        self.server_usernameBox.returnPressed.connect( self.server_checkUsernamePassword )
-        self.server_passwordBox.returnPressed.connect( self.server_checkUsernamePassword )
-        #
-        ##
-        self.setFixedWidth( self.sizeHint().width() )
-        self.setFixedHeight( self.sizeHint().height() )
-
-    #
-    ## clear all credential information
-    def clearCreds( self ):
-        self.client_usernameBox.setText( '' )
-        self.client_passwordBox.setText( '' )
-        self.server_usernameBox.setText( '' )
-        self.server_passwordBox.setText( '' )
-
-    #
-    ## do plex server checking
-    def server_checkUsernamePassword( self ):        
-        self.server_usernameBox.setText( str( self.server_usernameBox.text( ) ).strip( ) )
-        self.server_passwordBox.setText( str( self.server_passwordBox.text( ) ).strip( ) )
-        #
-        ## now check that this is a valid username and password
-        username = str( self.server_usernameBox.text( ) ).strip( )
-        password = str( self.server_passwordBox.text( ) ).strip( )
-        token = plexcore.getTokenForUsernamePassword( username, password )
-        if token is None:
-            self.server_statusLabel.setText( 'ERROR: wrong credentials.' )
-            return
-        self.token = token
-        _, fullurl = max( plexcore.get_owned_servers( token ).items( ) )
-        self.fullurl = 'https://%s' % fullurl
-        plexcore.pushCredentials( username, password )
-        self.clearCreds( )
-        self.accept( )
-
 class GoogleOauth2Dialog( QDialogWithPrinting ):
     emitState = pyqtSignal( bool )
     
@@ -1088,10 +1035,9 @@ class GoogleOauth2Dialog( QDialogWithPrinting ):
             plexcore.oauth_store_google_credentials( credentials )
             self.authCredentials.setText( '' )
             self.accept( )
-            self.emitState( True )
+            self.emitState.emit( True )
         except:
             self.statusLabel.setText( 'ERROR: INVALID AUTHORIZATION CODE.' )
             self.authCredentials.setText( '' )
-            self.emitState( False )
-
+            self.emitState.emit( False )
         self.close( )

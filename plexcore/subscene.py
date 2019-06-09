@@ -28,7 +28,7 @@ import re, enum, sys, cfscrape
 from contextlib import suppress
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from . import plexcore
+from . import get_maximum_matchval
 
 # constants
 HEADERS = {
@@ -221,8 +221,8 @@ def _get_best_match_url( html, term ):
     ## get best match
     best_match_tup = max(map(lambda elem: ( get_elem_url( elem ), get_elem_text( elem ) ),
                              filter( is_valid_subscene_elem, html.find_all( 'div', { 'class' : 'title' } ) ) ),
-                         key = lambda match_tup: plexcore.get_maximum_matchval( term, match_tup[1] ) )
-    if plexcore.get_maximum_matchval(  term, best_match_tup[1] ) < 95: return None
+                         key = lambda match_tup: get_maximum_matchval( term, match_tup[1] ) )
+    if get_maximum_matchval(  term, best_match_tup[1] ) < 95: return None
     return urljoin( SITE_DOMAIN, best_match_tup[0] )
 
 def _get_valid_subscene_urltups( subtitles_html ):

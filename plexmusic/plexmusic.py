@@ -298,8 +298,8 @@ class PlexLastFM( object ):
         except: release_date = datetime.datetime.strptime( data['date'], '%Y' ).date( )
         return release_date.year
     
-    def __init__( self ):
-        data = PlexLastFM.get_lastfm_credentials( )
+    def __init__( self, data = None ):
+        if data is None: data = PlexLastFM.get_lastfm_credentials( )
         self.api_key = data[ 'api_key' ]
         self.api_secret = data[ 'api_secret' ]
         self.application_name = data[ 'application_name' ]

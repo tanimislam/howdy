@@ -5,6 +5,7 @@ import copy, numpy, sys, requests, logging
 import io, PIL.Image, base64
 from . import plextvdb
 from plexcore import plexcore, QDialogWithPrinting, QLabelWithSave
+from plexcore import get_formatted_size, get_formatted_duration
 from plextmdb import plextmdb
 
 class TVDBSeasonGUI( QDialogWithPrinting ):
@@ -44,10 +45,10 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
             #
             dur_tag = html.new_tag( "p" )
             dur_tag.string = "average duration of season %02d episodes: %s." % (
-                season, plexcore.get_formatted_duration( average_duration_season_in_secs ) )
+                season, get_formatted_duration( average_duration_season_in_secs ) )
             siz_tag = html.new_tag( "p" )
             siz_tag.string = "average size of season %02d episodes: %s." % (
-                season, plexcore.get_formatted_size( average_size_duration_in_bytes ) )
+                season, get_formatted_size( average_size_duration_in_bytes ) )
             body_elem.append( dur_tag )
             body_elem.append( siz_tag )
         return html.prettify( )
@@ -204,12 +205,12 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
         if 'duration' in episode:
             dur_tag = html.new_tag( "p" )
             dur_tag.string = "duration: %s." % (
-                plexcore.get_formatted_duration( episode[ 'duration' ] ) )
+                get_formatted_duration( episode[ 'duration' ] ) )
             body_elem.append( dur_tag )
         if 'size' in episode:
             siz_tag = html.new_tag( "p" )
             siz_tag.string = "size: %s." % (
-                plexcore.get_formatted_size( episode[ 'size' ] ) )
+                get_formatted_size( episode[ 'size' ] ) )
             body_elem.append( siz_tag )
         if len(set([ 'picurl', 'plex_token' ]) -
                set( episode ) ) == 0: # not add in the picture

@@ -16,7 +16,11 @@ class ShowsToExclude( Base ): # these are shows you want to exclude
 ## commit all tables
 create_all( )
     
-def save_tvdb_api( username: str, apikey: str, userkey: str ):
+def save_tvdb_api( username: str, apikey: str, userkey: str, verify = True ):
+    #
+    ## first check if works
+    isValid = check_tvdb_api( username, apikey, userkey, verify = verify )
+    if not isValid: return 'FAILURE, COULD NOT SAVE TVDB API STUFF'
     query = session.query( PlexConfig ).filter( PlexConfig.service == 'tvdb' )
     val = query.first( )
     if val is not None:
@@ -29,6 +33,15 @@ def save_tvdb_api( username: str, apikey: str, userkey: str ):
                              'userkey' : userkey } )
     session.add( newval )
     session.commit( )
+    return 'SUCCESS'
+
+def check_tvdb_api( username, apikey, userkey, verify = True ):
+    token = get_token( verify = verify,
+                       data = {  'apikey' : apikey,
+                                 'username' : username,
+                                 'userkey' : userkey } )
+    if token is None: return False
+    return True
 
 def get_tvdb_api( ) -> dict:
     query = session.query( PlexConfig ).filter( PlexConfig.service == 'tvdb' )
@@ -40,11 +53,11 @@ def get_tvdb_api( ) -> dict:
              'apikey' : data['apikey'],
              'userkey' : data['userkey'] }
 
-def get_token( verify: bool = True ) -> str:
-    data = json.dumps( get_tvdb_api( ) )
+def get_token( verify: bool = True, data = None ) -> str:
+    if data is None: data = get_tvdb_api( )
     headers = { 'Content-Type' : 'application/json' }
     response = requests.post( 'https://api.thetvdb.com/login',
-                              data = json.dumps( get_tvdb_api( ) ),
+                              data = json.dumps( data ),
                               verify = verify, headers = headers )
     if response.status_code != 200: return None
     return response.json( )[ 'token' ]

@@ -1,9 +1,50 @@
 import os, subprocess, time, logging, shlex
 from . import session, Base, PlexConfig
 from sqlalchemy import Column, Integer, String
+from distutils.spawn import find_executable
+from fabric import Connection
+from patchwork.files import exists, directory
 
-def push_credentials( local_dir, sshpath, subdir = None ):
-    assert( os.path.isdir( os.path.abspath( local_dir ) ) )
+## validation to see if the data is valid
+def check_credentials( local_dir, sshpath, password, subdir = None ):
+    try:
+        #
+        ## first, does local directory exist?        
+        if not os.path.isdir( os.path.abspath( local_dir ) ):
+            raise ValueError( "Error, %s is not a directory." % os.path.abspath( local_dir ) )
+        #
+        ## second, can we login with username and password?
+        uname = sshpath.split('@')[0]
+        hostname = sshpath.split('@')[1]
+        # raises a ValueError if cannot do so
+        # needs to pass in look_for_keys = False so not use id_* keys
+        with Connection( hostname, user = uname,
+                         connect_kwargs = {
+                             'password' : password,
+                             'look_for_keys' : False } ) as conn:
+            conn.run( 'ls', hide = True ) # errors out if not a valid connection
+            #
+            ## third, if subdir is None does it exist?
+            if subdir is not None:
+                if not exists( conn, subdir ):
+                    raise ValueError( "Error, %s does not exist." % subdir )
+                # will raise an error if this is a file
+                directory( conn, subdir )
+        return True
+    except:
+        return False
+
+def push_credentials( local_dir, sshpath, password, subdir = None ):
+    #
+    ## validation to see if the data is valid
+    #
+    ## first, does local directory exist?
+    isValid = check_credentials( local_dir, sshpath, password,
+                                 subdir = subdir )
+    if not isValid: return "ERROR, COULD NOT SET RSYNC SSH CONNECTION CREDENTIALS"
+
+    #
+    ## success
     val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'rsync' ).first( )
     if val is not None:
@@ -14,7 +55,8 @@ def push_credentials( local_dir, sshpath, subdir = None ):
         data = {
             'localdir' : os.path.abspath( local_dir.strip( ) ),
             'sshpath' : sshpath.strip( ),
-            'subdir' : subdir } )
+            'subdir' : subdir,
+            'password' : password } )
     session.add( newval )
     session.commit( )
     mystr_split = [
@@ -27,23 +69,7 @@ def push_credentials( local_dir, sshpath, subdir = None ):
     if subdir is not None:
         mystr_split.append( 'sub directory on local machine from which to get files: %s' % subdir )
     logging.debug('\n'.join( mystr_split ) )
-
-def get_rsync_command( data, mystr, do_download = True ):
-    if do_download:
-        if data['subdir'] is not None:
-            mainStr = os.path.join( data['subdir'], mystr.strip( ) )
-        else: mainStr = mystr.strip( )
-        mycmd = 'rsync --remove-source-files -P -avz -e ssh %s:%s %s/' % (
-            data[ 'sshpath' ], mainStr, data['local_dir'] )
-    else:
-        fullpath = os.path.join( data['local_dir'], mystr )
-        if data['subdir'] is not None:
-            mycmd = 'rsync --remove-source-files -P -avz -e ssh %s %s:%s/' % (
-                fullpath, data[ 'sshpath' ], data['subdir'] )
-        else:
-            mycmd = 'rsync --remove-source-files -P -avz -e ssh %s %s:' % (
-                fullpath, data[ 'sshpath' ] )            
-    return mycmd
+    return 'SUCCESS'
 
 def get_credentials( ):
     val = session.query( PlexConfig ).filter(
@@ -55,11 +81,37 @@ def get_credentials( ):
     local_dir = data['localdir']
     sshpath = data['sshpath']
     subdir = data['subdir']
-    data = { 'local_dir' : local_dir,
-             'sshpath' : sshpath }
-    if subdir is None: data['subdir'] = None
-    else: data['subdir'] = subdir.strip( )
-    return data
+    datan = { 'local_dir' : local_dir,
+              'sshpath' : sshpath }
+    if 'password' not in data:
+        datan[ 'password'] = None
+    else: datan[ 'password' ] = data['password']
+    if subdir is None: datan['subdir'] = None
+    else: datan['subdir'] = subdir.strip( )
+    return datan
+
+def get_rsync_command( data, mystr, do_download = True ):
+    if do_download:
+        if data['subdir'] is not None:
+            mainStr = os.path.join( data['subdir'], mystr.strip( ) )
+        else: mainStr = mystr.strip( )
+        mycmd = 'rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass %s ssh" -e ssh %s:%s %s/' % (
+            data[ 'password' ], data[ 'sshpath' ], mainStr, data['local_dir'] )
+        mxcmd = 'rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass XXXX ssh" -e ssh %s:%s %s/' % (
+            data[ 'sshpath' ], mainStr, data['local_dir'] )
+    else:
+        fullpath = os.path.join( data['local_dir'], mystr )
+        if data['subdir'] is not None:
+            mycmd = 'rsync --remove-source-files -P --rsh="/usr/bin/sshpass %s ssh" -avz -e ssh %s %s:%s/' % (
+                data[ 'password' ], fullpath, data[ 'sshpath' ], data['subdir'] )
+            mxcmd = 'rsync --remove-source-files -P --rsh="/usr/bin/sshpass XXXX ssh" -avz -e ssh %s %s:%s/' % (
+                fullpath, data[ 'sshpath' ], data['subdir'] )
+        else:
+            mycmd = 'rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass %s ssh" -e ssh %s %s:' % (
+                data[ 'password' ], fullpath, data[ 'sshpath' ] )
+            mxcmd =  'rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass XXXX ssh" -e ssh %s %s:' % (
+                data[ 'password' ], fullpath, data[ 'sshpath' ] )
+    return mycmd, mxcmd
 
 def download_upload_files( glob_string, numtries = 10, debug_string = False,
                            do_reverse = False ):
@@ -69,8 +121,8 @@ def download_upload_files( glob_string, numtries = 10, debug_string = False,
         return "FAILURE", "could not get credentials for performing rsync operation"
     local_dir = data[ 'local_dir' ].strip( )
     sshpath = data[ 'sshpath' ].strip( )
-    mycmd = get_rsync_command( data, glob_string, do_download = not do_reverse )
-    mystr_split = [ 'STARTING THIS RSYNC CMD: %s' % mycmd ]
+    mycmd, mxcmd = get_rsync_command( data, glob_string, do_download = not do_reverse )
+    mystr_split = [ 'STARTING THIS RSYNC CMD: %s' % mxcmd ]
     if debug_string:
         print( mystr_split[-1] )
         print( 'TRYING UP TO %d TIMES.' % numtries )

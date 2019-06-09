@@ -11,7 +11,6 @@ from html import unescape
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.parse import urlencode, urljoin
-from fuzzywuzzy.fuzz import partial_ratio
 from itertools import chain
 from multiprocessing import Manager
 from . import mainDir, session
@@ -86,6 +85,7 @@ def getTokenForUsernamePassword( username, password, verify = True ):
 def checkServerCredentials( doLocal = False, verify = True ):
     val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'login' ).first( )
+    if val is None: return None
     data = val.data
     username = data['username'].strip( )
     password = data['password'].strip( )
@@ -97,6 +97,18 @@ def checkServerCredentials( doLocal = False, verify = True ):
         fullurl = 'https://%s' % fullurl
     else: fullurl = 'http://localhost:32400'
     return fullurl, token
+
+def getCredentials( verify = True ):
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'login' ).first( )
+    if val is None: return None
+    data = val.data
+    username = data['username'].strip( )
+    password = data['password'].strip( )
+    token = getTokenForUsernamePassword(
+        username, password, verify = verify )
+    if token is None: return None
+    return username, password
 
 def pushCredentials( username, password ):
     #
@@ -769,8 +781,9 @@ def fill_out_movies_stuff( fullURL = 'https://localhost:32400', token = None,
             if dat_copy[ 'releasedate' ] is None or len_summary == 0 or dat_copy[ 'rating' ] is None:
                 problem_rows.append( dat_copy )
                 continue
-            movie_data_rows.append( dat_copy )
             assert( 'localpic' in dat_copy )
+            movie_data_rows.append( dat_copy )
+            
     with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
         movie_data_rows += list(
             pool.map(_solve_problem_row, problem_rows ) )
@@ -963,62 +976,46 @@ def get_jackett_credentials( ):
     url = data['url'].strip( )
     apikey = data['apikey'].strip( )
     return url, apikey
-        
+
 #
-## string match with fuzzywuzzy
-def get_maximum_matchval( check_string, input_string ):
-    cstring = check_string.strip( ).lower( )
-    istring = input_string.strip( ).lower( )
-    return partial_ratio( check_string.strip( ).lower( ),
-                          input_string.strip( ).lower( ) )
+## now get imgurl credentials
+def get_imgurl_credentials( ):
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'imgurl' ).first( )
+    if val is None:
+        raise ValueError( "ERROR, COULD NOT GET ACCESS TOKEN." )
+    data_imgurl = val.data
+    return data_imgurl[ 'clientID' ], data_imgurl[ 'clientSECRET' ], data_imgurl[ 'clientREFRESHTOKEN' ]
 
-def get_formatted_duration( totdur ):
-    dt = datetime.datetime.utcfromtimestamp( totdur )
-    durstringsplit = []
-    month_off = 1
-    day_off = 1
-    hour_off = 0
-    min_off = 0
-    if dt.year - 1970 != 0:
-        durstringsplit.append('%d years' % ( dt.year - 1970 ) )
-        month_off = 0
-    if dt.month != month_off:
-        durstringsplit.append('%d months' % ( dt.month - month_off ) )
-        day_off = 0
-    if dt.day != day_off:
-        durstringsplit.append('%d days' % ( dt.day - day_off ) )
-        hour_off = 0
-    if dt.hour != hour_off:
-        durstringsplit.append('%d hours' % ( dt.hour - hour_off ) )
-        min_off = 0
-    if dt.minute != min_off:
-        durstringsplit.append('%d minutes' % ( dt.minute - min_off ) )
-    if len(durstringsplit) != 0:
-        durstringsplit.append('and %0.3f seconds' % ( dt.second + 1e-6 * dt.microsecond ) )
-    else:
-        durstringsplit.append('%0.3f seconds' % ( dt.second + 1e-6 * dt.microsecond ) )
-    return ', '.join( durstringsplit )
+def check_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify = True ):
+    response = requests.post(
+         'https://api.imgur.com/oauth2/token',
+        data = {'client_id': clientID,
+                'client_secret': clientSECRET,
+                'grant_type': 'refresh_token',
+                'refresh_token': clientREFRESHTOKEN },
+        verify = verify )
+    if response.status_code != 200:
+        return False
+    return True
 
-def get_formatted_size( totsizebytes ):
-    sizestring = ''
-    if totsizebytes >= 1024**3:
-        size_in_gb = totsizebytes * 1.0 / 1024**3
-        sizestring = '%0.3f GB' % size_in_gb
-    elif totsizebytes >= 1024**2:
-        size_in_mb = totsizebytes * 1.0 / 1024**2
-        sizestring = '%0.3f MB' % size_in_mb
-    elif totsizebytes >= 1024:
-        size_in_kb = totsizebytes * 1.0 / 1024
-        sizestring = '%0.3f kB' % size_in_kb
-    return sizestring
-
-def get_formatted_size_MB( totsizeMB ):
-    if totsizeMB >= 1024:
-        size_in_gb = totsizeMB * 1.0 / 1024
-        return '%0.3f GB' % size_in_gb
-    elif totsizeMB > 0: return '%0.3f MB' % totsizeMB
-    else: return ""
-
+def store_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify = True ):
+    isValid =  check_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN,
+                                         verify = verify )
+    if not isValid: return 'ERROR, COULD NOT STORE IMGURL CREDENTIALS.'
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'imgurl' ).first( )
+    if val is not None:
+        session.delete( val )
+        session.commit( )
+    newval = PlexConfig(
+        service = 'imgurl',
+        data = { 'clientID' : clientID,
+                 'clientSECRET' : clientSECRET,
+                 'clientREFRESHTOKEN' : clientREFRESHTOKEN } )
+    session.add( newval )
+    session.commit( )
+    return 'SUCCESS'
+    
+    
 def set_date_newsletter( ):
     query = session.query( LastNewsletterDate )
     backthen = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )

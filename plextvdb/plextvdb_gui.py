@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 from . import plextvdb, mainDir, get_token
 from .plextvdb_season_gui import TVDBSeasonGUI
 from plexcore import plexcore, geoip_reader, QLabelWithSave
+from plexcore import get_formatted_size, get_formatted_duration
 from plexcore import QDialogWithPrinting, ProgressDialog
 from plextmdb import plextmdb
 
@@ -214,10 +215,10 @@ class TVDBGUI( QDialogWithPrinting ):
                     set([0]))))).mean( )
         dur_tag = html.new_tag( "p" )
         dur_tag.string = "average duration of %02d episodes: %s." % (
-            num_total, plexcore.get_formatted_duration( average_duration_in_secs ) )
+            num_total, get_formatted_duration( average_duration_in_secs ) )
         siz_tag = html.new_tag( "p" )
         siz_tag.string = "average size of %02d episodes: %s." % (
-            num_total, plexcore.get_formatted_size( average_size_in_bytes ) )
+            num_total, get_formatted_size( average_size_in_bytes ) )
         body_elem.append( dur_tag )
         body_elem.append( siz_tag )
         return html.prettify( ), html2.prettify( )

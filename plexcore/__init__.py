@@ -12,8 +12,14 @@ from bs4 import BeautifulSoup
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
+from fuzzywuzzy.fuzz import partial_ratio
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
+
+# resource file and stuff
+mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
+baseConfDir = xdg.BaseDirectory.save_config_path( 'plexstuff' )
+sys.path.append( mainDir )
 
 #
 ## geoip stuff, exposes a single geop_reader from plexcore
@@ -92,6 +98,7 @@ class QDialogWithPrinting( QDialog ):
 
     def __init__( self, parent, isIsolated = True, doQuit = False ):
         super( QDialogWithPrinting, self ).__init__( parent )
+        self.setModal( True )
         if isIsolated:
             printAction = QAction( self )
             printAction.setShortcut( 'Shift+Ctrl+P' )
@@ -100,8 +107,10 @@ class QDialogWithPrinting( QDialog ):
             #
             quitAction = QAction( self )
             quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
-            if not doQuit: quitAction.triggered.connect( self.close )
-            else: quitAction.triggered.connect( sys.exit )
+            if not doQuit:
+                quitAction.triggered.connect( self.hide )
+            else:
+                quitAction.triggered.connect( sys.exit )
             self.addAction( quitAction )
 
 class ProgressDialog( QDialogWithPrinting ): # replace with QProgressDialog in the future?
@@ -200,18 +209,67 @@ def splitall( path_init ):
             allparts.insert( 0, parts[ 1 ] )
     return allparts
 
-# resource file and stuff
-mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
-baseConfDir = xdg.BaseDirectory.save_config_path( 'plexstuff' )
-sys.path.append( mainDir )
+def get_formatted_duration( totdur ):
+    dt = datetime.datetime.utcfromtimestamp( totdur )
+    durstringsplit = []
+    month_off = 1
+    day_off = 1
+    hour_off = 0
+    min_off = 0
+    if dt.year - 1970 != 0:
+        durstringsplit.append('%d years' % ( dt.year - 1970 ) )
+        month_off = 0
+    if dt.month != month_off:
+        durstringsplit.append('%d months' % ( dt.month - month_off ) )
+        day_off = 0
+    if dt.day != day_off:
+        durstringsplit.append('%d days' % ( dt.day - day_off ) )
+        hour_off = 0
+    if dt.hour != hour_off:
+        durstringsplit.append('%d hours' % ( dt.hour - hour_off ) )
+        min_off = 0
+    if dt.minute != min_off:
+        durstringsplit.append('%d minutes' % ( dt.minute - min_off ) )
+    if len(durstringsplit) != 0:
+        durstringsplit.append('and %0.3f seconds' % ( dt.second + 1e-6 * dt.microsecond ) )
+    else:
+        durstringsplit.append('%0.3f seconds' % ( dt.second + 1e-6 * dt.microsecond ) )
+    return ', '.join( durstringsplit )
 
+
+def get_formatted_size( totsizebytes ):
+    sizestring = ''
+    if totsizebytes >= 1024**3:
+        size_in_gb = totsizebytes * 1.0 / 1024**3
+        sizestring = '%0.3f GB' % size_in_gb
+    elif totsizebytes >= 1024**2:
+        size_in_mb = totsizebytes * 1.0 / 1024**2
+        sizestring = '%0.3f MB' % size_in_mb
+    elif totsizebytes >= 1024:
+        size_in_kb = totsizebytes * 1.0 / 1024
+        sizestring = '%0.3f kB' % size_in_kb
+    return sizestring
+
+def get_formatted_size_MB( totsizeMB ):
+    if totsizeMB >= 1024:
+        size_in_gb = totsizeMB * 1.0 / 1024
+        return '%0.3f GB' % size_in_gb
+    elif totsizeMB > 0: return '%0.3f MB' % totsizeMB
+    else: return ""
+
+#
+## string match with fuzzywuzzy
+def get_maximum_matchval( check_string, input_string ):
+    cstring = check_string.strip( ).lower( )
+    istring = input_string.strip( ).lower( )
+    return partial_ratio( check_string.strip( ).lower( ),
+                          input_string.strip( ).lower( ) )
 
 def returnQAppWithFonts( ):
     app = QApplication([])
     fontNames = sorted(glob.glob( os.path.join( mainDir, 'resources', '*.tff' ) ) )
     for fontName in fontNames: QFontDatabase.addApplicationFont( fontName )
     return app
-
 
 # follow directions in http://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
 _engine = create_engine( 'sqlite:///%s' % os.path.join( baseConfDir, 'app.db') )

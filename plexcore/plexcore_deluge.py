@@ -151,6 +151,12 @@ def get_deluge_client( ):
         error_message = 'ERROR, INVALID SETTINGS FOR DELUGE CLIENT.'        
         return None, error_message
 
+def get_deluge_credentials( ):
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'deluge' ).first( )
+    if val is None: return None
+    return val.data
+
 def push_deluge_credentials( url, port, username, password ):
     #
     ## first check that the configurations are valid

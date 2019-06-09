@@ -2,8 +2,8 @@ import threading, requests, fuzzywuzzy, re, os, time, logging
 from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
 from requests.compat import urljoin
-from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials
-from plexcore import plexcore
+from plexcore.plexcore import get_jackett_credentials
+from plexcore import plexcore, get_maximum_matchval
 from . import plextmdb
 
 def _return_error_raw( msg ): return None, msg
@@ -36,7 +36,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True ):
         return params
 
     params = _return_params( name )
-    # logging.info( 'jackett params = %s.' % params )
+    logging.info( 'jackett params = %s.' % params )
     response = requests.get( urljoin( url, endpoint ), verify = verify,
                              params = params )
     if response.status_code != 200:
@@ -49,7 +49,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True ):
     html = BeautifulSoup( response.content, 'lxml' )
     if len( html.find_all('item') ) == 0:
         return _return_error_raw(
-            'failure, no tv shows or series satisfying criteria for getting %s.' % name )
+            'failure, could not find movie %s with jackett.' % name )
     items = [ ]
     
     def _get_magnet_url( item ):
@@ -476,13 +476,4 @@ def get_movie_torrent( name, verify = True ):
     if 'movies' not in data or len(data['movies']) == 0:
         return None, "Could not find %s, exiting..." % name
     movies = data['movies']
-    #print movies
-    #if beforeYear is not None:
-    #    movies = filter(lambda movie: int(movie['year']) <= beforeYear, movies )
-    # alldata = { }
-    # for actmov in movies:
-    #     title = actmov['title']
-    #     url = list(filter(lambda tor: 'quality' in tor and '3D' not in tor['quality'],
-    #                       actmov['torrents']))[0]['url']
-    #    alldata[ title ] = requests.get( url, verify = verify ).content
     return movies, 'SUCCESS'

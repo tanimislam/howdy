@@ -22,10 +22,11 @@ def get_items_eztv_io( name, maxnum = 10 ):
         return None
     return items
 
-def get_items_jackett( name, maxnum = 1000 ):
+def get_items_jackett( name, maxnum = 1000, raw = False ):
     assert( maxnum >= 5 )
     logging.info( 'started jackett %s.' % name )
-    items, status = plextvdb_torrents.get_tv_torrent_jackett( name, maxnum = maxnum )
+    items, status = plextvdb_torrents.get_tv_torrent_jackett(
+        name, maxnum = maxnum, raw = raw )
     if status != 'SUCCESS':
         logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
         return None
@@ -110,7 +111,7 @@ def get_tv_torrent_items(
         with open(filename, 'w') as openfile:
             openfile.write('%s\n' % magnet_link )
 
-def process_magnet_items( name ):
+def process_magnet_items( name, raw = False ):
     time0 = time.time( )
     #
     ## check for jackett
@@ -126,7 +127,8 @@ def process_magnet_items( name ):
         pool = Pool( processes = 3 )
         jobs = list(map(
             lambda func: pool.apply_async( func, args = ( name, opts.maxnum ) ),
-            ( get_items_jackett, get_items_zooqle, get_items_eztv_io ) ) )
+            ( get_items_zooqle, get_items_eztv_io ) ) )
+        jobs.append( pool.apply_async( get_items_jackett, args = ( name, opts.maxnum, raw ) ) )
     items_all = list( chain.from_iterable( filter( None, map(lambda job: job.get( ), jobs ) ) ) )
     logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )
     pool.close( )
@@ -140,6 +142,8 @@ if __name__=='__main__':
                       help = 'Name of the TV show to get.')
     parser.add_option('--maxnum', dest='maxnum', type=int, action='store', default = 10,
                       help = 'Maximum number of torrents to look through. Default is 10.')
+    parser.add_option('--raw', dest='do_raw', action='store_true', default = False,
+                      help = 'If chosen, then use the raw string (for jackett) to download the torrent.' )
     parser.add_option('--any', dest='do_any', action='store_true', default = False,
                       help = 'If chosen, make no filter on TV show format.')
     parser.add_option('-f', '--filename', dest='filename', action='store', type=str,

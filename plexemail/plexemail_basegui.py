@@ -10,15 +10,13 @@ class PlexIMGClient( object ):
         #
         ## https://api.imgur.com/oauth2 advice on using refresh tokens
         self.verify = verify
-        val = session.query( PlexConfig ).filter( PlexConfig.service == 'imgurl' ).first( )
-        if val is None:
-            raise ValueError( "ERROR, COULD NOT GET ACCESS TOKEN." )
-        data_imgurl = val.data
+        dat = plexcore.get_imgurl_credentials( )
+        clientID, clientSECRET, clientREFRESHTOKEN = dat
         response = requests.post( 'https://api.imgur.com/oauth2/token',
-                                  data = {'client_id': data_imgurl[ 'clientID' ],
-                                          'client_secret': data_imgurl[ 'clientSECRET' ],
+                                  data = {'client_id': clientID,
+                                          'client_secret': clientSECRET,
                                           'grant_type': 'refresh_token',
-                                          'refresh_token': data_imgurl[ 'clientREFRESHTOKEN' ] },
+                                          'refresh_token': clientREFRESHTOKEN },
                                   verify = self.verify )
         if response.status_code != 200:
             raise ValueError( "ERROR, COULD NOT GET ACCESS TOKEN." )

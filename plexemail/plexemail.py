@@ -7,6 +7,7 @@ from email.mime.application import MIMEApplication
 from email.mime.audio import MIMEAudio
 from email.mime.image import MIMEImage
 from plexcore import session, plexcore
+from plexcore import get_formatted_size, get_formatted_duration
 from . import mainDir, send_email_lowlevel, send_email_localsmtp
 
 def send_email_movie_torrent( movieName, data, isJackett = False):
@@ -338,8 +339,8 @@ def get_summary_data_freshair_remote( token, fullURLWithPort = 'http://localhost
     key, num_songs, _, _, totdur, totsizebytes = plexcore._get_library_stats_artist(
         keynum, token, fullURL = fullURLWithPort )
     mainstring = 'There are %d episodes of NPR Fresh Air.'  % num_songs
-    sizestring = 'The total size of Fresh Air media is %s.' % plexcore.get_formatted_size( totsizebytes )
-    durstring = 'The total duration of Fresh Air media is %s.' % plexcore.get_formatted_duration( totdur )
+    sizestring = 'The total size of Fresh Air media is %s.' % get_formatted_size( totsizebytes )
+    durstring = 'The total duration of Fresh Air media is %s.' % get_formatted_duration( totdur )
     if sinceDate is not None:
         key, num_songs_since, _, _, \
             totdur_since, totsizebytes_since = plexcore._get_library_stats_artist(
@@ -349,9 +350,9 @@ def get_summary_data_freshair_remote( token, fullURLWithPort = 'http://localhost
                 'Since %s, I have added %d new Fresh Air episodes.' %
                 ( sinceDate.strftime('%B %d, %Y'), num_songs_since ),
                 'The total size of Fresh Air media I have added is %s.' %
-                plexcore.get_formatted_size( totsizebytes_since ),
+                get_formatted_size( totsizebytes_since ),
                 'The total duration of Fresh Air media I have added is %s.' %
-                plexcore.get_formatted_duration( totdur_since ) ] )
+                get_formatted_duration( totdur_since ) ] )
             return ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
     return ' '.join([ mainstring, sizestring, durstring ])
 
@@ -373,9 +374,9 @@ def get_summary_data_thisamericanlife_remote( token, fullURLWithPort = 'http://l
     mainstring = 'There are %d episodes in %d series in This American Life.' % (
         num_episodes, len( song_data ) )
     sizestring = 'The total size of This American Life media is %s.' % \
-        plexcore.get_formatted_size( totsizebytes )
+        get_formatted_size( totsizebytes )
     durstring = 'The total duration of This American Life media is %s.' % \
-        plexcore.get_formatted_duration( totdur )
+        get_formatted_duration( totdur )
     if sinceDate is None:
         pristrings = [ ' '.join([ mainstring, sizestring, durstring ]), ]
     else:
@@ -396,9 +397,9 @@ def get_summary_data_thisamericanlife_remote( token, fullURLWithPort = 'http://l
                 'Since %s, I have added %d new This American Life episodes.' %
                 ( sinceDate.strftime( '%B %d, %Y' ), num_episodes_since ),
                 'The total size of This American Life media I added is %s.' %
-                plexcore.get_formatted_size( totsizebytes_since ),
+                get_formatted_size( totsizebytes_since ),
                 'The total duration of This American Life media I added is %s.' %
-                plexcore.get_formatted_duration( totdur_since ) ])
+                get_formatted_duration( totdur_since ) ])
             pristrings = [ ' '.join([ mainstring, sizestring, durstring, mainstring_since ]), ]
         else:
             pristrings = [ ' '.join([ mainstring, sizestring, durstring ]), ]           
@@ -417,8 +418,8 @@ def get_summary_data_thisamericanlife_remote( token, fullURLWithPort = 'http://l
                 totdur += dur
                 totsizebytes += sizebytes
         mainstring = 'There are %d episodes in this category.' % num_episodes
-        sizestring = 'The total size of media here is %s.' % plexcore.get_formatted_size( totsizebytes )
-        durstring = 'The total duration of media here is %s.' % plexcore.get_formatted_duration( totdur )
+        sizestring = 'The total size of media here is %s.' % get_formatted_size( totsizebytes )
+        durstring = 'The total duration of media here is %s.' % get_formatted_duration( totdur )
         if sinceDate is None:
             mystring = ' '.join([ mainstring, sizestring, durstring ])
         else:
@@ -439,9 +440,9 @@ def get_summary_data_thisamericanlife_remote( token, fullURLWithPort = 'http://l
                         'Since %s, I have added %d new episodes in this category.' %
                         ( sinceDate.strftime( '%B %d, %Y' ), num_episodes_since ),
                         'The total size of media I added here is %s.' %
-                        plexcore.get_formatted_size( totsizebytes_since ),
+                        get_formatted_size( totsizebytes_since ),
                         'The total duration of media I added here is %s.' %
-                        plexcore.get_formatted_duration( totdur_since ) ])
+                        get_formatted_duration( totdur_since ) ])
                     mystring = ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
                 else:
                     mystring = ' '.join([ mainstring, sizestring, durstring ])
@@ -457,8 +458,8 @@ def get_summary_data_music_remote( token, fullURLWithPort = 'http://localhost:32
         keynum, token, fullURL = fullURLWithPort )
     mainstring = 'There are %d songs made by %d artists in %d albums.' % (
         num_songs, num_artists, num_albums )
-    sizestring = 'The total size of music media is %s.' % plexcore.get_formatted_size( totsizebytes )
-    durstring = 'The total duration of music media is %s.' % plexcore.get_formatted_duration( totdur )
+    sizestring = 'The total size of music media is %s.' % get_formatted_size( totsizebytes )
+    durstring = 'The total duration of music media is %s.' % get_formatted_duration( totdur )
     if sinceDate is not None:
         key, num_songs_since, num_albums_since, num_artists_since, \
             totdur_since, totsizebytes_since = plexcore._get_library_stats_artist(
@@ -468,9 +469,9 @@ def get_summary_data_music_remote( token, fullURLWithPort = 'http://localhost:32
                 'Since %s, I have added %d songs made by %d artists in %d albums.' %
                 ( sinceDate.strftime( '%B %d, %Y' ), num_songs_since, num_artists_since, num_albums_since ),
                 'The total size of music media I added is %s.' %
-                plexcore.get_formatted_size( totsizebytes_since ),
+                get_formatted_size( totsizebytes_since ),
                 'The total duration of music media I added is %s.' %
-                plexcore.get_formatted_duration( totdur_since ) ])
+                get_formatted_duration( totdur_since ) ])
             musicstring = ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
             return musicstring
     musicstring = ' '.join([ mainstring, sizestring, durstring ])
@@ -483,9 +484,9 @@ def get_summary_data_television_remote( token, fullURLWithPort = 'http://localho
     key, numTVeps, numTVshows, totdur, totsizebytes = plexcore._get_library_stats_show(
         keynum, token, fullURL = fullURLWithPort )
     sizestring = 'The total size of TV media is %s.' % \
-        plexcore.get_formatted_size( totsizebytes )
+        get_formatted_size( totsizebytes )
     durstring = 'The total duration of TV media is %s.' % \
-        plexcore.get_formatted_duration( totdur )
+        get_formatted_duration( totdur )
     mainstring = 'There are %d TV files in %d TV shows.' % ( numTVeps, numTVshows )
     if sinceDate is not None:
         key, numTVeps_since, numTVshows_since, \
@@ -496,9 +497,9 @@ def get_summary_data_television_remote( token, fullURLWithPort = 'http://localho
                 'Since %s, I have added %d TV files in %d TV shows.' %
                 ( sinceDate.strftime('%B %d, %Y'), numTVeps_since, numTVshows_since ),
                 'The total size of TV media I added is %s.' %
-                plexcore.get_formatted_size( totsizebytes_since ),
+                get_formatted_size( totsizebytes_since ),
                 'The total duration of TV media I added is %s.' %
-                plexcore.get_formatted_duration( totdur_since ) ] )
+                get_formatted_duration( totdur_since ) ] )
             tvstring = ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
             return tvstring
     tvstring = ' '.join([ mainstring, sizestring, durstring ])
@@ -519,13 +520,13 @@ def get_summary_data_movies_remote( token, fullURLWithPort = 'http://localhost:3
                 'Since %s, I have added %d movies in %d categories.' %
                 ( sinceDate.strftime('%B %d, %Y'), num_movies_since, len( sorted_by_genres_since ) ),
                 'The total size of movie media I added is %s.' %
-                plexcore.get_formatted_size( totsizebytes_since ),
+                get_formatted_size( totsizebytes_since ),
                 'The total duration of movie media I added is %s.' %
-                plexcore.get_formatted_duration( totdur_since ) ] )
+                get_formatted_duration( totdur_since ) ] )
     categories = sorted( sorted_by_genres )
     mainstring = 'There are %d movies in %d categories.' % ( num_movies, len( categories ) )
-    sizestring = 'The total size of movie media is %s.' % plexcore.get_formatted_size( totsizebytes )
-    durstring = 'The total duration of movie media is %s.' % plexcore.get_formatted_duration( totdur )
+    sizestring = 'The total size of movie media is %s.' % get_formatted_size( totsizebytes )
+    durstring = 'The total duration of movie media is %s.' % get_formatted_duration( totdur )
     #
     ## get last 7 movies that I have added
     lastN_movies = plexcore.get_lastN_movies( 7, token, fullURLWithPort = fullURLWithPort )
@@ -553,18 +554,18 @@ def get_summary_data_movies_remote( token, fullURLWithPort = 'http://localhost:3
         num_movies, totdur, totsizebytes = sorted_by_genres[ cat ]
         mainstring = 'There are %d movies in this category.' % num_movies
         sizestring = 'The total size of movie media here is %s.' % \
-            plexcore.get_formatted_size( totsizebytes )
+            get_formatted_size( totsizebytes )
         durstring = 'The total duration of movie media here is %s.' % \
-            plexcore.get_formatted_duration( totdur )
+            get_formatted_duration( totdur )
         if sinceDate is not None and cat in sorted_by_genres_since and num_movies_since > 0:
             num_movies_since, totdur_since, totsizebytes_since = sorted_by_genres_since[ cat ]
             mainstring_since = ' '.join([
                 'Since %s, I have added %d movies in this category.' %
                 ( sinceDate.strftime( '%B %d, %Y' ), num_movies_since ),
                 'The total size of movie media I added here is %s.' %
-                plexcore.get_formatted_size( totsizebytes_since ),
+                get_formatted_size( totsizebytes_since ),
                 'The total duration of movie media I added here is %s.' %
-                plexcore.get_formatted_duration( totdur_since ) ] )
+                get_formatted_duration( totdur_since ) ] )
             movstring = ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
         else:
             movstring = ' '.join([ mainstring, sizestring, durstring ])
@@ -579,8 +580,8 @@ def get_summary_data_movies( allrows ):
     totsizebytes = sum(map(lambda row: row[7], movie_rows ) )
     categories = set(map(lambda row: row[5].split('/')[4].strip(), movie_rows ) )
     mainstring = 'There are %d movies in %d categories.' % ( len( movie_rows ), len( categories ) )
-    sizestring = 'The total size of movie media is %s.' % plexcore.get_formatted_size( totsizebytes )
-    durstring = 'The total duration of movie media is %s.' % plexcore.get_formatted_duration( totdur )    
+    sizestring = 'The total size of movie media is %s.' % get_formatted_size( totsizebytes )
+    durstring = 'The total duration of movie media is %s.' % get_formatted_duration( totdur )    
     #
     ## get last 7 movies that I have added
     lastN_movies = plexcore.get_lastN_movies( 7 )
@@ -602,9 +603,9 @@ def get_summary_data_movies( allrows ):
         totsizebytes = sum(map(lambda row: row[7], cat_mov_rows ) )
         mainstring = 'There are %d movies in this category.' % len( cat_mov_rows )
         sizestring = 'The total size of movie media here is %s.' % \
-            plexcore.get_formatted_size( totsizebytes )
+            get_formatted_size( totsizebytes )
         durstring = 'The total duration of movie media here is %s.' % \
-            plexcore.get_formatted_duration( totdur )
+            get_formatted_duration( totdur )
         movstring = ' '.join([ mainstring, sizestring, durstring ])
         catmovstrings[cat] = movstring
     movstrings.append( catmovstrings )    

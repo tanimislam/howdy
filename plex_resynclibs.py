@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
-import requests
 from optparse import OptionParser
-from plexcore import plexcore
-from plexemail import plexemail
+from plexcore import plexcore, get_formatted_duration, get_formatted_size
 
 def _print_summary( library_key, library_dict, token = None, fullURL = 'http://localhost:32400' ):
     data = plexcore.get_library_stats( library_key, token = token, fullURL = fullURL )
@@ -13,26 +11,26 @@ def _print_summary( library_key, library_dict, token = None, fullURL = 'http://l
         print( ' '.join([ '%s is a movie library.' % library_dict[ library_key ],
                           'There are %d movies here.' % num_movies,
                           'The total size of movie media is %s.' %
-                          plexemailstuff.get_formatted_size( totsize ),
+                          get_formatted_size( totsize ),
                           'The total duration of movie media is %s.' % 
-                          plexemailstuff.get_formatted_duration( totdur ) ]) )
+                          get_formatted_duration( totdur ) ]) )
     elif mediatype == 'show':
         num_tveps, num_tvshows, totdur, totsize = data[3:]
         print( ' '.join([ '%s is a TV library.' % library_dict[ library_key ],
                           'There are %d TV files in %d TV shows.' % ( num_tveps, num_tvshows ),
                           'The total size of TV media is %s.' %
-                          plexemailstuff.get_formatted_size( totsize ),
+                          get_formatted_size( totsize ),
                           'The total duration of TV shows is %s.' % 
-                          plexemailstuff.get_formatted_duration( totdur ) ]) )
+                          get_formatted_duration( totdur ) ]) )
     elif mediatype == 'artist':
         num_songs, num_albums, num_artists, totdur, totsize = data[3:]
         print( ' '.join([ '%s is a music library.' % library_dict[ library_key ],
                           'There are %d songs made by %d artists in %d albums.' %
                           ( num_songs, num_artists, num_albums ),
                           'The total size of music media is %s.' %
-                          plexemailstuff.get_formatted_size( totsize ),
+                          get_formatted_size( totsize ),
                           'The total duration of music media is %s.' %
-                          plexemailstuff.get_formatted_duration( totdur ) ]) )
+                          get_formatted_duration( totdur ) ]) )
 
 def main( ):
     parser = OptionParser( )

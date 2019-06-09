@@ -21,6 +21,7 @@ musicbrainzngs
 mutagen
 numpy
 oauth2client
+patchwork
 pathos
 Pillow
 pyasn1

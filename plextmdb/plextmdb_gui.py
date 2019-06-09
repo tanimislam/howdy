@@ -564,7 +564,7 @@ class TMDBGUI( QDialogWithPrinting ):
 
     def refreshMovies( self ):
         movie_data_rows, _ = plexcore.fill_out_movies_stuff(
-            self.token, fullURL = self.fullURL, verify = self.verify )
+            token = self.token, fullURL = self.fullURL, verify = self.verify )
         self.fill_out_movies( movie_data_rows )
         self.movieRefreshRows.emit( movie_data_rows )
         

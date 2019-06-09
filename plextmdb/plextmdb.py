@@ -174,9 +174,10 @@ def get_movies_by_actors( actor_names: list, verify = True ) -> list:
         actualMovieData.append( row )
     return actualMovieData
 
-def get_movies_by_title( title: str, verify = True ) -> list:
+def get_movies_by_title( title: str, verify = True, apiKey = None ) -> list:
+    if apiKey is None: apiKey = tmdb_apiKey
     response = requests.get( 'https://api.themoviedb.org/3/search/movie',
-                             params = { 'api_key' : tmdb_apiKey,
+                             params = { 'api_key' : apiKey,
                                         'append_to_response': 'images',
                                         'include_image_language': 'en',
                                         'language': 'en',
@@ -192,7 +193,7 @@ def get_movies_by_title( title: str, verify = True ) -> list:
     if total_pages >= 2:
         for pageno in range( 2, max( 5, total_pages + 1 ) ):
             response = requests.get( 'https://api.themoviedb.org/3/search/movie',
-                                     params = { 'api_key' : tmdb_apiKey,
+                                     params = { 'api_key' : apiKey,
                                                 'append_to_response': 'images',
                                                 'include_image_language': 'en',
                                                 'language': 'en',

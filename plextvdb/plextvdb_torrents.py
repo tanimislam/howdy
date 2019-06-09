@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
 from pathos.multiprocessing import Pool
-from plexcore.plexcore import get_maximum_matchval, get_jackett_credentials, get_formatted_size
-from plexcore import plexcore_deluge
+from plexcore import plexcore_deluge, get_formatted_size, get_maximum_matchval
+from plexcore.plexcore import get_jackett_credentials
 from . import get_token, plextvdb
 
 def _return_error_couldnotfind( name ):
@@ -127,7 +127,8 @@ def get_tv_torrent_zooqle( name, maxnum = 10, verify = True ):
                                   'torrent:contentlength' ]) ) == 4
     cand_items = filter(lambda elem: len( elem.find_all('title' ) ) >= 1 and
                         is_valid_elem( elem ) and
-                        get_maximum_matchval( max( elem.find_all('title' ) ).get_text( ), candname ) >= 80,
+                        get_maximum_matchval(
+                            max( elem.find_all('title' ) ).get_text( ), candname ) >= 80,
                         myxml.find_all('item'))
     def get_num_forelem( elem, name ):
         valid_elm = list(filter(lambda elm: elm.name == 'torrent:%s' % name, elem ) )
@@ -302,7 +303,8 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     return items, 'SUCCESS'
 
 def get_tv_torrent_jackett( name, maxnum = 10, minsize = None, maxsize = None, keywords = [ ],
-                            keywords_exc = [ ], must_have = [ ], verify = True, series_name = None ):
+                            keywords_exc = [ ], must_have = [ ], verify = True, series_name = None,
+                            raw = False ):
     import validators
     data = get_jackett_credentials( )
     if data is None:
@@ -317,6 +319,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsize = None, maxsize = None, k
     
     def _return_params( name ):
         params = { 'apikey' : apikey, 'q' : name, 'cat' : '5000' }
+        if raw: return params
         if tvdb_token is None: return params
         if series_name is None:
             if status is None: sname = name

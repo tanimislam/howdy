@@ -180,7 +180,7 @@ def get_pic_data( plexPICURL, token = None ):
                    ( plexPICURL, len( response.content ) ) )
     return response.content
 
-def get_updated_at( token, fullURLWithPort = 'https://localhost:32400' ):
+def get_updated_at( token, fullURLWithPort = 'http://localhost:32400' ):
     params = { 'X-Plex-Token' : token }
     response = requests.get( fullURLWithPort, params = params, verify = False )
     if response.status_code != 200:
@@ -223,7 +223,7 @@ def get_current_date_newsletter( ):
         return None
     return val.date
 
-def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', sinceDate = None,
+def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sinceDate = None,
                              num_threads = 16 ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
@@ -307,7 +307,7 @@ def _get_library_data_movie( key, token, fullURL = 'https://localhost:32400', si
             movie_data.setdefault( first_genre, [ ] ).append( data )
         return key, movie_data
         
-def _get_library_stats_movie( key, token, fullURL ='https://localhost:32400', sinceDate = None ):
+def _get_library_stats_movie( key, token, fullURL ='http://localhost:32400', sinceDate = None ):
     tup = _get_library_data_movie( key, token, fullURL = fullURL, sinceDate = sinceDate )
     if tup is None: return None
     _, movie_data = tup
@@ -321,7 +321,7 @@ def _get_library_stats_movie( key, token, fullURL ='https://localhost:32400', si
     totsize = sum(map(lambda genre: sorted_by_genres[ genre ][ -2 ], sorted_by_genres ) )
     return key, totnum, totdur, totsize, sorted_by_genres
 
-def _get_library_data_show( key, token, fullURL = 'https://localhost:32400',
+def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
                             sinceDate = None, num_threads = 16 ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
@@ -630,7 +630,7 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
     return sorted(set(filter(lambda key: library_dict[ key ][1] == 'movie',
                              library_dict ) ) )
 
-def get_library_data( title, token, fullURL = 'https://localhost:32400', num_threads = 16 ):
+def get_library_data( title, token, fullURL = 'http://localhost:32400', num_threads = 16 ):
     time0 = time.time( )
     params = { 'X-Plex-Token' : token }
     response = requests.get( '%s/library/sections' % fullURL, params = params,
@@ -717,10 +717,10 @@ def get_libraries( fullURL = 'http://localhost:32400', token = None, do_full = F
         return dict( map( lambda direlem: ( int( direlem['key'] ), ( direlem['title'], direlem['type'] ) ),
                           html.find_all('directory') ) )
 
-def fill_out_movies_stuff( fullURL = 'https://localhost:32400', token = None,
+def fill_out_movies_stuff( fullURL = 'http://localhost:32400', token = None,
                            debug = False, verify = True ):
     if token is None:
-        if fullURL == 'https://localhost:32400':
+        if fullURL == 'http://localhost:32400':
             data = checkServerCredentials( doLocal = True )
         else:
             data = checkServerCredentials( doLocal = False )

@@ -902,9 +902,9 @@ class PlexConfigGUI( QDialogWithPrinting ):
 ## check to see if we have a local plex server
 def _checkForLocal( ):
     try:
-        response = requests.get( 'https://localhost:32400' )
+        response = requests.get( 'http://localhost:32400' )
         if response.status_code == 200:
-            return 'https://localhost:32400', None
+            return 'http://localhost:32400', None
         else:
             return None
     except requests.exceptions.ConnectionError:

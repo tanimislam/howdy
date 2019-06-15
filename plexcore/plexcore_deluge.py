@@ -1,10 +1,10 @@
 import os, sys, numpy, logging, magic, base64, subprocess
 from configparser import RawConfigParser
-from . import baseConfDir, session, PlexConfig
+from . import baseConfDir, session, PlexConfig, get_formatted_size
 
 #
 ## copied from deluge.common
-def _format_size( fsize_b ):
+def format_size( fsize_b ):
     """
     Formats the bytes value into a string with KiB, MiB or GiB units
 
@@ -48,7 +48,6 @@ def _format_progressbar(progress, width):
     :returns: str, a progress bar based on width
     
     """
-
     w = width - 2 # we use a [] for the beginning and end
     s = "["
     p = int(round((progress/100) * w))
@@ -300,8 +299,8 @@ def deluge_format_info( status, torrent_id ):
             "Availability: %0.2f" % status[ b'distributed_copies' ] ]
         mystr_split.append( ' '.join( line_split ) )
     #
-    total_done = _format_size( status[ b'total_done' ] )
-    total_size = _format_size( status[ b'total_size' ] )
+    total_done = format_size( status[ b'total_done' ] )
+    total_size = format_size( status[ b'total_size' ] )
     mystr_split.append(
         "Size: %s/%s Ratio: %0.3f" % ( total_done, total_size,
                                        status[ b'ratio' ] ) )

@@ -1,4 +1,4 @@
-import os, glob, datetime, gspread, logging, sys, numpy
+import os, glob, datetime, gspread, logging, sys, numpy, urllib3
 import uuid, requests, pytz, pypandoc, time, json
 import pathos.multiprocessing as multiprocessing
 # oauth2 stuff
@@ -20,6 +20,7 @@ from plextmdb import plextmdb
 # disable insecure request warnings, because do not recall how to get the name of the certificate for a 
 # given plex server
 requests.packages.urllib3.disable_warnings( )
+urllib3.disable_warnings( )
 
 def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
     assert( plex_email in plex_emails )

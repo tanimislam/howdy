@@ -7,7 +7,7 @@ from . import plexinitialization
 _ = plexinitialization.PlexInitialization( )
 
 import os, sys, xdg.BaseDirectory, signal, datetime, glob, logging
-import geoip2.database, _geoip_geolite2, time
+import geoip2.database, _geoip_geolite2, time, numpy
 from bs4 import BeautifulSoup
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -33,7 +33,6 @@ geoip_reader = geoip2.database.Reader( _geoip_database )
 
 .. _MaxMind: https://www.maxmind.com/en/geoip2-services-and-databases
 """
-
 
 #
 ## a QLabel with save option of the pixmap
@@ -86,6 +85,8 @@ class QWidgetWithPrinting( QWidget ):
             self.addAction( quitAction )
 
 class QDialogWithPrinting( QDialog ):
+    indexScalingSignal = pyqtSignal( int )
+    
     def screenGrab( self ):
         fname = str( QFileDialog.getSaveFileName(
             self, 'Save Screenshot', os.path.expanduser( '~' ),
@@ -96,9 +97,72 @@ class QDialogWithPrinting( QDialog ):
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
 
-    def __init__( self, parent, isIsolated = True, doQuit = False ):
+    def reset_sizes( self ):
+        self.initWidth = self.width( )
+        self.initHeight = self.height( )
+        self.resetSize( )
+
+    def makeBigger( self ):
+        newSizeRatio = min( self.currentSizeRatio + 1,
+                            len( self.sizeRatios ) - 1 )
+        if newSizeRatio != self.currentSizeRatio:
+            self.setFixedWidth( self.initWidth * 1.05**( newSizeRatio - 5 ) )
+            self.setFixedHeight( self.initHeight * 1.05**( newSizeRatio - 5 ) )
+            self.currentSizeRatio = newSizeRatio
+            self.indexScalingSignal.emit( self.currentSizeRatio - 5 )
+            
+
+    def makeSmaller( self ):
+        newSizeRatio = max( self.currentSizeRatio - 1, 0 )
+        if newSizeRatio != self.currentSizeRatio:
+            self.setFixedWidth( self.initWidth * 1.05**( newSizeRatio - 5 ) )
+            self.setFixedHeight( self.initHeight * 1.05**( newSizeRatio - 5 ) )
+            self.currentSizeRatio = newSizeRatio
+            self.indexScalingSignal.emit( self.currentSizeRatio - 5 )
+
+    def resetSize( self ):
+        if self.currentSizeRatio != 5:
+            self.setFixedWidth( self.initWidth )
+            self.setFixedHeight( self.initHeight )
+            self.currentSizeRatio = 5
+            self.indexScalingSignal.emit( 0 )
+    #
+    ## these commands are run after I am in the event loop. Get lists of sizes
+    def on_start( self ):
+        if not self.isIsolated: return
+        self.reset_sizes( )
+        #
+        ## set up actions
+        makeBiggerAction = QAction( self )
+        makeBiggerAction.setShortcut( 'Ctrl+|' )
+        makeBiggerAction.triggered.connect( self.makeBigger )
+        self.addAction( makeBiggerAction )
+        #
+        
+        makeSmallerAction = QAction( self )
+        makeSmallerAction.setShortcut( 'Ctrl+_' )
+        makeSmallerAction.triggered.connect( self.makeSmaller )
+        self.addAction( makeSmallerAction )
+        #
+        resetSizeAction = QAction( self )
+        resetSizeAction.setShortcut( 'Shift+Ctrl+R' )
+        resetSizeAction.triggered.connect( self.resetSize )
+        self.addAction( resetSizeAction )        
+
+    def __init__( self, parent, isIsolated = True, doQuit = True ):
         super( QDialogWithPrinting, self ).__init__( parent )
         self.setModal( True )
+        self.isIsolated = isIsolated
+        self.initWidth = self.width( )
+        self.initHeight = self.height( )
+        self.sizeRatios = numpy.array(
+            [ 1.05**(-idx) for idx in range(1, 6 ) ][::-1] + [ 1.0, ] +
+            [ 1.05**idx for idx in range(1, 6 ) ] )
+        self.currentSizeRatio = 5
+        #
+        ## timer to trigger on_start function on start of app
+        QTimer.singleShot( 0, self.on_start )
+        #
         if isIsolated:
             printAction = QAction( self )
             printAction.setShortcut( 'Shift+Ctrl+P' )

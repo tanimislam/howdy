@@ -341,28 +341,15 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
                set( media_elem.attrs ) ) != 0:
             return False
         return True
-
-    #
-    ## setting up a connection pool to minimize the number of connections we have
-    s = requests.Session( )
-    s.mount( 'https://', requests.adapters.HTTPAdapter(
-        pool_connections = num_threads,
-        pool_maxsize = num_threads ) )
-    s.mount( 'http://', requests.adapters.HTTPAdapter(
-        pool_connections = num_threads,
-        pool_maxsize = num_threads ) )
     
     #
     ## for videlems in shows
     ## videlem.get('index') == episode # in season
     ## videlem.get('parentindex') == season # of show ( season 0 means Specials )
     ## videlem.get('originallyavailableat') == when first aired
-    manager = Manager( )
-    shared_list = manager.list( )
-    time0 = time.time( )
     def _get_show_data( input_tuple ):
         times_requests_given = [ ]
-        cont, indices = input_tuple
+        cont, session, slist, t0, indices = input_tuple
         html = BeautifulSoup( cont, 'lxml' )
         direlems = html.find_all('directory')
         tvdata_tup = [ ]
@@ -375,8 +362,8 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
             if 'art' in direlem.attrs: picurl = '%s%s' % ( fullURL, direlem.get('art') )
             else: picurl = None
             newURL = urljoin( fullURL, direlem['key'] )
-            resp2 = s.get( newURL, params = params, verify = False )
-            times_requests_given.append( time.time( ) - time0 )
+            resp2 = session.get( newURL, params = params, verify = False )
+            times_requests_given.append( time.time( ) - t0 )
             if resp2.status_code != 200: continue
             h2 = BeautifulSoup( resp2.content, 'lxml' )
             leafElems = list( filter(lambda le: 'allLeaves' not in le['key'], h2.find_all('directory') ) )
@@ -389,8 +376,8 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
             }
             for idx, leafElem in enumerate(leafElems):
                 newURL = urljoin( fullURL, leafElem[ 'key' ] )
-                resp3 = s.get( newURL, params = params, verify = False )
-                times_requests_given.append( time.time( ) - time0 )
+                resp3 = session.get( newURL, params = params, verify = False )
+                times_requests_given.append( time.time( ) - t0 )
                 h3 = BeautifulSoup( resp3.content, 'lxml' )
                 for videlem in h3.find_all( _valid_videlem ):
                     if datetime.datetime.fromtimestamp( float( videlem['addedat'] ) ).date() < sinceDate:
@@ -428,18 +415,36 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
                         'path' : filename }
             showdata[ 'seasons' ] = seasons
             tvdata_tup.append( ( show, showdata ) )
-        shared_list.append( times_requests_given )
+        slist.append( times_requests_given )
         return tvdata_tup
     
     num_direlems = len( BeautifulSoup( response.content, 'lxml' ).find_all('directory' ) )
     max_of_num_vals = max( num_direlems, multiprocessing.cpu_count( ) )
     act_num_threads = min( num_threads, max_of_num_vals )
     with multiprocessing.Pool( processes = act_num_threads ) as pool:
+        #
+        ## manager with shared memory objects
+        manager = Manager( )
+        shared_list = manager.list( )
+        #
+        ## setting up a connection pool to minimize the number of connections we have
+        sess = requests.Session( )
+        sess.mount( 'https://', requests.adapters.HTTPAdapter(
+            pool_connections = act_num_threads,
+            pool_maxsize = act_num_threads ) )
+        sess.mount( 'http://', requests.adapters.HTTPAdapter(
+            pool_connections = act_num_threads,
+            pool_maxsize = act_num_threads ) )
+        #
+        ## multiprocess chunking of input data among act_num_threads processes
+        time0 = time.time( )
         input_tuples = list(
             map(lambda idx: (
-                response.content,
+                response.content, sess, shared_list, time0,
                 list( range( idx, num_direlems, act_num_threads ) ) ),
                 range( act_num_threads ) ) )
+        #
+        ## final result reduced after a multiprocessing map
         tvdata = dict(
             chain.from_iterable(filter(
                 None, pool.map( _get_show_data, input_tuples ) ) ) )

@@ -2,6 +2,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import os, sys, numpy, glob, datetime, inspect
 import logging, requests, time, io, PIL.Image
+import pickle, gzip
 from multiprocessing import Process, Manager
 import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
@@ -364,7 +365,7 @@ class TVDBGUI( QDialogWithPrinting ):
         self.filterOnTVShows.textChanged.connect( self.tm.setFilterString )
         self.refreshButton.clicked.connect( self.refreshTVShows )
         self.emitStatusToShow.connect( self.tm.setFilterStatus )
-        self.tm.emitNumSatified.connect( self.showNumSatified )
+        self.tm.emitNumSatisfied.connect( self.showNumSatisfied )
         #
         ## connect signals on resizing
         self.indexScalingSignal.connect( self.tv.setScalingIndex )
@@ -435,16 +436,48 @@ class TVDBGUI( QDialogWithPrinting ):
         showsToExclude = plextvdb.get_shows_to_exclude( )
         self.initThread.reset( showsToExclude )
         self.initThread.start( )
+        #
+        ## now send signals/run actions
+        self.tm.setFilterString( self.filterOnTVShows.text( ) )
+        self.tm.setFilterStatus( self.qbg.checkedId( ) )
 
     def updateStatus( self, qrb ):
         mytxt = qrb.text( )
         mymap = { 'ALL SHOWS' : 0, 'RUNNING' : 1, 'FINISHED' : 2, 'MISSING' : 3 }
         self.emitStatusToShow.emit( mymap[ mytxt ] )
 
-    def showNumSatified( self, num ):
+    def showNumSatisfied( self, num ):
         self.numSeriesFound.setText(
             '%d total shows satisfying criteria' %
             num )
+
+    def contextMenuEvent( self, event ):
+        menu = QMenu( self )
+        testDir = os.path.join( mainDir, 'tests' )
+        if not os.path.isdir( testDir ): return
+        if all([ self.tvdata_on_plex is None,
+                 self.missing_eps is None ]):
+            return
+        if self.fullURL.startswith('http://127.0.0.1'):
+            tvdataFile = 'tvdata.pkl.gz'
+        else:
+            tvdataFile = 'tvdata_remote.pkl.gz'            
+        
+        def _save_out_data( ):
+            if self.tvdata_on_plex is not None:
+                pickle.dump(
+                    self.tvdata_on_plex,
+                    gzip.open( os.path.join( testDir, tvdataFile ),
+                               'wb' ) )
+            if self.missing_eps is not None:
+                pickle.dump(
+                    self.missing_eps,
+                    gzip.open( os.path.join( testDir, 'toGet.pkl.gz' ),
+                               'wb' ) )            
+        saveAction = QAction( 'Save TV data', menu )
+        saveAction.triggered.connect( _save_out_data )
+        menu.addAction( saveAction )
+        menu.popup( QCursor.pos( ) )            
 
 class TVDBTableView( QTableView ):
     def __init__( self, parent ):
@@ -528,7 +561,7 @@ class TVDBTableModel( QAbstractTableModel ):
                  "Seasons", "Episodes", "Missing" ]
     emitFilterChanged = pyqtSignal( )
     emitRowSelected = pyqtSignal( int )
-    emitNumSatified = pyqtSignal( int )
+    emitNumSatisfied = pyqtSignal( int )
     
     def __init__( self, parent = None ):
         super( TVDBTableModel, self ).__init__( parent )
@@ -572,7 +605,7 @@ class TVDBTableModel( QAbstractTableModel ):
         self.filterStatus = filterStatus
         self.sort( 0, Qt.AscendingOrder )
         self.emitFilterChanged.emit( )
-        self.emitNumSatified.emit(
+        self.emitNumSatisfied.emit(
             len(list(filter(lambda row: self.filterRow( row ),
                             range( len( self.actualTVSeriesData ) ) ) ) ) )
         
@@ -583,7 +616,7 @@ class TVDBTableModel( QAbstractTableModel ):
         self.filterRegexp = QRegExp(
             mytext, Qt.CaseInsensitive, QRegExp.RegExp )
         self.emitFilterChanged.emit( )
-        self.emitNumSatified.emit(
+        self.emitNumSatisfied.emit(
             len(list(filter(lambda row: self.filterRow( row ),
                             range( len( self.actualTVSeriesData ) ) ) ) ) )
         

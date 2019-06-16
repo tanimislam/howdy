@@ -1,7 +1,8 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from bs4 import BeautifulSoup
-import copy, numpy, sys, requests, logging
+import copy, numpy, sys, requests
+import logging, datetime
 import io, PIL.Image, base64
 from . import plextvdb
 from plexcore import plexcore, QDialogWithPrinting, QLabelWithSave
@@ -292,9 +293,8 @@ class TVDBSeasonTableView( QTableView ):
     def setFixedSizes( self, width, height ):
         self.columnWidth = width * 1.0 / 5
         self.finalHeight = height
-        self.setColumnWidth( 0, self.columnWidth )
-        self.setColumnWidth( 1, 2 * self.columnWidth )
-        self.setColumnWidth( 2, 2 * self.columnWidth )
+        for colno in range( 5 ):
+            self.setColumnWidth( colno, self.columnWidth )
         self.setFixedWidth( width )
         self.setFixedHeight( self.finalHeight )
 
@@ -305,9 +305,8 @@ class TVDBSeasonTableView( QTableView ):
         self.parent.tm.emitRowSelected.emit( row_valid )
 
     def rescale( self, indexScale ):
-        self.setColumnWidth(0, self.columnWidth * 1.05**indexScale )
-        self.setColumnWidth(1, 2 * self.columnWidth * 1.05**indexScale )
-        self.setColumnWidth(2, 2 * self.columnWidth * 1.05**indexScale )
+        for colno in range( 5 ):
+            self.setColumnWidth(colno, self.columnWidth * 1.05**indexScale )
         self.setFixedWidth( 5 * self.columnWidth * 1.05**indexScale )
         self.setFixedHeight( self.finalHeight * 1.05**indexScale )
 
@@ -324,7 +323,7 @@ class TVDBSeasonQSortFilterProxyModel( QSortFilterProxyModel ):
         return self.sourceModel( ).filterRow( rowNumber )
 
 class TVDBSeasonTableModel( QAbstractTableModel ):
-    _headers = [ 'Episode', 'Name', 'Date' ]
+    _headers = [ 'Episode', 'Name', 'Date', 'Duration', 'Size' ]
     emitFilterChanged = pyqtSignal( )
     emitRowSelected = pyqtSignal( int )
 
@@ -368,7 +367,7 @@ class TVDBSeasonTableModel( QAbstractTableModel ):
         return len( self.actualTVSeasonData )
 
     def columnCount( self, parent ):
-        return 3
+        return 5
     
     def headerData( self, col, orientation, role ):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
@@ -414,4 +413,20 @@ class TVDBSeasonTableModel( QAbstractTableModel ):
                 return episode[ 'title' ]
             elif col == 2:
                 return episode[ 'date aired' ].strftime( '%d/%m/%Y' )
+            elif col == 3:
+                if 'duration' in episode:
+                    dur = episode[ 'duration' ]
+                    hrdur, rem = divmod( dur, 3600 )
+                    dur_string = datetime.datetime.fromtimestamp(
+                        dur ).strftime('%M:%S.%f')[:-3]
+                    if hrdur != 0: dur_string = '%d:%s' % (
+                            hrdur, dur_string )
+                else: dur_string = 'NOT IN LIB'
+                return dur_string
+            elif col == 4:
+                if 'size' in episode:
+                    return get_formatted_size(
+                        episode[ 'size' ] )
+                else:
+                    return 'NOT IN LIB'
         return None

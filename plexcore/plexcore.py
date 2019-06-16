@@ -337,10 +337,11 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
         if len( elem.find_all('media')) != 1:
             return False
         media_elem = elem.find( 'media' )
-        if len(set([ 'duration', 'bitrate']) -
+        if len(set([ 'duration', 'bitrate' ]) -
                set( media_elem.attrs ) ) != 0:
             return False
-        return True
+        part_elem = media_elem.find( 'part' )
+        return 'size' in part_elem.attrs
     
     #
     ## for videlems in shows
@@ -398,9 +399,9 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
                     duration = 1e-3 * int( videlem[ 'duration' ] )
                     media_elem = videlem.find('media')
                     bitrate = int( media_elem[ 'bitrate' ] ) * 1e3 / 8.0
-                    size = duration * bitrate
                     part_elem = media_elem.find('part')
                     filename = part_elem[ 'file' ]
+                    size = int( part_elem[ 'size' ] )
                     seasons.setdefault( seasno, { } )
                     if 'episodes' not in seasons[ seasno ]:
                         seasons[ seasno ].setdefault( 'episodes', { } )
@@ -413,6 +414,23 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
                         'duration' : duration,
                         'size' : size,
                         'path' : filename }
+                    #
+                    ## look for directors and writers
+                    director_elems = videlem.find_all( 'director' )
+                    if len( director_elems ) != 0:
+                        directors = list(
+                            map(lambda elem: elem['tag'].strip( ),
+                                filter(lambda elem: 'tag' in elem.attrs,
+                                       director_elems ) ) )
+                        seasons[ seasno ]['episodes'][ epno ][ 'director' ] = directors
+                    writer_elems = videlem.find_all( 'writer' )
+                    if len( writer_elems ) != 0:
+                        writers = list(
+                            map(lambda elem: elem['tag'].strip( ),
+                                filter(lambda elem: 'tag' in elem.attrs,
+                                       writer_elems ) ) )
+                        seasons[ seasno ]['episodes'][ epno ][ 'writer' ] = writers
+                                                                              
             showdata[ 'seasons' ] = seasons
             tvdata_tup.append( ( show, showdata ) )
         slist.append( times_requests_given )

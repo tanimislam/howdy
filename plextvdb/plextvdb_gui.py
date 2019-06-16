@@ -230,6 +230,7 @@ class TVDBGUI( QDialogWithPrinting ):
 
     def processTVShow( self, seriesName ):
         assert( seriesName in self.tvdata_on_plex )
+        self.currentSeriesName = seriesName
         if seriesName not in self.summaryShowInfo:
             self.summaryShowInfo[ seriesName ] = TVDBGUI.getShowSummary(
                 seriesName, self.tvdata_on_plex, self.missing_eps )
@@ -250,6 +251,16 @@ class TVDBGUI( QDialogWithPrinting ):
         else: self.summaryShowImage.setPixmap( )
         self.summaryShowInfoAreaLeft.setHtml( showSummary )
         self.summaryShowInfoAreaRight.setHtml( showSummaryOverview )
+
+    def resizeImage( self, scaleIndex ): # what to do when image resized
+        try:
+            if self.currentSeriesName not in self.tvdata_on_plex: return
+            showImg = self.showImages[ self.currentSeriesName ]
+            if showImg is None: return
+            qpm = QPixmap.fromImage( QImage.fromData( showImg ) )
+            qpm = qpm.scaledToWidth( self.size( ).width( ) * 0.95 )
+            self.summaryShowImage.setPixmap( qpm )
+        except: pass
 
     def process_final_state( self, final_data_out ):
         myLayout = QVBoxLayout( )
@@ -355,6 +366,10 @@ class TVDBGUI( QDialogWithPrinting ):
         self.emitStatusToShow.connect( self.tm.setFilterStatus )
         self.tm.emitNumSatified.connect( self.showNumSatified )
         #
+        ## connect signals on resizing
+        self.indexScalingSignal.connect( self.tv.setScalingIndex )
+        self.indexScalingSignal.connect( self.resizeImage )
+        #
         ## now change the initThread to connect to new slot
         ## do this once done
         try: self.initThread.finalData.disconnect( )
@@ -365,10 +380,12 @@ class TVDBGUI( QDialogWithPrinting ):
         self.finalSize = self.size( )
         #
         self.show( )
+        self.reset_sizes( ) # get current actual size
                                 
     def __init__( self, token, fullURL, tvdata_on_plex = None,
                   didend = None, toGet = None, verify = True ):
-        super( TVDBGUI, self ).__init__( None )
+        super( TVDBGUI, self ).__init__( None, isIsolated = True,
+                                         doQuit = True )
         self.fullURL = fullURL
         self.token = token
         self.tvdb_token = get_token( verify = verify )
@@ -452,6 +469,7 @@ class TVDBTableView( QTableView ):
         self.setColumnWidth(4, 120 )
         self.setColumnWidth(5, 120 )
         self.setFixedWidth( 1.05 * ( 210 * 1 + 120 * 5 ) )
+        #
         toBotAction = QAction( self )
         toBotAction.setShortcut( 'End' )
         toBotAction.triggered.connect( self.scrollToBottom )
@@ -467,6 +485,12 @@ class TVDBTableView( QTableView ):
         popupAction.setShortcut( 'Ctrl+Shift+S' )
         popupAction.triggered.connect( self.popupTVSeries )
         self.addAction( popupAction )
+
+    def setScalingIndex( self, scaleIndex ):
+        self.setColumnWidth(0, 210 * 1.05**scaleIndex )
+        for colno in range(1, 6):
+            self.setColumnWidth( colno, 120 * 1.05**scaleIndex )
+        self.setFixedWidth( 1.05 * ( 210 * 1 + 120 * 5 ) * 1.05**scaleIndex )
 
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
@@ -659,8 +683,8 @@ class TVDBShowGUI( QDialogWithPrinting ):
     def __init__( self, seriesName, tvdata, missing_eps,
                   tvdb_token, plex_token,
                   parent = None, verify = True ):
-        super( TVDBShowGUI, self ).__init__( parent, doQuit = True,
-                                             isIsolated = False )
+        super( TVDBShowGUI, self ).__init__( parent, doQuit = False,
+                                             isIsolated = True )
         if parent is not None:
             assert( isinstance( parent, QDialogWithPrinting ) )
         self.setModal( True )
@@ -720,6 +744,9 @@ class TVDBShowGUI( QDialogWithPrinting ):
         ## connect
         seasonSelected.installEventFilter( self )
         seasonSelected.currentIndexChanged.connect( self.selectSeason )
+        for season in self.series_widgets:
+            self.indexScalingSignal.connect(
+                self.series_widgets[ season ].rescale )
         ##
         self.show( )
 

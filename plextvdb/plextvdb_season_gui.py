@@ -16,7 +16,6 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
         return set( map(lambda tup: tup[1],
                         filter(lambda tup: tup[0] == season,
                                toGet[ seriesName ] ) ) )
-        
     
     @classmethod
     def processSeasonSummary( cls, season, episodes ):
@@ -57,6 +56,7 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
                   plex_tv_data, toGet, tvdb_token,
                   plex_token, verify = True, parent = None ):
         super( TVDBSeasonGUI, self ).__init__( parent, isIsolated = False, doQuit = False )
+        self.setModal( True )
         self.parent = parent
         assert( seriesName in plex_tv_data )
         assert( seasno in plex_tv_data[ seriesName ]['seasons'] )
@@ -64,6 +64,7 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
         seasonPICURL = plex_tv_episodes['seasonpicurl']
         #
         self.setWindowTitle( '%s season %02d' % ( seriesName, seasno ) )
+        self.currentEpisode = None
         #
         ## put in image and season number and seriesName 
         #
@@ -131,23 +132,25 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
         topWidget = QWidget( )
         topLayout = QHBoxLayout( )
         topWidget.setLayout( topLayout )
-        leftImageWidget = QLabelWithSave( )
-        leftImageWidget.setFixedWidth( 200 )
+        self.leftImageWidget = QLabelWithSave( )
+        self.leftImageWidget.setFixedWidth( 200 )
         if seasonPICURL is not None:
+            self.picData = plexcore.get_pic_data(
+                seasonPICURL, plex_token )
             qpm = QPixmap.fromImage(
-                QImage.fromData(
-                    plexcore.get_pic_data( seasonPICURL, plex_token ) ) )
+                QImage.fromData( self.picData ) )
             qpm = qpm.scaledToWidth( 200 )
-            leftImageWidget.setPixmap( qpm )
-        topLayout.addWidget( leftImageWidget )
-        seasonSummaryArea = QTextEdit( )
-        seasonSummaryArea.setReadOnly( True )
+            self.leftImageWidget.setPixmap( qpm )
+        else: self.picData = None
+        topLayout.addWidget( self.leftImageWidget )
+        self.seasonSummaryArea = QTextEdit( )
+        self.seasonSummaryArea.setReadOnly( True )
         #seasonSummaryArea.setLineWrapColumnOrWidth( 185 )
         #seasonSummaryArea.setLineWrapMode(QTextEdit.FixedPixelWidth)
-        seasonSummaryArea.setHtml(
+        self.seasonSummaryArea.setHtml(
             TVDBSeasonGUI.processSeasonSummary( seasno, episodes ) )
-        seasonSummaryArea.setFixedWidth( 200 )
-        topLayout.addWidget( seasonSummaryArea )
+        self.seasonSummaryArea.setFixedWidth( 200 )
+        topLayout.addWidget( self.seasonSummaryArea )
         self.episodeSummaryArea = QTextEdit( )
         self.episodeSummaryArea.setReadOnly( True )
         self.episodeSummaryArea.setFixedWidth( 400 )
@@ -174,7 +177,11 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
         ## now put in the table view and table model
         self.tm = TVDBSeasonTableModel( self, episodes )
         self.tv = TVDBSeasonTableView( self )
-        self.tv.setFixedHeight( topWidget.sizeHint( ).height( ) ) # no clipping of this QTableView
+        #
+        ## no clipping of this table view
+        self.tv.setFixedSizes(
+            topWidget.sizeHint( ).width( ),
+            topWidget.sizeHint( ).height( ) )
         #
         ## now add the TV season widget table view
         myLayout.addWidget( self.tv )
@@ -220,13 +227,38 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
             mimetype = PIL.Image.MIME[ img.format ]
             par_img_tag = html.new_tag('p')
             img_tag = html.new_tag( 'img' )
-            img_tag['width'] = 350
+            img_tag['width'] = 7.0 / 9 * self.episodeSummaryArea.width( )
             img_tag['src'] = "data:%s;base64,%s" % (
                 mimetype, base64.b64encode( img_content ).decode('utf-8') )
             par_img_tag.append( img_tag )
             body_elem.append( par_img_tag )
                                              
         self.episodeSummaryArea.setHtml( html.prettify( ) )
+
+    def rescale( self, indexScale ):
+        #
+        ## first set size of the image
+        self.leftImageWidget.setFixedWidth(
+            200 * 1.05**indexScale )
+        if self.picData is not None:
+            qpm = QPixmap.fromImage(
+                QImage.fromData( self.picData ) )
+            qpm = qpm.scaledToWidth( 200 * 1.05**indexScale )
+            self.leftImageWidget.setPixmap( qpm )
+        self.seasonSummaryArea.setFixedWidth(
+            200 * 1.05**indexScale )
+        #
+        ## season summary area
+        #
+        ## episode summary area
+        self.episodeSummaryArea.setFixedWidth(
+            400 * 1.05**indexScale )
+        if self.currentEpisode is not None:
+            self.processEpisode( self.currentEpisode )
+        #
+        ## now rescale the table
+        self.tv.rescale( indexScale )
+        
 #
 ## column names: episode, name, date
 class TVDBSeasonTableView( QTableView ):
@@ -246,12 +278,6 @@ class TVDBSeasonTableView( QTableView ):
         self.setSelectionMode( QAbstractItemView.SingleSelection ) # single row     
         self.setSortingEnabled( True )
         #
-        self.setColumnWidth( 0, 160 )
-        self.setColumnWidth( 1, 320 )
-        self.setColumnWidth( 2, 320 )
-        self.setFixedWidth( 800 )
-        self.setFixedHeight( 400 )
-        #
         toBotAction = QAction( self )
         toBotAction.setShortcut( 'End' )
         toBotAction.triggered.connect( self.scrollToBottom )
@@ -262,12 +288,28 @@ class TVDBSeasonTableView( QTableView ):
         toTopAction.triggered.connect( self.scrollToTop )
         self.addAction( toTopAction )
 
+    # set the width and height of table view here
+    def setFixedSizes( self, width, height ):
+        self.columnWidth = width * 1.0 / 5
+        self.finalHeight = height
+        self.setColumnWidth( 0, self.columnWidth )
+        self.setColumnWidth( 1, 2 * self.columnWidth )
+        self.setColumnWidth( 2, 2 * self.columnWidth )
+        self.setFixedWidth( width )
+        self.setFixedHeight( self.finalHeight )
+
     def processCurrentRow( self, newIndex, oldIndex = None ):
         row_valid = self.proxy.mapToSource( newIndex ).row( )
         #
         ## episode data emit this row here
         self.parent.tm.emitRowSelected.emit( row_valid )
-        
+
+    def rescale( self, indexScale ):
+        self.setColumnWidth(0, self.columnWidth * 1.05**indexScale )
+        self.setColumnWidth(1, 2 * self.columnWidth * 1.05**indexScale )
+        self.setColumnWidth(2, 2 * self.columnWidth * 1.05**indexScale )
+        self.setFixedWidth( 5 * self.columnWidth * 1.05**indexScale )
+        self.setFixedHeight( self.finalHeight * 1.05**indexScale )
 
 class TVDBSeasonQSortFilterProxyModel( QSortFilterProxyModel ):
     def __init__( self, parent, model ):
@@ -300,6 +342,7 @@ class TVDBSeasonTableModel( QAbstractTableModel ):
     def infoOnTVEpisodeAtRow( self, actualRow ):
         self.parent.processEpisode(
             self.actualTVSeasonData[ actualRow ] )
+        self.parent.currentEpisode = self.actualTVSeasonData[ actualRow ]
         
     def filterRow( self, rowNumber ):
         episodeData = self.actualTVSeasonData[ rowNumber ]

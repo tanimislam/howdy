@@ -112,15 +112,17 @@ def gmusicmanager( useMobileclient = False ):
     try: yield mmg
     finally: mmg.logout( )
 
-def get_gmusicmanager( useMobileclient = False ):
+def get_gmusicmanager( useMobileclient = False, verify = True ):
     if not useMobileclient:
-        mmg = gmusicapi.Musicmanager( )
+        mmg = gmusicapi.Musicmanager(
+            debug_logging = False, verify_ssl = verify )
         credentials = plexcore.oauthGetOauth2ClientGoogleCredentials( )
         if credentials is None:
             raise ValueError( "Error, do not have Google Music credentials." )
         mmg.login( oauth_credentials = credentials )
     else:
-        mmg = gmusicapi.Mobileclient( )
+        mmg = gmusicapi.Mobileclient(
+            debug_logging = False, verify_ssl = verify )
         val = session.query( PlexConfig ).filter(
             PlexConfig.service == 'gmusic' ).first( )
         if val is None:

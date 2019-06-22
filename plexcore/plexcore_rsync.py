@@ -11,11 +11,13 @@ def check_credentials( local_dir, sshpath, password, subdir = None ):
         #
         ## first, does local directory exist?        
         if not os.path.isdir( os.path.abspath( local_dir ) ):
-            raise ValueError( "Error, %s is not a directory." % os.path.abspath( local_dir ) )
+            raise ValueError( "Error, %s is not a directory." %
+                              os.path.abspath( local_dir ) )
         #
         ## second, can we login with username and password?
         uname = sshpath.split('@')[0]
         hostname = sshpath.split('@')[1]
+        print( uname, hostname )
         # raises a ValueError if cannot do so
         # needs to pass in look_for_keys = False so not use id_* keys
         with Connection( hostname, user = uname,
@@ -30,18 +32,19 @@ def check_credentials( local_dir, sshpath, password, subdir = None ):
                     raise ValueError( "Error, %s does not exist." % subdir )
                 # will raise an error if this is a file
                 directory( conn, subdir )
-        return True
-    except:
-        return False
+        return 'SUCCESS'
+    except Exception as e:
+        return str( e )
 
 def push_credentials( local_dir, sshpath, password, subdir = None ):
     #
     ## validation to see if the data is valid
     #
     ## first, does local directory exist?
-    isValid = check_credentials( local_dir, sshpath, password,
+    status = check_credentials( local_dir, sshpath, password,
                                  subdir = subdir )
-    if not isValid: return "ERROR, COULD NOT SET RSYNC SSH CONNECTION CREDENTIALS"
+    if status != 'SUCCESS':
+        return "ERROR, COULD NOT SET RSYNC SSH CONNECTION CREDENTIALS"
 
     #
     ## success

@@ -20,11 +20,11 @@ class PlexConfigCredWidget( QDialogWithPrinting ):
 
     def initPlexConfigCredStatus( self ):
         #
-        ## look for tmdb credentials
+        ## look for TMDB credentials
         try:
             tmdbApi = get_tmdb_api( )
             movies = plextmdb.get_movies_by_title(
-                'Star Wars', apiKey = tmdbApi )
+                'Star Wars', apiKey = tmdbApi, verify = self.verify )
             if len( movies ) == 0:
                 raise ValueError( "Error, invalid TMDB API KEY" )
             self.tmdb_apikey.setText( tmdbApi )
@@ -49,7 +49,6 @@ class PlexConfigCredWidget( QDialogWithPrinting ):
             self._emitWorkingStatusDict[ 'TVDB' ] = True
         except Exception as e:
             print( 'TVDB: %s.' % str( e ) )
-            print( '%s' % e )
             self.tvdb_apikey.setText( '' )
             self.tvdb_username.setText( '' )
             self.tvdb_userkey.setText( '' )
@@ -62,7 +61,8 @@ class PlexConfigCredWidget( QDialogWithPrinting ):
             clientID, clientSECRET, clientREFRESHTOKEN = \
                 plexcore.get_imgurl_credentials( )
             if not plexcore.check_imgurl_credentials(
-                    clientID, clientSECRET, clientREFRESHTOKEN ):
+                    clientID, clientSECRET, clientREFRESHTOKEN,
+                    verify = self.verify ):
                 raise ValueError( "Error, invalid imgurl creds.")
             self.imgurl_id.setText( clientID )
             self.imgurl_secret.setText( clientSECRET )
@@ -77,9 +77,9 @@ class PlexConfigCredWidget( QDialogWithPrinting ):
             self._emitWorkingStatusDict[ 'IMGURL' ] = False
 
         #
-        ## now the google
+        ## now the GOOGLE
         try:
-            cred1 = plexcore.oauthGetGoogleCredentials( )
+            cred1 = plexcore.oauthGetGoogleCredentials( verify = self.verify )
             cred2 = plexcore.oauthGetOauth2ClientGoogleCredentials( )
             if cred1 is None or cred2 is None:
                 raise ValueError( "ERROR, PROBLEMS WITH GOOGLE CREDENTIALS" )
@@ -276,9 +276,9 @@ class PlexConfigCredWidget( QDialogWithPrinting ):
 
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
-        resetAction = QAction( 'reset cred config', menu )
-        resetAction.triggered.connect( self.initPlexConfigCredStatus )
-        menu.addAction( resetAction )
+        refreshAction = QAction( 'refresh cred config', menu )
+        refreshAction.triggered.connect( self.initPlexConfigCredStatus )
+        menu.addAction( refreshAction )
         helpAction = QAction( 'help', menu )
         helpAction.triggered.connect( self.showHelpInfo )
         menu.addAction( helpAction )
@@ -304,7 +304,7 @@ class PlexConfigLoginWidget( QDialogWithPrinting ):
                 verify = self.verify )
             if dat is None:
                 raise ValueError("Error, vould not get username and password" )
-            dat = plexcore.getCredentials( )
+            dat = plexcore.getCredentials( verify = self.verify )
             if dat is None:
                 raise ValueError("Error, vould not get username and password" )
             username, password = dat
@@ -319,7 +319,7 @@ class PlexConfigLoginWidget( QDialogWithPrinting ):
             self._emitWorkingStatusDict[ 'PLEXLOGIN' ] = False
 
         #
-        ## look for the deluge credential
+        ## look for the DELUGE
         try:
             client, status = plexcore_deluge.get_deluge_client( )
             if status != 'SUCCESS':
@@ -343,7 +343,7 @@ class PlexConfigLoginWidget( QDialogWithPrinting ):
             self._emitWorkingStatusDict[ 'DELUGE' ] = False
 
         #
-        ## look for jackett
+        ## look for JACKETT
         try:
             dat = plexcore.get_jackett_credentials( )
             if dat is None:
@@ -360,7 +360,7 @@ class PlexConfigLoginWidget( QDialogWithPrinting ):
             self._emitWorkingStatusDict[ 'JACKETT' ] = True
 
         #
-        ## look for rsync
+        ## look for RSYNC
         try:
             data = plexcore_rsync.get_credentials( )
             if data is None:
@@ -371,9 +371,9 @@ class PlexConfigLoginWidget( QDialogWithPrinting ):
             password = data['password']
             #
             ## check if good just in case
-            if not plexcore_rsync.check_credentials(
-                    local_dir, sshpath, password, subdir = subdir ):
-                raise ValueError("Error, invalid rsync ssh credentials." )
+            status = plexcore_rsync.check_credentials(
+                local_dir, sshpath, password, subdir = subdir )
+            if status != 'SUCCESS': raise ValueError( status )
             self.rsync_localdir.setText( local_dir )
             self.rsync_sshpath.setText( sshpath )
             self.last_rsync_sshpath = sshpath
@@ -388,7 +388,7 @@ class PlexConfigLoginWidget( QDialogWithPrinting ):
             self.last_rsync_sshpath = ''
             self.rsync_subdir.setText( '' )
             self.rsync_password.setText( '' )
-            self.rsync_status.setText( 'NOT WORKING' )
+            self.rsync_status.setText( str( e ) )
             self._emitWorkingStatusDict[ 'RSYNC' ] = False
 
         self.workingStatus.emit( self._emitWorkingStatusDict )
@@ -642,14 +642,14 @@ class PlexConfigLoginWidget( QDialogWithPrinting ):
         #
         ## now initialize
         self.initPlexConfigLoginStatus( ) # set everything up
-        self.setFixedWidth( self.sizeHint( ).width( ) * 1.25 )
+        self.setFixedWidth( jackettWidget.sizeHint( ).width( ) * 1.7 )
         self.hide( )
 
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
-        resetAction = QAction( 'reset login config', menu )
-        resetAction.triggered.connect( self.initPlexConfigLoginStatus )
-        menu.addAction( resetAction )
+        refreshAction = QAction( 'refresh login config', menu )
+        refreshAction.triggered.connect( self.initPlexConfigLoginStatus )
+        menu.addAction( refreshAction )
         helpAction = QAction( 'help', menu )
         helpAction.triggered.connect( self.showHelpInfo )
         menu.addAction( helpAction )
@@ -669,7 +669,7 @@ class PlexConfigMusicWidget( QDialogWithPrinting ):
         #
         ## look for gmusic credentials
         try:
-            mmg = plexmusic.get_gmusicmanager( )
+            mmg = plexmusic.get_gmusicmanager( verify = self.verify )
             self.gmusicStatusLabel.setText( 'WORKING' )
             self._emitWorkingStatusDict[ 'GMUSIC' ] = True
         except ValueError as e:
@@ -748,11 +748,12 @@ class PlexConfigMusicWidget( QDialogWithPrinting ):
         self.workingStatus.emit( self._emitWorkingStatusDict )
             
         
-    def __init__( self, parent ):
+    def __init__( self, parent, verify = True ):
         super( PlexConfigMusicWidget, self ).__init__(
             parent, isIsolated = True, doQuit = False )
         self.setModal( True )
         self.setWindowTitle( 'PLEX MUSIC CONFIGURATION' )
+        self.verify = verify
         #
         self.gmusicStatusLabel = QLabel( )
         #
@@ -833,9 +834,9 @@ class PlexConfigMusicWidget( QDialogWithPrinting ):
 
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
-        resetAction = QAction( 'reset music config', menu )
-        resetAction.triggered.connect( self.initPlexConfigMusicStatus )
-        menu.addAction( resetAction )
+        refreshAction = QAction( 'refresh music config', menu )
+        refreshAction.triggered.connect( self.initPlexConfigMusicStatus )
+        menu.addAction( refreshAction )
         helpAction = QAction( 'help', menu )
         helpAction.triggered.connect( self.showHelpInfo )
         menu.addAction( helpAction )

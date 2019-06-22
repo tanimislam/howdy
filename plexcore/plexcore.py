@@ -902,12 +902,14 @@ def oauthCheckGoogleCredentials( ):
         return False, 'GOOGLE AUTHENTICATION CREDENTIALS DO NOT EXIST.'
     return True, 'SUCCESS'
 
-def oauthGetGoogleCredentials( ):
+def oauthGetGoogleCredentials( verify = True ):
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is None: return None
     cred_data = val.data
     credentials = Credentials.from_authorized_user_info( cred_data )
-    credentials.refresh( Request( ) )
+    s = requests.Session( )
+    s.verify = verify
+    credentials.refresh( Request( session = s ) )
     return credentials
 
 def oauthGetOauth2ClientGoogleCredentials( ):
@@ -1010,7 +1012,8 @@ def get_imgurl_credentials( ):
     data_imgurl = val.data
     return data_imgurl[ 'clientID' ], data_imgurl[ 'clientSECRET' ], data_imgurl[ 'clientREFRESHTOKEN' ]
 
-def check_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify = True ):
+def check_imgurl_credentials( clientID, clientSECRET,
+                              clientREFRESHTOKEN, verify = True ):
     response = requests.post(
          'https://api.imgur.com/oauth2/token',
         data = {'client_id': clientID,
@@ -1038,7 +1041,6 @@ def store_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify
     session.add( newval )
     session.commit( )
     return 'SUCCESS'
-    
     
 def set_date_newsletter( ):
     query = session.query( LastNewsletterDate )

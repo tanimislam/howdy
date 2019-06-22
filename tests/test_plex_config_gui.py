@@ -15,19 +15,26 @@ from optparse import OptionParser
 from PyQt4.QtGui import QApplication
 from plexcore import plexcore, plexcore_gui
 
-def main( info = False, doLocal = True, verify = True ):
+def main( info = False, doLocal = True, verify = True,
+          thingToShow = 'CRED' ):
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
     if info: logging.basicConfig( level = logging.INFO )
-    #pcgui = plexcore_gui.PlexConfigGUI( )
-    pccw = plexcore_gui.PlexConfigCredWidget( None )
-    pccw.setStyleSheet("""
+    if thingToShow == 'CRED':
+        widg = plexcore_gui.PlexConfigCredWidget( None, verify = verify )
+    elif thingToShow == 'LOGIN':
+        widg = plexcore_gui.PlexConfigLoginWidget( None, verify = verify )
+    elif thingToShow == 'MUSIC':
+        widg = plexcore_gui.PlexConfigMusicWidget( None, verify = verify )
+    else: raise ValueError("Error: %s needs to be one of %s." % (
+            thingToShow, sorted([ 'CRED', 'LOGIN', 'MUSIC' ])))
+    widg.setStyleSheet("""
     QWidget {
     font-family: Consolas;
     font-size: 11;
     }""" )
-    pccw.show( )
-    result = pccw.exec_( )
+    widg.show( )
+    result = widg.exec_( )
 
 if __name__=='__main__':
     parser = OptionParser( )
@@ -37,5 +44,9 @@ if __name__=='__main__':
                       default = False, help = 'Run info mode if chosen.')
     parser.add_option('--noverify', dest='do_verify', action='store_false',
                       default = True, help = 'Do not verify SSL transactions if chosen.')
+    parser.add_option('--widget', dest='widget', type=str, action='store', default = 'LOGIN',
+                      help = 'Name of the widget to test. Default is LOGIN widget.')
     opts, args = parser.parse_args( )
-    main( info = opts.do_info, doLocal = opts.do_local, verify = opts.do_verify )
+    assert( opts.widget in [ 'CRED', 'LOGIN', 'MUSIC' ] )
+    main( info = opts.do_info, doLocal = opts.do_local,
+          verify = opts.do_verify, thingToShow = opts.widget )

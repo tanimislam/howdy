@@ -15,6 +15,8 @@ from optparse import OptionParser
 from PyQt4.QtGui import QApplication
 from plexcore import plexcore, plexcore_gui
 
+scenarios = [ 'CRED', 'LOGIN', 'MUSIC', 'TOTAL' ]
+
 def main( info = False, doLocal = True, verify = True,
           thingToShow = 'CRED' ):
     app = QApplication([])
@@ -26,8 +28,10 @@ def main( info = False, doLocal = True, verify = True,
         widg = plexcore_gui.PlexConfigLoginWidget( None, verify = verify )
     elif thingToShow == 'MUSIC':
         widg = plexcore_gui.PlexConfigMusicWidget( None, verify = verify )
+    elif thingToShow == 'TOTAL':
+        widg = plexcore_gui.PlexConfigGUI( verify = verify )
     else: raise ValueError("Error: %s needs to be one of %s." % (
-            thingToShow, sorted([ 'CRED', 'LOGIN', 'MUSIC' ])))
+            thingToShow, scenarios ) )
     widg.setStyleSheet("""
     QWidget {
     font-family: Consolas;
@@ -45,8 +49,11 @@ if __name__=='__main__':
     parser.add_option('--noverify', dest='do_verify', action='store_false',
                       default = True, help = 'Do not verify SSL transactions if chosen.')
     parser.add_option('--widget', dest='widget', type=str, action='store', default = 'LOGIN',
-                      help = 'Name of the widget to test. Default is LOGIN widget.')
+                      help = ' '.join([
+                          'Name of the widget to test.',
+                          'Must be one of %s.' % scenarios,
+                          'Default is LOGIN widget.']))
     opts, args = parser.parse_args( )
-    assert( opts.widget in [ 'CRED', 'LOGIN', 'MUSIC' ] )
+    assert( opts.widget in scenarios )
     main( info = opts.do_info, doLocal = opts.do_local,
           verify = opts.do_verify, thingToShow = opts.widget )

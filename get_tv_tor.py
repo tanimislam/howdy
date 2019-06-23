@@ -13,28 +13,29 @@ from plexcore import plexcore_deluge
 from plextvdb import plextvdb_torrents
 from plexcore.plexcore import get_jackett_credentials
 
-def get_items_eztv_io( name, maxnum = 10 ):
+def get_items_eztv_io( name, maxnum = 10, verify = True ):
     assert( maxnum >= 5 )
     items, status = plextvdb_torrents.get_tv_torrent_eztv_io(
-        name, maxnum = maxnum )
+        name, maxnum = maxnum, verify = verify )
     if status != 'SUCCESS':
         logging.info( 'ERROR, EZTV.IO COULD NOT FIND %s.' % name )
         return None
     return items
 
-def get_items_jackett( name, maxnum = 1000, raw = False ):
+def get_items_jackett( name, maxnum = 1000, raw = False, verify = True ):
     assert( maxnum >= 5 )
     logging.info( 'started jackett %s.' % name )
     items, status = plextvdb_torrents.get_tv_torrent_jackett(
-        name, maxnum = maxnum, raw = raw )
+        name, maxnum = maxnum, raw = raw, verify = verify )
     if status != 'SUCCESS':
         logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
         return None
     return items
     
-def get_items_zooqle( name, maxnum = 10 ):
+def get_items_zooqle( name, maxnum = 10, verify = True ):
     assert( maxnum >= 5 )
-    items, status = plextvdb_torrents.get_tv_torrent_zooqle( name, maxnum = maxnum )
+    items, status = plextvdb_torrents.get_tv_torrent_zooqle(
+        name, maxnum = maxnum, verify = verify )
     if status != 'SUCCESS':
         logging.info( 'ERROR, ZOOQLE COULD NOT FIND %s.' % name )
         return None
@@ -111,7 +112,7 @@ def get_tv_torrent_items(
         with open(filename, 'w') as openfile:
             openfile.write('%s\n' % magnet_link )
 
-def process_magnet_items( name, raw = False ):
+def process_magnet_items( name, raw = False, verify = True ):
     time0 = time.time( )
     #
     ## check for jackett
@@ -126,9 +127,9 @@ def process_magnet_items( name, raw = False ):
     else:
         pool = Pool( processes = 3 )
         jobs = list(map(
-            lambda func: pool.apply_async( func, args = ( name, opts.maxnum ) ),
+            lambda func: pool.apply_async( func, args = ( name, opts.maxnum, verify ) ),
             ( get_items_zooqle, get_items_eztv_io ) ) )
-        jobs.append( pool.apply_async( get_items_jackett, args = ( name, opts.maxnum, raw ) ) )
+        jobs.append( pool.apply_async( get_items_jackett, args = ( name, opts.maxnum, raw, verify ) ) )
     items_all = list( chain.from_iterable( filter( None, map(lambda job: job.get( ), jobs ) ) ) )
     logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )
     pool.close( )
@@ -152,11 +153,13 @@ if __name__=='__main__':
                       help = 'If chosen, push the magnet link into the deluge server.' )
     parser.add_option('--info', dest='do_info', action='store_true', default = False,
                       help = 'If chosen, run in info mode.' )
+    parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
+                      help = 'If chosen, do not verify SSL connections.' )
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
     if opts.do_info: logging.basicConfig( level = logging.INFO )
     #
-    items = process_magnet_items( opts.name )
+    items = process_magnet_items( opts.name, raw = opts.do_raw, verify = opts.do_verify )
     if items is not None:
         #
         ## sort from most seeders + leecher to least

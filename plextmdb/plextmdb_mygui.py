@@ -3,7 +3,7 @@ import logging, glob, datetime, pickle, gzip
 from . import plextmdb
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from plexcore import plexcore, QDialogWithPrinting
+from plexcore import plexcore, QDialogWithPrinting, get_popularity_color
 
 _headers = [ 'title',  'popularity', 'rating', 'release date', 'added date',
              'genre' ]
@@ -237,13 +237,8 @@ class MyMovieTableModel( QAbstractTableModel ):
         data = self.myMovieData[ row ]
         if role == Qt.BackgroundRole:
             popularity = data[ 'rating' ]
-            h = min( 1.0, popularity * 0.1 ) * (
-                0.81 - 0.45 ) + 0.45
-            s = 0.85
-            v = 0.31
-            alpha = 1.0
-            color = QColor( 'white' )
-            color.setHsvF( h, s, v, alpha )
+            hpop = min( 1.0, popularity * 0.1 )
+            color = get_popularity_color( hpop )
             return QBrush( color )
         elif role == Qt.DisplayRole:
             if col in (0, 1, 2, 5):

@@ -5,7 +5,7 @@ from itertools import chain
 from . import plextmdb, mainDir, plextmdb_torrents
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from plexcore import plexcore
+from plexcore import plexcore, get_popularity_color
 from plexcore import QDialogWithPrinting, QWidgetWithPrinting, ProgressDialog
 from plexemail import plexemail
 
@@ -55,7 +55,8 @@ class TMDBGUIThread( QThread ):
 class TMDBMovieInfo( QDialogWithPrinting ):
     
     def __init__( self, parent, datum, verify = True ):
-        super( TMDBMovieInfo, self ).__init__( parent )
+        super( TMDBMovieInfo, self ).__init__(
+            parent, doQuit = False, isIsolated = True )
         self.token = parent.token
         self.title = datum[ 'title' ]
         self.setModal( True )
@@ -382,9 +383,6 @@ class TMDBTorrents( QDialogWithPrinting ):
                 items_lists.append( items )
             except: pass
         data = list( chain.from_iterable( items_lists ) )
-        # data, status = plextmdb_torrents.get_movie_torrent_jackett(
-        #     movie_name, maxnum = maxnum, verify = self.verify )
-        # if status != 'SUCCESS':
         if len( data ) == 0:
             return TMDBTorrents.TMDBTorrentsTableModel( self, [ ], -1 )
             
@@ -418,21 +416,24 @@ class TMDBTorrents( QDialogWithPrinting ):
         ##
         if parent is not None: self.verify = parent.verify
         else: self.verify = False
-       
+        self.statusLabel = QLabel( )
+        mainLayout.addWidget( self.statusLabel )
         #
         ## now make the local tablemodel
         self.tmdbTorrentModel = self._createTMDBTorrentsTableModel(
             movie_name, bypass = bypass, maxnum = maxnum )
-        self.tmdbTorrentView = TMDBTorrents.TMDBTorrentsTableView(
-            self, self.tmdbTorrentModel.torrentStatus )
-        mainLayout.addWidget( self.tmdbTorrentView )
-        self.statusLabel = QLabel( )
-        mainLayout.addWidget( self.statusLabel )
-        #
-        if self.tmdbTorrentModel.rowCount( None ) == 0:
+        if self.tmdbTorrentModel.torrentStatus == -1:
+            self.setWindowTitle( 'TORRENT ERROR' )
             self.statusLabel.setText( "FAILURE, COULD NOT FIND" )
+            newLabel = QLabel( )
+            mainLayout.addWidget( newLabel )
+            newLabel.setText( movie_name )
             self.setEnabled( False )
-        self.tmdbTorrentModel.sort( 1, Qt.DescendingOrder )
+        else:
+            self.tmdbTorrentView = TMDBTorrents.TMDBTorrentsTableView(
+                self, self.tmdbTorrentModel.torrentStatus )
+            mainLayout.addWidget( self.tmdbTorrentView )
+            self.tmdbTorrentModel.sort( 1, Qt.DescendingOrder )
         #
         ## now set the final sizes
         self.setFixedWidth( self.sizeHint( ).width( ) )
@@ -1075,11 +1076,7 @@ class TMDBTableModel( QAbstractTableModel ):
                 popularity = datum[ 'popularity' ]
                 hpop = numpy.log10( max( 1.0, popularity ) ) * 0.5
                 hpop = min( 1.0, hpop )
-                h = hpop * ( 0.81 - 0.45 ) + 0.45
-                s = 0.85
-                v = 0.31
-                color = QColor( 'white' )
-                color.setHsvF( h, s, v, 1.0 )
+                color = get_popularity_color( hpop )
                 return QBrush( color )
             else:
                 return QBrush( QColor( "#873600" ) )

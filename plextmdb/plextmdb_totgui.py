@@ -52,10 +52,10 @@ class TMDBTotGUI( QDialogWithPrinting ):
         #
         self.tmdb_gui = plextmdb_gui.TMDBGUI(
             self.token, self.fullurl, movie_data_rows, isIsolated = False,
-            verify = self.verify, doQuit = False )
+            verify = self.verify )
         self.tmdb_mygui = plextmdb_mygui.TMDBMyGUI(
             self.token, movie_data_rows, isIsolated = False,
-            verify = self.verify, doQuit = False )
+            verify = self.verify )
         self.tmdb_gui.movieRefreshRows.connect(
             self.tmdb_mygui.fill_out_movies )
         #

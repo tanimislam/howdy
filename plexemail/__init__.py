@@ -4,11 +4,12 @@ mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 sys.path.append( mainDir )
 from plexcore import plexcore
 
-def send_email_lowlevel( msg ):
+def send_email_lowlevel( msg, verify = True ):
     data = { 'raw' : base64.urlsafe_b64encode(
         msg.as_bytes( ) ).decode('utf-8') }
     #
-    credentials = plexcore.oauthGetGoogleCredentials( )
+    credentials = plexcore.oauthGetGoogleCredentials(
+        verify = verify )
     assert( credentials is not None )
     email_service = build('gmail', 'v1', credentials = credentials,
                           cache_discovery = False )

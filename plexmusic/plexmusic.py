@@ -245,7 +245,21 @@ def youtube_search(youtube, query, max_results = 10):
     return videos
 
 class PlexLastFM( object ):
-    
+
+    @classmethod
+    def get_mb_album_year( cls, year_string ):
+        try:
+            album_year = datetime.datetime.strptime(
+                data['date'], '%Y-%m-%d' ).year
+            return album_year
+        except: pass
+
+        try:
+            album_year = datetime.datetime.strptime(
+                data['date'], '%Y' ).year
+            return album_year
+        except: return None
+        
     @classmethod
     def push_lastfm_credentials( cls, api_data ):
         assert( len(set(api_data) - set([ 'api_key', 'api_secret', 'application_name',
@@ -379,9 +393,9 @@ class PlexLastFM( object ):
             music_metadata[ 'album' ] = data['title']
             music_metadata[ 'artist' ] = data[ 'artist-credit' ][ 0 ][ 'artist' ][ 'name' ]
             if 'date' in data:
-                album_year = datetime.datetime.strptime(
-                    data['date'], '%Y-%m-%d' ).year
-                music_metadata[ 'year' ] = album_year
+                album_year = PlexLastFM.get_mb_album_year( data['date'] )
+                if album_year is not None:
+                    music_metadata[ 'year' ] = album_year
             #
             ## get position of track
             if '@attr' in track[ 'album' ] and 'position' in track[ 'album' ]['@attr']:
@@ -465,8 +479,7 @@ class PlexLastFM( object ):
             album_name = data['title']
             artist = data[ 'artist-credit' ][ 0 ][ 'artist' ][ 'name' ]
             if 'date' in data:
-                album_year = datetime.datetime.strptime(
-                    data['date'], '%Y-%m-%d' ).year
+                album_year = PlexLastFM.get_mb_album_year( data['date' ] )
             else: album_year is None
             #
             ## now look for the track list

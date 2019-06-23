@@ -6,7 +6,7 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import codecs, sys, os, datetime
+import os, datetime, io, zipfile
 from plexmusic import plexmusic
 from plexcore import plexcore
 from plexemail import plexemail
@@ -23,8 +23,8 @@ def _get_final_song_name( song_name, dur ):
             song_name,
             datetime.datetime.fromtimestamp( dur ).strftime('%H:%M:%S') )
 
-def _choose_youtube_item( name, maxnum = 10 ):
-    youtube = plexmusic.get_youtube_service( )
+def _choose_youtube_item( name, maxnum = 10, verify = True ):
+    youtube = plexmusic.get_youtube_service( verify = verify )
     videos = plexmusic.youtube_search( youtube, name, max_results = maxnum )
     if len( videos ) != 1:
         sortdict = { idx + 1 : item for (idx, item) in enumerate(videos) }
@@ -55,15 +55,15 @@ def _download_actual_song( pm, lastfm, s_name, a_name, maxnum, do_lastfm ):
                                                        artist_name = a_name )
         else: status = 'FAILURE'
         if status != 'SUCCESS':
-            data_dict, status = lastfm.get_music_metadata( song_name = s_name,
-                                                           artist_name = a_name,
-                                                           all_data = True )
+            data_dict, status = lastfm.get_music_metadata(
+                song_name = s_name, artist_name = a_name, all_data = True )
             if status != 'SUCCESS':
-                print( status )
+                print( 'PROBLEM GETTING %s, %s: %s.' % ( s_name, a_name, status ) )
                 return None
     except Exception as e:
         print( e )
         return None
+
     if 'tracknumber' not in data_dict:
         data_dict[ 'tracknumber' ] = 1
         data_dict[ 'total tracks' ] = 1
@@ -80,7 +80,7 @@ def _download_actual_song( pm, lastfm, s_name, a_name, maxnum, do_lastfm ):
     #
     ## now get the youtube song selections
     youtubeURL = _choose_youtube_item( '%s %s' % ( artist_name, song_name ),
-                                       maxnum = maxnum )
+                                       maxnum = maxnum, verify = pm.verify )
     if youtubeURL is None: return None
     #
     ## now download the song into the given filename
@@ -88,26 +88,24 @@ def _download_actual_song( pm, lastfm, s_name, a_name, maxnum, do_lastfm ):
     plexmusic.get_youtube_file( youtubeURL, filename )
     #
     ## now fill out the metadata
-    plexmusic.fill_m4a_metadata( filename, data_dict )
+    plexmusic.fill_m4a_metadata( filename, data_dict, verify = pm.verify )
     #
     ##
     os.chmod( filename, 0o644 )
     return ( artist_name, song_name, filename )
 
 def _create_archive_songs( all_songs_downloaded ):
-    from io import BytesIO
-    import zipfile
-    mf = BytesIO( )
+    mf = io.BytesIO( )
     with zipfile.ZipFile( mf, 'w', compression=zipfile.ZIP_DEFLATED ) as zf:                          
         for tup in all_songs_downloaded: zf.write( tup[-1] )
     return mf.getvalue( ), 'songs.zip'
 
 def _email_songs( opts, all_songs_downloaded ):
     if len( all_songs_downloaded ) == 0: return
-    status, _ = plexcore.oauthCheckGoogleCredentials( )
-    if not status:
-        print( "Error, do not have correct Google credentials." )
-        return
+    # status, _ = plexcore.oauthCheckGoogleCredentials( verify = opts.do_verify )
+    # if not status:
+    #     print( "Error, do not have correct Google credentials." )
+    #    return
     songs_by_list = '\n'.join(map(lambda tup: '\item %s - %s.' % ( tup[0], tup[1] ),
                                   all_songs_downloaded ) )
     num_songs = len( all_songs_downloaded )
@@ -143,7 +141,7 @@ def _download_songs_newformat( opts ):
     assert( opts.artist_names is not None )
     #
     ## first get the music metadata
-    pm = plexmusic.PlexMusic( )
+    pm = plexmusic.PlexMusic( verify = opts.do_verify )
     song_names = map(lambda song_name: song_name.strip( ), opts.song_names.split(';'))
     artist_names = map(lambda artist_name: artist_name.strip( ), opts.artist_names.split(';'))
     all_songs_downloaded = list(
@@ -155,17 +153,17 @@ def _download_songs_oldformat( opts ):
     assert( opts.artist_name is not None )
     #
     ## first get music metadata
-    pm = plexmusic.PlexMusic( )
-    lastfm = plexmusic.PlexLastFM( )
+    pm = plexmusic.PlexMusic( verify = opts.do_verify )
+    lastfm = plexmusic.PlexLastFM( verify = opts.do_verify )
     if opts.album_name is not None:
         all_songs_downloaded = [ ]
         if not opts.do_lastfm:
-            album_data_dict, status = pm.get_music_metadatas_album( opts.artist_name,
-                                                                    opts.album_name )
+            album_data_dict, status = pm.get_music_metadatas_album(
+                opts.artist_name, opts.album_name )
         else: status = 'FAILURE'
         if status != 'SUCCESS':
-            album_data_dict, status = lastfm.get_music_metadatas_album( opts.artist_name,
-                                                                        opts.album_name )
+            album_data_dict, status = lastfm.get_music_metadatas_album(
+                opts.artist_name, opts.album_name )
             if status != 'SUCCESS':
                 print( status )
                 return
@@ -189,7 +187,7 @@ def _download_songs_oldformat( opts ):
             #
             ## now get the youtube song selections
             youtubeURL = _choose_youtube_item( '%s %s' % ( artist_name, song_name ),
-                                              maxnum = opts.maxnum )
+                                               maxnum = opts.maxnum, verify = pm.verify )
             if youtubeURL is None:
                 continue
             #
@@ -198,7 +196,7 @@ def _download_songs_oldformat( opts ):
             plexmusic.get_youtube_file( youtubeURL, filename )
             #
             ## now fill out the metadata
-            plexmusic.fill_m4a_metadata( filename, data_dict )
+            plexmusic.fill_m4a_metadata( filename, data_dict, verify = pm.verify )
             #
             ##
             os.chmod( filename, 0o644 )
@@ -237,13 +235,13 @@ def main( ):
                        help = "List of artists. Each artist is separated by a ';'.")
     parser.add_option( '--lastfm', dest='do_lastfm', action='store_true', default = False,
                        help = 'If chosen, then only use the LastFM API to get song metadata.' )
+    parser.add_option( '--noverify', dest='do_verify', action='store_false', default=True,
+                       help = 'Do not verify SSL transactions if chosen.' )
     opts, args = parser.parse_args( )
 
     if not opts.do_new: all_songs_downloaded = _download_songs_oldformat( opts )
     else: all_songs_downloaded = _download_songs_newformat( opts )
-    
     if opts.email is not None: _email_songs( opts, all_songs_downloaded )
         
 if __name__=='__main__':
     main( )
-        

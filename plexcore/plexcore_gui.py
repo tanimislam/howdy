@@ -2,7 +2,7 @@ import xdg.BaseDirectory, os, requests, logging, sys, webbrowser
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from . import plexcore, QDialogWithPrinting
-from . import plexcore_deluge, plexcore_rsync
+from . import plexcore_deluge, plexcore_rsync, get_popularity_color
 from plexmusic import plexmusic
 from plextmdb import get_tmdb_api, save_tmdb_api, plextmdb
 from plextvdb import get_tvdb_api, save_tvdb_api, check_tvdb_api, get_token
@@ -54,7 +54,7 @@ class PlexConfigCredWidget( PlexConfigWidget ):
             self._emitWorkingStatusDict[ 'TMDB' ] = False
 
         #
- look at TVDB
+        ## look at TVDB
         try:
             data = get_tvdb_api( )
             token = get_token( verify = self.verify, data = data )
@@ -107,11 +107,14 @@ class PlexConfigCredWidget( PlexConfigWidget ):
             self.google_status.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'GOOGLE' ] = False
 
+        self.workingStatus.emit( self._emitWorkingStatusDict )
+
     def pushTMDBConfig( self ):
         tmdbApi = self.tmdb_apikey.text( ).strip( )
         try:
             movies = plextmdb.get_movies_by_title(
-                'Star Wars', apiKey = tmdbApi )
+                'Star Wars', apiKey = tmdbApi,
+                verify = self.verify )
             if len( movies ) == 0:
                 raise ValueError( "Error, invalid TMDB API KEY" )
             plextmdb.save_tmdb_api( tmdbApi )
@@ -122,6 +125,7 @@ class PlexConfigCredWidget( PlexConfigWidget ):
             self.tmdb_apikey.setText( '' )
             self.tmdb_status.setText( 'NOT WORKING' )
             self._emitWorkingStatus[ 'TMDB' ] = False
+        print( 'got here TMDB' )
         self.workingStatus.emit( self._emitWorkingStatusDict )
 
     def pushTVDBConfig( self ):
@@ -144,6 +148,7 @@ class PlexConfigCredWidget( PlexConfigWidget ):
             self.tvdb_userkey.setText( '' )
             self.tvdb_status.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'TVDB' ] = False
+        print( 'got here TVDB' )
         self.workingStatus.emit( self._emitWorkingStatusDict )
 
     def pushIMGURLConfig( self ):
@@ -166,9 +171,11 @@ class PlexConfigCredWidget( PlexConfigWidget ):
             self.imgurl_refreshtoken.setText( '' )
             self.imgurl_status.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'IMGURL' ] = False
+        print( 'got here IMGURL' )
         self.workingStatus.emit( self._emitWorkingStatusDict )
 
     def pushGoogleConfig( self ): # this is done by button
+        print( 'got here GOOGLE?' )
         def checkStatus( state ):
             if state:
                 self.google_status.setText( 'WORKING' )
@@ -268,6 +275,7 @@ class PlexConfigCredWidget( PlexConfigWidget ):
         #
         ## google
         self.google_oauth = QPushButton( 'CLIENT REFRESH' )
+        self.google_oauth.setAutoDefault( False )
         self.google_status = QLabel( )
         googleWidget = QWidget( )
         googleWidget.setStyleSheet("""
@@ -402,6 +410,8 @@ class PlexConfigLoginWidget( PlexConfigWidget ):
             self.rsync_password.setText( '' )
             self.rsync_status.setText( str( e ) )
             self._emitWorkingStatusDict[ 'RSYNC' ] = False
+
+        self.workingStatus.emit( self._emitWorkingStatusDict )
 
     def pushPlexLoginConfig( self ):
         username = self.server_usernameBox.text( ).strip( )
@@ -769,6 +779,8 @@ class PlexConfigMusicWidget( PlexConfigWidget ):
         #
         self.gmusicStatusLabel = QLabel( )
         self.google_oauth = QPushButton( 'CLIENT REFRESH' )
+        # needed so that returnPressed does not trigger a clicked event
+        self.google_oauth.setAutoDefault( False )
         #
         self.lastfmAPIKey = QLineEdit( )
         self.lastfmAPIKey.setEchoMode( QLineEdit.Password )
@@ -919,11 +931,11 @@ class PlexConfigGUI( QDialogWithPrinting ):
                     self.parent.credWidget,
                     self.parent.musicWidget]):
                 working = pcwidget.getWorkingStatus( )
-                self.data[idx] = (
+                self.data[idx] = [
                     pcwidget.service,
                     len( working ),
                     len(list(filter(lambda tok: working[tok] is True,
-                                    working))))
+                                    working))) ]
 
             #
             ## populate the table
@@ -945,7 +957,11 @@ class PlexConfigGUI( QDialogWithPrinting ):
             row = index.row( )
             col = index.column( )
             datum = self.data[ row ]
-            if role == Qt.DisplayRole:
+            if role == Qt.Background:
+                if datum[ 2 ] < datum[ 1 ]:
+                    color = get_popularity_color( 0.5 )
+                    return QBrush( color )
+            elif role == Qt.DisplayRole:
                 return datum[ col ]
 
         def plexConfigAtRow( self, row ):
@@ -956,9 +972,10 @@ class PlexConfigGUI( QDialogWithPrinting ):
         def _setWidgetWorkingStatus( self, working, row ):
             assert( row in ( 0, 1, 2 ) )
             self.layoutAboutToBeChanged.emit( )
-            row = self.data[ row ]
-            row[1] = len( working )
-            row[2] = len(list(filter(lambda tok: working[tok] is True,
+            datum = self.data[ row ]
+            print( working )
+            datum[1] = len( working )
+            datum[2] = len(list(filter(lambda tok: working[tok] is True,
                                      working)))
             self.layoutChanged.emit( )
 
@@ -993,7 +1010,8 @@ class PlexConfigGUI( QDialogWithPrinting ):
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         myLayout.addWidget( self.tv )
-        self.setFixedHeight( self.tv.sizeHint( ).height( ) * 1.05 )
+        self.setFixedHeight( self.tv.sizeHint( ).height( ) * 0.75 )
+        self.setFixedWidth( self.tv.width( ) * 1.0 )
         self.show( )
 
     

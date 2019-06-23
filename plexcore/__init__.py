@@ -34,6 +34,15 @@ geoip_reader = geoip2.database.Reader( _geoip_database )
 .. _MaxMind: https://www.maxmind.com/en/geoip2-services-and-databases
 """
 
+def get_popularity_color( hpop, alpha = 1.0 ):
+    assert( hpop >= 0 )
+    h = hpop * ( 0.81 - 0.45 ) + 0.45
+    s = 0.85
+    v = 0.31
+    color = QColor( 'white' )
+    color.setHsvF( h, s, v, alpha )
+    return color
+
 #
 ## a QLabel with save option of the pixmap
 class QLabelWithSave( QLabel ):

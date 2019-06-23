@@ -207,8 +207,7 @@ def send_individual_email_full_withsingleattach(
         
 def send_individual_email_full_withattachs(
         mainHTML, subject, email, name = None,
-        attachNames = None, attachDatas = None
-        verify = True ):
+        attachNames = None, attachDatas = None ):
     fromEmail = 'Tanim Islam <tanim.islam@gmail.com>'
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
@@ -241,11 +240,11 @@ def send_individual_email_full_withattachs(
             att.add_header( 'content-disposition', 'attachment', filename = attachName )
             msg.attach( att )
     #send_email_lowlevel( msg )
-    send_email_localsmtp( msg ) # google has big problems sending "bad" emails
+    send_email_localsmtp( msg ) # google has big problems sending "big" emails (lots of attachments)
 
 def send_individual_email(
         mainHTML, email, name = None,
-        mydate = datetime.datetime.now().date()
+        mydate = datetime.datetime.now().date(),
         verify = True ):
     fromEmail = 'Tanim Islam <tanim.islam@gmail.com>'
     subject = titlecase.titlecase( 'Plex Email Newsletter For %s' % mydate.strftime( '%B %Y' ) )

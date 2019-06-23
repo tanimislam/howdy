@@ -10,7 +10,7 @@ from plexcore import session, plexcore
 from plexcore import get_formatted_size, get_formatted_duration
 from . import mainDir, send_email_lowlevel, send_email_localsmtp
 
-def send_email_movie_torrent( movieName, data, isJackett = False):
+def send_email_movie_torrent( movieName, data, isJackett = False, verify = True ):
     dtstring = datetime.datetime.now( ).strftime('%d %B %Y, %I:%M %p')
     msg = MIMEMultipart( )
     msg['From'] = 'Tanim Islam <tanim.islam@gmail.com>'
@@ -45,10 +45,10 @@ def send_email_movie_torrent( movieName, data, isJackett = False):
         msg.attach( body )
     #
     ## now send the email
-    send_email_lowlevel( msg )
+    send_email_lowlevel( msg, verify = verify )
     return 'SUCCESS'
 
-def send_email_movie_none( movieName ):
+def send_email_movie_none( movieName, verify = True ):
     dtstring = datetime.datetime.now( ).strftime('%d %B %Y, %I:%M %p')
     msg = MIMEMultipart( )
     msg['From'] = 'Tanim Islam <tanim.islam@gmail.com>'
@@ -65,12 +65,12 @@ def send_email_movie_none( movieName ):
     body = MIMEText( htmlString, 'html', 'utf-8' )
     msg.attach( body )
     #
-    send_email_lowlevel( msg )
+    send_email_lowlevel( msg, verify = verify )
     return 'SUCCESS'
 
-def get_email_contacts_dict( emailList ):
+def get_email_contacts_dict( emailList, verify = True ):
     if len( emailList ) == 0: return [ ]
-    credentials = plexcore.oauthGetGoogleCredentials( )
+    credentials = plexcore.oauthGetGoogleCredentials( verify = verify )
     people_service = build( 'people', 'v1', credentials = credentials,
                             cache_discovery = False )
     connections = people_service.people( ).connections( ).list(
@@ -142,7 +142,7 @@ def send_individual_email_perproc( input_tuple ):
             else:
                 print('Problem sending to %s <%s>. Trying again...' % ( name, email ) )
     
-def test_email( subject = None, htmlstring = None ):
+def test_email( subject = None, htmlstring = None, verify = True ):
     fromEmail = 'Tanim Islam <tanim.islam@gmail.com>'
     if subject is None:
         subject = titlecase.titlecase( 'Plex Email Newsletter For %s' % mydate.strftime( '%B %Y' ) )
@@ -153,10 +153,10 @@ def test_email( subject = None, htmlstring = None ):
     if htmlstring is None: body = MIMEText( 'This is a test.' )
     else: body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
-    send_email_lowlevel( msg )
+    send_email_lowlevel( msg, verify = verify )
 
 def send_individual_email_full( mainHTML, subject, email, name = None, attach = None,
-                                attachName = None, attachType = 'txt'):
+                                attachName = None, attachType = 'txt', verify = True ):
     fromEmail = 'Tanim Islam <tanim.islam@gmail.com>'
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
@@ -174,11 +174,12 @@ def send_individual_email_full( mainHTML, subject, email, name = None, attach = 
         att = MIMEApplication( attach, _subtype = 'text' )
         att.add_header( 'content-disposition', 'attachment', filename = attachName )
         msg.attach( att )
-    send_email_lowlevel( msg )
+    send_email_lowlevel( msg, verify = verify )
 
 def send_individual_email_full_withsingleattach(
         mainHTML, subject, email, name = None,
-        attachData = None, attachName = None):
+        attachData = None, attachName = None,
+        verify = True ):
     fromEmail = 'Tanim Islam <tanim.islam@gmail.com>'
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
@@ -202,11 +203,12 @@ def send_individual_email_full_withsingleattach(
         att = MIMEApplication( attachData, _subtype = sub_type )
         att.add_header( 'content-disposition', 'attachment', filename = attachName )
         msg.attach( att )
-    send_email_lowlevel( msg )
+    send_email_lowlevel( msg, verify = verify )
         
 def send_individual_email_full_withattachs(
         mainHTML, subject, email, name = None,
-        attachNames = None, attachDatas = None):
+        attachNames = None, attachDatas = None
+        verify = True ):
     fromEmail = 'Tanim Islam <tanim.islam@gmail.com>'
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
@@ -241,8 +243,10 @@ def send_individual_email_full_withattachs(
     #send_email_lowlevel( msg )
     send_email_localsmtp( msg ) # google has big problems sending "bad" emails
 
-def send_individual_email( mainHTML, email, name = None,
-                           mydate = datetime.datetime.now().date() ):
+def send_individual_email(
+        mainHTML, email, name = None,
+        mydate = datetime.datetime.now().date()
+        verify = True ):
     fromEmail = 'Tanim Islam <tanim.islam@gmail.com>'
     subject = titlecase.titlecase( 'Plex Email Newsletter For %s' % mydate.strftime( '%B %Y' ) )
     msg = MIMEMultipart( )
@@ -258,7 +262,7 @@ def send_individual_email( mainHTML, email, name = None,
     #
     body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
-    send_email_lowlevel( msg )
+    send_email_lowlevel( msg, verify = verify )
 
 def get_summary_html( preambleText = '', postambleText = '', pngDataDict = { },
                       name = None, token = None, doLocal = True ):

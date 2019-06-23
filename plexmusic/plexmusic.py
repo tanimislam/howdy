@@ -169,12 +169,12 @@ def upload_to_gmusic(filenames):
         with gmusicmanager( useMobileclient = False ) as mmg:
             mmg.upload(filenames_valid)
         
-def get_youtube_service( ):
-    credentials = plexcore.oauthGetGoogleCredentials( )
+def get_youtube_service( verify = True ):
+    credentials = plexcore.oauthGetGoogleCredentials( verify = verify )
     if credentials is None:
         raise ValueError( "Error, could not build the YouTube service." )
-    youtube = build( "youtube", "v3", credentials = credentials ) 
-    #outube = build( "youtube", "v3", http = credentials.authorize(httplib2.Http()))
+    youtube = build( "youtube", "v3", credentials = credentials,
+                     cache_discovery=False ) 
     return youtube
 
 def fill_m4a_metadata( filename, data_dict ):

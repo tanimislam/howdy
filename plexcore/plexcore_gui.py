@@ -7,8 +7,26 @@ from plexmusic import plexmusic
 from plextmdb import get_tmdb_api, save_tmdb_api, plextmdb
 from plextvdb import get_tvdb_api, save_tvdb_api, check_tvdb_api, get_token
 
-class PlexConfigCredWidget( QDialogWithPrinting ):
+class PlexConfigWidget( QDialogWithPrinting ):
     workingStatus = pyqtSignal( dict )
+    _emitWorkingStatusDict = { }
+    
+    def showHelpInfo( self ):
+        pass
+
+    def getWorkingStatus( self ):
+        return self._emitWorkingStatusDict.copy( )
+
+    def __init__( self, parent, service, verify = True ):
+        super( PlexConfigWidget, self ).__init__(
+            parent, isIsolated = True, doQuit = False )
+        self.hide( )
+        self.setModal( True )
+        self.service = service
+        self.verify = verify
+        self.setWindowTitle( 'PLEX %s CONFIGURATION' % service.upper( ) )
+
+class PlexConfigCredWidget( PlexConfigWidget ):
     _emitWorkingStatusDict = {
         'TMDB' : False,
         'TVDB' : False,
@@ -36,7 +54,7 @@ class PlexConfigCredWidget( QDialogWithPrinting ):
             self._emitWorkingStatusDict[ 'TMDB' ] = False
 
         #
-        ## now look at TVDB
+ look at TVDB
         try:
             data = get_tvdb_api( )
             token = get_token( verify = self.verify, data = data )
@@ -88,7 +106,6 @@ class PlexConfigCredWidget( QDialogWithPrinting ):
         except Exception as e:
             self.google_status.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'GOOGLE' ] = False
-        self.workingStatus.emit( self._emitWorkingStatusDict )
 
     def pushTMDBConfig( self ):
         tmdbApi = self.tmdb_apikey.text( ).strip( )
@@ -166,10 +183,7 @@ class PlexConfigCredWidget( QDialogWithPrinting ):
 
     def __init__( self, parent, verify = True ):
         super( PlexConfigCredWidget, self ).__init__(
-            parent, isIsolated = True, doQuit = False )
-        self.setModal( True )
-        self.setWindowTitle( 'PLEX CREDENTIALS CONFIGURATION' )
-        self.verify = verify
+            parent, 'CREDENTIALS', verify = verify )
         #
         ## gui stuff
         myLayout = QVBoxLayout( )
@@ -272,7 +286,6 @@ class PlexConfigCredWidget( QDialogWithPrinting ):
         ## now initialize
         self.initPlexConfigCredStatus( ) # set everything up
         self.setFixedWidth( self.sizeHint( ).width( ) * 1.25 )
-        self.hide( )
 
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
@@ -285,8 +298,7 @@ class PlexConfigCredWidget( QDialogWithPrinting ):
         menu.popup( QCursor.pos( ) )
         
 
-class PlexConfigLoginWidget( QDialogWithPrinting ):
-    workingStatus = pyqtSignal( dict )
+class PlexConfigLoginWidget( PlexConfigWidget ):
     _emitWorkingStatusDict = {
         'PLEXLOGIN' : False,
         'DELUGE' : False,
@@ -390,8 +402,6 @@ class PlexConfigLoginWidget( QDialogWithPrinting ):
             self.rsync_password.setText( '' )
             self.rsync_status.setText( str( e ) )
             self._emitWorkingStatusDict[ 'RSYNC' ] = False
-
-        self.workingStatus.emit( self._emitWorkingStatusDict )
 
     def pushPlexLoginConfig( self ):
         username = self.server_usernameBox.text( ).strip( )
@@ -512,10 +522,7 @@ class PlexConfigLoginWidget( QDialogWithPrinting ):
 
     def __init__( self, parent, verify = True ):
         super( PlexConfigLoginWidget, self ).__init__(
-            parent, isIsolated = True, doQuit = False )
-        self.setModal( True )
-        self.setWindowTitle( 'PLEX LOGIN CONFIGURATION' )
-        self.verify = verify
+            parent, 'LOGIN', verify = verify )
         #
         ## gui stuff
         myLayout = QVBoxLayout( )
@@ -643,7 +650,6 @@ class PlexConfigLoginWidget( QDialogWithPrinting ):
         ## now initialize
         self.initPlexConfigLoginStatus( ) # set everything up
         self.setFixedWidth( jackettWidget.sizeHint( ).width( ) * 1.7 )
-        self.hide( )
 
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
@@ -655,8 +661,7 @@ class PlexConfigLoginWidget( QDialogWithPrinting ):
         menu.addAction( helpAction )
         menu.popup( QCursor.pos( ) )
 
-class PlexConfigMusicWidget( QDialogWithPrinting ):
-    workingStatus = pyqtSignal( dict )
+class PlexConfigMusicWidget( PlexConfigWidget ):
     _emitWorkingStatusDict = {
         'GMUSIC' : False,
         'LASTFM' : False,
@@ -664,7 +669,7 @@ class PlexConfigMusicWidget( QDialogWithPrinting ):
 
     def showHelpInfo( self ):
         pass
-    
+
     def initPlexConfigMusicStatus( self ):
         #
         ## look for gmusic credentials
@@ -706,7 +711,18 @@ class PlexConfigMusicWidget( QDialogWithPrinting ):
             self.gracenoteStatusLabel.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'GRACENOTE' ] = False
 
-        self.workingStatus.emit( self._emitWorkingStatusDict )
+    def pushGoogleConfig( self ): # this is done by button
+        def checkStatus( state ):
+            if state:
+                self.gmusicStatusLabel.setText( 'WORKING' )
+            else:
+                self.gmusicStatusLabel.setText( 'NOT WORKING' )
+            self._emitWorkingStatusDict[ 'GOOGLE' ] = state
+            self.workingStatus.emit( self._emitWorkingStatusDict )
+        goauth2dlg = GoogleOauth2Dialog( self )
+        goauth2dlg.emitState.connect( checkStatus )
+        goauth2dlg.show( )
+        goauth2dlg.exec_( )
 
     def pushGracenoteToken( self ):
         client_ID = self.gracenoteToken.text( ).strip( )
@@ -726,10 +742,6 @@ class PlexConfigMusicWidget( QDialogWithPrinting ):
             'api_secret' : self.lastfmAPISecret.text( ).strip( ),
             'application_name' : self.lastfmAppName.text( ).strip( ),
             'username' : self.lastfmUserName.text( ).strip( ) }
-        self.lastfmAPIKey.setText( api_data[ 'api_key' ] )
-        self.lastfmAPISecret.setText( api_data[ 'api_secret' ] )
-        self.lastfmAppName.setText( api_data[ 'application_name' ] )
-        self.lastfmUserName.setText( api_data[ 'username' ] )
         plexlastFM = plexmusic.PlexLastFM( api_data )
         data, status = plexlastFM.get_album_info(
             'Air', 'Moon Safari' ) # this should always work
@@ -741,21 +753,22 @@ class PlexConfigMusicWidget( QDialogWithPrinting ):
             self.lastfmStatusLabel.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'LASTFM' ] = False
         else:
+            self.lastfmAPIKey.setText( api_data[ 'api_key' ] )
+            self.lastfmAPISecret.setText( api_data[ 'api_secret' ] )
+            self.lastfmAppName.setText( api_data[ 'application_name' ] )
+            self.lastfmUserName.setText( api_data[ 'username' ] )
             plexmusic.PlexLastFM.push_lastfm_credentials(
                 api_data )
             self.lastfmStatusLabel.setText( 'WORKING' )
             self._emitWorkingStatusDict[ 'LASTFM' ] = True
-        self.workingStatus.emit( self._emitWorkingStatusDict )
-            
+        self.workingStatus.emit( self._emitWorkingStatusDict )            
         
     def __init__( self, parent, verify = True ):
         super( PlexConfigMusicWidget, self ).__init__(
-            parent, isIsolated = True, doQuit = False )
-        self.setModal( True )
-        self.setWindowTitle( 'PLEX MUSIC CONFIGURATION' )
-        self.verify = verify
+            parent, 'MUSIC', verify = verify )
         #
         self.gmusicStatusLabel = QLabel( )
+        self.google_oauth = QPushButton( 'CLIENT REFRESH' )
         #
         self.lastfmAPIKey = QLineEdit( )
         self.lastfmAPIKey.setEchoMode( QLineEdit.Password )
@@ -781,8 +794,10 @@ class PlexConfigMusicWidget( QDialogWithPrinting ):
         gmusicLayout = QGridLayout( )
         gmusicWidget.setLayout( gmusicLayout )
         gmusicLayout.addWidget( QLabel( 'GMUSIC CONFIG' ), 0, 0, 1, 1 )
-        gmusicLayout.addWidget( QLabel( ), 0, 1, 1, 2 )
+        gmusicLayout.addWidget( self.google_oauth, 0, 1, 1, 2 )
         gmusicLayout.addWidget( self.gmusicStatusLabel, 0, 3, 1, 1 )
+        self.google_oauth.clicked.connect(
+            self.pushGoogleConfig )
         myLayout.addWidget( gmusicWidget )
         #
         lastfmWidget = QWidget( )
@@ -830,8 +845,7 @@ class PlexConfigMusicWidget( QDialogWithPrinting ):
             self.pushLastFMToken )
         #
         self.setFixedWidth( self.sizeHint( ).width( ) )
-        self.hide( )
-
+        
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
         refreshAction = QAction( 'refresh music config', menu )
@@ -847,9 +861,10 @@ class PlexConfigMusicWidget( QDialogWithPrinting ):
 ## main configuration dialog
 ## we look at the following login settings
 class PlexConfigGUI( QDialogWithPrinting ):
-    def PlexConfigTableView( QTableView ):
+    #
+    class PlexConfigTableView( QTableView ):
         def __init__( self, parent ):
-            super( PlexConfigTableView, self ).__init__( parent )
+            super( PlexConfigGUI.PlexConfigTableView, self ).__init__( parent )
             assert( isinstance( parent, QDialogWithPrinting ) )
             self.parent = parent
             self.setModel( self.parent.tm )
@@ -888,13 +903,97 @@ class PlexConfigGUI( QDialogWithPrinting ):
             popupAction.triggered.connect( popupConfigInfo )
             menu.addAction( popupAction )
             menu.popup( QCursor.pos( ) )
+
+    class PlexConfigTableModel( QAbstractTableModel ):
+        _columnNames = [ 'service', 'tot num.', 'num working' ]
+        
+        def __init__( self, parent ):
+            super( PlexConfigGUI.PlexConfigTableModel, self ).__init__( parent )
+            self.parent = parent
+            self.data = { }
+            #
+            ## now add in the data -- service, number total, number working
+            # row 0: LOGIN
+            for idx, pcwidget in enumerate([
+                    self.parent.loginWidget,
+                    self.parent.credWidget,
+                    self.parent.musicWidget]):
+                working = pcwidget.getWorkingStatus( )
+                self.data[idx] = (
+                    pcwidget.service,
+                    len( working ),
+                    len(list(filter(lambda tok: working[tok] is True,
+                                    working))))
+
+            #
+            ## populate the table
+            self.beginInsertRows( QModelIndex( ), 0, 2 )
+            self.endInsertRows( )
+
+        def rowCount( self, parent ):
+            return len( self.data )
+
+        def columnCount( self, parent ):
+            return 3
+
+        def headerData( self, col, orientation, role ):
+            if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+                return self._columnNames[ col ]
+
+        def data( self, index, role ):
+            if not index.isValid( ): return None
+            row = index.row( )
+            col = index.column( )
+            datum = self.data[ row ]
+            if role == Qt.DisplayRole:
+                return datum[ col ]
+
+        def plexConfigAtRow( self, row ):
+            if row == 0: self.parent.loginWidget.show( )
+            elif row == 1: self.parent.credWidget.show( )
+            elif row == 2: self.parent.musicWidget.show( )
+
+        def _setWidgetWorkingStatus( self, working, row ):
+            assert( row in ( 0, 1, 2 ) )
+            self.layoutAboutToBeChanged.emit( )
+            row = self.data[ row ]
+            row[1] = len( working )
+            row[2] = len(list(filter(lambda tok: working[tok] is True,
+                                     working)))
+            self.layoutChanged.emit( )
+
+        def setLoginWidgetWorkingStatus( self, working ):
+            self._setWidgetWorkingStatus( working, 0 )
+
+        def setCredWidgetWorkingStatus( self, working ):
+            self._setWidgetWorkingStatus( working, 1 )
+
+        def setMusicWidgetWorkingStatus( self, working ):
+            self._setWidgetWorkingStatus( working, 2 )
+                
             
-    def __init__( self ):
+    def __init__( self, verify = True ):
+        #
+        ## initialization of this data
         super(QDialogWithPrinting, self ).__init__( None )
+        self.setWindowTitle( 'PLEX CONFIGURATION WIDGET' )
+        self.credWidget = PlexConfigCredWidget( self, verify = verify )
+        self.loginWidget= PlexConfigLoginWidget( self, verify = verify )
+        self.musicWidget= PlexConfigMusicWidget( self, verify = verify )
+        #
+        ##
+        self.tm = PlexConfigGUI.PlexConfigTableModel( self )
+        self.tv = PlexConfigGUI.PlexConfigTableView( self )
+        #
+        ## connect signals
+        self.credWidget.workingStatus.connect( self.tm.setCredWidgetWorkingStatus )
+        self.loginWidget.workingStatus.connect( self.tm.setLoginWidgetWorkingStatus )
+        self.musicWidget.workingStatus.connect( self.tm.setMusicWidgetWorkingStatus )
         #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
-        self.setFixedHeight( 400 )
+        myLayout.addWidget( self.tv )
+        self.setFixedHeight( self.tv.sizeHint( ).height( ) * 1.05 )
         self.show( )
 
     

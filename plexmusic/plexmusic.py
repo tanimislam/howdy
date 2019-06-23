@@ -1,10 +1,9 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2, json, logging
-import requests, youtube_dl, gmusicapi, datetime, musicbrainzngs, time
+import requests, youtube_dl, gmusicapi, datetime, musicbrainzngs, time, io
 import pathos.multiprocessing as multiprocessing
 from contextlib import contextmanager
 from googleapiclient.discovery import build
 from PIL import Image
-from io import StringIO, BytesIO
 from urllib.parse import urljoin
 from . import mainDir, pygn, parse_youtube_date, format_youtube_date
 from plexcore import plexcore, baseConfDir, session, PlexConfig
@@ -48,7 +47,7 @@ class MusicInfo( object ):
         
     #
     ## now get all the albums of this artist.
-    ## musicbrainz probably does a "make functionality so general that easy use cases
+    ## musicbrainz does a "make functionality so general that easy use cases
     ## are much harder than expected" implementation.
     ##
     ## first, get all the release-groups of the artist
@@ -107,8 +106,8 @@ class MusicInfo( object ):
         return rtitle, albumdata
 
 @contextmanager
-def gmusicmanager( useMobileclient = False ):
-    mmg = get_gmusicmanager( useMobileclient = useMobileclient )
+def gmusicmanager( useMobileclient = False, verify = True ):
+    mmg = get_gmusicmanager( useMobileclient = useMobileclient, verify = verify  )
     try: yield mmg
     finally: mmg.logout( )
 
@@ -149,8 +148,8 @@ def save_gmusic_creds( email, password ):
     session.add( newval )
     session.commit( )
 
-def get_gmusic_all_songs( ):
-    with gmusicmanager( useMobileclient = True ) as mmg:
+def get_gmusic_all_songs( verify = True ):
+    with gmusicmanager( useMobileclient = True, verify = verify ) as mmg:
         allSongs = mmg.get_all_songs( )
         allSongsDict = dict( map(lambda song: (
             song.get('id'),
@@ -163,10 +162,10 @@ def get_gmusic_all_songs( ):
             } ), allSongs ) )
         return allSongsDict
 
-def upload_to_gmusic(filenames):
+def upload_to_gmusic(filenames, verify = True):
     filenames_valid = list(filter(lambda fname: os.path.isfile(fname), set(filenames)))
     if len(filenames_valid) != 0:
-        with gmusicmanager( useMobileclient = False ) as mmg:
+        with gmusicmanager( useMobileclient = False, verify = verify ) as mmg:
             mmg.upload(filenames_valid)
         
 def get_youtube_service( verify = True ):
@@ -177,7 +176,7 @@ def get_youtube_service( verify = True ):
                      cache_discovery=False ) 
     return youtube
 
-def fill_m4a_metadata( filename, data_dict ):
+def fill_m4a_metadata( filename, data_dict, verify = True ):
     assert( os.path.isfile( filename ) )
     assert( os.path.basename( filename ).lower( ).endswith( '.m4a' ) )
     #
@@ -191,7 +190,8 @@ def fill_m4a_metadata( filename, data_dict ):
     mp4tags[ 'trkn' ] = [ ( data_dict[ 'tracknumber' ],
                             data_dict[ 'total tracks' ] ), ]
     if data_dict[ 'album url' ] != '':
-        with BytesIO( requests.get( data_dict[ 'album url' ] ).content ) as csio, BytesIO( ) as csio2:
+        with io.BytesIO( requests.get(
+                data_dict[ 'album url' ], verify = verify ).content ) as csio, io.BytesIO( ) as csio2:
             img = Image.open( csio )
             img.save( csio2, format = 'png' )
             mp4tags[ 'covr' ] = [
@@ -285,28 +285,15 @@ class PlexLastFM( object ):
                                  key = lambda entry: sorting_list_size[ entry['size'] ] )
         if len( sorted_entries ) == 0: return None
         return sorted_entries[ 0 ][ '#text' ]
-
-    @classmethod
-    def get_album_release_year( cls, album_mbid ):
-        # this uses the MusicBrainz REST API to get release info
-        endpoint = 'https://musicbrainz.org/ws/2/release/'
-        headers = {'User-Agent': 'TanimIslamMusicBrainz/1.0 (tanim.islam@gmail.com)'}
-        response = requests.get( urljoin( endpoint, album_mbid ), headers = headers,
-                                 params = { 'fmt' : 'json' } )
-        if response.status_code != 200: return None
-        data = response.json( )
-        if 'date' not in data: return None
-        try: release_date = datetime.datetime.strptime( data['date'], '%Y-%m-%d' ).date( )
-        except: release_date = datetime.datetime.strptime( data['date'], '%Y' ).date( )
-        return release_date.year
     
-    def __init__( self, data = None ):
+    def __init__( self, data = None, verify = True ):
         if data is None: data = PlexLastFM.get_lastfm_credentials( )
         self.api_key = data[ 'api_key' ]
         self.api_secret = data[ 'api_secret' ]
         self.application_name = data[ 'application_name' ]
         self.username = data[ 'username' ]
         self.endpoint = 'http://ws.audioscrobbler.com/2.0'
+        self.verify = verify
 
     def get_collection_album_info( self, album_name ):
         response = requests.get( self.endpoint,
@@ -314,7 +301,8 @@ class PlexLastFM( object ):
                                             'album' : album_name,
                                             'api_key' : self.api_key,
                                             'format' : 'json',
-                                            'lang' : 'en' } )
+                                            'lang' : 'en' },
+                                 verify = self.verify )
         data = response.json( )
         if 'error' in data:
             return None, "ERROR: %s" % data['message']
@@ -328,7 +316,8 @@ class PlexLastFM( object ):
                                             'artist' : artist_name,
                                             'api_key' : self.api_key,
                                             'format' : 'json',
-                                            'lang' : 'en' } )
+                                            'lang' : 'en' },
+                                 verify = self.verify )
         data = response.json( )
         if 'error' in data:
             return None, "ERROR: %s" % data['message']
@@ -348,7 +337,7 @@ class PlexLastFM( object ):
                 album_name, artist_name )
             return None, error_message
         filename = '%s.%s.png' % ( artist_name, album_name.replace('/', '-' ) )
-        img = Image.open( BytesIO( requests.get( album_url ).content ) )
+        img = Image.open( io.BytesIO( requests.get( album_url ).content ) )
         img.save( filename, format = 'png' )
         os.chmod( filename, 0o644 )
         return filename, 'SUCCESS'
@@ -374,17 +363,64 @@ class PlexLastFM( object ):
                                             'autocorrect' : 1,
                                             'api_key' : self.api_key,
                                             'format' : 'json',
-                                            'lang' : 'en' } )
+                                            'lang' : 'en' },
+                                 verify = self.verify )
         data = response.json( )
         if 'error' in data:
             return None, "ERROR: %s" % data[ 'message' ]
         track = data['track']
         #
-        ## now see if we have an album with mbid
+        ## now see if we have an album with mbid, fill out ALL the metadata
         if 'mbid' in track[ 'album' ]:
+            music_metadata = { }
             album_mbid = track[ 'album' ][ 'mbid' ]
-            album_year = PlexLastFM.get_album_release_year( album_mbid )
-        else: album_year = None
+            data = musicbrainzngs.get_release_by_id(
+                album_mbid, includes = [ 'recordings', 'artists' ] )['release']
+            music_metadata[ 'album' ] = data['title']
+            music_metadata[ 'artist' ] = data[ 'artist-credit' ][ 0 ][ 'artist' ][ 'name' ]
+            if 'date' in data:
+                album_year = datetime.datetime.strptime(
+                    data['date'], '%Y-%m-%d' ).year
+                music_metadata[ 'year' ] = album_year
+            #
+            ## get position of track
+            if '@attr' in track[ 'album' ] and 'position' in track[ 'album' ]['@attr']:
+                tracknumber = int( track[ 'album' ][ '@attr' ][ 'position' ] )
+                music_metadata[ 'tracknumber' ] = tracknumber
+            else: tracknumber = None
+            #
+            ## now look for the track list
+            medium_list = data['medium-list'][0]
+            music_metadata[ 'total tracks' ] = medium_list[ 'track-count' ]
+            track_list = medium_list['track-list']
+            #
+            ## now find tracknumber here
+            if tracknumber is not None:
+                act_track = list(filter(lambda trck: int( trck['position'] ) == tracknumber,
+                                        track_list))
+                if len( act_track ) == 0:
+                    music_metadata[ 'duration' ] = float( track['duration'] ) * 1e-3
+                    music_metadata[ 'song' ] = titlecase.titlecase( track[ 'name' ] )
+                else:
+                    act_track = act_track[ 0 ]
+                    music_metadata[ 'song' ] = titlecase.titlecase( act_track[ 'recording' ][ 'title' ] )
+                    music_metadata[ 'duration' ] = float( act_track[ 'recording' ][ 'length' ] ) * 1e-3
+            else:
+                music_metadata[ 'duration' ] = float( track['duration'] ) * 1e-3
+                music_metadata[ 'song' ] = titlecase.titlecase( track[ 'name' ] )
+                music_metadata[ 'tracknumber' ] = 1
+
+            #
+            ## if find the image
+            if 'image' in track[ 'album' ]:
+                album_url = PlexLastFM.get_album_url( track[ 'album' ][ 'image' ] )
+                if album_url is not None:
+                    music_metadata[ 'album url' ] = album_url
+
+            return music_metadata, 'SUCCESS'
+
+        #
+        ## alternate, could not get mbid stuff...
         music_metadata = { 'artist' : track['artist']['name'],
                            'song' : titlecase.titlecase( track['name'] ),
                            'album' : track[ 'album' ][ 'title' ],
@@ -399,8 +435,9 @@ class PlexLastFM( object ):
             return music_metadata, 'SUCCESS'
         #
         ## now if we want to get total number of tracks for this album, and track number for song
-        track_listing, status = self.get_song_listing( artist_name = artist_name,
-                                                       album_name = track[ 'album' ][ 'title' ] )
+        track_listing, status = self.get_song_listing(
+            artist_name = artist_name,
+            album_name = track[ 'album' ][ 'title' ] )
         if track_listing is None:
             return music_metadata, 'SUCCESS'
         track_listing_dict = dict( track_listing )
@@ -421,27 +458,44 @@ class PlexLastFM( object ):
         if len( album[ 'tracks' ][ 'track' ] ) == 0:
             return None, "Error, could find no tracks for artist = %s, album = %s." % (
                 artist_name, album_name )
+        if 'mbid' in album:
+            album_mbid = album['mbid']
+            data = musicbrainzngs.get_release_by_id(
+                album_mbid, includes = [ 'recordings', 'artists' ] )['release']
+            album_name = data['title']
+            artist = data[ 'artist-credit' ][ 0 ][ 'artist' ][ 'name' ]
+            if 'date' in data:
+                album_year = datetime.datetime.strptime(
+                    data['date'], '%Y-%m-%d' ).year
+            else: album_year is None
+            #
+            ## now look for the track list
+            medium_list = data['medium-list'][0]
+            total_tracks = medium_list[ 'track-count' ]
+            track_list = medium_list['track-list']
+            #
+            ## image URL
+            album_url = PlexLastFM.get_album_url( album[ 'image' ] )
+            #
+            album_data_dict = sorted(map(lambda act_track:
+                                         { 'song' : titlecase.titlecase( act_track[ 'recording' ][ 'title' ] ),
+                                           'artist' : artist,
+                                           'tracknumber' : int( act_track[ 'position' ] ),
+                                           'total tracks' : total_tracks,
+                                           'duration' : 1e-3 * float( act_track[ 'recording' ][ 'length' ] ),
+                                           'album url' : album_url,
+                                           'album' : album_name }, track_list ),
+                                     key = lambda trck: trck['tracknumber'] )
+            if album_year is not None:
+                for datum in album_data_dict:
+                    datum['year'] = album_year
+            return album_data_dict, 'SUCCESS'
+        #
         track_listing = sorted(map(lambda track: ( titlecase.titlecase( track['name'] ),
                                                    int( track[ '@attr' ][ 'rank' ] ),
                                                    float( track[ 'duration' ] ) ),
                                    album['tracks']['track'] ), key = lambda tup: tup[1] )
-        if 'mbid' in album:
-            album_mbid = album['mbid']
-            album_year = PlexLastFM.get_album_release_year( album_mbid )
-        else: album_year = None
-        if album_year is not None:
-            album_data_dict = list( map(lambda title_num:
-                                    { 'song' : titlecase.titlecase( title_num[ 0 ] ),
-                                      'artist' : album[ 'artist' ],
-                                      'tracknumber' : title_num[ 1 ],
-                                      'total tracks' : len( track_listing ),
-                                      'duration' : title_num[ 2 ],
-                                      'year' : album_year,
-                                      'album url' : PlexLastFM.get_album_url( album[ 'image' ] ),
-                                      'album' : album[ 'name' ] },
-                                    track_listing ) )
-        else:
-            album_data_dict = list( map(lambda title_num:
+        album_data_dict = list( map(lambda title_num:
                                     { 'song' : titlecase.titlecase( title_num[ 0 ] ),
                                       'artist' : album[ 'artist' ],
                                       'tracknumber' : title_num[ 1 ],
@@ -450,7 +504,7 @@ class PlexLastFM( object ):
                                       'album url' : PlexLastFM.get_album_url( album[ 'image' ] ),
                                       'album' : album[ 'name' ] },
                                     track_listing ) )
-            
+        
         return album_data_dict, 'SUCCESS'
     
 class PlexMusic( object ):
@@ -485,8 +539,9 @@ class PlexMusic( object ):
         userID = data['userID']
         return clientID, userID
     
-    def __init__( self ):
+    def __init__( self, verify = True ):
         self.clientID, self.userID = PlexMusic.get_gracenote_credentials( )
+        self.verify = verify
 
     def get_album_image( self, artist_name, album_name ):
         metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,
@@ -496,7 +551,8 @@ class PlexMusic( object ):
             return None, 'Could not find album = %s for artist = %s.' % (
                 album_name, titlecase.titlecase( artist_name ) )
         filename = '%s.%s.png' % ( artist_name, album_name.replace('/', '-') )
-        img = Image.open( BytesIO( requests.get( metadata_album[ 'album_art_url' ] ).content ) )
+        img = Image.open( io.BytesIO( requests.get(
+            metadata_album[ 'album_art_url' ], verify = self.verify ).content ) )
         img.save( filename, format = 'png' )
         os.chmod( filename, 0o644 )
         return filename, 'SUCCESS'

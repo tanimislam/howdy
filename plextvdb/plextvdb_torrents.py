@@ -331,7 +331,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsize = None, maxsize = None, k
         if imdb_id is None: return params
         params[ 'imdbid' ] = imdb_id
         return params
-            
+    
     response = requests.get( urljoin( url, endpoint ),
                              params = _return_params( name ), verify = verify ) # tv shows
     if response.status_code != 200:

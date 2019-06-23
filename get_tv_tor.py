@@ -41,9 +41,10 @@ def get_items_zooqle( name, maxnum = 10, verify = True ):
         return None
     return items
 
-def get_items_tpb(name, maxnum = 10, doAny = False, raiseError = False, shared_list = None):
+def get_items_tpb(name, maxnum = 10, doAny = False, raiseError = False, verify = True ):
     assert( maxnum >= 5 )
-    items, status = plextvdb_torrents.get_tv_torrent_tpb( name, maxnum = maxnum, doAny = doAny )
+    items, status = plextvdb_torrents.get_tv_torrent_tpb(
+        name, maxnum = maxnum, doAny = doAny, verify = verify )
     if status != 'SUCCESS':
         if raiseError:
             raise ValueError('ERROR, TPB COULD NOT FIND %s.' % name)
@@ -51,25 +52,28 @@ def get_items_tpb(name, maxnum = 10, doAny = False, raiseError = False, shared_l
         return None
     return items
 
-def get_items_torrentz( name, maxnum = 10, shared_list = None ):
+def get_items_torrentz( name, maxnum = 10, verify = True ):
     assert( maxnum >= 5 )
-    items, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
+    items, status = plextvdb_torrents.get_tv_torrent_torrentz(
+        name, maxnum = maxnum, verify = verify )
     if status != 'SUCCESS':
         logging.info( 'ERROR, TORRENTZ COULD NOT FIND %s.' % name )
         return None
     return items
 
-def get_items_rarbg( name, maxnum = 10, shared_list = None ):
+def get_items_rarbg( name, maxnum = 10, verify = True ):
     assert( maxnum >= 10 )
-    items, status = plextvdb_torrents.get_tv_torrent_rarbg( name, maxnum = maxnum )
+    items, status = plextvdb_torrents.get_tv_torrent_rarbg(
+        name, maxnum = maxnum, verify = verify )
     if status != 'SUCCESS':
         logging.info( 'ERROR, RARBG COULD NOT FIND %s.' % name )
         return None
     return items
 
-def get_items_kickass( name, maxnum = 10, shared_list = None ):
+def get_items_kickass( name, maxnum = 10, verify = True ):
     assert( maxnum >= 10 )
-    items, status = plextvdb_torrents.get_tv_torrent_kickass( name, maxnum = maxnum )
+    items, status = plextvdb_torrents.get_tv_torrent_kickass(
+        name, maxnum = maxnu, verify = verify )
     if status != 'SUCCESS':
         logging.info( 'ERROR, KICKASS COULD NOT FIND %s.' % name )
         return None
@@ -105,7 +109,8 @@ def get_tv_torrent_items(
         if status != 'SUCCESS':
             print( status )
             return
-        plexcore_deluge.deluge_add_magnet_file( client, magnet_link )
+        plexcore_deluge.deluge_add_magnet_file(
+            client, magnet_link )
     elif filename is None:
         print('magnet link: %s' % magnet_link )
     else:

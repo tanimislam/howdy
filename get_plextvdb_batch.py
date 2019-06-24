@@ -100,13 +100,12 @@ def main( ):
     step += 1
     #
     ## now download these episodes
-    tv_torrent_gets = plextvdb.get_tvtorrent_candidate_downloads( toGet )
-    tvTorUnits = plextvdb.create_tvTorUnits( tv_torrent_gets )
+    tvTorUnits, tv_torrent_gets = plextvdb.create_tvTorUnits( toGet )
     print('%d, here are the %d episodes to get: %s.' % ( step,
         len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname' ], tvTorUnits))))
     step += 1
     plextvdb.download_batched_tvtorrent_shows(
-        tv_torrent_gets, maxtime_in_secs = opts.maxtime_in_secs,
+        tv_torrent_gets, tvTorUnits, maxtime_in_secs = opts.maxtime_in_secs,
         num_iters = opts.num_iters )
     print( '\n'.join([ '%d, everything done in %0.3f seconds.' % ( step, time.time( ) - time0 ),
                        '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(

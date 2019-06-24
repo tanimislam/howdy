@@ -960,7 +960,7 @@ def get_shows_to_exclude( tvdata = None ):
     # showsToExcludeInDB = sorted( set( showsToExcludeInDB ) & set( tvdata ) )
     return showsToExcludeInDB
 
-def get_tvtorrent_candidate_downloads( toGet ):
+def create_tvTorUnits( toGet ):
     tv_torrent_gets = { }
     tv_torrent_gets.setdefault( 'nonewdirs', [] )
     tv_torrent_gets.setdefault( 'newdirs', {} )
@@ -974,11 +974,15 @@ def get_tvtorrent_candidate_downloads( toGet ):
         #
         ## calc minsize from avg_length_mins
         num_in_50 = int( avg_length_mins * 60.0 * 700 / 8.0 / 1024 / 50 + 1)
-        minSize = 50 * num_in_50        
+        minSize = 50 * num_in_50
+        num_in_50 = int( avg_length_mins * 60.0 * 500 / 8.0 / 1024 / 50 + 1)
+        minSize_x265 = 50 * num_in_50
         ##
         ## calc maxsize from avg_length_mins
-        num_in_50 = int( avg_length_mins * 60.0 * 1500 / 8.0 / 1024 / 50 + 1 )
+        num_in_50 = int( avg_length_mins * 60.0 * 2000 / 8.0 / 1024 / 50 + 1 )
         maxSize = 50 * num_in_50
+        num_in_50 = int( avg_length_mins * 60.0 * 1600 / 8.0 / 1024 / 50 + 1 )
+        maxSize_x265 = 50 * num_in_50
         #
         ## being too clever
         ## doing torTitle = showFileName.replace("'",'').replace(':','').replace('&', 'and').replace('/', '-')
@@ -994,28 +998,26 @@ def get_tvtorrent_candidate_downloads( toGet ):
             torFname = '%s S%02dE%02d' % ( torTitle, seasno, epno )
             dat = { 'totFname' : totFname, 'torFname' : torFname,
                     'minSize' : minSize, 'maxSize' : maxSize,
+                    'minSize_x265' : minSize_x265, 'maxSize_x265' : maxSize_x265,
                     'tvshow' : tvshow }
                 
             if not os.path.isdir( candDir ):
                 tv_torrent_gets[ 'newdirs' ].setdefault( candDir, [] )
                 tv_torrent_gets[ 'newdirs' ][ candDir ].append( dat )
             else: tv_torrent_gets[ 'nonewdirs' ].append( dat )
-    return tv_torrent_gets
 
-def create_tvTorUnits( tv_torrent_gets ):
     tvTorUnits = list(chain.from_iterable(
         [ tv_torrent_gets[ 'nonewdirs' ] ] +
         list(map(lambda newdir: tv_torrent_gets[ 'newdirs' ][ newdir ],
                  tv_torrent_gets[ 'newdirs' ] ) ) ) )
-    return tvTorUnits
+    return tvTorUnits, tv_torrent_gets
 
-def download_batched_tvtorrent_shows( tv_torrent_gets, maxtime_in_secs = 240, num_iters = 10 ):
+def download_batched_tvtorrent_shows( tv_torrent_gets, tvTorUnits, maxtime_in_secs = 240, num_iters = 10 ):
     time0 = time.time( )
     data = plexcore_rsync.get_credentials( )
     assert( data is not None ), "error, could not get rsync download settings."
     assert( maxtime_in_secs >= 60 ), "error, max time to download each torrent >= 60 seconds."
     assert( num_iters >= 1 ), "error, number of tries on different magnet links >= 1."
-    tvTorUnits = create_tvTorUnits( tv_torrent_gets )
     print( 'started downloading %d episodes on %s' % (
         len( tvTorUnits ), datetime.datetime.now( ).strftime(
             '%B %d, %Y @ %I:%M:%S %p' ) ) )

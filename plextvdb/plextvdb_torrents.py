@@ -1,5 +1,5 @@
 import requests, re, threading, cfscrape
-import os, time, numpy, logging
+import os, time, numpy, logging, datetime
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from requests.compat import urljoin
@@ -18,7 +18,7 @@ def _return_error_raw( msg ):
 _num_to_quit = 5
 
 def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None,
-                            minsize = None, maxsize = None ):
+                            minsizes = None, maxsizes = None ):
     assert( maxnum >= 5 )
     name_split = name.split()
     last_tok = name_split[-1]
@@ -63,15 +63,37 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
     ## now filter on those torrents that have sXXeYY in them
     all_torrents_mine = list(filter(
         lambda tor: last_tok.lower( ) in tor['title'].lower( ), all_torrents ) )
+
+    #
+    ## now perform the filtering
+    def _filter_minmax_size( minSize, minSize_x265, maxSize, maxSize_x265, elem ):
+        if minSize is not None and 'x265' not in elem['rawtitle'].lower( ) and int( elem['size_bytes'] ) <= minSize*1024**2:
+            return False
+        if minSize_x265 is not None and 'x265' in elem['rawtitle'].lower( ) and int( elem['size_bytes'] ) <= minSize_x265*1024**2:
+            return False
+        if maxSize is not None and 'x265' not in elem['rawtitle'].lower( ) and int( elem['size_bytes'] ) >= maxSize*1024**2:
+            return False
+        if maxSize_x265 is not None and 'x265' in elem['rawtitle'].lower( ) and int( elem['torrent_size'] ) >= minSize_x265*1024**2:
+            return False
+        return True
+
     
     ## now perform the filtering
-    if any(map(lambda tok: tok is not None, [ minsize, maxsize ])):
-        if minsize is not None:
-            all_torrents_mine = list(filter(lambda elem: int(elem['size_bytes']) >= minsize*1e6,
-                                            all_torrents_mine ) )
-        if maxsize is not None:
-            all_torrents_mine = list(filter(lambda elem: int(elem['size_bytes']) <= maxsize*1e6,
-                                            all_torrents_mine ) )
+    if any(map(lambda tok: tok is not None, [ minsizes, maxsizes ])):
+        minsize = None
+        minsize_x265 = None
+        maxsize = None
+        maxsize_x265 = None
+        if minsizes is not None:
+            if len( minsizes ) >= 2: minsize, minsize_x265 = minsizes[:2]
+            else: minsize, minsize_x265 = 2 * [ minsizes[0] ]
+        if maxsizes is not None:
+            if len( minsizes ) >= 2: minsize, minsize_x265 = minsizes[:2]
+            else: minsize, minsize_x265 = 2 * [ minsizes[0] ]
+        all_torrents_mine = list(filter(lambda item: _filter_minmax_size(
+            minsize, minsize_x265, maxsize, maxsize_265, item ), items ) )
+            
+                  
     all_torrents_mine = all_torrents_mine[:maxnum]
     if len( all_torrents_mine ) == 0:
         return _return_error_raw(
@@ -79,10 +101,13 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
     return list(
         map(lambda tor: {
             'title' : tor[ 'title' ],
+            'rawtitle' : tor[ 'title' ],
             'seeders' : int( tor[ 'seeds' ] ),
             'leechers' : int( tor[ 'peers' ] ),
             'link' : tor[ 'magnet_url' ],
-            'torrent_size' : int( tor[ 'size_bytes' ] ) },
+            'torrent_size' : int( tor[ 'size_bytes' ] ) / 1024.0**2, # size in MB
+            'pubdate' : datetime.datetime.fromtimestamp(
+                int( tor['date_released_unix'] ) ).date( ) },
             all_torrents_mine ) ), 'SUCCESS'
             
     
@@ -302,7 +327,7 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     items = items[:maxnum]
     return items, 'SUCCESS'
 
-def get_tv_torrent_jackett( name, maxnum = 10, minsize = None, maxsize = None, keywords = [ ],
+def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None, keywords = [ ],
                             keywords_exc = [ ], must_have = [ ], verify = True, series_name = None,
                             raw = False ):
     import validators
@@ -383,27 +408,56 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsize = None, maxsize = None, k
         magnet_url = _get_magnet_url( item )
         if magnet_url is None: continue
         myitem = { 'title' : title,
+                   'rawtitle' : title,
                    'seeders' : seeders,
                    'leechers' : leechers,
                    'link' : magnet_url }
         if torrent_size is not None:
             myitem[ 'title' ] = '%s (%0.1f MiB)' % ( title, torrent_size )
             myitem[ 'torrent_size' ] = torrent_size
+        pubdate_elem = item.find( 'pubdate' )
+        if pubdate_elem is not None:
+            try:
+                pubdate_s = pubdate_elem.get_text( ).split(',')[-1].strip( )
+                pubdate_s = ' '.join( pubdate_s.split()[:3] )
+                pubdate = datetime.datetime.strptime(
+                    pubdate_s, '%d %B %Y' ).date( )
+                myitem[ 'pubdate' ] = pubdate
+            except: pass
         items.append( myitem )
 
     items = sorted(items, key = lambda elem: elem['seeders'] + elem['leechers' ] )[::-1]
     #
     ## now perform the filtering
-    if any(map(lambda tok: tok is not None, [ minsize, maxsize ])):
+    def _filter_minmax_size( minSize, minSize_x265, maxSize, maxSize_x265, elem ):
+        if minSize is not None and 'x265' not in elem['rawtitle'].lower( ) and elem['torrent_size'] <= minSize:
+            return False
+        if minSize_x265 is not None and 'x265' in elem['rawtitle'].lower( ) and elem['torrent_size'] <= minSize_x265:
+            return False
+        if maxSize is not None and 'x265' not in elem['rawtitle'].lower( ) and elem['torrent_size'] >= maxSize:
+            return False
+        if maxSize_x265 is not None and 'x265' in elem['rawtitle'].lower( ) and elem['torrent_size'] >= minSize_x265:
+            return False
+        return True
+    
+    if any(map(lambda tok: tok is not None, [ minsizes, maxsizes ])):
         items = list(filter(lambda elem: 'torrent_size' in elem, items ))
-        if minsize is not None:
-            items = list(filter(lambda elem: elem['torrent_size'] > minsize, items ) )
-        if maxsize is not None:
-            items = list(filter(lambda elem: elem['torrent_size'] < maxsize, items ) )
+        minsize = None
+        minsize_x265 = None
+        maxsize = None
+        maxsize_x265 = None
+        if minsizes is not None:
+            if len( minsizes ) >= 2: minsize, minsize_x265 = minsizes[:2]
+            else: minsize, minsize_x265 = 2 * [ minsizes[0] ]
+        if maxsizes is not None:
+            if len( maxsizes ) >= 2: maxsize, maxsize_x265 = maxsizes[:2]
+            else: maxsize, maxsize_x265 = 2 * [ maxsizes[0] ]
+        items = list(filter(lambda item: _filter_minmax_size(
+            minsize, minsize_x265, maxsize, maxsize_x265, item ), items ) )
     if len( keywords ) != 0:
-        items = list(filter(lambda elem: any(map(lambda tok: tok.lower( ) in elem['title'].lower( ), keywords ) ) and
-                            not any(map(lambda tok: tok.lower( ) in elem['title'].lower( ), keywords_exc ) ) and
-                            all(map(lambda tok: tok.lower( ) in elem['title'].lower( ), must_have ) ),
+        items = list(filter(lambda elem: any(map(lambda tok: tok.lower( ) in elem['rawtitle'].lower( ), keywords ) ) and
+                            not any(map(lambda tok: tok.lower( ) in elem['rawtitle'].lower( ), keywords_exc ) ) and
+                            all(map(lambda tok: tok.lower( ) in elem['rawtitle'].lower( ), must_have ) ),
                             items ) )
     if len( items ) == 0:
         return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
@@ -631,6 +685,8 @@ def worker_process_download_tvtorrent(
     totFname = tvTorUnit[ 'totFname' ]
     minSize = tvTorUnit[ 'minSize' ]
     maxSize = tvTorUnit[ 'maxSize' ]
+    minSize_x265 = tvTorUnit[ 'minSize_x265' ]
+    maxSize_x265 = tvTorUnit[ 'maxSize_x265' ]
     series_name = tvTorUnit[ 'tvshow' ]
     mustHaveString = torFileName.split()[-1]
     if client is None:
@@ -645,7 +701,9 @@ def worker_process_download_tvtorrent(
             torFileName, mustHaveString, series_name ) )
         data, status = get_tv_torrent_jackett(
             mustHaveString, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
-            minsize = minSize, maxsize = maxSize, keywords_exc = [ 'xvid' ],
+            minsizes = [ minSize_x265, minSize ],
+            maxsizes = [ maxSize_x265, maxSize ],
+            keywords_exc = [ 'xvid' ],
             must_have = [ mustHaveString ], series_name = series_name )
         if status != 'SUCCESS':
             return ( 'jackett', create_status_dict( 'FAILURE', status ), 'FAILURE' )

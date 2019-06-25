@@ -57,7 +57,9 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
                              verify = verify )
         if response.status_code != 200: break
         alldat = response.json( )
+        if 'torrents' not in alldat: break
         if alldat['torrents_count'] == 0: break
+        logging.debug( 'EZTV.IO: %s, %d, %s.' % ( name, pageno, alldat.keys( ) ) )
         all_torrents += alldat[ 'torrents' ]
     #
     ## now filter on those torrents that have sXXeYY in them
@@ -66,17 +68,16 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
 
     #
     ## now perform the filtering
-    def _filter_minmax_size( minSize, minSize_x265, maxSize, maxSize_x265, elem ):
-        if minSize is not None and 'x265' not in elem['rawtitle'].lower( ) and int( elem['size_bytes'] ) <= minSize*1024**2:
+    def _filter_minmax_size( minSize, minSize_x265, maxSize, maxSize_x265, item ):
+        if minSize is not None and 'x265' not in item['title'].lower( ) and int( item['size_bytes'] ) <= minSize*1024**2:
             return False
-        if minSize_x265 is not None and 'x265' in elem['rawtitle'].lower( ) and int( elem['size_bytes'] ) <= minSize_x265*1024**2:
+        if minSize_x265 is not None and 'x265' in item['title'].lower( ) and int( item['size_bytes'] ) <= minSize_x265*1024**2:
             return False
-        if maxSize is not None and 'x265' not in elem['rawtitle'].lower( ) and int( elem['size_bytes'] ) >= maxSize*1024**2:
+        if maxSize is not None and 'x265' not in item['title'].lower( ) and int( item['size_bytes'] ) >= maxSize*1024**2:
             return False
-        if maxSize_x265 is not None and 'x265' in elem['rawtitle'].lower( ) and int( elem['torrent_size'] ) >= minSize_x265*1024**2:
+        if maxSize_x265 is not None and 'x265' in item['title'].lower( ) and int( item['size_bytes'] ) >= minSize_x265*1024**2:
             return False
         return True
-
     
     ## now perform the filtering
     if any(map(lambda tok: tok is not None, [ minsizes, maxsizes ])):
@@ -91,7 +92,8 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
             if len( minsizes ) >= 2: minsize, minsize_x265 = minsizes[:2]
             else: minsize, minsize_x265 = 2 * [ minsizes[0] ]
         all_torrents_mine = list(filter(lambda item: _filter_minmax_size(
-            minsize, minsize_x265, maxsize, maxsize_265, item ), items ) )
+            minsize, minsize_x265, maxsize, maxsize_x265, item ),
+                                        all_torrents_mine ) )
             
                   
     all_torrents_mine = all_torrents_mine[:maxnum]
@@ -429,19 +431,19 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
     items = sorted(items, key = lambda elem: elem['seeders'] + elem['leechers' ] )[::-1]
     #
     ## now perform the filtering
-    def _filter_minmax_size( minSize, minSize_x265, maxSize, maxSize_x265, elem ):
-        if minSize is not None and 'x265' not in elem['rawtitle'].lower( ) and elem['torrent_size'] <= minSize:
+    def _filter_minmax_size( minSize, minSize_x265, maxSize, maxSize_x265, item ):
+        if minSize is not None and 'x265' not in item['rawtitle'].lower( ) and item['torrent_size'] <= minSize:
             return False
-        if minSize_x265 is not None and 'x265' in elem['rawtitle'].lower( ) and elem['torrent_size'] <= minSize_x265:
+        if minSize_x265 is not None and 'x265' in item['rawtitle'].lower( ) and item['torrent_size'] <= minSize_x265:
             return False
-        if maxSize is not None and 'x265' not in elem['rawtitle'].lower( ) and elem['torrent_size'] >= maxSize:
+        if maxSize is not None and 'x265' not in item['rawtitle'].lower( ) and item['torrent_size'] >= maxSize:
             return False
-        if maxSize_x265 is not None and 'x265' in elem['rawtitle'].lower( ) and elem['torrent_size'] >= minSize_x265:
+        if maxSize_x265 is not None and 'x265' in item['rawtitle'].lower( ) and item['torrent_size'] >= minSize_x265:
             return False
         return True
     
     if any(map(lambda tok: tok is not None, [ minsizes, maxsizes ])):
-        items = list(filter(lambda elem: 'torrent_size' in elem, items ))
+        items = list(filter(lambda item: 'torrent_size' in item, items ))
         minsize = None
         minsize_x265 = None
         maxsize = None
@@ -455,9 +457,9 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
         items = list(filter(lambda item: _filter_minmax_size(
             minsize, minsize_x265, maxsize, maxsize_x265, item ), items ) )
     if len( keywords ) != 0:
-        items = list(filter(lambda elem: any(map(lambda tok: tok.lower( ) in elem['rawtitle'].lower( ), keywords ) ) and
-                            not any(map(lambda tok: tok.lower( ) in elem['rawtitle'].lower( ), keywords_exc ) ) and
-                            all(map(lambda tok: tok.lower( ) in elem['rawtitle'].lower( ), must_have ) ),
+        items = list(filter(lambda item: any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords ) ) and
+                            not any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords_exc ) ) and
+                            all(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), must_have ) ),
                             items ) )
     if len( items ) == 0:
         return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
@@ -701,8 +703,8 @@ def worker_process_download_tvtorrent(
             torFileName, mustHaveString, series_name ) )
         data, status = get_tv_torrent_jackett(
             mustHaveString, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
-            minsizes = [ minSize_x265, minSize ],
-            maxsizes = [ maxSize_x265, maxSize ],
+            minsizes = [ minSize, minSize_x265 ],
+            maxsizes = [ maxSize, maxSize_x265 ],
             keywords_exc = [ 'xvid' ],
             must_have = [ mustHaveString ], series_name = series_name )
         if status != 'SUCCESS':
@@ -716,7 +718,8 @@ def worker_process_download_tvtorrent(
         logging.debug( 'eztv.io: %s' % torFileName )
         data, status = get_tv_torrent_eztv_io(
             torFileName, maxnum = 100, series_name = series_name,
-            minsize = minSize, maxsize = maxSize )
+            minsizes = [ minSize, minSize_x265],
+            maxsizes = [ maxSize, maxSize_x265] )
         if status != 'SUCCESS':
             return ( 'eztv.io', create_status_dict( 'FAILURE', status ), 'FAILURE' )
         data_filt = list(filter(

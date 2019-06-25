@@ -710,7 +710,8 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
                            seasons_info[seasno]['episodes'][epno]['path'])[ colno ],
                            seasons_info[ seasno ]['episodes'])),
                        seasons_info )))) == 1, range(num_cols)))
-    if sum(map(lambda seasno: len(seasons_info[seasno]), seasons_info)) == 1: # only one episode
+    
+    if sum(map(lambda seasno: len(seasons_info[seasno]['episodes']), seasons_info)) == 1: # only one episode
         ## just get the non-episode, non-season name
         splits_with_len_1.pop(-1)
         season = max( seasons_info )
@@ -727,7 +728,7 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
                               seasons_info[seasno]['episodes'][epno]['path'])[ colno ],
                               seasons_info[ seasno ]['episodes'])),
                           seasons_info)))), sorted(splits_with_len_1))))
-    
+    print( '%s: %s' % ( tvshow, prefix ) )
     
     #
     ## average length in seconds of an episode
@@ -1039,13 +1040,14 @@ def download_batched_tvtorrent_shows( tv_torrent_gets, tvTorUnits, maxtime_in_se
             tvTorUnitFin[ 'totFname' ] = '%s.%s' % ( tvTorUnit[ 'totFname' ], suffix )
             return tvTorUnitFin
         except Exception as e:
-            return 'filename = %s, error_message = %s.' % (
-                tvTorUnit[ 'torFname' ], str( e ) )
+            import traceback
+            return 'filename = %s, error_message = %s, %s' % (
+                tvTorUnit[ 'torFname' ], str( e ), traceback.print_tb( e.__traceback__ ) )
     #
     ## now create a pool to multiprocess collect those episodes
     with multiprocessing.Pool( processes = min(
             multiprocessing.cpu_count( ), len( tvTorUnits ) ) ) as pool:
-        allTvTorUnits = list(pool.map(
+        allTvTorUnits = list( pool.map(
             worker_process_download_tvtorrent_perproc, tvTorUnits ) )
     successfulTvTorUnits = list(filter(lambda tup: not isinstance( tup, str ),
                                        allTvTorUnits ) )

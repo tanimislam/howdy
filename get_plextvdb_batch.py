@@ -15,6 +15,7 @@ def main( ):
     time0 = time.time( )
     default_time = 1000
     default_iters = 2
+    default_num_threads = 2 * multiprocessing.cpu_count( )
     
     parser = OptionParser( )
     parser.add_option('--maxtime', dest='maxtime_in_secs', type=int, action='store', default = default_time,
@@ -29,11 +30,14 @@ def main( ):
                           'before giving up. Default is %d.' % default_iters ]) )
     parser.add_option('--info', dest='do_info', action='store_true', default=False,
                       help = 'If chosen, then run in info mode.' )
-    parser.add_option('--numthreads', dest='numthreads', type=int, action='store', default = multiprocessing.cpu_count( ) * 2,
-                      help = 'Number of threads over which to search for TV shows in my library. Default is %d.' % (
-                          2 * multiprocessing.cpu_count( ) ) )
+    parser.add_option('--debug', dest='do_debug', action='store_true', default=False,
+                      help = 'If chosen, then run in debug mode.' )
+    parser.add_option('--numthreads', dest='numthreads', type=int, action='store', default = default_num_threads,
+                      help = 'Number of threads over which to search for TV shows in my library. Default is %d.' %
+                      default_num_threads )
     opts, args = parser.parse_args( )
     if opts.do_info: logging.basicConfig( level = logging.INFO )
+    if opts.do_debug: logging.basicConfig( level = logging.DEBUG )
     assert( opts.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
     assert( opts.num_iters >= 1 ), 'error, must have a positive number of iterations.'
     step = 0

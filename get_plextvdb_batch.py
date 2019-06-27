@@ -16,7 +16,7 @@ def main( ):
     default_time = 1000
     default_iters = 2
     default_num_threads = 2 * multiprocessing.cpu_count( )
-    
+    #
     parser = OptionParser( )
     parser.add_option('--maxtime', dest='maxtime_in_secs', type=int, action='store', default = default_time,
                       help = ' '.join([

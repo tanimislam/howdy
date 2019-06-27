@@ -347,6 +347,8 @@ class TMDBTorrents( QDialogWithPrinting ):
     def _createTMDBTorrentsTableModel(
             self, movie_name, bypass = False, maxnum = 10 ):
         data_torrents = [ ]
+        print( 'verify connection on %s? %s.' %
+               ( movie_name, self.verify ) )
         if not bypass:
             data, status = plextmdb_torrents.get_movie_torrent(
                 movie_name, verify = self.verify )
@@ -366,7 +368,8 @@ class TMDBTorrents( QDialogWithPrinting ):
                 data_torrents.append(
                     { 'title' : title,
                       'content' : requests.get( url, verify = self.verify ).content } )
-            return TMDBTorrents.TMDBTorrentsTableModel( self, data_torrents, 0 )
+            return TMDBTorrents.TMDBTorrentsTableModel(
+                self, data_torrents, 0 )
 
         # get magnet links, now use Jackett AND OTHERS for downloading movies
         pool = Pool( processes = 3 )

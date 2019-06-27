@@ -806,22 +806,22 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
              'avg_length_mins' : avg_length_secs // 60 }
 
 def get_all_series_didend( tvdata, verify = True, debug = False,
-                           num_threads = 16, token = None ):
+                           num_threads = 16, tvdb_token = None ):
     time0 = time.time( )
-    if token is None: token = get_token( verify = verify )
+    if tvdb_token is None: tvdb_token = get_token( verify = verify )
     with multiprocessing.Pool(
             processes = max(num_threads, multiprocessing.cpu_count( ) ) ) as pool:
         date_now = datetime.datetime.now( ).date( )
         tvshow_id_map = dict(filter(
             None, pool.map(lambda seriesName: (
-                seriesName, get_series_id( seriesName, token, verify = verify ) ),
+                seriesName, get_series_id( seriesName, tvdb_token, verify = verify ) ),
                            tvdata ) ) )
         tvshows_notfound = set( tvdata ) - set( tvshow_id_map )
         tvid_didend_map = dict(filter(
             lambda tup: tup is not None,
             pool.map(lambda seriesName: (
                 tvshow_id_map[ seriesName ],
-                did_series_end( tvshow_id_map[ seriesName ], token, verify = verify,
+                did_series_end( tvshow_id_map[ seriesName ], tvdb_token, verify = verify,
                                 date_now = date_now ) ),
                      tvshow_id_map ) ) )
         didend_map = { seriesName : tvid_didend_map[ tvshow_id_map[ seriesName ] ] for

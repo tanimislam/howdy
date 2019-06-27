@@ -81,7 +81,7 @@ class TVDBGUIThread( QThread ):
                 shared_list.append( ( 'didend', self.didend ) )
                 return
             didEnd = plextvdb.get_all_series_didend(
-                self.tvdata_on_plex, verify = self.verify, token = self.tvdb_token )
+                self.tvdata_on_plex, verify = self.verify, tvdb_token = self.tvdb_token )
             myLock.acquire( )
             myStage.value += 1
             mytxt = '%d, added information on whether shows ended in %0.3f seconds.' % (

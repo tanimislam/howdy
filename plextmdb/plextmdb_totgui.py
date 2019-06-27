@@ -41,7 +41,7 @@ class TMDBTotGUIThread( QThread ):
         
 class TMDBTotGUI( QDialogWithPrinting ):
     emitNewToken = pyqtSignal( str )
-
+    
     def process_movie_data_rows_init( self, movie_data_rows ):
         #
         ## now change everything
@@ -58,6 +58,7 @@ class TMDBTotGUI( QDialogWithPrinting ):
             verify = self.verify )
         self.tmdb_gui.movieRefreshRows.connect(
             self.tmdb_mygui.fill_out_movies )
+        self.movie_data_rows = movie_data_rows
         #
         self.tabWidget.addTab(
             self.tmdb_gui, 'The List of Movies By Genre and Year' )
@@ -168,6 +169,7 @@ class TMDBTotGUI( QDialogWithPrinting ):
             fullurl = self.fullurl, token = self.token )
         self.tmdb_gui.fill_out_movies( movie_data_rows )
         self.tmdb_mygui.fill_out_movies( movie_data_rows )
+        self.movie_data_rows = movie_data_rows
         self.tmdb_gui.emitMovieList( )
         self.statusDialog.setText( 'FINISHED REFRESHING MOVIES' )
 
@@ -176,6 +178,26 @@ class TMDBTotGUI( QDialogWithPrinting ):
         self.fullurl, self.token = plexcore_gui.returnToken( )
         self.emitNewToken.emit( self.token )
         self.statusDialog.setText( 'FINISHED RELOGGING CREDENTIALS' )
+
+    def contextMenuEvent( self, event ):
+        menu = QMenu( self )
+        def save_menu_rows( ):
+            dirName = os.path.dirname(
+                os.path.abspath( __file__ ) )
+            dirName = os.path.dirname(
+                dirName )
+            testDir = os.path.join(
+                dirName, 'tests' )
+            movieRowsFile = os.path.join(
+                testDir, 'movie_data_rows.pkl.gz' )
+            pickle.dump(
+                self.movie_data_rows,
+                gzip.open( movieRowsFile, 'wb' ) )
+            
+        saveAction = QAction( 'Save Movie Rows', menu )
+        saveAction.triggered.connect( save_menu_rows )
+        menu.addAction( saveAction )
+        menu.popup( QCursor.pos( ) )
 
 class HelpDialog( QDialog ):    
     def __init__( self, parent ):

@@ -728,8 +728,6 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
                               seasons_info[seasno]['episodes'][epno]['path'])[ colno ],
                               seasons_info[ seasno ]['episodes'])),
                           seasons_info)))), sorted(splits_with_len_1))))
-    print( '%s: %s' % ( tvshow, prefix ) )
-    
     #
     ## average length in seconds of an episode
     avg_length_secs = numpy.average(

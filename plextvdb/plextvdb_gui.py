@@ -8,6 +8,7 @@ import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
 from itertools import chain
 from urllib.parse import urlparse
+#
 from . import plextvdb, mainDir, get_token
 from .plextvdb_season_gui import TVDBSeasonGUI
 from plexcore import plexcore, geoip_reader, QLabelWithSave
@@ -147,8 +148,7 @@ class TVDBGUIThread( QThread ):
         self.emitString.emit( mytxt )
         missing_eps = dict(map(
             lambda seriesName: ( seriesName, toGet[ seriesName ][ 'episodes' ] ),
-            filter(lambda sname: sname in toGet and sname not in self.showsToExclude,
-                   self.tvdata_on_plex ) ) )
+            set( self.tvdata_on_plex ) & set( toGet ) - set( self.showsToExclude ) ) )
         final_data_out[ 'missing_eps' ] = missing_eps
         self.finalData.emit( final_data_out )
         
@@ -465,10 +465,18 @@ class TVDBGUI( QDialogWithPrinting ):
         
         def _save_out_data( ):
             if self.tvdata_on_plex is not None:
+                tvdata_on_plex = self.tvdata_on_plex.copy( )
+                didend = dict(map(
+                    lambda seriesName:
+                    ( seriesName, tvdata_on_plex[ seriesName ][ 'didEnd' ] ),
+                    self.tvdata_on_plex ) )
+                list(map(lambda seriesName: tvdata_on_plex[ seriesName ].pop( 'didEnd' ),
+                         self.tvdata_on_plex ) )
                 pickle.dump(
-                    self.tvdata_on_plex,
-                    gzip.open( os.path.join( testDir, tvdataFile ),
-                               'wb' ) )
+                    tvdata_on_plex,
+                    gzip.open( os.path.join( testDir, tvdataFile ), 'wb' ) )
+                pickle.dump( didend, gzip.open(
+                    os.path.join( testDir, 'didend.pkl.gz' ), 'wb' ) )
             if self.missing_eps is not None:
                 pickle.dump(
                     self.missing_eps,

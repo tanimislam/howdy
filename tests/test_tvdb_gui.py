@@ -27,8 +27,8 @@ def main( info = False, doLocal = True, verify = True ):
         didend = pickle.load( gzip.open(max(glob.glob('didend.pkl.gz')), 'rb'))
     else:
         tvdata = pickle.load( gzip.open(max(glob.glob('tvdata_remote.pkl.gz')), 'rb' ))
-        didend = pickle.load( gzip.open(max(glob.glob('didend_remote.pkl.gz')), 'rb'))
-    toGet = pickle.load( gzip.open(max(glob.glob('toGet*pkl.gz')), 'rb' ))
+        didend = pickle.load( gzip.open(max(glob.glob('didend.pkl.gz')), 'rb'))
+    toGet = pickle.load( gzip.open(max(glob.glob('toGet.pkl.gz')), 'rb' ))
     tvdbg = plextvdb_gui.TVDBGUI(
         token, fullURL, tvdata_on_plex = tvdata,
         toGet = toGet, didend = didend, verify = verify )

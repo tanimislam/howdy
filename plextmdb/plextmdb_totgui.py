@@ -181,13 +181,8 @@ class TMDBTotGUI( QDialogWithPrinting ):
 
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
+        testDir = os.path.join( mainDir, 'tests' )
         def save_menu_rows( ):
-            dirName = os.path.dirname(
-                os.path.abspath( __file__ ) )
-            dirName = os.path.dirname(
-                dirName )
-            testDir = os.path.join(
-                dirName, 'tests' )
             movieRowsFile = os.path.join(
                 testDir, 'movie_data_rows.pkl.gz' )
             pickle.dump(

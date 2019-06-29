@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 
-import os, sys, json, signal, time
-
+import sys, signal 
+# code to handle Ctrl+C, convenience method for command line tools
+def signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Exiting...")
+    sys.exit( 0 )
+signal.signal( signal.SIGINT, signal_handler )
+import os, json, time, logging
 from io import BytesIO
 from fabric import Connection
 from plextvdb import plextvdb
@@ -15,9 +20,12 @@ def main( ):
                       help = 'Namer of the TV Show to push into remote server.')
     parser.add_option('-j', '--jsonfile', type=str, action='store', dest='jsonfile', default = 'eps.json',
                       help = 'Name of the JSON file into which to store the episode information. Default is eps.json.' )
+    parser.add_option('--debug', dest='do_debug', action='store_true', default = False,
+                      help = 'If chosen, then run DEBUG logging.' )
     opts, args = parser.parse_args( )
     assert( opts.show is not None ), "error, show name not defined."
     assert( opts.jsonfile.endswith('.json' ) ), "error, JSON file does not end with json."
+    if opts.do_debug: logging.basicConfig( level = logging.DEBUG )
     #
     client, status = plexcore_deluge.get_deluge_client( )
     if status != 'SUCCESS':
@@ -27,7 +35,10 @@ def main( ):
     server = client.host
     #
     ## now get episode information
-    try: epdicts = plextvdb.get_tot_epdict_tvdb( opts.show.strip( ) )
+    try:
+        epdicts = plextvdb.get_tot_epdict_tvdb( opts.show.strip( ) )
+        logging.debug( 'name of show: %s. Number of eps: %d.' % (
+            opts.show.strip( ), sum(list(map(lambda seasno: len( epdicts[ seasno ] ), epdicts)))))
     except Exception as e:
         print( "error, could not get show %s." % opts.show.strip( ) )
         return

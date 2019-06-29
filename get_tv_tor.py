@@ -160,11 +160,17 @@ if __name__=='__main__':
                       help = 'If chosen, run in info mode.' )
     parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
                       help = 'If chosen, do not verify SSL connections.' )
+    parser.add_option('--timing', dest='do_timing', action='store_true', default = False,
+                      help = 'If chosen, show timing information (how long to get TV torrents.')
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
     if opts.do_info: logging.basicConfig( level = logging.INFO )
     #
+    time0 = time.time( )
     items = process_magnet_items( opts.name, raw = opts.do_raw, verify = opts.do_verify )
+    if opts.do_timing:
+        print( 'took %0.3f seconds to get TV torrents for %s.' % (
+            time.time( ) - time0, opts.name ) )
     if items is not None:
         #
         ## sort from most seeders + leecher to least

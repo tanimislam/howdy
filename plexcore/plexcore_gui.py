@@ -957,7 +957,7 @@ class PlexConfigGUI( QDialogWithPrinting ):
             row = index.row( )
             col = index.column( )
             datum = self.data[ row ]
-            if role == Qt.Background:
+            if role == Qt.BackgroundRole:
                 if datum[ 2 ] < datum[ 1 ]:
                     color = get_popularity_color( 0.5 )
                     return QBrush( color )
@@ -973,7 +973,6 @@ class PlexConfigGUI( QDialogWithPrinting ):
             assert( row in ( 0, 1, 2 ) )
             self.layoutAboutToBeChanged.emit( )
             datum = self.data[ row ]
-            print( working )
             datum[1] = len( working )
             datum[2] = len(list(filter(lambda tok: working[tok] is True,
                                      working)))

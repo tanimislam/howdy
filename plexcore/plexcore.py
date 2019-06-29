@@ -961,8 +961,7 @@ def store_jackett_credentials( url, apikey ):
     ## now check that everything works
     ## first, is URL a valid URL?
     if not validators.url( url ):
-        print( "ERROR, %s is not a valid URL" % url )
-        return
+        return "ERROR, %s is not a valid URL" % url
 
     #
     ## second, add a '/' to end of URL
@@ -975,8 +974,7 @@ def store_jackett_credentials( url, apikey ):
                              params = { 'apikey' : apikey,
                                         't' : 'caps' })
     if response.status_code != 200:
-        print("ERROR, invalid jackett credentials")
-        return
+        return "ERROR, invalid jackett credentials"
     
     #
     ## now put the stuff inside
@@ -991,6 +989,7 @@ def store_jackett_credentials( url, apikey ):
                  'apikey' : apikey.strip( ) } )
     session.add( newval )
     session.commit( )
+    return 'SUCCESS'
 
 #
 ## read in JACKETT credentials here

@@ -26,15 +26,15 @@ def main( ):
     if not status:
         print( "Error, do not have correct Google credentials." )
         return
-    val = plexcore.checkServerCredentials( )
+    val = plexcore.checkServerCredentials( doLocal = False, verify = False )
     if val is None:
         print( "Error, could not get an instance of a running Plex server on this machine." )
         return
     _, token = val
     #
     ## get mapped emails
-    emails = plexcore.get_mapped_email_contacts( token )
-    name_emails = plexemail.get_email_contacts_dict( emails )
+    emails = plexcore.get_mapped_email_contacts( token, verify = False )
+    name_emails = plexemail.get_email_contacts_dict( emails, verify = False )
     def return_nameemail_string( name, email ):
         if name is not None:
             return "%s <%s>" % ( name, email )

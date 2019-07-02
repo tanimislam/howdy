@@ -1,5 +1,5 @@
 import os, sys, titlecase, datetime, re, time, requests, mimetypes
-import mutagen.mp3, mutagen.mp4, glob, multiprocessing, re
+import mutagen.mp3, mutagen.mp4, glob, multiprocessing, re, httplib2
 from apiclient.discovery import build
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -70,6 +70,7 @@ def send_email_movie_none( movieName, verify = True ):
 
 def get_email_contacts_dict( emailList, verify = True ):
     if len( emailList ) == 0: return [ ]
+    # http = httplib2.Http( disable_ssl_certificate_validation = not verify )
     credentials = plexcore.oauthGetGoogleCredentials( verify = verify )
     people_service = build( 'people', 'v1', credentials = credentials,
                             cache_discovery = False )

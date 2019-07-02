@@ -125,7 +125,7 @@ class PlexConfigCredWidget( PlexConfigWidget ):
             self.tmdb_apikey.setText( '' )
             self.tmdb_status.setText( 'NOT WORKING' )
             self._emitWorkingStatus[ 'TMDB' ] = False
-        print( 'got here TMDB' )
+        logging.debug( 'got here TMDB' )
         self.workingStatus.emit( self._emitWorkingStatusDict )
 
     def pushTVDBConfig( self ):
@@ -148,7 +148,7 @@ class PlexConfigCredWidget( PlexConfigWidget ):
             self.tvdb_userkey.setText( '' )
             self.tvdb_status.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'TVDB' ] = False
-        print( 'got here TVDB' )
+        logging.debug( 'got here TVDB' )
         self.workingStatus.emit( self._emitWorkingStatusDict )
 
     def pushIMGURLConfig( self ):
@@ -171,11 +171,10 @@ class PlexConfigCredWidget( PlexConfigWidget ):
             self.imgurl_refreshtoken.setText( '' )
             self.imgurl_status.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'IMGURL' ] = False
-        print( 'got here IMGURL' )
+        logging.debug( 'got here IMGURL' )
         self.workingStatus.emit( self._emitWorkingStatusDict )
 
     def pushGoogleConfig( self ): # this is done by button
-        print( 'got here GOOGLE?' )
         def checkStatus( state ):
             if state:
                 self.google_status.setText( 'WORKING' )

@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-import re, logging, sys, signal, time
+import sys, signal
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
+import logging, os, re, time
 from itertools import chain
 from multiprocessing import Pool
 from optparse import OptionParser

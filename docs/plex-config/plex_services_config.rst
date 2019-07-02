@@ -23,7 +23,7 @@ The document is organized into the following sections.
 * `The Movie Database (TMDB) API <moviedb_>`_.
 * The Television Database (TVDB) API <tvdb>`_.
 * `The Imgur API <imgur_>`_.
-* `The Gracenote API <gracenote_>`_.
+* `The Gracenote and LastFM APIs <gracenote_and_lastfm_>`_.
 
 .. _moviedb::
 The Movie Database (TMDB) API
@@ -70,7 +70,29 @@ The final information one programmatically sends to the TVDB service, through RE
     "userkey":  "ZZZZZZ"
    }
 
-.. _imgur::
+.. _imgur:
 The `Imgur <https://imgur.com>`_ API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Good information on setting up Imgur API access can be found on `this website <https://apidocs.imgur.com/?version=latest>`_.
+
+.. _gracenote_and_lastfm:
+The `Gracenote <https://developer.gracenote.com/web-api>`_ and `LastFM <https://www.last.fm/api/>`_ APIs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Instructions for the Gracenote API registration can be found `here <https://developer.gracenote.com/web-api>`_. The implementation of metadata population using Gracenote uses the `pygn <https://github.com/cweichen/pygn>`_ Python module.
+
+The instructions for the LastFM API registration start `here <lastfm_intro_>`_. Here are the steps to get an API key and register your service to use the LastFM API to get music metadata.
+
+1. On the `API intro page <lastfm_intro_>`_, click on the  the *Add API account* link. Here is a screen shot.
+
+.. image:: plex-config-figures/lastfm_step01_addapiaccount.png
+  :width: 600
+  :align: center
+
+2. You will land on the `LastFM API creation page <lastfm_create_>`_. Fill in the forms for *Application name*, *Application description*, and *Application homepage*. Leave *Callback URL* empty because it is optional. Click on the *Submit* button once done. Here is a screen shot.
+
+.. image:: plex-config-figures/lastfm_step02_registerapp.png
+  :width: 600
+  :align: center
+
+.. _lastfm_intro:  https://www.last.fm/api/intro
+.. _lastfm_create: https://www.last.fm/api/account/create

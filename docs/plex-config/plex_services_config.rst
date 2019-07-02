@@ -111,7 +111,9 @@ If everything has worked out, after clicking *Submit* you will see the *Applicat
 .. _google_services::
 Summary of Setting Up Google Credentials
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-We set up `Google <https://www.google.com>`_ services that use `YouTube <https://www.youtube.com>`_, GMail, Google Contacts, Google Spreadsheets, and the `unofficial Google Music API <https://unofficial-google-music-api.readthedocs.io/en/latest/>`_. Since these are all Google services, a single tool sets all of them up given a single Google account. The easiest way to do this is through the *plex_config_gui.py* executable, which is part of Plexstuff.
+We set up `Google <https://www.google.com>`_ services that use `YouTube <https://www.youtube.com>`_, GMail, Google Contacts, Google Spreadsheets, and the `unofficial Google Music API <https://unofficial-google-music-api.readthedocs.io/en/latest/>`_.
+
+Since these are all Google services, a single tool sets all of them up given a single Google account using Google's OAuth2_ authentication mechanism. The easiest way to do this is through the *plex_config_gui.py* executable, which is part of Plexstuff.
 
 1. Launch *plex_config_gui.py*, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. Here is a screen shot.
 
@@ -131,7 +133,7 @@ We set up `Google <https://www.google.com>`_ services that use `YouTube <https:/
   :width: 600
   :align: center
 
-4. Also, a new dialog widget will open asking you to put in an OAuth token string once you have given permission. Here is the second screen shot.
+4. Also, a new dialog widget will open asking you to put in an OAuth2_ token string once you have given permission. Here is the second screen shot.
 
 .. image:: plex-config-services-figures/google_step04_oauthtokenstring.png
   :width: 600
@@ -156,3 +158,5 @@ We set up `Google <https://www.google.com>`_ services that use `YouTube <https:/
   :align: center
 
 If all goes well, then all the Google services needed by Plexstuff will have been authorized.
+
+.. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0

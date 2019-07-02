@@ -21,9 +21,10 @@ This document contains all the needed information to get started on getting set 
 The document is organized into the following sections.
 
 * `The Movie Database (TMDB) API <moviedb_>`_.
-* The Television Database (TVDB) API <tvdb>`_.
+* `The Television Database (TVDB) API <tvdb>`_.
 * `The Imgur API <imgur_>`_.
 * `The Gracenote and LastFM APIs <gracenote_and_lastfm_>`_.
+* `Summary of Setting Up Google Credentials <google_services_>`_.
 
 .. _moviedb::
 The Movie Database (TMDB) API
@@ -38,27 +39,29 @@ The TVDB API registration is more involved and (currently, as of 2 July 2019) no
 
 1. Log in or register (if you don't have an account) onto the television database `login page <https://www.thetvdb.com/login>`_. Here is a screen shot.
 
-.. image:: plex-config-figures/tmdb_step01_login.png
+.. image:: plex-config-services-figures/tmdb_step01_login.png
   :width: 600
   :align: center
 
 2. Select the **API ACCESS** sub menu option in the right most menu option, which is your TVDB username, **<USERNAME> → API ACCESS**. Here is a screen shot.
 
-.. image:: plex-config-figures/tmdb_step02_apiselect.png
+.. image:: plex-config-services-figures/tmdb_step02_apiselect.png
   :width: 600
   :align: center
 
 3. This will send you to the API keys web page for your account. On the top, you will see two labels showing your **username**, and an **unique ID** that the TVDB asigns to you. In the middle section is a table showing the API keys you have created, if any. Each row is a project you have created that the TVDB uses to grant you API access. Each project has an *API key*, the *project name*, and *project website*. A hopefully illuminating screen shot is shown below.
 
-.. image:: plex-config-figures/tmdb_step03_apikeys_generated.png
+.. image:: plex-config-services-figures/tmdb_step03_apikeys_generated.png
   :width: 600
   :align: center
 
 4. Generate an API key by defining a *project name*, *project website*, and then click on the *Generate API key* button. Here is a screen shot.
 
-.. image:: plex-config-figures/tmdb_step04_apikeys_generate.png
+.. image:: plex-config-services-figures/tmdb_step04_apikeys_generate.png
   :width: 600
   :align: center
+
+Make sure to record the TVDB *project name*, *API key*, and *unique ID*.
 
 The final information one programmatically sends to the TVDB service, through REST commands, is represented as the following JSON data.
 
@@ -70,29 +73,86 @@ The final information one programmatically sends to the TVDB service, through RE
     "userkey":  "ZZZZZZ"
    }
 
-.. _imgur:
-The `Imgur <https://imgur.com>`_ API
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. _imgur::
+The Imgur API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Good information on setting up Imgur API access can be found on `this website <https://apidocs.imgur.com/?version=latest>`_.
 
-.. _gracenote_and_lastfm:
-The `Gracenote <https://developer.gracenote.com/web-api>`_ and `LastFM <https://www.last.fm/api/>`_ APIs
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. _gracenote_and_lastfm::
+The Gracenote and LastFM APIs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Instructions for the Gracenote API registration can be found `here <https://developer.gracenote.com/web-api>`_. The implementation of metadata population using Gracenote uses the `pygn <https://github.com/cweichen/pygn>`_ Python module.
 
 The instructions for the LastFM API registration start `here <lastfm_intro_>`_. Here are the steps to get an API key and register your service to use the LastFM API to get music metadata.
 
 1. On the `API intro page <lastfm_intro_>`_, click on the  the *Add API account* link. Here is a screen shot.
 
-.. image:: plex-config-figures/lastfm_step01_addapiaccount.png
+.. image:: plex-config-services-figures/lastfm_step01_addapiaccount.png
   :width: 600
   :align: center
 
 2. You will land on the `LastFM API creation page <lastfm_create_>`_. Fill in the forms for *Application name*, *Application description*, and *Application homepage*. Leave *Callback URL* empty because it is optional. Click on the *Submit* button once done. Here is a screen shot.
 
-.. image:: plex-config-figures/lastfm_step02_registerapp.png
+.. image:: plex-config-services-figures/lastfm_step02_registerapp.png
+  :width: 600
+  :align: center
+
+If everything has worked out, after clicking *Submit* you will see the *Application name*, *API key*, *Shared secret*, and *Registered to* fields. Record this information. Here is a screen shot.
+
+.. image:: plex-config-services-figures/lastfm_step03_success.png
   :width: 600
   :align: center
 
 .. _lastfm_intro:  https://www.last.fm/api/intro
 .. _lastfm_create: https://www.last.fm/api/account/create
+
+.. _google_services::
+Summary of Setting Up Google Credentials
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+We set up `Google <https://www.google.com>`_ services that use `YouTube <https://www.youtube.com>`_, GMail, Google Contacts, Google Spreadsheets, and the `unofficial Google Music API <https://unofficial-google-music-api.readthedocs.io/en/latest/>`_. Since these are all Google services, a single tool sets all of them up given a single Google account. The easiest way to do this is through the *plex_config_gui.py* executable, which is part of Plexstuff.
+
+1. Launch *plex_config_gui.py*, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. Here is a screen shot.
+
+.. image:: plex-config-services-figures/google_step01_credentials.png
+  :width: 600
+  :align: center
+
+2. A *PLEX CREDENTIALS CONFIGURATION* widget will open. Click on the *CLIENT REFRESH* button in the Google section of this widget. Here is a screen shot.
+
+.. image:: plex-config-services-figures/google_step02_refreshcredentials.png
+  :width: 600
+  :align: center
+
+3. A browser window in your default internet browser will launch, asking you to authorize access to a Google account. Here is the first screen shot.
+
+.. image:: plex-config-services-figures/google_step03_authorizeaccount.png
+  :width: 600
+  :align: center
+
+4. Also, a new dialog widget will open asking you to put in an OAuth token string once you have given permission. Here is the second screen shot.
+
+.. image:: plex-config-services-figures/google_step04_oauthtokenstring.png
+  :width: 600
+  :align: center
+
+5. In step 3, when you choose a Google account, currently you will be redirected to a scary browser page that says "this app isn't verified". It isn't, but the services still work. If you use Google Chrome or derived browser, click on the *Show Advanced* toggling link. Then click on *Go to Project Default Service Account (unsafe)* to go forward. Here is a screen shot.
+
+.. image:: plex-config-services-figures/google_step05_scaryscreen.png
+  :width: 600
+  :align: center
+
+6. Plexstuff asks for six different Google authorizations. Click on the *Allow* button.
+
+.. image:: plex-config-services-figures/google_step06_allowbutton.png
+  :width: 600
+  :align: center
+
+7. The final browser window shows a text box with the OAuth token string. Copy that string into the GUI dialog widget in step 4, and press return on that widget.
+
+.. image:: plex-config-services-figures/google_step07_oauthtokencopy.png
+  :width: 600
+  :align: center
+
+If all goes well, then all the Google services needed by Plexstuff will have been authorized.

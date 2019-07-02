@@ -22,26 +22,53 @@ The document is organized into the following sections.
 
 * `Setting up the Movie Database API <moviedb>`_.
 * `Setting up the the Television Database API <tvdb>`_.
+* `Setting up the Imgur API <imgur>`_.
 
 .. _moviedb::
-Setting Up the Movie Database API
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Setting Up the Movie Database (TMDB) API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Follow instructions on getting an access key for the Movie Database `here <https://developers.themoviedb.org/3/getting-started/introduction>`_. Click on the `API link <https://www.themoviedb.org/settings/api>`_.
+Follow instructions on getting an access key for the TMDB API `here <https://developers.themoviedb.org/3/getting-started/introduction>`_. Click on the `API link <https://www.themoviedb.org/settings/api>`_.
 
 .. _tvdb::
-Setting up the the Television Database API
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The television database API registration is more involved and (currently, as of 2 July 2019) not clearly documented. Here is how I got this to work.
+Setting up the Television Database (TVDB) API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The TVDB API registration is more involved and (currently, as of 2 July 2019) not clearly documented. Here is how I got this to work.
 
 1. Log in or register (if you don't have an account) onto the television database `login page <https://www.thetvdb.com/login>`_. Here is a screen shot.
 
-.. image:: plex_config_figures/tmdb_step01_login.png
-  :width 400
-  :align left
+.. image:: plex-config-figures/tmdb_step01_login.png
+  :width: 600
+  :align: center
 
-2. Select the **API ACCESS** sub menu option in the right most menu option, which is your Television Database username, **<USERNAME> → API ACCESS**. Here is a screen shot.
+2. Select the **API ACCESS** sub menu option in the right most menu option, which is your TVDB username, **<USERNAME> → API ACCESS**. Here is a screen shot.
 
-.. image:: plex_config_figures/tmdb_step02_apiselect.png
-  :width 400
-  :align left
+.. image:: plex-config-figures/tmdb_step02_apiselect.png
+  :width: 600
+  :align: center
+
+3. This will send you to the API keys web page for your account. On the top, you will see two labels showing your **username**, and an **unique ID** that the TVDB asigns to you. In the middle section is a table showing the API keys you have created, if any. Each row is a project you have created that the TVDB uses to grant you API access. Each project has an *API key*, the *project name*, and *project website*. A hopefully illuminating screen shot is shown below.
+
+.. image:: plex-config-figures/tmdb_step03_apikeys_generated.png
+  :width: 600
+  :align: center
+
+4. Generate an API key by defining a *project name*, *project website*, and then click on the *Generate API key* button. Here is a screen shot.
+
+.. image:: plex-config-figures/tmdb_step04_apikeys_generate.png
+  :width: 600
+  :align: center
+
+The final information one programmatically sends to the TVDB service, through REST commands, is represented as the following JSON data.
+
+.. code-block:: JSON
+
+  {
+    "apikey":  "XXXXXXX",
+    "username": "YYYYYY",
+    "userkey":  "ZZZZZZ"
+   }
+
+.. _imgur::
+Setting up the `Imgur <https://imgur.com>`_ API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

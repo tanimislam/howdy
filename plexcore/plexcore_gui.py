@@ -888,10 +888,10 @@ class PlexConfigGUI( QDialogWithPrinting ):
             self.setSelectionBehavior( QAbstractItemView.SelectRows )
             self.setSelectionMode( QAbstractItemView.SingleSelection ) # single row
             #
-            self.setColumnWidth(0, 210 )
-            self.setColumnWidth(1, 120 )
-            self.setColumnWidth(2, 120 )
-            self.setFixedWidth( 1.05 * ( 210 * 1 + 120 * 2 ) )
+            self.setColumnWidth(0, 90 )
+            self.setColumnWidth(1, 90 )
+            self.setColumnWidth(2, 90 )
+            self.setFixedWidth( 1.25 * ( 90 * 3 ) )
             #
             toBotAction = QAction( self )
             toBotAction.setShortcut( 'End' )
@@ -1008,10 +1008,9 @@ class PlexConfigGUI( QDialogWithPrinting ):
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         myLayout.addWidget( self.tv )
-        self.setFixedHeight( self.tv.sizeHint( ).height( ) * 0.75 )
-        self.setFixedWidth( self.tv.width( ) * 1.0 )
+        self.setFixedHeight( self.tv.sizeHint( ).height( ) * 0.85 )
+        self.setFixedWidth( self.tv.sizeHint( ).width( ) * 1.25 )
         self.show( )
-
     
 
 #

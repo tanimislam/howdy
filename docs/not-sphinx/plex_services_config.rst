@@ -2,9 +2,9 @@
    :maxdepth: 2
    :caption: Contents:
 
-========================
-Plex Configuration
-========================
+================================================
+Plexstuff Services Configuration
+================================================
 
 This document contains all the needed information to get started on getting set up with all the **services** and **Plex server settings** you need to get up and running with all my Plex goodnesses. Here are the following **services** needed to get all the functionality here.
 
@@ -12,7 +12,7 @@ This document contains all the needed information to get started on getting set 
 * Identifying television shows and episodes using `the Televion Database <https://www.thetvdb.com/>`_.
 * Uploading images for emails using the `Imgur image service <https://imgur.com/>`_.
 * Populating music metadata using either the `Gracenote API <https://developer.gracenote.com/web-api>`_ or the `LastFM API <https://www.last.fm/api/>`_.
-* A bevy of many Google services that do the following.
+* A bevy of Google services to do the following.
   1. Sending out emails to your Plex users, using the `GMail API <https://developers.google.com/gmail/api/>`_, and identifying them from your Google address book using the `Google Contacts API <https://developers.google.com/contacts/v3/>`_.
   2. Identifying songs on `YouTube <https://www.youtube.com>`_ using the `YouTube API <https://developers.google.com/youtube/v3/>`_.
   3. Access to Google spreadsheets using the `Google Sheets API <https://developers.google.com/sheets/api/>`_.
@@ -72,3 +72,4 @@ The final information one programmatically sends to the TVDB service, through RE
 .. _imgur::
 Setting up the `Imgur <https://imgur.com>`_ API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Good information on setting up Imgur API access can be found on `this website <https://apidocs.imgur.com/?version=latest>`_.

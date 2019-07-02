@@ -6,7 +6,7 @@
 Plexstuff Services Configuration
 ================================================
 
-This document contains all the needed information to get started on getting set up with all the **services** and **Plex server settings** you need to get up and running with all my Plex goodnesses. Here are the following **services** needed to get all the functionality here.
+This document contains all the needed information to get started on getting set up with all the **services** you need to get up and running with Plexstuff. Here are the following **services** needed to get all the functionality here.
 
 * Identifying movies using `the Movie Database <https://www.themoviedb.org/>`_.
 * Identifying television shows and episodes using `the Televion Database <https://www.thetvdb.com/>`_.
@@ -20,18 +20,19 @@ This document contains all the needed information to get started on getting set 
 
 The document is organized into the following sections.
 
-* `Setting up the Movie Database API <moviedb>`_.
-* `Setting up the the Television Database API <tvdb>`_.
-* `Setting up the Imgur API <imgur>`_.
+* `The Movie Database (TMDB) API <moviedb_>`_.
+* The Television Database (TVDB) API <tvdb>`_.
+* `The Imgur API <imgur_>`_.
+* `The Gracenote API <gracenote_>`_.
 
 .. _moviedb::
-Setting Up the Movie Database (TMDB) API
+The Movie Database (TMDB) API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Follow instructions on getting an access key for the TMDB API `here <https://developers.themoviedb.org/3/getting-started/introduction>`_. Click on the `API link <https://www.themoviedb.org/settings/api>`_.
 
 .. _tvdb::
-Setting up the Television Database (TVDB) API
+The Television Database (TVDB) API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The TVDB API registration is more involved and (currently, as of 2 July 2019) not clearly documented. Here is how I got this to work.
 
@@ -70,6 +71,6 @@ The final information one programmatically sends to the TVDB service, through RE
    }
 
 .. _imgur::
-Setting up the `Imgur <https://imgur.com>`_ API
+The `Imgur <https://imgur.com>`_ API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Good information on setting up Imgur API access can be found on `this website <https://apidocs.imgur.com/?version=latest>`_.

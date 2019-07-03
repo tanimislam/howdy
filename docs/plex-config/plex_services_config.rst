@@ -167,7 +167,7 @@ Since these are all Google services, a single tool sets all of them up given a s
   :width: 100%
   :align: center
 
-7. The final browser window shows a text box with the OAuth token string. Copy that string into the GUI dialog widget in step 4, and press return on that widget.
+7. The final browser window shows a text box with the OAuth2_ token string. Copy that string into the GUI dialog widget in step 4, and press return on the text box in that widget.
 
 .. image:: plex-config-services-figures/google_step07_oauthtokencopy.png
   :width: 100%

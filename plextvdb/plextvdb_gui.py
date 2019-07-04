@@ -48,6 +48,7 @@ class TVDBGUIThread( QThread ):
             datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
         logging.info( mytxt )
         self.emitString.emit( mytxt )
+        #
         libraries_dict = plexcore.get_libraries(
             fullURL = self.fullURL, token = self.token, do_full = True )
         if not any(map(lambda value: 'show' in value[-1], libraries_dict.values( ) ) ):

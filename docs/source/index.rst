@@ -8,7 +8,11 @@ Welcome to plexstuff's documentation!
 
 .. toctree::
    :maxdepth: 2
+   :numbered:
    :caption: Contents:
+
+   plex-config/plex_settings_config
+   plex-config/plex_services_config
 
 Indices and tables
 ==================

@@ -1,10 +1,3 @@
-.. toctree::
-  :maxdepth: 2
-  :caption: Contents
-
-.. sectnum::
-  :maxdepth: 3
-
 ================================================
 Plexstuff Settings Configuration
 ================================================

@@ -1,14 +1,7 @@
-.. toctree::
-   :maxdepth: 3
-   :caption: Contents:
-
-.. sectnum::
-  :maxdepth: 3
-
-.. _plex_services_config:
-
+================================================
 Plexstuff Services Configuration
---------------------------------
+================================================
+
 This document contains all the needed information to get started on getting set up with all the **services** you need to get up and running with Plexstuff. Here are the following **services** needed to get all the functionality here.
 
 * Identifying movies using `the Movie Database <https://www.themoviedb.org/>`_.

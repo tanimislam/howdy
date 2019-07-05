@@ -5,8 +5,6 @@
 .. sectnum::
   :maxdepth: 3
 
-.. _plex_settings_config:
-
 ================================================
 Plexstuff Settings Configuration
 ================================================
@@ -34,15 +32,14 @@ This configuration is handled through the ``plex_config_gui.py``, and consists o
 
 To begin, launch ``plex_config_gui.py``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex login credentials*. Click on *Plex login credentials*. Here is a screen shot.
 
-.. image:: plex-config-settings-figures/login_step01_login.png
+.. figure:: plex-config-settings-figures/login_step01_login.png
   :width: 100%
   :align: center
 
 The dialog widget that launches shows the Plex and other server settings that are set in order for Plexstuff to fully function. The inset in **blue** refers to the Jackett server settings.
 
 .. _login_step02_settings:
-
-.. image:: plex-config-settings-figures/login_step02_settings.png
+.. figure:: plex-config-settings-figures/login_step02_settings.png
   :width: 100%
   :align: center
 
@@ -54,18 +51,13 @@ I confess that the current organization of this data is duplicated and not fully
 
 The document is organized into the following sections. The second section describes the easiest setup, which uses Seedhost's services.
 
-* `Credentials for Plex Account <plex_account_>`_.
-* `Seedhost Services Setup <seedhost_services_>`_.
-* `Local and Remote (Seedhost) SSH Setup <local_and_remote_>`_.
-
-.. _plex_account:
+* :ref:`Credentials for Plex Account`.
+* :ref:`Seedhost Services Setup`.
+* :ref:`Local and Remote (Seedhost) SSH Setup`.
 
 Credentials for Plex Account
 ----------------------------
 This assumes that you already have a `Plex Account <https://plex.tv>`_ with server already set up. If you don't, and want to get started, a good place to start is a blog entry I have written, `How to share your Plex media <https://tanimislamblog.wordpress.com/2017/09/27/how-to-share-your-plex-media/>`_. Just record your username and password.
-
-
-.. _seedhost_services:
 
 Seedhost Services Setup
 -----------------------
@@ -118,12 +110,10 @@ The Deluge server connection requires three bits of information.
 * username and password is from your Seedhost account.
 * port is from step #7.
 
-.. _local_and_remote:
-
 Local and Remote (Seedhost) SSH Setup
 ---------------------------------------
 
-You have already set up your SSH account by registering a Seedhost account. Presumably you know enough to have a an SSH account on a server you own, and on which your Plex server runs. This is usually your login account on your home SSH server. All instructions refer to the login dialog widget shown `here <seedhost_step07_delugeportnumber_>`_.
+You have already set up your SSH account by registering a Seedhost account. Presumably you know enough to have a an SSH account on a server you own, and on which your Plex server runs. This is usually your login account on your home SSH server. All instructions refer to the login dialog widget shown in :numref:`login_step02_settings`.
 
 * Put the full username and SSH server URL path into the *SSH Path* text box.
 

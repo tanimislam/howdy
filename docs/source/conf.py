@@ -30,7 +30,13 @@
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.mathjax']
+extensions = [
+    'sphinx.ext.mathjax',
+    'sphinx.ext.autosectionlabel',
+]
+
+# numfig stuff
+numfig = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -46,8 +52,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'plexstuff'
-copyright = u'2019, Plex Utility Functionality'
-author = u'Plex Utility Functionality'
+copyright = u'2019'
+author = u'Tanim Islam'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -83,6 +89,10 @@ todo_include_todos = False
 # a list of builtin themes.
 #
 html_theme = 'alabaster'
+html_sidebars = {
+   '**': ['globaltoc.html', 'sourcelink.html', 'searchbox.html'],
+   'using/windows': ['windowssidebar.html', 'searchbox.html'],
+}
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -166,6 +176,3 @@ texinfo_documents = [
      author, 'plexstuff', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-

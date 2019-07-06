@@ -7,17 +7,20 @@ This document contains all the needed information to get started on getting set 
 This configuration is handled through the ``plex_config_gui.py``, and consists of the following elements. The *Plex Settings Configuration* document describes the Jackett server settings, where one may use either the Jackett server provided by Seedbox or one's own server.
 
 1. Plex user settings.
+
   * Plex server URL.
   * user name.
   * password.
 
 2. Deluge and Seedhost settings.
+
   * the URL of the Deluge server.
   * the port number of the Deluge server.
   * the username of the Deluge server and the SSH account (both are the same).
   * the password of the Deluge server and the SSH account.
 
 3. Local settings to transfer downloaded torrent files to one's local machine.
+
   * The local directory on one's machine to download finished torrent files from your Seedhost machine.
   * The SSH path (``username@server path``) of the remote machine.
   * The sub directory, below the main directory of the SSH user directory on the Seedhost account, to look for downloaded files.

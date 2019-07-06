@@ -29,12 +29,23 @@ _geoip_database = os.path.join(
 assert( os.path.isfile( _geoip_database ) )
 
 geoip_reader = geoip2.database.Reader( _geoip_database )
-"""This contains an on-disk _`MaxMind` database containing location information for IP addresses.
+"""This contains an on-disk `MaxMind <https://www.maxmind.com/en/geoip2-services-and-databases>`_ 
+database containing location information for IP addresses.
 
-.. _MaxMind: https://www.maxmind.com/en/geoip2-services-and-databases
 """
 
 def get_popularity_color( hpop, alpha = 1.0 ):
+    """Get a color that represents some darkish cool looking color interpolated between 0 and 1.
+
+    :param float hpop: the value (between 0 and 1) of the color.
+    :param alpha: The alpha value of the color
+    :returns: a QColor_ object to put into a QWidget_.
+    :rtype: QColor
+
+    .. _QColor: https://www.riverbankcomputing.com/static/Docs/PyQt4/qcolor.html
+    .. _QWidget: https://www.riverbankcomputing.com/static/Docs/PyQt4/qwidget.html
+
+    """
     assert( hpop >= 0 )
     h = hpop * ( 0.81 - 0.45 ) + 0.45
     s = 0.85

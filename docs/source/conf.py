@@ -31,9 +31,13 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.mathjax',
-    'sphinx.ext.autosectionlabel',
+   'sphinx.ext.mathjax',
+   'sphinx.ext.autosectionlabel',
+   'sphinx.ext.autodoc',
+   'sphinx.ext.intersphinx'
 ]
+
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 
 # numfig stuff
 numfig = True

@@ -16,9 +16,11 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os, sys
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ),
+                  range(2), os.path.abspath('.'))
+sys.path.insert( 0, _mainDir )
 
 
 # -- General configuration ------------------------------------------------
@@ -34,7 +36,8 @@ extensions = [
    'sphinx.ext.mathjax',
    'sphinx.ext.autosectionlabel',
    'sphinx.ext.autodoc',
-   'sphinx.ext.intersphinx'
+   'sphinx.ext.intersphinx',
+   'sphinx.ext.napoleon'
 ]
 
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
@@ -155,7 +158,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'plexstuff.tex', u'plexstuff Documentation',
+    (master_doc, 'plexstuff.tex', u'Plexstuff Documentation',
      u'Plex Utility Functionality', 'manual'),
 ]
 
@@ -165,7 +168,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'plexstuff', u'plexstuff Documentation',
+    (master_doc, 'plexstuff', u'Plexstuff Documentation',
      [author], 1)
 ]
 

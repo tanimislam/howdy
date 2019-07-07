@@ -8,22 +8,30 @@ from email.mime.audio import MIMEAudio
 from email.mime.image import MIMEImage
 from plexcore import session, plexcore
 from plexcore import get_formatted_size, get_formatted_duration
-from . import mainDir, send_email_lowlevel, send_email_localsmtp
+from . import mainDir, send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
 
 def send_email_movie_torrent( movieName, data, isJackett = False, verify = True ):
+    assert( emailAddress is not None ), "Error, email address must not be None"
+    if emailName is None: emailString = emailAddress
+    else: emailString = '%s <%s>' % ( emailName, emailAddress )
     dtstring = datetime.datetime.now( ).strftime('%d %B %Y, %I:%M %p')
     msg = MIMEMultipart( )
-    msg['From'] = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
-    msg['To']  = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
-    msg['Subject'] = 'Tanim, can you download this movie, %s, requested on %s?' % (
-        movieName, dtstring )
+    msg['From'] = emailString
+    msg['To']  = emailString
+    if emailName is not None:
+        msg['Subject'] = '%s, can you download this movie, %s, requested on %s?' % (
+           emailName.split()[0],  movieName, dtstring )
+    else:
+        msg['Subject'] = 'Can you download this movie, %s, requested on %s?' % (
+            movieName, dtstring )
     if not isJackett:
         torfile = '%s.torrent' % '_'.join( movieName.split( ) ) # change to get to work
         torfile_mystr = '%s.torrent' % '\_'.join( movieName.split( ) ) # change to get to work
         #
         tup_formatting = ( '%s.' % torfile_mystr, '%s.' % dtstring )
-        wholestr = open( os.path.join( mainDir, 'resources',
-                                       'plextmdb_sendmovie_torrent.tex' ), 'r' ).read( )
+        wholestr = open( os.path.join(
+            mainDir, 'resources',
+            'plextmdb_sendmovie_torrent.tex' ), 'r' ).read( )
         wholestr = wholestr % tup_formatting
         htmlString = plexcore.latexToHTML( wholestr )
         htmlString = htmlString.replace('strong>', 'B>')
@@ -34,8 +42,9 @@ def send_email_movie_torrent( movieName, data, isJackett = False, verify = True 
         msg.attach( att )
     else:
         mag_link = data
-        wholestr = open( os.path.join( mainDir, 'resources',
-                                       'plextmdb_sendmovie_magnet.tex' ), 'r' ).read( )
+        wholestr = open( os.path.join(
+            mainDir, 'resources',
+            'plextmdb_sendmovie_magnet.tex' ), 'r' ).read( )
         wholestr = wholestr.replace('ZZZZ', dtstring )
         htmlString = plexcore.latexToHTML( wholestr )
         htmlString = htmlString.replace('XXXX', mag_link )
@@ -49,12 +58,19 @@ def send_email_movie_torrent( movieName, data, isJackett = False, verify = True 
     return 'SUCCESS'
 
 def send_email_movie_none( movieName, verify = True ):
+    assert( emailAddress is not None ), "Error, email address must not be None"
+    if emailName is None: emailString = emailAddress
+    else: emailString = '%s <%s>' % ( emailName, emailAddress )
     dtstring = datetime.datetime.now( ).strftime('%d %B %Y, %I:%M %p')
     msg = MIMEMultipart( )
-    msg['From'] = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
-    msg['To']  = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
-    msg['Subject'] = 'Tanim, can you download this movie, %s, requested on %s?' % (
-        movieName, dtstring )
+    msg['From'] = emailString
+    msg['To']  = emailString
+    if emailName is not None:
+        msg['Subject'] = '%s, can you download this movie, %s, requested on %s?' % (
+           emailName.split()[0],  movieName, dtstring )
+    else:
+        msg['Subject'] = 'Can you download this movie, %s, requested on %s?' % (
+            movieName, dtstring )
     #
     wholestr = open( os.path.join( mainDir, 'resources',
                                    'plextmdb_sendmovie_none.tex' ), 'r' ).read( )
@@ -144,21 +160,27 @@ def send_individual_email_perproc( input_tuple ):
                 print('Problem sending to %s <%s>. Trying again...' % ( name, email ) )
     
 def test_email( subject = None, htmlstring = None, verify = True ):
-    fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
+    assert( emailAddress is not None ), "Error, email address must not be None"
+    if emailName is None: emailString = emailAddress
+    else: emailString = '%s <%s>' % ( emailName, emailAddress )
+    fromEmail = emailString
     if subject is None:
         subject = titlecase.titlecase( 'Plex Email Newsletter For %s' % mydate.strftime( '%B %Y' ) )
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
     msg['Subject'] = subject
-    msg['To'] = '***REMOVED***.islam@gmail.com'
+    msg['To'] = emailAddress
     if htmlstring is None: body = MIMEText( 'This is a test.' )
     else: body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
     send_email_lowlevel( msg, verify = verify )
 
 def send_individual_email_full( mainHTML, subject, email, name = None, attach = None,
-                                attachName = None, attachType = 'txt', verify = True ):
-    fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
+                               attachName = None, attachType = 'txt', verify = True ):
+    assert( emailAddress is not None ), "Error, email address must not be None"
+    if emailName is None: emailString = emailAddress
+    else: emailString = '%s <%s>' % ( emailName, emailAddress )
+    fromEmail = emailString
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
     msg['Subject'] = subject
@@ -181,7 +203,10 @@ def send_individual_email_full_withsingleattach(
         mainHTML, subject, email, name = None,
         attachData = None, attachName = None,
         verify = True ):
-    fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
+    assert( emailAddress is not None ), "Error, email address must not be None"
+    if emailName is None: emailString = emailAddress
+    else: emailString = '%s <%s>' % ( emailName, emailAddress )
+    fromEmail = emailString
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
     msg['Subject'] = subject
@@ -209,7 +234,9 @@ def send_individual_email_full_withsingleattach(
 def send_individual_email_full_withattachs(
         mainHTML, subject, email, name = None,
         attachNames = None, attachDatas = None ):
-    fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
+    assert( emailAddress is not None ), "Error, email address must not be None"
+    if emailName is None: fromEmail = emailAddress
+    else: fromEmail = '%s <%s>' % ( emailName, emailAddress )
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
     msg['Subject'] = subject
@@ -247,7 +274,9 @@ def send_individual_email(
         mainHTML, email, name = None,
         mydate = datetime.datetime.now().date(),
         verify = True ):
-    fromEmail = 'Tanim Islam <***REMOVED***.islam@gmail.com>'
+    assert( emailAddress is not None ), "Error, email address must not be None"
+    if emailName is None: fromEmail = emailAddress
+    else: fromEmail = '%s <%s>' % ( emailName, emailAddress )
     subject = titlecase.titlecase( 'Plex Email Newsletter For %s' % mydate.strftime( '%B %Y' ) )
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
@@ -335,124 +364,6 @@ def _get_album_prifile( prifile ):
         album = max( mp4tag['\xa9ART'] ).strip( )
         return ( prifile, album )
     else: return None
-
-def get_summary_data_freshair_remote( token, fullURLWithPort = 'http://localhost:32400' ):
-    libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
-    keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'NPR Fresh Air' ])
-    sinceDate = plexcore.get_current_date_newsletter( )
-    key, num_songs, _, _, totdur, totsizebytes = plexcore._get_library_stats_artist(
-        keynum, token, fullURL = fullURLWithPort )
-    mainstring = 'There are %d episodes of NPR Fresh Air.'  % num_songs
-    sizestring = 'The total size of Fresh Air media is %s.' % get_formatted_size( totsizebytes )
-    durstring = 'The total duration of Fresh Air media is %s.' % get_formatted_duration( totdur )
-    if sinceDate is not None:
-        key, num_songs_since, _, _, \
-            totdur_since, totsizebytes_since = plexcore._get_library_stats_artist(
-                keynum, token, fullURL = fullURLWithPort, sinceDate = sinceDate )
-        if num_songs_since > 0:
-            mainstring_since = ' '.join([
-                'Since %s, I have added %d new Fresh Air episodes.' %
-                ( sinceDate.strftime('%B %d, %Y'), num_songs_since ),
-                'The total size of Fresh Air media I have added is %s.' %
-                get_formatted_size( totsizebytes_since ),
-                'The total duration of Fresh Air media I have added is %s.' %
-                get_formatted_duration( totdur_since ) ] )
-            return ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
-    return ' '.join([ mainstring, sizestring, durstring ])
-
-def get_summary_data_thisamericanlife_remote( token, fullURLWithPort = 'http://localhost:32400' ):
-    libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
-    keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'This American Life' ])
-    sinceDate = plexcore.get_current_date_newsletter( )
-    key, song_data = plexcore._get_library_data_artist( keynum, token, fullURL = fullURLWithPort )
-    num_episodes = 0
-    totdur = 0.0
-    totsizebytes = 0.0
-    for key in song_data:
-        for key2 in song_data[key]:
-            num_episodes += len( song_data[ key ][ key2 ] )
-            for track in song_data[ key ][ key2 ]:
-                name, dt, dur, sizebytes = track
-                totdur += dur
-                totsizebytes += sizebytes
-    mainstring = 'There are %d episodes in %d series in This American Life.' % (
-        num_episodes, len( song_data ) )
-    sizestring = 'The total size of This American Life media is %s.' % \
-        get_formatted_size( totsizebytes )
-    durstring = 'The total duration of This American Life media is %s.' % \
-        get_formatted_duration( totdur )
-    if sinceDate is None:
-        pristrings = [ ' '.join([ mainstring, sizestring, durstring ]), ]
-    else:
-        key, song_data_since = plexcore._get_library_data_artist(
-            keynum, token, fullURL = fullURLWithPort, sinceDate = sinceDate )
-        num_episodes_since = 0
-        totdur_since = 0.0
-        totsizebytes_since = 0.0
-        for key in song_data_since:
-            for key2 in song_data_since[key]:
-                num_episodes_since += len( song_data_since[ key ][ key2 ] )
-                for track in song_data_since[ key ][ key2 ]:
-                    name, dt, dur, sizebytes = track
-                    totdur_since += dur
-                    totsizebytes_since += sizebytes
-        if num_episodes_since > 0:        
-            mainstring_since = ' '.join([
-                'Since %s, I have added %d new This American Life episodes.' %
-                ( sinceDate.strftime( '%B %d, %Y' ), num_episodes_since ),
-                'The total size of This American Life media I added is %s.' %
-                get_formatted_size( totsizebytes_since ),
-                'The total duration of This American Life media I added is %s.' %
-                get_formatted_duration( totdur_since ) ])
-            pristrings = [ ' '.join([ mainstring, sizestring, durstring, mainstring_since ]), ]
-        else:
-            pristrings = [ ' '.join([ mainstring, sizestring, durstring ]), ]           
-    #
-    catpristrings = {}
-    for album in song_data:
-        if album == 'Ira Glass': actalbum = 'This American Life'
-        else: actalbum = album
-        totdur = 0.0
-        totsizebytes = 0.0
-        num_episodes = 0
-        for key2 in song_data[ album ]:
-            num_episodes += len( song_data[ album ][ key2 ] )
-            for track in song_data[ album ][ key2 ]:
-                name, dt, dur, sizebytes = track
-                totdur += dur
-                totsizebytes += sizebytes
-        mainstring = 'There are %d episodes in this category.' % num_episodes
-        sizestring = 'The total size of media here is %s.' % get_formatted_size( totsizebytes )
-        durstring = 'The total duration of media here is %s.' % get_formatted_duration( totdur )
-        if sinceDate is None:
-            mystring = ' '.join([ mainstring, sizestring, durstring ])
-        else:
-            if album not in song_data_since:
-                mystring = ' '.join([ mainstring, sizestring, durstring ])
-            else:
-                totdur_since = 0.0
-                totsizebytes_since = 0.0
-                num_episodes_since = 0
-                for key2 in song_data_since[ album ]:
-                    num_episodes_since += len( song_data_since[ album ][ key2 ] )
-                    for track in song_data_since[ album ][ key2 ]:
-                        name, dt, dur, sizebytes = track
-                        totdur_since += dur
-                        totsizebytes_since += sizebytes
-                if num_episodes_since > 0:
-                    mainstring_since = ' '.join([
-                        'Since %s, I have added %d new episodes in this category.' %
-                        ( sinceDate.strftime( '%B %d, %Y' ), num_episodes_since ),
-                        'The total size of media I added here is %s.' %
-                        get_formatted_size( totsizebytes_since ),
-                        'The total duration of media I added here is %s.' %
-                        get_formatted_duration( totdur_since ) ])
-                    mystring = ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
-                else:
-                    mystring = ' '.join([ mainstring, sizestring, durstring ])
-        catpristrings[ actalbum ] = mystring
-    pristrings.append( catpristrings )
-    return pristrings
 
 def get_summary_data_music_remote( token, fullURLWithPort = 'http://localhost:32400' ):
     libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
@@ -578,6 +489,13 @@ def get_summary_data_movies_remote( token, fullURLWithPort = 'http://localhost:3
     return movstrings
     
 def get_summary_data_movies( allrows ):
+    """FIXME! briefly describe function
+
+    :param allrows: 
+    :returns: 
+    :rtype: 
+
+    """
     movie_rows = list(filter(lambda row: '/mnt/media/movies' in row[5] and
                              row[8] is not None and row[7] is not None, allrows ) )
     totdur = 1e-3 * sum(map(lambda row: row[8], movie_rows ) )

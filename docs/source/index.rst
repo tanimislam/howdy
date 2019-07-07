@@ -30,9 +30,9 @@ Here are some of the best known lower APIs used to help one manage your Plex_ se
 Installation
 ------------
 
-Currently, installation is fairly straightforward. Just copy out ``plexstuff`` into a directory you own on a Linux machine. You will need to have `PyQt4 <https://www.riverbankcomputing.com/software/pyqt/download>`_ and ``sshpass`` on your machine.
+Currently, installation is straightforward. Just copy out ``plexstuff`` into a directory you own on a Linux machine. You will need to have `PyQt4 <https://www.riverbankcomputing.com/software/pyqt/download>`_ and `sshpass <https://linux.die.net/man/1/sshpass>`_ on your machine.
 
-To automatically, get all the dependencies (and there are a lot of them!) installed onto your machine (specifically, your user account), just run a single CLI executable from the top level directory, such as ``get_tv_tor.py`` the following way.
+To automatically, get all the dependencies (and there are a lot of them!) installed onto your machine (specifically, your user account), just run a single CLI executable from the top level directory, such as ``get_tv_tor.py``, the following way.
 
 .. code:: bash
 
@@ -58,8 +58,8 @@ Documentation
   :maxdepth: 3
   :numbered:
 
-  plex-config/plex_settings_config
-  plex-config/plex_services_config
+  plex-config/plex_config
+  plex-core/plex_core
 
 Indices and tables
 ==================

@@ -4,6 +4,15 @@ mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 sys.path.append( mainDir )
 from apiclient.discovery import build
 from plexcore import plexcore
+from . import plexemail
+
+dat = plexcore.getCredentials( verify = False )
+if dat is not None:
+    emailAddress = dat[0]
+    emailName = plexemail.get_email_contacts_dict( [ emailAddress ] )[0][0]
+else:
+    emailAddress = None
+    emailName = None
 
 def send_email_lowlevel( msg, verify = True ):
     data = { 'raw' : base64.urlsafe_b64encode(

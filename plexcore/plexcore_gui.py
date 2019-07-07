@@ -322,10 +322,10 @@ class PlexConfigLoginWidget( PlexConfigWidget ):
             dat = plexcore.checkServerCredentials(
                 verify = self.verify )
             if dat is None:
-                raise ValueError("Error, vould not get username and password" )
+                raise ValueError("Error, could not get username and password" )
             dat = plexcore.getCredentials( verify = self.verify )
             if dat is None:
-                raise ValueError("Error, vould not get username and password" )
+                raise ValueError("Error, could not get username and password" )
             username, password = dat
             self.server_usernameBox.setText( username )
             self.server_passwordBox.setText( password )

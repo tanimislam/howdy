@@ -40,7 +40,12 @@ extensions = [
    'sphinx.ext.napoleon'
 ]
 
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'requests': ('http://docs.python-requests.org/en/stable', None),
+    }
+
+verify = False
 
 # numfig stuff
 numfig = True

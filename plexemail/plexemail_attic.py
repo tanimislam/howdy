@@ -2,22 +2,22 @@ from plexcore import session, plexcore
 from plexcore import get_formatted_size, get_formatted_duration
 from . import mainDir, send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
 
-def get_summary_data_freshair_remote( token, fullURLWithPort = 'http://localhost:32400' ):
-    libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
-    keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'NPR Fresh Air' ])
-    sinceDate = plexcore.get_current_date_newsletter( )
+def get_summary_data_freshair_remote( token, fullurlwithport = 'http://localhost:32400' ):
+    libraries_dict = plexcore.get_libraries( token = token, fullurl = fullurlwithport )
+    keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'npr fresh air' ])
+    sincedate = plexcore.get_current_date_newsletter( )
     key, num_songs, _, _, totdur, totsizebytes = plexcore._get_library_stats_artist(
-        keynum, token, fullURL = fullURLWithPort )
-    mainstring = 'There are %d episodes of NPR Fresh Air.'  % num_songs
-    sizestring = 'The total size of Fresh Air media is %s.' % get_formatted_size( totsizebytes )
-    durstring = 'The total duration of Fresh Air media is %s.' % get_formatted_duration( totdur )
-    if sinceDate is not None:
+        keynum, token, fullurl = fullurlwithport )
+    mainstring = 'there are %d episodes of npr fresh air.'  % num_songs
+    sizestring = 'the total size of fresh air media is %s.' % get_formatted_size( totsizebytes )
+    durstring = 'the total duration of fresh air media is %s.' % get_formatted_duration( totdur )
+    if sincedate is not none:
         key, num_songs_since, _, _, \
             totdur_since, totsizebytes_since = plexcore._get_library_stats_artist(
-                keynum, token, fullURL = fullURLWithPort, sinceDate = sinceDate )
+                keynum, token, fullurl = fullurlwithport, sincedate = sincedate )
         if num_songs_since > 0:
             mainstring_since = ' '.join([
-                'Since %s, I have added %d new Fresh Air episodes.' %
+                'since %s, i have added %d new fresh air episodes.' %
                 ( sinceDate.strftime('%B %d, %Y'), num_songs_since ),
                 'The total size of Fresh Air media I have added is %s.' %
                 get_formatted_size( totsizebytes_since ),

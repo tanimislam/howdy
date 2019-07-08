@@ -17,7 +17,7 @@ This document contains all the needed information to get started on getting set 
 
 The document is organized into the following sections.
 
-* :ref:`The Movie Database (TMDB) API`.
+* :ref:`The Movie Database (TMDB) API`.´
 * :ref:`The Television Database (TVDB) API`.
 * :ref:`The Imgur API`.
 * :ref:`The Gracenote and LastFM APIs`.
@@ -105,7 +105,7 @@ If everything has worked out, after clicking *Submit* you will see the *Applicat
 The Jackett Server
 ^^^^^^^^^^^^^^^^^^
 
-`Jackett <https://github.com/Jackett/Jackett>`_ is a relatively successful proxy server that consolidates the torrent search large number of public, private, and semi-private torrent trackers and services into a single search user interface and API. It is used as the torrent searching back end for higher level media automated downloaders/maintainers such as `Sonarr <https://sonarr.tv/>`_, `Sickrage <https://www.sickrage.ca/>`_, `Radarr <https://radarr.video/>`_, `Lidarr <https://lidarr.audio/>`_, `Couchpotato <https://couchpota.to/>`_, and yet many others that I have not included.
+`Jackett <https://github.com/Jackett/Jackett>`_ is a relatively successful proxy server that consolidates the torrent search from a large number of public, private, and semi-private torrent trackers and services into a single search user interface and API. It is used as the torrent searching back end for higher level media automated downloaders/maintainers such as `Sonarr <https://sonarr.tv/>`_, `Sickrage <https://www.sickrage.ca/>`_, `Radarr <https://radarr.video/>`_, `Lidarr <https://lidarr.audio/>`_, `Couchpotato <https://couchpota.to/>`_, and yet many others that I have not included.
 
 Plexstuff needs the main URL prefix of the Jackett server, and the Jackett API key, in order to use Jackett programmatically to search for movie and television torrents. The URL prefix is the part of the Jackett Web UI page before the ``UI/dashboard`` in the address. The API key is clearly shown and can be copied.
 

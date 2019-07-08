@@ -51,11 +51,11 @@ If you are missing any packages, and almost certainly you are if you are using t
 
 Choose ``1`` and the missing packages (in this case `cfscrape <https://github.com/Anorov/cloudflare-scrape>`_) will be installed.
 
-Documentation
--------------
+Table of Contents
+-----------------
 
 .. toctree::
-  :maxdepth: 3
+  :maxdepth: 1
   :numbered:
 
   plex-config/plex_config

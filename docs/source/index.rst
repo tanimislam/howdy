@@ -20,12 +20,10 @@ Here are a few of the best known high level media management services:
 Here are some of the best known lower APIs used to help one manage your Plex_ server.
 
 * `Tautulli <https://tautulli.com/>`_ to monitor your Plex_ server.
-* `Jackett <https://github.com/Jackett/Jackett>`_ is a relatively successful proxy server that consolidates the torrent search large number of public, private, and semi-private torrent trackers and services into a single search user interface and API. I discuss this in more detail in :numref:`The Jackett Server`.
+* `Jackett <https://github.com/Jackett/Jackett>`_ is a relatively successful proxy server that consolidates the torrent search from a´ large number of public, private, and semi-private torrent trackers and services into a single search user interface and API. I discuss this in more detail in :numref:`The Jackett Server`.
 * `PlexAPI <PlexAPI_>`_ are the unofficial bindings to the Plex API. They are based off the older `unofficial Plex API <unofficial_plex_api_>`_. I still use `the older lower-level REST API <unofficial_plex_api_>`_ because it seems to offer more freedom (such as finer grained multithreaded HTTP requests, and access to remote servers) than PlexAPI_.
 
-.. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki
-.. _Plex: https://plex.tv
-.. _PlexAPI: https://python-plexapi.readthedocs.io/en/latest/introduction.html
+To get started, I assume you have your own Plex server. In order to get started with Plex, start at the `Plex website <Plex_>`_ and put your media into it. Next, follow the :ref:`Installation` instructions. Join or identify the music, television, and movie based services described in :numref:`Plexstuff Services Configuration`, and server settings described in :numref:`Plexstuff Settings Configuration`. Use ``plex_config_gui.py`` to save your services and settings information, and then you will be good to go in using the ~25 or so command line and GUI tools to manage your Plex server.
 
 Installation
 ------------
@@ -51,6 +49,15 @@ If you are missing any packages, and almost certainly you are if you are using t
 
 Choose ``1`` and the missing packages (in this case `cfscrape <https://github.com/Anorov/cloudflare-scrape>`_) will be installed.
 
+Common Design Philosophies for Command Line and GUIs
+-----------------------------------------------------
+
+Since I am forced to use the tools I developed to manage my Plex server, my command line interfaces (CLIs) and GUIs share common features that I hope make these tools *discoverable* and more easily *debuggable*.
+
+The CLIs are programmed with :py:class:`optparse's OptionParser( ) <optparse.OptionParser>` and have a comprehensive help that can accessed via ``<cli_tool> -h``.
+
+The GUI tools all share common features. One can take a PNG screenshot of each widget and sub-widget with the ``Shift+Ctrl+P`` (or ``Shift+Command+P`` on Mac OS X computers) key combination. This helps to debug issues that may appear in the GUI, and helps to create useful documentation.
+
 Table of Contents
 -----------------
 
@@ -67,3 +74,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki
+.. _Plex: https://plex.tv
+.. _PlexAPI: https://python-plexapi.readthedocs.io/en/latest/introduction.html

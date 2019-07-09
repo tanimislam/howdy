@@ -5,7 +5,7 @@ from itertools import chain
 from . import plextmdb, mainDir, plextmdb_torrents
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from plexcore import plexcore, get_popularity_color
+from plexcore import plexcore, get_popularity_color, get_formatted_size_MB, plexcore_deluge
 from plexcore import QDialogWithPrinting, QWidgetWithPrinting, ProgressDialog
 from plexemail import plexemail
 
@@ -184,9 +184,10 @@ class TMDBTorrents( QDialogWithPrinting ):
             downloadAction.triggered.connect( self.downloadTorrentOrMagnet )
             menu.addAction( downloadAction )
             #
-            addAction = QAction( 'Add', menu )
-            addAction.triggered.connect( self.addTorrentOrMagnet )
-            menu.addAction( addAction )
+            if self.parent.client is not None:
+                addAction = QAction( 'Add', menu )
+                addAction.triggered.connect( self.addTorrentOrMagnet )
+                menu.addAction( addAction )
             #
             menu.popup( QCursor.pos( ) )
 
@@ -209,7 +210,7 @@ class TMDBTorrents( QDialogWithPrinting ):
 
         def addTorrentOrMagnet( self ):
             self.parent.tmdbTorrentModel.addTorrentOrMagnetAtRow(
-                self.getValidIndexRow( ) )
+                self.getValidIndexRow( ), self.parent.client )
 
     class TMDBTorrentsTableModel( QAbstractTableModel ):
         _columnNames = { 1 : [ 'title', 'seeds', 'leeches', 'size' ],
@@ -265,7 +266,7 @@ class TMDBTorrents( QDialogWithPrinting ):
                     if col == 0: return datum['title']
                     elif col == 1: return datum['seeders']
                     elif col == 2: return datum['leechers']
-                    else: return plexcore.get_formatted_size_MB( datum[ 'torrent_size' ] )
+                    else: return get_formatted_size_MB( datum[ 'torrent_size' ] )
 
         def showSummaryAtRow( self, row ):
             datum = self.data_torrents[ row ]
@@ -339,16 +340,23 @@ class TMDBTorrents( QDialogWithPrinting ):
                 with open( magnetURLFile, 'w' ) as openfile:
                     openfile.write('%s\n' % url )
             
-        def addTorrentOrMagnetAtRow( self, row ):
+        def addTorrentOrMagnetAtRow( self, row, deluge_client ):
+            assert( deluge_client is not None )
             datum = self.data_torrents[ row ]
-            print( 'FIXME adding torrent or magnet = %d, %s' % (
-                row, datum['title'] ) )
+            if self.torrentStatus == 0:
+                jsondata['movie'] = datum[ 'title' ]
+                jsondata['data'] = base64.b64encode(
+                    datum[ 'content' ].decode('utf-8') )
+                plexcore_deluge.deluge_add_torrent_file_as_data(
+                    deluge_client, datum[ 'title' ],
+                    datum[ 'content' ] )
+            elif self.torrentStatus == 1:
+                plexcore_deluge.deluge_add_magnet_file(
+                    deluge_client, datum[ 'link' ] )
 
     def _createTMDBTorrentsTableModel(
             self, movie_name, bypass = False, maxnum = 10 ):
         data_torrents = [ ]
-        print( 'verify connection on %s? %s.' %
-               ( movie_name, self.verify ) )
         if not bypass:
             data, status = plextmdb_torrents.get_movie_torrent(
                 movie_name, verify = self.verify )
@@ -408,13 +416,19 @@ class TMDBTorrents( QDialogWithPrinting ):
 
     def __init__( self, parent, token, movie_name, bypass = False, maxnum = 10,
                   do_debug = False ):
-        super( TMDBTorrents, self ).__init__( parent )
+        super( TMDBTorrents, self ).__init__(
+            parent, isIsolated = True, doQuit = False )
         self.token = token
         self.movie = movie_name
         self.setWindowTitle( 'MOVIE TORRENT DOWNLOAD: %s' % movie_name )
         mainLayout = QVBoxLayout( self )
         self.setLayout( mainLayout )
         self.do_debug = do_debug
+        #
+        ## now check to see if we have a working deluge client
+        client, status = plexcore_deluge.get_deluge_client( )
+        if status != 'SUCCESS': self.client = None
+        else: self.client = client
         #
         ##
         if parent is not None: self.verify = parent.verify
@@ -1002,8 +1016,12 @@ class TMDBTableModel( QAbstractTableModel ):
                 year, genre_id, verify = self.verify )
         elif self.status == 1:
             actors = list( tup )
-            actualMovieData = plextmdb.get_movies_by_actors(
+            #
+            ## first figure out which actors are valid
+            actor_names_dict = plextmdb.get_actor_ids_dict(
                 actors, verify = self.verify )
+            actualMovieData = plextmdb.get_movies_by_actors(
+                actor_names_dict, verify = self.verify )
         elif self.status == 2:
             movieName = max( tup )
             actualMovieData = plextmdb.get_movies_by_title(
@@ -1026,7 +1044,8 @@ class TMDBTableModel( QAbstractTableModel ):
                      len( self.actualMovieData ) ) )
         elif status == 1:
             self.mySummarySignal.emit(
-                1, ( actors, len( self.actualMovieData ) ) )
+                1, ( sorted( actor_names_dict ),
+                     len( self.actualMovieData ) ) )
         elif status == 2:
             self.mySummarySignal.emit(
                 2, ( movieName, len( self.actualMovieData ) ) )

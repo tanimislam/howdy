@@ -1,5 +1,4 @@
-# resource file
-import os, sys, base64
+import os, sys, base64, httplib2
 mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 sys.path.append( mainDir )
 from apiclient.discovery import build
@@ -9,10 +8,15 @@ def send_email_lowlevel( msg, verify = True ):
     data = { 'raw' : base64.urlsafe_b64encode(
         msg.as_bytes( ) ).decode('utf-8') }
     #
-    credentials = plexcore.oauthGetGoogleCredentials(
-        verify = verify )
+    #credentials = plexcore.oauthGetGoogleCredentials(
+    #    verify = verify )
+    #email_service = build('gmail', 'v1', credentials = credentials,
+    #                      cache_discovery = False )
+    credentials = plexcore.oauthGetOauth2ClientGoogleCredentials( )
     assert( credentials is not None )
-    email_service = build('gmail', 'v1', credentials = credentials,
+    http_auth = credentials.authorize( httplib2.Http(
+        disable_ssl_certificate_validation = not verify ) )
+    email_service = build('gmail', 'v1', http = http_auth,
                           cache_discovery = False )
     try: message = email_service.users( ).messages( ).send(
             userId='me', body = data ).execute( )
@@ -27,9 +31,14 @@ def send_email_localsmtp( msg ):
 
 def get_email_contacts_dict( emailList, verify = True ):
     if len( emailList ) == 0: return [ ]
-    # http = httplib2.Http( disable_ssl_certificate_validation = not verify )
-    credentials = plexcore.oauthGetGoogleCredentials( verify = verify )
-    people_service = build( 'people', 'v1', credentials = credentials,
+    #credentials = plexcore.oauthGetGoogleCredentials( verify = verify )
+    credentials = plexcore.oauthGetOauth2ClientGoogleCredentials( )
+    http_auth = credentials.authorize( httplib2.Http(
+        disable_ssl_certificate_validation = not verify ) )
+    # credentials = plexcore.oauthGetGoogleCredentials( verify = verify )
+    # people_service = build( 'people', 'v1', credentials = credentials,
+    #                        cache_discovery = False )
+    people_service = build( 'people', 'v1', http = http_auth,
                             cache_discovery = False )
     connections = people_service.people( ).connections( ).list(
         resourceName='people/me', personFields='names,emailAddresses',
@@ -74,7 +83,9 @@ def get_email_contacts_dict( emailList, verify = True ):
 dat = plexcore.getCredentials( verify = False )
 if dat is not None:
     emailAddress = dat[0]
-    emailName = get_email_contacts_dict( [ emailAddress ] )[0][0]
+    try:
+        emailName = get_email_contacts_dict( [ emailAddress ], verify = False )[0][0]
+    except: emailName = None
 else:
     emailAddress = None
     emailName = None

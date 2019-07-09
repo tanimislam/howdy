@@ -15,57 +15,63 @@ from plextmdb import plextmdb_torrents
 from plextvdb import plextvdb_torrents
 from plexcore.plexcore import get_jackett_credentials
 
-def get_items_jackett( name, maxnum = 1000 ):
+def get_items_jackett( name, maxnum = 1000, verify = True ):
     assert( maxnum >= 5 )
     items, status = plextmdb_torrents.get_movie_torrent_jackett(
-        name, maxnum = maxnum, doRaw = True )
+        name, maxnum = maxnum, doRaw = True, verify = verify )
     if status != 'SUCCESS':
         logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
         print( 'jackett error message: %s.' % status )
         return None
     return items
 
-def get_items_eztv_io( name, maxnum = 1000 ):
+def get_items_eztv_io( name, maxnum = 1000, verify = True ):
     assert( maxnum >= 5 )
-    items, status = plextmdb_torrents.get_movie_torrent_eztv_io( name, maxnum = maxnum )
+    items, status = plextmdb_torrents.get_movie_torrent_eztv_io(
+        name, maxnum = maxnum, verify = verify )
     if status != 'SUCCESS':
         logging.info( 'ERROR, EZTV.IO COULD NOT FIND %s.' % name )
         return None
     return items
     
-def get_items_zooqle( name, maxnum = 10 ):
+def get_items_zooqle( name, maxnum = 100, verify = True ):
     assert( maxnum >= 5)
-    items, status = plextmdb_torrents.get_movie_torrent_zooqle( name, maxnum = maxnum )
+    items, status = plextmdb_torrents.get_movie_torrent_zooqle(
+        name, maxnum = maxnum, verify = verify )
     if status != 'SUCCESS':
         return None
     return items
 
-def get_items_tpb( name, maxnum = 10, doAny = False ):
+def get_items_tpb( name, maxnum = 10, doAny = False, verify = True ):
     assert( maxnum >= 5)
-    its, status = plextmdb_torrents.get_movie_torrent_tpb( name, maxnum = maxnum, doAny = doAny )
+    its, status = plextmdb_torrents.get_movie_torrent_tpb(
+        name, maxnum = maxnum, doAny = doAny, verify = verify )
     if status != 'SUCCESS':
         return None
     items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
               item in its ]
     return items
 
-def get_items_kickass( name, maxnum = 10, doAny = False ):
+def get_items_kickass( name, maxnum = 10, doAny = False, verify = True ):
     assert( maxnum >= 5)
-    its, status = plextmdb_torrents.get_movie_torrent_kickass( name, maxnum = maxnum, doAny = doAny )
+    its, status = plextmdb_torrents.get_movie_torrent_kickass(
+        name, maxnum = maxnum, doAny = doAny, verify = verify )
     if status != 'SUCCESS': return None
     items = [ { 'title' : item[0], 'seeders' : item[1], 'leechers' : item[2], 'link' : item[3] } for
               item in its ]
     return items
 
-def get_items_rarbg( name, maxnum = 10 ):
+def get_items_rarbg( name, maxnum = 100, verify = True ):
     assert( maxnum >= 5 )
-    items, status = plextmdb_torrents.get_movie_torrent_rarbg( name, maxnum = maxnum )
+    items, status = plextmdb_torrents.get_movie_torrent_rarbg(
+        name, maxnum = maxnum, verify = verify )
     if status != 'SUCCESS' : return None
     return items
 
-def get_items_torrentz( name, maxnum = 10 ):
+def get_items_torrentz( name, maxnum = 100, verify = True ):
     assert( maxnum >= 5 )
-    items, status = plextvdb_torrents.get_tv_torrent_torrentz( name, maxnum = maxnum )
+    items, status = plextvdb_torrents.get_tv_torrent_torrentz(
+        name, maxnum = maxnum, verify = verify )
     if status != 'SUCCESS':
         logging.info( 'ERROR, TORRENTZ COULD NOT FIND %s.' % name )
         return None
@@ -104,11 +110,12 @@ def get_movie_torrent_items( items, filename = None, to_torrent = False ):
     elif filename is None:
         print('magnet link: %s' % magnet_link )
     else:
-        with open(filename, 'w') as openfile:
+        with open(filename, mode='w', encoding='utf-8') as openfile:
             openfile.write('%s\n' % magnet_link )
             
 def get_movie_yts( name, verify = True, raiseError = False, to_torrent = False ):
-    movies, status = plextmdb_torrents.get_movie_torrent( name, verify = verify )
+    movies, status = plextmdb_torrents.get_movie_torrent(
+        name, verify = verify )
     if status != 'SUCCESS':
         if raiseError:
             raise ValueError("Could not find %s, exiting..." % name )
@@ -181,7 +188,9 @@ def main( ):
     parser.add_option('--info', dest='do_info', action='store_true', default = False,
                       help = 'If chosen, run in info mode.' )
     parser.add_option('--add', dest='do_add', action='store_true', default = False,
-                      help = 'If chosen, push the magnet link into the deluge server.' )    
+                      help = 'If chosen, push the magnet link into the deluge server.' )  
+    parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
+                      help = 'If chosen, do not verify any of the SSL connections made.' )
     opts, args = parser.parse_args( )
     assert( opts.timeout >= 10 )
     assert( opts.name is not None )
@@ -190,8 +199,8 @@ def main( ):
     time0 = time.time( )
     if not opts.do_bypass:
         try:
-            get_movie_yts( opts.name, verify = True, raiseError = True,
-                           to_torrent = opts.do_add )
+            get_movie_yts( opts.name, verify = opts.do_verify,
+                           raiseError = True, to_torrent = opts.do_add )
             logging.info( 'search for YTS torrents took %0.3f seconds.' %
                           ( time.time( ) - time0 ) )
             return
@@ -201,7 +210,6 @@ def main( ):
     if not opts.do_nozooq: jobs = [
             pool.apply_async( get_items_zooqle, args = ( opts.name, opts.maxnum ) ) ]
     else: jobs = [ ]
-    print( 'got here, # jobs = %d' % len( jobs ) )
     #
     ## check for jackett
     if get_jackett_credentials( ) is None:
@@ -210,7 +218,8 @@ def main( ):
         if opts.do_torrentz:
             jobs.append( pool.apply_async( get_items_torrentz, args = ( opts.name, opts.maxnum ) ) )
     else:        
-        jobs += list(map(lambda func: pool.apply_async( func, args = ( opts.name, opts.maxnum ) ),
+        jobs += list(map(lambda func: pool.apply_async(
+            func, args = ( opts.name, opts.maxnum, opts.do_verify ) ),
                          ( get_items_jackett, get_items_eztv_io ) ) )
     items_lists = [ ]
     for job in jobs:
@@ -220,7 +229,8 @@ def main( ):
             items_lists.append( items )
         except: pass
     items = list( chain.from_iterable( items_lists ) )
-    logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )    
+    logging.info( 'search for %d torrents took %0.3f seconds.' % (
+        len( items ), time.time( ) - time0 ) )    
     if len( items ) != 0:
         #
         ## sort from most seeders + leecher to least

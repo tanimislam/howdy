@@ -4,7 +4,7 @@ from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
 from requests.compat import urljoin
 from plexcore.plexcore import get_jackett_credentials
-from plexcore import plexcore, get_maximum_matchval
+from plexcore import plexcore, get_maximum_matchval, get_formatted_size
 from . import plextmdb
 
 def _return_error_raw( msg ): return None, msg
@@ -38,21 +38,18 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False )
         return params
 
     params = _return_params( name )
-    print( 'jackett params = %s.' % params )
+    logging.debug( 'jackett params = %s.' % params )
     response = requests.get(
         urljoin( url, endpoint ), verify = verify,
         params = params )
-    print( 'jackett movie name = %s' % name, response.status_code )
     if response.status_code != 200:
         return _return_error_raw(
             ' '.join([ 'failure, problem with jackett server accessible at %s.' % url,
                        'Error code = %d. Error data = %s.' % (
                            response.status_code, response.content ) ] ) )
-    logging.info( 'processed jackett torrents for %s in %0.3f seconds.' % (
+    logging.debug( 'processed jackett torrents for %s in %0.3f seconds.' % (
         name, time.time( ) - time0 ) )
     html = BeautifulSoup( response.content, 'lxml' )
-    print( 'jackett movie name = %s, %d items.' % (
-        name, len( html.find_all( 'item' ) ) ) )
     if len( html.find_all('item') ) == 0:
         return _return_error_raw(
             'failure, could not find movie %s with jackett.' % name )
@@ -77,12 +74,8 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False )
         if len( valid_magnet_links ) == 0: return None
         return max( valid_magnet_links )
 
-    
-    print( 'jackett got here, no error in %s.' % name )
-
     for item in html.find_all('item'):
         title = item.find('title')
-        print( 'got here, movie name = %s, title = %s.' % ( name, title ) )
         if title is None: continue
         title = title.text
         torrent_size = item.find('size')
@@ -106,11 +99,9 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False )
             'link' : magnet_url }
         if torrent_size is not None:
             myitem[ 'title' ] = '%s (%s)' % (
-                title, plexcore.get_formatted_size(
-                    torrent_size * 1024**2 ) )
+                title, get_formatted_size( torrent_size * 1024**2 ) )
             myitem[ 'torrent_size' ] = torrent_size
         items.append( myitem )
-    print( 'jackett movie name = %s, %d hits in the end.' % ( name, len( items ) ) )
     if len( items ) == 0:
         return _return_error_raw(
             'FAILURE, JACKETT CANNOT FIND %s' % name )
@@ -159,7 +150,7 @@ def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True ):
         map(lambda tor: {
             'raw_title' : tor[ 'title' ],
             'title' : '%s (%s)' % (
-                tor[ 'title' ], plexcore.get_formatted_size( tor['size_bytes'] ) ),
+                tor[ 'title' ], get_formatted_size( tor['size_bytes'] ) ),
             'seeders' : int( tor[ 'seeds' ] ),
             'leechers' : int( tor[ 'peers' ] ),
             'link' : tor[ 'magnet_url' ],
@@ -222,7 +213,7 @@ def get_movie_torrent_zooqle( name, maxnum = 10, verify = True ):
     items_toshow = list( map(lambda elem: {
         'title' : '%s (%s)' % (
             max( elem.find_all('title' ) ).get_text( ),
-            plexcore.get_formatted_size( get_num_forelem( elem, 'contentlength' ) ) ),
+            get_formatted_size( get_num_forelem( elem, 'contentlength' ) ) ),
         'raw_title' : max( elem.find_all('title' ) ).get_text( ),
         'seeders' : get_num_forelem( elem, 'seeds' ),
         'leechers' : get_num_forelem( elem, 'peers' ),
@@ -233,7 +224,7 @@ def get_movie_torrent_zooqle( name, maxnum = 10, verify = True ):
         return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
     return sorted( items_toshow, key = lambda item: -item['seeders'] - item['leechers'] )[:maxnum], 'SUCCESS'
 
-def get_movie_torrent_rarbg( name, maxnum = 10 ):
+def get_movie_torrent_rarbg( name, maxnum = 10, verify = True ):
     tmdbid = plextmdb.get_movie_tmdbids( name )
     if tmdbid is None:
         return None, 'ERROR, could not find %s in themoviedb.' % name
@@ -243,7 +234,7 @@ def get_movie_torrent_rarbg( name, maxnum = 10 ):
     response = requests.get(apiurl,
                             params={ "get_token": "get_token",
                                      "format": "json",
-                                     "app_id": "rarbg-rubygem" } )
+                                     "app_id": "rarbg-rubygem" }, verify = verify )
     if response.status_code != 200:
         status = '. '.join([ 'ERROR, problem with rarbg.to: %d' % response.status_code,
                              'Unable to connect to provider.' ])
@@ -256,7 +247,7 @@ def get_movie_torrent_rarbg( name, maxnum = 10 ):
     ## wait 4 seconds
     ## this is a diamond hard limit for RARBG
     time.sleep( 4.0 )
-    response = requests.get( apiurl, params = params )
+    response = requests.get( apiurl, params = params, verify = verify )
     if response.status_code != 200:
         status = '. '.join([ 'ERROR, problem with rarbg.to: %d' % response.status_code,
                              'Unable to connect to provider.' ])
@@ -274,7 +265,7 @@ def get_movie_torrent_rarbg( name, maxnum = 10 ):
         return 1
     def get_title( elem ):
         if 'size' in elem:
-            return '%s (%s)' % ( elem['title'], plexcore.get_formatted_size( elem[ 'size' ] ) )
+            return '%s (%s)' % ( elem['title'], get_formatted_size( elem[ 'size' ] ) )
         return '%s ()' % elem['title']
     actdata = list( map(lambda elem: { 'title' : get_title( elem ),
                                        'seeders' : get_num_seeders( elem ),
@@ -282,7 +273,7 @@ def get_movie_torrent_rarbg( name, maxnum = 10 ):
                                        'link' : elem['download'] }, data ) ) 
     return actdata, 'SUCCESS'
         
-def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
+def get_movie_torrent_tpb( name, maxnum = 100, doAny = False, verify = True ):
     assert( maxnum >= 5 )
     def convert_size(size, default=None, use_decimal=False, **kwargs):
         """
@@ -347,7 +338,7 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
     search_params = { "q" : name, "type" : "search",
                       "orderby" : ORDERS.SIZE.DES, "page" : 0,
                       "category" : cat }
-    response = requests.get( surl, params = search_params )
+    response = requests.get( surl, params = search_params, verify = verify )
     if response.status_code != 200:
         return None, 'Error, could not use the movie service. Exiting...'
     
@@ -418,7 +409,7 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False ):
         'leechers' : item[ 'leechers' ],
         'link' : item[ 'link' ] }, items ) ), 'SUCCESS'
 
-def get_movie_torrent_kickass( name, maxnum = 10 ):
+def get_movie_torrent_kickass( name, maxnum = 100, verify = True ):
     from KickassAPI import Search, Latest, User, CATEGORY, ORDER
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
         'http://mgtracker.org:2710/announce',

@@ -546,6 +546,7 @@ class TMDBGUI( QDialogWithPrinting ):
 
     def _connectTMDBTableView( self ):
         self.tmdbtv.tm.mySummarySignal.connect( self.sdWidget.processStatus )
+        self.tmdbtv.tm.mySummarySignal.connect( self.sygWidget.processActors )
         self.tmdbtv.tm.emitMoviesHave.connect( self.sdWidget.processMovieTitles )
 
     def getChosenMovies( self ):
@@ -839,6 +840,13 @@ class SelectYearGenreWidget( QWidget ):
         elif state == 2:
             movieName = str( self.movieNameLineEdit.text( ) ).strip( )
             self.mySignalAndFill.emit( state, ( movieName, ) )
+
+    def processActors( self, status, tup ):
+        if status != 1: return
+        actor_names_sorted, _ = tup
+        if len( actor_names_sorted ) != 0:
+            self.actorNamesLineEdit.setText(
+                ', '.join( actor_names_sorted ) )
             
 #
 ## now the table, table model, and cell objects.

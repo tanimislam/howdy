@@ -84,8 +84,8 @@ def get_movie_info( tmdb_id: int, verify = True ):
     if response.status_code != 200:
         return None
     return response.json( )
-    
-def get_movies_by_actors( actor_names: list, verify = True ) -> list:
+
+def get_actor_ids_dict( actor_names, verify = True ):
     actor_name_dict = { }
     for actor_name in set(actor_names):
         actor_ids = [ ]
@@ -110,7 +110,10 @@ def get_movies_by_actors( actor_names: list, verify = True ) -> list:
             actor_ids += list( map(lambda result: result['id'], data['results'] ) )
         if len( set( actor_ids ) ) != 0:
             actor_name_dict[ actor_name ] = min(set( actor_ids ) )
-    #
+    return actor_name_dict
+
+def get_movies_by_actors( actor_name_dict, verify = True ):
+    if len( actor_name_dict ) == 0: return [ ]
     response = requests.get( 'https://api.themoviedb.org/3/discover/movie',
                              params = { 'api_key' : tmdb_apiKey,
                                         'append_to_response': 'images',

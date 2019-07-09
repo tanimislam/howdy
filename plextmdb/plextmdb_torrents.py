@@ -1,4 +1,5 @@
-import threading, requests, fuzzywuzzy, re, os, time, logging
+import threading, requests, fuzzywuzzy
+import re, os, time, logging, validators
 from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
 from requests.compat import urljoin
@@ -8,9 +9,8 @@ from . import plextmdb
 
 def _return_error_raw( msg ): return None, msg
 
-def get_movie_torrent_jackett( name, maxnum = 10, verify = True ):
+def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False ):
     time0 = time.time( )
-    import validators
     data = get_jackett_credentials( )
     if data is None:
         return _return_error_raw('failure, could not get jackett server credentials')
@@ -19,16 +19,18 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True ):
     def _return_params( name ):
         params = { 'apikey' : apikey, 'cat' : 2000 }
         tmdb_id = plextmdb.get_movie_tmdbids( name, verify = verify )
-        if tmdb_id is None:
+        if tmdb_id is None or doRaw:
             params['q'] = name
             return params
         #
         ## check that the name matches
-        movie_name = plextmdb.get_movie_info( tmdb_id )['title'].lower( ).strip( )
+        movie_name = plextmdb.get_movie_info(
+            tmdb_id, verify = verify )['title'].lower( ).strip( )
         if movie_name != name.lower( ).strip( ):
             params['q'] = name
             return params
-        imdb_id = plextmdb.get_imdbid_from_id( tmdb_id )
+        imdb_id = plextmdb.get_imdbid_from_id(
+            tmdb_id, verify = verify )
         if imdb_id is None:
             params['q'] = name
             return params
@@ -36,9 +38,11 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True ):
         return params
 
     params = _return_params( name )
-    logging.info( 'jackett params = %s.' % params )
-    response = requests.get( urljoin( url, endpoint ), verify = verify,
-                             params = params )
+    print( 'jackett params = %s.' % params )
+    response = requests.get(
+        urljoin( url, endpoint ), verify = verify,
+        params = params )
+    print( 'jackett movie name = %s' % name, response.status_code )
     if response.status_code != 200:
         return _return_error_raw(
             ' '.join([ 'failure, problem with jackett server accessible at %s.' % url,
@@ -47,6 +51,8 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True ):
     logging.info( 'processed jackett torrents for %s in %0.3f seconds.' % (
         name, time.time( ) - time0 ) )
     html = BeautifulSoup( response.content, 'lxml' )
+    print( 'jackett movie name = %s, %d items.' % (
+        name, len( html.find_all( 'item' ) ) ) )
     if len( html.find_all('item') ) == 0:
         return _return_error_raw(
             'failure, could not find movie %s with jackett.' % name )
@@ -71,8 +77,12 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True ):
         if len( valid_magnet_links ) == 0: return None
         return max( valid_magnet_links )
 
-    for item in html('item'):
+    
+    print( 'jackett got here, no error in %s.' % name )
+
+    for item in html.find_all('item'):
         title = item.find('title')
+        print( 'got here, movie name = %s, title = %s.' % ( name, title ) )
         if title is None: continue
         title = title.text
         torrent_size = item.find('size')
@@ -100,6 +110,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True ):
                     torrent_size * 1024**2 ) )
             myitem[ 'torrent_size' ] = torrent_size
         items.append( myitem )
+    print( 'jackett movie name = %s, %d hits in the end.' % ( name, len( items ) ) )
     if len( items ) == 0:
         return _return_error_raw(
             'FAILURE, JACKETT CANNOT FIND %s' % name )

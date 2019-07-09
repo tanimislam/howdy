@@ -84,51 +84,6 @@ def send_email_movie_none( movieName, verify = True ):
     send_email_lowlevel( msg, verify = verify )
     return 'SUCCESS'
 
-def get_email_contacts_dict( emailList, verify = True ):
-    if len( emailList ) == 0: return [ ]
-    # http = httplib2.Http( disable_ssl_certificate_validation = not verify )
-    credentials = plexcore.oauthGetGoogleCredentials( verify = verify )
-    people_service = build( 'people', 'v1', credentials = credentials,
-                            cache_discovery = False )
-    connections = people_service.people( ).connections( ).list(
-        resourceName='people/me', personFields='names,emailAddresses',
-        pageSize = 2000 ).execute( )
-    emails_dict = { }
-    for conn in filter(lambda conn: 'names' in conn and 'emailAddresses' in conn,
-                       connections['connections']):
-        name = conn['names'][0]['displayName']
-        emails = set(map(lambda eml: eml['value'], conn['emailAddresses'] ) )
-        if name not in emails_dict:
-            emails_dict[ name ] = emails
-        else:
-            new_emails = emails | emails_dict[ name ]
-            emails_dict[ name ] = new_emails
-    while 'nextPageToken' in connections: 
-        connections = people_service.people( ).connections( ).list(
-            resourceName='people/me', personFields='names,emailAddresses',
-            pageToken = connections['nextPageToken'], pageSize = 2000 ).execute( )
-        for conn in filter(lambda conn: 'names' in conn and 'emailAddresses' in conn,
-                           connections['connections']):
-            name = conn['names'][0]['displayName']
-            emails = set(map(lambda eml: eml['value'], conn['emailAddresses'] ) )
-            if name not in emails_dict:
-                emails_dict[ name ] = emails
-            else:
-                new_emails = emails | emails_dict[ name ]
-                emails_dict[ name ] = new_emails
-    #
-    emails_dict_rev = {}
-    for contact in emails_dict:
-        for email in emails_dict[contact]:
-            emails_dict_rev[ email ] = contact
-    emails_array = []
-    for email in emailList:
-        if email in emails_dict_rev:
-            emails_array.append((emails_dict_rev[ email ], email) )
-        else:
-            emails_array.append( (None, email) )
-    return emails_array
-
 def get_summary_body( token, nameSection = False, fullURL = 'http://localhost:32400' ):
     # allrows = plexcore.get_allrows( )
     tup_formatting = (

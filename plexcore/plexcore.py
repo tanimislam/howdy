@@ -1,5 +1,5 @@
 import os, glob, datetime, gspread, logging, sys, numpy, urllib3
-import uuid, requests, pytz, pypandoc, time, json
+import uuid, requests, pytz, pypandoc, time, json, validators
 import pathos.multiprocessing as multiprocessing
 # oauth2 stuff
 import oauth2client.client
@@ -955,27 +955,10 @@ def oauth_store_google_credentials( credentials ):
     
 #
 ## put in the jackett credentials into here
-def store_jackett_credentials( url, apikey ):
-    import validators
-    endpoint = 'api/v2.0/indexers/all/results/torznab/api'
-    #
-    ## now check that everything works
-    ## first, is URL a valid URL?
-    if not validators.url( url ):
-        return "ERROR, %s is not a valid URL" % url
-
-    #
-    ## second, add a '/' to end of URL
-    actURL = url
-    if not actURL.endswith('/'): actURL += '/'
-
-    #
-    ## third, check that we have a valid URL
-    response = requests.get( urljoin( url, endpoint ),
-                             params = { 'apikey' : apikey,
-                                        't' : 'caps' })
-    if response.status_code != 200:
-        return "ERROR, invalid jackett credentials"
+def store_jackett_credentials( url, apikey, verify = True ):
+    status = check_jackett_credentials(
+        url, apikey, verify = verify )
+    if status != 'SUCCESS': return status
     
     #
     ## now put the stuff inside
@@ -986,7 +969,7 @@ def store_jackett_credentials( url, apikey ):
         session.commit( )
     newval = PlexConfig(
         service = 'jackett',
-        data = { 'url' : actURL.strip( ),
+        data = { 'url' : url.strip( ),
                  'apikey' : apikey.strip( ) } )
     session.add( newval )
     session.commit( )
@@ -1002,6 +985,39 @@ def get_jackett_credentials( ):
     url = data['url'].strip( )
     apikey = data['apikey'].strip( )
     return url, apikey
+
+#
+## now check that Jackett credentials work
+def check_jackett_credentials( url, apikey, verify = True ):
+    endpoint = 'api/v2.0/indexers/all/results/torznab/api'
+    #
+    ## now check that everything works
+    ## first, is URL a valid URL?
+    if not validators.url( url ):
+        return "ERROR, %s is not a valid URL" % url
+
+    #
+    ## second, add a '/' to end of URL
+    actURL = url
+    if not actURL.endswith('/'): actURL += '/'
+
+    try:
+        #
+        ## third, check that we have a valid URL
+        response = requests.get(
+            urljoin( url, endpoint ),
+            params = { 'apikey' : apikey, 't' : 'caps' },
+            verify = verify )
+        if response.status_code != 200:
+            return "ERROR, invalid jackett credentials"
+
+        html = BeautifulSoup( response.content, 'lxml' )
+        error_items = html.find_all('error')
+        if len( error_items ) != 0:
+            return "ERROR, invalid API key"
+        return 'SUCCESS'
+    except Exception as e:
+        return "ERROR, exception emitted: %s." % str( e )
 
 #
 ## now get imgurl credentials

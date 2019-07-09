@@ -25,12 +25,90 @@ Here are some of the best known lower APIs used to help one manage your Plex_ se
 
 To get started, I assume you have your own Plex server. In order to get started with Plex, start at the `Plex website <Plex_>`_ and put your media into it. Next, follow the :ref:`Installation` instructions. Join or identify the music, television, and movie based services described in :numref:`Plexstuff Services Configuration`, and server settings described in :numref:`Plexstuff Settings Configuration`. Use ``plex_config_gui.py`` to save your services and settings information, and then you will be good to go in using the ~25 or so command line and GUI tools to manage your Plex server.
 
+Prerequisites
+-------------
+You will need to have PyQt4_, sshpass_, and pandoc_ on your machine. `Pandoc <pandoc_>`_ is needed by Plexstuff tools that convert emails written in LaTeX_ into HTML. Linux distributions, such as `Ubuntu <https://www.ubuntu.com>`_, `Mint <https://linuxmint.com>`_, `Debian <https://www.debian.org>`_, or `Red Hat <https://www.redhat.com/en>`_ based systems such as `Fedora <https://getfedora.org/>`_ or `CentOS <https://www.centos.org/>`_. On Debian based systems (such as Ubuntu), you can install PyQt4_, sshpass_, and pandoc_ with the following command (as sudo_ or root).
+
+.. code:: bash
+
+  sudo apt install python3-pyqt4 sshpass pandoc
+
+In a common scenario, you may need to use Plexstuff on a Linux machine you do not administer or own. Typically PyQt4_ and sshpass_ are installed, but pandoc_ is a more niche tool that must be installed by hand into your home directory if it has not been installed by default. By my convention the executables and other resources (such as includes and libraries) will be installed under ``~/.local``. Sources of necessary tools will be decompressed and live in ``~/.local/src``. Here are the eight steps I used in order to get pandoc_ installed.
+
+1. Ensure that ``~/.local/bin`` and ``~/.cabal/bin`` are in your PATH.
+
+2. Download the ``Linux x86-64`` pre-built version of the `Haskell Stack build tool <stack_>`_ and decompress into ``~/.local/src``. Here is a link, `https://get.haskellstack.org/stable/linux-x86_64-static.tar.gz <https://get.haskellstack.org/stable/linux-x86_64-static.tar.gz>`_. Decompress with the following command,
+
+  .. code:: bash
+
+    tar stack-2.1.1-linux-x86_64-static.tar.gz && rm stack-2.1.1-linux-x86_64-static.tar.gz
+
+  This will create a directory, ``~/.local/src/stack-2.1.1-linux-x86_64-static``.
+
+3. cd into ``~/.local/src/stack-2.1.1-linux-x86_64-static`` and install a *bootstrapped* Glasgow Haskell Compiler (ghc_) for Linux with the following command,
+
+  .. code:: bash
+
+    ./stack ghc
+
+  This will install ghc_ into ``~/.stack/programs/x86_64-linux/ghc-8.6.5/bin/ghc``. We need to install a bootstrapped Haskell compiler, because one needs (a version of) ghc_ in order to build ghc_ from source!
+
+4. Download the latest version of the Glasgow Haskell Compiler, as of 8 July 2019, it is `ghc-8.6.5-src.tar.xz <https://downloads.haskell.org/~ghc/8.6.5/ghc-8.6.5-src.tar.xz>`_. Once it has downloaded into ``~/.local/src``, decompress and untar this way. Note that you need `xz <https://en.wikipedia.org/wiki/Xz>`_ to be installed on your machine.
+
+  .. code:: bash
+
+    xz -cd ghc-8.6.5-src.tar.xz | tar xvf -
+    rm ghc-8.6.5-src.tar
+
+  This will create the source directory, ``~/.local/src/ghc-8.6.5``.
+
+5. cd into ``~/.local/src/ghc-8.6.5``. Configure, ``make``, and ``make install`` ghc_ with the following three commands in order.
+
+  .. code:: bash
+
+    ./configure --prefix=$HOME/.local --with-ghc=$HOME/.stack/programs/x86_64-linux/ghc-8.6.5/bin/ghc_
+    make && make install
+
+6. At this point, remove the stack_ source and distribution directories,
+
+  .. code:: bash
+
+    rm -rf ~/.local/src/stack-2.1.1-linux-x86_64-static
+    rm -rf ~/.stack
+
+7. Download and install cabal_, a command line tool to manage Haskell packages. First, download the cabal_ x86-64 binary, `cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz <https://downloads.haskell.org/~cabal/cabal-install-latest/cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz>`_, into ``~/.local/src``.
+
+  .. code:: bash
+
+    xz -cd cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz | tar xvf -
+    rm cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz
+
+  Second, move ``cabal`` into ``~/.local/bin``,
+
+  .. code:: bash
+
+    mv ~/.local/src/cabal ~/.local/bin
+    rm -f ~/.local/src/cabal.sig
+
+  Third, run ``cabal update`` to make cabal_ operational.
+
+8. FINALLY,  install ``pandoc`` into ``~/.local/bin`` in these steps. First run,
+
+  .. code:: bash
+
+    cabal install pandoc
+
+  This will install ``pandoc`` into ``~/.cabal/bin/pandoc``. Move ``pandoc`` from ``~/.cabal/bin/pandoc`` into ``~/.local/bin``.
+
+  .. code:: bash
+
+    mv ~/.cabal/bin/pandoc ~/.local/bin
+
+
 Installation
 ------------
 
-Currently, installation is straightforward. Just copy out ``plexstuff`` into a directory you own on a Linux machine. You will need to have `PyQt4 <https://www.riverbankcomputing.com/software/pyqt/download>`_ and `sshpass <https://linux.die.net/man/1/sshpass>`_ on your machine.
-
-To automatically, get all the dependencies (and there are a lot of them!) installed onto your machine (specifically, your user account), just run a single CLI executable from the top level directory, such as ``get_tv_tor.py``, the following way.
+Currently, parts of the installation are straightforward. Just copy out ``plexstuff`` into a directory you own on a Linux machine. To automatically get all the Python dependencies (and there are a lot of them!) installed onto your machine (specifically, your user account), just run a single CLI executable from the top level directory, such as ``get_tv_tor.py``, the following way.
 
 .. code:: bash
 
@@ -78,3 +156,11 @@ Indices and tables
 .. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki
 .. _Plex: https://plex.tv
 .. _PlexAPI: https://python-plexapi.readthedocs.io/en/latest/introduction.html
+.. _PyQt4: https://www.riverbankcomputing.com/software/pyqt/download
+.. _sshpass: https://linux.die.net/man/1/sshpass
+.. _pandoc: https://pandoc.org
+.. _sudo: https://en.wikipedia.org/wiki/Sudo
+.. _LaTeX: https://en.wikipedia.org/wiki/LaTeX
+.. _ghc: https://www.haskell.org/ghc
+.. _stack: https://docs.haskellstack.org/en/stable/README
+.. _cabal: http://hackage.haskell.org/package/cabal-install

@@ -17,9 +17,11 @@ from plexcore.plexcore import get_jackett_credentials
 
 def get_items_jackett( name, maxnum = 1000 ):
     assert( maxnum >= 5 )
-    items, status = plextmdb_torrents.get_movie_torrent_jackett( name, maxnum = maxnum )
+    items, status = plextmdb_torrents.get_movie_torrent_jackett(
+        name, maxnum = maxnum, doRaw = True )
     if status != 'SUCCESS':
         logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
+        print( 'jackett error message: %s.' % status )
         return None
     return items
 
@@ -190,7 +192,7 @@ def main( ):
         try:
             get_movie_yts( opts.name, verify = True, raiseError = True,
                            to_torrent = opts.do_add )
-            logging.info( 'search for torrents took %0.3f seconds.' %
+            logging.info( 'search for YTS torrents took %0.3f seconds.' %
                           ( time.time( ) - time0 ) )
             return
         except ValueError: pass
@@ -199,6 +201,7 @@ def main( ):
     if not opts.do_nozooq: jobs = [
             pool.apply_async( get_items_zooqle, args = ( opts.name, opts.maxnum ) ) ]
     else: jobs = [ ]
+    print( 'got here, # jobs = %d' % len( jobs ) )
     #
     ## check for jackett
     if get_jackett_credentials( ) is None:

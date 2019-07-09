@@ -21,9 +21,7 @@ def get_items_jackett( name, maxnum = 1000, verify = True ):
         name, maxnum = maxnum, doRaw = False, verify = verify )
     if status != 'SUCCESS':
         logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
-        print( 'jackett error message: %s.' % status )
         return None
-    print( 'jackett: %s found %d matches.' % ( name, len( items ) ) )
     return items
 
 def get_items_eztv_io( name, maxnum = 1000, verify = True ):

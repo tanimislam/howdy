@@ -1,6 +1,5 @@
 import os, sys, titlecase, datetime, re, time, requests, mimetypes
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing, re, httplib2
-from apiclient.discovery import build
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication

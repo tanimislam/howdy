@@ -18,11 +18,12 @@ from plexcore.plexcore import get_jackett_credentials
 def get_items_jackett( name, maxnum = 1000, verify = True ):
     assert( maxnum >= 5 )
     items, status = plextmdb_torrents.get_movie_torrent_jackett(
-        name, maxnum = maxnum, doRaw = True, verify = verify )
+        name, maxnum = maxnum, doRaw = False, verify = verify )
     if status != 'SUCCESS':
         logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
         print( 'jackett error message: %s.' % status )
         return None
+    print( 'jackett: %s found %d matches.' % ( name, len( items ) ) )
     return items
 
 def get_items_eztv_io( name, maxnum = 1000, verify = True ):
@@ -190,7 +191,9 @@ def main( ):
     parser.add_option('--add', dest='do_add', action='store_true', default = False,
                       help = 'If chosen, push the magnet link into the deluge server.' )  
     parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
-                      help = 'If chosen, do not verify any of the SSL connections made.' )
+                      help = 'If chosen, do not verify SSL connections.' )
+    parser.add_option('--timing', dest='do_timing', action='store_true', default = False,
+                      help = 'If chosen, show timing information (how long to get TV torrents.')
     opts, args = parser.parse_args( )
     assert( opts.timeout >= 10 )
     assert( opts.name is not None )
@@ -229,8 +232,9 @@ def main( ):
             items_lists.append( items )
         except: pass
     items = list( chain.from_iterable( items_lists ) )
-    logging.info( 'search for %d torrents took %0.3f seconds.' % (
-        len( items ), time.time( ) - time0 ) )    
+    if opts.do_timing:
+        print( 'search for %d torrents took %0.3f seconds.' % (
+            len( items ), time.time( ) - time0 ) )    
     if len( items ) != 0:
         #
         ## sort from most seeders + leecher to least

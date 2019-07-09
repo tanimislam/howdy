@@ -169,12 +169,17 @@ def upload_to_gmusic(filenames, verify = True):
             mmg.upload(filenames_valid)
         
 def get_youtube_service( verify = True ):
-    credentials = plexcore.oauthGetGoogleCredentials( verify = verify )
+    # credentials = plexcore.oauthGetGoogleCredentials( verify = verify )
     # http = httplib2.Http( disable_ssl_certificate_validation = not verify )
+    credentials = plexcore.oauthGetOauth2ClientGoogleCredentials( )
     if credentials is None:
         raise ValueError( "Error, could not build the YouTube service." )
-    youtube = build( "youtube", "v3", credentials = credentials,
-                     cache_discovery = False ) 
+    http_auth = credentials.authorize( httplib2.Http(
+        disable_ssl_certificate_validation = not verify ) )
+    youtube = build(  "youtube", "v3", http = http_auth,
+                      cache_discovery = False )
+    #youtube = build( "youtube", "v3", credentials = credentials,
+    #                 cache_discovery = False ) 
     return youtube
 
 def fill_m4a_metadata( filename, data_dict, verify = True ):

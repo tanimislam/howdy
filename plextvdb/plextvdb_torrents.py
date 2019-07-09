@@ -111,10 +111,8 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
             'pubdate' : datetime.datetime.fromtimestamp(
                 int( tor['date_released_unix'] ) ).date( ) },
             all_torrents_mine ) ), 'SUCCESS'
-            
-    
 
-def get_tv_torrent_zooqle( name, maxnum = 10, verify = True ):
+def get_tv_torrent_zooqle( name, maxnum = 100, verify = True ):
     assert( maxnum >= 5 )
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
         'udp://tracker.opentrackr.org:1337/announce',
@@ -466,7 +464,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
         
     return items[:maxnum], 'SUCCESS'
 
-def get_tv_torrent_kickass( name, maxnum = 10 ):
+def get_tv_torrent_kickass( name, maxnum = 100, verify = True ):
     from KickassAPI import Search, Latest, User, CATEGORY, ORDER
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
         'http://mgtracker.org:2710/announce',
@@ -532,7 +530,7 @@ def get_tv_torrent_kickass( name, maxnum = 10 ):
     
     return items_toshow, 'SUCCESS'
 
-def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
+def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
     #surl = urljoin( 'https://thepiratebay3.org', 's/' )
     surl = 'https://thepiratebay.org'
     if not doAny:
@@ -545,7 +543,8 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
 
     response_arr = [ None, ]
     def fill_response( response_arr ):
-        response_arr[ 0 ] = requests.get( surl, params = search_params, verify = False )
+        response_arr[ 0 ] = requests.get(
+            surl, params = search_params, verify = verify )
 
     e = threading.Event( )
     t = threading.Thread( target = fill_response, args = ( response_arr, ) )
@@ -607,7 +606,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
             #item = {'title': title, 'link': download_url, 'seeders': seeders, 'leechers': leechers }
             items.append(item)
         except Exception as e:
-            print(e)
+            print( str( e ) )
             continue
     if len( items ) == 0:
         return _return_error_couldnotfind( name )
@@ -615,17 +614,19 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False ):
                try_int(d.get('leechers')), reverse=True)
     return items[:maxnum], 'SUCCESS'
 
-def get_tv_torrent_best( name, maxnum = 10 ):
+def get_tv_torrent_best( name, maxnum = 100, verify = True ):
     items = [ ]
     assert( maxnum >= 5 )
-    items_1, status = get_tv_torrent_tpb( name, maxnum = maxnum )
+    items_1, status = get_tv_torrent_tpb(
+        name, maxnum = maxnum, verify = verify )
     if status == 'SUCCESS':
         print( len(items) )
         items += items_1
-    items_1, status = get_tv_torrent_torrentz( name, maxnum = maxnum )
+    items_1, status = get_tv_torrent_torrentz(
+        name, maxnum = maxnum, verify = verify )
     if status == 'SUCCESS':
         items += items_1
-    print( 'LENGTH OF ALL ITEMS = %d' % len( items ) )
+    logging.debug( 'LENGTH OF ALL ITEMS = %d' % len( items ) )
     if len( items ) == 0:
         print( "Error, could not find anything with name = %s" % name )
         return None, None # could find nothing

@@ -370,9 +370,16 @@ class PlexConfigLoginWidget( PlexConfigWidget ):
             url, apikey = dat
             self.jackett_url.setText( url )
             self.jackett_apikey.setText( apikey )
-            self.jackett_status.setText( 'WORKING' )
-            self._emitWorkingStatusDict[ 'JACKETT' ] = True
-        except:
+            status = plexcore.check_jackett_credentials(
+                url, apikey, verify = self.verify )
+            if status == 'SUCCESS':
+                self.jackett_status.setText( 'WORKING' )
+                self._emitWorkingStatusDict[ 'JACKETT' ] = True
+            else:
+                self.jackett_status.setText( 'NOT WORKING' )
+                self._emitWorkingStatusDict[ 'JACKETT' ] = False
+        except Exception as e:
+            print( 'got here in JACKETT, %s.' % str( e ) )
             self.jackett_url.setText( '' )
             self.jackett_apikey.setText( '' )
             self.jackett_status.setText( 'NOT WORKING' )
@@ -467,19 +474,19 @@ class PlexConfigLoginWidget( PlexConfigWidget ):
         self.workingStatus.emit( self._emitWorkingStatusDict )
 
     def pushJackettConfig( self ):
+        url = self.jackett_url.text( ).strip( )
+        apikey = self.jackett_apikey.text( ).strip( )
+        self.jackett_url.setText( url )
+        self.jackett_apikey.setText( apikey )
         try:
-            url = self.jackett_url.text( ).strip( )
-            apikey = self.jackett_apikey.text( ).strip( )
-            status = plexcore.store_jackett_credentials( url, apikey )
+            status = plexcore.store_jackett_credentials(
+                url, apikey, verify = self.verify )
             if status != 'SUCCESS':
                 raise ValueError("Error, invalid jackett credentials.")
-            self.jackett_url.setText( url )
-            self.jackett_apikey.setText( apikey )
             self.jackett_status.setText( 'WORKING' )
             self._emitWorkingStatusDict[ 'JACKETT' ] = True
-        except:
-            self.jackett_url.setText( url )
-            self.jackett_apikey.setText( apikey )
+        except Exception as e:
+            logging.debug( 'ERROR MESSAGE IN JACKETT CONFIG: %s.' % str( e ) )
             self.jackett_status.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'JACKETT' ] = False
         self.workingStatus.emit( self._emitWorkingStatusDict )

@@ -108,6 +108,7 @@ class QDialogWithPrinting( QDialog ):
     indexScalingSignal = pyqtSignal( int )
     
     def screenGrab( self ):
+        print( 'got here, should start a file dialog' )
         fname = str( QFileDialog.getSaveFileName(
             self, 'Save Screenshot', os.path.expanduser( '~' ),
             filter = '*.png' ) )
@@ -185,7 +186,7 @@ class QDialogWithPrinting( QDialog ):
         #
         if isIsolated:
             printAction = QAction( self )
-            printAction.setShortcut( 'Shift+Ctrl+P' )
+            printAction.setShortcuts( [ 'Shift+Ctrl+P', 'Shift+Command+P' ] )
             printAction.triggered.connect( self.screenGrab )
             self.addAction( printAction )
             #

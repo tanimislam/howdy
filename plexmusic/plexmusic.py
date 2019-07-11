@@ -24,6 +24,30 @@ class MusicInfo( object ):
                                 artist=artist_name, strict = do_strict )['artist-list'] ) )
         return adata
 
+    @classmethod
+    def get_set_musicbrainz_useragent( cls, email_address ):
+        val = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'musicbrainz' ).first( )
+        if val is None:
+            raise ValueError( "ERROR, MUSICBRAINZ USERAGENT DATA NOT FOUND OR SET" )
+        data = val.data
+        appname = data[ 'appname' ]
+        version = data[ 'version' ]
+        musicbrainzngs.set_useragent( appname, version, email_address )
+        return { 'appname' : appname, 'version' : version }
+
+    @classmethod
+    def push_musicbrainz_useragent( cls, appname, version ):
+        val = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'musicbrainz' ).first( )
+        if val is not None:
+            session.delete( val )
+            session.commit( )
+        session.add( PlexConfig( service = 'musicbrainz',
+                                 data = { 'appname' : appname,
+                                          'version' : version } ) )
+        session.commit( )
+        
     
     def __init__( self, artist_name ):
         time0 = time.time( )

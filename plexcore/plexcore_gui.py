@@ -681,7 +681,8 @@ class PlexConfigMusicWidget( PlexConfigWidget ):
     _emitWorkingStatusDict = {
         'GMUSIC' : False,
         'LASTFM' : False,
-        'GRACENOTE' : False }
+        'GRACENOTE' : False,
+        'MUSICBRAINZ' : False }
 
     def showHelpInfo( self ):
         pass
@@ -726,6 +727,36 @@ class PlexConfigMusicWidget( PlexConfigWidget ):
             self.gracenoteToken.setText( '' )
             self.gracenoteStatusLabel.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'GRACENOTE' ] = False
+
+        #
+        ## set up musicbrainz API access credentials
+        # first, get email from plex server credentials
+        email = None
+        dat = plexcore.getCredentials( verify = self.verify )
+        if dat is not None:
+            email, _ = dat
+            self.musicbrainzEmail.setText( email )
+        else: self.musicbrainzEmail.setText( '' )
+        try:
+            if email is not None:
+                mb_data = plexmusic.MusicInfo.get_set_musicbrainz_useragent(
+                    email )
+                self.musicbrainzStatusLabel.setText( 'WORKING' )
+                self._emitWorkingStatusDict[ 'MUSICBRAINZ' ] = True
+            else:
+                mb_data = plexmusic.MusicInfo.get_set_musicbrainz_useragent(
+                    '' )
+                self.musicbrainzStatusLabel.setText( 'NOT WORKING' )
+                self._emitWorkingStatusDict[ 'MUSICBRAINZ' ] = False
+            mb_app_name = mb_data[ 'appname' ]
+            mb_version = mb_data[ 'version' ]
+            self.musicbrainzAppName.setText( mb_app_name )
+            self.musicbrainzVersion.setText( mb_version )
+        except Exception as e:
+            self.musicbrainzAppName.setText( '' )
+            self.musicbrainzVersion.setText( '' )
+            self.musicbrainzStatusLabel.setText( 'NOT WORKING' )
+            self._emitWorkingStatusDict[ 'MUSICBRAINZ' ] = False
 
     def pushGoogleConfig( self ): # this is done by button
         def checkStatus( state ):
@@ -777,7 +808,27 @@ class PlexConfigMusicWidget( PlexConfigWidget ):
                 api_data )
             self.lastfmStatusLabel.setText( 'WORKING' )
             self._emitWorkingStatusDict[ 'LASTFM' ] = True
-        self.workingStatus.emit( self._emitWorkingStatusDict )            
+        self.workingStatus.emit( self._emitWorkingStatusDict )
+
+    def pushMusicBrainzUserAgent( self ):
+        appname = self.musicbrainzAppName.text( ).strip( )
+        version = self.musicbrainzVersion.text( ).strip( )
+        email = self.musicbrainzEmail.text( ).strip( )
+        if any(map(lambda tok: tok == '', ( appname, version, email ) ) ):
+            self.musicbrainzAppName.setText( '' )
+            self.musicbrainzVersion.setText( '' )
+            self.musicbrainzStatusLabel.setText( 'NOT WORKING' )
+            self._emitWorkingStatusDict[ 'MUSICBRAINZ' ] = False
+            self.workingStatus.emit( self._emitWorkingStatusDict )
+            return
+        #
+        ## all fields nonzero, good to go
+        plexmusic.MusicInfo.push_musicbrainz_useragent( appname, version )
+        plexmusic.MusicInfo.get_set_musicbrainz_useragent( email )
+        self.musicbrainzStatusLabel.setText( 'WORKING' )
+        self._emitWorkingStatusDict[ 'MUSICBRAINZ' ] = True
+        self.workingStatus.emit( self._emitWorkingStatusDict )
+        
         
     def __init__( self, parent, verify = True ):
         super( PlexConfigMusicWidget, self ).__init__(
@@ -799,16 +850,24 @@ class PlexConfigMusicWidget( PlexConfigWidget ):
         self.gracenoteToken = QLineEdit( )
         self.gracenoteToken.setEchoMode( QLineEdit.Password )
         self.gracenoteStatusLabel = QLabel( )
+        #
+        self.musicbrainzEmail = QLabel( )
+        self.musicbrainzAppName = QLineEdit( )
+        self.musicbrainzVersion = QLineEdit( )
+        self.musicbrainzStatusLabel = QLabel( )
+        #
         self.initPlexConfigMusicStatus( ) # set everything up
         #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         #
+        ## 1/4
+        bkgColor = get_popularity_color( 0.1 ).name( )
         gmusicWidget = QWidget( )
         gmusicWidget.setStyleSheet("""
         QWidget {
-        background-color: #0b4d4f;
-        }""" )
+        background-color: %s;
+        }""" % bkgColor )
         gmusicLayout = QGridLayout( )
         gmusicWidget.setLayout( gmusicLayout )
         gmusicLayout.addWidget( QLabel( 'GMUSIC CONFIG' ), 0, 0, 1, 1 )
@@ -818,11 +877,13 @@ class PlexConfigMusicWidget( PlexConfigWidget ):
             self.pushGoogleConfig )
         myLayout.addWidget( gmusicWidget )
         #
+        ## 2/4
+        bkgColor = get_popularity_color( 0.2 ).name( )
         lastfmWidget = QWidget( )
         lastfmWidget.setStyleSheet("""
         QWidget {
-        background-color: #0b2d4f;
-        }""" )
+        background-color: %s;
+        }""" % bkgColor )
         lastfmLayout = QGridLayout( )
         lastfmWidget.setLayout( lastfmLayout )
         lastfmLayout.addWidget( QLabel( 'LASTFM TOKENS' ), 0, 0, 1, 1 )
@@ -838,17 +899,39 @@ class PlexConfigMusicWidget( PlexConfigWidget ):
         lastfmLayout.addWidget( self.lastfmUserName, 4, 1, 1, 3 )
         myLayout.addWidget( lastfmWidget )
         #
+        ## 3/4
+        bkgColor = get_popularity_color( 0.3 ).name( )
         gracenoteWidget = QWidget( )
         gracenoteWidget.setStyleSheet("""
         QWidget {
-        background-color: #370b4f;
-        }""" )
+        background-color: %s;
+        }""" % bkgColor )
         gracenoteLayout = QGridLayout( )
         gracenoteWidget.setLayout( gracenoteLayout )
         gracenoteLayout.addWidget( QLabel( 'GRACENOTE TOKEN' ), 6, 0, 1, 1 )
         gracenoteLayout.addWidget( self.gracenoteToken, 6, 1, 1, 2 )
         gracenoteLayout.addWidget( self.gracenoteStatusLabel, 6, 3, 1, 1 )
         myLayout.addWidget( gracenoteWidget )
+        #
+        ## 4/4
+        bkgColor = get_popularity_color( 0.4 ).name( )
+        musicbrainzWidget = QWidget( )
+        musicbrainzWidget.setStyleSheet("""
+        QWidget {
+        background-color: %s;
+        }""" % bkgColor )
+        musicbrainzLayout = QGridLayout( )
+        musicbrainzWidget.setLayout( musicbrainzLayout )
+        musicbrainzLayout.addWidget( QLabel( 'MUSICBRAINZ USER AGENT' ), 0, 0, 1, 1 )
+        musicbrainzLayout.addWidget( QLabel( ), 0, 1, 1, 2 )
+        musicbrainzLayout.addWidget( self.musicbrainzStatusLabel, 0, 3, 1, 1 )
+        musicbrainzLayout.addWidget( QLabel( 'EMAIL' ), 1, 0, 1, 1 )
+        musicbrainzLayout.addWidget( self.musicbrainzEmail, 1, 1, 1, 3 )
+        musicbrainzLayout.addWidget( QLabel( 'APP NAME' ), 2, 0, 1, 1 )
+        musicbrainzLayout.addWidget( self.musicbrainzAppName, 2, 1, 1, 3 )
+        musicbrainzLayout.addWidget( QLabel( 'APP VERSION' ), 3, 0, 1, 1 )
+        musicbrainzLayout.addWidget( self.musicbrainzVersion, 3, 1, 1, 3 )
+        myLayout.addWidget( musicbrainzWidget )
         #
         ## signals
         self.gracenoteToken.returnPressed.connect(
@@ -861,6 +944,10 @@ class PlexConfigMusicWidget( PlexConfigWidget ):
             self.pushLastFMToken )
         self.lastfmUserName.returnPressed.connect(
             self.pushLastFMToken )
+        self.musicbrainzAppName.returnPressed.connect(
+            self.pushMusicBrainzUserAgent )
+        self.musicbrainzVersion.returnPressed.connect(
+            self.pushMusicBrainzUserAgent )
         #
         self.setFixedWidth( self.sizeHint( ).width( ) )
         

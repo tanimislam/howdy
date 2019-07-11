@@ -201,13 +201,15 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
         epno = episode[ 'episode' ]
         dateAired = episode[ 'date aired' ]
         overview = episode[ 'overview' ]
+        title = episode[ 'title' ].strip( )
         html = BeautifulSoup("""
         <html>
-          <p>%s, season %02d, episode %02d.</p>
+          <p>%s, season %02d, episode %02d, <b>%s</b>.</p>
           <p>aired on %s.</p>
           <p>%s.</p>
         </html>""" % (
-            seriesName, season, epno, dateAired.strftime( '%d/%m/%Y' ),
+            seriesName, season, epno, title,
+            dateAired.strftime( '%d/%m/%Y' ),
             overview ), 'lxml' )
         body_elem = html.find_all('body')[0]
         if 'duration' in episode:
@@ -291,9 +293,11 @@ class TVDBSeasonTableView( QTableView ):
 
     # set the width and height of table view here
     def setFixedSizes( self, width, height ):
-        self.columnWidth = width * 1.0 / 5
+        self.firstColumnWidth = width * 1.0 / 9
+        self.columnWidth = width * 2.0 / 9
         self.finalHeight = height
-        for colno in range( 5 ):
+        self.setColumnWidth( 0, self.firstColumnWidth )
+        for colno in range( 1, 5 ):
             self.setColumnWidth( colno, self.columnWidth )
         self.setFixedWidth( width )
         self.setFixedHeight( self.finalHeight )

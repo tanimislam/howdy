@@ -6,7 +6,7 @@ Although ``plex_config_gui.py`` is part of ``plexcore``, and naturally lives in 
 
 Some of the ``plex_config_gui.py`` screenshots are found in :numref:`Summary of Setting Up Google Credentials` (specifically :numref:`google_step01_credentials`, :numref:`google_step02_refreshcredentials`, and :numref:`google_step04_oauthtokenstring`) and in :numref:`Plexstuff Settings Configuration` (specifically :numref:`login_step01_login` and :numref:`login_step02_settings`).
 
-As described in :numref:`Plexstuff Services Configuration` and :numref:`Plexstuff Settings Configuration`, ```plex_config_gui.py`` start with the initial dialog widget of three sets of services and settings organized into three rows: *LOGIN*, *CREDENTIALS*, and *MUSIC*. The second column shows the number of services for each service set. The third column shows that number of services that are *working*. A screen shot illuminates this.
+As described in :numref:`Plexstuff Services Configuration` and :numref:`Plexstuff Settings Configuration`, ``plex_config_gui.py`` start with the initial dialog widget of three sets of services and settings organized into three rows: *LOGIN*, *CREDENTIALS*, and *MUSIC*. The second column shows the number of services for each service set. The third column shows that number of services that are *working*. A screen shot illuminates this.
 
 .. _plex_config_gui_serviceswidget:
 

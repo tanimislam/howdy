@@ -19,8 +19,10 @@
 import os, sys
 from functools import reduce
 _mainDir = reduce(lambda x,y: os.path.dirname( x ),
-                  range(2), os.path.abspath('.'))
+                  range(3), os.path.abspath('.'))
 sys.path.insert( 0, _mainDir )
+
+print( "mainDir = %s" % _mainDir)
 
 
 # -- General configuration ------------------------------------------------
@@ -43,6 +45,7 @@ extensions = [
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'requests': ('http://docs.python-requests.org/en/stable', None),
+    'beautifulsoup' : ( 'https://www.crummy.com/software/BeautifulSoup/bs4/doc/', None),
     }
 
 verify = False

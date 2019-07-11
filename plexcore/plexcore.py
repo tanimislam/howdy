@@ -38,12 +38,32 @@ def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
     session.commit( )
 
 def get_date_from_datestring( dstring ):
+    """Returns as :py:class:`date <datetime.date>` object from
+    a date string with the format, "January 1, 2000".
+
+    :param dstring: the initial date string.
+    :returns: its :py:class`date <datetime.date>` object reprsesentation.
+    :rtype: :py:class`date <datetime.date>`
+
+    """
     try: return datetime.datetime.strptime( dstring, '%B %d, %Y' ).date( )
     except Exception: return None
 
 #
 ## now convert this into HTML using pandoc, then BeautifulSoup :)
 def latexToHTML( latexString ):
+    """Converts a LaTeX_ string into HTML using Pandoc_, then prettifies the
+    intermediate HTML using BeautifulSoup_.
+
+    :param latexString: the initial LaTeX string.
+    :returns: the final prettified, formatted HTML string.
+    :rtype: str
+
+    .. _LaTeX: https://www.latex-project.org
+    .. _Pandoc: https://pandoc.org
+    .. _BeautifulSoup: https://www.crummy.com/software/BeautifulSoup/bs4/doc
+
+    """
     try:
         htmlstring = pypandoc.convert( latexString, 'html', format = 'latex',
                                        extra_args = [ '-s' ] )
@@ -129,9 +149,22 @@ def pushCredentials( username, password ):
     session.add( newval )
     session.commit( )
     return "SUCCESS"
-    
 
 def get_all_servers( token, verify = True ):
+    """Find all the Plex_ servers for which you have access.
+
+    :param token: the Plex str access token, returned by :py:meth:`checkServerCredentials`.
+    :param verify: optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
+    :returns: a dictionary of servers owned by you. Each key is the Plex_ server's name, and the value is the URL with port.
+    :rtype: dict
+
+    .. seealso: :py:meth:`checkServerCredentials`
+    
+    .. seealso: :py:meth:`get_owned_servers`
+
+    .. _Plex: https://plex.tv
+
+    """
     response = requests.get( 'https://plex.tv/api/resources',
                              params = { 'X-Plex-Token' : token },
                              verify = verify )
@@ -152,6 +185,21 @@ def get_all_servers( token, verify = True ):
     return server_dict
     
 def get_owned_servers( token, verify = True ):
+    """Find the Plex_ servers that you own own.
+
+    :param token: the Plex str access token, returned by :py:meth:`checkServerCredentials`.
+    :param verify: optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
+    :returns: a dictionary of servers owned by you. Each key is the Plex_ server's name, and the value is the URL with port.
+    :rtype: dict
+
+    .. seealso: :py:meth:`checkServerCredentials`
+    
+    .. seealso: :py:meth:`get_all_servers`
+
+    .. _Plex: https://plex.tv
+
+    
+    """
     response = requests.get( 'https://plex.tv/api/resources',
                              params = { 'X-Plex-Token' : token },
                              verify = verify )

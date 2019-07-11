@@ -104,7 +104,6 @@ If everything has worked out, after clicking *Submit* you will see the *Applicat
 
 The Jackett Server
 ^^^^^^^^^^^^^^^^^^
-
 `Jackett <https://github.com/Jackett/Jackett>`_ is a relatively successful proxy server that consolidates the torrent search from a large number of public, private, and semi-private torrent trackers and services into a single search user interface and API. It is used as the torrent searching back end for higher level media automated downloaders/maintainers such as `Sonarr <https://sonarr.tv/>`_, `Sickrage <https://www.sickrage.ca/>`_, `Radarr <https://radarr.video/>`_, `Lidarr <https://lidarr.audio/>`_, `Couchpotato <https://couchpota.to/>`_, and yet many others that I have not included.
 
 Plexstuff needs the main URL prefix of the Jackett server, and the Jackett API key, in order to use Jackett programmatically to search for movie and television torrents. The URL prefix is the part of the Jackett Web UI page before the ``UI/dashboard`` in the address. The API key is clearly shown and can be copied.
@@ -122,11 +121,15 @@ Since these are all Google services, a single tool sets all of them up given a s
 
 1. Launch ``plex_config_gui.py``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. Here is a screen shot.
 
+.. _google_step01_credentials:
+
 .. figure:: plex-config-services-figures/google_step01_credentials.png
   :width: 100%
   :align: center
 
 2. A *PLEX CREDENTIALS CONFIGURATION* widget will open. Click on the *CLIENT REFRESH* button in the Google section of this widget. Here is a screen shot.
+
+.. _google_step02_refreshcredentials:
 
 .. figure:: plex-config-services-figures/google_step02_refreshcredentials.png
   :width: 100%
@@ -139,6 +142,8 @@ Since these are all Google services, a single tool sets all of them up given a s
   :align: center
 
 4. Also, a new dialog widget will open asking you to put in an OAuth2_ token string once you have given permission. Here is the second screen shot.
+
+.. _google_step04_oauthtokenstring:
 
 .. figure:: plex-config-services-figures/google_step04_oauthtokenstring.png
   :width: 600

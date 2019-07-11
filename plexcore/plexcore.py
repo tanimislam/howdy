@@ -38,11 +38,11 @@ def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
     session.commit( )
 
 def get_date_from_datestring( dstring ):
-    """Returns as :py:class:`date <datetime.date>` object from
+    """Returns a :py:class:`date <datetime.date>` object from
     a date string with the format, "January 1, 2000".
 
     :param dstring: the initial date string.
-    :returns: its :py:class`date <datetime.date>` object reprsesentation.
+    :returns: its :py:class`date <datetime.date>` object representation.
     :rtype: :py:class`date <datetime.date>`
 
     """
@@ -55,7 +55,7 @@ def latexToHTML( latexString ):
     """Converts a LaTeX_ string into HTML using Pandoc_, then prettifies the
     intermediate HTML using BeautifulSoup_.
 
-    :param latexString: the initial LaTeX string.
+    :param latexString: the initial LaTeX_ string.
     :returns: the final prettified, formatted HTML string.
     :rtype: str
 
@@ -104,6 +104,19 @@ def getTokenForUsernamePassword( username, password, verify = True ):
     return response.json()['user']['authentication_token']
     
 def checkServerCredentials( doLocal = False, verify = True ):
+    """Returns get a local or remote URL and Plex_ access token to allow for API access to the server.
+
+    :param doLocal: optional ``bool`` argument, whether to get a local (`http://localhost:32400`) or remote URL. Default is ``False`` (look for the remote URL).
+    
+    :param verify: optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: a ``tuple`` of server URL and Plex_ access token.
+    
+    :rtype: ``tuple``
+
+    .. _Plex: https://plex.tv
+
+    """
     val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'login' ).first( )
     if val is None: return None
@@ -198,7 +211,6 @@ def get_owned_servers( token, verify = True ):
 
     .. _Plex: https://plex.tv
 
-    
     """
     response = requests.get( 'https://plex.tv/api/resources',
                              params = { 'X-Plex-Token' : token },

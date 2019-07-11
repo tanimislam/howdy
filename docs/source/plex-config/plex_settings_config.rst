@@ -28,6 +28,8 @@ This configuration is handled through the ``plex_config_gui.py``, and consists o
 
 To begin, launch ``plex_config_gui.py``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex login credentials*. Click on *Plex login credentials*. Here is a screen shot.
 
+.. _login_step01_login:
+
 .. figure:: plex-config-settings-figures/login_step01_login.png
   :width: 100%
   :align: center
@@ -35,11 +37,12 @@ To begin, launch ``plex_config_gui.py``, which starts with a three row table: *L
 The dialog widget that launches shows the Plex and other server settings that are set in order for Plexstuff to fully function. The inset in **blue** refers to the Jackett server settings.
 
 .. _login_step02_settings:
+
 .. figure:: plex-config-settings-figures/login_step02_settings.png
   :width: 100%
   :align: center
 
-I confess that the current organization of this data is duplicated and not fully logical. For example, why define the username and password in two places instead of one? Here are three reasons:
+I confess that the current organization of this data is duplicated and not fully logical. For example, why define the username and password in two places instead of one? Here are two reasons:
 
 * Lack of time and effort in making the organization of this setup fully logical.
 

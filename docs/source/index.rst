@@ -1,7 +1,3 @@
-.. plexstuff documentation master file, created by
-   sphinx-quickstart on Sun Jun 23 11:03:17 2019.
-   You can adapt this file completely to your liking, but it should at least contain the root `toctree` directive.
-
 ###################################################################
 Plexstuff - Yet Another Way to Manage Your Plex_ Server's Content
 ###################################################################
@@ -127,14 +123,16 @@ If you are missing any packages, and almost certainly you are if you are using t
 
 Choose ``1`` and the missing packages (in this case `cfscrape <https://github.com/Anorov/cloudflare-scrape>`_) will be installed.
 
-Common Design Philosophies for Command Line and GUIs
------------------------------------------------------
+Common Design Philosophies and Features for Command Line and GUIs
+----------------------------------------------------------------------------------------------------------
 
 Since I am forced to use the tools I developed to manage my Plex server, my command line interfaces (CLIs) and GUIs share common features that I hope make these tools *discoverable* and more easily *debuggable*.
 
-The CLIs are programmed with :py:class:`optparse's OptionParser( ) <optparse.OptionParser>` and have a comprehensive help that can accessed via ``<cli_tool> -h``.
+The CLIs are programmed with :py:class:`optparse's OptionParser( ) <optparse.OptionParser>` and have a comprehensive help that can accessed via ``<cli_tool> -h``, where ``<cli_tool>`` refers to the the specific Python CLI.
 
 The GUI tools all share common features. One can take a PNG screenshot of each widget and sub-widget with the ``Shift+Ctrl+P`` (or ``Shift+Command+P`` on Mac OS X computers) key combination. This helps to debug issues that may appear in the GUI, and helps to create useful documentation. I always try to put help screens into my GUIs, although not all the GUIs have working help dialogs.
+
+Many of the GUIs and CLIs can be run with  a ``--noverify`` option to access SSL protected URLs and services without verification, which is needed when running in more restricted environments.
 
 Table of Contents
 -----------------

@@ -10,6 +10,7 @@ This document contains all the needed information to get started on getting set 
 * Populating music metadata using either the `Gracenote API <https://developer.gracenote.com/web-api>`_ or the `LastFM API <https://www.last.fm/api>`_.
 * Using the `Jackett proxy server <https://github.com/Jackett/Jackett>`_ to consolidate torrent searches among 20-30 public torrent trackers (such as `Torrentz2 <https://torrentz2.eu>`_, `RARBG <http://rarbg.to/index70.php>`_, `Kickass Torrents <https://en.wikipedia.org/wiki/KickassTorrents>`_, and `The Pirate Bay <https://thepiratebay.org>`_) through a single search API and service without `CAPTCHAs <https://en.wikipedia.org/wiki/CAPTCHA>`_ and other usability restrictions.
 * A bevy of Google services to do the following.
+
   1. Sending out emails to your Plex users, using the `GMail API <https://developers.google.com/gmail/api>`_, and identifying them from your Google address book using the `Google Contacts API <https://developers.google.com/contacts/v3>`_.
   2. Identifying songs on `YouTube <https://www.youtube.com>`_ using the `YouTube API <https://developers.google.com/youtube/v3>`_.
   3. Access to Google spreadsheets using the `Google Sheets API <https://developers.google.com/sheets/api>`_.

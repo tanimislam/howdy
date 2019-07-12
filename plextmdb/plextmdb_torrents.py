@@ -9,17 +9,20 @@ from . import plextmdb
 
 def _return_error_raw( msg ): return None, msg
 
-def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False ):
+def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, tmdb_id = None ):
     time0 = time.time( )
     data = get_jackett_credentials( )
     if data is None:
         return _return_error_raw('failure, could not get jackett server credentials')
     url, apikey = data
     endpoint = 'api/v2.0/indexers/all/results/torznab/api'
-    def _return_params( name ):
+    popName = False
+    if tmdb_id is not None: popName = True        
+    def _return_params( name, popName, tmdb_id ):
         params = { 'apikey' : apikey, 'cat' : 2000 }
-        tmdb_id = plextmdb.get_movie_tmdbids( name, verify = verify )
-        if tmdb_id is None or doRaw:
+        if tmdb_id is not None:
+            tmdb_id = plextmdb.get_movie_tmdbids( name, verify = verify )
+        if tmdb_id is None or doRaw and not popName:
             params['q'] = name
             return params
         #
@@ -37,7 +40,8 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False )
         params['imdbid'] = imdb_id
         return params
 
-    params = _return_params( name )
+    params = _return_params( name, popName, tmdb_id )
+    if popName: params.pop( 'q' )
     response = requests.get(
         urljoin( url, endpoint ), verify = verify,
         params = params )

@@ -38,7 +38,6 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False )
         return params
 
     params = _return_params( name )
-    logging.debug( 'jackett params = %s.' % params )
     response = requests.get(
         urljoin( url, endpoint ), verify = verify,
         params = params )

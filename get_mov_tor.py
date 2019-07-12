@@ -15,10 +15,10 @@ from plextmdb import plextmdb_torrents
 from plextvdb import plextvdb_torrents
 from plexcore.plexcore import get_jackett_credentials
 
-def get_items_jackett( name, maxnum = 1000, verify = True ):
+def get_items_jackett( name, maxnum = 1000, verify = True, doRaw = False ):
     assert( maxnum >= 5 )
     items, status = plextmdb_torrents.get_movie_torrent_jackett(
-        name, maxnum = maxnum, doRaw = False, verify = verify )
+        name, maxnum = maxnum, doRaw = doRaw, verify = verify )
     if status != 'SUCCESS':
         logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
         return None
@@ -192,6 +192,8 @@ def main( ):
                       help = 'If chosen, do not verify SSL connections.' )
     parser.add_option('--timing', dest='do_timing', action='store_true', default = False,
                       help = 'If chosen, show timing information (how long to get TV torrents.')
+    parser.add_option('--doRaw', dest='do_raw', action='store_true', default = False,
+                      help = 'If chosen, do not use IMDB matching for Jackett torrents.')
     opts, args = parser.parse_args( )
     assert( opts.timeout >= 10 )
     assert( opts.name is not None )
@@ -218,10 +220,11 @@ def main( ):
                          ( get_items_rarbg, get_items_tpb ) ) )
         if opts.do_torrentz:
             jobs.append( pool.apply_async( get_items_torrentz, args = ( opts.name, opts.maxnum ) ) )
-    else:        
-        jobs += list(map(lambda func: pool.apply_async(
-            func, args = ( opts.name, opts.maxnum, opts.do_verify ) ),
-                         ( get_items_jackett, get_items_eztv_io ) ) )
+    else:
+        jobs.append( pool.apply_async(
+            get_items_jackett, args = ( opts.name, opts.maxnum, opts.do_verify, opts.do_raw ) ) )
+        jobs.append( pool.apply_async(
+            get_items_eztv_io, args = ( opts.name, opts.maxnum, opts.do_verify ) ) )
     items_lists = [ ]
     for job in jobs:
         try:

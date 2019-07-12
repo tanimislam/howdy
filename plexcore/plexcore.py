@@ -1065,7 +1065,7 @@ def check_jackett_credentials( url, apikey, verify = True ):
         #
         ## third, check that we have a valid URL
         response = requests.get(
-            urljoin( url, endpoint ),
+            urljoin( actURL, endpoint ),
             params = { 'apikey' : apikey, 't' : 'caps' },
             verify = verify )
         if response.status_code != 200:

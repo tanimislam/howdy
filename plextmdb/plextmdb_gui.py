@@ -61,18 +61,21 @@ class TMDBMovieInfo( QDialogWithPrinting ):
         self.title = datum[ 'title' ]
         self.setModal( True )
         self.verify = verify
+        self.datum = datum
         #
         full_info = datum[ 'overview' ]
         movie_full_path = datum[ 'poster_path' ]
         release_date = datum[ 'release_date' ]
         popularity = datum[ 'popularity' ]
         isFound = datum[ 'isFound' ]
+        if 'tmdb_id' in datum: self.tmdb_id = datum[ 'tmdb_id' ]
+        else: self.tmdb_id = None
         #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         if not isFound:
             self.getTorrentButton = QPushButton( 'GET MOVIE TORRENT' )
-            myButtonGroup = QButtonGroup( )
+            myButtonGroup = QButtonGroup( self )
             self.noRadioButton = QRadioButton( 'NO', self )
             self.yesRadioButton = QRadioButton( 'YES', self )
             for qrb in ( self.noRadioButton, self.yesRadioButton ):
@@ -83,6 +86,13 @@ class TMDBMovieInfo( QDialogWithPrinting ):
             self.numEntriesComboBox.addItems([ '5', '10', '20', '40' ])
             self.numEntriesComboBox.setEditable( False )
             self.numEntriesComboBox.setCurrentIndex( 1 )
+            imdbButtonGroup = QButtonGroup( self )
+            self.noIMDBRadioButton = QRadioButton( 'NO', self )
+            self.yesIMDBRadioButton = QRadioButton( 'YES', self )
+            for qrb in ( self.noIMDBRadioButton, self.yesIMDBRadioButton ):
+                imdbButtonGroup.addButton( qrb )
+            imdbButtonGroup.setExclusive( True )
+            self.noIMDBRadioButton.setChecked( True )
             topWidget = QWidget( self )
             topLayout = QGridLayout( )
             topWidget.setLayout( topLayout )
@@ -92,6 +102,10 @@ class TMDBMovieInfo( QDialogWithPrinting ):
             topLayout.addWidget( self.yesRadioButton, 1, 2, 1, 1 )
             topLayout.addWidget( QLabel( 'MAXNUM' ), 1, 3, 1, 1 )
             topLayout.addWidget( self.numEntriesComboBox, 1, 4, 1, 1 )
+            if self.tmdb_id is not None:
+                topLayout.addWidget( QLabel( 'USE IMDB FOR TORRENT?'), 2, 0, 1, 3 )
+                topLayout.addWidget( self.noIMDBRadioButton, 2, 3, 1, 1 )
+                topLayout.addWidget( self.yesIMDBRadioButton, 2, 4, 1, 1 )
             myLayout.addWidget( topWidget )
             self.getTorrentButton.clicked.connect( self.launchTorrentWindow )
         myLayout.addWidget( QLabel( 'TITLE: %s' % self.title ) )
@@ -124,10 +138,32 @@ class TMDBMovieInfo( QDialogWithPrinting ):
     def launchTorrentWindow( self ):
         maxnum = int( self.numEntriesComboBox.currentText( ) )
         bypass = self.yesRadioButton.isChecked( )
+        useIMDB = self.yesIMDBRadioButton.isChecked( )
         tmdbt = TMDBTorrents(
-            self, self.token, self.title,
-            bypass = bypass, maxnum = maxnum )
+            self, self.token, self.title, self.tmdb_id,
+            bypass = bypass, maxnum = maxnum,
+            useIMDB = useIMDB )
         result = tmdbt.exec_( )
+
+    def contextMenuEvent( self, event ):
+        menu = QMenu( self )
+        infoAction = QAction( 'Info', menu )
+        infoAction.triggered.connect( self._showInfo )
+        menu.addAction( infoAction )
+        menu.popup( QCursor.pos( ) )
+
+    def _showInfo( self ):
+        qdl = QDialog( self )
+        qdl.setModal( True )
+        layout = QVBoxLayout( )
+        qdl.setLayout( layout )
+        qte = QTextEdit( )
+        qte.setReadOnly( True )
+        layout.addWidget( qte )
+        qte.setText( '%s' % self.datum )
+        qdl.setFixedHeight( qdl.sizeHint( ).height( ) )
+        qdl.setFixedWidth( qdl.sizeHint( ).width( ) )
+        result = qdl.exec_( )
 
 class TMDBTorrents( QDialogWithPrinting ):
     
@@ -355,7 +391,8 @@ class TMDBTorrents( QDialogWithPrinting ):
                     deluge_client, datum[ 'link' ] )
 
     def _createTMDBTorrentsTableModel(
-            self, movie_name, bypass = False, maxnum = 10 ):
+            self, movie_name, tmdb_id, bypass = False, maxnum = 10,
+            useIMDB = False ):
         data_torrents = [ ]
         if not bypass:
             data, status = plextmdb_torrents.get_movie_torrent(
@@ -380,20 +417,30 @@ class TMDBTorrents( QDialogWithPrinting ):
                 self, data_torrents, 0 )
 
         # get magnet links, now use Jackett AND OTHERS for downloading movies
-        pool = Pool( processes = 3 )
-        jobs = list(map(
-            lambda func: pool.apply_async( func, args = ( movie_name, maxnum, self.verify ) ),
-            ( plextmdb_torrents.get_movie_torrent_zooqle,
-              plextmdb_torrents.get_movie_torrent_jackett,
-              plextmdb_torrents.get_movie_torrent_eztv_io ) ) )
-        items_lists = [ ]
-        for job in jobs:
-            try:
-                items, status = job.get( 60 ) # 60 second timeout on process
-                if items is None: continue
-                items_lists.append( items )
-            except: pass
-        data = list( chain.from_iterable( items_lists ) )
+        data = [ ]
+        with Pool( processes = 3 ) as pool:
+            jobs = [ ]
+            if tmdb_id is not None and useIMDB:
+                jobs.append( pool.apply_async(
+                    target = plextmdb_torrents.get_movie_torrent_jackett,
+                    args = ( movie_name, maxnum, self.verify, False, tmdb_id ) ) )
+            else:
+                jobs.append( pool.apply_async(
+                    target = plextmdb_torrents.get_movie_torrent_jackett,
+                    args = ( movie_name, maxnum, self.verify, False ) ) )
+            jobs+= list(map(
+                lambda func: pool.apply_async( func, args = ( movie_name, maxnum, self.verify ) ),
+                ( plextmdb_torrents.get_movie_torrent_zooqle,
+                  plextmdb_torrents.get_movie_torrent_eztv_io ) ) )
+            items_lists = [ ]
+            for job in jobs:
+                try:
+                    items, status = job.get( 60 ) # 60 second timeout on process
+                    if items is None: continue
+                    items_lists.append( items )
+                except: pass
+            data = list( chain.from_iterable( items_lists ) )
+        #
         if len( data ) == 0:
             return TMDBTorrents.TMDBTorrentsTableModel( self, [ ], -1 )
             
@@ -414,16 +461,19 @@ class TMDBTorrents( QDialogWithPrinting ):
             return TMDBTorrents.TMDBTorrentsTableModel( self, [ ], 0 )
         return TMDBTorrents.TMDBTorrentsTableModel( self, data_torrents, 1 )
 
-    def __init__( self, parent, token, movie_name, bypass = False, maxnum = 10,
+    def __init__( self, parent, token, movie_name, tmdb_id,
+                  bypass = False, maxnum = 10, useIMDB = False,
                   do_debug = False ):
         super( TMDBTorrents, self ).__init__(
             parent, isIsolated = True, doQuit = False )
         self.token = token
         self.movie = movie_name
+        self.tmdb_id = tmdb_id
         self.setWindowTitle( 'MOVIE TORRENT DOWNLOAD: %s' % movie_name )
         mainLayout = QVBoxLayout( self )
         self.setLayout( mainLayout )
         self.do_debug = do_debug
+        self.useIMDB = useIMDB
         #
         ## now check to see if we have a working deluge client
         client, status = plexcore_deluge.get_deluge_client( )

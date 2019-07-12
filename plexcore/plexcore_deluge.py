@@ -1,4 +1,5 @@
 import os, sys, numpy, logging, magic, base64, subprocess
+from urllib.parse import parse_qs
 from configparser import RawConfigParser
 from . import baseConfDir, session, PlexConfig, get_formatted_size
 
@@ -205,12 +206,25 @@ def deluge_add_torrent_file_as_data( client, torrent_file_name,
     torrentId = client.call(
         'core.add_torrent_file', baseName,
         base64.b64encode( torrent_file_data ), {} )
+    #
+    ## check if the magnet link is in there already
+    ## this is an obvious failure mode that I had not considered
     return torrentId
+    
 
 def deluge_add_magnet_file( client, magnet_uri ):
     torrentId = client.call(
         'core.add_torrent_magnet', magnet_uri, {} )
-    return torrentId
+    #
+    ## check if the magnet link is in there already
+    ## this is an obvious failure mode that I had not considered
+    if torrentId is not None: return torrentId
+
+    torrentIds = set(map(lambda torId: torId.lower( ),
+                         deluge_get_matching_torrents( client, ['*'] ) ) )
+    cand_torr_id = parse_qs( magnet_uri )['magnet:?xt'][0].split(':')[-1].strip( )
+    if cand_torr_id in torrentIds: return cand_torr_id
+    return None
 
 #
 ## From https://stackoverflow.com/questions/7160737/python-how-to-validate-a-url-in-python-malformed-or-not

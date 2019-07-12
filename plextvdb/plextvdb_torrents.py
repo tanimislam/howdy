@@ -356,9 +356,10 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
         if imdb_id is None: return params
         params[ 'imdbid' ] = imdb_id
         return params
-    
-    response = requests.get( urljoin( url, endpoint ),
-                             params = _return_params( name ), verify = verify ) # tv shows
+
+    response = requests.get(
+        urljoin( url, endpoint ),
+        params = _return_params( name ), verify = verify ) # tv shows
     if response.status_code != 200:
         return _return_error_raw( 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url )
     html = BeautifulSoup( response.content, 'lxml' )
@@ -706,7 +707,7 @@ def worker_process_download_tvtorrent(
             mustHaveString, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
             minsizes = [ minSize, minSize_x265 ],
             maxsizes = [ maxSize, maxSize_x265 ],
-            keywords_exc = [ 'xvid' ],
+            keywords_exc = [ 'xvid' ], raw = True,
             must_have = [ mustHaveString ], series_name = series_name )
         if status != 'SUCCESS':
             return ( 'jackett', create_status_dict( 'FAILURE', status ), 'FAILURE' )

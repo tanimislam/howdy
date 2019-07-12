@@ -36,8 +36,9 @@ def main( ):
                       help = 'Number of threads over which to search for TV shows in my library. Default is %d.' %
                       default_num_threads )
     opts, args = parser.parse_args( )
-    if opts.do_info: logging.basicConfig( level = logging.INFO )
-    if opts.do_debug: logging.basicConfig( level = logging.DEBUG )
+    logger = logging.getLogger( )
+    if opts.do_info: logger.setLevel( logging.INFO )
+    if opts.do_debug: logger.setLevel( logging.DEBUG )
     assert( opts.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
     assert( opts.num_iters >= 1 ), 'error, must have a positive number of iterations.'
     step = 0

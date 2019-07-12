@@ -7,7 +7,7 @@ from . import plexinitialization
 _ = plexinitialization.PlexInitialization( )
 
 import os, sys, xdg.BaseDirectory, signal, datetime, glob, logging
-import geoip2.database, _geoip_geolite2, time, numpy
+import geoip2.database, _geoip_geolite2, time, numpy, multiprocessing, multiprocessing.pool
 from bs4 import BeautifulSoup
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -34,6 +34,26 @@ database containing location information for IP addresses.
 
 """
 
+class NoDaemonProcess(multiprocessing.Process):
+    """
+    magic to get multiprocessing to get processes to be able to start daemons
+    I copied the code from http://stackoverflow.com/a/8963618/3362358, without
+    any real understanding EXCEPT that I am extending a Pool using a
+    NoDaemonProcess that always returns False, allowing me to create a pool of
+    workers that can spawn other processes (by default, multiprocessing does not
+    allow this)
+    """
+    # make 'daemon' attribute always return False
+    def _get_daemon(self):
+        return False
+    def _set_daemon(self, value):
+        pass
+    daemon = property(_get_daemon, _set_daemon)
+
+class MyPool(multiprocessing.pool.Pool):
+    Process = NoDaemonProcess
+
+    
 def get_popularity_color( hpop, alpha = 1.0 ):
     """Get a color that represents some darkish cool looking color interpolated between 0 and 1.
 

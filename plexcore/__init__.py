@@ -123,7 +123,6 @@ class QDialogWithPrinting( QDialog ):
     indexScalingSignal = pyqtSignal( int )
     
     def screenGrab( self ):
-        print( 'got here, should start a file dialog' )
         fname = str( QFileDialog.getSaveFileName(
             self, 'Save Screenshot', os.path.expanduser( '~' ),
             filter = '*.png' ) )

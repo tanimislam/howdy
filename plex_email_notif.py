@@ -3,7 +3,7 @@
 import os, datetime, logging, time
 from optparse import OptionParser
 from plexcore import plexcore
-from plexemail import plexemail, get_email_contacts_dict
+from plexemail import plexemail, get_email_contacts_dict, emailAddress, emailName
 
 def main( ):
     time0 = time.time( )
@@ -52,17 +52,17 @@ def main( ):
     print( 'processed all checks in %0.3f seconds.' % ( time.time( ) - time0 ) )
     time0 = time.time( )
     if opts.do_test:
-        plexemail.send_individual_email_full( htmlString, opts.subject,
-                                              '***REMOVED***.islam@gmail.com', 'Tanim Islam' )
+        plexemail.send_individual_email_full(
+            htmlString, opts.subject, emailAddress, name = emailName )
         print( 'processed test email in %0.3f seconds.' % ( time.time( ) - time0 ) )
     else:
         def _send_email_perproc( input_tuple ):
             name, email = input_tuple
-            plexemail.send_individual_email_full( htmlString, opts.subject,
-                                                  email, name )
+            plexemail.send_individual_email_full(
+                htmlString, opts.subject, email, name = name )
             return True
         arrs = list( map( _send_email_perproc, name_emails +
-                          [ ( 'Tanim Islam', '***REMOVED***.islam@gmail.com' ) ]) )
+                          [ ( emailName, emailAddress ) ] ) )
         print( 'processed %d emails in %0.3f seconds.' % ( len(arrs), time.time( ) - time0 ) )
         
 if __name__=='__main__':

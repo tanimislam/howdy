@@ -6,9 +6,10 @@ from itertools import chain
 from requests.compat import urljoin
 from multiprocessing import Process, Manager
 from pathos.multiprocessing import Pool
+
 from plexcore import plexcore_deluge, get_formatted_size, get_maximum_matchval
 from plexcore.plexcore import get_jackett_credentials
-from . import get_token, plextvdb
+from plextvdb import get_token, plextvdb
 
 def _return_error_couldnotfind( name ):
     return _return_error_raw(

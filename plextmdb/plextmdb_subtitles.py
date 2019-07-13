@@ -4,7 +4,7 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from io import BytesIO
 from plexcore import subscene
-from . import plextmdb
+from plextmdb import plextmdb
 
 def get_subtitles_opensubtitles( title, extra_strings = [ ] ):
     headers = {'User-Agent': 'TanimIslamSubtitles v1'}

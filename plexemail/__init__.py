@@ -1,7 +1,10 @@
 import os, sys, base64, httplib2
-mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
-sys.path.append( mainDir )
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                  os.path.abspath(__file__) )
+sys.path.append( _mainDir )
 from apiclient.discovery import build
+
 from plexcore import plexcore
 
 def send_email_lowlevel( msg, verify = True ):

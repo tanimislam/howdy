@@ -3,7 +3,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PIL import Image
 from io import StringIO
-from plexcore import PlexConfig, session
 
 class PlexIMGClient( object ):    
     def __init__( self, verify = True ):

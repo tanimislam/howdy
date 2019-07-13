@@ -1,7 +1,10 @@
 import os, requests, json, sys
+from functools import reduce
 from sqlalchemy import Column, String
-mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
-sys.path.append( mainDir )
+
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                  os.path.abspath( __file__ ) )
+sys.path.append( _mainDir )
 from plexcore import session, create_all, PlexConfig, Base
 from sqlalchemy import String, Column
 
@@ -35,7 +38,7 @@ def save_tvdb_api( username: str, apikey: str, userkey: str, verify = True ):
     session.commit( )
     return 'SUCCESS'
 
-def check_tvdb_api( username, apikey, userkey, verify = True ):
+def check_tvdb_api( username, apikey, userkey, verify = True ) -> bool:
     token = get_token( verify = verify,
                        data = {  'apikey' : apikey,
                                  'username' : username,

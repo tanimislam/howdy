@@ -1,9 +1,7 @@
 import logging, glob, os, requests, datetime, fuzzywuzzy.fuzz, time
 import pathos.multiprocessing as multiprocessing
 from itertools import chain
-from . import mainDir, get_tmdb_api
-
-tmdb_apiKey = get_tmdb_api( )
+from plextmdb import get_tmdb_api, TMDBEngine, TMDBEngineSimple, tmdb_apiKey
 
 def get_tv_ids_by_series_name( series_name: str, verify = True ) -> list:
     response = requests.get( 'https://api.themoviedb.org/3/search/tv',
@@ -428,70 +426,3 @@ def getMovieData( year: int, genre_id: str, verify = True ) -> list:
         if 'id' in datum: row[ 'tmdb_id' ] = datum[ 'id' ]
         actualMovieData.append( row )
     return actualMovieData
-
-class TMDBEngine( object ):
-    class __TMDBEngine( object ):
-        def __init__( self, verify = True ):
-            from PyQt4.QtGui import QFontDatabase
-            mainURL = 'https://api.themoviedb.org/3/genre/movie/list'
-            params = { 'api_key' : tmdb_apiKey }
-            response = requests.get( mainURL, params = params, verify = verify )
-            data = response.json( )
-            genres_tup = data['genres']
-            self._genres = { genre_row['name'] : genre_row['id'] for genre_row in genres_tup }
-            self._genres_rev = { genre_row['id'] : genre_row['name'] for genre_row in genres_tup }
-            self._genres[ 'ALL' ] = -1
-            self._genres_rev[ -1 ] = 'ALL'
-            #
-            ## now load in the fonts
-            for fontFile in glob.glob( os.path.join( mainDir, 'resources', '*.ttf' ) ):
-                QFontDatabase.addApplicationFont( fontFile )
-            
-        def getGenreIdFromGenre( self, genre ):
-            return self._genres[ genre ]
-
-        def getGenreFromGenreId( self, genre_id ):
-            return self._genres_rev[ genre_id ]
-
-        def getGenreIds( self ):
-            return self._genres.values( )
-        
-        def getGenres( self ):
-            return self._genres.keys( )
-
-    _instances = { }
-
-    def __new__( cls, verify = True ):
-        if verify not in TMDBEngine._instances:
-            TMDBEngine._instances[ verify ] = TMDBEngine.__TMDBEngine( verify = verify )
-        return TMDBEngine._instances[ verify ]
-
-class TMDBEngineSimple( object ):
-    class __TMDBEngine( object ):
-        def __init__( self, verify = True ):
-            mainURL = 'http://api.themoviedb.org/3/genre/movie/list'
-            params = { 'api_key' : tmdb_apiKey }
-            response = requests.get( mainURL, params = params, verify = verify )
-            data = response.json( )
-            genres_tup = data['genres']
-            self._genres = { genre_row['name'] : genre_row['id'] for genre_row in genres_tup }
-            self._genres_rev = { genre_row['id'] : genre_row['name'] for genre_row in genres_tup }
-            
-        def getGenreIdFromGenre( self, genre ):
-            return self._genres[ genre ]
-
-        def getGenreFromGenreId( self, genre_id ):
-            return self._genres_rev[ genre_id ]
-
-        def getGenreIds( self ):
-            return self._genres.values( )
-        
-        def getGenres( self ):
-            return self._genres.keys( )
-
-    _instances = { }
-
-    def __new__( cls, verify = True ):
-        if verify not in TMDBEngineSimple._instances:
-            TMDBEngineSimple._instances[ verify ] = TMDBEngineSimple.__TMDBEngine( verify )
-        return TMDBEngineSimple._instances[ verify ]

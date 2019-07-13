@@ -3,7 +3,7 @@
 import os, datetime, logging, time
 from optparse import OptionParser
 from plexcore import plexcore
-from plexemail import plexemail
+from plexemail import plexemail, get_email_contacts_dict
 
 def main( ):
     time0 = time.time( )
@@ -34,7 +34,7 @@ def main( ):
     #
     ## get mapped emails
     emails = plexcore.get_mapped_email_contacts( token, verify = False )
-    name_emails = plexemail.get_email_contacts_dict( emails, verify = False )
+    name_emails = get_email_contacts_dict( emails, verify = False )
     def return_nameemail_string( name, email ):
         if name is not None:
             return "%s <%s>" % ( name, email )

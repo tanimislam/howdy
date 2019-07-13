@@ -2,9 +2,10 @@ import numpy, os, sys, requests, json, base64, time
 import logging, glob, datetime, textwrap, titlecase
 from pathos.multiprocessing import Pool
 from itertools import chain
-from . import plextmdb, mainDir, plextmdb_torrents
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
+from plextmdb import plextmdb, plextmdb_torrents
 from plexcore import plexcore, get_popularity_color, get_formatted_size_MB, plexcore_deluge
 from plexcore import QDialogWithPrinting, QWidgetWithPrinting, ProgressDialog
 from plexemail import plexemail
@@ -422,11 +423,11 @@ class TMDBTorrents( QDialogWithPrinting ):
             jobs = [ ]
             if tmdb_id is not None and useIMDB:
                 jobs.append( pool.apply_async(
-                    target = plextmdb_torrents.get_movie_torrent_jackett,
+                    plextmdb_torrents.get_movie_torrent_jackett,
                     args = ( movie_name, maxnum, self.verify, False, tmdb_id ) ) )
             else:
                 jobs.append( pool.apply_async(
-                    target = plextmdb_torrents.get_movie_torrent_jackett,
+                    plextmdb_torrents.get_movie_torrent_jackett,
                     args = ( movie_name, maxnum, self.verify, False ) ) )
             jobs+= list(map(
                 lambda func: pool.apply_async( func, args = ( movie_name, maxnum, self.verify ) ),
@@ -488,7 +489,8 @@ class TMDBTorrents( QDialogWithPrinting ):
         #
         ## now make the local tablemodel
         self.tmdbTorrentModel = self._createTMDBTorrentsTableModel(
-            movie_name, bypass = bypass, maxnum = maxnum )
+            movie_name, tmdb_id, bypass = bypass, maxnum = maxnum,
+            useIMDB = useIMDB )
         if self.tmdbTorrentModel.torrentStatus == -1:
             self.setWindowTitle( 'TORRENT ERROR' )
             self.statusLabel.setText( "FAILURE, COULD NOT FIND" )

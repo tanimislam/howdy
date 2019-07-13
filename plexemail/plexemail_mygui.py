@@ -4,8 +4,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from bs4 import BeautifulSoup
 
-from plexcore import plexcore, mainDir, emailAddress, emailName
-from plexemail import plexemail, plexemail_basegui
+from plexcore import plexcore, mainDir
+from plexemail import plexemail, plexemail_basegui, emailAddress, emailName
+from plexemail import get_email_contacts_dict
 
 def _checkValidLaTeX( myString ):
     try:
@@ -24,9 +25,10 @@ class QLineCustom( QLineEdit ):
         self.setText( titlecase.titlecase( str( self.text( ) ).strip( ) ) )
 
 class PlexEmailMyGUI( QWidget ):
-    def __init__( self, token, doLarge = False ):
+    def __init__( self, token, doLarge = False, verify = True ):
         super( PlexEmailMyGUI, self ).__init__( )
         self.resolution = 1.0
+        self.verify = verify
         if doLarge:
             self.resolution = 2.0
         for fontFile in glob.glob( os.path.join( mainDir, 'resources', '*.ttf' ) ):
@@ -53,8 +55,9 @@ class PlexEmailMyGUI( QWidget ):
         self.emailSendButton.setEnabled( False )
         self.emailTestButton.setEnabled( False )
         #
-        self.emails_array = plexemail.get_email_contacts_dict(
-            plexcore.get_mapped_email_contacts( token ) )
+        self.emails_array = get_email_contacts_dict(
+            plexcore.get_mapped_email_contacts(
+                token, verify = self.verify ), verify = self.verify )
         self.emails_array.append(( emailName, emailAddress ) )
         #
         self.pngWidget = plexemail_basegui.PNGWidget( self )

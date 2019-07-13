@@ -381,9 +381,6 @@ class TMDBTorrents( QDialogWithPrinting ):
             assert( deluge_client is not None )
             datum = self.data_torrents[ row ]
             if self.torrentStatus == 0:
-                jsondata['movie'] = datum[ 'title' ]
-                jsondata['data'] = base64.b64encode(
-                    datum[ 'content' ].decode('utf-8') )
                 plexcore_deluge.deluge_add_torrent_file_as_data(
                     deluge_client, datum[ 'title' ],
                     datum[ 'content' ] )

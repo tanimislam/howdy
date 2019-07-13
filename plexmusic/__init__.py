@@ -1,7 +1,9 @@
 import os, sys, datetime, re, isodate
 from dateutil.relativedelta import relativedelta
-mainDir = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
-sys.path.append( mainDir )
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                  os.path.abspath( __file__ ) )
+sys.path.append( _mainDir )
 
 _dt0 = datetime.datetime.strptime("00", "%S")
 

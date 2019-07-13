@@ -2,18 +2,17 @@ import threading, requests, fuzzywuzzy
 import re, os, time, logging, validators
 from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
-from requests.compat import urljoin
-from plexcore.plexcore import get_jackett_credentials
-from plexcore import plexcore, get_maximum_matchval, get_formatted_size
-from . import plextmdb
 
-def _return_error_raw( msg ): return None, msg
+from requests.compat import urljoin
+from plexcore import get_maximum_matchval, get_formatted_size, return_error_raw
+from plexcore.plexcore import get_jackett_credentials
+from plextmdb import plextmdb
 
 def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, tmdb_id = None ):
     time0 = time.time( )
     data = get_jackett_credentials( )
     if data is None:
-        return _return_error_raw('failure, could not get jackett server credentials')
+        return return_error_raw('failure, could not get jackett server credentials')
     url, apikey = data
     endpoint = 'api/v2.0/indexers/all/results/torznab/api'
     popName = False
@@ -46,7 +45,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
         urljoin( url, endpoint ), verify = verify,
         params = params )
     if response.status_code != 200:
-        return _return_error_raw(
+        return return_error_raw(
             ' '.join([ 'failure, problem with jackett server accessible at %s.' % url,
                        'Error code = %d. Error data = %s.' % (
                            response.status_code, response.content ) ] ) )
@@ -54,7 +53,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
         name, time.time( ) - time0 ) )
     html = BeautifulSoup( response.content, 'lxml' )
     if len( html.find_all('item') ) == 0:
-        return _return_error_raw(
+        return return_error_raw(
             'failure, could not find movie %s with jackett.' % name )
     items = [ ]
     
@@ -106,7 +105,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
             myitem[ 'torrent_size' ] = torrent_size
         items.append( myitem )
     if len( items ) == 0:
-        return _return_error_raw(
+        return return_error_raw(
             'FAILURE, JACKETT CANNOT FIND %s' % name )
     return items[:maxnum], 'SUCCESS'
 
@@ -114,25 +113,25 @@ def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True ):
     assert( maxnum >= 5 )
     tmdb_id = plextmdb.get_movie_tmdbids( name, verify = verify )
     if tmdb_id is None:
-        return _return_error_raw( 'FAILURE, COULD NOT FIND IMDB ID FOR %s.' % name )
+        return return_error_raw( 'FAILURE, COULD NOT FIND IMDB ID FOR %s.' % name )
     #
     ## check that the name matches
     movie_name = plextmdb.get_movie_info( tmdb_id )['title'].lower( ).strip( )
     if movie_name != name.lower( ).strip( ):
-        return _return_error_raw( 'FAILURE, COULD NOT FIND IMDB ID FOR %s.' % name )
+        return return_error_raw( 'FAILURE, COULD NOT FIND IMDB ID FOR %s.' % name )
     imdb_id = plextmdb.get_imdbid_from_id( tmdb_id )
     if imdb_id is None:
-        return _return_error_raw( 'FAILURE, COULD NOT FIND IMDB ID FOR %s.' % name )
+        return return_error_raw( 'FAILURE, COULD NOT FIND IMDB ID FOR %s.' % name )
     response = requests.get( 'https://eztv.io/api/get-torrents',
                              params = { 'imdb_id' : int( imdb_id.replace('t','')),
                                         'limit' : 100, 'page' : 0 },
                              verify = verify )
     if response.status_code != 200:
-        return _return_error_raw(
+        return return_error_raw(
             'ERROR, COULD NOT FIND ANY TORRENTS FOR %s IN EZTV.IO' % name )
     alldat = response.json( )
     if alldat['torrents_count'] == 0:
-        return _return_error_raw(
+        return return_error_raw(
             'ERROR, COULD NOT FIND ANY TORRENTS FOR %s IN EZTV.IO' % name )
     all_torrents = alldat[ 'torrents' ]
     for pageno in range( 1, 101 ):
@@ -147,7 +146,7 @@ def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True ):
         all_torrents += alldat[ 'torrents' ]
     all_torrents_mine = all_torrents[:maxnum]
     if len( all_torrents_mine ) == 0:
-        return _return_error_raw(
+        return return_error_raw(
             'ERROR, COULD NOT FIND %s IN EZTV.IO' % name )
     return list(
         map(lambda tor: {

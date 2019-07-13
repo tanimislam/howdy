@@ -72,6 +72,7 @@ def get_popularity_color( hpop, alpha = 1.0 ):
 #
 ## a QLabel with save option of the pixmap
 class QLabelWithSave( QLabel ):
+    
     def screenGrab( self ):
         fname = str( QFileDialog.getSaveFileName(
             self, 'Save Pixmap', os.path.expanduser( '~' ),
@@ -309,6 +310,16 @@ def splitall( path_init ):
     return allparts
 
 def get_formatted_duration( totdur ):
+    """
+    This routine spits out a nice, formatted string representation of the duration, which is of
+    type :py:class:`datetime.datetime`.
+
+    Args:
+        totdur (datetime): a length of time, reprsented as a :py:class:`datetime.datetime`.
+    
+    Returns:
+        string: Formatted representation of that length of time.
+    """
     dt = datetime.datetime.utcfromtimestamp( totdur )
     durstringsplit = []
     month_off = 1
@@ -337,6 +348,17 @@ def get_formatted_duration( totdur ):
 
 
 def get_formatted_size( totsizebytes ):
+    """
+    This routine spits out a nice, formatted string representation of a file size,
+    which is represented in int.
+
+    Args:
+        totsizebytes (int): size of a file in bytes.
+    
+    Returns:
+        string: Formatted representation of that file size.
+    """
+    
     sizestring = ''
     if totsizebytes >= 1024**3:
         size_in_gb = totsizebytes * 1.0 / 1024**3

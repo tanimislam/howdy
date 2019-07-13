@@ -1,9 +1,10 @@
 import numpy, os, sys, requests, time
 import logging, glob, datetime, pickle, gzip
-from . import plextmdb, plextmdb_mygui, plextmdb_gui, mainDir
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from plexcore import plexcore, plexcore_gui
+
+from plextmdb import plextmdb, plextmdb_mygui, plextmdb_gui
+from plexcore import plexcore, plexcore_gui, mainDir
 from plexcore import QDialogWithPrinting, ProgressDialog
     
 class TMDBTotGUIThread( QThread ):

@@ -4,7 +4,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from bs4 import BeautifulSoup
 
-from plexcore import plexcore, mainDir
+from plexcore import plexcore, mainDir, emailAddress, emailName
 from plexemail import plexemail, plexemail_basegui
 
 def _checkValidLaTeX( myString ):
@@ -55,7 +55,7 @@ class PlexEmailMyGUI( QWidget ):
         #
         self.emails_array = plexemail.get_email_contacts_dict(
             plexcore.get_mapped_email_contacts( token ) )
-        self.emails_array.append(( 'Tanim Islam', '***REMOVED***.islam@gmail.com'))
+        self.emails_array.append(( emailName, emailAddress ) )
         #
         self.pngWidget = plexemail_basegui.PNGWidget( self )
         self.pngWidget.hide( )
@@ -209,7 +209,7 @@ class PlexEmailMyGUI( QWidget ):
         self.statusLabel.setText( 'EMAILS SENT' )
 
     def testEmail( self ):
-        self.statusLabel.setText( 'SENDING EMAIL TO TANIM.ISLAM@GMAIL.COM' )
+        self.statusLabel.setText( 'SENDING EMAIL TO %s.' % emailAddress.upper( ) )
         status, html = self.getHTML( )
         if not status:
             self.emailSendButton.setEnabled( False )
@@ -219,9 +219,9 @@ class PlexEmailMyGUI( QWidget ):
         if len(subject) == 0:
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
         #
-        plexemail.send_individual_email_full( html, subject, '***REMOVED***.islam@gmail.com',
-                                              name = 'Tanim Islam', )
-        self.statusLabel.setText( 'EMAILS SENT TO TANIM.ISLAM@GMAIL.COM' )
+        plexemail.send_individual_email_full(
+            html, subject, emailAddress, name = emailName )
+        self.statusLabel.setText( 'EMAILS SENT TO %s.' % emailAddress.upper( ) )
 
 if __name__=='__main__':
     app = QApplication([])

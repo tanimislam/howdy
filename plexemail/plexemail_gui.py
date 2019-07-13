@@ -2,9 +2,9 @@ import os, sys, titlecase, datetime, json, re, urllib, time
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from configparser import RawConfigParser
-from . import mainDir, plexemail, plexemail_basegui
-from plexcore import plexcore
+
+from plexemail import plexemail, plexemail_basegui
+from plexcore import plexcore, mainDir
 
 class PlexEmailGUI( QWidget ):
     class EmailSendDialog( QDialog ):

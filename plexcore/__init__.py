@@ -285,7 +285,7 @@ class ProgressDialog( QDialogWithPrinting ): # replace with QProgressDialog in t
 
 def splitall( path_init ):
     """
-    This routine is used by ``plextvdb.plextvdb.get_path_data_on_tvshow`` to split a TV show file path
+    This routine is used by :func:`get_path_data_on_tvshow <plextvdb.plextvdb.get_path_data_on_tvshow>` to split a TV show file path
     into separate directory delimited tokens
     
     Args:
@@ -315,7 +315,7 @@ def get_formatted_duration( totdur ):
     type :py:class:`datetime.datetime`.
 
     Args:
-        totdur (datetime): a length of time, reprsented as a :py:class:`datetime.datetime`.
+        totdur (datetime): a length of time, reprsented as a :class:`datetime <datetime.datetime>`.
     
     Returns:
         string: Formatted representation of that length of time.
@@ -403,16 +403,15 @@ session = sessionmaker( bind = _engine )( )
 class PlexConfig( Base ):
     """
     This SQLAlchemy ORM class contains the configuration data used for running all the plexstuff tools.
-    Stored into the ``plexconfig`` table in the ``app.db`` SQLITE database.
+    Stored into the ``plexconfig`` table in the ``~/.config.plexstuff/app.db`` SQLITE database.
 
     Attributes:
         service: the name of the configuration service we store. Index on this unique key.
-        data: JSON formatted information on the data stored here. For instance, username and password can be
-        stored in the following way::
+        data: JSON formatted information on the data stored here. For instance, username and password can be stored in the following way
+    .. code:: json
 
-            { 'username' : ``username``,
-              'password' : ``password``
-            }
+            { 'username' : <USERNAME>,
+              'password' : <PASSWORD> }
 
     """
     

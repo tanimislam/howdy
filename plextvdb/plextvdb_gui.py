@@ -8,10 +8,10 @@ import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
 from itertools import chain
 from urllib.parse import urlparse
-#
-from . import plextvdb, mainDir, get_token
-from .plextvdb_season_gui import TVDBSeasonGUI
-from plexcore import plexcore, geoip_reader, QLabelWithSave
+
+from plextvdb import plextvdb, get_token
+from plextvdb.plextvdb_season_gui import TVDBSeasonGUI
+from plexcore import plexcore, geoip_reader, QLabelWithSave, mainDir
 from plexcore import get_formatted_size, get_formatted_duration
 from plexcore import QDialogWithPrinting, ProgressDialog
 from plextmdb import plextmdb

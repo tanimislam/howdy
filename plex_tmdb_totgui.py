@@ -18,7 +18,8 @@ def main(info = False, doLocal = True, doLarge = False, verify = True):
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
     icn = QIcon( os.path.join( mainDir, 'resources', 'icons', 'plex_tmdb_totgui.png' ) )
     app.setWindowIcon( icn )
-    if info: logging.basicConfig( level = logging.INFO )
+    logger = logging.getLogger( )
+    if info: logger.setLevel( logging.INFO )
     fullurl, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
     tmdb_mygui = plextmdb_totgui.TMDBTotGUI( fullurl, token, doLarge = doLarge,

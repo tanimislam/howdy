@@ -4,13 +4,17 @@ from PyQt4.QtGui import *
 from PIL import Image
 from io import StringIO
 
+from plexcore import plexcore
+
 class PlexIMGClient( object ):    
     def __init__( self, verify = True ):
         #
         ## https://api.imgur.com/oauth2 advice on using refresh tokens
         self.verify = verify
-        dat = plexcore.get_imgurl_credentials( )
-        clientID, clientSECRET, clientREFRESHTOKEN = dat
+        data_imgurl = plexcore.get_imgurl_credentials( )
+        clientID = data_imgurl[ 'clientID' ]
+        clientSECRET = data_imgurl[ 'clientSECRET' ]
+        clientREFRESHTOKEN = data_imgurl[ 'clientREFRESHTOKEN' ]
         response = requests.post( 'https://api.imgur.com/oauth2/token',
                                   data = {'client_id': clientID,
                                           'client_secret': clientSECRET,

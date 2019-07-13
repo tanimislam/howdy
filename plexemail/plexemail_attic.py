@@ -1,6 +1,6 @@
-from plexcore import session, plexcore
+from plexcore import session, plexcore, mainDir
 from plexcore import get_formatted_size, get_formatted_duration
-from . import mainDir, send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
+from plexemail import send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
 
 def get_summary_data_freshair_remote( token, fullurlwithport = 'http://localhost:32400' ):
     libraries_dict = plexcore.get_libraries( token = token, fullurl = fullurlwithport )

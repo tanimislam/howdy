@@ -5,9 +5,10 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from email.mime.audio import MIMEAudio
 from email.mime.image import MIMEImage
-from plexcore import session, plexcore
+
+from plexcore import session, plexcore, mainDir
 from plexcore import get_formatted_size, get_formatted_duration
-from . import mainDir, send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
+from plexemail import send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
 
 def send_email_movie_torrent( movieName, data, isJackett = False, verify = True ):
     assert( emailAddress is not None ), "Error, email address must not be None"

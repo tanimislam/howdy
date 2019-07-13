@@ -3,9 +3,9 @@ import json, re, urllib, time, glob, multiprocessing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from bs4 import BeautifulSoup
-from configparser import RawConfigParser
-from plexcore import plexcore
-from . import mainDir, plexemail, plexemail_basegui
+
+from plexcore import plexcore, mainDir
+from plexemail import plexemail, plexemail_basegui
 
 def _checkValidLaTeX( myString ):
     try:

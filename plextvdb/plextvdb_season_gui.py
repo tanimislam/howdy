@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 import copy, numpy, sys, requests
 import logging, datetime
 import io, PIL.Image, base64
-from . import plextvdb
+
+from plextvdb import plextvdb
 from plexcore import plexcore, QDialogWithPrinting, QLabelWithSave
 from plexcore import get_formatted_size, get_formatted_duration
 from plextmdb import plextmdb

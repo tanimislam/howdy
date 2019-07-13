@@ -8,7 +8,8 @@ from itertools import chain
 from functools import reduce
 from dateutil.relativedelta import relativedelta
 from fuzzywuzzy.fuzz import ratio
-from . import get_token, plextvdb_torrents, ShowsToExclude
+
+from plextvdb import get_token, plextvdb_torrents, ShowsToExclude
 from plexcore import plexcore_rsync, splitall, session
 
 class TVShow( object ):

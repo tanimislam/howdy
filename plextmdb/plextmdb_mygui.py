@@ -1,12 +1,14 @@
 import numpy, os, sys, requests
 import logging, glob, datetime, pickle, gzip
-from . import plextmdb
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
+from plextmdb import plextmdb
 from plexcore import plexcore, QDialogWithPrinting, get_popularity_color
 
 _headers = [ 'title',  'popularity', 'rating', 'release date', 'added date',
              'genre' ]
+
 _columnMapping = {
     0 : 'title',
     1 : 'rating',

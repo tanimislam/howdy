@@ -8,8 +8,8 @@ def signal_handler( signal, frame ):
 signal.signal( signal.SIGINT, signal_handler )
 from optparse import OptionParser
 from plextvdb.plextvdb_gui import TVDBGUI
-from plexcore import plexcore
-from PyQt4.QtGui import QApplication
+from plexcore import plexcore, mainDir
+from PyQt4.QtGui import QApplication, QIcon
 import qdarkstyle, logging, os, warnings
 
 warnings.simplefilter("ignore")
@@ -17,6 +17,8 @@ warnings.simplefilter("ignore")
 def main( info = False, doLocal = True, verify = True ):
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
+    icn = QIcon( os.path.join( mainDir, 'resources', 'icons', 'plex_tvdb_gui.png' ) )
+    app.setWindowIcon( icn )
     if info: logging.basicConfig( level = logging.INFO )
     fullURL, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )

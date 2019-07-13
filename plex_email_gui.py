@@ -10,29 +10,36 @@ warnings.simplefilter( 'ignore' )
 from plexcore import mainDir
 from plexemail.plexemail_gui import PlexEmailGUI
 from plexemail.plexemail_mygui import PlexEmailMyGUI
-from plexcore.plexcore_gui import returnServerToken, returnGoogleAuthentication
+from plexcore.plexcore_gui import returnToken, returnGoogleAuthentication
 from optparse import OptionParser
 from PyQt4.QtGui import QApplication, QStyleFactory
 import qdarkstyle
 
-if __name__=='__main__':
-    parser = OptionParser( )
-    parser.add_option('--debug', dest='do_debug', action='store_true',
-                      default = False, help = 'Run debug mode if chosen.')
-    parser.add_option('--onlyemail', dest = 'do_onlyemail', action = 'store_true',
-                      default = False, help = 'If chosen, only send bare email.')
-    parser.add_option('--remote', dest='do_remote', action = 'store_true', default = False,
-                      help = 'If chosen, then do everything remotely.')
-    parser.add_option('--large', dest='do_large', action='store_true', default = False,
-                      help = 'If chosen, make the GUI (widgets and fonts) LARGER to help with readability.')
-    opts, args = parser.parse_args( )
-    if opts.do_debug: logging.basicConfig( level = logging.DEBUG )
-    app = QApplication( [] )
+def main( info = False, doLocal = True, doLarge = False, verify = True, onlyEmail = False ):
+    app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
-    _, token = returnServerToken( )
+    logger = logging.getLogger( )
+    if info: logger.setLevel( logging.INFO )
+    _, token = returnToken( doLocal = doLocal, verify = verify )
     val = returnGoogleAuthentication( )
     if not opts.do_onlyemail:
-        pegui = PlexEmailGUI( token, doLocal = not opts.do_remote, doLarge = opts.do_large )
+        pegui = PlexEmailGUI( token, doLocal = doLocal, doLarge = doLarge )
     else:
-        pegui = PlexEmailMyGUI( token, doLarge = opts.do_large )
+        pegui = PlexEmailMyGUI( token, doLarge = doLarge, verify = verify )
     result = app.exec_( )
+
+if __name__=='__main__':
+    parser = OptionParser( )
+    parser.add_option('--info', dest='do_info', action='store_true',
+                      default = False, help = 'Run info mode if chosen.')
+    parser.add_option('--onlyemail', dest = 'do_onlyemail', action = 'store_true',
+                      default = False, help = 'If chosen, only send bare email.')
+    parser.add_option('--local', dest='do_local', action = 'store_true', default = False,
+                      help = 'Check for locally running plex server.' )
+    parser.add_option('--large', dest='do_large', action='store_true', default = False,
+                      help = 'If chosen, make the GUI (widgets and fonts) LARGER to help with readability.')
+    parser.add_option('--noverify', dest='do_verify', action='store_false',
+                      default = True, help = 'Do not verify SSL transactions if chosen.') 
+    opts, args = parser.parse_args( )
+    main( info = opts.do_info, doLocal = opts.do_local, verify = opts.do_verify,
+          onlyEmail = opts.do_onlyemail )

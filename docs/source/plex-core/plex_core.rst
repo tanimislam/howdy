@@ -6,3 +6,6 @@ These command line executables, graphical user interfaces, and APIs form the cor
 
 .. automodule:: plexstuff.plexcore.plexcore
   :members:
+
+.. automodule:: plexstuff.plexcore
+  :members:

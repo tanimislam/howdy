@@ -3,7 +3,7 @@ import mutagen.mp3, mutagen.mp4, glob, multiprocessing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from plexemail import plexemail, plexemail_basegui
+from plexemail import plexemail, plexemail_basegui, emailAddress, emailName
 from plexcore import plexcore, mainDir
 
 class PlexEmailGUI( QWidget ):
@@ -26,8 +26,10 @@ class PlexEmailGUI( QWidget ):
             self.selectAllButton = QPushButton( 'ALL ADDRESSES', self )
             self.sendEmailButton = QPushButton( 'SEND EMAIL', self )
             self.myButtonGroup = QButtonGroup( self )
+            if emailName is None: emailString = emailAddress
+            else: emailString = '%s <%s>' % ( emailName, emailAddress )
             self.allRadioButtons = map( lambda name: QRadioButton( name, self ),
-                                        [ 'Tanim Islam <***REMOVED***.islam@gmail.com>', ] +
+                                        [ emailString, ] +
                                         sorted(map( lambda idx: parent.emailComboBox.itemText( idx ),
                                                     range( parent.emailComboBox.count() ) ) ) )
             self.mainHtml = unicode( parent.mainEmailCanvas.toHtml( ) ).strip( )

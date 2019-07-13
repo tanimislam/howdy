@@ -1119,24 +1119,16 @@ def _checkForLocal( ):
     except requests.exceptions.ConnectionError:
         return None
 
-def returnToken( shouldCheckLocal = True ):
-    #
-    ## now check local
-    if shouldCheckLocal:
-        val = _checkForLocal( )
-        if val is None:
-            pass
-        else:
-            fullurl, token = val
-            return fullurl, token
+def returnToken( doLocal = True, verify = True ):    
     #
     ## now check if we have server credentials
-    val = plexcore.checkServerCredentials( )
+    val = plexcore.checkServerCredentials(
+        verify = verify, doLocal = doLocal )
     if val is not None:
         fullurl, token = val
         return fullurl, token
     
-    dlg = UsernamePasswordDialog( )
+    dlg = UsernamePasswordServerDialog( )
     result = dlg.exec_( )
     if result != QDialog.Accepted:
         sys.exit( 0 )
@@ -1145,14 +1137,14 @@ def returnToken( shouldCheckLocal = True ):
 def returnGoogleAuthentication( ):
     status, message = plexcore.oauthCheckGoogleCredentials( )
     if status: return status
-    dlg = GMailOauth2Dialog( )
+    dlg = GoogleOauth2Dialog( )
     result = dlg.exec_( )
     if result != QDialog.Accepted:
         sys.exit( 0 )
     return True
 
 class UsernamePasswordServerDialog( QDialog ):
-    def __init__( self ):
+    def __init__( self, doLocal = True, verify = True ):
         super( UsernamePasswordServerDialog, self ).__init__( )
         self.fullurl = ''
         self.token = None
@@ -1160,6 +1152,8 @@ class UsernamePasswordServerDialog( QDialog ):
         self.setWindowTitle( 'PLEX SERVER USERNAME/PASSWORD' )
         mainLayout = QGridLayout( )
         self.setLayout( mainLayout )
+        self.doLocal = doLocal
+        self.verify = verify
         #
         self.server_usernameBox = QLineEdit( )
         self.server_passwordBox = QLineEdit( )
@@ -1191,14 +1185,14 @@ class UsernamePasswordServerDialog( QDialog ):
         ## now check that this is a valid username and password
         username = str( self.server_usernameBox.text( ) ).strip( )
         password = str( self.server_passwordBox.text( ) ).strip( )
-        token = plexcore.getTokenForUsernamePassword( username, password )
+        token = plexcore.getTokenForUsernamePassword( username, password, verify = self.verify )
         if token is None:
             self.server_statusLabel.setText( 'ERROR: wrong credentials.' )
             return
         self.token = token
         _, fullurl = max( plexcore.get_owned_servers( token ).items( ) )
         self.fullurl = 'https://%s' % fullurl
-        plexcore.pushCredentials( username, password, name = 'SERVER' )
+        plexcore.pushCredentials( username, password )
         self.clearCreds( )
         self.accept( )
 

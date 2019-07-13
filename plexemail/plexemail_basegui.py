@@ -4,7 +4,7 @@ from PyQt4.QtGui import *
 from PIL import Image
 from io import StringIO
 
-from plexcore import plexcore
+from plexcore import plexcore, QDialogWithPrinting
 
 class PlexIMGClient( object ):    
     def __init__( self, verify = True ):
@@ -141,20 +141,13 @@ class PNGPicObject( object ):
 Because Pandoc does not recognize image size at all, I will
 need a separate column where I can specify the image width in cm.
 """
-class PNGWidget( QDialog ):
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                  os.path.expanduser( '~' ),
-                                                  filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
+class PNGWidget( QDialogWithPrinting ):
     
     def __init__( self, parent ):
-        super( PNGWidget, self ).__init__( parent )
+        if parent is not None:
+            super( PNGWidget, self ).__init__( parent, isIsolated = True, doQuit = True )
+        else:
+            super( PNGWidget, self ).__init__( parent, isIsolated = True, doQuit = False )
         self.setModal( True )
         self.parent = parent
         self.setWindowTitle( 'PNG IMAGES' )
@@ -172,14 +165,6 @@ class PNGWidget( QDialog ):
         # self.setFixedWidth( self.pngTV.sizeHint( ).width( ) )
         self.setFixedHeight( 450 )
         self.hide( )
-
-    def closeEvent( self, evt ):
-        evt.ignore( )
-        if self.parent is not None:
-            self.hide( )
-            # self.parent.pngAddButton.setEnabled( True )
-        else:
-            sys.exit( 0 )
 
     def getAllDataAsDict( self ):
         return self.pngPicTableModel.getDataAsDict( )

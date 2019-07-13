@@ -1086,7 +1086,7 @@ def get_imgurl_credentials( ):
     if val is None:
         raise ValueError( "ERROR, COULD NOT GET ACCESS TOKEN." )
     data_imgurl = val.data
-    return data_imgurl[ 'clientID' ], data_imgurl[ 'clientSECRET' ], data_imgurl[ 'clientREFRESHTOKEN' ]
+    return data_imgurl
 
 def check_imgurl_credentials( clientID, clientSECRET,
                               clientREFRESHTOKEN, verify = True ):

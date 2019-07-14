@@ -679,11 +679,17 @@ def _create_status_dict( status, status_message, time0 ):
         'time' : time.time( ) - time0
     }
     
-def _worker_process_tvtorrents( client, data, torFileName, totFname, maxtime_in_secs, num_iters ):
+def _worker_process_tvtorrents( client, data, torFileName, totFname,
+                                maxtime_in_secs, num_iters, kill_if_fail ):
     time0 = time.time( )
     failing_reasons = [ ]
     numiters, rem = divmod( maxtime_in_secs, 30 )
     if rem != 0: numiters += 1
+
+    def kill_failing( torrentId ):
+        if not kill_if_fail: return
+        plexcore_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = kill_if_fail )
+
     
     def process_single_iteration( data, idx ):
         mag_link = data[ idx ]['link']
@@ -747,9 +753,6 @@ def worker_process_download_tvtorrent(
         tvTorUnit, client = None, maxtime_in_secs = 14400, 
         num_iters = 1, kill_if_fail = False ):
     time0 = time.time( )
-    def kill_failing( torrentId ):
-        if not kill_if_fail: return
-        plexcore_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = kill_if_fail )
         
     assert( maxtime_in_secs > 0 )
     #
@@ -877,4 +880,4 @@ def worker_process_download_tvtorrent(
     ## wrapped away in another method
     return _worker_process_tvtorrents(
         client, data, torFileName, totFname,
-        maxtime_in_secs, num_iters )
+        maxtime_in_secs, num_iters, kill_if_fail )

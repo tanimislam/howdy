@@ -2,7 +2,7 @@ import os, sys, base64, numpy, glob, hashlib, requests
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PIL import Image
-from io import StringIO
+from io import BytesIO
 
 from plexcore import plexcore, QDialogWithPrinting
 
@@ -107,7 +107,7 @@ class PNGPicObject( object ):
         self.currentWidth = self.originalWidth
         #
         ## do this from http://stackoverflow.com/questions/31826335/how-to-convert-pil-image-image-object-to-base64-string
-        buffer = StringIO( )
+        buffer = BytesIO( )
         self.originalImage.save( buffer, format = 'PNG' )
         self.b64string = base64.b64encode( buffer.getvalue( ) )
         self.imgMD5 = hashlib.md5( self.b64string ).hexdigest( )
@@ -119,6 +119,7 @@ class PNGPicObject( object ):
         qdl.setModal( True )
         myLayout = QVBoxLayout( )
         mainColor = qdl.palette().color( QPalette.Background )
+        qdl.setWindowTitle( 'PNG IMAGE: %s.' % self.actName )
         qdl.setLayout( myLayout )
         myLayout.addWidget( QLabel( 'ACTNAME: %s' % self.actName ) )
         myLayout.addWidget( QLabel( 'URL: %s' % self.imgurlLink ) )
@@ -269,7 +270,7 @@ class PNGPicTableModel( QAbstractTableModel ):
         row = index.row( )
         if col == 0:
             picObjNames = set(map(lambda picObject: picObject.actName, self.pngPicObjects ) )
-            candActName = os.path.basename( str( value.toString( ) ).strip( ) )
+            candActName = os.path.basename( value.strip( ) )
             if not candActName.endswith('.png'):
                 return False
             if candActName in picObjNames:
@@ -320,9 +321,3 @@ class PNGPicTableModel( QAbstractTableModel ):
             b64data, widthInCM, link = pngpo.b64String( )
             data[ pngpo.actName ] = ( b64data, widthInCM, link )
         return data
-
-if __name__=='__main__':
-    app = QApplication([])
-    qw = PNGWidget( None )
-    qw.show( )
-    result = app.exec_( )

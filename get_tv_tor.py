@@ -165,7 +165,8 @@ if __name__=='__main__':
                       help = 'If chosen, show timing information (how long to get TV torrents.')
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
-    if opts.do_info: logging.basicConfig( level = logging.INFO )
+    logger = logging.getLogger( )
+    if opts.do_info: logger.setLevel( logging.INFO )
     #
     time0 = time.time( )
     items = process_magnet_items( opts.name, raw = opts.do_raw, verify = opts.do_verify )

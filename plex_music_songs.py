@@ -9,7 +9,7 @@ signal.signal( signal.SIGINT, signal_handler )
 import os, datetime, io, zipfile
 from plexmusic import plexmusic
 from plexcore import plexcore
-from plexemail import plexemail
+from plexemail import plexemail, emailAddress
 from optparse import OptionParser
 
 def _get_final_song_name( song_name, dur ):
@@ -157,16 +157,36 @@ def _download_songs_oldformat( opts ):
     lastfm = plexmusic.PlexLastFM( verify = opts.do_verify )
     if opts.album_name is not None:
         all_songs_downloaded = [ ]
-        if not opts.do_lastfm:
-            album_data_dict, status = pm.get_music_metadatas_album(
-                opts.artist_name, opts.album_name )
-        else: status = 'FAILURE'
-        if status != 'SUCCESS':
+        if opts.do_lastfm:
             album_data_dict, status = lastfm.get_music_metadatas_album(
                 opts.artist_name, opts.album_name )
             if status != 'SUCCESS':
                 print( status )
                 return
+        elif opts.do_musicbrainz:
+            try:
+                mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
+                album_data_dict, status = mi.get_music_metadatas_album(
+                    opts.album_name.strip( ) )
+                if status != 'SUCCESS':
+                    print( status )
+                    return
+            except Exception as e:
+                import traceback
+                print( type(e ), str( e ) )
+                traceback.print_exc( )
+                print( 'Could not get find artist = %s with Musicbrainz.' % (
+                    opts.artist_name.strip( ) ) )
+                return
+        else:
+            album_data_dict, status = pm.get_music_metadatas_album(
+                opts.artist_name, opts.album_name )
+            if status != 'SUCCESS':
+                album_data_dict, status = lastfm.get_music_metadatas_album(
+                    opts.artist_name, opts.album_name )
+                if status != 'SUCCESS':
+                    print( status )
+                    return
         data_dict = album_data_dict[ 0 ]
         artist_name = data_dict[ 'artist' ]
         album_name = data_dict[ 'album' ]
@@ -211,6 +231,7 @@ def _download_songs_oldformat( opts ):
     return all_songs_downloaded
 
 def main( ):
+    plexmusic.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
     parser = OptionParser( )
     parser.add_option( '-s', '--songs', dest='song_names', type=str, action='store',
                        help = 'Names of the song to put into M4A files. Separated by ;' )
@@ -235,6 +256,10 @@ def main( ):
                        help = "List of artists. Each artist is separated by a ';'.")
     parser.add_option( '--lastfm', dest='do_lastfm', action='store_true', default = False,
                        help = 'If chosen, then only use the LastFM API to get song metadata.' )
+    parser.add_option( '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
+                       help = ' '.join([
+                           'If chosen, use Musicbrainz to get the artist metadata.',
+                           'Note that this is expensive, and only applies if the -A (--album) flag is chosen.' ]))
     parser.add_option( '--noverify', dest='do_verify', action='store_false', default=True,
                        help = 'Do not verify SSL transactions if chosen.' )
     opts, args = parser.parse_args( )

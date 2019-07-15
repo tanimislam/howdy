@@ -476,6 +476,7 @@ class PlexConfigLoginWidget( PlexConfigWidget ):
     def pushJackettConfig( self ):
         url = self.jackett_url.text( ).strip( )
         apikey = self.jackett_apikey.text( ).strip( )
+        if not url.endswith('/'): url = '%s/' % url
         self.jackett_url.setText( url )
         self.jackett_apikey.setText( apikey )
         try:

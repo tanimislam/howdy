@@ -23,13 +23,19 @@ To get started, I assume you have your own Plex server. In order to get started 
 
 Prerequisites
 -------------
-You will need to have PyQt4_, sshpass_, and pandoc_ on your machine. `Pandoc <pandoc_>`_ is needed by Plexstuff tools that convert emails written in LaTeX_ into HTML. Linux distributions, such as `Ubuntu <https://www.ubuntu.com>`_, `Mint <https://linuxmint.com>`_, `Debian <https://www.debian.org>`_, or `Red Hat <https://www.redhat.com/en>`_ based systems such as `Fedora <https://getfedora.org/>`_ or `CentOS <https://www.centos.org/>`_. On Debian based systems (such as Ubuntu), you can install PyQt4_, sshpass_, and pandoc_ with the following command (as sudo_ or root).
+You will need to have PyQt4_, sshpass_, and pandoc_ on your machine. `Pandoc <pandoc_>`_ is needed by Plexstuff tools that convert emails written in LaTeX_ into HTML. On Debian based systems (such as Ubuntu_. Mint_, or Debian_), you can install PyQt4_, sshpass_, and pandoc_ with the following command (as sudo_ or root).
 
 .. code:: bash
 
   sudo apt install python3-pyqt4 sshpass pandoc
 
+Equivalent commands to install PyQt4_ and sshpass_ exist on `Red Hat`_ based systems, such as `Fedora <https://getfedora.org/>`_ or `CentOS <https://www.centos.org/>`_.
+
 In a common scenario, you may need to use Plexstuff on a Linux machine you do not administer or own. Typically PyQt4_ and sshpass_ are installed, but pandoc_ is a more niche tool that must be installed by hand into your home directory if it has not been installed by default. By my convention the executables and other resources (such as includes and libraries) will be installed under ``~/.local``. Sources of necessary tools will be decompressed and live in ``~/.local/src``. Here are the eight steps I used in order to get pandoc_ installed.
+
+.. _Ubuntu:: https://www.ubuntu.com
+.. _Mint:: https://linuxmint.com
+.. _Debian:: https://www.debian.org
 
 1. Ensure that ``~/.local/bin`` and ``~/.cabal/bin`` are in your PATH.
 

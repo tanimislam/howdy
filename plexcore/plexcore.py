@@ -1016,7 +1016,7 @@ def oauth_store_google_credentials( credentials ):
 #
 ## put in the jackett credentials into here
 def store_jackett_credentials( url, apikey, verify = True ):
-    status = check_jackett_credentials(
+    actURL, status = check_jackett_credentials(
         url, apikey, verify = verify )
     if status != 'SUCCESS': return status
     
@@ -1029,7 +1029,7 @@ def store_jackett_credentials( url, apikey, verify = True ):
         session.commit( )
     newval = PlexConfig(
         service = 'jackett',
-        data = { 'url' : url.strip( ),
+        data = { 'url' : actURL.strip( ),
                  'apikey' : apikey.strip( ) } )
     session.add( newval )
     session.commit( )
@@ -1075,9 +1075,9 @@ def check_jackett_credentials( url, apikey, verify = True ):
         error_items = html.find_all('error')
         if len( error_items ) != 0:
             return "ERROR, invalid API key"
-        return 'SUCCESS'
+        return actURL, 'SUCCESS'
     except Exception as e:
-        return "ERROR, exception emitted: %s." % str( e )
+        return None, "ERROR, exception emitted: %s." % str( e )
 
 #
 ## now get imgurl credentials

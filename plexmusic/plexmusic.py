@@ -88,8 +88,9 @@ class MusicInfo( object ):
         rgdate_date = None
         for fmt in ( '%Y-%m-%d', '%Y-%m', '%Y' ):
             try:
-                rgdata_date = datetime.datetime.strptime(
+                rgdate_date = datetime.datetime.strptime(
                     rgdate, fmt ).date( )
+                break
             except: pass
         if rgdate is None:
             print("Error, could not find correct release info for %s because no date defined." % rtitle )
@@ -108,11 +109,20 @@ class MusicInfo( object ):
         rid = release['id']
         trackinfo = musicbrainzngs.get_release_by_id( rid, includes = ['recordings'] )[
             'release']['medium-list']
+        try:
+            image_datas = musicbrainzngs.get_image_list( rid )
+            if len( image_datas ) == 0: album_url = ''
+            else:
+                image_data = image_datas[ 0 ]
+                album_url = image_data[ 'image' ]
+        except: album_url = ''
+        
         #
         ## collapse multiple discs into single disk with more tracknumbers
         track_counts = list(map(lambda cd_for_track: cd_for_track['track-count'], trackinfo))
         act_counts = numpy.concatenate([ [ 0, ], numpy.cumsum( track_counts ) ])
-        albumdata = { 'release-date' : rgdata_date }
+        albumdata = { 'release-date' : rgdate_date }
+        albumdata[ 'album url' ] = album_url
         albumdata[ 'tracks' ] = { }
         alltracknos = set(range(1, 1 + act_counts[-1]))
         for idx, cd_for_track in enumerate( trackinfo ):
@@ -123,10 +133,35 @@ class MusicInfo( object ):
                     logging.debug( 'error, track = %s does not have defined position.' % track )
                     return None
                 title = track[ 'recording' ][ 'title' ]
-                albumdata[ 'tracks' ][ act_counts[ idx ] + number ] = title
+                if 'length' in track[ 'recording' ]:
+                    length = 1e-3 * int( track[ 'recording' ][ 'length' ] )
+                else: length = None
+                albumdata[ 'tracks' ][ act_counts[ idx ] + number ] = ( title, length )
         assert( set( albumdata[ 'tracks' ] ) == alltracknos )
         logging.debug( 'processed %s in %0.3f seconds.' % ( rtitle, time.time( ) - time0 ) )
-        return rtitle, albumdata
+        return titlecase.titlecase( rtitle ), albumdata
+
+    def get_music_metadatas_album( self, album_name ):
+        if album_name not in self.alltrackdata:
+            return None, 'Could not find album = %s for artist = %s with Musicbrainz.' % (
+                album_name, self.artist_name )
+        album_info = self.alltrackdata[ album_name ]
+        album_data_dict = [ ]
+        total_tracks = len( album_info[ 'tracks' ] )
+        print( album_info[ 'release-date'] )
+        for trackno in sorted( album_info[ 'tracks' ] ):
+            trackinfo = { 'artist' : self.artist_name,
+                          'album' : album_name,
+                          'year' : album_info[ 'release-date' ].year,
+                          'total tracks' : total_tracks,
+                          'song' : album_info[ 'tracks' ][ trackno ][ 0 ],
+                          'tracknumber' : trackno,
+                          'album url' : album_info[ 'album url' ]
+            }
+            if album_info[ 'tracks' ][ trackno ][ 1 ] is not None:
+                trackinfo[ 'duration' ] = int( album_info[ 'tracks' ][ trackno ][ 1 ] )
+            album_data_dict.append( trackinfo )
+        return album_data_dict, 'SUCCESS'
 
 @contextmanager
 def gmusicmanager( useMobileclient = False, verify = True ):

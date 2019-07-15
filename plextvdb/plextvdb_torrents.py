@@ -337,6 +337,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
     if data is None:
         return _return_error_raw('FAILURE, COULD NOT GET JACKETT SERVER CREDENTIALS')
     url, apikey = data
+    if not url.endswith( '/' ): url = '%s/' % url
     endpoint = 'api/v2.0/indexers/all/results/torznab/api'
     tvdb_token = get_token( verify = verify )
     name_split = name.split()
@@ -359,6 +360,8 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
         params[ 'imdbid' ] = imdb_id
         return params
 
+    logging.info( 'URL ENDPOINT: %s, PARAMS = %s.' % (
+        urljoin( url, endpoint ), _return_params( name ) ) )
     response = requests.get(
         urljoin( url, endpoint ),
         params = _return_params( name ), verify = verify ) # tv shows

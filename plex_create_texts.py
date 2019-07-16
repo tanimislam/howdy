@@ -1,72 +1,106 @@
 #!/usr/bin/env python3
 
-import pypandoc, glob, os, sys, textwrap
+import pypandoc, glob, os, sys, textwrap, qdarkstyle
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from plexcore import mainDir
+from plexcore import mainDir, returnQAppWithFonts
 
 def checkValidLaTeX( myString ):
     try:
-        mainHTML = pypandoc.convert( myString, 'html', format = 'latex',
-                                     extra_args = [ '-s' ] )
+        mainHTML = pypandoc.convert_text(
+            myString, 'html', format = 'latex',
+            extra_args = [ '-s' ] )
         return True
     except RuntimeError:
         return False
 
-def printString( myString, statusLabel, toHTML = True ):
-    statusLabel.setText( '' )
-    if not checkValidLaTeX( myString ):
-        statusLabel.setText( 'INVALID LATEX' )
-        return
-    qdl = QDialog( statusLabel )
-    qsb = QPushButton( 'SAVE' )
-    qdl.setModal( True )
-    qte = QTextEdit( qdl )
-    qte.setReadOnly( True )
-    qdlLayout = QVBoxLayout( )
-    qdl.setLayout( qdlLayout )
-    qdlLayout.addWidget( qsb )
-    qdlLayout.addWidget( qte )
-    qf = QFont( )
-    qf.setFamily( 'Consolas' )
-    qf.setPointSize( 11 )
-    qfm = QFontMetrics( qf )
-    qte.setFixedWidth( 85 * qfm.width( 'A' ) )
-    qte.setFixedHeight( 550 )
-    qdl.setFixedWidth( 85 * qfm.width( 'A' ) )
-    qdl.setFixedHeight( 550 )
-    if toHTML:
-        qte.setHtml( pypandoc.convert( myString, 'html', format = 'latex',
-                                       extra_args = [ '-s' ] ) )
-    else:
-        qte.setPlainText( pypandoc.convert( myString, 'markdown', format = 'latex',
-                                            extra_args = [ '-s' ] ) )
-    def saveFilename( ):
-        if toHTML:
-            name = 'HTML'
-            suffix = 'html'
-        else:
-            name = 'Markdown'
-            suffix = 'md'
-        while( True ):
-            fname = str( QFileDialog.getSaveFileName( qdl, 'Save %s' % name,
-                                                      os.path.expanduser( '~' ),
-                                                      filter = '*.%s' % suffix ) )
-            if fname.lower().endswith('.%s' % suffix) or len( os.path.basename( fname ) ) == 0:
-                break
-        if fname.lower().endswith('.%s' % suffix ):
-            with open( fname, 'w') as openfile:
-                openfile.write('%s\n' % textwrap.fill( str( qte.toPlainText( ) ).strip( ) ) )
-    qsb.clicked.connect( saveFilename )
-    saveAction = QAction( qdl )
-    saveAction.setShortcut('Ctrl+S')
-    saveAction.triggered.connect( saveFilename )
-    qdl.addAction( saveAction )
-    qdl.show( )
-    result = qdl.exec_( )
-
 class MainGUI( QWidget ):
 
+    def printHTML( self ):
+        mainText = r"""
+            \documentclass[12pt, fleqn]{article}
+            \usepackage{amsmath, amsfonts, graphicx, hyperref}
+
+            \\begin{document}
+
+            %s
+
+            \end{document}
+            """ % ( self.latexOutput.toPlainText( ).strip( ) )
+        self.printString( mainText, toHTML = True )
+
+    def printMarkdown( self ):
+        mainText = r"""
+            \documentclass[12pt, fleqn]{article}
+            \usepackage{amsmath, amsfonts, graphicx, hyperref}
+
+            \\begin{document}
+
+            %s
+
+            \end{document}
+            """ % ( self.latexOutput.toPlainText( ).strip( ) )
+        self.printString( mainText, toHTML = False )
+
+    def printString( self, myString, toHTML = True ):
+        self.statusLabel.setText( '' )
+        if not checkValidLaTeX( myString ):
+            statusLabel.setText( 'INVALID LATEX' )
+            return
+        qdl = QDialog( self )
+        qdl.setModal( True )
+        qsb = QPushButton( 'SAVE' )
+        qdl.setModal( True )
+        qte = QTextEdit( qdl )
+        qte.setReadOnly( True )
+        qdlLayout = QVBoxLayout( )
+        qdl.setLayout( qdlLayout )
+        qdlLayout.addWidget( qsb )
+        qdlLayout.addWidget( qte )
+        qf = QFont( )
+        qf.setFamily( 'Consolas' )
+        qf.setPointSize( 11 )
+        qfm = QFontMetrics( qf )
+        qte.setFixedWidth( 85 * qfm.width( 'A' ) )
+        qte.setFixedHeight( 550 )
+        qdl.setFixedWidth( 85 * qfm.width( 'A' ) )
+        qdl.setFixedHeight( 550 )
+        if toHTML:
+            myHTML =  pypandoc.convert_text(
+                myString, 'html', format = 'latex',
+                extra_args = [ '-s' ] )
+            print( myHTML )
+            qte.setHtml( pypandoc.convert_text(
+                myString, 'html', format = 'latex',
+                extra_args = [ '-s' ] ) )
+        else:
+            qte.setPlainText( pypandoc.convert_text(
+                myString, 'markdown', format = 'latex',
+                extra_args = [ '-s' ] ) )
+        def saveFilename( ):
+            if toHTML:
+                name = 'HTML'
+                suffix = 'html'
+            else:
+                name = 'Markdown'
+                suffix = 'md'
+            while( True ):
+                fname = str( QFileDialog.getSaveFileName( qdl, 'Save %s' % name,
+                                                          os.path.expanduser( '~' ),
+                                                          filter = '*.%s' % suffix ) )
+                if fname.lower().endswith('.%s' % suffix) or len( os.path.basename( fname ) ) == 0:
+                    break
+            if fname.lower().endswith('.%s' % suffix ):
+                with open( fname, 'w') as openfile:
+                    openfile.write('%s\n' % textwrap.fill( str( qte.toPlainText( ) ).strip( ) ) )
+        qsb.clicked.connect( saveFilename )
+        saveAction = QAction( qdl )
+        saveAction.setShortcut('Ctrl+S')
+        saveAction.triggered.connect( saveFilename )
+        qdl.addAction( saveAction )
+        qdl.show( )
+        result = qdl.exec_( )
+        
     def __init__( self ):
         super( MainGUI, self ).__init__( )
         self.setWindowTitle( 'FORMAT CONVERTER' )
@@ -76,12 +110,14 @@ class MainGUI( QWidget ):
         qf.setFamily( 'Consolas' )
         qf.setPointSize( 11 )
         qfm = QFontMetrics( qf )
+        self.setStyleSheet("""
+        QWidget {
+        font-family: Consolas;
+        font-size: 11;
+        }""" )
         self.latexOutput = QTextEdit( )
         self.latexOutput.setTabStopWidth( 2 * qfm.width( 'A' ) )
         self.statusLabel = QLabel( )
-        for fontFile in glob.glob( os.path.join( mainDir, 'resources', '*.ttf' ) ):
-            QFontDatabase.addApplicationFont( fontFile )
-        self.setStyleSheet( open( os.path.join( mainDir, 'resources', 'ubuntu.qss' ), 'r' ).read( ) )
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         #
@@ -99,39 +135,15 @@ class MainGUI( QWidget ):
         quitAction.setShortcuts([ 'Ctrl+Q', 'Esc' ])
         quitAction.triggered.connect( sys.exit )
         self.addAction( quitAction )
-        def printHTML( ):
-            mainText = r"""
-            \documentclass[12pt, fleqn]{article}
-            \usepackage{amsmath, amsfonts, graphicx, hyperref}
-
-            \\begin{document}
-
-            %s
-
-            \end{document}
-            """ % ( self.latexOutput.toPlainText( ).strip( ) )
-            printString( mainText, self.statusLabel, toHTML = True )
-        def printMarkdown( ):
-            mainText = r"""
-            \documentclass[12pt, fleqn]{article}
-            \usepackage{amsmath, amsfonts, graphicx, hyperref}
-
-            \\begin{document}
-
-            %s
-
-            \end{document}
-            """ % ( self.latexOutput.toPlainText( ).strip( ) )
-            printString( mainText, self.statusLabel, toHTML = False )
-        self.toHTML.clicked.connect( printHTML )
-        self.toMarkdown.clicked.connect( printMarkdown )
+        self.toHTML.clicked.connect( self.printHTML )
+        self.toMarkdown.clicked.connect( self.printMarkdown )
         toHTMLAction = QAction( self )
         toHTMLAction.setShortcut( 'Ctrl+Shift+H' )
-        toHTMLAction.triggered.connect( printHTML )
+        toHTMLAction.triggered.connect( self.printHTML )
         self.addAction( toHTMLAction )
         toMarkdownAction = QAction( self )
         toMarkdownAction.setShortcut( 'Ctrl+Shift+M' )
-        toMarkdownAction.triggered.connect( printMarkdown )
+        toMarkdownAction.triggered.connect( self.printMarkdown )
         self.addAction( toMarkdownAction )
         #
         self.setFixedHeight( 650 )
@@ -139,6 +151,7 @@ class MainGUI( QWidget ):
         self.show( )
 
 if __name__=='__main__':
-    app = QApplication([])
+    app = returnQAppWithFonts( )
+    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )                       
     mg = MainGUI( )
     result = app.exec_( )

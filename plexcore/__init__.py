@@ -34,15 +34,16 @@ _geoip_database = os.path.join(
 assert( os.path.isfile( _geoip_database ) )
 
 geoip_reader = geoip2.database.Reader( _geoip_database )
-"""This contains an on-disk `MaxMind <https://www.maxmind.com/en/geoip2-services-and-databases>`_ 
-database containing location information for IP addresses.
+"""
+This contains an on-disk MaxMind_ database, of type :py:class:`geoip2.database.Reader`, containing location information for IP addresses.
 
+.. _Maxmind: https://www.maxmind.com/en/geoip2-services-and-databases
 """
 
 def return_error_raw( msg ):
-    """Returns a default ``tuple`` of type ``None, msg``, where ``msg`` is a string.
+    """Returns a default ``tuple`` of type ``None, msg``, where ``msg`` is a str.
 
-    :param msg: the error message
+    :param msg: the error message.
     :returns: a ``tuple`` with structure ``( None, msg )``. ``msg`` should NEVER be ``SUCCESS``.
     :rtype: ``tuple``
     """
@@ -54,8 +55,8 @@ def get_popularity_color( hpop, alpha = 1.0 ):
 
     :param float hpop: the value (between 0 and 1) of the color.
     :param alpha: The alpha value of the color
-    :returns: a QColor_ object to put into a QWidget_.
-    :rtype: QColor
+    :returns: a :class:`QColor <PyQt4.QtGui.QColor>` object to put into a :class:`QWidget <PyQt4.QtGui.QWidget>`.
+    :rtype: :class:`QColor <PyQt4.QtGui.QColor>`
 
     .. _QColor: https://www.riverbankcomputing.com/static/Docs/PyQt4/qcolor.html
     .. _QWidget: https://www.riverbankcomputing.com/static/Docs/PyQt4/qwidget.html
@@ -186,6 +187,21 @@ class QDialogWithPrinting( QDialog ):
         self.addAction( resetSizeAction )        
 
     def __init__( self, parent, isIsolated = True, doQuit = True ):
+        """FIXME! briefly describe function
+
+        Here is some math
+
+        .. math::
+
+        54x^2 + 4 = 7
+
+        :param parent: 
+        :param isIsolated: 
+        :param doQuit: 
+        :returns: 
+        :rtype: 
+
+        """
         super( QDialogWithPrinting, self ).__init__( parent )
         self.setModal( True )
         self.isIsolated = isIsolated
@@ -285,8 +301,7 @@ class ProgressDialog( QDialogWithPrinting ): # replace with QProgressDialog in t
 
 def splitall( path_init ):
     """
-    This routine is used by :func:`get_path_data_on_tvshow <plextvdb.plextvdb.get_path_data_on_tvshow>` to split a TV show file path
-    into separate directory delimited tokens
+    This routine is used by :func:`get_path_data_on_tvshow <plextvdb.plextvdb.get_path_data_on_tvshow>` to split a TV show file path into separate directory delimited tokens
     
     Args:
         path_init (string): The absolute path of the file.
@@ -312,7 +327,7 @@ def splitall( path_init ):
 def get_formatted_duration( totdur ):
     """
     This routine spits out a nice, formatted string representation of the duration, which is of
-    type :py:class:`datetime.datetime`.
+    type :py:class:`datetime <datetime.datetime>`.
 
     Args:
         totdur (datetime): a length of time, reprsented as a :class:`datetime <datetime.datetime>`.
@@ -403,12 +418,13 @@ session = sessionmaker( bind = _engine )( )
 class PlexConfig( Base ):
     """
     This SQLAlchemy ORM class contains the configuration data used for running all the plexstuff tools.
-    Stored into the ``plexconfig`` table in the ``~/.config.plexstuff/app.db`` SQLITE database.
+    Stored into the ``plexconfig`` table in the ``~/.config.plexstuff/app.db`` SQLite3_ database.
 
     Attributes:
         service: the name of the configuration service we store. Index on this unique key.
         data: JSON formatted information on the data stored here. For instance, username and password can be stored in the following way
-    .. code:: json
+
+        .. code:: json
 
             { 'username' : <USERNAME>,
               'password' : <PASSWORD> }
@@ -424,21 +440,23 @@ class PlexConfig( Base ):
 
 class LastNewsletterDate( Base ):
     """
-    This SQLAlchemy ORM class contains the date at which the last newsletter was sent.
+    This SQLAlchemy_ ORM class contains the date at which the last newsletter was sent.
     It is not used much, and now that `Tautulli`_ has newsletter functionality, I
     very likely won't use this at all. Stored into the ``plexconfig`` table in the
-    ``app.db`` SQLITE database.
+    ``~/.config/plexstuff/app.db`` SQLite3_ database.
         
     Attributes:
         date: the name of the configuration service we store.
 
-    .. _Tautulli: https://tautulli.com/#features
+    .. _Tautulli: https://tautulli.com
+    .. _SQLAlchemy: https://www.sqlalchemy.org
     """
     #
     ## create the table using Base.metadata.create_all( _engine )
     __tablename__ = 'lastnewsletterdate'
     __table_args__ = {'extend_existing': True}
-    date = Column( Date, onupdate = datetime.datetime.now, index = True, primary_key = True )
+    date = Column( Date, onupdate = datetime.datetime.now,
+                   index = True, primary_key = True )
     
 class PlexGuestEmailMapping( Base ):
     #
@@ -448,7 +466,6 @@ class PlexGuestEmailMapping( Base ):
     plexemail = Column( String( 256 ), index = True, unique = True, primary_key = True )
     plexmapping = Column( String( 65536 ) )
     plexreplaceexisting = Column( Boolean )
-
     
 def create_all( ):
     Base.metadata.create_all( _engine )

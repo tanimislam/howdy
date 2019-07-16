@@ -15,7 +15,7 @@ Here are a few of the best known high level media management services:
 
 Here are some of the best known lower APIs used to help one manage your Plex_ server.
 
-* `Tautulli <https://tautulli.com/>`_ to monitor your Plex_ server.
+* `Tautulli <https://tautulli.com>`_ to monitor your Plex_ server.
 * `Jackett <https://github.com/Jackett/Jackett>`_ is a relatively successful proxy server that consolidates the torrent search from a´ large number of public, private, and semi-private torrent trackers and services into a single search user interface and API. I discuss this in more detail in :numref:`The Jackett Server`.
 * `PlexAPI <PlexAPI_>`_ are the unofficial bindings to the Plex API. They are based off the older `unofficial Plex API <unofficial_plex_api_>`_. I still use `the older lower-level REST API <unofficial_plex_api_>`_ because it seems to offer more freedom (such as finer grained multithreaded HTTP requests, and access to remote servers) than PlexAPI_.
 
@@ -29,13 +29,9 @@ You will need to have PyQt4_, sshpass_, and pandoc_ on your machine. `Pandoc <pa
 
   sudo apt install python3-pyqt4 sshpass pandoc
 
-Equivalent commands to install PyQt4_ and sshpass_ exist on `Red Hat`_ based systems, such as `Fedora <https://getfedora.org/>`_ or `CentOS <https://www.centos.org/>`_.
+Equivalent commands to install PyQt4_ and sshpass_ exist on `Red Hat`_ based systems, such as Fedora_ or CentOS_.
 
 In a common scenario, you may need to use Plexstuff on a Linux machine you do not administer or own. Typically PyQt4_ and sshpass_ are installed, but pandoc_ is a more niche tool that must be installed by hand into your home directory if it has not been installed by default. By my convention the executables and other resources (such as includes and libraries) will be installed under ``~/.local``. Sources of necessary tools will be decompressed and live in ``~/.local/src``. Here are the eight steps I used in order to get pandoc_ installed.
-
-.. _Ubuntu:: https://www.ubuntu.com
-.. _Mint:: https://linuxmint.com
-.. _Debian:: https://www.debian.org
 
 1. Ensure that ``~/.local/bin`` and ``~/.cabal/bin`` are in your PATH.
 
@@ -149,14 +145,20 @@ Table of Contents
 
   plex-config/plex_config
   plex-core/plex_core
+  plex-tvdb/plex_tvdb
+  plex-tmdb/plex_tmdb
+  plex-music/plex_music
+  plex-email/plex_email
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
 
+
+.. these are the links
 .. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki
 .. _Plex: https://plex.tv
 .. _PlexAPI: https://python-plexapi.readthedocs.io/en/latest/introduction.html
@@ -168,3 +170,9 @@ Indices and tables
 .. _ghc: https://www.haskell.org/ghc
 .. _stack: https://docs.haskellstack.org/en/stable/README
 .. _cabal: http://hackage.haskell.org/package/cabal-install
+.. _Ubuntu: https://www.ubuntu.com
+.. _Mint: https://linuxmint.com
+.. _Debian: https://www.debian.org
+.. _Red Hat: https://www.redhat.com/en
+.. _Fedora: https://getfedora.org
+.. _CentOS: https://www.centos.org

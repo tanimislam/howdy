@@ -40,29 +40,31 @@ def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
 def get_date_from_datestring( dstring ):
     """Returns a :py:class:`date <datetime.date>` object from
     a date string with the format, "January 1, 2000".
-
+    
     :param dstring: the initial date string.
-    :returns: its :py:class`date <datetime.date>` object representation.
-    :rtype: :py:class`date <datetime.date>`
+    
+    :returns: its :py:class:`date <datetime.date>` object representation.
+    
+    :rtype: :py:class:`date <datetime.date>`
 
     """
     try: return datetime.datetime.strptime( dstring, '%B %d, %Y' ).date( )
     except Exception: return None
 
-#
-## now convert this into HTML using pandoc, then BeautifulSoup :)
 def latexToHTML( latexString ):
     """Converts a LaTeX_ string into HTML using Pandoc_, then prettifies the
     intermediate HTML using BeautifulSoup_.
 
     :param latexString: the initial LaTeX_ string.
+    
     :returns: the final prettified, formatted HTML string.
+    
     :rtype: str
 
     .. _LaTeX: https://www.latex-project.org
     .. _Pandoc: https://pandoc.org
     .. _BeautifulSoup: https://www.crummy.com/software/BeautifulSoup/bs4/doc
-
+    
     """
     try:
         htmlstring = pypandoc.convert( latexString, 'html', format = 'latex',
@@ -106,13 +108,13 @@ def getTokenForUsernamePassword( username, password, verify = True ):
 def checkServerCredentials( doLocal = False, verify = True ):
     """Returns get a local or remote URL and Plex_ access token to allow for API access to the server.
 
-    :param doLocal: optional ``bool`` argument, whether to get a local (`http://localhost:32400`) or remote URL. Default is ``False`` (look for the remote URL).
+    :param doLocal: optional ``bool`` argument, whether to get a local (``http://localhost:32400``) or remote URL. Default is ``False`` (look for the remote URL).
     
     :param verify: optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
     
-    :returns: a ``tuple`` of server URL and Plex_ access token.
+    :returns: a tuple of server URL and Plex_ access token.
     
-    :rtype: ``tuple``
+    :rtype: tuple
 
     .. _Plex: https://plex.tv
 
@@ -133,6 +135,15 @@ def checkServerCredentials( doLocal = False, verify = True ):
     return fullurl, token
 
 def getCredentials( verify = True ):
+    """Returns the Plex_ user account information stored in ``~/.config/plexstuff/app.db``.
+
+    :param verify: optional ``bool`` argument, whether to use SSL verification. Default is ``True``.
+    :returns: the Plex_ account tuple of ``(username, password)``.
+    :rtype: tuple
+
+    .. seealso:: :py:meth:`pushCredentials <plexstuff.plexcore.plexcore.pushCredentials>`
+
+    """
     val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'login' ).first( )
     if val is None: return None
@@ -145,6 +156,16 @@ def getCredentials( verify = True ):
     return username, password
 
 def pushCredentials( username, password ):
+    """replace the Plex_ server credentials, located in ``~/.config/plexstuff/app.db``, with a new ``username`` and ``password``.
+
+    :param username: the Plex_ account username.
+    :param password: the Plex_ account password.
+    :returns: if successful, return a string, ``SUCCESS``. If unsuccessful, returns a string reason of why it failed.
+    :rtype: str
+
+    .. seealso:: :py:meth:`getCredentials <plexstuff.plexcore.plexcore.getCredentials>`
+
+    """
     #
     ## first see if these work
     token = getTokenForUsernamePassword( username, password )
@@ -166,14 +187,14 @@ def pushCredentials( username, password ):
 def get_all_servers( token, verify = True ):
     """Find all the Plex_ servers for which you have access.
 
-    :param token: the Plex str access token, returned by :py:meth:`checkServerCredentials`.
-    :param verify: optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
+    :param token: the Plex str access token, returned by :py:meth:`checkServerCredentials <plexstuff.plexcore.checkServerCredentials>`.
+    :param verify: optional bool argument, whether to verify SSL connections. Default is ``True``.
     :returns: a dictionary of servers owned by you. Each key is the Plex_ server's name, and the value is the URL with port.
     :rtype: dict
 
-    .. seealso: :py:meth:`checkServerCredentials`
+    .. seealso:: :py:meth:`checkServerCredentials <plexstuff.plexcore.plexcore.checkServerCredentials>`
     
-    .. seealso: :py:meth:`get_owned_servers`
+    .. seealso:: :py:meth:`get_owned_servers <plexstuff.plexcore.plexcore.get_owned_servers>`
 
     .. _Plex: https://plex.tv
 
@@ -205,9 +226,9 @@ def get_owned_servers( token, verify = True ):
     :returns: a dictionary of servers owned by you. Each key is the Plex_ server's name, and the value is the URL with port.
     :rtype: dict
 
-    .. seealso: :py:meth:`checkServerCredentials`
+    .. seealso:: :py:meth:`checkServerCredentials <plexstuff.plexcore.plexcore.checkServerCredentials>`
     
-    .. seealso: :py:meth:`get_all_servers`
+    .. seealso:: :py:meth:`get_all_servers <plexstuff.plexcore.plexcore.get_all_servers>`
 
     .. _Plex: https://plex.tv
 
@@ -391,6 +412,7 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
                              params = params, verify = False )
     if response.status_code != 200: return None
+    
     def _valid_videlem( elem ):
         if elem.name != 'video':
             return False
@@ -937,10 +959,9 @@ def _get_failing_artistalbum( filename ):
         mp4tag = mutagen.mp4.MP4( filename )
         if not all([ key in mp4tag for key in ( '\xa9alb', '\xa9ART' ) ]):
             return filename
-    return None        
+    return None
 
 def get_lastupdated_string( dt = datetime.datetime.now( ) ):
-    # dt = dt = datetime.datetime.fromtimestamp( os.stat( dbloc ).st_mtime ) ):
     return dt.strftime('%A, %d %B %Y, at %-I:%M %p')
 
 def get_tvshownames_gspread( ):

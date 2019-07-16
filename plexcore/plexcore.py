@@ -108,9 +108,9 @@ def getTokenForUsernamePassword( username, password, verify = True ):
 def checkServerCredentials( doLocal = False, verify = True ):
     """Returns get a local or remote URL and Plex_ access token to allow for API access to the server.
 
-    :param doLocal: optional ``bool`` argument, whether to get a local (``http://localhost:32400``) or remote URL. Default is ``False`` (look for the remote URL).
+    :param bool doLocal: optional argument, whether to get a local (``http://localhost:32400``) or remote URL. Default is ``False`` (look for the remote URL).
     
-    :param verify: optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     
     :returns: a tuple of server URL and Plex_ access token.
     
@@ -192,9 +192,9 @@ def get_all_servers( token, verify = True ):
     :returns: a dictionary of servers owned by you. Each key is the Plex_ server's name, and the value is the URL with port.
     :rtype: dict
 
-    .. seealso:: :py:meth:`checkServerCredentials <plexstuff.plexcore.plexcore.checkServerCredentials>`
-    
-    .. seealso:: :py:meth:`get_owned_servers <plexstuff.plexcore.plexcore.get_owned_servers>`
+    .. seealso::
+       * :py:meth:`checkServerCredentials <plexstuff.plexcore.plexcore.checkServerCredentials>`
+       * :py:meth:`get_owned_servers <plexstuff.plexcore.plexcore.get_owned_servers>`
 
     .. _Plex: https://plex.tv
 
@@ -226,9 +226,9 @@ def get_owned_servers( token, verify = True ):
     :returns: a dictionary of servers owned by you. Each key is the Plex_ server's name, and the value is the URL with port.
     :rtype: dict
 
-    .. seealso:: :py:meth:`checkServerCredentials <plexstuff.plexcore.plexcore.checkServerCredentials>`
-    
-    .. seealso:: :py:meth:`get_all_servers <plexstuff.plexcore.plexcore.get_all_servers>`
+    .. seealso:: 
+       * :py:meth:`checkServerCredentials <plexstuff.plexcore.plexcore.checkServerCredentials>`
+       * :py:meth:`get_all_servers <plexstuff.plexcore.plexcore.get_all_servers>`
 
     .. _Plex: https://plex.tv
 

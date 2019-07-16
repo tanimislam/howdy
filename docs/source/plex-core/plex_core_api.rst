@@ -7,7 +7,10 @@ This document describes the lower level Plex emailing API, upon which all the co
 ``plexstuff.plexcore``
 ----------------------
 
-This module implements the lower-level functionality to download torrent and magnet files, to access and retrieve configuration data from an SQLite3_ database using SQLAlchemy_, and to provide necessary miscellaneous glue functionality for the rest of the Plexstuff SDK, command line tools, and GUIs.
+This module implements the lower-level functionality to do the following:
+
+* to access and retrieve configuration and other data from an SQLite3_ database using SQLAlchemy_ classes.
+* provide glue functionality for the rest of the Plexstuff SDK, command line tools, and GUIs.
 
 .. _SQLite3: https://www.sqlite.org/index.html
 .. _SQLAlchemy: https://www.sqlalchemy.org

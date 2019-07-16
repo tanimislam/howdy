@@ -43,9 +43,9 @@ This contains an on-disk MaxMind_ database, of type :py:class:`geoip2.database.R
 def return_error_raw( msg ):
     """Returns a default ``tuple`` of type ``None, msg``, where ``msg`` is a str.
 
-    :param msg: the error message.
-    :returns: a ``tuple`` with structure ``( None, msg )``. ``msg`` should NEVER be ``SUCCESS``.
-    :rtype: ``tuple``
+    :param str msg: the error message.
+    :returns: a ``tuple`` with structure ``(None, msg)``. ``msg`` should NEVER be ``SUCCESS``.
+    :rtype: tuple
     """
     return None, msg
     
@@ -54,12 +54,9 @@ def get_popularity_color( hpop, alpha = 1.0 ):
     """Get a color that represents some darkish cool looking color interpolated between 0 and 1.
 
     :param float hpop: the value (between 0 and 1) of the color.
-    :param alpha: The alpha value of the color
+    :param float alpha: The alpha value of the color (between 0 and 1).
     :returns: a :class:`QColor <PyQt4.QtGui.QColor>` object to put into a :class:`QWidget <PyQt4.QtGui.QWidget>`.
     :rtype: :class:`QColor <PyQt4.QtGui.QColor>`
-
-    .. _QColor: https://www.riverbankcomputing.com/static/Docs/PyQt4/qcolor.html
-    .. _QWidget: https://www.riverbankcomputing.com/static/Docs/PyQt4/qwidget.html
 
     """
     assert( hpop >= 0 )
@@ -73,8 +70,15 @@ def get_popularity_color( hpop, alpha = 1.0 ):
 #
 ## a QLabel with save option of the pixmap
 class QLabelWithSave( QLabel ):
+    """
+    A convenient PyQt4_ widget that inherits from :py:class:`QLabel <PyQt4.QtGui.QLabel>`, but allows for taking screen grabs.
+    """
     
     def screenGrab( self ):
+        """
+        take a screen shot of itself and saver to a PNG file through a :py:class:`QFileDialog <PyQt4.QtGui.QFileDialog>`.
+
+        """
         fname = str( QFileDialog.getSaveFileName(
             self, 'Save Pixmap', os.path.expanduser( '~' ),
             filter = '*.png' ) )
@@ -88,6 +92,13 @@ class QLabelWithSave( QLabel ):
         super( QLabel, self ).__init__( parent )
 
     def contextMenuEvent( self, event ):
+        """Constructs a `context menu`_ with a single action, *Save Pixmap*, that takes a screen shot of this widget, using :py:meth:`screenGrab <plexstuff.plexcore.QLabelWithSave.screenGrab>`.
+
+        :param event: default :py:class:`QEvent <PyQt4.QtCore.QEvent>` argument needed to create a context menu. Is not used in this method.
+
+        .. _context menu: https://en.wikipedia.org/wiki/Context_menu
+
+        """
         menu = QMenu( self )
         savePixmapAction = QAction( 'Save Pixmap', menu )
         savePixmapAction.triggered.connect( self.screenGrab )
@@ -187,21 +198,6 @@ class QDialogWithPrinting( QDialog ):
         self.addAction( resetSizeAction )        
 
     def __init__( self, parent, isIsolated = True, doQuit = True ):
-        """FIXME! briefly describe function
-
-        Here is some math
-
-        .. math::
-
-        54x^2 + 4 = 7
-
-        :param parent: 
-        :param isIsolated: 
-        :param doQuit: 
-        :returns: 
-        :rtype: 
-
-        """
         super( QDialogWithPrinting, self ).__init__( parent )
         self.setModal( True )
         self.isIsolated = isIsolated
@@ -229,7 +225,7 @@ class QDialogWithPrinting( QDialog ):
                 quitAction.triggered.connect( sys.exit )
             self.addAction( quitAction )
 
-class ProgressDialog( QDialogWithPrinting ): # replace with QProgressDialog in the future?
+class ProgressDialog( QDialogWithPrinting ):
     def __init__( self, parent, windowTitle = "", doQuit = True ):
         super( ProgressDialog, self ).__init__(
             parent, doQuit = doQuit )
@@ -301,10 +297,10 @@ class ProgressDialog( QDialogWithPrinting ): # replace with QProgressDialog in t
 
 def splitall( path_init ):
     """
-    This routine is used by :func:`get_path_data_on_tvshow <plextvdb.plextvdb.get_path_data_on_tvshow>` to split a TV show file path into separate directory delimited tokens
+    This routine is used by :func:`get_path_data_on_tvshow <plextvdb.plextvdb.get_path_data_on_tvshow>` to split a TV show file path into separate directory delimited tokens.
     
     Args:
-        path_init (string): The absolute path of the file.
+        path_init (str): The absolute path of the file.
 
     Returns:
         list: each subdirectory, and file basename, in the path
@@ -330,10 +326,10 @@ def get_formatted_duration( totdur ):
     type :py:class:`datetime <datetime.datetime>`.
 
     Args:
-        totdur (datetime): a length of time, reprsented as a :class:`datetime <datetime.datetime>`.
+        totdur (:py:class:`datetime <datetime.datetime>`): a length of time, represented as a :class:`datetime <datetime.datetime>`.
     
     Returns:
-        string: Formatted representation of that length of time.
+        str: Formatted representation of that length of time.
     """
     dt = datetime.datetime.utcfromtimestamp( totdur )
     durstringsplit = []
@@ -364,14 +360,23 @@ def get_formatted_duration( totdur ):
 
 def get_formatted_size( totsizebytes ):
     """
-    This routine spits out a nice, formatted string representation of a file size,
-    which is represented in int.
+    This routine spits out a nice, formatted string representation of a file size, which is represented in int.
+    
+    This method works like this.
+
+    .. code:: python
+       
+       get_formatted_size( int(2e3) ) = '1.953 kB' # kilobytes
+       get_formatted_size( int(2e6) ) = '1.907 MB' # megabytes
+       get_formatted_size( int(2e9) ) = '1.863 GB' # gigabytes
 
     Args:
         totsizebytes (int): size of a file in bytes.
     
     Returns:
-        string: Formatted representation of that file size.
+        str: Formatted representation of that file size.
+
+    .. seealso:: :py:meth:`get_formatted_size_MB <plexstuff.plexcore.get_formatted_size_MB>`
     """
     
     sizestring = ''
@@ -387,6 +392,18 @@ def get_formatted_size( totsizebytes ):
     return sizestring
 
 def get_formatted_size_MB( totsizeMB ):
+    """
+    Same as :py:meth:`get_formatted_size <plexstuff.plexcore.get_formatted_size>`, except this operates on file sizes in units of megabytes rather than bytes.
+
+    :param int totsizeMB: size of the file in megabytes.
+    
+    :returns: Formatted representation of that file size.
+    
+    :rtype: str
+
+    .. seealso:: :py:meth:`get_formatted_size <plexstuff.plexcore.get_formatted_size>`
+
+    """
     if totsizeMB >= 1024:
         size_in_gb = totsizeMB * 1.0 / 1024
         return '%0.3f GB' % size_in_gb
@@ -417,17 +434,17 @@ session = sessionmaker( bind = _engine )( )
 ## this will be used to replace all the existing credentials stored in separate tables
 class PlexConfig( Base ):
     """
-    This SQLAlchemy ORM class contains the configuration data used for running all the plexstuff tools.
+    This SQLAlchemy_ ORM class contains the configuration data used for running all the plexstuff tools.
     Stored into the ``plexconfig`` table in the ``~/.config.plexstuff/app.db`` SQLite3_ database.
 
     Attributes:
         service: the name of the configuration service we store. Index on this unique key.
         data: JSON formatted information on the data stored here. For instance, username and password can be stored in the following way
 
-        .. code:: json
+    .. code:: JSON
 
-            { 'username' : <USERNAME>,
-              'password' : <PASSWORD> }
+       { 'username' : <USERNAME>,
+         'password' : <PASSWORD> }
 
     """
     
@@ -459,6 +476,23 @@ class LastNewsletterDate( Base ):
                    index = True, primary_key = True )
     
 class PlexGuestEmailMapping( Base ):
+    """
+    This SQLAlchemy_ ORM class contains mapping of emails of Plex_ server users, to other email addresses. This is used to determine other email addresses to which Plexstuff one-off or newsletter emails are delivered. Stored into the ``plexconfig`` table in the
+    ``~/.config/plexstuff/app.db`` SQLite3_ database.
+
+    The structure of each row in this table, named *plexguestemailmapping*, is straightforward.
+    
+    * the main column is *plexemail*, which must be a friend of the Plex_server.
+    * the second column is *plexmapping*, which is a collection of ***different*** email addresses, to which the Plexstuff emails are sent. For example, if a Plex_ user with email address ``A@email.com`` would like to send email to ``B@mail.com`` and ``C@mail.com``, the *plexmapping* column would be ``B@mail.com,C@mail.com``. NONE of the mapped emails will match *plexemail*.
+    * the third column  is *plexreplaceexisting*, a boolean that determines whether Plexstuff email also goes to the Plex_ user's email address. From the example above, if ``True`` then a Plex_ user at ``A@mail.com`` will have email delivered ONLY to ``B@mail.com`` and ``C@mail.com``. If ``False``, then that same Plex_ user will have email delivered to all three email addresses (``A@mail.com``, ``B@mail.com``, and ``C@mail.com``).
+    
+        
+    Attributes:
+        plexemail: the email address of a Plex_ user who has stream access to the Plex_ server.
+        plexmapping: the mapping, as a comma-delimited string, of other email addresses to deliver Plexstuff emails.
+        plexreplaceexisting: if ``True``, only send Plexstuff emails of Plex_ user to new email addresses. If ``False``, also send to email address of Plex_ user.
+
+    """
     #
     ## create the table using Base.metadata.create_all( _engine )
     __tablename__ = 'plexguestemailmapping'

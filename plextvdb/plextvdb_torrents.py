@@ -839,7 +839,8 @@ def worker_process_download_tvtorrent(
         #
         data, status = get_tv_torrent_zooqle( torFileName, maxnum = 100 )
         if status != 'SUCCESS':
-            shared_list.append( ( 'zooqle', create_status_dict( 'FAILURE', status ), 'FAILURE' ) )
+            shared_list.append( ( 'zooqle', _create_status_dict( 'FAILURE', status, t0 ), 'FAILURE' ) )
+            return
         data_filt = list(filter(
             lambda elem: any(map(lambda tok: tok in elem['title'].lower( ),
                                  ( 'x264', 'x265', '720p' ) ) ) and

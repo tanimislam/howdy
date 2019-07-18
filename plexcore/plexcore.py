@@ -49,13 +49,15 @@ def get_date_from_datestring( dstring ):
 
     """
     try: return datetime.datetime.strptime( dstring, '%B %d, %Y' ).date( )
-    except Exception: return None
+    except Exception:
+        logging.error("Error, could not parse %s into a date." % dstring )
+        return None
 
 def latexToHTML( latexString ):
     """Converts a LaTeX_ string into HTML using Pandoc_, then prettifies the
     intermediate HTML using BeautifulSoup_.
 
-    :param latexString: the initial LaTeX_ string.
+    :param str latexString: the initial LaTeX_ string.
     
     :returns: the final prettified, formatted HTML string.
     
@@ -75,22 +77,51 @@ def latexToHTML( latexString ):
         return None
 
 def processValidHTMLWithPNG( html, pngDataDict, doEmbed = False ):
+    """Returns a prettified HTML document, using BeautifulSoup_, including all PNG image data (whether URLs or `Base 64 encoded`_ data) in ``<img>`` tags.
+
+    :param str html: the initial HTML document into which images are to be embedded.
+    
+    :param dict pngDataDict: dictionary of PNG data. Key is the name of the PNG file (must end in .png). Value is a tuple of type ``(b64data, widthInCM, url)``. ``b64data`` is the `Base 64 encoded`_ binary representation of the PNG image. ``widthInCm`` is the image width in cm. ``url`` is thje URL address of the image.
+    
+    :param bool doEmbed: If ``True``, then the image source tag uses the `Base 64 encoded` data. If ``False``, the image source tag is the URL.
+    :returns: prettified HTML document with the images located in it.
+    :rtype: str
+
+    .. _Base 64 encoded: https://en.wikipedia.org/wiki/Base64
+    """
     htmlData = BeautifulSoup( html, 'lxml' )
-    pngNames = set(filter(lambda name: name.endswith('.png'),
-                          map(lambda img: img['src'], htmlData.find_all('img'))))
+    pngNames = set(filter(
+        lambda name: name.endswith('.png'),
+        map(lambda img: img['src'], htmlData.find_all('img'))))
     if len( pngNames ) == 0: return htmlData.prettify( )
     if len( pngNames - set( pngDataDict ) ) != 0:
-        logging.debug( 'error, some defined figures in latex do not have images.' )
+        logging.debug(
+            'error, some defined figures in latex do not have images.' )
         return htmldata.prettify( )
     for img in htmlData.find_all('img'):
         name = img['src']
         b64data, widthInCM, url = pngDataDict[ name ]
-        if doEmbed: img['src'] = "data:image/png;base64," + b64data
+        if doEmbed: img['src'] = "data:image/png;base64,%s" % b64data
         else: img['src'] = url
         img['width'] = "%d" % ( widthInCM / 2.54 * 300 )
     return htmlData.prettify( )
 
 def getTokenForUsernamePassword( username, password, verify = True ):
+    """get the Plex_ access token for the Plex_ server given an username and password for the user account.
+
+    :param str username: the Plex_ account username.
+    :param str password: the Plex_ account password.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :returns: the Plex_ access token.
+    :rtype: str
+
+    .. seealso:
+    
+    * :py:meth:`checkServerCredentials <plexstuff.plexcore.plexcore.checkServerCredentials>`.
+    * :py:meth:`getCredentials <plexstuff.plexcore.plexcore.getCredentials>`.
+    * :py:meth:`pushCredentials <plexstuff.plexcore.plexcore.pushCredentials>`.
+
+    """
     headers = { 'X-Plex-Client-Identifier' : str( uuid.uuid4( ) ),
                 'X-Plex-Platform' : 'Linux',
                 'X-Plex-Provides' : 'server' }
@@ -116,6 +147,8 @@ def checkServerCredentials( doLocal = False, verify = True ):
     
     :rtype: tuple
 
+    .. seealso:: :py:meth:`getCredentials <plexstuff.plexcore.plexcore.getCredentials>`
+
     .. _Plex: https://plex.tv
 
     """
@@ -137,7 +170,7 @@ def checkServerCredentials( doLocal = False, verify = True ):
 def getCredentials( verify = True ):
     """Returns the Plex_ user account information stored in ``~/.config/plexstuff/app.db``.
 
-    :param verify: optional ``bool`` argument, whether to use SSL verification. Default is ``True``.
+    :param bool verify: optional argument, whether to use SSL verification. Default is ``True``.
     :returns: the Plex_ account tuple of ``(username, password)``.
     :rtype: tuple
 
@@ -158,8 +191,8 @@ def getCredentials( verify = True ):
 def pushCredentials( username, password ):
     """replace the Plex_ server credentials, located in ``~/.config/plexstuff/app.db``, with a new ``username`` and ``password``.
 
-    :param username: the Plex_ account username.
-    :param password: the Plex_ account password.
+    :param str username: the Plex_ account username.
+    :param str password: the Plex_ account password.
     :returns: if successful, return a string, ``SUCCESS``. If unsuccessful, returns a string reason of why it failed.
     :rtype: str
 
@@ -221,8 +254,8 @@ def get_all_servers( token, verify = True ):
 def get_owned_servers( token, verify = True ):
     """Find the Plex_ servers that you own own.
 
-    :param token: the Plex str access token, returned by :py:meth:`checkServerCredentials`.
-    :param verify: optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
+    :param str token: the Plex str access token, returned by :py:meth:`checkServerCredentials`.
+    :param bool verify: optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
     :returns: a dictionary of servers owned by you. Each key is the Plex_ server's name, and the value is the URL with port.
     :rtype: dict
 
@@ -255,6 +288,14 @@ def get_owned_servers( token, verify = True ):
     return server_dict
 
 def get_pic_data( plexPICURL, token = None ):
+    """Get the PNG data as a :py:class:`Response <requests.Response>` object, from a movie picture URL on the Plex_ server.
+
+    :param str plexPICURL: the movie picture URL.
+    :param str token: the Plex_ access token.
+    :returns: the PNG data for the movie image.
+    :rtype: :py:class:`Response <requests.Response>`
+
+    """
     if token is None: params = { }
     else: params = { 'X-Plex-Token' : token }
     response = requests.get( plexPICURL, params = params, verify = False )
@@ -262,9 +303,17 @@ def get_pic_data( plexPICURL, token = None ):
                    ( plexPICURL, len( response.content ) ) )
     return response.content
 
-def get_updated_at( token, fullURLWithPort = 'http://localhost:32400' ):
+def get_updated_at( token, fullURL = 'http://localhost:32400' ):
+    """Get the date and time at which the Plex_ server was last updated, as a :py:class:`datetime <datetime.datetime>` object.
+
+    :param str token: the Plex_ access token.
+    :param str fullURL: the Plex_ server URL.
+    :returns: the date and time of the Plex_ server's last update.
+    :rtype: :py:class:`datetime <datetime.datetime>`
+
+    """
     params = { 'X-Plex-Token' : token }
-    response = requests.get( fullURLWithPort, params = params, verify = False )
+    response = requests.get( fullURL, params = params, verify = False )
     if response.status_code != 200:
         return None
     myxml = BeautifulSoup( response.content, 'lxml' )
@@ -273,6 +322,17 @@ def get_updated_at( token, fullURLWithPort = 'http://localhost:32400' ):
     return datetime.datetime.fromtimestamp( int( media_elem['updatedat'] ) )
 
 def get_email_contacts( token, verify = True ):
+    """list of all email addresses of friends who have stream access to your Plex_ server.
+
+    :param str token:  Plex_ access token.
+    :param bool verify:  optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
+    :returns: list of email addresses of Plex_ friends.
+    :rtype: list 
+
+    .. seealso: :py:method:`get_mapped_email_contacts <plexstuff.plexcore.plexcore.get_mapped_email_contacts>`.
+
+    """
+    
     response = requests.get( 'https://plex.tv/pms/friends/all',
                              headers = { 'X-Plex-Token' : token },
                              verify = verify )
@@ -283,6 +343,16 @@ def get_email_contacts( token, verify = True ):
                                  myxml.find_all( 'user' ) ) ) ) )
 
 def get_mapped_email_contacts( token, verify = True ):
+    """list of all email addresses (including Plex_ server friends and mapped emails) to send Plexstuff related emails.
+
+    :param str token: Plex_ access token.
+    :param bool verify: optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
+    :returns: a list of email addresses for Plexstuff emails.
+    :rtype: list
+
+    .. seealso: :py:method:`get_email_contacts <plexstuff.plexcore.plexcore.get_email_contacts>`.
+
+    """
     emails = get_email_contacts( token, verify = verify )
     query = session.query( PlexGuestEmailMapping )
     subtracts = [ ]
@@ -298,6 +368,12 @@ def get_mapped_email_contacts( token, verify = True ):
     return mapped_emails
     
 def get_current_date_newsletter( ):
+    """the last date and time at which the Plexstuff email newsletter was updated.
+
+    :returns: the date and time of the most recent previous email newsletter.
+    :rtype: :py:class:`datetime <datetime.datetime>`.
+    
+    """
     query = session.query( LastNewsletterDate )
     backthen = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
     val = query.filter( LastNewsletterDate.date >= backthen ).first( )
@@ -411,7 +487,12 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date()
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
                              params = params, verify = False )
-    if response.status_code != 200: return None
+    if response.status_code != 200:
+        logging.debug('ERROR TANIM: COULD NOT REACH PLEX LIBRARIES AT %s/library/sections/%d/all' % ( fullURL, key ) )
+        return None
+
+    logging.debug('SUCCESS AT %s/library/sections/%d/all' %
+                  ( fullURL, key ) )
     
     def _valid_videlem( elem ):
         if elem.name != 'video':
@@ -742,9 +823,9 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400', num_thre
     response = requests.get( '%s/library/sections' % fullURL, params = params,
                              verify = False )
     if response.status_code != 200:
-        logging.info( "took %0.3f seconds to get here in get_library_data, library = %s." %
+        logging.error( "took %0.3f seconds to get here in get_library_data, library = %s." %
                       ( time.time( ) - time0, title ) )
-        logging.info( "no data found. Exiting..." )
+        logging.error( "no data found. Exiting..." )
         return None
     html = BeautifulSoup( response.content, 'lxml' )
     library_dict = { direlem[ 'title' ] : ( int( direlem['key'] ), direlem['type'] ) for
@@ -814,7 +895,10 @@ def get_libraries( fullURL = 'http://localhost:32400', token = None, do_full = F
     response = requests.get(
         '%s/library/sections' % fullURL,
         params = params, verify = False )
-    if response.status_code != 200: return None
+    if response.status_code != 200:
+        logging.error( "error, got status code = %d." %
+                       response.status_code )
+        return None
     html = BeautifulSoup( response.content, 'lxml' )
     if not do_full:
         return dict( map( lambda direlem: ( int( direlem['key'] ), direlem['title'] ),
@@ -895,33 +979,33 @@ def fill_out_movies_stuff( fullURL = 'http://localhost:32400', token = None,
             pool.map(_solve_problem_row, problem_rows ) )
         return movie_data_rows, genres
     
-def get_movie_titles_by_year( year, fullURLWithPort = 'http://localhost:32400',
+def get_movie_titles_by_year( year, fullURL = 'http://localhost:32400',
                               token = None ):
     if token is None:
         params = {}
     else:
         params = { 'X-Plex-Token' : token }
     params['year'] = year
-    libraries_dict = get_libraries( token = token, fullURL = fullURLWithPort )
+    libraries_dict = get_libraries( token = token, fullURL = fullURL )
     if libraries_dict is None:
         return None
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'Movies' ])
-    response = requests.get( '%s/library/sections/%d/all' % ( fullURLWithPort, keynum ),
+    response = requests.get( '%s/library/sections/%d/all' % ( fullURL, keynum ),
                              params = params, verify = False )                             
     if response.status_code != 200: return None
     movie_elems = filter( lambda elem: 'title' in elem.attrs,
                           BeautifulSoup( response.content, 'lxml' ).find_all('video') )
     return sorted(set(map( lambda movie_elem: movie_elem['title'], movie_elems ) ) )
 
-def get_lastN_movies( lastN, token, fullURLWithPort = 'http://localhost:32400',
+def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
                       useLastNewsletterDate = True ):    
     assert( isinstance( lastN, int ) )
     assert( lastN > 0 )
     params = { 'X-Plex-Token' : token }
-    libraries_dict = get_libraries( fullURL = fullURLWithPort, token = token )
+    libraries_dict = get_libraries( fullURL = fullURL, token = token )
     if libraries_dict is None: return None
     keynum = max(filter(lambda key: libraries_dict[key] == 'Movies', libraries_dict))
-    response = requests.get('%s/library/sections/%d/recentlyAdded' % ( fullURLWithPort, keynum ),
+    response = requests.get('%s/library/sections/%d/recentlyAdded' % ( fullURL, keynum ),
                             params = params, verify = False )
     if response.status_code != 200: return None
     html = BeautifulSoup( response.content, 'lxml' )

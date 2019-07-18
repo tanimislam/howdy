@@ -25,6 +25,9 @@ from PyQt4.QtCore import *
 
 # resource file and stuff
 baseConfDir = os.path.abspath( os.path.expanduser( '~/.config/plexstuff' ) )
+"""
+the directory where Plexstuff configuration data is stored -- ``~/.config/plexstuff``.
+"""
 
 #
 ## geoip stuff, exposes a single geop_reader from plexcore
@@ -55,7 +58,7 @@ def get_popularity_color( hpop, alpha = 1.0 ):
 
     :param float hpop: the value (between 0 and 1) of the color.
     :param float alpha: The alpha value of the color (between 0 and 1).
-    :returns: a :class:`QColor <PyQt4.QtGui.QColor>` object to put into a :class:`QWidget <PyQt4.QtGui.QWidget>`.
+    :returns: a :class:`QColor <PyQt4.QtGui.QColor>` object to put into a :class:`QWidget <PyQt4.QtGui.QWidget>`, or converted into a hex color.
     :rtype: :class:`QColor <PyQt4.QtGui.QColor>`
 
     """
@@ -76,8 +79,7 @@ class QLabelWithSave( QLabel ):
     
     def screenGrab( self ):
         """
-        take a screen shot of itself and saver to a PNG file through a :py:class:`QFileDialog <PyQt4.QtGui.QFileDialog>`.
-
+        take a screen shot of itself and save to a PNG file through a :py:class:`QFileDialog <PyQt4.QtGui.QFileDialog>`.
         """
         fname = str( QFileDialog.getSaveFileName(
             self, 'Save Pixmap', os.path.expanduser( '~' ),
@@ -133,9 +135,26 @@ class QWidgetWithPrinting( QWidget ):
             self.addAction( quitAction )
 
 class QDialogWithPrinting( QDialog ):
+    """
+    A convenient PyQt4_ widget, inheriting from :py:class:`QDialog <PyQt4.QtGui.QDialog>`, that allows for screen grabs and keyboard shortcuts to either hide this dialog window or quit the underlying program. This PyQt4_ widget is also resizable, in relative increments of 5% larger or smaller, to a maximum of :math:`1.05^5` times the initial size, and to a minimum of :math:`1.05^{-5}` times the initial size.
+    
+    Args:
+        parent (:py:class:`QWidget <PyQt4.QtGui.QWidget>`): the parent :py:class:`QWidget <PyQt4.QtGui.QWidget>` to this dialog widget.
+        isIsolated (bool): If ``True``, then this widget is detached from its parent. If ``False``, then this widget is embedded into a layout in the parent widget.
+        doQuit (bool): if ``True``, then using the quit shortcuts (``Esc`` or ``Ctrl+Shift+Q``) will cause the underlying program to exit. Otherwise, hide the progress dialog.
+
+     Attributes:
+        indexScalingSignal: a :py:class:`pyqtSignal <PyQt4.QtCore.pyqtSignal>` that can be connected to other PyQt4_ events or methods, if resize events want to be recorded.
+
+    .. _PyQt4: https://www.riverbankcomputing.com/static/Docs/PyQt4
+    """
+    
     indexScalingSignal = pyqtSignal( int )
     
     def screenGrab( self ):
+        """
+        take a screen shot of itself and saver to a PNG file through a :py:class:`QFileDialog <PyQt4.QtGui.QFileDialog>`.
+        """
         fname = str( QFileDialog.getSaveFileName(
             self, 'Save Screenshot', os.path.expanduser( '~' ),
             filter = '*.png' ) )
@@ -146,11 +165,19 @@ class QDialogWithPrinting( QDialog ):
         qpm.save( fname )
 
     def reset_sizes( self ):
+        """
+        Sets the default widget size to the current size.
+        """
+        
         self.initWidth = self.width( )
         self.initHeight = self.height( )
         self.resetSize( )
 
     def makeBigger( self ):
+        """
+        makes the widget incrementally 5% larger, for a maximum of :math:`1.05^5`, or approximately 28% larger than, the initial size.
+        """
+        
         newSizeRatio = min( self.currentSizeRatio + 1,
                             len( self.sizeRatios ) - 1 )
         if newSizeRatio != self.currentSizeRatio:
@@ -159,8 +186,10 @@ class QDialogWithPrinting( QDialog ):
             self.currentSizeRatio = newSizeRatio
             self.indexScalingSignal.emit( self.currentSizeRatio - 5 )
             
-
     def makeSmaller( self ):
+        """
+        makes the widget incrementally 5% smaller, for a minimum of :math:`1.05^{-5}`, or approximately 28% smaller than, the initial size.
+        """
         newSizeRatio = max( self.currentSizeRatio - 1, 0 )
         if newSizeRatio != self.currentSizeRatio:
             self.setFixedWidth( self.initWidth * 1.05**( newSizeRatio - 5 ) )
@@ -169,6 +198,10 @@ class QDialogWithPrinting( QDialog ):
             self.indexScalingSignal.emit( self.currentSizeRatio - 5 )
 
     def resetSize( self ):
+        """
+        reset the widget size to the initial size.
+        """
+        
         if self.currentSizeRatio != 5:
             self.setFixedWidth( self.initWidth )
             self.setFixedHeight( self.initHeight )
@@ -213,7 +246,7 @@ class QDialogWithPrinting( QDialog ):
         #
         if isIsolated:
             printAction = QAction( self )
-            printAction.setShortcuts( [ 'Shift+Ctrl+P', 'Shift+Command+P' ] )
+            printAction.setShortcuts( [ 'Shift+Ctrl+P' ] )
             printAction.triggered.connect( self.screenGrab )
             self.addAction( printAction )
             #
@@ -226,6 +259,21 @@ class QDialogWithPrinting( QDialog ):
             self.addAction( quitAction )
 
 class ProgressDialog( QDialogWithPrinting ):
+    """
+    A convenient PyQt4_ widget, inheriting from :py:class:`QDialogWithPrinting <plexstuff.plexcore.QDialogWithPrinting>`, that acts as a GUI blocking progress window for longer lasting operations. Like its parent class, this dialog widget is also resizable. This shows the passage of the underlying slow process in 5 second increments.
+
+    This progress dialog exposes three methods -- :py:meth:`addText <plexstuff.plexcore.ProgressDialog.addText>`, :py:meth:`stopDialog <plexstuff.plexcore.ProgressDialog.stopDialog>`, and :py:meth:`startDialog <plexstuff.plexcore.ProgressDialog.startDialog>` -- to which a custom :py:class:`QThread <PyQt4.QtCore.QThread>` object can connect.
+    * :py:meth:`startDialog <plexstuff.plexcore.ProgressDialog.startDialog>` is triggered on long operation start, sometimes with an initial message.
+    * :py:meth:`addText <plexstuff.plexcore.ProgressDialog.addText>` is triggered when some intermediate progress text must be returned.
+    * :py:meth:`stopDialog <plexstuff.plexcore.ProgressDialog.stopDialog>` is triggered on process end.
+
+    Args:
+        parent (:py:class:`QWidget <PyQt4.QtGui.QWidget>`): the parent :py:class:`QWidget <PyQt4.QtGui.QWidget>` on which this dialog widget blocks.
+        windowTitle (str): the label to put on this progress dialog in an internal :py:class:`QLabel <PyQt4.QtGui.QLabel>`.
+        doQuit (bool): if ``True``, then using the quit shortcuts (``Esc`` or ``Ctrl+Shift+Q``) will cause the underlying program to exit. Otherwise, hide the progress dialog.
+
+    .. _PyQt4: https://www.riverbankcomputing.com/static/Docs/PyQt4
+    """
     def __init__( self, parent, windowTitle = "", doQuit = True ):
         super( ProgressDialog, self ).__init__(
             parent, doQuit = doQuit )
@@ -236,19 +284,19 @@ class ProgressDialog( QDialogWithPrinting ):
         self.setFixedWidth( 300 )
         self.setFixedHeight( 400 )
         myLayout.addWidget( QLabel( windowTitle ) )
-        self.errorDialog = QTextEdit( )
+        self.mainDialog = QTextEdit( )
         self.parsedHTML = BeautifulSoup("""
         <html>
         <body>
         </body>
         </html>""", 'lxml' )
-        self.errorDialog.setHtml( self.parsedHTML.prettify( ) )
-        self.errorDialog.setReadOnly( True )
-        self.errorDialog.setStyleSheet("""
+        self.mainDialog.setHtml( self.parsedHTML.prettify( ) )
+        self.mainDialog.setReadOnly( True )
+        self.mainDialog.setStyleSheet("""
         QTextEdit {
         background-color: #373949;
         }""" )
-        myLayout.addWidget( self.errorDialog )
+        myLayout.addWidget( self.mainDialog )
         #
         self.elapsedTime = QLabel( )
         self.elapsedTime.setStyleSheet("""
@@ -270,17 +318,29 @@ class ProgressDialog( QDialogWithPrinting ):
             logging.basicConfig( level = logging.DEBUG )
 
     def addText( self, text ):
+        """adds some text to this progress dialog window.
+
+        :param str text: the text to add.
+        
+        """
         body_elem = self.parsedHTML.find_all('body')[0]
         txt_tag = self.parsedHTML.new_tag("p")
         txt_tag.string = text
         body_elem.append( txt_tag )
-        self.errorDialog.setHtml( self.parsedHTML.prettify( ) )
+        self.mainDialog.setHtml( self.parsedHTML.prettify( ) )
 
     def stopDialog( self ):
+        """stops running, and hides, this progress dialog.
+        """
+        
         self.timer.stop( )
         self.hide( )
 
     def startDialog( self, initString = '' ):
+        """starts running the progress dialog, with an optional labeling string, and starts the timer.
+
+        :param str initString: optional internal labeling string.
+        """
         self.t0 = time.time( )
         self.timer.start( )
         #
@@ -290,7 +350,7 @@ class ProgressDialog( QDialogWithPrinting ):
         <body>
         </body>
         </html>""", 'lxml' )
-        self.errorDialog.setHtml( self.parsedHTML.prettify( ) )
+        self.mainDialog.setHtml( self.parsedHTML.prettify( ) )
         if len( initString ) != 0:
             self.addText( initString )
         self.show( )
@@ -413,12 +473,25 @@ def get_formatted_size_MB( totsizeMB ):
 #
 ## string match with fuzzywuzzy
 def get_maximum_matchval( check_string, input_string ):
+    """
+    Returns the `Levenshtein`_ distance of two strings, implemented using  A perfect match is a score of ``100.0``.
+
+    :param str check_string: first string.
+    :param str input_string: second string.
+    :returns: the `Levenshtein`_ distance between the two strings.
+    :rtype: float
+
+    .. _Levenshtein: https://en.wikipedia.org/wiki/Levenshtein_distance
+    """
     cstring = check_string.strip( ).lower( )
     istring = input_string.strip( ).lower( )
     return partial_ratio( check_string.strip( ).lower( ),
                           input_string.strip( ).lower( ) )
 
 def returnQAppWithFonts( ):
+    """
+    returns a customized :py:class:`QApplication <PyQt4.QtGui.QApplication>` with all custom fonts loaded.
+    """
     app = QApplication([])
     fontNames = sorted(glob.glob( os.path.join( mainDir, 'resources', '*.tff' ) ) )
     for fontName in fontNames: QFontDatabase.addApplicationFont( fontName )
@@ -435,7 +508,7 @@ session = sessionmaker( bind = _engine )( )
 class PlexConfig( Base ):
     """
     This SQLAlchemy_ ORM class contains the configuration data used for running all the plexstuff tools.
-    Stored into the ``plexconfig`` table in the ``~/.config.plexstuff/app.db`` SQLite3_ database.
+    Stored into the ``plexconfig`` table in the SQLite3_ configuration database.
 
     Attributes:
         service: the name of the configuration service we store. Index on this unique key.
@@ -459,8 +532,8 @@ class LastNewsletterDate( Base ):
     """
     This SQLAlchemy_ ORM class contains the date at which the last newsletter was sent.
     It is not used much, and now that `Tautulli`_ has newsletter functionality, I
-    very likely won't use this at all. Stored into the ``plexconfig`` table in the
-    ``~/.config/plexstuff/app.db`` SQLite3_ database.
+    very likely won't use this at all. Stored into the ``lastnewsletterdate`` table in the
+    ``~/.config/plexstuff/app.db`` SQLite3_ configuration database.
         
     Attributes:
         date: the name of the configuration service we store.
@@ -477,13 +550,12 @@ class LastNewsletterDate( Base ):
     
 class PlexGuestEmailMapping( Base ):
     """
-    This SQLAlchemy_ ORM class contains mapping of emails of Plex_ server users, to other email addresses. This is used to determine other email addresses to which Plexstuff one-off or newsletter emails are delivered. Stored into the ``plexconfig`` table in the
-    ``~/.config/plexstuff/app.db`` SQLite3_ database.
+    This SQLAlchemy_ ORM class contains mapping of emails of Plex_ server users, to other email addresses. This is used to determine other email addresses to which Plexstuff one-off or newsletter emails are delivered. Stored in the ``plexguestemailmapping`` table in the SQLite3_ configuration database.
 
-    The structure of each row in this table, named *plexguestemailmapping*, is straightforward.
+    The structure of each row in this table is straightforward. Each column in the table is a member of the object in this ORM class. 
     
-    * the main column is *plexemail*, which must be a friend of the Plex_server.
-    * the second column is *plexmapping*, which is a collection of ***different*** email addresses, to which the Plexstuff emails are sent. For example, if a Plex_ user with email address ``A@email.com`` would like to send email to ``B@mail.com`` and ``C@mail.com``, the *plexmapping* column would be ``B@mail.com,C@mail.com``. NONE of the mapped emails will match *plexemail*.
+    * the main column is *plexemail*, which must be a Plex_ user who has access to the Plex_ server.
+    * the second column is *plexmapping*, which is a collection of **different** email addresses, to which the Plexstuff emails are sent. For example, if a Plex_ user with email address ``A@email.com`` would like to send email to ``B@mail.com`` and ``C@mail.com``, the *plexmapping* column would be ``B@mail.com,C@mail.com``. NONE of the mapped emails will match *plexemail*.
     * the third column  is *plexreplaceexisting*, a boolean that determines whether Plexstuff email also goes to the Plex_ user's email address. From the example above, if ``True`` then a Plex_ user at ``A@mail.com`` will have email delivered ONLY to ``B@mail.com`` and ``C@mail.com``. If ``False``, then that same Plex_ user will have email delivered to all three email addresses (``A@mail.com``, ``B@mail.com``, and ``C@mail.com``).
     
         
@@ -502,6 +574,10 @@ class PlexGuestEmailMapping( Base ):
     plexreplaceexisting = Column( Boolean )
     
 def create_all( ):
+    """
+    creates the necessary SQLite3_ tables into ``~/.config/plexstuff/app.db`` if they don't already exist.
+
+    """
     Base.metadata.create_all( _engine )
     session.commit( )
 

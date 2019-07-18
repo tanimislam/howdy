@@ -1,9 +1,13 @@
-import os, subprocess, time, logging, shlex
-from . import session, Base, PlexConfig
-from sqlalchemy import Column, Integer, String
+import os, subprocess, time, logging, shlex, sys
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                  os.path.abspath( __file__ ) )
+sys.path.append( _mainDir )
 from distutils.spawn import find_executable
 from fabric import Connection
 from patchwork.files import exists, directory
+
+from plexcore import session, PlexConfig
 
 ## validation to see if the data is valid
 def check_credentials( local_dir, sshpath, password, subdir = None ):

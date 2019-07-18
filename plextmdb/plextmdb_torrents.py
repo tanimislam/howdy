@@ -1,9 +1,13 @@
-import threading, requests, fuzzywuzzy
-import re, os, time, logging, validators
+import threading, requests, fuzzywuzzy, os, sys
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                  os.path.abspath( __file__ ) )
+sys.path.append( _mainDir )
+import re, time, logging, validators
 from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
-from requests.compat import urljoin
 from plexcore import get_maximum_matchval, get_formatted_size, return_error_raw
 from plexcore.plexcore import get_jackett_credentials
 from plextmdb import plextmdb

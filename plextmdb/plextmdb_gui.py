@@ -1,4 +1,8 @@
 import numpy, os, sys, requests, json, base64, time
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                  os.path.abspath( __file__ ) )
+sys.path.append( _mainDir )
 import logging, glob, datetime, textwrap, titlecase
 from pathos.multiprocessing import Pool
 from itertools import chain

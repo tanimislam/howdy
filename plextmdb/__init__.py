@@ -3,9 +3,10 @@ from functools import reduce
 _mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
                   os.path.abspath( __file__ ) )
 sys.path.append( _mainDir )
+
 from plexcore import session, PlexConfig, mainDir
 
-def save_tmdb_api( apikey: str ) -> None:
+def save_tmdb_api( apikey ):
     """
     Saves the provided TMDB API key into the database, stored on disk at ~/.config/plexstuff/app.db.
 
@@ -72,7 +73,7 @@ class TMDBEngine( object ):
         
         def getGenres( self ):
             return self._genres.keys( )
-
+        
         def get_tmdb_apiKey( self ):
             return self._tmdb_apiKey
         

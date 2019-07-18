@@ -1,4 +1,9 @@
 import os, sys, sqlite3, tempfile, shutil, numpy, hashlib
+from functools import reduce
+__mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                   os.path.abspath( __file__ ) )
+sys.path.append( _mainDir )
+
 from contextlib import contextmanager
 
 dbloc = os.path.join( '/var/lib/plexmediaserver/Library/',

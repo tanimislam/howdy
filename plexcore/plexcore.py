@@ -1,4 +1,8 @@
 import os, glob, datetime, gspread, logging, sys, numpy, urllib3
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                   os.path.abspath( __file__ ) )
+sys.path.append( _mainDir )
 import uuid, requests, pytz, pypandoc, time, json, validators
 import pathos.multiprocessing as multiprocessing
 # oauth2 stuff
@@ -13,8 +17,8 @@ from urllib.request import urlopen
 from urllib.parse import urlencode, urljoin
 from itertools import chain
 from multiprocessing import Manager
-from . import mainDir, session
-from . import PlexConfig, LastNewsletterDate, PlexGuestEmailMapping
+from plexcore import mainDir, session
+from plexcore import PlexConfig, LastNewsletterDate, PlexGuestEmailMapping
 from plextmdb import plextmdb
 
 # disable insecure request warnings, because do not recall how to get the name of the certificate for a 

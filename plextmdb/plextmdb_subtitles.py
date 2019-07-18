@@ -1,8 +1,13 @@
-import requests, os, re, logging
+import requests, os, re, logging, sys
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                  os.path.abspath( __file__ ) )
+sys.path.append( _mainDir )
 import sys, zipfile, codecs
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from io import BytesIO
+
 from plexcore import subscene
 from plextmdb import plextmdb
 

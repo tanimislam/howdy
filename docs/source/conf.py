@@ -48,6 +48,7 @@ intersphinx_mapping = {
     'beautifulsoup' : ( 'https://www.crummy.com/software/BeautifulSoup/bs4/doc/', None),
     'geoip2' : ( 'https://geoip2.readthedocs.org/en/latest', None),
     'pyqt4' : ( 'https://www.riverbankcomputing.com/static/Docs/PyQt4', None ),
+    'requests' : ( 'https://docs.python-requests.org', None ),
     }
 
 verify = False

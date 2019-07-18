@@ -1,4 +1,4 @@
-import os, sys, sqlite3, tempfile, shutil
+import os, sys, sqlite3, tempfile, shutil, numpy, hashlib
 from contextlib import contextmanager
 
 dbloc = os.path.join( '/var/lib/plexmediaserver/Library/',
@@ -23,3 +23,16 @@ def get_allrows( ):
     with plexconnection( ) as c:
         rows = list( c.execute( 'SELECT * FROM media_parts;' ) )    
         return rows
+
+def get_hash(filename):
+    """
+    Uses the SubDB API to get subtitles
+    """    
+    assert( os.path.isfile( filename ) )
+    readsize = 64 * 1024
+    with open( filename, 'rb') as openfile:
+        size = os.path.getsize( name )
+        data = openfile.read( readsize )
+        openfile.seek( -readsize, os.SEEK_END )
+        data += openfile.read( readsize )
+    return hashlib.md5(data).hexdigest( )

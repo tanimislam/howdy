@@ -24,11 +24,15 @@ this script that does the job by parsing the website"s pages.
 """
 
 # imports
-import re, enum, sys, cfscrape
+import re, enum, sys, cfscrape, sys, os
+from functools import reduce
+__mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                   os.path.abspath( __file__ ) )
+sys.path.append( _mainDir )
 from contextlib import suppress
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from . import get_maximum_matchval
+from plexcore import get_maximum_matchval
 
 # constants
 HEADERS = {

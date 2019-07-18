@@ -1,8 +1,14 @@
-import xdg.BaseDirectory, os, requests, logging, sys, webbrowser
+import os, sys
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                  os.path.abspath( __file__ ) )
+sys.path.append( _mainDir )
+import requests, webbrowser, logging
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
-from . import plexcore, QDialogWithPrinting
-from . import plexcore_deluge, plexcore_rsync, get_popularity_color
+
+from plexcore import plexcore, QDialogWithPrinting
+from plexcore import plexcore_deluge, plexcore_rsync, get_popularity_color
 from plexmusic import plexmusic
 from plextmdb import get_tmdb_api, save_tmdb_api, plextmdb
 from plextvdb import get_tvdb_api, save_tvdb_api, check_tvdb_api, get_token

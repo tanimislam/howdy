@@ -1,4 +1,8 @@
 import numpy, os, sys, requests
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                  os.path.abspath( __file__ ) )
+sys.path.append( _mainDir )
 import logging, glob, datetime, pickle, gzip
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *

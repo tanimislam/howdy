@@ -1,6 +1,11 @@
-import logging, glob, os, requests, datetime, fuzzywuzzy.fuzz, time
+import logging, glob, os, requests, datetime, fuzzywuzzy.fuzz, time, sys
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                  os.path.abspath( __file__ ) )
+sys.path.append( _mainDir )
 import pathos.multiprocessing as multiprocessing
 from itertools import chain
+
 from plextmdb import get_tmdb_api, TMDBEngine, TMDBEngineSimple, tmdb_apiKey
 
 def get_tv_ids_by_series_name( series_name: str, verify = True ) -> list:

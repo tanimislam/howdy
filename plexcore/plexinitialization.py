@@ -1,17 +1,6 @@
 import imp, sys, os, pkg_resources, logging
 import subprocess, shlex, glob, socket
-
-#
-## I have to do this thing because connections
-logging.info('HAVE TO DO THIS IN ORDER TO USE IPV4 WHEN IPV6 DOES NOT WORK')
-_old_getaddrinfo = socket.getaddrinfo
-def _new_getaddrinfo(*args, **kwargs):
-    responses = _old_getaddrinfo(*args, **kwargs)
-    return [
-        response
-        for response in responses
-        if response[0] == socket.AF_INET]
-socket.getaddrinfo = _new_getaddrinfo
+from distutils.spawn import find_executable
 
 def _choose_install_local( requirements ):
     print('YOU NEED TO INSTALL THESE PACKAGES: %s.' % ' '.join( sorted( requirements ) ) )
@@ -100,14 +89,52 @@ def _bootout_pip( ):
     sys.exit( 0 )
 
 class PlexInitialization( object ):
+    """
+    The singleton class that, once called, initializes to perform the following checks:
+
+    1. Force Python to use ipv4 connections.
+
+    2. are PyQt4, sshpass, and pandoc installed on the machine? If not, then exits.
+
+    3. If they are installed, then installs missing Python packages and modules as enumerated in the ``resources/requirements.txt`` resource file.
+    
+    """
+
+    version = 1.0
+    
     class __PlexInitialization( object ):
         def __init__( self ):
+            #
+            ## I have to do this in order to explicitly use ipv4 in instances where ipv6 is used but does not work.
+            logging.info('HAVE TO DO THIS IN ORDER TO USE IPV4 WHEN IPV6 DOES NOT WORK')
+            _old_getaddrinfo = socket.getaddrinfo
+            def _new_getaddrinfo(*args, **kwargs):
+                responses = _old_getaddrinfo(*args, **kwargs)
+                return [
+                    response
+                    for response in responses
+                if response[0] == socket.AF_INET]
+            socket.getaddrinfo = _new_getaddrinfo
+            
             #
             ## first see if we have PyQt4
             try: val = imp.find_module( 'PyQt4' )
             except ImportError:
                 print('ERROR, YOU NEED TO INSTALL PyQt4 ON YOUR MACHINE.')
                 sys.exit( 0 )
+            #
+            ## now see if we have sshpass
+            sshpass = find_executable( 'sshpass' )
+            if sshpass is None:
+                print('ERROR, YOU NEED TO INSTALL sshpass ON YOUR MACHINE.')
+                sys.exit( 0 )
+            #
+            ## now see if we have pandoc
+            pandoc = find_executable( 'pandoc' )
+            if pandoc is None:
+                print('ERROR, YOU NEED TO INSTALL pandoc ON YOUR MACHINE.')
+                sys.exit( 0 )
+                
             from PyQt4.QtGui import QFontDatabase
             
             #
@@ -143,6 +170,6 @@ class PlexInitialization( object ):
             PlexInitialization._instance = PlexInitialization.__PlexInitialization( )
         return PlexInitialization._instance
 
-if __name__=='__main__':
-    os.chdir( os.path.dirname( __file__ ) )
-    pi = PlexInitialization( )
+#if __name__=='__main__':
+#    os.chdir( os.path.dirname( __file__ ) )
+#    pi = PlexInitialization( )

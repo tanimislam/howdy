@@ -16,14 +16,15 @@ from PyQt4.QtGui import *
 def main(info = False, doLocal = True, doLarge = False, verify = True):
     app = returnQAppWithFonts( )
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
-    icn = QIcon( os.path.join( mainDir, 'resources', 'icons', 'plex_tmdb_totgui.png' ) )
+    icn = QIcon( os.path.join(
+        mainDir, 'resources', 'icons', 'plex_tmdb_totgui.png' ) )
     app.setWindowIcon( icn )
     logger = logging.getLogger( )
     if info: logger.setLevel( logging.INFO )
     fullurl, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
-    tmdb_mygui = plextmdb_totgui.TMDBTotGUI( fullurl, token, doLarge = doLarge,
-                                             verify = verify )
+    tmdb_mygui = plextmdb_totgui.TMDBTotGUI(
+        fullurl, token, doLarge = doLarge, verify = verify )
     result = app.exec_( )
     return tmdb_mygui
 

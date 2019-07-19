@@ -223,7 +223,7 @@ def send_individual_email_full_withattachs(
             att.add_header( 'content-disposition', 'attachment', filename = attachName )
             msg.attach( att )
     #send_email_lowlevel( msg )
-    send_email_localsmtp( msg ) # google has big problems sending "big" emails (lots of attachments)
+    send_email_localsmtp( msg ) # google has problems sending "big" emails (lots of attachments)
 
 def send_individual_email(
         mainHTML, email, name = None,

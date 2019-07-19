@@ -11,6 +11,10 @@ from plexcore import plexcore
 from plextvdb import plextvdb
 from optparse import OptionParser
 
+def finish_statement( step ):
+    return '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
+        '%B %d, %Y @ %I:%M:%S %p' ) )
+
 def main( ):
     time0 = time.time( )
     default_time = 1000
@@ -28,6 +32,8 @@ def main( ):
                       help = ' '.join([ 
                           'The maximum number of different magnet links to try',
                           'before giving up. Default is %d.' % default_iters ]) )
+    parser.add_option('--token', dest='token', type=str, action='store',
+                      help = 'Optional argument. If chosen, user provided Plex access token.')
     parser.add_option('--info', dest='do_info', action='store_true', default=False,
                       help = 'If chosen, then run in info mode.' )
     parser.add_option('--debug', dest='do_debug', action='store_true', default=False,
@@ -36,11 +42,12 @@ def main( ):
                       help = 'Number of threads over which to search for TV shows in my library. Default is %d.' %
                       default_num_threads )
     opts, args = parser.parse_args( )
+    #
     logger = logging.getLogger( )
     if opts.do_info: logger.setLevel( logging.INFO )
     if opts.do_debug: logger.setLevel( logging.DEBUG )
     assert( opts.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
-    assert( opts.num_iters >= 1 ), 'error, must have a positive number of iterations.'
+    assert( opts.num_iters >= 1 ), 'error, must have a positive number of maximum iterations.'
     step = 0
     print( '%d, started on %s' % ( step, datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ) )
     step += 1
@@ -51,19 +58,18 @@ def main( ):
         print('\n'.join([
             '%d, error, could not access local Plex server in %0.3f seconds. Exiting...' % (
                 step, time.time( ) - time0 ),
-            '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
-                '%B %d, %Y @ %I:%M:%S %p' ) ) ] ) )
+            finish_statement( step )  ] ) )
         return
     fullURL, token = dat
+    if opts.token is not None: token = opts.token
     #
     ## first find out which libraries are the TV show ones
-    library_dict = plexcore.get_libraries( fullURL = fullURL, token = token, do_full = True )
+    library_dict = plexcore.get_libraries(
+        fullURL = fullURL, token = token, do_full = True )
     if library_dict is None:
         print('\n'.join([
             '%d, error, could not access libraries in plex server in %0.3f seconds. Exiting...' % (
-                step, time.time( ) - time0 ),
-            '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
-                '%B %d, %Y @ %I:%M:%S %p' ) ) ] ) )
+                step, time.time( ) - time0 ), finish_statement( step ) ]))
         return
     #
     valid_keys = list(filter(lambda key: library_dict[ key ][ -1 ] ==
@@ -71,9 +77,7 @@ def main( ):
     if len( valid_keys ) == 0:
         print('\n'.join([
             '%d, Error, could not find a TV show library in %0.3f seconds. Exiting...' %
-            ( time.time( ) - time0, step ),
-            '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
-                '%B %d, %Y @ %I:%M:%S %p' ) ) ] ) )
+            ( time.time( ) - time0, step ), finish_statement( step ) ]))
         return
     tvlib_title = library_dict[ max( valid_keys ) ][ 0 ]
     print( '%d, found TV library: %s.' % ( step, tvlib_title ) )
@@ -95,9 +99,7 @@ def main( ):
     if len( toGet ) == 0:
         print('\n'.join([
             '%d, no episodes to download in %0.3f seconds. Exiting...' % (
-                step, time.time( ) - time0 ),
-            '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
-                '%B %d, %Y @ %I:%M:%S %p' ) ) ] ) )        
+                step, time.time( ) - time0 ), finish_statement( step ) ]))
         return
     print( '%d, took %0.3f seconds to get list of %d episodes to download.' % (
         step, time.time( ) - time0, sum(
@@ -113,8 +115,7 @@ def main( ):
         tv_torrent_gets, tvTorUnits, maxtime_in_secs = opts.maxtime_in_secs,
         num_iters = opts.num_iters )
     print( '\n'.join([ '%d, everything done in %0.3f seconds.' % ( step, time.time( ) - time0 ),
-                       '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
-                           '%B %d, %Y @ %I:%M:%S %p' ) ) ] ) )
+                       finish_statement( step ) ]))
     
 if __name__=='__main__':
     main( )

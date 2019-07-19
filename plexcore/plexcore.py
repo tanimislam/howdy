@@ -141,7 +141,7 @@ def getTokenForUsernamePassword( username, password, verify = True ):
     return response.json()['user']['authentication_token']
     
 def checkServerCredentials( doLocal = False, verify = True ):
-    """Returns get a local or remote URL and Plex_ access token to allow for API access to the server.
+    """Returns get a local or remote URL and Plex_ access token to allow for API access to the server. If there is already a VALID token in the SQLite3_ configuration database, then uses that. Otherwise, tries to 
 
     :param bool doLocal: optional argument, whether to get a local (``http://localhost:32400``) or remote URL. Default is ``False`` (look for the remote URL).
     
@@ -156,6 +156,34 @@ def checkServerCredentials( doLocal = False, verify = True ):
     .. _Plex: https://plex.tv
 
     """
+
+    #
+    ## first see if there are a set of valid login tokens
+    def _get_stored_plexlogin( doLocal, verify ):
+        val = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'plexlogin' ).first( )
+        if val is None: return None
+        
+        data = val.data
+        token = data[ 'token' ]
+        if doLocal: fullURL = 'http://localhost:32400'
+        else:
+            dat = get_owned_servers( token, verify = verify )
+            if dat is None: return None
+            _, fullURL = max( dat.items( ) )
+            fullURL = 'https://%s' % fullURL
+        #
+        ## now see if this works
+        updated_at = get_updated_at( token, fullURL )
+        if updated_at is None:
+            return None
+        return fullURL, token
+
+    dat = _get_stored_plexlogin( doLocal, verify )
+    if dat is not None: return dat
+
+    #
+    ## instead, must get a new set of tokens
     val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'login' ).first( )
     if val is None: return None
@@ -166,10 +194,28 @@ def checkServerCredentials( doLocal = False, verify = True ):
         username, password, verify = verify )
     if token is None: return None
     if not doLocal:
-        _, fullurl = max( get_owned_servers( token, verify = verify ).items( ) )
-        fullurl = 'https://%s' % fullurl
-    else: fullurl = 'http://localhost:32400'
-    return fullurl, token
+        _, fullURL = max( get_owned_servers( token, verify = verify ).items( ) )
+        fullURL = 'https://%s' % fullurl
+    else: fullURL = 'http://localhost:32400'
+    #
+    ## now see if this works
+    updated_at = plexcore.get_updated_at( token, fullURL )
+    if updated_at is None: return None
+
+    #
+    ## now put into the 'plexlogin' service in the 'plexconfig' database
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'plexlogin' ).first( )
+    if val is not None:
+        session.delete( val )
+        session.commit( )
+
+    newval = PlexConfig( service = 'plexlogin',
+                         data = { 'token' : token } )
+    session.add( newval )
+    session.commit( )
+        
+    return fullURL, token
 
 def getCredentials( verify = True ):
     """Returns the Plex_ user account information stored in ``~/.config/plexstuff/app.db``.
@@ -274,7 +320,7 @@ def get_owned_servers( token, verify = True ):
                              params = { 'X-Plex-Token' : token },
                              verify = verify )
     if response.status_code != 200:
-        return None
+        return { }
     myxml = BeautifulSoup( response.content, 'lxml' )
     server_dict = { }
     for server_elem in filter(
@@ -319,6 +365,8 @@ def get_updated_at( token, fullURL = 'http://localhost:32400' ):
     params = { 'X-Plex-Token' : token }
     response = requests.get( fullURL, params = params, verify = False )
     if response.status_code != 200:
+        logging.error( 'Error, could not get updated at status with token = %s, URL = %s.' % (
+            token, fullURL ) )
         return None
     myxml = BeautifulSoup( response.content, 'lxml' )
     media_elem = max( myxml.find_all( 'mediacontainer' ) )
@@ -484,13 +532,14 @@ def _get_library_stats_movie( key, token, fullURL ='http://localhost:32400', sin
     return key, totnum, totdur, totsize, sorted_by_genres
 
 def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
-                            sinceDate = None, num_threads = 16 ):
+                            sinceDate = None, num_threads = 2 * multiprocessing.cpu_count( ),
+                            timeout = None ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date()
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
-                             params = params, verify = False )
+                             params = params, verify = False, timeout = timeout )
     if response.status_code != 200:
         logging.debug('ERROR TANIM: COULD NOT REACH PLEX LIBRARIES AT %s/library/sections/%d/all' % ( fullURL, key ) )
         return None
@@ -517,7 +566,7 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
     ## videlem.get('originallyavailableat') == when first aired
     def _get_show_data( input_tuple ):
         times_requests_given = [ ]
-        cont, session, slist, t0, indices = input_tuple
+        cont, session, slist, t0, timeout, indices = input_tuple
         html = BeautifulSoup( cont, 'lxml' )
         direlems = html.find_all('directory')
         tvdata_tup = [ ]
@@ -530,7 +579,7 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
             if 'art' in direlem.attrs: picurl = '%s%s' % ( fullURL, direlem.get('art') )
             else: picurl = None
             newURL = urljoin( fullURL, direlem['key'] )
-            resp2 = session.get( newURL, params = params, verify = False )
+            resp2 = session.get( newURL, params = params, verify = False, timeout = timeout )
             times_requests_given.append( time.time( ) - t0 )
             if resp2.status_code != 200: continue
             h2 = BeautifulSoup( resp2.content, 'lxml' )
@@ -544,7 +593,7 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
             }
             for idx, leafElem in enumerate(leafElems):
                 newURL = urljoin( fullURL, leafElem[ 'key' ] )
-                resp3 = session.get( newURL, params = params, verify = False )
+                resp3 = session.get( newURL, params = params, verify = False, timeout = timeout )
                 times_requests_given.append( time.time( ) - t0 )
                 h3 = BeautifulSoup( resp3.content, 'lxml' )
                 for videlem in h3.find_all( _valid_videlem ):
@@ -625,7 +674,7 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
         time0 = time.time( )
         input_tuples = list(
             map(lambda idx: (
-                response.content, sess, shared_list, time0,
+                response.content, sess, shared_list, time0, timeout,
                 list( range( idx, num_direlems, act_num_threads ) ) ),
                 range( act_num_threads ) ) )
         #
@@ -642,8 +691,9 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
         logging.debug( 'average time between requests = %0.3e seconds.' % dts.mean( ) )            
         return key, tvdata
 
-def _get_library_stats_show( key, token, fullURL = 'http://localhost:32400',
-                             sinceDate = None ):
+def _get_library_stats_show(
+        key, token, fullURL = 'http://localhost:32400',
+        sinceDate = None ):
     _, tvdata = _get_library_data_show( key, token, fullURL = fullURL,
                                         sinceDate = sinceDate )
     numTVshows = len( tvdata )
@@ -719,15 +769,19 @@ def _get_library_stats_artist( key, token, fullURL = 'http://localhost:32400',
     return key, num_songs, num_albums, num_artists, totdur, totsize
 
 def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
-                              sinceDate = None, num_threads = 16 ):
+                              sinceDate = None, num_threads = 2 * multiprocessing.cpu_count( ),
+                              timeout = None ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
         
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
-                             params = params, verify = False )
-    if response.status_code != 200: return None
+                             params = params, verify = False, timeout = timeout )
+    if response.status_code != 200:
+        logging.error('ERROR: COULD NOT REACH PLEX LIBRARIES AT %s/library/sections/%d/all' %
+                      ( fullURL, key ) )
+        return None
     
     s = requests.Session( )
     s.mount( 'https://', requests.adapters.HTTPAdapter(
@@ -747,14 +801,14 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
         return True
     #
     def _get_artist_data( input_tuple ):
-        cont, indices = input_tuple
+        cont, timeout, indices = input_tuple
         html = BeautifulSoup( cont, 'lxml' )
         artist_elems = html.find_all('directory')
         song_data_sub = [ ]
         for idx in indices:
             artist_elem = artist_elems[ idx ]
             newURL = '%s%s' % ( fullURL, artist_elem.get('key') )
-            resp2 = s.get( newURL, params = params, verify = False )        
+            resp2 = s.get( newURL, params = params, verify = False, timeout = timeout )        
             if resp2.status_code != 200: continue
             h2 = BeautifulSoup( resp2.content, 'lxml' )
             album_elems = list( h2.find_all('directory') )
@@ -762,7 +816,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
             artist_data = { }
             for album_elem in album_elems:
                 newURL = '%s%s' % ( fullURL, album_elem.get('key') )
-                resp3 = s.get( newURL, params = params, verify = False )
+                resp3 = s.get( newURL, params = params, verify = False, timeout = timeout )
                 if resp3.status_code != 200: continue
                 h3 = BeautifulSoup( resp3.content, 'lxml' )
                 track_elems = filter(valid_track, h3.find_all( 'track' ) )
@@ -803,7 +857,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
     len_artistelems = len( BeautifulSoup( response.content, 'lxml' ).find_all('directory') )
     with multiprocessing.Pool( processes=act_num_threads ) as pool:
         input_tuples = list(
-            map(lambda idx: ( response.content, list(range(
+            map(lambda idx: ( response.content, timeout, list(range(
                 idx, len_artistelems, act_num_threads ) ) ),
                 range(act_num_threads)))
         song_data = dict(chain.from_iterable(pool.map(
@@ -821,11 +875,12 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
     return sorted(set(filter(lambda key: library_dict[ key ][1] == 'movie',
                              library_dict ) ) )
 
-def get_library_data( title, token, fullURL = 'http://localhost:32400', num_threads = 16 ):
+def get_library_data( title, token, fullURL = 'http://localhost:32400',
+                      num_threads = 2 * multiprocessing.cpu_count( ), timeout = None ):
     time0 = time.time( )
     params = { 'X-Plex-Token' : token }
     response = requests.get( '%s/library/sections' % fullURL, params = params,
-                             verify = False )
+                             verify = False, timeout = timeout )
     if response.status_code != 200:
         logging.error( "took %0.3f seconds to get here in get_library_data, library = %s." %
                       ( time.time( ) - time0, title ) )
@@ -838,17 +893,17 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400', num_thre
     key, mediatype = library_dict[ title ]
     if mediatype == 'movie':
         _, data = _get_library_data_movie( key, token, fullURL = fullURL,
-                                           num_threads = num_threads )
+                                           num_threads = num_threads, timeout = timeout )
     elif mediatype == 'show':
         _, data =  _get_library_data_show( key, token, fullURL = fullURL,
-                                           num_threads = num_threads )
+                                           num_threads = num_threads, timeout = timeout )
     elif mediatype == 'artist':
         _, data = _get_library_data_artist( key, token, fullURL = fullURL,
-                                            num_threads = num_threads )
+                                            num_threads = num_threads, timeout = timeout )
     else:
-        logging.info( "took %0.3f seconds to gete here in get_library_data, library = %s." %
+        logging.error( "took %0.3f seconds to gete here in get_library_data, library = %s." %
                       ( time.time( ) - time0, title ) )
-        logging.info( "could not find a library with name = %s. Exiting..." % title )
+        logging.error( "could not find a library with name = %s. Exiting..." % title )
         return None
     logging.info( "took %0.3f seconds to gete here in get_library_data, library = %s." %
                   ( time.time( ) - time0, title ) )
@@ -886,7 +941,7 @@ def get_library_stats( key, token, fullURL = 'http://localhost:32400' ):
     else:
         return fullURL, title, mediatype
         
-def get_libraries( fullURL = 'http://localhost:32400', token = None, do_full = False ):
+def get_libraries( fullURL = 'http://localhost:32400', token = None, do_full = False, timeout = None ):
     if token is None:
         if fullURL == 'http://localhost:32400':
             data = checkServerCredentials( doLocal = True )
@@ -898,7 +953,7 @@ def get_libraries( fullURL = 'http://localhost:32400', token = None, do_full = F
     params = { 'X-Plex-Token' : token }
     response = requests.get(
         '%s/library/sections' % fullURL,
-        params = params, verify = False )
+        params = params, verify = False, timeout = timeout )
     if response.status_code != 200:
         logging.error( "error, got status code = %d." %
                        response.status_code )

@@ -34,15 +34,14 @@ def send_email_localsmtp( msg ):
 
 def get_email_contacts_dict( emailList, verify = True ):
     if len( emailList ) == 0: return [ ]
-    #credentials = plexcore.oauthGetGoogleCredentials( verify = verify )
     credentials = plexcore.oauthGetOauth2ClientGoogleCredentials( )
     http_auth = credentials.authorize( httplib2.Http(
         disable_ssl_certificate_validation = not verify ) )
+    people_service = build( 'people', 'v1', http = http_auth,
+                            cache_discovery = False )
     # credentials = plexcore.oauthGetGoogleCredentials( verify = verify )
     # people_service = build( 'people', 'v1', credentials = credentials,
     #                        cache_discovery = False )
-    people_service = build( 'people', 'v1', http = http_auth,
-                            cache_discovery = False )
     connections = people_service.people( ).connections( ).list(
         resourceName='people/me', personFields='names,emailAddresses',
         pageSize = 2000 ).execute( )

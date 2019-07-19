@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from plexcore import plexcore, session
+from plexemail import get_email_contacts_dict
 from optparse import OptionParser
 import requests
 
@@ -52,8 +53,58 @@ def main( ):
         plex_emails = sorted( set( plexcore.get_email_contacts( token, verify = False ) ) )
         print( '\n'.join([ 'YOU HAVE %d PLEX FRIENDS' % len( plex_emails ),
                            '---' ]) )
-        for email in plex_emails:
-            print( email )
+        if len( plex_emails ) == 0: return
+        email_contacts_dict = get_email_contacts_dict( plex_emails )
+        num_with_names = len( list( filter( lambda tup: tup[0] is not None, email_contacts_dict ) ) )
+        num_wo_names = len( email_contacts_dict ) - num_with_names
+        print ('\n'.join([ '%d HAVE FOUND NAMES, %d DO NOT HAVE FOUND NAMES' % (
+            num_with_names, num_wo_names ), '' ]) )
+        if num_with_names != 0:
+            if num_with_names == 1:
+                print( '\n'.join([ '%d PLEX FRIEND WITH NAMES' % num_with_names, '' ]))
+            else:
+                print( '\n'.join([ '%d PLEX FRIENDS WITH NAMES' % num_with_names, '' ]))
+                
+            max_len_name = max(map(lambda tup: len( tup[ 0 ] ),
+                                   filter(lambda tup: tup[0] is not None, email_contacts_dict ) ) )
+            num, rem = divmod( max_len_name, 5 )
+            if rem != 0 or num == 0: num += 1
+            num_spac = 5 * num
+
+            max_len_email = max(map(lambda tup: len( tup[ 1 ] ),
+                                    filter(lambda tup: tup[0] is not None, email_contacts_dict ) ) )
+            num, rem = divmod( max_len_email, 5 )
+            if rem != 0 or num == 0: num += 1
+            num_spac_email = 5 * num            
+            
+            str_format_name = '%%-%02ds' % num_spac
+            str_format_email = '%%-%02ds' % num_spac_email
+            fmt_line = '%s  |  %s' % ( str_format_name, str_format_email )
+            print( fmt_line % ( 'NAME', 'EMAIL' ) )
+            print( ''.join([
+                ''.join( ['-'] * ( num_spac + 2 ) ), '|',
+                ''.join( ['-'] * ( num_spac_email + 2 ) ) ]) )
+            for name, email in sorted(filter(lambda tup: tup[0] is not None, email_contacts_dict ), key = lambda tup: tup[0].split()[-1] ):
+                print( fmt_line % ( name, email ) )
+            if num_wo_names != 0: print('\n')
+        
+        if num_wo_names != 0:
+            if num_wo_names == 1:
+                print( '\n'.join([ '%d PLEX FRIEND WITHOUT NAMES' % num_wo_names, '' ]))
+            else:
+                print( '\n'.join([ '%d PLEX FRIENDS WITHOUT NAMES' % num_wo_names, '' ]))
+            
+            max_len_email = max(map(lambda tup: len( tup[ 1 ] ),
+                                    filter(lambda tup: tup[0] is None, email_contacts_dict ) ) )
+            num, rem = divmod( max_len_email, 5 )
+            if rem != 0 or num == 0: num += 1
+            num_spac_email = 5 * num
+            
+            str_format = '%%-%02ds' % num_spac_email
+            print( str_format % 'EMAIL' )
+            print( ''.join( ['-'] * num_spac_email ) )
+            for _, email in sorted(filter(lambda tup: tup[0] is None, email_contacts_dict ), key = lambda tup: tup[1] ):
+                print( str_format % email )
 
     elif opts.do_addmapping:
         plex_emails = sorted( set( plexcore.get_email_contacts( token, verify = False ) ) )

@@ -40,3 +40,4 @@ if __name__=='__main__':
                       default = True, help = 'Do not verify SSL transactions if chosen.')    
     opts, args = parser.parse_args( )
     main( info = opts.do_info, doLocal = opts.do_local, doLarge = opts.do_large, verify = opts.do_verify )
+    

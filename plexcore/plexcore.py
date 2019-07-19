@@ -434,14 +434,14 @@ def get_current_date_newsletter( ):
     return val.date
 
 def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sinceDate = None,
-                             num_threads = 16 ):
+                             num_threads = 2 * multiprocessing.cpu_count( ), timeout = None ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
         sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
         
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
-                             params = params, verify = False )
+                             params = params, verify = False, timeout = timeout )
     if response.status_code != 200: return None
     def _get_bitrate_size( movie_elem ):
         bitrate_elem = list(filter(lambda elem: 'bitrate' in elem.attrs, movie_elem.find_all('media')))

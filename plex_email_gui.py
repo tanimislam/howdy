@@ -20,12 +20,12 @@ def main( info = False, doLocal = True, doLarge = False, verify = True, onlyEmai
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
     logger = logging.getLogger( )
     if info: logger.setLevel( logging.INFO )
-    _, token = returnToken( doLocal = doLocal, verify = verify )
+    _, token = returnToken( doLocal = doLocal, verify = verify, checkWorkingServer = False )
     val = returnGoogleAuthentication( )
     if not opts.do_onlyemail:
         pegui = PlexEmailGUI( token, doLocal = doLocal, doLarge = doLarge )
     else:
-        pegui = PlexEmailMyGUI( doLarge = doLarge, verify = verify )
+        pegui = PlexEmailMyGUI( token, doLarge = doLarge, verify = verify )
     result = app.exec_( )
 
 if __name__=='__main__':

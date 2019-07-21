@@ -199,7 +199,7 @@ def checkServerCredentials( doLocal = False, verify = True ):
     else: fullURL = 'http://localhost:32400'
     #
     ## now see if this works
-    updated_at = plexcore.get_updated_at( token, fullURL )
+    updated_at = get_updated_at( token, fullURL )
     if updated_at is None: return None
 
     #

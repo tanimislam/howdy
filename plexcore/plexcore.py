@@ -195,7 +195,7 @@ def checkServerCredentials( doLocal = False, verify = True ):
     if token is None: return None
     if not doLocal:
         _, fullURL = max( get_owned_servers( token, verify = verify ).items( ) )
-        fullURL = 'https://%s' % fullurl
+        fullURL = 'https://%s' % fullURL
     else: fullURL = 'http://localhost:32400'
     #
     ## now see if this works

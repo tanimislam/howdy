@@ -1,143 +1,15 @@
-import os, sys, base64, numpy, glob, hashlib, requests
+import os, sys
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                  os.path.abspath(__file__) )
+sys.path.append( _mainDir )
+import base64,numpy, glob, hashlib, requests, io, datetime
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PIL import Image
-from io import BytesIO
 
 from plexcore import plexcore, QDialogWithPrinting
-
-class PlexIMGClient( object ):    
-    def __init__( self, verify = True ):
-        #
-        ## https://api.imgur.com/oauth2 advice on using refresh tokens
-        self.verify = verify
-        data_imgurl = plexcore.get_imgurl_credentials( )
-        clientID = data_imgurl[ 'clientID' ]
-        clientSECRET = data_imgurl[ 'clientSECRET' ]
-        clientREFRESHTOKEN = data_imgurl[ 'clientREFRESHTOKEN' ]
-        response = requests.post( 'https://api.imgur.com/oauth2/token',
-                                  data = {'client_id': clientID,
-                                          'client_secret': clientSECRET,
-                                          'grant_type': 'refresh_token',
-                                          'refresh_token': clientREFRESHTOKEN },
-                                  verify = self.verify )
-        if response.status_code != 200:
-            raise ValueError( "ERROR, COULD NOT GET ACCESS TOKEN." )
-        self.access_token = response.json()[ 'access_token' ]
-        self.albumID = data_imgurl['mainALBUMID']
-        #
-        ## now get all the images in that album
-        ## remember: Authorization: Bearer YOUR_ACCESS_TOKEN
-        response = requests.get( 'https://api.imgur.com/3/album/%s/images' % self.albumID,
-                                 headers = { 'Authorization' : 'Bearer %s' % self.access_token },
-                                 verify = False )
-        if response.status_code != 200:
-            raise ValueError("ERROR, COULD NOT ACCESS ALBUM IMAGES." )
-        self.imghashes = { }
-        all_imgs = response.json( )[ 'data' ]
-        for imgurl_img in all_imgs:
-            name = imgurl_img[ 'name' ]
-            imgName, imgMD5 = map(lambda tok: tok.strip(),
-                                  name.split(':')[:2] )
-            imgID = imgurl_img[ 'id' ]
-            imgLINK = imgurl_img[ 'link' ]
-            self.imghashes[ imgMD5 ] = ( imgName, imgID, imgLINK )
-
-    def refreshImages( self ):
-        response = requests.get( 'https://api.imgur.com/3/album/%s/images' % self.albumID,
-                                 headers = { 'Authorization' : 'Bearer %s' % self.access_token },
-                                 verify = self.verify )
-        if response.status_code != 200:
-            raise ValueError("ERROR, COULD NOT ACCESS ALBUM IMAGES." )
-        self.imghashes = { }        
-        all_imgs = response.json( )[ 'data' ]
-        for imgurl_img in all_imgs:
-            name = imgurl_img[ 'name' ]
-            imgName, imgMD5 = map(lambda tok: tok.strip(),
-                                  name.split(':')[:2] )
-            imgID = imgurl_img[ 'id' ]
-            imgLINK = imgurl_img[ 'link' ]
-            self.imghashes[ imgMD5 ] = ( imgName, imgID, imgLINK )
-            
-    def upload_image( self, b64img, name, imgMD5 = None ):
-        if imgMD5 is None:
-            imgMD5 = hashlib.md5( b64img ).hexdigest( )
-        if imgMD5 in self.imghashes:
-            return self.imghashes[ imgMD5 ]
-        #
-        ## upload and add to the set of images
-        data = { 'image' : b64img,
-                 'type' : 'base64',
-                 'name' : '%s : %s' % ( name, imgMD5 ),
-                 'album' : self.albumID }
-        response = requests.post( 'https://api.imgur.com/3/image', data = data,
-                                  headers = { 'Authorization' : 'Bearer %s' % self.access_token },
-                                  verify = self.verify )
-        if response.status_code != 200:
-            print('ERROR, COULD NOT UPLOAD IMAGE.')
-            return
-        responseData = response.json( )[ 'data' ]
-        link = responseData[ 'link' ]
-        id = responseData[ 'id' ]        
-        self.imghashes[ imgMD5 ] = ( name, id, link )
-        return ( name, id, link )
-
-    def delete_image( self, b64img, imgMD5 = None ):
-        if imgMD5 is None:
-            imgMD5 = hashlib.md5( b64img ).hexdigest( )
-        if imgMD5 not in self.imghashes:
-            return False
-
-        _, imgID, _ = self.imghashes[ imgMD5 ]
-        response = requests.delete( 'https://api.imgur.com/3/image/%s' % imgID,
-                                    headers = { 'Authorization' : 'Bearer %s' % self.access_token },
-                                    verify = self.verify )
-        self.imghashes.pop( imgMD5 )
-        return True
-
-class PNGPicObject( object ):
-    def __init__( self, filename, actName, pImgClient ):
-        assert( os.path.isfile( filename ) )
-        assert( actName.endswith('.png') )
-        self.actName = os.path.basename( actName )
-        self.img = QImage( filename )
-        self.originalImage = Image.open( filename )
-        dpi = 300.0
-        self.originalWidth = self.originalImage.size[0] * 2.54 / dpi # current width in cm
-        self.currentWidth = self.originalWidth
-        #
-        ## do this from http://stackoverflow.com/questions/31826335/how-to-convert-pil-image-image-object-to-base64-string
-        buffer = BytesIO( )
-        self.originalImage.save( buffer, format = 'PNG' )
-        self.b64string = base64.b64encode( buffer.getvalue( ) )
-        self.imgMD5 = hashlib.md5( self.b64string ).hexdigest( )
-        _, _, link = pImgClient.upload_image( self.b64string, self.actName, imgMD5 = self.imgMD5 )
-        self.imgurlLink = link
-        
-    def getInfoGUI( self, parent ):
-        qdl = QDialog( parent )
-        qdl.setModal( True )
-        myLayout = QVBoxLayout( )
-        mainColor = qdl.palette().color( QPalette.Background )
-        qdl.setWindowTitle( 'PNG IMAGE: %s.' % self.actName )
-        qdl.setLayout( myLayout )
-        myLayout.addWidget( QLabel( 'ACTNAME: %s' % self.actName ) )
-        myLayout.addWidget( QLabel( 'URL: %s' % self.imgurlLink ) )
-        qpm = QPixmap.fromImage( self.img ).scaledToWidth( 450 )
-        qlabel = QLabel( )
-        qlabel.setPixmap( qpm )
-        myLayout.addWidget( qlabel )
-        qdl.setFixedWidth( 450 )
-        qdl.setFixedHeight( qpm.height( ) )
-        result = qdl.exec_( )
-
-    def b64String( self ):
-        #assert( self.currentWidth > 0 )
-        #buffer = StringIO( )
-        #reldif = abs( 2 * ( self.originalWidth - self.currentWidth ) / ( self.originalWidth + self.currentWidth ) )
-        #self.originalImage.save( buffer, format = 'PNG' )
-        #return base64.b64encode( buffer.getvalue( ) ), self.currentWidth, self.imgurlLink
-        return self.b64string, self.currentWidth, self.imgurlLink
+from plexemail import PlexIMGClient, PNGPicObject
 
 """
 Because Pandoc does not recognize image size at all, I will
@@ -153,6 +25,8 @@ class PNGWidget( QDialogWithPrinting ):
         self.setModal( True )
         self.parent = parent
         self.setWindowTitle( 'PNG IMAGES' )
+        self.pIMGClient = PlexIMGClient( verify = False )
+        #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         self.pngPicTableModel = PNGPicTableModel( self )
@@ -174,7 +48,6 @@ class PNGWidget( QDialogWithPrinting ):
 class PNGPicTableView( QTableView ):
     def __init__( self, parent ):
         super( PNGPicTableView, self ).__init__( parent )
-        self.pImgClient = PlexIMGClient( verify = False )
         self.parent = parent
         self.setModel( parent.pngPicTableModel )
         self.setShowGrid( True )
@@ -184,8 +57,9 @@ class PNGPicTableView( QTableView ):
         self.setSelectionMode( QAbstractItemView.SingleSelection )
         self.setSortingEnabled( True )
         #
-        self.setColumnWidth( 0, 220 )
-        self.setColumnWidth( 1, 180 )
+        self.setColumnWidth( 0, 200 )
+        self.setColumnWidth( 1, 80 )
+        self.setColumnWidth( 2, 120 )
         self.setFixedWidth( 410 )
         #
         toBotAction = QAction( self )
@@ -212,11 +86,15 @@ class PNGPicTableView( QTableView ):
                 break
             numNow += 1
         self.parent.pngPicTableModel.addPicObject(
-            PNGPicObject( pngFileName, actName, self.pImgClient ) )
+            PNGPicObject( {
+                'initialization' : 'FILE',
+                'filename' : pngFileName,
+                'actName' : actName }, self.parent.pIMGClient ) )
 
     def info( self ):
-        indices_valid = filter(lambda index: index.column( ) == 0,
-                               self.selectionModel().selectedIndexes( ) )
+        indices_valid = list(
+            filter(lambda index: index.column( ) == 0,
+                   self.selectionModel().selectedIndexes( ) ) )
         row = max(map(lambda index: index.row( ), indices_valid ) )
         self.parent.pngPicTableModel.infoOnPicAtRow( row )
 
@@ -224,7 +102,13 @@ class PNGPicTableView( QTableView ):
         indices_valid = filter(lambda index: index.column( ) == 0,
                                self.selectionModel().selectedIndexes( ) )
         row = max(map(lambda index: index.row( ), indices_valid ) )
-        self.parent.pngPicTableModel.removePicObject( row )    
+        self.parent.pngPicTableModel.removePicObject( row )
+
+    def removeAndDelete( self ):
+        indices_valid = filter(lambda index: index.column( ) == 0,
+                               self.selectionModel().selectedIndexes( ) )
+        row = max(map(lambda index: index.row( ), indices_valid ) )
+        self.parent.pngPicTableModel.removeAndDeletePicObject( row )
         
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
@@ -238,13 +122,19 @@ class PNGPicTableView( QTableView ):
             removeAction = QAction( 'Remove', menu )
             removeAction.triggered.connect( self.remove )
             menu.addAction( removeAction )
+            removeAndDeleteAction = QAction( 'Remove and Delete', menu )
+            removeAndDeleteAction.triggered.connect( self.removeAndDelete )
+            menu.addAction( removeAndDeleteAction )
         menu.popup( QCursor.pos( ) )        
 
 class PNGPicTableModel( QAbstractTableModel ):
     def __init__( self, parent ):
         super(PNGPicTableModel, self).__init__( parent )
         self.parent = parent
-        self.pngPicObjects = [ ]
+        self.layoutAboutToBeChanged.emit( )
+        self.pngPicObjects = sorted( PNGPicObject.createPNGPicObjects(
+            parent.pIMGClient ), key = lambda pngpo: pngpo.imgDateTime )[::-1]
+        self.layoutChanged.emit( )
 
     def infoOnPicAtRow( self, actualRow ):
         currentRow = self.pngPicObjects[ actualRow ]
@@ -254,10 +144,14 @@ class PNGPicTableModel( QAbstractTableModel ):
         return len( self.pngPicObjects )
 
     def columnCount( self, parent ):
-        return 2
+        return 3
 
     def flags( self, index ):
-        return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable
+        col = index.column( )
+        if col in ( 0, ):
+            return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable
+        else:
+            return Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
     def headerData( self, col, orientation, role ):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
@@ -265,6 +159,8 @@ class PNGPicTableModel( QAbstractTableModel ):
                 return 'PNG PICTURE'
             elif col == 1:
                 return 'WIDTH IN CM'
+            elif col == 2:
+                return 'UPLOADED'
         return None
 
     def setData( self, index, value, role ):
@@ -277,7 +173,8 @@ class PNGPicTableModel( QAbstractTableModel ):
                 return False
             if candActName in picObjNames:
                 return False
-            self.pngPicObjects[ row ].actName = candActName
+            self.pngPicObjects[ row ].changeName(
+                candActName, self.parent.pIMGClient )
             return True
         elif col == 1:
             try:
@@ -286,7 +183,7 @@ class PNGPicTableModel( QAbstractTableModel ):
                     return False
                 self.pngPicObjects[ row ].currentWidth = currentWidth
                 return True
-            except:
+            except Exception as e:
                 return False
 
     def data( self, index, role ):
@@ -303,10 +200,27 @@ class PNGPicTableModel( QAbstractTableModel ):
                 return self.pngPicObjects[ row ].actName
             elif col == 1:
                 return '%0.3f' % self.pngPicObjects[ row ].currentWidth
+            elif col == 2:
+                return self.pngPicObjects[ row ].imgDateTime.strftime( '%d/%m/%Y' )
+
+    def sort( self, col, order ): # sort on datetime
+        self.layoutAboutToBeChanged.emit( )
+        print( self.pngPicObjects[0].imgDateTime )
+        self.pngPicObjects.sort(
+            key = lambda pngpo: -datetime.datetime.timestamp( pngpo.imgDateTime ) )
+        self.layoutChanged.emit( )
 
     def removePicObject( self, row ):
         assert( row >= 0 and row < len( self.pngPicObjects ) )
-        self.pngPicObjects.pop( row )
+        pngpo = self.pngPicObjects.pop( row )
+        pngpo.delete( parent.plexImgClient )
+        self.layoutAboutToBeChanged.emit( )
+        self.layoutChanged.emit( )
+
+    def removeAndDeletePicObject( self, row ):
+        assert( row >= 0 and row < len( self.pngPicObjects ) )
+        pngpo = self.pngPicObjects.pop( row )
+        self.parent.pIMGClient.delete_image( pngpo.b64string, pngpo.imgMD5 )
         self.layoutAboutToBeChanged.emit( )
         self.layoutChanged.emit( )
 

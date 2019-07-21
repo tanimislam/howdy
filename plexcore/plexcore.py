@@ -140,15 +140,16 @@ def getTokenForUsernamePassword( username, password, verify = True ):
         return None
     return response.json()['user']['authentication_token']
     
-def checkServerCredentials( doLocal = False, verify = True ):
+def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer = True ):
     """Returns get a local or remote URL and Plex_ access token to allow for API access to the server. If there is already a VALID token in the SQLite3_ configuration database, then uses that. Otherwise, tries to 
 
     :param bool doLocal: optional argument, whether to get a local (``http://localhost:32400``) or remote URL. Default is ``False`` (look for the remote URL).
     
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    :param bool checkWorkingServer: optional argument, whether to check if the server is working. Default is ``True``.
     
     :returns: a tuple of server URL and Plex_ access token.
-    
     :rtype: tuple
 
     .. seealso:: :py:meth:`getCredentials <plexstuff.plexcore.plexcore.getCredentials>`
@@ -174,6 +175,7 @@ def checkServerCredentials( doLocal = False, verify = True ):
             fullURL = 'https://%s' % fullURL
         #
         ## now see if this works
+        if not checkWorkingServer: return fullURL, token
         try:
             updated_at = get_updated_at( token, fullURL )
             if updated_at is None: return None
@@ -198,6 +200,7 @@ def checkServerCredentials( doLocal = False, verify = True ):
         _, fullURL = max( get_owned_servers( token, verify = verify ).items( ) )
         fullURL = 'https://%s' % fullURL
     else: fullURL = 'http://localhost:32400'
+    if not checkWorkingServer: return fullURL, token # don't store into plexlogin database
     #
     ## now see if this works
     try:
@@ -220,10 +223,11 @@ def checkServerCredentials( doLocal = False, verify = True ):
         
     return fullURL, token
 
-def getCredentials( verify = True ):
+def getCredentials( verify = True, checkWorkingServer = True ):
     """Returns the Plex_ user account information stored in ``~/.config/plexstuff/app.db``.
 
     :param bool verify: optional argument, whether to use SSL verification. Default is ``True``.
+    :param bool checkWorkingServer: optional argument, whether to check if the server is working. Default is ``True``.
     :returns: the Plex_ account tuple of ``(username, password)``.
     :rtype: tuple
 

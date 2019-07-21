@@ -1126,11 +1126,12 @@ def _checkForLocal( ):
     except requests.exceptions.ConnectionError:
         return None
 
-def returnToken( doLocal = True, verify = True ):    
+def returnToken( doLocal = True, verify = True, checkWorkingServer = True ):    
     #
     ## now check if we have server credentials
     val = plexcore.checkServerCredentials(
-        verify = verify, doLocal = doLocal )
+        verify = verify, doLocal = doLocal,
+        checkWorkingServer = checkWorkingServer )
     if val is not None:
         fullurl, token = val
         return fullurl, token

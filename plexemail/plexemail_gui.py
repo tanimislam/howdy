@@ -1,4 +1,9 @@
 import os, sys, titlecase, datetime, json, re, urllib, time
+from functools import reduce
+_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
+                  os.path.abspath(__file__) )
+sys.path.append( _mainDir )
+
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *

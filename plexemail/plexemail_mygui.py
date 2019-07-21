@@ -117,7 +117,9 @@ class PlexEmailMyGUI( QWidget ):
         qf.setPointSize( int( 11 * self.resolution ) )
         qfm = QFontMetrics( qf )
         lines = [ ]
-        for idx, ( name, email ) in enumerate( self.emails_array ):
+        for idx, ( name, email ) in enumerate(
+                sorted( self.emails_array,
+                        key = lambda tup: tup[0].split()[-1] ) ):
             if name is None:
                 lines.append( '%02d: %s' % ( idx + 1, email ) )
             else:

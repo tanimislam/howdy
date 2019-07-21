@@ -4,7 +4,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from bs4 import BeautifulSoup
 
-from plexcore import plexcore, mainDir
+from plexcore import plexcore, mainDir, QDialogWithPrinting
 from plexemail import plexemail, plexemail_basegui, emailAddress, emailName
 from plexemail import get_email_contacts_dict
 
@@ -24,9 +24,9 @@ class QLineCustom( QLineEdit ):
     def returnPressed( ):
         self.setText( titlecase.titlecase( str( self.text( ) ).strip( ) ) )
 
-class PlexEmailMyGUI( QWidget ):
+class PlexEmailMyGUI( QDialogWithPrinting ):
     def __init__( self, token, doLarge = False, verify = True ):
-        super( PlexEmailMyGUI, self ).__init__( )
+        super( PlexEmailMyGUI, self ).__init__( None, )
         self.resolution = 1.0
         self.verify = verify
         if doLarge:
@@ -47,10 +47,10 @@ class PlexEmailMyGUI( QWidget ):
         self.mainEmailCanvas.setTabStopWidth( 2 * qfm.width( 'A' ) )
         self.subjectLine = QLineCustom( )
         self.statusLabel = QLabel( )
-        self.checkLaTeXButton = QPushButton( 'PRINT EMAIL' )
-        self.emailListButton = QPushButton( 'PLEX GUESTS' )
-        self.emailSendButton = QPushButton( 'SEND EMAIL' )
-        self.emailTestButton = QPushButton( 'TEST EMAIL' )
+        self.checkLaTeXButton = QPushButton( '\n'.join('PRINT EMAIL'.split( ) ) )
+        self.emailListButton = QPushButton( '\n'.join( 'PLEX GUESTS'.split( ) ) )
+        self.emailSendButton = QPushButton( '\n'.join( 'SEND EMAIL'.split( ) ) )
+        self.emailTestButton = QPushButton( '\n'.join( 'TEST EMAIL'.split( ) ) )
         self.pngAddButton = QPushButton( 'ADD PNGS' )
         self.emailSendButton.setEnabled( False )
         self.emailTestButton.setEnabled( False )
@@ -99,6 +99,13 @@ class PlexEmailMyGUI( QWidget ):
         self.setFixedHeight( 33 * qfm.height( ) )
         self.show( )
 
+    def contextMenuEvent( self, event ):
+        menu = QMenu( self )
+        screenGrabAction = QAction( 'screenGrab', menu )
+        screenGrabAction.triggered.connect( self.screenGrab )
+        menu.addAction( screenGrabAction )
+        menu.popup( QCursor.pos( ) )
+
     def addPNGs( self ):
         self.pngWidget.show( )
         # self.pngAddButton.setEnabled( False )
@@ -124,7 +131,7 @@ class PlexEmailMyGUI( QWidget ):
                 lines.append( '%02d: %s' % ( idx + 1, email ) )
             else:
                 lines.append( '%02d: %s <%s>' % ( idx + 1, name, email ) )
-        qdl.setFixedWidth( 1.1 * max(map(lambda line: qfm.width(line.strip()), lines)))
+        qdl.setFixedWidth( 1.50 * max(map(lambda line: qfm.width(line.strip()), lines)))
         qdl.setFixedHeight( 1.15 * len( self.emails_array ) * qfm.height( ) )
         qte.setPlainText( '\n'.join( lines ) )
         qdl.show( )
@@ -155,14 +162,16 @@ class PlexEmailMyGUI( QWidget ):
             self.emailTestButton.setEnabled( False )
             self.statusLabel.setText( 'INVALID LaTeX' )
             return
-        html = plexcore.processValidHTMLWithPNG( html, self.pngWidget.getAllDataAsDict( ),
-                                                 doEmbed = True )
+        html = plexcore.processValidHTMLWithPNG(
+            html, self.pngWidget.getAllDataAsDict( ),
+            doEmbed = True )
         self.emailSendButton.setEnabled( True )
         self.emailTestButton.setEnabled( True )
         self.statusLabel.setText( 'VALID LaTeX' )
         #
         qdl = QDialog( self )
         qdl.setWindowTitle( 'HTML EMAIL BODY' )
+        qdl.setModal( True )
         qte = QTextEdit( qdl )
         qte.setReadOnly( True )
         qdlLayout = QVBoxLayout( )
@@ -176,6 +185,13 @@ class PlexEmailMyGUI( QWidget ):
         qdl.setFixedHeight( 550 )
         qte.setHtml( html )
         qdl.show( )
+        def _close( ):
+            qdl.close( )
+        closeAction = QAction( self )
+        closeAction.setShortcuts( [ 'Esc' ] )
+        closeAction.triggered.connect( _close )
+        #
+        ##
         result = qdl.exec_( )
 
     def getHTML( self ):

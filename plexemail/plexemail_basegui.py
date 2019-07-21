@@ -126,6 +126,7 @@ class PNGPicObject( object ):
         qpm = QPixmap.fromImage( self.img ).scaledToWidth( 450 )
         qlabel = QLabel( )
         qlabel.setPixmap( qpm )
+        myLayout.addWidget( qlabel )
         qdl.setFixedWidth( 450 )
         qdl.setFixedHeight( qpm.height( ) )
         result = qdl.exec_( )
@@ -155,7 +156,7 @@ class PNGWidget( QDialogWithPrinting ):
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         self.pngPicTableModel = PNGPicTableModel( self )
-        self.pngTV = PNGPicTableView( self, self.pngPicTableModel )
+        self.pngTV = PNGPicTableView( self )
         myLayout.addWidget( self.pngTV )
         #
         printAction = QAction( self )
@@ -171,11 +172,11 @@ class PNGWidget( QDialogWithPrinting ):
         return self.pngPicTableModel.getDataAsDict( )
 
 class PNGPicTableView( QTableView ):
-    def __init__( self, parent, pngpictablemodel ):
+    def __init__( self, parent ):
         super( PNGPicTableView, self ).__init__( parent )
         self.pImgClient = PlexIMGClient( verify = False )
         self.parent = parent
-        self.setModel( pngpictablemodel )
+        self.setModel( parent.pngPicTableModel )
         self.setShowGrid( True )
         self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
         self.horizontalHeader( ).setResizeMode( QHeaderView.Fixed )
@@ -204,32 +205,33 @@ class PNGPicTableView( QTableView ):
             return
         if not os.path.isfile( pngFileName ):
             return
-        numNow = len( self.model( ).pngPicObjects ) + 1
+        numNow = len( self.parent.pngPicTableModel.pngPicObjects ) + 1
         while( True ):
             actName = 'figure_%03d.png' % numNow
-            if actName not in set(map(lambda obj: obj.actName, self.model( ).pngPicObjects ) ):
+            if actName not in set(map(lambda obj: obj.actName, self.parent.pngPicTableModel.pngPicObjects ) ):
                 break
             numNow += 1
-        self.model( ).addPicObject( PNGPicObject( pngFileName, actName, self.pImgClient ) )
+        self.parent.pngPicTableModel.addPicObject(
+            PNGPicObject( pngFileName, actName, self.pImgClient ) )
 
     def info( self ):
         indices_valid = filter(lambda index: index.column( ) == 0,
                                self.selectionModel().selectedIndexes( ) )
         row = max(map(lambda index: index.row( ), indices_valid ) )
-        self.model( ).infoOnPicAtRow( row )
+        self.parent.pngPicTableModel.infoOnPicAtRow( row )
 
     def remove( self ):
         indices_valid = filter(lambda index: index.column( ) == 0,
                                self.selectionModel().selectedIndexes( ) )
         row = max(map(lambda index: index.row( ), indices_valid ) )
-        self.model( ).removePicObject( row )    
+        self.parent.pngPicTableModel.removePicObject( row )    
         
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
         addAction = QAction( 'Add', menu )
         addAction.triggered.connect( self.add )
         menu.addAction( addAction )
-        if len( self.model( ).pngPicObjects ) != 0:
+        if len( self.parent.pngPicTableModel.pngPicObjects ) != 0:
             infoAction = QAction( 'Information', menu )
             infoAction.triggered.connect( self.info )
             menu.addAction( infoAction)

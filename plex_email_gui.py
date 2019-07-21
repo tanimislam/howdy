@@ -12,12 +12,15 @@ from plexemail.plexemail_gui import PlexEmailGUI
 from plexemail.plexemail_mygui import PlexEmailMyGUI
 from plexcore.plexcore_gui import returnToken, returnGoogleAuthentication
 from optparse import OptionParser
-from PyQt4.QtGui import QApplication, QStyleFactory
+from PyQt4.QtGui import QApplication, QStyleFactory, QIcon
 import qdarkstyle
 
 def main( info = False, doLocal = True, doLarge = False, verify = True, onlyEmail = False ):
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
+    icn = QIcon( os.path.join(
+        mainDir, 'resources', 'icons', 'plex_email_gui.png' ) )
+    app.setWindowIcon( icn )
     logger = logging.getLogger( )
     if info: logger.setLevel( logging.INFO )
     _, token = returnToken( doLocal = doLocal, verify = verify, checkWorkingServer = False )

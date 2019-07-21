@@ -174,9 +174,10 @@ def checkServerCredentials( doLocal = False, verify = True ):
             fullURL = 'https://%s' % fullURL
         #
         ## now see if this works
-        updated_at = get_updated_at( token, fullURL )
-        if updated_at is None:
-            return None
+        try:
+            updated_at = get_updated_at( token, fullURL )
+            if updated_at is None: return None
+        except: return None
         return fullURL, token
 
     dat = _get_stored_plexlogin( doLocal, verify )
@@ -199,8 +200,10 @@ def checkServerCredentials( doLocal = False, verify = True ):
     else: fullURL = 'http://localhost:32400'
     #
     ## now see if this works
-    updated_at = get_updated_at( token, fullURL )
-    if updated_at is None: return None
+    try:
+        updated_at = get_updated_at( token, fullURL )
+        if updated_at is None: return None
+    except: return None
 
     #
     ## now put into the 'plexlogin' service in the 'plexconfig' database

@@ -25,7 +25,7 @@ def main( info = False, doLocal = True, doLarge = False, verify = True, onlyEmai
     if not opts.do_onlyemail:
         pegui = PlexEmailGUI( token, doLocal = doLocal, doLarge = doLarge )
     else:
-        pegui = PlexEmailMyGUI( token, doLarge = doLarge, verify = verify )
+        pegui = PlexEmailMyGUI( doLarge = doLarge, verify = verify )
     result = app.exec_( )
 
 if __name__=='__main__':

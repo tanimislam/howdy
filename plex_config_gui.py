@@ -6,15 +6,17 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-from functools import reduce
 import qdarkstyle, logging, glob, os
 from optparse import OptionParser
-from PyQt4.QtGui import QApplication
-from plexcore import plexcore_gui
+from PyQt4.QtGui import QApplication, QIcon
+from plexcore import plexcore_gui, mainDir
 
 def main( info = False, doLocal = True, verify = True ):
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
+    icn = QIcon( os.path.join(
+        mainDir, 'resources', 'icons', 'plex_config_gui.png' ) )
+    app.setWindowIcon( icn )
     pcgui = plexcore_gui.PlexConfigGUI( verify = verify )
     pcgui.setStyleSheet("""
     QWidget {

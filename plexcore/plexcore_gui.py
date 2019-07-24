@@ -4,6 +4,7 @@ _mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
                   os.path.abspath( __file__ ) )
 sys.path.append( _mainDir )
 import requests, webbrowser, logging
+from requests_oauthlib import OAuth2Session
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
@@ -81,22 +82,32 @@ class PlexConfigCredWidget( PlexConfigWidget ):
 
         #
         ## now look at the IMGURL
+        def _get_creds( ):
+            try:
+                imgur_credentials = plexcore.get_imgurl_credentials( )
+                clientID = imgur_credentials[ 'clientID' ]
+                clientSECRET = imgur_credentials[ 'clientSECRET' ]
+                clientREFRESHTOKEN = imgur_credentials[ 'clientREFRESHTOKEN' ]
+                return clientID, clientSECRET, clientREFRESHTOKEN
+            except: return '', '', ''
+
+        clientID, clientSECRET, clientREFRESHTOKEN = _get_creds( )            
         try:
-            clientID, clientSECRET, clientREFRESHTOKEN = \
-                plexcore.get_imgurl_credentials( )
             if not plexcore.check_imgurl_credentials(
                     clientID, clientSECRET, clientREFRESHTOKEN,
                     verify = self.verify ):
                 raise ValueError( "Error, invalid imgurl creds.")
             self.imgurl_id.setText( clientID )
             self.imgurl_secret.setText( clientSECRET )
-            self.imgurl_refreshtoken.setText( clientREFRESHTOKEN )
+            self.imgurl_id.setStyleSheet( "QWidget {background-color: #370b4f;}" )
+            self.imgurl_secret.setStyleSheet( "QWidget {background-color: #370b4f;}" )
             self.imgurl_status.setText( 'WORKING' )
             self._emitWorkingStatusDict[ 'IMGURL' ] = True
-        except:
-            self.imgurl_id.setText( '' )
-            self.imgurl_secret.setText( '' )
-            self.imgurl_refreshtoken.setText( '' )
+        except Exception as e:
+            self.imgurl_id.setText( clientID )
+            self.imgurl_secret.setText( clientSECRET )
+            self.imgurl_id.setStyleSheet( "QWidget {background-color: purple;}" )
+            self.imgurl_secret.setStyleSheet( "QWidget {background-color: purple;}" )
             self.imgurl_status.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'IMGURL' ] = False
 
@@ -160,25 +171,22 @@ class PlexConfigCredWidget( PlexConfigWidget ):
     def pushIMGURLConfig( self ):
         clientID = self.imgurl_id.text( ).strip( )
         clientSECRET = self.imgurl_secret.text( ).strip( )
-        clientREFRESHTOKEN = self.imgurl_refreshtoken.text( ).strip( )
-        try:
-            status = plexcore.store_imgurl_credentials(
-                clientID, clientSECRET, clientREFRESHTOKEN, verify = self.verify )
-            if status != 'SUCCESS':
-                raise ValueError("Error, invalid TVDB API keys." )
-            self.imgurl_id.setText( clientID )
-            self.imgurl_secret.setText( clientSECRET )
-            self.imgurl_refreshtoken.setText( clientREFRESHTOKEN )
-            self.imgurl_status.setText( 'WORKING' )
-            self._emitWorkingStatusDict[ 'IMGURL' ] = True
-        except:
-            self.imgurl_id.setText( '' )
-            self.imgurl_secret.setText( '' )
-            self.imgurl_refreshtoken.setText( '' )
-            self.imgurl_status.setText( 'NOT WORKING' )
-            self._emitWorkingStatusDict[ 'IMGURL' ] = False
-        logging.debug( 'got here IMGURL' )
-        self.workingStatus.emit( self._emitWorkingStatusDict )
+        def checkStatus( state ):
+            if state:
+                self.imgurl_status.setText( 'WORKING' )
+                self.imgurl_id.setStyleSheet( "QWidget {background-color: #370b4f;}" )
+                self.imgurl_secret.setStyleSheet( "QWidget {background-color: #370b4f;}" )
+            else:
+                self.imgurl_status.setText( 'NOT WORKING' )
+                self.imgurl_id.setStyleSheet( "QWidget {background-color: purple;}" )
+                self.imgurl_secret.setStyleSheet( "QWidget {background-color: purple;}" )
+            self._emitWorkingStatusDict[ 'IMGURL' ] = state
+            self.workingStatus.emit( self._emitWorkingStatusDict )
+
+        ioauth2dlg = ImgurOauth2Dialog( self, clientID, clientSECRET )
+        ioauth2dlg.emitState.connect( checkStatus )
+        ioauth2dlg.show( )
+        ioauth2dlg.exec_( )
 
     def pushGoogleConfig( self ): # this is done by button
         def checkStatus( state ):
@@ -252,8 +260,9 @@ class PlexConfigCredWidget( PlexConfigWidget ):
         ## imgurl
         self.imgurl_id = QLineEdit( )
         self.imgurl_secret = QLineEdit( )
-        self.imgurl_refreshtoken = QLineEdit( )
         self.imgurl_status = QLabel( )
+        self.imgurl_oauth = QPushButton( 'CLIENT REFRESH' )
+        self.imgurl_oauth.setAutoDefault( False )
         imgurlWidget = QWidget( )
         imgurlWidget.setStyleSheet("""
         QWidget {
@@ -262,20 +271,18 @@ class PlexConfigCredWidget( PlexConfigWidget ):
         imgurlLayout = QGridLayout( )
         imgurlWidget.setLayout( imgurlLayout )
         imgurlLayout.addWidget( QLabel( 'IMGURL' ), 0, 0, 1, 1 )
-        imgurlLayout.addWidget( QLabel( ), 0, 1, 1, 2 )
+        imgurlLayout.addWidget( self.imgurl_oauth, 0, 1, 1, 2 )
         imgurlLayout.addWidget( self.imgurl_status, 0, 3, 1, 1 )
         imgurlLayout.addWidget( QLabel( 'ID' ), 1, 0, 1, 1 )
         imgurlLayout.addWidget( self.imgurl_id, 1, 1, 1, 3 )
         imgurlLayout.addWidget( QLabel( 'SECRET' ), 2, 0, 1, 1 )
         imgurlLayout.addWidget( self.imgurl_secret, 2, 1, 1, 3 )
-        imgurlLayout.addWidget( QLabel( 'REFRESH' ), 3, 0, 1, 1 )
-        imgurlLayout.addWidget( self.imgurl_refreshtoken, 3, 1, 1, 3 )
         myLayout.addWidget( imgurlWidget )
-        self.imgurl_id.returnPressed.connect(
-            self.pushIMGURLConfig )
-        self.imgurl_secret.returnPressed.connect(
-            self.pushIMGURLConfig )
-        self.imgurl_refreshtoken.returnPressed.connect(
+        #self.imgurl_id.returnPressed.connect(
+        #    self.pushIMGURLConfig )
+        #self.imgurl_secret.returnPressed.connect(
+        #    self.pushIMGURLConfig )
+        self.imgurl_oauth.clicked.connect(
             self.pushIMGURLConfig )
         #
         ## google
@@ -374,9 +381,10 @@ class PlexConfigLoginWidget( PlexConfigWidget ):
             if dat is None:
                 raise ValueError("Error, could not get valid Jackett credentials." )
             url, apikey = dat
+            if not url.endswith('/'): url = '%s/' % url
             self.jackett_url.setText( url )
             self.jackett_apikey.setText( apikey )
-            status = plexcore.check_jackett_credentials(
+            _, status = plexcore.check_jackett_credentials(
                 url, apikey, verify = self.verify )
             if status == 'SUCCESS':
                 self.jackett_status.setText( 'WORKING' )
@@ -493,7 +501,7 @@ class PlexConfigLoginWidget( PlexConfigWidget ):
             self.jackett_status.setText( 'WORKING' )
             self._emitWorkingStatusDict[ 'JACKETT' ] = True
         except Exception as e:
-            logging.debug( 'ERROR MESSAGE IN JACKETT CONFIG: %s.' % str( e ) )
+            logging.error( 'ERROR MESSAGE IN JACKETT CONFIG: %s.' % str( e ) )
             self.jackett_status.setText( 'NOT WORKING' )
             self._emitWorkingStatusDict[ 'JACKETT' ] = False
         self.workingStatus.emit( self._emitWorkingStatusDict )
@@ -1203,6 +1211,81 @@ class UsernamePasswordServerDialog( QDialog ):
         plexcore.pushCredentials( username, password )
         self.clearCreds( )
         self.accept( )
+
+class ImgurOauth2Dialog( QDialogWithPrinting ):
+    emitState = pyqtSignal( bool )
+
+    def __init__( self, parent, imgur_clientId, imgur_clientSECRET ):
+        if parent is not None:
+            super( ImgurOauth2Dialog, self ).__init__(
+                parent, isIsolated = True, doQuit = False )
+            self.verify = parent.verify
+        else:
+            super( ImgurOauth2Dialog, self ).__init__(
+                None, isIsolated = True, doQuit = True )
+            self.verify = False
+        self.setModal( True )
+        self.setWindowTitle( 'PLEX ACCOUNT IMGUR OAUTH2 CREDENTIALS' )
+        mainLayout = QVBoxLayout( )
+        self.setLayout( mainLayout )
+        self.imgur_clientId = imgur_clientId
+        self.imgur_clientSECRET = imgur_clientSECRET
+        #
+        mainLayout.addWidget( QLabel(
+            '\n'.join([
+                       'FILL OUT THE MAIN URL (IN BROWSER BAR)',
+                       'TO WHICH YOU ARE REDIRECTED IN THE END.'  ])))
+        #
+        authWidget = QWidget( )
+        authLayout = QGridLayout( )
+        authWidget.setLayout( authLayout )
+        self.authCredentials = QLineEdit( )
+        # self.authCredentials.setEchoMode( QLineEdit.Password )
+        authLayout.addWidget( QLabel( 'URL:' ), 0, 0, 1, 1 )
+        authLayout.addWidget( self.authCredentials, 0, 1, 1, 6 )
+        mainLayout.addWidget( authWidget )
+        #
+        self.statusLabel = QLabel( )
+        mainLayout.addWidget( self.statusLabel )
+        #
+        self.authCredentials.returnPressed.connect( self.check_authCredentials )
+        self.setFixedWidth( 600 )
+        self.setFixedHeight( self.sizeHint( ).height( ) )
+        #
+        ## now perform the launch window
+        auth_url = 'https://api.imgur.com/oauth2/authorize'
+        imgur = OAuth2Session( self.imgur_clientId )
+        authorization_url, self.state = imgur.authorization_url(
+            auth_url, verify = self.verify )
+        webbrowser.open_new_tab( authorization_url )
+        self.hide( )
+
+    def check_authCredentials( self ):
+        self.statusLabel.setText( '' )
+        self.authCredentials.setText( str( self.authCredentials.text( ) ).strip( ) )
+        response_url = str( self.authCredentials.text( ) )
+        try:
+            token_url = 'https://api.imgur.com/oauth2/token'
+            imgur = OAuth2Session(
+                client_id = self.imgur_clientId,
+                state = self.state )
+            token = imgur.fetch_token(
+                token_url, client_secret = self.imgur_clientSECRET,
+                authorization_response = response_url, verify = self.verify )
+            self.authCredentials.setText( '' )
+            stat =  plexcore.store_imgurl_credentials(
+                self.imgur_clientId,
+                self.imgur_clientSECRET,
+                token[ 'refresh_token' ] )
+            assert( stat == 'SUCCESS' )
+            self.accept( )
+            self.emitState.emit( True )
+        except Exception as e:
+            logging.error( str( e ) )
+            self.statusLabel.setText( 'ERROR: INVALID AUTHORIZATION CODE.' )
+            self.authCredentials.setText( '' )
+            self.emitState.emit( False )
+        self.close( )
 
 class GoogleOauth2Dialog( QDialogWithPrinting ):
     emitState = pyqtSignal( bool )

@@ -17,9 +17,11 @@ from PyQt4.QtGui import QApplication
 
 def main(info = False, doLocal = True, doLarge = False,
          verify = True ):
+    testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
-    movie_data_rows = pickle.load( gzip.open( 'movie_data_rows.pkl.gz', 'rb' ) )
+    movie_data_rows = pickle.load( gzip.open(
+        os.path.join( testDir, 'movie_data_rows.pkl.gz' ), 'rb' ) )
     if info: logging.basicConfig( level = logging.INFO )
     fullURL, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )

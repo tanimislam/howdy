@@ -13,13 +13,11 @@ dbloc = os.path.join( '/var/lib/plexmediaserver/Library/',
 
 @contextmanager
 def plexconnection( ):
-    import shutil, tempfile, sqlite3
     _, tmpsub = tempfile.mkstemp( suffix = '.db' )
     shutil.copy( dbloc, tmpsub )
     conn = sqlite3.connect( tmpsub )
     cursor = conn.cursor( )
-    try:
-        yield cursor
+    try: yield cursor
     finally:
         conn.close( )
         os.remove( tmpsub )
@@ -32,6 +30,10 @@ def get_allrows( ):
 def get_hash(filename):
     """
     Uses the SubDB API to get subtitles
+
+    :param str filename: the subtitle filename.
+    :returns: the MD5 hash of the subtitle filename.
+    :rtype: str
     """    
     assert( os.path.isfile( filename ) )
     readsize = 64 * 1024
@@ -41,3 +43,17 @@ def get_hash(filename):
         openfile.seek( -readsize, os.SEEK_END )
         data += openfile.read( readsize )
     return hashlib.md5(data).hexdigest( )
+
+def get_tvshownames_gspread( ):
+    import oauth2client.file, httplib2
+    credPath = os.path.join(
+        mainDir, 'resources', 'credentials_gspread.json' )
+    storage = oauth2client.file.Storage( credPath )
+    credentials = storage.get( )
+    credentials.refresh( httplib2.Http( ) )
+    gclient = gspread.authorize( credentials )
+    sURL = 'https://docs.google.com/spreadsheets/d/10MR-mXd3sJlZWKOG8W-LhYp_6FAt0wq1daqPZ7is9KE/edit#gid=0'
+    sheet = gclient.open_by_url( sURL )
+    wksht = sheet.get_worksheet( 0 )
+    tvshowshere = set(filter(lambda val: len(val.strip()) != 0, wksht.col_values(1)))
+    return tvshowshere

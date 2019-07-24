@@ -12,8 +12,12 @@ from plexemail import send_email_lowlevel, send_email_localsmtp, emailAddress, e
 
 def send_email_movie_torrent( movieName, data, isJackett = False, verify = True ):
     assert( emailAddress is not None ), "Error, email address must not be None"
-    if emailName is None: emailString = emailAddress
-    else: emailString = '%s <%s>' % ( emailName, emailAddress )
+    if emailName is None:
+        emailString = emailAddress
+        name = 'Friend'
+    else:
+        emailString = '%s <%s>' % ( emailName, emailAddress )
+        name = emailName.split( )[ 0 ].strip( )
     dtstring = datetime.datetime.now( ).strftime('%d %B %Y, %I:%M %p')
     msg = MIMEMultipart( )
     msg['From'] = emailString
@@ -28,7 +32,7 @@ def send_email_movie_torrent( movieName, data, isJackett = False, verify = True 
         torfile = '%s.torrent' % '_'.join( movieName.split( ) ) # change to get to work
         torfile_mystr = '%s.torrent' % '\_'.join( movieName.split( ) ) # change to get to work
         #
-        tup_formatting = ( '%s.' % torfile_mystr, '%s.' % dtstring )
+        tup_formatting = ( name, '%s.' % torfile_mystr, '%s.' % dtstring )
         wholestr = open( os.path.join(
             mainDir, 'resources',
             'plextmdb_sendmovie_torrent.tex' ), 'r' ).read( )
@@ -37,7 +41,9 @@ def send_email_movie_torrent( movieName, data, isJackett = False, verify = True 
         htmlString = htmlString.replace('strong>', 'B>')
         body = MIMEText( htmlString, 'html', 'utf-8' )
         att = MIMEApplication( data, _subtype = 'torrent' )
-        att.add_header( 'content-disposition', 'attachment', filename = torfile )
+        att.add_header(
+            'content-disposition', 'attachment',
+            filename = torfile )
         msg.attach( body )
         msg.attach( att )
     else:
@@ -45,10 +51,9 @@ def send_email_movie_torrent( movieName, data, isJackett = False, verify = True 
         wholestr = open( os.path.join(
             mainDir, 'resources',
             'plextmdb_sendmovie_magnet.tex' ), 'r' ).read( )
-        wholestr = wholestr.replace('ZZZZ', dtstring )
+        tup_formatting = (
+            name, mag_link, movieName, dtstring )
         htmlString = plexcore.latexToHTML( wholestr )
-        htmlString = htmlString.replace('XXXX', mag_link )
-        htmlString = htmlString.replace('YYYY', movieName )
         htmlString = htmlString.replace('strong>', 'B>')
         body = MIMEText( htmlString, 'html', 'utf-8' )
         msg.attach( body )
@@ -59,8 +64,12 @@ def send_email_movie_torrent( movieName, data, isJackett = False, verify = True 
 
 def send_email_movie_none( movieName, verify = True ):
     assert( emailAddress is not None ), "Error, email address must not be None"
-    if emailName is None: emailString = emailAddress
-    else: emailString = '%s <%s>' % ( emailName, emailAddress )
+    if emailName is None:
+        emailString = emailAddress
+        name = 'Friend'
+    else:
+        emailString = '%s <%s>' % ( emailName, emailAddress )
+        name = emailName.split( )[ 0 ].strip( )
     dtstring = datetime.datetime.now( ).strftime('%d %B %Y, %I:%M %p')
     msg = MIMEMultipart( )
     msg['From'] = emailString
@@ -74,8 +83,8 @@ def send_email_movie_none( movieName, verify = True ):
     #
     wholestr = open( os.path.join( mainDir, 'resources',
                                    'plextmdb_sendmovie_none.tex' ), 'r' ).read( )
-    wholestr = wholestr.replace('XXXX', movieName )
-    wholestr = wholestr.replace('YYYY', dtstring )
+    tup_formatting = ( name, movieName, dtstring )
+    wholestr = wholestr % tup_formatting
     htmlString = plexcore.latexToHTML( wholestr )
     htmlString = htmlString.replace('strong>', 'B>')
     body = MIMEText( htmlString, 'html', 'utf-8' )

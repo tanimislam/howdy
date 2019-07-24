@@ -16,12 +16,14 @@ from plextmdb import plextmdb_gui
 from PyQt4.QtGui import QApplication
 
 def main(info = False, doLocal = True, verify = True ):
+    testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
     if info: logging.basicConfig( level = logging.INFO )
     fullurl, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
-    movie_data_rows = pickle.load( gzip.open( 'movie_data_rows.pkl.gz', 'rb' ) )
+    movie_data_rows = pickle.load( gzip.open(
+        os.path.join( testDir, 'movie_data_rows.pkl.gz' ), 'rb' ) )
     tmdbgui = plextmdb_gui.TMDBGUI( token, fullurl, movie_data_rows, verify = verify )
     result = app.exec_( )
 

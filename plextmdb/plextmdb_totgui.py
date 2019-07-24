@@ -186,7 +186,9 @@ class TMDBTotGUI( QDialogWithPrinting ):
 
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
-        testDir = os.path.join( mainDir, 'tests' )
+        if not os.path.isdir( os.path.expanduser( '~/.config/plexstuff/tests' ) )
+            os.mkdir( os.path.expanduser( '~/.config/plexstuff/tests' ) )
+        testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
         def save_menu_rows( ):
             movieRowsFile = os.path.join(
                 testDir, 'movie_data_rows.pkl.gz' )

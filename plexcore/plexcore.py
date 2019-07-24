@@ -1045,12 +1045,10 @@ def fill_out_movies_stuff( fullURL = 'http://localhost:32400', token = None,
             pool.map(_solve_problem_row, problem_rows ) )
         return movie_data_rows, genres
     
-def get_movie_titles_by_year( year, fullURL = 'http://localhost:32400',
-                              token = None ):
-    if token is None:
-        params = {}
-    else:
-        params = { 'X-Plex-Token' : token }
+def get_movie_titles_by_year(
+    year, fullURL = 'http://localhost:32400', token = None ):
+    if token is None: params = {}
+    else: params = { 'X-Plex-Token' : token }
     params['year'] = year
     libraries_dict = get_libraries( token = token, fullURL = fullURL )
     if libraries_dict is None:
@@ -1092,9 +1090,8 @@ def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
         plextmdb.get_movie( elem['title'] ) ),
                     valid_video_elems ) )
 
-"""
-All this stuff I found at https://support.plex.tv/hc/en-us/articles/201638786-Plex-Media-Server-URL-Commands
-"""
+#
+## All this stuff I found at https://support.plex.tv/hc/en-us/articles/201638786-Plex-Media-Server-URL-Commands
 def refresh_library( library_key, library_dict, fullURL = 'http://localhost:32400', token = None ):    
     assert( library_key in library_dict )
     if token is None: params = { }
@@ -1114,18 +1111,6 @@ def _get_failing_artistalbum( filename ):
 def get_lastupdated_string( dt = datetime.datetime.now( ) ):
     return dt.strftime('%A, %d %B %Y, at %-I:%M %p')
 
-def get_tvshownames_gspread( ):
-    import oauth2client.file, httplib2
-    credPath = os.path.join( mainDir, 'resources', 'credentials_gspread.json' )
-    storage = oauth2client.file.Storage( credPath )
-    credentials = storage.get( )
-    credentials.refresh( httplib2.Http( ) )
-    gclient = gspread.authorize( credentials )
-    sURL = 'https://docs.google.com/spreadsheets/d/10MR-mXd3sJlZWKOG8W-LhYp_6FAt0wq1daqPZ7is9KE/edit#gid=0'
-    sheet = gclient.open_by_url( sURL )
-    wksht = sheet.get_worksheet( 0 )
-    tvshowshere = set(filter(lambda val: len(val.strip()) != 0, wksht.col_values(1)))
-    return tvshowshere
 
 def oauthCheckGoogleCredentials( ):
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )

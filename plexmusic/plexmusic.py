@@ -454,7 +454,7 @@ class PlexLastFM( object ):
             album_mbid = track[ 'album' ][ 'mbid' ]
             data = musicbrainzngs.get_release_by_id(
                 album_mbid, includes = [ 'recordings', 'artists' ] )['release']
-            music_metadata[ 'album' ] = data['title']
+            music_metadata[ 'album' ] = data[ 'title' ]
             music_metadata[ 'artist' ] = data[ 'artist-credit' ][ 0 ][ 'artist' ][ 'name' ]
             if 'date' in data:
                 album_year = PlexLastFM.get_mb_album_year( data['date'] )
@@ -497,14 +497,19 @@ class PlexLastFM( object ):
 
             return music_metadata, 'SUCCESS'
 
+        elif 'mbid' in track[ 'artist' ]:
+            music_metadata = { }
+            artist_mbid = track[ 'artist' ][ 'mbid' ]
+
         #
         ## alternate, could not get mbid stuff...
+        if 'date' in track:
+            album_year = PlexLastFM.get_mb_album_year( track['date'] )
+            music_metadata[ 'year' ] = album_year
         music_metadata = { 'artist' : track['artist']['name'],
                            'song' : titlecase.titlecase( track['name'] ),
                            'album' : track[ 'album' ][ 'title' ],
                            'duration' : float(track['duration']) * 1e-3 }
-        if album_year is not None:
-            music_metadata[ 'year' ] = album_year
         if 'image' in track[ 'album' ]:
             album_url = PlexLastFM.get_album_url( track[ 'album' ][ 'image' ] )
             if album_url is not None:

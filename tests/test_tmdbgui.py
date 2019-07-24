@@ -4,6 +4,8 @@ from PyQt4.QtGui import QApplication
 from plextmdb import plextmdb_gui, plextmdb_mygui, plextmdb_totgui
 from .test_plexcore import get_token_fullURL
 
+testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
+
 @pytest.fixture( scope="module" )
 def get_movie_data_rows( request, get_token_fullURL ):
     time0 = time.time( )
@@ -16,11 +18,13 @@ def get_movie_data_rows( request, get_token_fullURL ):
         ## movie data rows
         movie_data_rows = plextmdb_totgui.TMDBTotGUI.fill_out_movies(
             fullURL, token, debug = True )
-        pickle.dump( movie_data_rows, gzip.open( 'movie_data_rows.pkl.gz', 'wb' ) )
+        pickle.dump( movie_data_rows, gzip.open(
+            os.path.join( testDir, 'movie_data_rows.pkl.gz' ), 'wb' ) )
         print( 'processed and stored new movie data in %0.3f seconds.' % (
             time.time( ) - time0 ) )
     else:
-        movie_data_rows = pickle.load( gzip.open( 'movie_data_rows.pkl.gz', 'rb' ) )
+        movie_data_rows = pickle.load( gzip.open(
+            os.path.join( testDir, 'movie_data_rows.pkl.gz' ), 'rb' ) )
     yield movie_data_rows
 
 @pytest.fixture( scope="module" )
@@ -31,7 +35,8 @@ def get_app( ):
 
 @pytest.fixture( scope="module" )
 def get_movie_data_rows( ):
-    movie_data_rows = pickle.load( gzip.open( 'movie_data_rows.pkl.gz', 'rb' ) )
+    movie_data_rows = pickle.load( gzip.open(
+        os.path.join( testDir, 'movie_data_rows.pkl.gz' ), 'rb' ) )
     yield movie_data_rows
 
 def test_tmdb_mygui( get_token_fullURL, get_movie_data_rows,

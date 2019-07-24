@@ -14,6 +14,8 @@ from plextvdb import plextvdb_season_gui, get_token
 from plexcore import plexcore
 from optparse import OptionParser
 
+testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
+
 #
 ## start the application here
 logging.basicConfig( level = logging.INFO )
@@ -25,8 +27,10 @@ parser.add_option('-S', '--season', type=int, dest='season', action='store', def
 opts, args = parser.parse_args( )
 app = QApplication([])
 app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
-tvdata = pickle.load( gzip.open( max(glob.glob('tvdata*pkl.gz')), 'rb'))
-toGet = pickle.load( gzip.open( max(glob.glob('toGet*pkl.gz')), 'rb'))
+tvdata = pickle.load(
+    gzip.open( os.path.join( testDir, 'tvdata.pkl.gz' ), 'rb' ) )
+toGet = pickle.load(
+    gzip.open( os.path.join( testDir, 'toGet.pkl.gz' ), 'rb' ) )
 fullURL, plex_token = plexcore.checkServerCredentials(
     doLocal = False, verify = False )
 assert( opts.season > 0 )

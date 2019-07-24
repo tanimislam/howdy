@@ -1,12 +1,11 @@
-import requests, os, re, logging, sys
+import os, sys
 from functools import reduce
 _mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
                   os.path.abspath( __file__ ) )
 sys.path.append( _mainDir )
-import sys, zipfile, codecs
+import zipfile, requests, re, logging, io
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
-from io import BytesIO
 
 from plexcore import subscene
 from plextmdb import plextmdb
@@ -16,7 +15,7 @@ def get_subtitles_opensubtitles( title, extra_strings = [ ] ):
     response = requests.get('https://rest.opensubtitles.org/search/query-%s/sublanguageid-eng' %
                             '%20'.join( title.lower( ).split( ) ), headers = headers )
     if response.status_code != 200:
-        logging.info( '%d, %s' % ( response.status_code, response.content ) )
+        logging.error( '%d, %s' % ( response.status_code, response.content ) )
         return None
     subtitles = list(map(lambda item: { 'title'   : item['SubFileName'],
                                         'srtfile' : item['ZipDownloadLink'] },
@@ -108,10 +107,9 @@ def download_yts_sub( url, srtfilename = 'eng.srt' ):
     response = requests.get( url )
     if response.status_code != 200:
         raise ValueError("Error, could not download %s." % url )
-    with zipfile.ZipFile( BytesIO( response.content ), 'r' ) as zf:
+    with zipfile.ZipFile( io.BytesIO( response.content ), 'r' ) as zf:
         name = max( zf.namelist( ) )
         if not name.endswith('.srt'):
             raise ValueError("Error, name = %s does not end with srt." % name )
-        #with codecs.open( srtfilename, 'w', 'utf-8' ) as openfile:
-        with open( srtfilename, 'w') as openfile:
+        with open( srtfilename, mode='w', encoding='utf-8') as openfile:
             openfile.write( zf.read( name ) )

@@ -1231,7 +1231,6 @@ def check_jackett_credentials( url, apikey, verify = True ):
     ## second, add a '/' to end of URL
     actURL = url
     if not actURL.endswith('/'): actURL += '/'
-
     try:
         #
         ## third, check that we have a valid URL
@@ -1255,7 +1254,7 @@ def check_jackett_credentials( url, apikey, verify = True ):
 def get_imgurl_credentials( ):
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'imgurl' ).first( )
     if val is None:
-        raise ValueError( "ERROR, COULD NOT GET ACCESS TOKEN." )
+        raise ValueError( "ERROR, COULD NOT FIND IMGUR CREDENTIALS." )
     data_imgurl = val.data
     return data_imgurl
 
@@ -1273,8 +1272,8 @@ def check_imgurl_credentials( clientID, clientSECRET,
     return True
 
 def store_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify = True ):
-    isValid =  check_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN,
-                                         verify = verify )
+    isValid =  check_imgurl_credentials(
+        clientID, clientSECRET, clientREFRESHTOKEN, verify = verify )
     if not isValid: return 'ERROR, COULD NOT STORE IMGURL CREDENTIALS.'
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'imgurl' ).first( )
     if val is not None:

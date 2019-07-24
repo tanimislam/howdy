@@ -17,18 +17,22 @@ from plextvdb import plextvdb_gui
 from plexcore import plexcore
 
 def main( info = False, doLocal = True, verify = True ):
+    testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
     if info: logging.basicConfig( level = logging.INFO )
     fullURL, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
+    didend = pickle.load(
+        gzip.open( os.path.join( testDir, 'didend.pkl.gz' ), 'rb' ) )
     if doLocal:
-        tvdata = pickle.load( gzip.open(max(glob.glob('tvdata.pkl.gz')), 'rb' ))
-        didend = pickle.load( gzip.open(max(glob.glob('didend.pkl.gz')), 'rb'))
+        tvdata = pickle.load(
+            gzip.open( os.path.join( testDir, 'tvdata.pkl.gz' ), 'rb' ) )
     else:
-        tvdata = pickle.load( gzip.open(max(glob.glob('tvdata_remote.pkl.gz')), 'rb' ))
-        didend = pickle.load( gzip.open(max(glob.glob('didend.pkl.gz')), 'rb'))
-    toGet = pickle.load( gzip.open(max(glob.glob('toGet.pkl.gz')), 'rb' ))
+        tvdata = pickle.load(
+            gzip.open( os.path.join( testDir, 'tvdata_remote.pkl.gz' ), 'rb' ) )
+    toGet = pickle.load( gzip.open(
+        gzip.open( os.path.join( testDir, 'toGet.pkl.gz' ), 'rb' ) )
     tvdbg = plextvdb_gui.TVDBGUI(
         token, fullURL, tvdata_on_plex = tvdata,
         toGet = toGet, didend = didend, verify = verify )

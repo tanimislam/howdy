@@ -27,9 +27,12 @@ parser.add_option('-s', '--series', type=str, dest='series', action='store',
 opts, args = parser.parse_args( )
 app = QApplication([])
 app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
-tvdata = pickle.load( gzip.open(max(glob.glob('tvdata*pkl.gz')), 'rb' ))
-toGet = pickle.load( gzip.open(max(glob.glob('toGet*pkl.gz')), 'rb' ))
-didend= pickle.load( gzip.open(max(glob.glob('didend*pkl.gz')), 'rb'))
+tvdata = pickle.load(
+    gzip.open( os.path.join( testDir, 'tvdata.pkl.gz' ), 'rb' ) )
+toGet = pickle.load( gzip.open(
+    gzip.open( os.path.join( testDir, 'toGet.pkl.gz' ), 'rb' ) )
+didend = pickle.load( gzip.open(
+    os.path.join( testDir, 'didend.pkl.gz'), 'rb' ) )
 assert( opts.series in tvdata )
 _, plex_token = plexcore.checkServerCredentials(
     doLocal = False, verify = False )

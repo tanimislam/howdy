@@ -7,6 +7,7 @@ from .test_plexcore import get_token_fullURL, get_libraries_dict
 
 @pytest.fixture( scope="module" )
 def get_tvdata_toGet_didend( request, get_token_fullURL, get_libraries_dict ):
+    testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
     time0 = time.time( )
     rebuild = request.config.option.do_rebuild
     doLocal = request.config.option.do_local
@@ -22,23 +23,29 @@ def get_tvdata_toGet_didend( request, get_token_fullURL, get_libraries_dict ):
         key = max( key )
         library_name = libraries_dict[ key ][ 0 ]
         tvdata = plexcore.get_library_data( library_name, token = token, fullURL = fullURL )
-        pickle.dump( tvdata, gzip.open( 'tvdata.pkl.gz', 'wb' ) )
+        pickle.dump( tvdata, gzip.open(
+            os.path.join( testDir, 'tvdata.pkl.gz' ), 'wb' ) )
         #
         ## toGet
         toGet = plextvdb.get_remaining_episodes(
             tvdata, showSpecials=False, showsToExclude = plextvdb.get_shows_to_exclude( ),
             verify = verify )
-        pickle.dump( toGet, gzip.open( 'toGet.pkl.gz', 'wb' ) )
+        pickle.dump( toGet, gzip.open(
+            os.path.join( testDir, 'toGet.pkl.gz' ), 'wb' ) )
         #
         ## didend
         didend = plextvdb.get_all_series_didend( tvdata, verify = verify )
-        pickle.dump( didend, gzip.open( 'didend.pkl.gz', 'wb' ) )
+        pickle.dump( didend, gzip.open(
+            os.path.jpin( testDir, 'didend.pkl.gz' ), 'wb' ) )
         print( 'processed and stored new TV data in %0.3f seconds.' % (
             time.time( ) - time0 ) )
     else:
-        tvdata = pickle.load( gzip.open(max(glob.glob('tvdata*pkl.gz')), 'rb' ))
-        toGet  = pickle.load( gzip.open(max(glob.glob('toGet*pkl.gz')), 'rb' ))
-        didend = pickle.load( gzip.open(max(glob.glob('didend*pkl.gz')), 'rb'))
+        tvdata = pickle.load(
+            gzip.open( os.path.join( testDir, 'tvdata.pkl.gz' ), 'rb' ) )
+        toGet = pickle.load( gzip.open(
+            gzip.open( os.path.join( testDir, 'toGet.pkl.gz' ), 'rb' ) )
+        didend = pickle.load( gzip.open(
+            os.path.join( testDir, 'didend.pkl.gz'), 'rb' ) )
     yield tvdata, toGet, didend
 
 @pytest.fixture( scope="module" )

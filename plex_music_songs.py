@@ -61,7 +61,9 @@ def _download_actual_song( pm, lastfm, s_name, a_name, maxnum, do_lastfm ):
                 print( 'PROBLEM GETTING %s, %s: %s.' % ( s_name, a_name, status ) )
                 return None
     except Exception as e:
+        import traceback
         print( e )
+        traceback.print_exc(file=sys.stdout)
         return None
 
     if 'tracknumber' not in data_dict:

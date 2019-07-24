@@ -13,7 +13,7 @@ This document contains all the needed information to get started on getting set 
   1. Sending out emails to your Plex users, using the `GMail API <https://developers.google.com/gmail/api>`_, and identifying them from your Google address book using the `Google Contacts API <https://developers.google.com/contacts/v3>`_.
   2. Identifying songs on `YouTube <https://www.youtube.com>`_ using the `YouTube API <https://developers.google.com/youtube/v3>`_.
   3. Access to Google spreadsheets using the `Google Sheets API <https://developers.google.com/sheets/api>`_.
-  4. Upload your music to your `Google Play Music <https://play.google.com/store/music?hl=en>`_ account using the `unofficial Google Music API <https://unofficial-google-music-api.readthedocs.io/en/latest>`_.
+  4. Upload your music to your `Google Play Music <https://play.google.com/store/music?hl=en>`_ account using the `unofficial Google Music API <unofficial_google_music_api_>`_.
 
 The document is organized into the following sections.
 
@@ -27,7 +27,7 @@ The document is organized into the following sections.
 The Movie Database (TMDB) API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Follow instructions on getting an access key for the TMDB API `here <https://developers.themoviedb.org/3/getting-started/introduction>`_. Click on the `API link <https://www.themoviedb.org/settings/api>`_.
+Instructions on getting an access key for the `TMDB API <https://developers.themoviedb.org/3/getting-started/introduction>`_ start with the `TMDB API link <https://www.themoviedb.org/settings/api>`_.
 
 The Television Database (TVDB) API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -80,7 +80,120 @@ The final information one programmatically sends to the TVDB service, through RE
 The Imgur API
 ^^^^^^^^^^^^^
 
-Good information on setting up Imgur API access can be found on `this website <https://apidocs.imgur.com/?version=latest>`_.
+Incomplete information on setting up Imgur API access can be found on `this website <https://apidocs.imgur.com/?version=latest>`_. High level instructions to generate valid Imgur client credentials are described in :numref:`Generate Imgur Credentials Using ``Plexstuff```. 
+
+
+Generate Imgur Credentials Using ``Plexstuff``
+------------------------------------------------
+
+Here are the steps used to get working Imgur API access using the ``plex_config_gui.py``. First register for an `Imgur account <https://imgur.com/register?redirect=https%3A%2F%2Fimgur.com%2F>`_, if you have not already done so.
+
+1. Once you have an account, `register an Imgur application <https://api.imgur.com/oauth2/addclient>`_. Specify an application name, choose the "OAuth2 authorization without a callback URL" option, provide an email address, and provide a basic description of the application. Here is a screen shot.
+
+.. _imgur_step01_registerapp:
+
+.. figure:: plex-config-services-figures/imgur_step01_registerapp.png
+   :width: 100%
+   :align: center
+
+2. Now go to your `Imgur application's webpage <https://imgur.com/account/settings/apps>`_ and click on the *generate new secret* to generate an application Oauth2 secret ID. Here is a screen shot.
+
+.. _imgur_step02_getclientsecret:
+
+.. figure:: plex-config-services-figures/imgur_step02_getclientsecret.png
+   :width: 100%
+   :align: center
+
+3. Then record the client ID and client secret, which will be used in ``plex_config_gui.py``. Here is a screen shot.
+
+.. _imgur_step03_clientsecret:
+.. figure:: plex-config-services-figures/imgur_step03_clientsecret.png
+   :width: 100%
+   :align: center
+
+4. Launch ``plex_config_gui.py``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. Here is a screen shot.
+
+.. _imgur_step04_credentials:
+
+.. figure:: plex-config-services-figures/imgur_step04_credentials.png
+  :width: 100%
+  :align: center
+
+5. Fill in the Imgur client ID and Imgur client secret as shown in :numref:`imgur_step03_clientsecret` and then press the *REFRESH CLIENT* button. Here is a screen shot.
+
+.. _imgur_step05_authorizeaccount:
+
+.. figure:: plex-config-services-figures/imgur_step05_authorizeaccount.png
+  :width: 100%
+  :align: center
+
+6. At this point, two things occur. First, a new web browser window (or tab, if a browser window is open) that resolves to the URL that the Imgur client must use in order to finally authenticate the client. Copy the full URL in the browser's tab, as shown in :numref:`imgur_step06a_launchedURL` into the new dialog window shown in :numref:`imgur_step06b_copyURLdialog`. Press return in that dialog window.
+
+.. _imgur_step06a_launchedURL:
+
+.. figure:: plex-config-services-figures/imgur_step06a_launchedURL.png
+   :width: 100%
+   :align: center
+
+.. _imgur_step06b_copyURLdialog:
+
+.. figure:: plex-config-services-figures/imgur_step06b_copyURLdialog.png
+   :width: 100%
+   :align: center
+
+7. This **should** work -- the *Plex config credentials* widget should show **WORKING** under the Imgur settings panel. If this does not work, then close the Imgur URL dialog in :numref:`imgur_step06b_copyURLdialog` with the ``Esc`` key, and generate a new client secret as shown in :numref:`imgur_step02_getclientsecret`, and repeat until you are able to generate good Imgur client credential.
+
+Low Level Imgur Credentials
+---------------------------
+
+The lower level generation of Imgur credentials use `requests-oauthlib <https://requests-oauthlib.readthedocs.io/en/latest>`_ to generate the Imgur credentials.
+
+1. Follow steps 1-3 in :numref:`Generate Imgur Credentials Using ``Plexstuff``` to get the Imgur client ID and client secret.
+
+2. Generate the Oauth2 ``authorization_url`` and ``state`` variables, using this piece of example Python code. We also allow one to choose whether to verify SSL connections with a ``verify`` boolean variable.
+
+   .. code-block:: python
+
+      from requests_oauthlib import Oauth2Session
+
+      client_ID = "XXXXXXXX"
+      client_SECRET = "YYYYYYY"
+      variable = True
+      auth_url = "https://api.imgur.com/oauth2/authorize"
+      token_url = "https://api.imgur.com/oauth2/token"
+
+      imgur = Oauth2Session( client_ID )
+      authorization_url, state = authorization_url, state = imgur.authorization_url( auth_url, verify = False )
+
+3. Launch a browser at the ``authorization_url`` either manually or by running
+
+   .. code-block:: python
+
+      import webbrowser
+
+      webbrowser.open_new_tab( authorization_url )
+
+4. Copy the browser URL, as described in :numref:`imgur_step06a_launchedURL`, into ``response_url``, and generate the final OAuth2 token into a ``token`` dictionary object.
+
+   .. code-block:: python
+
+      imgur = Oauth2Session( client_ID, state = state )
+      token = imgur.fetch_token( token_url, authorization_response=response_url, client_secret=client_secret)
+
+   If the process does not work, an Exception will be emitted. If successful, the final ``token`` object looks like the following,
+   
+   .. code-block:: python
+
+      {'access_token': 'xxxxxx',
+       'expires_in': 315360000,
+       'token_type': 'bearer',
+       'scope': None,
+       'refresh_token': 'rrrrrr',
+       'account_id': <account_ID>,
+       'account_username': <account_username>,
+       'expires_at': zzzzz }
+
+   Copy ``token['refresh_token']`` with ``client_ID`` and ``secret_ID`` to authorize your Imgur client. Here, you can follow instructions as given in `the Imgur API page <https://apidocs.imgur.com>`.
 
 The Gracenote and LastFM APIs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -94,16 +207,16 @@ The instructions for the LastFM API registration start `here <lastfm_intro_>`_. 
 .. _lastfm_step01_addapiaccount:
 
 .. figure:: plex-config-services-figures/lastfm_step01_addapiaccount.png
-  :width: 100%
-  :align: center
+   :width: 100%
+   :align: center
 
 2. You will land on the `LastFM API creation page <lastfm_create_>`_. Fill in the forms for *Application name*, *Application description*, and *Application homepage*. Leave *Callback URL* empty because it is optional. Click on the *Submit* button once done. Here is a screen shot.
 
 .. _lastfm_step02_registerapp:
 
 .. figure:: plex-config-services-figures/lastfm_step02_registerapp.png
-  :width: 100%
-  :align: center
+   :width: 100%
+   :align: center
 
 If everything has worked out, after clicking *Submit* you will see the *Application name*, *API key*, *Shared secret*, and *Registered to* fields. Record this information. Here is a screen shot.
 
@@ -135,9 +248,7 @@ We set up `Google <https://www.google.com>`_ services that use `YouTube <https:/
 
 Since these are all Google services, a single tool sets all of them up given a single Google account using Google's OAuth2_ authentication mechanism. The easiest way to do this is through the ``plex_config_gui.py`` executable, which is part of Plexstuff.
 
-1. Launch ``plex_config_gui.py``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. Here is a screen shot.
-
-.. _google_step01_credentials:
+1. Launch ``plex_config_gui.py``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. These instructions are the same as in step 4 in :numref:`The Imgur API` and in :numref:`imgur_step04_credentials`, which we reproduce here.
 
 .. figure:: plex-config-services-figures/google_step01_credentials.png
   :width: 100%
@@ -188,3 +299,4 @@ Since these are all Google services, a single tool sets all of them up given a s
 If all goes well, then all the Google services needed by Plexstuff will have been authorized.
 
 .. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0
+.. _unofficial_google_music_api: https://unofficial-google-music-api.readthedocs.io/en/latest

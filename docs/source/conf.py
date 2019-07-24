@@ -44,11 +44,11 @@ extensions = [
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'requests': ('http://docs.python-requests.org/en/stable', None),
+    'requests': ('https://2.python-requests.org/en/master', None),
     'beautifulsoup' : ( 'https://www.crummy.com/software/BeautifulSoup/bs4/doc/', None),
     'geoip2' : ( 'https://geoip2.readthedocs.org/en/latest', None),
     'pyqt4' : ( 'https://www.riverbankcomputing.com/static/Docs/PyQt4', None ),
-    'requests' : ( 'https://docs.python-requests.org', None ),
+    'requests_oauthlib' : ( 'https://requests-oauthlib.readthedocs.io/en/latest', None ),
     }
 
 verify = False

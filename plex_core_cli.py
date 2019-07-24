@@ -122,8 +122,8 @@ def main( ):
             print( email )
     elif opts.do_updateflaskcreds:
         assert( opts.flaskpassword is not None ), "must have a password to access these flask server credentials."
-        response = requests.get( 'https://***REMOVED***islam.ddns.net/flask/accounts/checkpassword',
-                                 auth = ( '***REMOVED***.islam@gmail.com', opts.flaskpassword ) )
+        response = requests.get( 'https://tanimislam.ddns.net/flask/accounts/checkpassword',
+                                 auth = ( 'tanim.islam@gmail.com', opts.flaskpassword ) )
         if response.status_code != 200:
             print( 'ERROR, WRONG PASSWORD FOR TANIM ISLAM.' )
             return
@@ -136,25 +136,25 @@ def main( ):
             if replace_existing: subtracts.append( plex_email )
             adds += map(lambda tok: tok.strip(), mapping.plexmapping.strip().split(','))
         adds = sorted( set( adds ) )
-        response = requests.post( 'https://***REMOVED***islam.ddns.net/flask/accounts/adddeleteusersbulk',
+        response = requests.post( 'https://tanimislam.ddns.net/flask/accounts/adddeleteusersbulk',
                                   json = { 'initialpassword' : 'initialplexserver',
                                            'addemails' : adds, 'deleteemails' : subtracts },
-                                  auth = ( '***REMOVED***.islam@gmail.com', opts.flaskpassword ) )
+                                  auth = ( 'tanim.islam@gmail.com', opts.flaskpassword ) )
         data = response.json( )
         print( '\n'.join(map(lambda tok: data[tok], ( 'deleted', 'added' ) ) ) )
     elif opts.do_justadd:
         assert( opts.flaskpassword is not None )
         assert( opts.new_emails is not None )
-        response = requests.get( 'https://***REMOVED***islam.ddns.net/flask/accounts/checkpassword',
-                                 auth = ( '***REMOVED***.islam@gmail.com', opts.flaskpassword ) )
+        response = requests.get( 'https://tanimislam.ddns.net/flask/accounts/checkpassword',
+                                 auth = ( 'tanim.islam@gmail.com', opts.flaskpassword ) )
         if response.status_code != 200:
             print( 'ERROR, WRONG PASSWORD FOR TANIM ISLAM.' )
             return
         adds = sorted( set( map(lambda email: email.strip(), opts.new_emails.split(',') ) ) )
-        response = requests.post( 'https://***REMOVED***islam.ddns.net/flask/accounts/adddeleteusersbulk',
+        response = requests.post( 'https://tanimislam.ddns.net/flask/accounts/adddeleteusersbulk',
                                   json = { 'initialpassword' : 'initialplexserver',
                                            'addemails' : adds },
-                                  auth = ( '***REMOVED***.islam@gmail.com', opts.flaskpassword ) )
+                                  auth = ( 'tanim.islam@gmail.com', opts.flaskpassword ) )
         data = response.json( )
         print( data['added'] )
         

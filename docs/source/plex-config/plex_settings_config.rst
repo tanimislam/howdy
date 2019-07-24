@@ -56,7 +56,7 @@ The document is organized into the following sections. The second section descri
 
 Credentials for Plex Account
 ----------------------------
-This assumes that you already have a `Plex Account <https://plex.tv>`_ with server already set up. If you don't, and want to get started, a good place to start is a blog entry I have written, `How to share your Plex media <https://***REMOVED***islamblog.wordpress.com/2017/09/27/how-to-share-your-plex-media/>`_. Just record your username and password.
+This assumes that you already have a `Plex Account <https://plex.tv>`_ with server already set up. If you don't, and want to get started, a good place to start is a blog entry I have written, `How to share your Plex media <https://tanimislamblog.wordpress.com/2017/09/27/how-to-share-your-plex-media/>`_. Just record your username and password.
 
 Seedhost Services Setup
 -----------------------

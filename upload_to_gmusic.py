@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 
-import signal
-from plexcore import signal_handler
+import signal, sys
+# code to handle Ctrl+C, convenience method for command line tools
+def signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Exiting...")
+    sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 import os, glob
 from optparse import OptionParser
+
 from plexmusic import plexmusic
 
 def _files_from_commas(fnames_string):
-    return set(filter(lambda fname: os.path.isfile(fname), [ tok.strip() for tok in fnames_string.split(',') ] ) )
+    return set(filter(lambda fname: os.path.isfile(fname),
+                      map(lambda tok: tok.strip( ), fnames_string.split(',') ) ) )
 
 def _files_from_glob(fnames_string):
     return set(filter(lambda fname: os.path.isfile(fname), glob.glob(fnames_string)))

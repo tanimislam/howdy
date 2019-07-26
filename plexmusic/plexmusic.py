@@ -507,6 +507,7 @@ class PlexLastFM( object ):
             return music_metadata, 'SUCCESS'
 
         elif 'mbid' in track[ 'artist' ]:
+            pass # not working now for reasons cannot debug
             music_metadata = { }
             artist_mbid = track[ 'artist' ][ 'mbid' ]
             mi = MusicInfo( artist_name, artist_mbid = artist_mbid )

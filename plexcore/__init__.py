@@ -74,7 +74,7 @@ def get_popularity_color( hpop, alpha = 1.0 ):
 ## a QLabel with save option of the pixmap
 class QLabelWithSave( QLabel ):
     """
-    A convenient PyQt4_ widget that inherits from :py:class:`QLabel <PyQt4.QtGui.QLabel>`, but allows for taking screen grabs.
+    A convenient PyQt4_ widget that inherits from :py:class:`QLabel <PyQt4.QtGui.QLabel>`, but allows screen shots.
     """
     
     def screenGrab( self ):
@@ -106,33 +106,6 @@ class QLabelWithSave( QLabel ):
         savePixmapAction.triggered.connect( self.screenGrab )
         menu.addAction( savePixmapAction )
         menu.popup( QCursor.pos( ) )
-
-#
-## now make a QWidget subclass that automatically allows for printing and quitting
-class QWidgetWithPrinting( QWidget ):
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName(
-            self, 'Save Screenshot', os.path.expanduser( '~' ),
-            filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0: return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = '%s.png' % fname
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
-
-    def __init__( self, parent, isIsolated = True, doQuit = False ):
-        super( QWidgetWithPrinting, self ).__init__( parent )
-        if isIsolated:
-            printAction = QAction( self )
-            printAction.setShortcut( 'Shift+Ctrl+P' )
-            printAction.triggered.connect( self.screenGrab )
-            self.addAction( printAction )
-            #
-            quitAction = QAction( self )
-            quitAction.setShortcuts( [ 'Ctrl+Q', 'Esc' ] )
-            if not doQuit: quitAction.triggered.connect( self.close )
-            else: quitAction.triggered.connect( sys.exit )
-            self.addAction( quitAction )
 
 class QDialogWithPrinting( QDialog ):
     """

@@ -3,6 +3,7 @@ import requests, youtube_dl, gmusicapi, datetime, musicbrainzngs, time, io
 import pathos.multiprocessing as multiprocessing
 from contextlib import contextmanager
 from googleapiclient.discovery import build
+from itertools import chain
 from PIL import Image
 from urllib.parse import urljoin
 from sqlalchemy import Integer, String, Column
@@ -16,7 +17,12 @@ from plexmusic import pygn, parse_youtube_date, format_youtube_date
 class MusicInfo( object ):
 
     @classmethod
-    def get_artist_datas_LL( cls, artist_name, min_score = 100, do_strict = True ):
+    def get_artist_datas_LL(
+        cls, artist_name, min_score = 100,
+        do_strict = True, artist_mbid = None ):
+        if artist_mbid is not None:
+            adata = [ musicbrainzngs.get_artist_by_id( artist_mbid )[ 'artist' ] ]
+            return adata
         assert( min_score <= 100 and min_score >= 0 )
         adata = list(filter(lambda entry: int(entry['ext:score']) >= min_score,
                             musicbrainzngs.search_artists(
@@ -48,11 +54,11 @@ class MusicInfo( object ):
         session.commit( )
         
     
-    def __init__( self, artist_name ):
+    def __init__( self, artist_name, artist_mbid = None ):
         time0 = time.time( )
         #
         ## first get out artist MBID, called ambid, with score = 100
-        adata = MusicInfo.get_artist_datas_LL( artist_name, min_score = 100 )
+        adata = MusicInfo.get_artist_datas_LL( artist_name, min_score = 100, artist_mbid = artist_mbid )
         if len(adata) == 0:
             raise ValueError( 'Could not find artist = %s in MusicBrainz.' % artist_name )
         self.artist = adata[ 0 ]
@@ -76,7 +82,7 @@ class MusicInfo( object ):
     ## first, get all the release-groups of the artist
     def get_albums_lowlevel( self ):
         rgdata = musicbrainzngs.get_artist_by_id(
-            self.ambid, includes='release-groups',
+            self.ambid, includes=[ 'release-groups' ],
             release_type=['album'] )['artist']['release-group-list']
         return rgdata
 
@@ -132,7 +138,7 @@ class MusicInfo( object ):
                 except:
                     logging.debug( 'error, track = %s does not have defined position.' % track )
                     return None
-                title = track[ 'recording' ][ 'title' ]
+                title = titlecase.titlecase( track[ 'recording' ][ 'title' ] )
                 if 'length' in track[ 'recording' ]:
                     length = 1e-3 * int( track[ 'recording' ][ 'length' ] )
                 else: length = None
@@ -314,15 +320,16 @@ class PlexLastFM( object ):
     def get_mb_album_year( cls, year_string ):
         try:
             album_year = datetime.datetime.strptime(
-                data['date'], '%Y-%m-%d' ).year
+                year_string, '%Y-%m-%d' ).year
             return album_year
         except: pass
 
         try:
             album_year = datetime.datetime.strptime(
-                data['date'], '%Y' ).year
+                year_string, '%Y' ).year
             return album_year
-        except: return None
+        except Exception as e:
+            return None
         
     @classmethod
     def push_lastfm_credentials( cls, api_data ):
@@ -447,9 +454,11 @@ class PlexLastFM( object ):
         if 'error' in data:
             return None, "ERROR: %s" % data[ 'message' ]
         track = data['track']
+        logging.debug( track )
         #
         ## now see if we have an album with mbid, fill out ALL the metadata
         if 'mbid' in track[ 'album' ]:
+            print( 'got here, mbid = %s.' % track[ 'album' ][ 'mbid' ] )
             music_metadata = { }
             album_mbid = track[ 'album' ][ 'mbid' ]
             data = musicbrainzngs.get_release_by_id(
@@ -500,6 +509,27 @@ class PlexLastFM( object ):
         elif 'mbid' in track[ 'artist' ]:
             music_metadata = { }
             artist_mbid = track[ 'artist' ][ 'mbid' ]
+            mi = MusicInfo( artist_name, artist_mbid = artist_mbid )
+            #
+            ## now find song name in list of stuff
+            alltracks = list(chain.from_iterable(map(lambda album: map(lambda trackno: (
+                mi.alltrackdata[album]['tracks'][trackno][0], trackno, album ), mi.alltrackdata[album]['tracks'] ),
+                                                     mi.alltrackdata.keys( ))))
+            matches = list( filter( lambda tup: tup[0] == song_name, alltracks ) )
+            if len( matches ) != 1: pass
+            match = matches[ 0 ]
+            trackno = match[ 1 ]
+            album = match[ 2 ]
+            music_metadata[ 'album' ] = album
+            music_metadata[ 'artist' ] = mi.artist_name
+            trackdata = mi.alltrackdata[ album ]
+            music_metadata[ 'total tracks' ] = len( trackdata[ 'tracks' ] )
+            music_metadata[ 'song' ] = match[ 0 ]
+            music_metadata[ 'tracknumber' ] = trackno
+            music_metadata[ 'year' ] = trackdata[ 'release-date' ].year
+            music_metadata[ 'duration' ] = trackdata[ 'tracks' ][ trackno ][ 1 ]
+            return music_metadata, 'SUCCESS'
+            
 
         #
         ## alternate, could not get mbid stuff...

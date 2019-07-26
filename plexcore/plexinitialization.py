@@ -118,31 +118,29 @@ class PlexInitialization( object ):
             
             #
             ## first see if we have PyQt4
-            try: val = imp.find_module( 'PyQt4' )
+            try:
+                val = imp.find_module( 'PyQt4' )
+                from PyQt4.QtGui import QFontDatabase
             except ImportError:
-                print('ERROR, YOU NEED TO INSTALL PyQt4 ON YOUR MACHINE.')
+                print( 'ERROR, YOU NEED TO INSTALL PyQt4 ON YOUR MACHINE.' )
                 sys.exit( 0 )
             #
             ## now see if we have sshpass
             sshpass = find_executable( 'sshpass' )
             if sshpass is None:
-                print('ERROR, YOU NEED TO INSTALL sshpass ON YOUR MACHINE.')
+                print( 'ERROR, YOU NEED TO INSTALL sshpass ON YOUR MACHINE.' )
                 sys.exit( 0 )
             #
             ## now see if we have pandoc
             pandoc = find_executable( 'pandoc' )
             if pandoc is None:
-                print('ERROR, YOU NEED TO INSTALL pandoc ON YOUR MACHINE.')
+                print( 'ERROR, YOU NEED TO INSTALL pandoc ON YOUR MACHINE.' )
                 sys.exit( 0 )
-                
-            from PyQt4.QtGui import QFontDatabase
             
             #
             ## first see if we have pip on this machine
-            try:
-                val = imp.find_module( 'pip' )
-            except ImportError:
-                _choose_install_pip( )
+            try: val = imp.find_module( 'pip' )
+            except ImportError: _choose_install_pip( )
             
             #
             ## now go through all the dependencies in the requirements packages
@@ -152,11 +150,9 @@ class PlexInitialization( object ):
                                                         'requirements.txt' ), 'r' ).readlines( ) ) ) )
             reqs_remain = [ ]
             for req in reqs:
-                try: 
-                    val = imp.find_module( req )
+                try: val = imp.find_module( req )
                 except ImportError: 
-                    try:
-                        val = pkg_resources.require([ req ])
+                    try: val = pkg_resources.require([ req ])
                     except pkg_resources.DistributionNotFound:
                         reqs_remain.append( req )
             #
@@ -169,7 +165,3 @@ class PlexInitialization( object ):
         if not PlexInitialization._instance:
             PlexInitialization._instance = PlexInitialization.__PlexInitialization( )
         return PlexInitialization._instance
-
-#if __name__=='__main__':
-#    os.chdir( os.path.dirname( __file__ ) )
-#    pi = PlexInitialization( )

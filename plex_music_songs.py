@@ -32,6 +32,9 @@ def _choose_youtube_item( name, maxnum = 10, verify = True ):
             map(lambda idx: '%d: %s' % ( idx, sortdict[ idx ][ 0 ] ),
                 sorted( sortdict ) ) )
         iidx = input( bs )
+        if iidx.strip( ).lower( ) == 'qq':
+            print( 'Doing a hard quit. Exiting...' )
+            sys.exit( 0 )
         try:
             iidx = int( iidx.strip( ) )
             if iidx not in sortdict:
@@ -49,6 +52,8 @@ def _choose_youtube_item( name, maxnum = 10, verify = True ):
     return youtubeURL
 
 def _download_actual_song( pm, lastfm, s_name, a_name, maxnum, do_lastfm ):
+    print( 'got here download actual song' )
+    
     try:
         if not do_lastfm:
             data_dict, status = pm.get_music_metadata( song_name = s_name,
@@ -267,8 +272,8 @@ def main( ):
     parser.add_option( '--debug', dest='do_debug', action='store_false', default=True,
                        help = 'Run with debug mode turned on.' )
     opts, args = parser.parse_args( )
-    logger = logging.getLogger( )
-    if opts.do_debug: logger.setLevel( logging.DEBUG )
+    #logger = logging.getLogger( )
+    #if opts.do_debug: logger.setLevel( logging.DEBUG )
 
     if not opts.do_new: all_songs_downloaded = _download_songs_oldformat( opts )
     else: all_songs_downloaded = _download_songs_newformat( opts )

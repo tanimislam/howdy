@@ -15,12 +15,18 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# .. .. todo:: replace ``plexcore.subscene`` with Subliminal_ based subtitle downloader.
 
 """
-Python wrapper for Subscene subtitle database.
+Python wrapper for Subscene_ subtitle database.
 
-since Subscene doesn't provide an official API, I wrote
-this script that does the job by parsing the website"s pages.
+since Subscene_ doesn't provide an official API, I wrote this script that does the job by parsing the website"s pages.
+
+.. note:: I have copied this code from the `Subscene Python Module <https://github.com/mamins1376/Subscene-API>`_, which is now discontinued in favor of Subliminal_. I continue to use this tool.
+
+
+.. _Subscene: https://subscene.com
+.. _Subliminal: https://subliminal.readthedocs.io/en/latest
 """
 
 # imports

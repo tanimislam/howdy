@@ -24,6 +24,10 @@ sys.path.insert( 0, _mainDir )
 
 print( "mainDir = %s" % _mainDir)
 
+print( 'listing: %s.' % os.listdir( _mainDir ) )
+
+print( sys.path )
+
 
 # -- General configuration ------------------------------------------------
 

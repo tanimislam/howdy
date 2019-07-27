@@ -259,7 +259,7 @@ def send_individual_email(
 
 def get_summary_html( preambleText = '', postambleText = '', pngDataDict = { },
                       name = None, token = None, doLocal = True ):
-    data = plexcore.checkServerCredentials( doLocal = doLocal )
+    data = plexcore.checkServerCredentials( doLocal = doLocal, verify = False )
     if data is None:
         print('Sorry, now we need to provide an user name and password. Please get one!')
         return
@@ -329,11 +329,15 @@ def _get_album_prifile( prifile ):
         return ( prifile, album )
     else: return None
 
-def get_summary_data_music_remote( token, fullURLWithPort = 'http://localhost:32400' ):
+def get_summary_data_music_remote(
+    token, fullURLWithPort = 'http://localhost:32400',
+    library = 'Music' ):
     libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
-    keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'Music' ])
+    keynum = max(filter(lambda key: libraries_dict[ key ] == name, libraries_dict ) )
+    if keynum is None:
+        return None
     sinceDate = plexcore.get_current_date_newsletter( )
-    key, num_songs, num_albums, num_artists, totdur, totsizebytes = plexcore._get_library_stats_artist(
+    key, num_songs, num_albums, num_artists, totdur, totsizebytes = plexcore.get_library_stats(
         keynum, token, fullURL = fullURLWithPort )
     mainstring = 'There are %d songs made by %d artists in %d albums.' % (
         num_songs, num_artists, num_albums )
@@ -356,11 +360,14 @@ def get_summary_data_music_remote( token, fullURLWithPort = 'http://localhost:32
     musicstring = ' '.join([ mainstring, sizestring, durstring ])
     return musicstring
 
-def get_summary_data_television_remote( token, fullURLWithPort = 'http://localhost:32400' ):
+def get_summary_data_television_remote(
+    token, fullURLWithPort = 'http://localhost:32400', library = 'TV Shows' ):
     libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
-    keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'TV Shows' ])
+    keynum = max(filter(lambda key: libraries_dict[ key ] == library, libraries_dict ) )
+    if keynum is None:
+        return None
     sinceDate = plexcore.get_current_date_newsletter( )
-    key, numTVeps, numTVshows, totdur, totsizebytes = plexcore._get_library_stats_show(
+    key, numTVeps, numTVshows, totdur, totsizebytes = plexcore.get_library_stats(
         keynum, token, fullURL = fullURLWithPort )
     sizestring = 'The total size of TV media is %s.' % \
         get_formatted_size( totsizebytes )
@@ -384,12 +391,13 @@ def get_summary_data_television_remote( token, fullURLWithPort = 'http://localho
     tvstring = ' '.join([ mainstring, sizestring, durstring ])
     return tvstring
 
-def get_summary_data_movies_remote( token, fullURLWithPort = 'http://localhost:32400' ):
+def get_summary_data_movies_remote( token, fullURLWithPort = 'http://localhost:32400', library = 'Movies' ):
     libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
-    keynum = max(zip(*filter(lambda tup: tup[1] == 'Movies', libraries_dict.items()))[0])
+    keynum = max(zip(*list(filter(lambda tup: tup[1] == 'Movies', libraries_dict.items())))[0])
+    if keynum is None: return None
     sinceDate = plexcore.get_current_date_newsletter( )
     _, num_movies, totsizebytes, totdur, \
-        sorted_by_genres = plexcore._get_library_stats_movie( keynum, token, fullURL = fullURLWithPort )
+        sorted_by_genres = plexcore.get_library_stats( keynum, token, fullURL = fullURLWithPort )
     if sinceDate is not None:
         _, num_movies_since, totsizebytes_since, totdur_since, \
             sorted_by_genres_since = plexcore._get_library_stats_movie(
@@ -455,7 +463,7 @@ def get_summary_data_movies_remote( token, fullURLWithPort = 'http://localhost:3
 def get_summary_data_movies( allrows ):
     """FIXME! briefly describe function
 
-    :param allrows: 
+    :param list allrows: 
     :returns: 
     :rtype: 
 

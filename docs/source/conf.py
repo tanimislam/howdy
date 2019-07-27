@@ -16,7 +16,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os, sys, mock
+import os, sys
 from functools import reduce
 _mainDir = reduce(lambda x,y: os.path.dirname( x ),
                   range(2), os.path.abspath('.'))

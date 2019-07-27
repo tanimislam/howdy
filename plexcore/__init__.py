@@ -552,4 +552,4 @@ def create_all( ):
     Base.metadata.create_all( _engine )
     session.commit( )
 
-create_all( )
+if not os.path.environ('READTHEDOCS'): create_all( )

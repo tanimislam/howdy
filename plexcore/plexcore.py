@@ -520,7 +520,7 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
                 range( act_num_threads ) ) )
         movie_data = { }
         movie_data_list = list( chain.from_iterable(
-            map( _get_movie_data, input_tuples ) ) )
+            pool.map( _get_movie_data, input_tuples ) ) )
         for first_genre, data in movie_data_list:
             movie_data.setdefault( first_genre, [ ] ).append( data )
         return key, movie_data
@@ -885,6 +885,65 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
 
 def get_library_data( title, token, fullURL = 'http://localhost:32400',
                       num_threads = 2 * multiprocessing.cpu_count( ), timeout = None ):
+    """
+    Returns the data on the specific Plex library, as a :py:class:`dict`. This lower level functionality lives in the same space as `PlexAPI <https://python-plexapi.readthedocs.io/en/latest>`_. Three types of library data can be returned: movies, TV shows, and music.
+    
+      * Movie data has this JSON like structure. ``moviedata`` is an example movie data dictionary.
+
+        * ``moviedata`` is a :py:class:`dict` whose keys (of type :py:class:`str`) are the main movie genres in the Plex_ library, such as ``comedy``.
+
+        * Each value in ``moviedata[<genre>]``  is a :py:class:`list` of movies of that (main) genre.
+        
+        * Each ``movie`` in ``moviedata[<genre>]`` is a :py:class:`dict` with the following ten keys and values.
+        
+          * ``title``: :py:class:`str` movie's name.
+          * ``rating``: :py:class:`float` the movie's quality rating as a number between ``0.0`` and ``10.0``.
+          * ``contentrating``: :py:class:`str` the `MPAA content rating <https://en.wikipedia.org/wiki/Motion_Picture_Association_of_America_film_rating_system>`_ for the movie (such as ``PG``, ``PG-13``, ``R``, or ``NR``).
+          * ``picurl``: :py:class:`str` URL of the movie's poster on the Plex_ server.
+          * ``releasedate``: :py:class:`date <datetime.date>` of when the movie was first released.
+          * ``addedat``: :py:class:`date <datetime.date>` of when the movie was added to the Plex_ server.
+          * ``summary``: :py:class:`str` plot summary of the movie.
+          * ``duration``: :py:class:`float` movie's duration in seconds.
+          * ``totsize``: :py:class:`int` size of the movie file in bytes.
+          * ``localpic``: :py:class:`bool` currently unused variable, always ``True``.
+          
+        * An example ``moviedata`` :py:class:`dict` with one genre (``comedy``) and ten highly rated movies can be found in :download:`moviedata example </_static/moviedata_example.json>` in JSON format.
+
+      * TV data has this JSON like structure.  ``tvdata`` is an example TV data dictionary.
+      
+        * ``tvdata`` is a :py:class:`dict` whose keys are the individual TV shows.
+        
+        * Each value in ``tvdata[<showname>]`` is a dictionary with four keys: ``title`` (:py:class:`str` name of the show, <showname>), ``summary`` (:py:class:`str` description of the show), ``picturl`` (:py:class:`str` URL of the poster for the show), and ``seasons`` (:py:class:`dict` whose keys are the seasons of the show).
+        
+        * ``tvdata[<showname>]['seasons']`` is a :py:class:`dict` whose keys are the seasons. If the show has specials, then those episodes are in season 0.
+        
+          * this :py:class:`dict` has two keys: ``seasonpicurl`` (:py:class:`str` URL of the poster for the season), and ``episodes`` (:py:class:`dict` of the episodes for that season).
+          * ``tvdata[<showname>]['seasons']['episodes']`` is a :py:class:`dict` whose keys are the episode numbers, and whose value is a :py:class:`dict` with the following nine keys and values.
+          
+            * ``title``: :py:class:`str` title of the episode.
+            * ``episodepicurl``: :py:class:`str` URL of the poster of the episode.
+            * ``date aired``: :py:class:`date <datetime.date>` of when the episode first aired.
+            * ``summary``: :py:class:`str` summary of the episode's plot.
+            * ``duration:``: :py:class:`float` episode duration in seconds.
+            * ``size``: :py:class:`int` size of the episode file in bytes.
+            * ``path``: :py:class:`str` path, on the Plex_ server, of the episode file.
+            * ``director``: :py:class:`list` of the episode's directors.
+            * ``writer``: :py:class:`list` of the episode's writers.
+            
+        * An example ``tvdata`` :py:class:`dict` with one finished HBO show, `The Brink <https://en.wikipedia.org/wiki/The_Brink_(TV_series)>`_, can be found in :download:`tvdata example </_static/tvdata_example.json>` in JSON format.
+
+      * Music data has this structure.
+    
+    :param str title: the name of the library.
+    :param str token: the Plex_ server access token.
+    :param str fullURL: the Plex_ server address.
+    :param int num_threads: the number of concurrent threads used to access the Plex_ server and get the library data.
+    :param int timeout: optional time, in seconds, to wait for an HTTP conection to the Plex_ server.
+    
+    :returns: a dictionary of library data on the Plex server.
+    :rtype: dict.
+    
+    """
     time0 = time.time( )
     params = { 'X-Plex-Token' : token }
     response = requests.get( '%s/library/sections' % fullURL, params = params,
@@ -909,7 +968,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
         _, data = _get_library_data_artist( key, token, fullURL = fullURL,
                                             num_threads = num_threads, timeout = timeout )
     else:
-        logging.error( "took %0.3f seconds to gete here in get_library_data, library = %s." %
+        logging.error( "took %0.3f seconds to get here in get_library_data, library = %s." %
                       ( time.time( ) - time0, title ) )
         logging.error( "could not find a library with name = %s. Exiting..." % title )
         return None

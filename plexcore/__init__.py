@@ -236,8 +236,11 @@ class ProgressDialog( QDialogWithPrinting ):
     A convenient PyQt4_ widget, inheriting from :py:class:`QDialogWithPrinting <plexcore.QDialogWithPrinting>`, that acts as a GUI blocking progress window for longer lasting operations. Like its parent class, this dialog widget is also resizable. This shows the passage of the underlying slow process in 5 second increments.
 
     This progress dialog exposes three methods -- :py:meth:`addText <plexcore.ProgressDialog.addText>`, :py:meth:`stopDialog <plexcore.ProgressDialog.stopDialog>`, and :py:meth:`startDialog <plexcore.ProgressDialog.startDialog>` -- to which a custom :py:class:`QThread <PyQt4.QtCore.QThread>` object can connect.
+    
     * :py:meth:`startDialog <plexcore.ProgressDialog.startDialog>` is triggered on long operation start, sometimes with an initial message.
+    
     * :py:meth:`addText <plexcore.ProgressDialog.addText>` is triggered when some intermediate progress text must be returned.
+    
     * :py:meth:`stopDialog <plexcore.ProgressDialog.stopDialog>` is triggered on process end.
 
     Args:

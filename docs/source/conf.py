@@ -16,19 +16,23 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os, sys
+import os, sys, mock
 from functools import reduce
 _mainDir = reduce(lambda x,y: os.path.dirname( x ),
                   range(2), os.path.abspath('.'))
 sys.path.insert( 0, _mainDir )
 
 print( "mainDir = %s" % _mainDir)
-print( os.environ.get('READTHEDOCS'))
-#print( 'listing: %s.' % os.listdir( _mainDir ) )
-#print( 'listing #1: %s.' % os.listdir( os.path.dirname( _mainDir ) ) )
-#print( 'listing #2: %s.' % os.listdir( os.path.dirname( os.path.dirname( _mainDir ) ) ) )
-# print( 'listing #-1: %s.' % os.listdir( os.path.join( _mainDir, 'latest' ) ) )
-#print( sys.path )
+print( os.environ.get('READTHEDOCS') )
+
+#
+## following instructions on https://docs.readthedocs.io/en/latest/faq.html#i-get-import-errors-on-libraries-that-depend-on-c-modules
+## and instructions on https://stackoverflow.com/questions/28178644/python-readthedocs-how-to-satisfy-the-requirement-sip-or-pyqt/37363830#37363830
+## because CANNOT install PyQt4 and stuff in readthedocs
+if os.environ.get( 'READTHEDOCS' ):
+    MOCK_MODULES = ['sip', 'PyQt4', 'PyQt4.QtGui', 'PyQt4.QtCore' ]
+    sys.modules.update((mod_name, mock.MagicMock()) for mod_name in MOCK_MODULES)
+
 
 # -- General configuration ------------------------------------------------
 

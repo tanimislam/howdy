@@ -32,6 +32,7 @@ def main( ):
         print( "error, could not find remote server to push series info.")
         return
     username = client.username
+    password = client.password
     server = client.host
     #
     ## now get episode information
@@ -44,7 +45,7 @@ def main( ):
         return
     epdicts_sub = { seasno : {
         epno : epdicts[seasno][epno][0] for epno in epdicts[seasno] } for seasno in epdicts }
-    with Connection( server, user = username ) as conn, BytesIO( ) as io_obj:
+    with Connection( server, user = username, connect_kwargs = { 'password' : password } ) as conn, BytesIO( ) as io_obj:
         io_obj.write( json.dumps( epdicts_sub, indent=1 ).encode( ) )
         r = conn.put( io_obj, os.path.basename( opts.jsonfile ) )
         print( 'put episode info for "%s" into %s in %0.3f seconds.' % (

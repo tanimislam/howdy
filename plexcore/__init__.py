@@ -22,8 +22,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
 from fuzzywuzzy.fuzz import partial_ratio
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt4.QtGui import QLabel, QDialog
+from PyQt4.QtCore import pyqtSignal
 
 # resource file and stuff
 baseConfDir = os.path.abspath( os.path.expanduser( '~/.config/plexstuff' ) )

@@ -40,7 +40,8 @@ def get_tmdb_api( ) -> str:
         raise ValueError("ERROR, NO TMDB API CREDENTIALS FOUND")
     return val.data['apikey']
 
-tmdb_apiKey = get_tmdb_api( )
+if not os.environ.get( 'READTHEDOCS' ): tmdb_apiKey = get_tmdb_api( )
+else: tmdb_apiKey = ''
 
 #
 ## singleton objects

@@ -116,26 +116,27 @@ class PlexInitialization( object ):
                 if response[0] == socket.AF_INET]
             socket.getaddrinfo = _new_getaddrinfo
             
-            #
-            ## first see if we have PyQt4
-            try:
-                val = imp.find_module( 'PyQt4' )
-                from PyQt4.QtGui import QFontDatabase
-            except ImportError:
-                print( 'ERROR, YOU NEED TO INSTALL PyQt4 ON YOUR MACHINE.' )
-                sys.exit( 0 )
-            #
-            ## now see if we have sshpass
-            sshpass = find_executable( 'sshpass' )
-            if sshpass is None:
-                print( 'ERROR, YOU NEED TO INSTALL sshpass ON YOUR MACHINE.' )
-                sys.exit( 0 )
-            #
-            ## now see if we have pandoc
-            pandoc = find_executable( 'pandoc' )
-            if pandoc is None:
-                print( 'ERROR, YOU NEED TO INSTALL pandoc ON YOUR MACHINE.' )
-                sys.exit( 0 )
+            if not os.environ.get( 'READTHEDOCS' ):
+                #
+                ## first see if we have PyQt4
+                try:
+                    val = imp.find_module( 'PyQt4' )
+                    from PyQt4.QtGui import QFontDatabase
+                except ImportError:
+                    print( 'ERROR, YOU NEED TO INSTALL PyQt4 ON YOUR MACHINE.' )
+                    sys.exit( 0 )
+                #
+                ## now see if we have sshpass
+                sshpass = find_executable( 'sshpass' )
+                if sshpass is None:
+                    print( 'ERROR, YOU NEED TO INSTALL sshpass ON YOUR MACHINE.' )
+                    sys.exit( 0 )
+                #
+                ## now see if we have pandoc
+                pandoc = find_executable( 'pandoc' )
+                if pandoc is None:
+                    print( 'ERROR, YOU NEED TO INSTALL pandoc ON YOUR MACHINE.' )
+                    sys.exit( 0 )
             
             #
             ## first see if we have pip on this machine

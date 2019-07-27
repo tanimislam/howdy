@@ -38,3 +38,4 @@ This module implements the following
 
 .. automodule:: plexcore.plexcore
    :members:
+

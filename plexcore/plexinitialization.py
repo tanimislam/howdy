@@ -116,7 +116,7 @@ class PlexInitialization( object ):
                 if response[0] == socket.AF_INET]
             socket.getaddrinfo = _new_getaddrinfo
             
-            if not os.environ.get( 'READTHEDOCS' ):
+            if not os.environ.get( 'READTHEDOCS' ): # more and more contortions to get read the docs to work...
                 #
                 ## first see if we have PyQt4
                 try:

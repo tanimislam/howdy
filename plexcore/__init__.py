@@ -120,8 +120,6 @@ class QDialogWithPrinting( QDialog ):
 
      Attributes:
         indexScalingSignal: a :py:class:`pyqtSignal <PyQt4.QtCore.pyqtSignal>` that can be connected to other PyQt4_ events or methods, if resize events want to be recorded.
-
-    .. _PyQt4: https://www.riverbankcomputing.com/static/Docs/PyQt4
     """
     
     indexScalingSignal = pyqtSignal( int )
@@ -246,8 +244,6 @@ class ProgressDialog( QDialogWithPrinting ):
         parent (:py:class:`QWidget <PyQt4.QtGui.QWidget>`): the parent :py:class:`QWidget <PyQt4.QtGui.QWidget>` on which this dialog widget blocks.
         windowTitle (str): the label to put on this progress dialog in an internal :py:class:`QLabel <PyQt4.QtGui.QLabel>`.
         doQuit (bool): if ``True``, then using the quit shortcuts (``Esc`` or ``Ctrl+Shift+Q``) will cause the underlying program to exit. Otherwise, hide the progress dialog.
-
-    .. _PyQt4: https://www.riverbankcomputing.com/static/Docs/PyQt4
     """
     def __init__( self, parent, windowTitle = "", doQuit = True ):
         super( ProgressDialog, self ).__init__(

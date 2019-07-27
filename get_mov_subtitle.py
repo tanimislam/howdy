@@ -64,6 +64,9 @@ def get_movie_subtitle_items( items, filename = 'eng.srt', do_send = False ):
                                                    coloration_dict[ sortdict[ idx ][ 'content' ] ] ) ),
             sorted( sortdict ) ) )
     iidx = input( bs )
+    if iidx.lower( ).strip( ) == 'qq':
+        print( 'Abort the search for subtitles. Exit...' )
+        return
     try:
         iidx = int( iidx.strip( ) )
         if iidx not in sortdict:
@@ -124,13 +127,14 @@ if __name__=='__main__':
                           'in the subscene search for movie subtitles.' ]) )
     parser.add_option('-s', '--send', dest='do_send', action='store_true', default = False,
                       help = 'If chosen, then send the file to remote host.' )
-    parser.add_option('-d', '--debug', dest='do_debug', action='store_true', default = False,
-                      help = 'If chosen, run in debug mode.' )
+    parser.add_option('--info', dest='do_info', action='store_true', default = False,
+                      help = 'If chosen, run in info mode.' )
     
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
     assert( os.path.basename( opts.filename ).endswith('.srt' ) )
-    if opts.do_debug: logging.basicConfig( level = logging.INFO )
+    logger = logging.getLogger( )
+    if opts.do_info: logger.setLogger( logging.INFO )
     keywords_set = { }
     if opts.keywords is not None:
         keywords_set = set(map(lambda tok: tok.lower( ),

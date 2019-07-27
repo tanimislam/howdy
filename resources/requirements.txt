@@ -37,6 +37,7 @@ requests_oauthlib
 rsa
 six
 SQLAlchemy
+subliminal
 termcolor
 titlecase
 validators

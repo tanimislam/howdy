@@ -471,8 +471,9 @@ def returnQAppWithFonts( ):
 # follow directions in http://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
 _engine = create_engine( 'sqlite:///%s' % os.path.join( baseConfDir, 'app.db') )
 Base = declarative_base( )
-Base.metadata.bind = _engine
-session = sessionmaker( bind = _engine )( )
+if not os.environ.get( 'READTHEDOCS' ):
+    Base.metadata.bind = _engine
+    session = sessionmaker( bind = _engine )( )
 
 #
 ## this will be used to replace all the existing credentials stored in separate tables

@@ -474,6 +474,7 @@ Base = declarative_base( )
 if not os.environ.get( 'READTHEDOCS' ):
     Base.metadata.bind = _engine
     session = sessionmaker( bind = _engine )( )
+else: session = ''
 
 #
 ## this will be used to replace all the existing credentials stored in separate tables

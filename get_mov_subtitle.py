@@ -7,13 +7,14 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 import re, codecs, requests, zipfile, os, logging, time
-from plexcore import subscene
-signal.signal( signal.SIGINT, signal_handler )
+from fabric import Connection
 from termcolor import colored
 from io import BytesIO
 from itertools import chain
 from pathos.multiprocessing import Pool
 from optparse import OptionParser
+
+from plexcore import subscene, plexcore_deluge
 from plextmdb import plextmdb_subtitles
 
 def get_items_yts( name, maxnum = 10 ):
@@ -40,7 +41,19 @@ def get_items_opensubtitles( name, maxnum = 20, extra_strings = [ ] ):
                                      'content' : 'opensubtitles' },
                      sorted( subtitles_map )[:maxnum] ) )
 
-def get_movie_subtitle_items( items, filename = 'eng.srt' ):
+def get_movie_subtitle_items( items, filename = 'eng.srt', do_send = False ):
+    if do_send:
+        client, status = plexcore_deluge.get_deluge_client( )
+        if status != 'SUCCESS':
+            print( "error, could not find remote server to push subtitle info.")
+            return
+        username = client.username
+        password = client.password
+        server = client.host
+        conn = Connection(
+            server, user = username,
+            connect_kwargs = { 'password' : password } )
+    
     coloration_dict = { 'yts' : 'red',
                         'subscene' : 'green',
                         'opensubtitles' : 'blue' }
@@ -60,22 +73,37 @@ def get_movie_subtitle_items( items, filename = 'eng.srt' ):
         if content == 'yts': # yts
             zipurl = sortdict[ iidx ][ 'zipurl' ]
             with zipfile.ZipFile( BytesIO( requests.get( zipurl ).content ), 'r') as zf:
-                with open( filename, 'wb' ) as openfile:
-                    name = max( zf.namelist( ) )
-                    openfile.write( zf.read( name ) )
+                name = max( zf.namelist( ) )
+                if not do_send:
+                    with open( filename, 'wb' ) as openfile:
+                        openfile.write( zf.read( name ) )
+                else:
+                    with BytesIO( ) as io_obj:
+                        io_obj.write( zf.read( name ) )
+                        r = conn.put( io_obj, os.path.basename( filename ) )
         elif content == 'subscene': # subscene
             suburl = sortdict[ iidx ][ 'srtdata' ]
             zipcontent = subscene.get_subscene_zipped_content( suburl )
             with zipfile.ZipFile( BytesIO( zipcontent ), 'r') as zf:
-                with open( filename, 'wb' ) as openfile:
-                    name = max( zf.namelist( ) )
-                    openfile.write( zf.read( name ) )
+                name = max( zf.namelist( ) )
+                if not do_send:
+                    with open( filename, 'wb' ) as openfile:
+                        openfile.write( zf.read( name ) )
+                else:
+                    with BytesIO( ) as io_obj:
+                        io_obj.write( zf.read( name ) )
+                        r = conn.put( io_obj, os.path.basename( filename ) )
         elif content == 'opensubtitles': # opensubtitles
             zipurl = sortdict[ iidx ][ 'srtdata' ]
             with zipfile.ZipFile( BytesIO( requests.get( zipurl ).content ), 'r') as zf:
-                with open( filename, 'wb' ) as openfile:
-                    name = max( filter(lambda nm: nm.endswith('.srt'), zf.namelist( ) ) )
-                    openfile.write( zf.read( name ) )
+                name = max( filter(lambda nm: nm.endswith('.srt'), zf.namelist( ) ) )
+                if not do_send:
+                    with open( filename, 'wb' ) as openfile:
+                        openfile.write( zf.read( name ) )
+                else:
+                    with BytesIO( ) as io_obj:
+                        io_obj.write( zf.read( name ) )
+                        r = conn.put( io_obj, os.path.basename( filename ) )
     except Exception as e:
         print('Error, did not give a valid integer value. Exiting...')
         return
@@ -94,8 +122,11 @@ if __name__=='__main__':
                       help = ' '.join([
                           'Optional definition of a list of keywords to look for,',
                           'in the subscene search for movie subtitles.' ]) )
+    parser.add_option('-s', '--send', dest='do_send', action='store_true', default = False,
+                      help = 'If chosen, then send the file to remote host.' )
     parser.add_option('-d', '--debug', dest='do_debug', action='store_true', default = False,
                       help = 'If chosen, run in debug mode.' )
+    
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
     assert( os.path.basename( opts.filename ).endswith('.srt' ) )
@@ -124,4 +155,6 @@ if __name__=='__main__':
         except: pass
     items = list( chain.from_iterable( items_lists ) )
     logging.info( 'search for movie subtitles took %0.3f seconds.' % ( time.time( ) - time0 ) )    
-    if len( items ) != 0: get_movie_subtitle_items( items, filename = opts.filename )
+    if len( items ) != 0:
+        get_movie_subtitle_items(
+            items, filename = opts.filename, do_send = opts.do_send )

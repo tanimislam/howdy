@@ -10,9 +10,9 @@ from optparse import OptionParser
 
 if __name__=='__main__':
     parser = OptionParser( )
-    parser.add_option( '--artist', dest='artist_name', type=str, action='store',
+    parser.add_option( '-a', '--artist', dest='artist_name', type=str, action='store',
                        help = 'Name of the artist to get album image for.' )
-    parser.add_option( '--album', dest='album_name', type=str, action='store',
+    parser.add_option( '-A', '--album', dest='album_name', type=str, action='store',
                        help = 'Name of the album to get album image for.' )
     parser.add_option( '--songs', dest='do_songs', action='store_true', default = False,
                        help = 'If chosen, get the song listing instead of downloading the album image.')

@@ -537,6 +537,7 @@ class PlexGuestEmailMapping( Base ):
         plexmapping: the mapping, as a comma-delimited string, of other email addresses to deliver Plexstuff emails.
         plexreplaceexisting: if ``True``, only send Plexstuff emails of Plex_ user to new email addresses. If ``False``, also send to email address of Plex_ user.
 
+    .. _Plex: https://plex.tv
     """
     #
     ## create the table using Base.metadata.create_all( _engine )

@@ -21,6 +21,7 @@ This module implements the lower-level functionality to do the following:
 
 .. _SQLite3: https://www.sqlite.org/index.html
 .. _SQLAlchemy: https://www.sqlalchemy.org
+.. _PyQt4: https://www.riverbankcomputing.com/static/Docs/PyQt4/index.html
 
 .. automodule:: plexcore
    :members:

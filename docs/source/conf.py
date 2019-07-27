@@ -23,14 +23,11 @@ _mainDir = reduce(lambda x,y: os.path.dirname( x ),
 sys.path.insert( 0, _mainDir )
 
 print( "mainDir = %s" % _mainDir)
-print( 'listing: %s.' % os.listdir( _mainDir ) )
-print( 'listing #1: %s.' % os.listdir( os.path.dirname( _mainDir ) ) )
-print( 'listing #2: %s.' % os.listdir( os.path.dirname( os.path.dirname( _mainDir ) ) ) )
+#print( 'listing: %s.' % os.listdir( _mainDir ) )
+#print( 'listing #1: %s.' % os.listdir( os.path.dirname( _mainDir ) ) )
+#print( 'listing #2: %s.' % os.listdir( os.path.dirname( os.path.dirname( _mainDir ) ) ) )
 # print( 'listing #-1: %s.' % os.listdir( os.path.join( _mainDir, 'latest' ) ) )
-print( sys.path )
-
-from plexcore import plexcore
-
+#print( sys.path )
 
 # -- General configuration ------------------------------------------------
 

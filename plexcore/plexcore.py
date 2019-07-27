@@ -17,6 +17,7 @@ from urllib.request import urlopen
 from urllib.parse import urlencode, urljoin
 from itertools import chain
 from multiprocessing import Manager
+
 from plexcore import mainDir, session
 from plexcore import PlexConfig, LastNewsletterDate, PlexGuestEmailMapping
 from plextmdb import plextmdb
@@ -121,9 +122,9 @@ def getTokenForUsernamePassword( username, password, verify = True ):
 
     .. seealso:
     
-    * :py:meth:`checkServerCredentials <plexstuff.plexcore.plexcore.checkServerCredentials>`.
-    * :py:meth:`getCredentials <plexstuff.plexcore.plexcore.getCredentials>`.
-    * :py:meth:`pushCredentials <plexstuff.plexcore.plexcore.pushCredentials>`.
+    * :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`.
+    * :py:meth:`getCredentials <plexcore.plexcore.getCredentials>`.
+    * :py:meth:`pushCredentials <plexcore.plexcore.pushCredentials>`.
 
     """
     headers = { 'X-Plex-Client-Identifier' : str( uuid.uuid4( ) ),
@@ -152,7 +153,7 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
     :returns: a tuple of server URL and Plex_ access token.
     :rtype: tuple
 
-    .. seealso:: :py:meth:`getCredentials <plexstuff.plexcore.plexcore.getCredentials>`
+    .. seealso:: :py:meth:`getCredentials <plexcore.plexcore.getCredentials>`
 
     .. _Plex: https://plex.tv
 
@@ -231,7 +232,7 @@ def getCredentials( verify = True, checkWorkingServer = True ):
     :returns: the Plex_ account tuple of ``(username, password)``.
     :rtype: tuple
 
-    .. seealso:: :py:meth:`pushCredentials <plexstuff.plexcore.plexcore.pushCredentials>`
+    .. seealso:: :py:meth:`pushCredentials <plexcore.plexcore.pushCredentials>`
 
     """
     val = session.query( PlexConfig ).filter(
@@ -253,7 +254,7 @@ def pushCredentials( username, password ):
     :returns: if successful, return a string, ``SUCCESS``. If unsuccessful, returns a string reason of why it failed.
     :rtype: str
 
-    .. seealso:: :py:meth:`getCredentials <plexstuff.plexcore.plexcore.getCredentials>`
+    .. seealso:: :py:meth:`getCredentials <plexcore.plexcore.getCredentials>`
 
     """
     #
@@ -277,14 +278,14 @@ def pushCredentials( username, password ):
 def get_all_servers( token, verify = True ):
     """Find all the Plex_ servers for which you have access.
 
-    :param token: the Plex str access token, returned by :py:meth:`checkServerCredentials <plexstuff.plexcore.checkServerCredentials>`.
+    :param token: the Plex str access token, returned by :py:meth:`checkServerCredentials <plexcore.checkServerCredentials>`.
     :param verify: optional bool argument, whether to verify SSL connections. Default is ``True``.
     :returns: a dictionary of servers owned by you. Each key is the Plex_ server's name, and the value is the URL with port.
     :rtype: dict
 
     .. seealso::
-       * :py:meth:`checkServerCredentials <plexstuff.plexcore.plexcore.checkServerCredentials>`
-       * :py:meth:`get_owned_servers <plexstuff.plexcore.plexcore.get_owned_servers>`
+       * :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`
+       * :py:meth:`get_owned_servers <plexcore.plexcore.get_owned_servers>`
 
     .. _Plex: https://plex.tv
 
@@ -317,8 +318,8 @@ def get_owned_servers( token, verify = True ):
     :rtype: dict
 
     .. seealso:: 
-       * :py:meth:`checkServerCredentials <plexstuff.plexcore.plexcore.checkServerCredentials>`
-       * :py:meth:`get_all_servers <plexstuff.plexcore.plexcore.get_all_servers>`
+       * :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`
+       * :py:meth:`get_all_servers <plexcore.plexcore.get_all_servers>`
 
     .. _Plex: https://plex.tv
 
@@ -388,7 +389,7 @@ def get_email_contacts( token, verify = True ):
     :returns: list of email addresses of Plex_ friends.
     :rtype: list 
 
-    .. seealso: :py:method:`get_mapped_email_contacts <plexstuff.plexcore.plexcore.get_mapped_email_contacts>`.
+    .. seealso: :py:method:`get_mapped_email_contacts <plexcore.plexcore.get_mapped_email_contacts>`.
 
     """
     
@@ -409,7 +410,7 @@ def get_mapped_email_contacts( token, verify = True ):
     :returns: a list of email addresses for Plexstuff emails.
     :rtype: list
 
-    .. seealso: :py:method:`get_email_contacts <plexstuff.plexcore.plexcore.get_email_contacts>`.
+    .. seealso: :py:method:`get_email_contacts <plexcore.plexcore.get_email_contacts>`.
 
     """
     emails = get_email_contacts( token, verify = verify )

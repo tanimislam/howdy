@@ -9,7 +9,7 @@ This document describes the lower level Plex emailing API, upon which all the co
 
 This module implements the lower-level functionality to do the following:
 
-* to access and retrieve configuration and other data from an SQLite3_ database using SQLAlchemy_ ORM classes. The SQLite3_ database is stored in ``~/.config/plexstuff/app.db``.
+  * to access and retrieve configuration and other data from an SQLite3_ database using SQLAlchemy_ ORM classes. The SQLite3_ database is stored in ``~/.config/plexstuff/app.db``.
 
   * :py:class:`PlexConfig <plexstuff.plexcore.PlexConfig>` is an ORM class that stores configuration information.
   * :py:class:`PlexGuestEmailMapping <plexstuff.plexcore.PlexGuestEmailMapping>` is an ORM class that stores all the email addresses that will receive Plexstuff email notifications.

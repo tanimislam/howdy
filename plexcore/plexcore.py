@@ -142,7 +142,7 @@ def getTokenForUsernamePassword( username, password, verify = True ):
     return response.json()['user']['authentication_token']
     
 def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer = True ):
-    """Returns get a local or remote URL and Plex_ access token to allow for API access to the server. If there is already a VALID token in the SQLite3_ configuration database, then uses that. Otherwise, tries to 
+    """Returns get a local or remote URL and Plex_ access token to allow for API access to the server. If there is already a VALID token in the SQLite3_ configuration database, then uses that. Otherwise, tries to acquire a Plex_ access token.
 
     :param bool doLocal: optional argument, whether to get a local (``http://localhost:32400``) or remote URL. Default is ``False`` (look for the remote URL).
     

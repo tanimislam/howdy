@@ -47,6 +47,12 @@ This module implements the functionality to do the following:
 .. automodule:: plexcore.plexcore
    :members:
 
+``plexcore.subscene``
+-----------------------
+
+.. automodule:: plexcore.subscene
+   :members:
+
 .. these are some URLs
 
 .. _SQLite3: https://www.sqlite.org/index.html

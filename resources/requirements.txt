@@ -31,7 +31,6 @@ python-geoip-geolite2
 python-Levenshtein
 python-magic
 pytz
-pyxdg
 qdarkstyle
 requests
 requests_oauthlib

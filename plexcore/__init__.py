@@ -94,7 +94,7 @@ class QLabelWithSave( QLabel ):
         super( QLabel, self ).__init__( parent )
 
     def contextMenuEvent( self, event ):
-        """Constructs a `context menu`_ with a single action, *Save Pixmap*, that takes a screen shot of this widget, using :py:meth:`screenGrab <plexstuff.plexcore.QLabelWithSave.screenGrab>`.
+        """Constructs a `context menu`_ with a single action, *Save Pixmap*, that takes a screen shot of this widget, using :py:meth:`screenGrab <plexcore.QLabelWithSave.screenGrab>`.
 
         :param event: default :py:class:`QEvent <PyQt4.QtCore.QEvent>` argument needed to create a context menu. Is not used in this method.
 
@@ -233,12 +233,12 @@ class QDialogWithPrinting( QDialog ):
 
 class ProgressDialog( QDialogWithPrinting ):
     """
-    A convenient PyQt4_ widget, inheriting from :py:class:`QDialogWithPrinting <plexstuff.plexcore.QDialogWithPrinting>`, that acts as a GUI blocking progress window for longer lasting operations. Like its parent class, this dialog widget is also resizable. This shows the passage of the underlying slow process in 5 second increments.
+    A convenient PyQt4_ widget, inheriting from :py:class:`QDialogWithPrinting <plexcore.QDialogWithPrinting>`, that acts as a GUI blocking progress window for longer lasting operations. Like its parent class, this dialog widget is also resizable. This shows the passage of the underlying slow process in 5 second increments.
 
-    This progress dialog exposes three methods -- :py:meth:`addText <plexstuff.plexcore.ProgressDialog.addText>`, :py:meth:`stopDialog <plexstuff.plexcore.ProgressDialog.stopDialog>`, and :py:meth:`startDialog <plexstuff.plexcore.ProgressDialog.startDialog>` -- to which a custom :py:class:`QThread <PyQt4.QtCore.QThread>` object can connect.
-    * :py:meth:`startDialog <plexstuff.plexcore.ProgressDialog.startDialog>` is triggered on long operation start, sometimes with an initial message.
-    * :py:meth:`addText <plexstuff.plexcore.ProgressDialog.addText>` is triggered when some intermediate progress text must be returned.
-    * :py:meth:`stopDialog <plexstuff.plexcore.ProgressDialog.stopDialog>` is triggered on process end.
+    This progress dialog exposes three methods -- :py:meth:`addText <plexcore.ProgressDialog.addText>`, :py:meth:`stopDialog <plexcore.ProgressDialog.stopDialog>`, and :py:meth:`startDialog <plexcore.ProgressDialog.startDialog>` -- to which a custom :py:class:`QThread <PyQt4.QtCore.QThread>` object can connect.
+    * :py:meth:`startDialog <plexcore.ProgressDialog.startDialog>` is triggered on long operation start, sometimes with an initial message.
+    * :py:meth:`addText <plexcore.ProgressDialog.addText>` is triggered when some intermediate progress text must be returned.
+    * :py:meth:`stopDialog <plexcore.ProgressDialog.stopDialog>` is triggered on process end.
 
     Args:
         parent (:py:class:`QWidget <PyQt4.QtGui.QWidget>`): the parent :py:class:`QWidget <PyQt4.QtGui.QWidget>` on which this dialog widget blocks.
@@ -409,7 +409,7 @@ def get_formatted_size( totsizebytes ):
     Returns:
         str: Formatted representation of that file size.
 
-    .. seealso:: :py:meth:`get_formatted_size_MB <plexstuff.plexcore.get_formatted_size_MB>`
+    .. seealso:: :py:meth:`get_formatted_size_MB <plexcore.get_formatted_size_MB>`
     """
     
     sizestring = ''
@@ -426,7 +426,7 @@ def get_formatted_size( totsizebytes ):
 
 def get_formatted_size_MB( totsizeMB ):
     """
-    Same as :py:meth:`get_formatted_size <plexstuff.plexcore.get_formatted_size>`, except this operates on file sizes in units of megabytes rather than bytes.
+    Same as :py:meth:`get_formatted_size <plexcore.get_formatted_size>`, except this operates on file sizes in units of megabytes rather than bytes.
 
     :param int totsizeMB: size of the file in megabytes.
     
@@ -434,7 +434,7 @@ def get_formatted_size_MB( totsizeMB ):
     
     :rtype: str
 
-    .. seealso:: :py:meth:`get_formatted_size <plexstuff.plexcore.get_formatted_size>`
+    .. seealso:: :py:meth:`get_formatted_size <plexcore.get_formatted_size>`
 
     """
     if totsizeMB >= 1024:

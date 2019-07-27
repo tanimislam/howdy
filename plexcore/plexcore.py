@@ -313,8 +313,11 @@ def get_owned_servers( token, verify = True ):
     """Find the Plex_ servers that you own own.
 
     :param str token: the Plex str access token, returned by :py:meth:`checkServerCredentials`.
-    :param bool verify: optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
+    
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
     :returns: a dictionary of servers owned by you. Each key is the Plex_ server's name, and the value is the URL with port.
+    
     :rtype: dict
 
     .. seealso:: 
@@ -384,8 +387,8 @@ def get_updated_at( token, fullURL = 'http://localhost:32400' ):
 def get_email_contacts( token, verify = True ):
     """list of all email addresses of friends who have stream access to your Plex_ server.
 
-    :param str token:  Plex_ access token.
-    :param bool verify:  optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
+    :param str token: Plex_ access token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :returns: list of email addresses of Plex_ friends.
     :rtype: list 
 
@@ -406,7 +409,7 @@ def get_mapped_email_contacts( token, verify = True ):
     """list of all email addresses (including Plex_ server friends and mapped emails) to send Plexstuff related emails.
 
     :param str token: Plex_ access token.
-    :param bool verify: optional ``bool`` argument, whether to verify SSL connections. Default is ``True``.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :returns: a list of email addresses for Plexstuff emails.
     :rtype: list
 

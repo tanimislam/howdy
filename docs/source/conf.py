@@ -25,6 +25,8 @@ sys.path.insert( 0, _mainDir )
 print( "mainDir = %s" % _mainDir)
 
 print( 'listing: %s.' % os.listdir( _mainDir ) )
+print( 'listing #1: %s.' % os.listdir( os.path.dirname( _mainDir ) ) )
+print( 'listing #2: %s.' % os.listdir( os.path.dirname( os.path.dirname( _mainDir ) ) ) )
 
 print( sys.path )
 

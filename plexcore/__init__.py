@@ -10,8 +10,10 @@ mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
                  os.path.abspath( __file__ ) )
 sys.path.append( mainDir )
 
-from plexcore import plexinitialization
-_ = plexinitialization.PlexInitialization( )
+#
+## not working right now when doing read the docs
+#from plexcore import plexinitialization
+#_ = plexinitialization.PlexInitialization( )
 
 import datetime, glob, logging, time, numpy
 import geoip2.database, _geoip_geolite2, multiprocessing, multiprocessing.pool

@@ -140,7 +140,7 @@ Table of Contents
 -----------------
 
 .. toctree::
-  :maxdepth: 1
+  :maxdepth: 2
   :numbered:
 
   plex-config/plex_config
@@ -153,13 +153,14 @@ Table of Contents
 TODO
 ----
 
-Here are some things I would like to do in general
+Here are some things I would like to finish.
 
 * Fill out documentation for all the CLIs and GUIs.
 * Fill out documentation for the lower level APIs.
-* Fill out some more of the testing suite.
+* Fill out help dialogs for the CLIs and GUIs.
+* Complete the testing suite.
 * Streamline the OAuth2 authentication process, and provide more logical authorization and verification work flows.
-* Transition GUIs to use PyQt5_.
+* Transition GUIs to use PyQt5_, with the eventual use of fbs_.
 
 .. these are the links
 .. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki
@@ -180,3 +181,4 @@ Here are some things I would like to do in general
 .. _Red Hat: https://www.redhat.com/en
 .. _Fedora: https://getfedora.org
 .. _CentOS: https://www.centos.org
+.. _fbs: https://www.learnpyqt.com/courses/packaging-and-distribution/packaging-pyqt5-apps-fbs

@@ -29,10 +29,10 @@ print( os.environ.get('READTHEDOCS') )
 ## following instructions on https://docs.readthedocs.io/en/latest/faq.html#i-get-import-errors-on-libraries-that-depend-on-c-modules
 ## and instructions on https://stackoverflow.com/questions/28178644/python-readthedocs-how-to-satisfy-the-requirement-sip-or-pyqt/37363830#37363830
 ## because CANNOT install PyQt4 and stuff in readthedocs
-#autodoc_mock_imports = [ 'sip', 'PyQt4' ]
-if os.environ.get( 'READTHEDOCS' ):
-    MOCK_MODULES = ['sip', 'PyQt4', 'PyQt4.QtGui', 'PyQt4.QtCore' ]
-    sys.modules.update((mod_name, mock.MagicMock()) for mod_name in MOCK_MODULES)
+autodoc_mock_imports = [ 'sip', 'PyQt4', 'PyQt4.QtGui', 'PyQt4.QtCore' ]
+#if os.environ.get( 'READTHEDOCS' ):
+#    MOCK_MODULES = ['sip', 'PyQt4', 'PyQt4.QtGui', 'PyQt4.QtCore' ]
+#    sys.modules.update((mod_name, mock.MagicMock()) for mod_name in MOCK_MODULES)
 
 
 # -- General configuration ------------------------------------------------

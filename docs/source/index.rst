@@ -150,19 +150,23 @@ Table of Contents
   plex-music/plex_music
   plex-email/plex_email
 
-Indices and tables
-------------------
+TODO
+----
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+Here are some things I would like to do in general
 
+* Fill out documentation for all the CLIs and GUIs.
+* Fill out documentation for the lower level APIs.
+* Fill out some more of the testing suite.
+* Streamline the OAuth2 authentication process, and provide more logical authorization and verification work flows.
+* Transition GUIs to use PyQt5_.
 
 .. these are the links
 .. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki
 .. _Plex: https://plex.tv
 .. _PlexAPI: https://python-plexapi.readthedocs.io/en/latest/introduction.html
-.. _PyQt4: https://www.riverbankcomputing.com/software/pyqt/download
+.. _PyQt4: https://www.riverbankcomputing.com/static/Docs/PyQt4/index.html
+.. _PyQt5: https://www.riverbankcomputing.com/static/Docs/PyQt5/index.html
 .. _sshpass: https://linux.die.net/man/1/sshpass
 .. _pandoc: https://pandoc.org
 .. _sudo: https://en.wikipedia.org/wiki/Sudo

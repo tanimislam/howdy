@@ -297,13 +297,16 @@ class PNGPicObject( object ):
         self.actName = os.path.basename( new_name )
 
 
-
-dat = plexcore.getCredentials( verify = False )
-if dat is not None:
-    emailAddress = dat[0]
-    try:
-        emailName = get_email_contacts_dict( [ emailAddress ], verify = False )[0][0]
-    except: emailName = None
+if not os.environ.get( 'READTHEDOCS' ):
+    dat = plexcore.getCredentials( verify = False )
+    if dat is not None:
+        emailAddress = dat[0]
+        try:
+            emailName = get_email_contacts_dict( [ emailAddress ], verify = False )[0][0]
+        except: emailName = None
+    else:
+        emailAddress = None
+        emailName = None
 else:
     emailAddress = None
     emailName = None

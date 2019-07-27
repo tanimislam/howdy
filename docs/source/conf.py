@@ -19,17 +19,17 @@
 import os, sys
 from functools import reduce
 _mainDir = reduce(lambda x,y: os.path.dirname( x ),
-                  range(3), os.path.abspath('.'))
+                  range(2), os.path.abspath('.'))
 sys.path.insert( 0, _mainDir )
 
 print( "mainDir = %s" % _mainDir)
 print( 'listing: %s.' % os.listdir( _mainDir ) )
 print( 'listing #1: %s.' % os.listdir( os.path.dirname( _mainDir ) ) )
 print( 'listing #2: %s.' % os.listdir( os.path.dirname( os.path.dirname( _mainDir ) ) ) )
-print( 'listing #-1: %s.' % os.listdir( os.path.join( _mainDir, 'latest' ) ) )
+# print( 'listing #-1: %s.' % os.listdir( os.path.join( _mainDir, 'latest' ) ) )
 print( sys.path )
 
-from plexstuff.plexcore import plexcore
+from plexcore import plexcore
 
 
 # -- General configuration ------------------------------------------------

@@ -52,8 +52,6 @@ def _choose_youtube_item( name, maxnum = 10, verify = True ):
     return youtubeURL
 
 def _download_actual_song( pm, lastfm, s_name, a_name, maxnum, do_lastfm ):
-    print( 'got here download actual song' )
-    
     try:
         if not do_lastfm:
             data_dict, status = pm.get_music_metadata( song_name = s_name,
@@ -67,7 +65,6 @@ def _download_actual_song( pm, lastfm, s_name, a_name, maxnum, do_lastfm ):
                 return None
     except Exception as e:
         import traceback
-        print( e )
         traceback.print_exc(file=sys.stdout)
         return None
 

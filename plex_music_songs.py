@@ -269,11 +269,12 @@ def main( ):
                            'Note that this is expensive, and only applies if the -A (--album) flag is chosen.' ]))
     parser.add_option( '--noverify', dest='do_verify', action='store_false', default=True,
                        help = 'Do not verify SSL transactions if chosen.' )
-    parser.add_option( '--debug', dest='do_debug', action='store_false', default=True,
+    parser.add_option( '--debug', dest='do_debug', action='store_true', default=False,
                        help = 'Run with debug mode turned on.' )
     opts, args = parser.parse_args( )
-    #logger = logging.getLogger( )
-    #if opts.do_debug: logger.setLevel( logging.DEBUG )
+    logger = logging.getLogger( )
+    logger.setLevel( logging.CRITICAL )
+    if opts.do_debug: logger.setLevel( logging.DEBUG )
 
     if not opts.do_new: all_songs_downloaded = _download_songs_oldformat( opts )
     else: all_songs_downloaded = _download_songs_newformat( opts )

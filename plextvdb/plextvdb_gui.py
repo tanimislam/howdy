@@ -470,19 +470,22 @@ class TVDBGUI( QDialogWithPrinting ):
                 didend = dict(map(
                     lambda seriesName:
                     ( seriesName, tvdata_on_plex[ seriesName ][ 'didEnd' ] ),
-                    self.tvdata_on_plex ) )
+                    tvdata_on_plex ) )
                 list(map(lambda seriesName: tvdata_on_plex[ seriesName ].pop( 'didEnd' ),
-                         self.tvdata_on_plex ) )
+                         tvdata_on_plex ) )
                 pickle.dump(
                     tvdata_on_plex,
-                    gzip.open( os.path.join( testDir, tvdataFile ), 'wb' ) )
+                    gzip.open( os.path.join( os.path.expanduser( '~/.config/plexstuff/tests' ),
+                                             tvdataFile ), 'wb' ) )
                 pickle.dump( didend, gzip.open(
-                    os.path.join( testDir, 'didend.pkl.gz' ), 'wb' ) )
+                    os.path.join( os.path.expanduser( '~/.config/plexstuff/tests' ),
+                                  'didend.pkl.gz' ), 'wb' ) )
             if self.missing_eps is not None:
                 pickle.dump(
                     self.missing_eps,
-                    gzip.open( os.path.join( testDir, 'toGet.pkl.gz' ),
-                               'wb' ) )            
+                    gzip.open( os.path.join( os.path.expanduser( '~/.config/plexstuff/tests' ),
+                                             'toGet.pkl.gz' ),
+                               'wb' ) )      
         saveAction = QAction( 'Save TV data', menu )
         saveAction.triggered.connect( _save_out_data )
         menu.addAction( saveAction )

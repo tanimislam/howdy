@@ -22,7 +22,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
 from fuzzywuzzy.fuzz import partial_ratio
-from PyQt4.QtGui import QLabel, QDialog, QAction, QMenu, QVBoxLayout, QTextEdit
+from PyQt4.QtGui import QLabel, QDialog, QAction, QMenu, QVBoxLayout, QTextEdit, QApplication, QColor
 from PyQt4.QtCore import pyqtSignal, QTimer
 
 # resource file and stuff

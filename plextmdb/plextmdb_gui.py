@@ -11,7 +11,7 @@ from PyQt4.QtGui import *
 
 from plextmdb import plextmdb, plextmdb_torrents
 from plexcore import plexcore, get_popularity_color, get_formatted_size_MB, plexcore_deluge
-from plexcore import QDialogWithPrinting, QWidgetWithPrinting, ProgressDialog
+from plexcore import QDialogWithPrinting, ProgressDialog
 from plexemail import plexemail
 
 _headers = [ 'title', 'release date', 'popularity', 'rating', 'overview' ]

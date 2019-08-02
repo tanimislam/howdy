@@ -523,7 +523,7 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
                 range( act_num_threads ) ) )
         movie_data = { }
         movie_data_list = list( chain.from_iterable(
-            pool.map( _get_movie_data, input_tuples ) ) )
+            map( _get_movie_data, input_tuples ) ) ) # change back to pool.map
         for first_genre, data in movie_data_list:
             movie_data.setdefault( first_genre, [ ] ).append( data )
         return key, movie_data

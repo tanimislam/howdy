@@ -7,11 +7,12 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 import qdarkstyle, logging
-from plexcore import geoip_reader
-from plexcore.plexcore_gui import returnToken, returnGoogleAuthentication
 from PyQt4.QtGui import QApplication
 from urllib.parse import urlparse
 from optparse import OptionParser
+
+from plexcore import geoip_reader
+from plexcore.plexcore_gui import returnToken, returnGoogleAuthentication
 
 if __name__=='__main__':
     parser = OptionParser( )

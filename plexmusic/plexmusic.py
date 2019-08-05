@@ -623,9 +623,9 @@ class PlexLastFM( object ):
 class PlexMusic( object ):
     
     @classmethod
-    def push_gracenote_credentials( cls, client_ID ):
+    def push_gracenote_credentials( cls, client_ID, verify = True ):
         try:
-            userID = pygn.register( client_ID )
+            userID = pygn.register( client_ID, verify = verify )
             query = session.query( PlexConfig ).filter(
                 PlexConfig.service == 'gracenote' )
             val = query.first( )
@@ -659,7 +659,8 @@ class PlexMusic( object ):
     def get_album_image( self, artist_name, album_name ):
         metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,
                                       album = album_name,
-                                      artist = titlecase.titlecase( artist_name ) )
+                                      artist = titlecase.titlecase( artist_name ),
+                                      verify = self.verify )
         if 'album_art_url' not in metadata_album or len( metadata_album[ 'album_art_url' ].strip( ) ) == 0:
             return None, 'Could not find album = %s for artist = %s.' % (
                 album_name, titlecase.titlecase( artist_name ) )

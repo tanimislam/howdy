@@ -24,12 +24,14 @@ if __name__=='__main__':
                       help = 'If chosen, then get a list of all the songs in all studio albums for the artist.' )
     parser.add_option( '--debug', dest='do_debug', action='store_true', default=False,
                        help = 'Run with debug mode turned on.' )
+    parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
+                      help = 'If chosen, do not verify SSL connections.' )
     opts, args = parser.parse_args( )
     assert(all(map(lambda tok: tok is not None, ( opts.artist_name,  ) ) ) )
     if not opts.do_all: assert( opts.album_name is not None )
     #
     ##    
-    pm = plexmusic.PlexMusic( )
+    pm = plexmusic.PlexMusic( verify = opts.do_verify )
     if opts.do_all:
         username, _ = plexcore.getCredentials( verify = False, checkWorkingServer = False )
         plexmusic.MusicInfo.get_set_musicbrainz_useragent( username )

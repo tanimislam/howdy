@@ -6,7 +6,7 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import os, datetime, io, zipfile, logging
+import os, datetime, io, zipfile, logging, tabulate
 from plexmusic import plexmusic
 from plexcore import plexcore
 from plexemail import plexemail, emailAddress
@@ -153,13 +153,38 @@ def _download_songs_newformat( opts ):
                          filter(None, zip( song_names, artist_names ) ) ) ) )    
     return all_songs_downloaded
 
+def _print_format_album_names( mi ):
+    all_album_data = sorted(
+        map(lambda album:
+            ( album, mi.alltrackdata[ album ]['release-date'].year,
+             len( mi.alltrackdata[ album ][ 'tracks' ] ) ) ),
+        key = lambda tup: tup[1] )
+    print( '%s has %d studio albums.' % ( mi.artist_name, len( all_album_data ) ) )
+    print( '%s\n' % 
+          tabulate( all_album_data, headers = [ 'Studio Album', 'Year', '# Tracks' ] ) )
+
 def _download_songs_oldformat( opts ):
     assert( opts.artist_name is not None )
     #
     ## first get music metadata
     pm = plexmusic.PlexMusic( verify = opts.do_verify )
     lastfm = plexmusic.PlexLastFM( verify = opts.do_verify )
-    if opts.album_name is not None:
+    if opts.do_albums:
+        try:
+            mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
+            album_data_dict, status = mi.get_music_metadatas_album(
+                opts.album_name.strip( ) )
+            if status != 'SUCCESS':
+                print( status )
+                return
+        except Exception as e:
+            print( 'Could not get find artist = %s with Musicbrainz.' % (
+                opts.artist_name.strip( ) ) )
+            return
+        
+        _print_format_album_names( mi )        
+        
+    elif opts.album_name is not None:
         all_songs_downloaded = [ ]
         if opts.do_lastfm:
             album_data_dict, status = lastfm.get_music_metadatas_album(
@@ -176,9 +201,6 @@ def _download_songs_oldformat( opts ):
                     print( status )
                     return
             except Exception as e:
-                import traceback
-                print( type(e ), str( e ) )
-                traceback.print_exc( )
                 print( 'Could not get find artist = %s with Musicbrainz.' % (
                     opts.artist_name.strip( ) ) )
                 return
@@ -247,6 +269,8 @@ def main( ):
                            'Default is 10.' ]))
     parser.add_option( '-A', '--album', dest='album_name', type=str, action='store',
                        help = 'If defined, then use ALBUM information to get all the songs in order from the album.' )
+    parser.add_option( '--albums', dest='do_albums', action='store_true', default = False,
+                       help = 'If chosen, then print out all the studio albums this artist has put out.' )
     parser.add_option( '-e', '--email', dest='email', type=str, action='store',
                        help = 'If defined with an email address, will email these songs to the recipient with that email address.')
     parser.add_option( '-n', '--ename', dest='email_name', type=str, action='store',
@@ -263,7 +287,7 @@ def main( ):
     parser.add_option( '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
                        help = ' '.join([
                            'If chosen, use Musicbrainz to get the artist metadata.',
-                           'Note that this is expensive, and only applies if the -A (--album) flag is chosen.' ]))
+                           'Note that this is expensive, and only applies if the -A (--album) or --albums flag is chosen.' ]))
     parser.add_option( '--noverify', dest='do_verify', action='store_false', default=True,
                        help = 'Do not verify SSL transactions if chosen.' )
     parser.add_option( '--debug', dest='do_debug', action='store_true', default=False,

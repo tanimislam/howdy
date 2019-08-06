@@ -38,6 +38,7 @@ rsa
 six
 SQLAlchemy
 subliminal
+tabulate
 termcolor
 titlecase
 validators

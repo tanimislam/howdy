@@ -1,5 +1,5 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2, json, logging
-import requests, youtube_dl, gmusicapi, datetime, musicbrainzngs, time, io
+import requests, youtube_dl, gmusicapi, datetime, musicbrainzngs, time, io, tabulate
 import pathos.multiprocessing as multiprocessing
 from contextlib import contextmanager
 from googleapiclient.discovery import build
@@ -168,6 +168,18 @@ class MusicInfo( object ):
                 trackinfo[ 'duration' ] = int( album_info[ 'tracks' ][ trackno ][ 1 ] )
             album_data_dict.append( trackinfo )
         return album_data_dict, 'SUCCESS'
+
+    def print_format_album_names( self ):
+        all_album_data = sorted(
+            map(lambda album:
+                ( album, self.alltrackdata[ album ]['release-date'].year,
+                  len( self.alltrackdata[ album ][ 'tracks' ] ) ), self.alltrackdata ),
+            key = lambda tup: tup[1] )
+        print( '%s has %d studio albums.' % ( self.artist_name, len( all_album_data ) ) )
+        print( '\n' )
+        print( '%s\n' % 
+               tabulate.tabulate( all_album_data, headers = [ 'Studio Album', 'Year', '# Tracks' ] ) )
+        
 
 @contextmanager
 def gmusicmanager( useMobileclient = False, verify = True ):

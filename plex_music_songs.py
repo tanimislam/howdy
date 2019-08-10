@@ -6,7 +6,7 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import os, datetime, io, zipfile, logging, tabulate
+import os, datetime, io, zipfile, logging
 from plexmusic import plexmusic
 from plexcore import plexcore
 from plexemail import plexemail, emailAddress
@@ -153,39 +153,25 @@ def _download_songs_newformat( opts ):
                          filter(None, zip( song_names, artist_names ) ) ) ) )    
     return all_songs_downloaded
 
-def _print_format_album_names( mi ):
-    all_album_data = sorted(
-        map(lambda album:
-            ( album, mi.alltrackdata[ album ]['release-date'].year,
-             len( mi.alltrackdata[ album ][ 'tracks' ] ) ) ),
-        key = lambda tup: tup[1] )
-    print( '%s has %d studio albums.' % ( mi.artist_name, len( all_album_data ) ) )
-    print( '%s\n' % 
-          tabulate( all_album_data, headers = [ 'Studio Album', 'Year', '# Tracks' ] ) )
-
 def _download_songs_oldformat( opts ):
     assert( opts.artist_name is not None )
     #
     ## first get music metadata
     pm = plexmusic.PlexMusic( verify = opts.do_verify )
     lastfm = plexmusic.PlexLastFM( verify = opts.do_verify )
+
+    #
+    ## scenario #1: just get the list of albums
     if opts.do_albums:
         try:
             mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
-            album_data_dict, status = mi.get_music_metadatas_album(
-                opts.album_name.strip( ) )
-            if status != 'SUCCESS':
-                print( status )
-                return
-            _print_format_album_names( mi )        
-        except Exception as e:
-            import traceback
-            exc_type, exc_value, exc_traceback = sys.exc_info()
-            print( str( e ) )
-            print( traceback.print_tb( exc_traceback ) )
-            print( 'Could not get %s with Musicbrainz.' % (
-                opts.artist_name.strip( ) ) )
+            mi.print_format_album_names( )
             return
+        except Exception as e:
+            logging.error( e, exc_info = True )
+            print( 'Could not get find artist = %s with Musicbrainz.' % (
+                opts.artist_name.strip( ) ) )
+            return   
         
     elif opts.album_name is not None:
         all_songs_downloaded = [ ]

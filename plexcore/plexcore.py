@@ -241,9 +241,10 @@ def getCredentials( verify = True, checkWorkingServer = True ):
     data = val.data
     username = data['username'].strip( )
     password = data['password'].strip( )
-    token = getTokenForUsernamePassword(
-        username, password, verify = verify )
-    if token is None: return None
+    if checkWorkingServer:
+        token = getTokenForUsernamePassword(
+            username, password, verify = verify )
+        if token is None: return None
     return username, password
 
 def pushCredentials( username, password ):

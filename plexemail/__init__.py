@@ -298,7 +298,7 @@ class PNGPicObject( object ):
 
 
 if not os.environ.get( 'READTHEDOCS' ):
-    dat = plexcore.getCredentials( verify = False )
+    dat = plexcore.getCredentials( verify = False, checkWorkingServer = False )
     if dat is not None:
         emailAddress = dat[0]
         try:

@@ -177,12 +177,15 @@ def _download_songs_oldformat( opts ):
             if status != 'SUCCESS':
                 print( status )
                 return
+            _print_format_album_names( mi )        
         except Exception as e:
-            print( 'Could not get find artist = %s with Musicbrainz.' % (
+            import traceback
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            print( str( e ) )
+            print( traceback.print_tb( exc_traceback ) )
+            print( 'Could not get %s with Musicbrainz.' % (
                 opts.artist_name.strip( ) ) )
             return
-        
-        _print_format_album_names( mi )        
         
     elif opts.album_name is not None:
         all_songs_downloaded = [ ]

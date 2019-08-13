@@ -1,6 +1,5 @@
 apiclient
 beautifulsoup4
-cfscrape
 deluge_client
 fabric
 fuzzywuzzy

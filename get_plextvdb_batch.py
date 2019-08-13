@@ -41,6 +41,8 @@ def main( ):
     parser.add_option('--numthreads', dest='numthreads', type=int, action='store', default = default_num_threads,
                       help = 'Number of threads over which to search for TV shows in my library. Default is %d.' %
                       default_num_threads )
+    parser.add_option('--nomax', dest='do_restrict_maxsize', action='store_false', default=True,
+                      help = 'If chosen, do not restrict maximum size of downloaded file.' )
     opts, args = parser.parse_args( )
     #
     logger = logging.getLogger( )
@@ -107,12 +109,14 @@ def main( ):
     step += 1
     #
     ## now download these episodes
-    tvTorUnits, tv_torrent_gets = plextvdb.create_tvTorUnits( toGet )
+    tvTorUnits, tv_torrent_gets = plextvdb.create_tvTorUnits(
+        toGet, restrictMaxSize = opts.do_restrict_maxsize )
+    newdirs = sorted( tv_torrent_gets[ 'newdirs' ] )
     print('%d, here are the %d episodes to get: %s.' % ( step,
         len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname' ], tvTorUnits))))
     step += 1
     plextvdb.download_batched_tvtorrent_shows(
-        tv_torrent_gets, tvTorUnits, maxtime_in_secs = opts.maxtime_in_secs,
+        tvTorUnits, newdirs = newdirs, maxtime_in_secs = opts.maxtime_in_secs,
         num_iters = opts.num_iters )
     print( '\n'.join([ '%d, everything done in %0.3f seconds.' % ( step, time.time( ) - time0 ),
                        finish_statement( step ) ]))

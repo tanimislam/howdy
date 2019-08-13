@@ -47,20 +47,6 @@ This module implements the functionality to do the following:
 .. automodule:: plexcore.plexcore
    :members:
 
-``plexcore.subscene``
------------------------
-
-Python wrapper for Subscene_ subtitle database.
-
-Since Subscene_ doesn't provide an official API, I wrote this script that does the job by parsing the website"s pages.
-
-I have modified this module in the following ways. This module is integrated into the rest of Plexstuff, specifically ``plexstuff.plexcore``, and uses cfscrape_ to automatically pass through the CAPTCHA_ system that Subscene_ uses.
-
-.. note:: I have copied this code from the `Subscene Python Module <https://github.com/mamins1376/Subscene-API>`_, which is now discontinued in favor of Subliminal_. I continue to use this tool.
-
-.. automodule:: plexcore.subscene
-   :members:
-
 .. these are some URLs
 
 .. _SQLite3: https://www.sqlite.org/index.html

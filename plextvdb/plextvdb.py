@@ -10,7 +10,8 @@ from dateutil.relativedelta import relativedelta
 from fuzzywuzzy.fuzz import ratio
 
 from plextvdb import get_token, plextvdb_torrents, ShowsToExclude
-from plexcore import plexcore_rsync, splitall, session
+from plexcore import plexcore_rsync, splitall, session, return_error_raw
+from plextmdb import plextmdb
 
 class TVShow( object ):
     
@@ -397,9 +398,10 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010,
     return fig
     
 def get_series_id( series_name, token, verify = True ):
-    data_ids = get_possible_ids( series_name, token, verify = verify )
+    data_ids, status = get_possible_ids( series_name, token, verify = verify )
     if data_ids is None:
         print( 'PROBLEM WITH series %s' % series_name )
+        print( 'error message: %s.' % status )
         return None
     data_matches = list(filter(lambda dat: dat['seriesName'] == series_name,
                                data_ids ) )
@@ -418,18 +420,47 @@ def get_possible_ids( series_name, token, verify = True ):
     response = requests.get( 'https://api.thetvdb.com/search/series',
                              params = params, headers = headers,
                              verify = verify )
-    if response.status_code != 200: # quick hack to get this to work
-        # was a problem with show AQUA TEEN HUNGER FORCE FOREVER
-        params = { 'name' : ' '.join( series_name.replace("'", '').split()[:-1] ) }
-        headers = { 'Content-Type' : 'application/json',
-                    'Authorization' : 'Bearer %s' % token }
+    if response.status_code == 200:
+        data = response.json( )[ 'data' ]
+        return list(map(lambda dat: {
+            'id' : dat['id'], 'seriesName' : dat['seriesName'] }, data ) ), 'SUCCESS'
+    
+    
+    
+    # quick hack to get this to work
+    ## was a problem with show AQUA TEEN HUNGER FORCE FOREVER
+    params = { 'name' : ' '.join( series_name.replace("'", '').split()[:-1] ) }
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    response = requests.get( 'https://api.thetvdb.com/search/series',
+                             params = params, headers = headers,
+                             verify = verify )
+    if response.status_code == 200:
+        data = response.json( )[ 'data' ]
+        return list(map(lambda dat: {
+            'id' : dat['id'], 'seriesName' : dat['seriesName'] }, data ) ), 'SUCCESS'
+
+    #
+    ## still doesn't work, figure out the imdbId for this episode, using tmdb API
+    tmdb_ids = plextmdb.get_tv_ids_by_series_name( series_name, verify = verify )
+    imdb_ids = list(filter(None, map(lambda tmdb_id: plextmdb.get_tv_imdbid_by_id(
+        tmdb_id, verify = verify ), tmdb_ids ) ) )
+    if len( imdb_ids ) == 0:
+        return return_error_raw( 'Error, could not find TMDB ids for %s.' % series_name )
+    tot_data = [ ]
+    for imdb_id in imdb_ids:
         response = requests.get( 'https://api.thetvdb.com/search/series',
-                                 params = params, headers = headers,
+                                 params = { 'imdbId' : imdb_id }, headers = headers,
                                  verify = verify )
-        if response.status_code != 200: return None
-    data = response.json( )[ 'data' ]
-    return list(map(lambda dat: {
-        'id' : dat['id'], 'seriesName' : dat['seriesName'] }, data ) )
+        if response.status_code != 200: continue
+        data = response.json( )[ 'data' ]
+        for dat in data:
+            tot_data.append( {
+                'id' : dat[ 'id' ], 'seriesName' : dat[ 'seriesName' ] } )
+    if len( tot_data ) != 0:
+        return tot_data, 'SUCCESS'
+    #
+    return return_error_raw( 'Error, could not find series ids for %s.' % series_name )
 
 def did_series_end( series_id, token, verify = True, date_now = None ):
     """

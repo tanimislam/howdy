@@ -991,7 +991,7 @@ def get_shows_to_exclude( tvdata = None ):
     # showsToExcludeInDB = sorted( set( showsToExcludeInDB ) & set( tvdata ) )
     return showsToExcludeInDB
 
-def create_tvTorUnits( toGet ):
+def create_tvTorUnits( toGet, restrictMaxSize = True ):
     tv_torrent_gets = { }
     tv_torrent_gets.setdefault( 'nonewdirs', [] )
     tv_torrent_gets.setdefault( 'newdirs', {} )
@@ -1014,6 +1014,9 @@ def create_tvTorUnits( toGet ):
         maxSize = 50 * num_in_50
         num_in_50 = int( avg_length_mins * 60.0 * 1600 / 8.0 / 1024 / 50 + 1 )
         maxSize_x265 = 50 * num_in_50
+        if not restrictMaxSize:
+            maxSize *= 10
+            maxSize_x265 *= 10
         #
         ## being too clever
         ## doing torTitle = showFileName.replace("'",'').replace(':','').replace('&', 'and').replace('/', '-')
@@ -1043,7 +1046,7 @@ def create_tvTorUnits( toGet ):
                  tv_torrent_gets[ 'newdirs' ] ) ) ) )
     return tvTorUnits, tv_torrent_gets
 
-def download_batched_tvtorrent_shows( tv_torrent_gets, tvTorUnits, maxtime_in_secs = 240, num_iters = 10 ):
+def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs = 240, num_iters = 10 ):
     time0 = time.time( )
     data = plexcore_rsync.get_credentials( )
     assert( data is not None ), "error, could not get rsync download settings."
@@ -1053,9 +1056,6 @@ def download_batched_tvtorrent_shows( tv_torrent_gets, tvTorUnits, maxtime_in_se
         len( tvTorUnits ), datetime.datetime.now( ).strftime(
             '%B %d, %Y @ %I:%M:%S %p' ) ) )
         
-    #
-    ## first find and make the new directories
-    newdirs = sorted( tv_torrent_gets[ 'newdirs' ] )
     for newdir in filter(lambda nd: not os.path.isdir( nd ), newdirs ):
         os.mkdir( newdir )
     def worker_process_download_tvtorrent_perproc( tvTorUnit ):

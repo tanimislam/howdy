@@ -7,6 +7,7 @@ import pathos.multiprocessing as multiprocessing
 from itertools import chain
 
 from plextmdb import get_tmdb_api, TMDBEngine, TMDBEngineSimple, tmdb_apiKey
+from plexcore import return_error_raw
 
 def get_tv_ids_by_series_name( series_name: str, verify = True ) -> list:
     response = requests.get( 'https://api.themoviedb.org/3/search/tv',
@@ -45,6 +46,16 @@ def get_tv_info_for_season( tv_id: int, season: int, verify: bool = True ):
         print( response.content )
         return None
     return response.json( )
+
+def get_tv_imdbid_by_id( tv_id: int, verify: bool = True ) -> str:
+    response = requests.get( 'https://api.themoviedb.org/3/tv/%d/external_ids' % tv_id,
+                             params = { 'api_key' : tmdb_apiKey }, verify = verify )
+    if response.status_code != 200:
+        print( 'problem here, %s.' % response.content )
+        return None
+    data = response.json( )
+    if 'imdb_id' not in data: return None
+    return data['imdb_id']
 
 #
 ## right now do not show specials

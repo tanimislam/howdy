@@ -873,12 +873,17 @@ def _get_remaining_eps_perproc( input_tuple ):
     fromDate = input_tuple[ 'fromDate' ]
     verify = input_tuple[ 'verify' ]
     showFuture = input_tuple[ 'showFuture' ]
+    mustHaveTitle = input_tuple[ 'mustHaveTitle' ]
     #
     ## only record those episodes that have an episodeName that is not None
-    eps = list(
-        filter(lambda ep: 'episodeName' in ep and ep['episodeName'] is not None,
-               get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
-                                    fromDate = fromDate, showFuture = showFuture ) ) )
+    if mustHaveTitle:
+        eps = list(
+            filter(lambda ep: 'episodeName' in ep and ep['episodeName'] is not None,
+                   get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
+                                        fromDate = fromDate, showFuture = showFuture ) ) )
+    else:
+        eps = get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
+                                   fromDate = fromDate, showFuture = showFuture )
     tvdb_eps = set(map(lambda ep: ( ep['airedSeason'], ep['airedEpisodeNumber' ] ), eps ) )
     tvdb_eps_dict = { ( ep['airedSeason'], ep['airedEpisodeNumber' ] ) :
                       ( ep['airedSeason'], ep['airedEpisodeNumber' ], ep['episodeName'] ) for ep in eps }
@@ -906,7 +911,8 @@ def _get_series_id_perproc( input_tuple ):
     
 def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify = True,
                             doShowEnded = False, showsToExclude = None, showFuture = False,
-                            num_threads = 2 * multiprocessing.cpu_count( ), token = None ):
+                            num_threads = 2 * multiprocessing.cpu_count( ), token = None,
+                            mustHaveTitle = True ):
     assert( num_threads >= 1 )
     if token is None: token = get_token( verify = verify )
     tvdata_copy = copy.deepcopy( tvdata )
@@ -938,6 +944,7 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
               'verify' : verify,
               'series_id' : tvshow_id_map[ name ],
               'showFuture' : showFuture,
+              'mustHaveTitle' : mustHaveTitle,
               'epsForShow' : tvdata_copy[ name ][ 'seasons' ] }, tvshow_id_map ) )
     with multiprocessing.Pool(
             processes = max(num_threads, multiprocessing.cpu_count( ) ) ) as pool:
@@ -945,20 +952,34 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
             None, pool.map( _get_remaining_eps_perproc, input_tuples ) ) )
     #
     ## guard code for now -- only include those tv shows that have titles of new episodes to download
-    tvshows_act = set(filter(lambda tvshow: len(list(
-        filter(lambda epdata: epdata[-1] is not None, toGet_sub[ tvshow ] ) ) ) != 0, toGet_sub ) )
-    tvdata_path_data = dict(filter(None, map(lambda tvshow: (
-        tvshow, get_path_data_on_tvshow( tvdata, tvshow ) ), tvshows_act ) ) )
-    toGet = dict(map(lambda tvshow: ( tvshow, {
-        'episodes' : list(
-            filter(lambda epdata: epdata[-1] is not None, toGet_sub[ tvshow ] ) ),
-        'prefix' : tvdata_path_data[ tvshow ][ 'prefix' ],
-        'showFileName' : tvdata_path_data[ tvshow ][ 'showFileName' ],
-        'min_inferred_length' : tvdata_path_data[ tvshow ][ 'min_inferred_length' ],
-        'season_prefix_dict' : tvdata_path_data[ tvshow ][ 'season_prefix_dict' ],
-        'episode_number_length' : tvdata_path_data[ tvshow ][ 'episode_number_length' ],
-        'avg_length_mins' : tvdata_path_data[ tvshow ][ 'avg_length_mins' ] } ),
-                     sorted( tvshows_act ) ) )
+    if mustHaveTitle:
+        tvshows_act = set(filter(lambda tvshow: len(list(
+            filter(lambda epdata: epdata[-1] is not None, toGet_sub[ tvshow ] ) ) ) != 0, toGet_sub ) )
+        tvdata_path_data = dict(filter(None, map(lambda tvshow: (
+            tvshow, get_path_data_on_tvshow( tvdata, tvshow ) ), tvshows_act ) ) )
+        toGet = dict(map(lambda tvshow: ( tvshow, {
+            'episodes' : list(
+                filter(lambda epdata: epdata[-1] is not None, toGet_sub[ tvshow ] ) ),
+            'prefix' : tvdata_path_data[ tvshow ][ 'prefix' ],
+            'showFileName' : tvdata_path_data[ tvshow ][ 'showFileName' ],
+            'min_inferred_length' : tvdata_path_data[ tvshow ][ 'min_inferred_length' ],
+            'season_prefix_dict' : tvdata_path_data[ tvshow ][ 'season_prefix_dict' ],
+            'episode_number_length' : tvdata_path_data[ tvshow ][ 'episode_number_length' ],
+            'avg_length_mins' : tvdata_path_data[ tvshow ][ 'avg_length_mins' ] } ),
+                         sorted( tvshows_act ) ) )
+    else:
+        tvshows_act = set(filter(lambda tvshow: len( toGet_sub[ tvshow ] ) != 0, toGet_sub ) )
+        tvdata_path_data = dict(filter(None, map(lambda tvshow: (
+            tvshow, get_path_data_on_tvshow( tvdata, tvshow ) ), tvshows_act ) ) )
+        toGet = dict(map(lambda tvshow: ( tvshow, {
+            'episodes' : toGet_sub[ tvshow ],
+            'prefix' : tvdata_path_data[ tvshow ][ 'prefix' ],
+            'showFileName' : tvdata_path_data[ tvshow ][ 'showFileName' ],
+            'min_inferred_length' : tvdata_path_data[ tvshow ][ 'min_inferred_length' ],
+            'season_prefix_dict' : tvdata_path_data[ tvshow ][ 'season_prefix_dict' ],
+            'episode_number_length' : tvdata_path_data[ tvshow ][ 'episode_number_length' ],
+            'avg_length_mins' : tvdata_path_data[ tvshow ][ 'avg_length_mins' ] } ),
+                         sorted( tvshows_act ) ) )
     return toGet
 
 def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token = None,
@@ -970,7 +991,8 @@ def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token =
     toGet_future_cands = get_remaining_episodes(
         tvdata, showSpecials = False, fromDate = fromDate,
         doShowEnded = False, showsToExclude = showsToExclude,
-        token = token, showFuture = True, num_threads = num_threads )
+        mustHaveTitle = False, token = token, showFuture = True,
+        num_threads = num_threads )
     logging.info( 'tvdata size = %d, toGet_future_cands size = %d.' % (
         len( tvdata ), len( toGet_future_cands ) ) )
     #

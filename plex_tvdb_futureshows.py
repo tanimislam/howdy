@@ -67,7 +67,7 @@ def main( ):
         return
     tvlib_title = library_dict[ max( valid_keys ) ][ 0 ]
     step += 1
-    nowdate = datetime.datetime.now( )
+    nowdate = datetime.datetime.now( ).date( )
     print( '%d, found TV library: %s.' % (
         step, tvlib_title ) )
     #
@@ -81,7 +81,11 @@ def main( ):
             step, '; '.join( showsToExclude ) ) )
 
     future_shows_dict = plextvdb.get_future_info_shows(
-        tvdata, verify = opts.do_verify, showsToExclude = showsToExclude )
+        tvdata, verify = opts.do_verify, showsToExclude = showsToExclude,
+        fromDate = nowdate )
+    for show in future_shows_dict:
+        tdelta = future_shows_dict[ show ][ 'start_date' ] - nowdate
+        future_shows_dict[ show ][ 'days_to_new_season' ] = tdelta.days
 
     if len( future_shows_dict ) == 0:
         step += 1
@@ -92,11 +96,14 @@ def main( ):
     step += 1
     print( '%d, Found %d TV shows with new seasons after %s, in %0.3f seconds.' % (
         step, len( future_shows_dict ), nowdate.strftime( '%B %d, %Y' ), time.time( ) - time0 ) )
+    print( '\n' )
     all_new_show_data = list(
         map(lambda show: ( show, future_shows_dict[ show ][ 'max_last_season' ], future_shows_dict[ show ][ 'min_next_season' ],
-                           future_shows_dict[ show ][ 'start_date' ].strftime( '%B %d, %Y' ) ),
+                           future_shows_dict[ show ][ 'start_date' ].strftime( '%B %d, %Y' ),
+                           future_shows_dict[ show ][ 'days_to_new_season' ] ),
             sorted(future_shows_dict, key = lambda shw: ( future_shows_dict[ shw ][ 'start_date' ], shw ) ) ) )
-    print( '%s\n' % tabulate.tabulate( all_new_show_data, headers = [ 'SHOW', 'LAST SEASON', 'NEXT SEASON', 'AIR DATE' ] ))
+    print( '%s\n' % tabulate.tabulate( all_new_show_data, headers = [
+        'SHOW', 'LAST SEASON', 'NEXT SEASON', 'AIR DATE', 'DAYS TO NEW SEASON' ] ) )
 
     step += 1
     print( '\n'.join([

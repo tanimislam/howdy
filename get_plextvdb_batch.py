@@ -109,9 +109,8 @@ def main( ):
     step += 1
     #
     ## now download these episodes
-    tvTorUnits, tv_torrent_gets = plextvdb.create_tvTorUnits(
+    tvTorUnits, newdirs = plextvdb.create_tvTorUnits(
         toGet, restrictMaxSize = opts.do_restrict_maxsize )
-    newdirs = sorted( tv_torrent_gets[ 'newdirs' ] )
     print('%d, here are the %d episodes to get: %s.' % ( step,
         len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname' ], tvTorUnits))))
     step += 1

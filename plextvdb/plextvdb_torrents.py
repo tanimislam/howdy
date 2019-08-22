@@ -783,7 +783,7 @@ def worker_process_download_tvtorrent(
             torFileName, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
             minsizes = [ minSize, minSize_x265 ],
             maxsizes = [ maxSize, maxSize_x265 ],
-            keywords_exc = [ 'xvid' ], raw = True,
+            keywords_exc = [ 'xvid' ], raw = False, # try non-raw see if works
             must_have = [ mustHaveString ] )
         if status != 'SUCCESS':
             shared_list.append( ( 'jackett', _create_status_dict( 'FAILURE', status, t0 ), 'FAILURE' ) )

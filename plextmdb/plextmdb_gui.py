@@ -22,12 +22,86 @@ _colmap = { 0 : 'title',
 
 _minyear = 1900
 
+class TMDBRefreshMoviesThread( QThread ):
+    emitString = pyqtSignal( str )
+    endRun = pyqtSignal( )
+
+    def __init__( self, syg ):
+        super( TMDBRefreshMoviesThread, self ).__init__( )
+        self.syg = syg
+
+    def run( self ):
+        time0 = time.time( )
+        mytxt = '0, started refreshing list of movies on Plex server on %s.' % (
+            datetime.datetime.now( ).strftime(
+                '%B %d, %Y @ %I:%M:%S %p' ) )
+        self.emitString.emit( mytxt )
+        #
+        ## now perform the engine calculation
+        movie_data_rows, _ = plexcore.fill_out_movies_stuff(
+            token = self.syg.token, fullURL = self.syg.fullURL, verify = self.syg.verify )
+        self.syg.fill_out_movies( movie_data_rows )
+        self.syg.movieRefreshRows.emit( movie_data_rows )
+        #
+        ## finished everything
+        mytxt = '1, finished refreshing list of movies on Plex server in %0.3f seconds.' % (
+            time.time( ) - time0 )
+        self.emitString.emit( mytxt )
+        mytxt = '2, finished whole process on %s.' % (
+            datetime.datetime.now( ).strftime(
+                '%B %d, %Y @ %I:%M:%S %p' ) )
+        self.emitString.emit( mytxt )
+        self.endRun.emit( )
+        
+
+class TMDBGUIFilloutCalculationThread( QThread ):
+    emitString = pyqtSignal( str )
+    endRun = pyqtSignal( )
+
+    def __init__( self, tm, status, tup ):
+        super( TMDBGUIFilloutCalculationThread, self ).__init__( )
+        assert( status in ( 0, 1, 2 ) )
+        self.tm = tm
+        self.status = status
+        self.tup = tup
+        
+    def run( self ):
+        time0 = time.time( )
+        dtString = datetime.datetime.now( ).strftime(
+            '%B %d, %Y @ %I:%M:%S %p' )
+        if self.status == 0:
+            year, num, genre = self.tup
+            mytxt = '0, started getting %s movies in %d on %s.' % (
+                genre.lower( ), year, dtString )
+        elif self.status == 1:
+            actors = self.tup
+            mytxt = '0, started getting movies with these actors (%s) on %s.' % (
+                ', '.join( sorted( actors ) ), dtString )
+        elif self.status == 2:
+            movieTitle = self.tup
+            mytxt = '0, started getting movies that match %s movie title on %s.' % (
+                movieTitle, dtString )
+        self.emitString.emit( mytxt )
+        #
+        ## now run the job
+        self.tm.fillOutCalculation( self.status, self.tup )
+        #
+        ## now say we have finished
+        mytxt = '1, finished getting movies in %0.3f seconds.' % (
+            time.time( ) - time0 )
+        self.emitString.emit( mytxt )
+        mytxt = '2, finished whole process on %s.' % (
+            datetime.datetime.now( ).strftime(
+                '%B %d, %Y @ %I:%M:%S %p' ) )
+        self.emitString.emit( mytxt )
+        self.endRun.emit( )
+        
 class TMDBGUIThread( QThread ):
     emitString = pyqtSignal( str )
     endRun = pyqtSignal( )
 
     def __init__( self, void_func_dict ):
-        super( QThread, self ).__init__( )
+        super( TMDBGUIThread, self ).__init__( )
         self.void_func_dict = void_func_dict
 
     def run( self ):
@@ -604,7 +678,15 @@ class TMDBGUI( QDialogWithPrinting ):
 
     def getChosenMovies( self ):
         status, tup =  self.sygWidget.returnSYG( )
-        self.tmdbtv.tm.fillOutCalculation( status, tup )
+        progress_dialog = ProgressDialog(
+            self, 'GETTING CHOSEN MOVIES' )
+        progress_dialog.startDialog( )
+        initThread = TMDBGUIFilloutCalculationThread(
+            self.tmdbtv.tm, status, tup )
+        initThread.emitString.connect( progress_dialog.addText )
+        initThread.endRun.connect( progress_dialog.stopDialog )
+        initThread.start( )
+        progress_dialog.exec_( )
 
     def emitMovieList( self ):
         if len( self.all_movies ) > 0:
@@ -635,10 +717,14 @@ class TMDBGUI( QDialogWithPrinting ):
         self.token = newToken
 
     def refreshMovies( self ):
-        movie_data_rows, _ = plexcore.fill_out_movies_stuff(
-            token = self.token, fullURL = self.fullURL, verify = self.verify )
-        self.fill_out_movies( movie_data_rows )
-        self.movieRefreshRows.emit( movie_data_rows )
+        progress_dialog = ProgressDialog(
+            self, 'REFRESHING MOVIES' )
+        progress_dialog.startDialog( )
+        initThread = TMDBRefreshMoviesThread( self )
+        initThread.emitString.connect( progress_dialog.addText )
+        initThread.endRun.connect( progress_dialog.stopDialog )
+        initThread.start( )
+        progress_dialog.exec_( )
         
 class StatusDialogWidget( QWidget ):
     emitStatusToShow = pyqtSignal( int )
@@ -860,9 +946,13 @@ class SelectYearGenreWidget( QWidget ):
         self.genreComboBox.setEnabled( False )
         self.actorNamesLineEdit.setEnabled( False )
         self.movieNameLineEdit.setEnabled( False )
+        self.pushDataButton.setEnabled( False )
+        self.refreshDataButton.setEnabled( False )
         if state == 0:
             self.yearSpinBox.setEnabled( True )
             self.genreComboBox.setEnabled( True )
+            self.pushDataButton.setEnabled( True )
+            self.refreshDataButton.setEnabled( True )
         elif state == 1:
             self.actorNamesLineEdit.setEnabled( True )
         elif state == 2:
@@ -1059,7 +1149,16 @@ class TMDBTableModel( QAbstractTableModel ):
             self.actors = list( tup )
         elif status == 2:
             self.movieName = max( tup )
-        self.fillOutCalculation( status, tup )
+        progress_dialog = ProgressDialog(
+            self.parent, 'GETTING MOVIES' )
+        progress_dialog.startDialog( )
+        initThread = TMDBGUIFilloutCalculationThread(
+            self, status, tup )
+        initThread.emitString.connect( progress_dialog.addText )
+        initThread.endRun.connect( progress_dialog.stopDialog )
+        initThread.start( )
+        progress_dialog.exec_( )
+        #self.fillOutCalculation( status, tup )
     
     #
     ## engine code, actually do the calculation

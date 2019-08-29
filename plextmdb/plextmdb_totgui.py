@@ -26,19 +26,19 @@ class TMDBTotGUIThread( QThread ):
         self.time0 = time0
         
     def run( self ):
-        mystr = 'started loading in movie data on %s.' % (
+        mystr = '0, started loading in movie data on %s.' % (
             datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
         logging.info( mystr )
         self.emitString.emit( mystr )
         if self.movie_data_rows is None:
             self.movie_data_rows, _ = plexcore.fill_out_movies_stuff(
                 self.fullURL, self.token, verify = self.verify )
-        mystr = 'processed existing movie data in %0.3f seconds.' % (
+        mystr = '1, processed existing movie data in %0.3f seconds.' % (
             time.time( ) - self.time0 )
         logging.info( mystr )
         self.emitString.emit( mystr )
         time.sleep( 0.5 )
-        mystr = 'processed all movie data on %s.' % (
+        mystr = '2, processed all movie data on %s.' % (
             datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
         logging.info( mystr )
         self.emitString.emit( mystr )

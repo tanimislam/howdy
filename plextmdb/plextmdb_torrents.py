@@ -24,10 +24,17 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
     def _return_params( name, popName, tmdb_id ):
         params = { 'apikey' : apikey, 'cat' : 2000 }
         if tmdb_id is not None:
-            tmdb_id = plextmdb.get_movie_tmdbids( name, verify = verify )
-        if tmdb_id is None or doRaw and not popName:
+            imdb_id = plextmdb.get_imdbid_from_id( tmdb_id, verify = verify )
+            params[ 'imdbid' ] = imdb_id
+            return params
+        elif doRaw:
             params['q'] = name
             return params
+
+        tmdb_id = plextmdb.get_movie_tmdbids( name )
+        #if tmdb_id is None or doRaw and not popName:
+        #    params['q'] = name
+        #    return params
         #
         ## check that the name matches
         movie_name = plextmdb.get_movie_info(
@@ -44,7 +51,9 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
         return params
 
     params = _return_params( name, popName, tmdb_id )
-    if popName: params.pop( 'q' )
+    if popName and 'q' in params: params.pop( 'q' )
+    logging.info( 'params: %s, mainURL = %s' % (
+        params, urljoin( url, endpoint ) ) )                                                 
     response = requests.get(
         urljoin( url, endpoint ), verify = verify,
         params = params )
@@ -113,9 +122,10 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
             'FAILURE, JACKETT CANNOT FIND %s' % name )
     return items[:maxnum], 'SUCCESS'
 
-def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True ):
+def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True, tmdb_id = None ):
     assert( maxnum >= 5 )
-    tmdb_id = plextmdb.get_movie_tmdbids( name, verify = verify )
+    if tmdb_id is None:
+        tmdb_id = plextmdb.get_movie_tmdbids( name, verify = verify )
     if tmdb_id is None:
         return return_error_raw( 'FAILURE, COULD NOT FIND IMDB ID FOR %s.' % name )
     #

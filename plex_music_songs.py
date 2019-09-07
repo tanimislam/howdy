@@ -26,6 +26,7 @@ def _get_final_song_name( song_name, dur ):
 def _choose_youtube_item( name, maxnum = 10, verify = True ):
     youtube = plexmusic.get_youtube_service( verify = verify )
     videos = plexmusic.youtube_search( youtube, name, max_results = maxnum )
+    if videos is None: return None
     if len( videos ) != 1:
         sortdict = { idx + 1 : item for (idx, item) in enumerate(videos) }
         bs = 'Choose YouTube video:\n%s\n' % '\n'.join(

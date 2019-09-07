@@ -11,23 +11,24 @@ from plexcore import plexcore_deluge
 from itertools import chain
 from pathos.multiprocessing import Pool
 from optparse import OptionParser
-from plextmdb import plextmdb_torrents
+from plextmdb import plextmdb_torrents, plextmdb
 from plextvdb import plextvdb_torrents
 from plexcore.plexcore import get_jackett_credentials
 
-def get_items_jackett( name, maxnum = 1000, verify = True, doRaw = False ):
+def get_items_jackett( name, tmdb_id = None, maxnum = 1000, verify = True, doRaw = False ):
     assert( maxnum >= 5 )
     items, status = plextmdb_torrents.get_movie_torrent_jackett(
-        name, maxnum = maxnum, doRaw = doRaw, verify = verify )
+        name, maxnum = maxnum, doRaw = doRaw, verify = verify,
+        tmdb_id = tmdb_id )
     if status != 'SUCCESS':
         logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
         return None
     return items
 
-def get_items_eztv_io( name, maxnum = 1000, verify = True ):
+def get_items_eztv_io( name, tmdb_id = None, year = None, maxnum = 1000, verify = True ):
     assert( maxnum >= 5 )
     items, status = plextmdb_torrents.get_movie_torrent_eztv_io(
-        name, maxnum = maxnum, verify = verify )
+        name, maxnum = maxnum, verify = verify, tmdb_id = tmdb_id )
     if status != 'SUCCESS':
         logging.info( 'ERROR, EZTV.IO COULD NOT FIND %s.' % name )
         return None
@@ -170,6 +171,8 @@ def main( ):
     parser = OptionParser( )
     parser.add_option('-n', '--name', dest='name', type=str, action='store',
                       help = 'Name of the movie file to get.')
+    parser.add_option('-y', '--year', dest='year', type=int, action='store',
+                      help = 'Year to look for the movie file to get.')
     parser.add_option('--maxnum', dest='maxnum', type=int, action='store', default = 10,
                       help = 'Maximum number of torrents to look through. Default is 10.')
     parser.add_option('--timeout', dest='timeout', type=int, action='store', default = 60,
@@ -200,6 +203,9 @@ def main( ):
     if opts.do_info: logging.basicConfig( level = logging.INFO )
     #
     time0 = time.time( )
+    tmdb_id = None
+    if opts.year is not None:
+        tmdb_id = plextmdb.get_movie_tmdbids( opts.name, year = opts.year )
     if not opts.do_bypass:
         try:
             get_movie_yts( opts.name, verify = opts.do_verify,
@@ -222,9 +228,9 @@ def main( ):
             jobs.append( pool.apply_async( get_items_torrentz, args = ( opts.name, opts.maxnum ) ) )
     else:
         jobs.append( pool.apply_async(
-            get_items_jackett, args = ( opts.name, opts.maxnum, opts.do_verify, opts.do_raw ) ) )
+            get_items_jackett, args = ( opts.name, tmdb_id, opts.maxnum, opts.do_verify, opts.do_raw ) ) )
         jobs.append( pool.apply_async(
-            get_items_eztv_io, args = ( opts.name, opts.maxnum, opts.do_verify ) ) )
+            get_items_eztv_io, args = ( opts.name, tmdb_id, opts.maxnum, opts.do_verify ) ) )
     items_lists = [ ]
     for job in jobs:
         try:

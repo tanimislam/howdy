@@ -1064,7 +1064,7 @@ def get_shows_to_exclude( tvdata = None ):
     # showsToExcludeInDB = sorted( set( showsToExcludeInDB ) & set( tvdata ) )
     return showsToExcludeInDB
 
-def create_tvTorUnits( toGet, restrictMaxSize = True ):
+def create_tvTorUnits( toGet, restrictMaxSize = True, do_raw = False ):
     tv_torrent_gets = { }
     tv_torrent_gets.setdefault( 'nonewdirs', [] )
     tv_torrent_gets.setdefault( 'newdirs', {} )
@@ -1106,7 +1106,8 @@ def create_tvTorUnits( toGet, restrictMaxSize = True ):
             dat = { 'totFname' : totFname, 'torFname' : torFname,
                     'minSize' : minSize, 'maxSize' : maxSize,
                     'minSize_x265' : minSize_x265, 'maxSize_x265' : maxSize_x265,
-                    'tvshow' : tvshow }
+                    'tvshow' : tvshow,
+                    'do_raw' : do_raw }
                 
             if not os.path.isdir( candDir ):
                 tv_torrent_gets[ 'newdirs' ].setdefault( candDir, [] )
@@ -1119,7 +1120,8 @@ def create_tvTorUnits( toGet, restrictMaxSize = True ):
                  tv_torrent_gets[ 'newdirs' ] ) ) ) )
     return tvTorUnits, sorted( tv_torrent_gets[ 'newdirs' ].keys( ) )
 
-def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs = 240, num_iters = 10 ):
+def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs = 240, num_iters = 10,
+                                      do_raw = False ):
     time0 = time.time( )
     data = plexcore_rsync.get_credentials( )
     assert( data is not None ), "error, could not get rsync download settings."

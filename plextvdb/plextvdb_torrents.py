@@ -18,7 +18,7 @@ def _return_error_couldnotfind( name ):
 def _return_error_raw( msg ):
     return None, msg
 
-_num_to_quit = 5
+_num_to_quit = 10
 
 def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None,
                             minsizes = None, maxsizes = None ):
@@ -37,12 +37,13 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
         return _return_error_raw(
             'ERROR, COULD NOT FIND SERIES %s.' % series_name )
     imdb_id = plextvdb.get_imdb_id( series_id, tvdb_token, verify = verify )
-    if imdb_id is None:
+    if imdb_id is None or len( imdb_id.strip( ) ) == 0:
         return _return_error_raw(
             'ERROR, COULD NOT FIND IMDB ID FOR SERIES %s.' % series_name )
     response = requests.get( 'https://eztv.io/api/get-torrents',
-                             params = { 'imdb_id' : int( imdb_id.replace('t','')),
-                                        'limit' : 100, 'page' : 0 },
+                             params = {
+                                 'imdb_id' : int( imdb_id.replace('t','')),
+                                 'limit' : 100, 'page' : 0 },
                              verify = verify )
     if response.status_code != 200:
         return _return_error_raw(
@@ -776,6 +777,7 @@ def worker_process_download_tvtorrent(
         maxSize_x265 = tvTorUnit[ 'maxSize_x265' ]
         series_name = tvTorUnit[ 'tvshow' ]
         mustHaveString = torFileName.split( )[ -1 ]
+        do_raw = tvTorUnit[ 'do_raw' ]
         logging.info( 'jackett start: %s, %s, %s' % (
             torFileName, mustHaveString, series_name ) )
         #
@@ -783,7 +785,7 @@ def worker_process_download_tvtorrent(
             torFileName, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
             minsizes = [ minSize, minSize_x265 ],
             maxsizes = [ maxSize, maxSize_x265 ],
-            keywords_exc = [ 'xvid' ], raw = False, # try non-raw see if works
+            keywords_exc = [ 'xvid' ], raw = do_raw,
             must_have = [ mustHaveString ] )
         if status != 'SUCCESS':
             shared_list.append( ( 'jackett', _create_status_dict( 'FAILURE', status, t0 ), 'FAILURE' ) )

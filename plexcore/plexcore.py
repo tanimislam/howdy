@@ -1084,6 +1084,8 @@ def fill_out_movies_stuff( fullURL = 'http://localhost:32400', token = None,
             dat_copy[ 'summary' ] = movie_here[ 'overview' ]                        
             if dat_copy[ 'releasedate' ] is None:
                 dat_copy[ 'releasedate' ] = movie_here['release_date'].date( )
+            if 'imdb_id' in movie_here:
+                dat_copy[ 'imdb_id' ] = movie_here[ 'imdb_id' ]
         else:
             if dat_copy[ 'releasedate' ] is None:
                 dat_copy[ 'releasedate' ] = datetime.datetime.strptime(

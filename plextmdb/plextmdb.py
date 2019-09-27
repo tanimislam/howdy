@@ -252,7 +252,10 @@ def get_movies_by_title( title: str, verify = True, apiKey = None ) -> list:
                 'poster_path' : poster_path,
                 'isFound' : False
             }
-            if 'id' in datum: row[ 'tmdb_id' ] = datum[ 'id' ]
+            if 'id' in datum:
+                row[ 'tmdb_id' ] = datum[ 'id' ]
+                imdb_id = get_imdbid_from_id( row[ 'tmdb_id' ], verify = verify )
+                if imdb_id is not None: row[ 'imdb_id' ] = imdb_id
         except Exception: pass
         actualMovieData.append( row )
     return actualMovieData

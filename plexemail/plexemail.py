@@ -330,15 +330,15 @@ def _get_album_prifile( prifile ):
     else: return None
 
 def get_summary_data_music_remote(
-    token, fullURLWithPort = 'http://localhost:32400',
+    token, fullURL = 'http://localhost:32400',
     library = 'Music' ):
-    libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
+    libraries_dict = plexcore.get_libraries( token, fullURL = fullURL )
     keynum = max(filter(lambda key: libraries_dict[ key ] == name, libraries_dict ) )
     if keynum is None:
         return None
     sinceDate = plexcore.get_current_date_newsletter( )
     key, num_songs, num_albums, num_artists, totdur, totsizebytes = plexcore.get_library_stats(
-        keynum, token, fullURL = fullURLWithPort )
+        keynum, token, fullURL = fullURL )
     mainstring = 'There are %d songs made by %d artists in %d albums.' % (
         num_songs, num_artists, num_albums )
     sizestring = 'The total size of music media is %s.' % get_formatted_size( totsizebytes )
@@ -346,7 +346,7 @@ def get_summary_data_music_remote(
     if sinceDate is not None:
         key, num_songs_since, num_albums_since, num_artists_since, \
             totdur_since, totsizebytes_since = plexcore._get_library_stats_artist(
-                keynum, token, fullURL = fullURLWithPort, sinceDate = sinceDate )
+                keynum, token, fullURL = fullURL, sinceDate = sinceDate )
         if num_songs_since > 0:
             mainstring_since = ' '.join([
                 'Since %s, I have added %d songs made by %d artists in %d albums.' %
@@ -361,14 +361,14 @@ def get_summary_data_music_remote(
     return musicstring
 
 def get_summary_data_television_remote(
-    token, fullURLWithPort = 'http://localhost:32400', library = 'TV Shows' ):
-    libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
+        token, fullURL = 'http://localhost:32400', library = 'TV Shows' ):
+    libraries_dict = plexcore.get_libraries( token, fullURL = fullURL )
     keynum = max(filter(lambda key: libraries_dict[ key ] == library, libraries_dict ) )
     if keynum is None:
         return None
     sinceDate = plexcore.get_current_date_newsletter( )
     key, numTVeps, numTVshows, totdur, totsizebytes = plexcore.get_library_stats(
-        keynum, token, fullURL = fullURLWithPort )
+        keynum, token, fullURL = fullURL )
     sizestring = 'The total size of TV media is %s.' % \
         get_formatted_size( totsizebytes )
     durstring = 'The total duration of TV media is %s.' % \
@@ -377,7 +377,7 @@ def get_summary_data_television_remote(
     if sinceDate is not None:
         key, numTVeps_since, numTVshows_since, \
             totdur_since, totsizebytes_since = plexcore._get_library_stats_show(
-                keynum, token, fullURL = fullURLWithPort, sinceDate = sinceDate )
+                keynum, token, fullURL = fullURL, sinceDate = sinceDate )
         if numTVeps_since > 0:
             mainstring_since = ' '.join([
                 'Since %s, I have added %d TV files in %d TV shows.' %
@@ -391,17 +391,17 @@ def get_summary_data_television_remote(
     tvstring = ' '.join([ mainstring, sizestring, durstring ])
     return tvstring
 
-def get_summary_data_movies_remote( token, fullURLWithPort = 'http://localhost:32400', library = 'Movies' ):
-    libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
+def get_summary_data_movies_remote( token, fullURL = 'http://localhost:32400', library = 'Movies' ):
+    libraries_dict = plexcore.get_libraries( token, fullURL = fullURL )
     keynum = max(zip(*list(filter(lambda tup: tup[1] == 'Movies', libraries_dict.items())))[0])
     if keynum is None: return None
     sinceDate = plexcore.get_current_date_newsletter( )
     _, num_movies, totsizebytes, totdur, \
-        sorted_by_genres = plexcore.get_library_stats( keynum, token, fullURL = fullURLWithPort )
+        sorted_by_genres = plexcore.get_library_stats( keynum, token, fullURL = fullURL )
     if sinceDate is not None:
         _, num_movies_since, totsizebytes_since, totdur_since, \
             sorted_by_genres_since = plexcore._get_library_stats_movie(
-                keynum, token, fullURL = fullURLWithPort, sinceDate = sinceDate )
+                keynum, token, fullURL = fullURL, sinceDate = sinceDate )
         if num_movies_since > 0:
             mainstring_since = ' '.join([
                 'Since %s, I have added %d movies in %d categories.' %
@@ -416,7 +416,7 @@ def get_summary_data_movies_remote( token, fullURLWithPort = 'http://localhost:3
     durstring = 'The total duration of movie media is %s.' % get_formatted_duration( totdur )
     #
     ## get last 7 movies that I have added
-    lastN_movies = plexcore.get_lastN_movies( 7, token, fullURLWithPort = fullURLWithPort )
+    lastN_movies = plexcore.get_lastN_movies( 7, token, fullURL = fullURL )
     lastNstrings = [ '', '',
                      'Here are the last %d movies I have added.' % len( lastN_movies ),
                      '\\begin{itemize}' ]

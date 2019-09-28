@@ -170,7 +170,7 @@ class TMDBTotGUI( QDialogWithPrinting ):
 
     def refresh_movies( self ):
         self.statusDialog.setText( 'REFRESHING MOVIES' )
-        movie_data_rows, _ = TVDBTotGUI.fill_out_movie_stuff(
+        movie_data_rows, _ = plexcore.fill_out_movie_stuff(
             fullurl = self.fullurl, token = self.token )
         self.tmdb_gui.fill_out_movies( movie_data_rows )
         self.tmdb_mygui.fill_out_movies( movie_data_rows )

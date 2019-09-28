@@ -32,7 +32,7 @@ class TMDBTotGUIThread( QThread ):
         self.emitString.emit( mystr )
         if self.movie_data_rows is None:
             self.movie_data_rows, _ = plexcore.fill_out_movies_stuff(
-                self.fullURL, self.token, verify = self.verify )
+                self.token, self.fullURL, verify = self.verify )
         mystr = '1, processed existing movie data in %0.3f seconds.' % (
             time.time( ) - self.time0 )
         logging.info( mystr )
@@ -148,7 +148,7 @@ class TMDBTotGUI( QDialogWithPrinting ):
             qdl.setFixedHeight( qdl.sizeHint( ).height( ) )
             qdl.show( )
             movie_data_rows, _ = plexcore.fill_out_movies_stuff(
-                self.fullurl, self.token, verify = self.verify )
+                self.token, self.fullURL, verify = self.verify )
             self.tmdb_gui.fill_out_movies( movie_data_rows = movie_data_rows )
             self.tmdb_mygui.fill_out_movies( movie_data_rows = movie_data_rows )
             qdl.close( )

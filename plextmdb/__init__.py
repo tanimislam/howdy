@@ -4,6 +4,10 @@ _mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
                   os.path.abspath( __file__ ) )
 sys.path.append( _mainDir )
 
+#from requests_respectful import RespectfulRequester
+#tmdbrequests = RespectfulRequester( )
+#tmdbrequests.register_realm( 'TheMovieDB', max_requests = 40, timespan = 10 )
+
 from plexcore import session, PlexConfig, mainDir
 
 def save_tmdb_api( apikey ):

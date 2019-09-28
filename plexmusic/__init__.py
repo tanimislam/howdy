@@ -1,4 +1,4 @@
-import os, sys, datetime, re, isodate
+import os, sys, datetime, re, isodate, mutagen.mp4
 from dateutil.relativedelta import relativedelta
 from functools import reduce
 _mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
@@ -25,3 +25,14 @@ def format_youtube_date( dt_duration ):
     else:
         dstring = dt_duration.strftime("%S")
     return dstring
+
+
+def get_failing_artistalbum( filename ):
+    if not os.path.basename( filename ).endswith( '.m4a' ):
+        return None
+
+    mp4tag = mutagen.mp4.MP4( filename )
+    if not all([ key in mp4tag for key in ( '\xa9alb', '\xa9ART' ) ]):
+        return filename
+
+    return None

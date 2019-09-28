@@ -45,7 +45,7 @@ def main( ):
     fullURL, token = dat
     #
     ## first find out which libraries are the TV show ones
-    library_dict = plexcore.get_libraries( fullURL = fullURL, token = token, do_full = True )
+    library_dict = plexcore.get_libraries( token, fullURL = fullURL, do_full = True )
     if library_dict is None:
         step += 1
         print('\n'.join([

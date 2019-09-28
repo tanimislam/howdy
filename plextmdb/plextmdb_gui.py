@@ -706,10 +706,13 @@ class TMDBGUI( QDialogWithPrinting ):
         
 
     def fill_out_movies( self, movie_data_rows ):
-        self.all_movies = list(map(
-            lambda row: { 'title' : row['title'],
-                          'year' : row['releasedate'].year },
-            movie_data_rows ))
+        def get_tuple_movie_data_row( row ):
+            datum = {  'title' : row['title'],
+                       'year' : row['releasedate'].year }
+            if 'imdb_id' in rows:
+                datum[ 'imdb_id' ] = row[ 'imdb_id' ]
+            return datum
+        self.all_movies = list(map(get_tuple_movie_data_row, movie_data_rows ) )
         self.tmdbtv.tm.layoutAboutToBeChanged.emit( )
         self.tmdbtv.tm.layoutChanged.emit( ) # change the colors in the rows, if already there
 

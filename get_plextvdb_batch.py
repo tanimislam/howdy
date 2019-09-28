@@ -68,8 +68,8 @@ def main( ):
     if opts.token is not None: token = opts.token
     #
     ## first find out which libraries are the TV show ones
-    library_dict = plexcore.get_libraries(
-        fullURL = fullURL, token = token, do_full = True )
+    library_dict = plexcore.get_libraries( token,
+        fullURL = fullURL, do_full = True )
     if library_dict is None:
         print('\n'.join([
             '%d, error, could not access libraries in plex server in %0.3f seconds. Exiting...' % (

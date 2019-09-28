@@ -3,7 +3,7 @@ from plexcore import get_formatted_size, get_formatted_duration
 from plexemail import send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
 
 def get_summary_data_freshair_remote( token, fullurlwithport = 'http://localhost:32400' ):
-    libraries_dict = plexcore.get_libraries( token = token, fullurl = fullurlwithport )
+    libraries_dict = plexcore.get_libraries( token, fullurl = fullurlwithport )
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'npr fresh air' ])
     sincedate = plexcore.get_current_date_newsletter( )
     key, num_songs, _, _, totdur, totsizebytes = plexcore._get_library_stats_artist(
@@ -27,7 +27,7 @@ def get_summary_data_freshair_remote( token, fullurlwithport = 'http://localhost
     return ' '.join([ mainstring, sizestring, durstring ])
 
 def get_summary_data_thisamericanlife_remote( token, fullURLWithPort = 'http://localhost:32400' ):
-    libraries_dict = plexcore.get_libraries( token = token, fullURL = fullURLWithPort )
+    libraries_dict = plexcore.get_libraries( token, fullURL = fullURLWithPort )
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'This American Life' ])
     sinceDate = plexcore.get_current_date_newsletter( )
     key, song_data = plexcore._get_library_data_artist( keynum, token, fullURL = fullURLWithPort )

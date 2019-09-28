@@ -29,7 +29,13 @@ urllib3.disable_warnings( )
 
 def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
     """
-    Changes the mapping of one member of the Plex_ server's emails from an old set of emails to a new set of emails. The command line tool, ``plex_config_cli.py``, is a front end to the lower-level functionality implemeted here.
+    Changes the mapping of one member of the Plex_ server's emails from an old set of emails to a new set of emails. The command line tool, ``plex_config_cli.py``, is a front end to the lower-level functionality implemented here. That command line's tool functionality is described in some detail in the Sphinx documentation for that tool.
+
+    :param str plex_email: the email of a Plex_ server member whose mapping of emails is to be changed.
+    
+    :param list plex_emails: the emails of all members of the Plex_ server.
+    
+    :param list new_emails: the mapping to be done. None of the emails in ``new_emails`` can be in the Plex_ server.
     """
     assert( plex_email in plex_emails )
     assert( len( set( new_emails ) & set( plex_emails ) ) == 0 )
@@ -49,7 +55,7 @@ def get_date_from_datestring( dstring ):
     """Returns a :py:class:`date <datetime.date>` object from
     a date string with the format, "January 1, 2000".
     
-    :param dstring: the initial date string.
+    :param str dstring: the initial date string.
     
     :returns: its :py:class:`date <datetime.date>` object representation.
     
@@ -281,8 +287,8 @@ def pushCredentials( username, password ):
 def get_all_servers( token, verify = True ):
     """Find all the Plex_ servers for which you have access.
 
-    :param token: the Plex str access token, returned by :py:meth:`checkServerCredentials <plexcore.checkServerCredentials>`.
-    :param verify: optional bool argument, whether to verify SSL connections. Default is ``True``.
+    :param str token: the Plex str access token, returned by :py:meth:`checkServerCredentials <plexcore.checkServerCredentials>`.
+    :param bool verify: optional bool argument, whether to verify SSL connections. Default is ``True``.
     :returns: a dictionary of servers owned by you. Each key is the Plex_ server's name, and the value is the URL with port.
     :rtype: dict
 

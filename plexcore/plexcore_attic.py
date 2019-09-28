@@ -57,3 +57,19 @@ def get_tvshownames_gspread( ):
     wksht = sheet.get_worksheet( 0 )
     tvshowshere = set(filter(lambda val: len(val.strip()) != 0, wksht.col_values(1)))
     return tvshowshere
+
+def get_movie_titles_by_year(
+        year, fullURL = 'http://localhost:32400', token = None ):
+    if token is None: params = {}
+    else: params = { 'X-Plex-Token' : token }
+    params['year'] = year
+    libraries_dict = get_libraries( token, fullURL = fullURL )
+    if libraries_dict is None:
+        return None
+    keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'Movies' ])
+    response = requests.get( '%s/library/sections/%d/all' % ( fullURL, keynum ),
+                             params = params, verify = False )                             
+    if response.status_code != 200: return None
+    movie_elems = filter( lambda elem: 'title' in elem.attrs,
+                          BeautifulSoup( response.content, 'lxml' ).find_all('video') )
+    return sorted(set(map( lambda movie_elem: movie_elem['title'], movie_elems ) ) )

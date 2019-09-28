@@ -1161,7 +1161,6 @@ class TMDBTableModel( QAbstractTableModel ):
         initThread.endRun.connect( progress_dialog.stopDialog )
         initThread.start( )
         progress_dialog.exec_( )
-        #self.fillOutCalculation( status, tup )
     
     #
     ## engine code, actually do the calculation
@@ -1222,10 +1221,8 @@ class TMDBTableModel( QAbstractTableModel ):
             lambda datum: ( datum[ 'title' ],
                             datum[ 'year' ] ), allMoviesInPlex ) )
         init_set = tmdbmovietitles & allmoviesinplex_set
-        #self.emitMoviesHave.emit( sorted( tmdbmovietitles & allmoviesinplex_set ) )
         #
         ## now look for the imdb_ids
-        print( 'GOT HERE IN EMITMOVIESHERE' )
         tmdbmovies_imdbids = set(map(lambda datum: datum[ 'imdb_id' ],
                                      filter(lambda datum: 'imdb_id' in datum,
                                             self.actualMovieData ) ) )
@@ -1235,12 +1232,11 @@ class TMDBTableModel( QAbstractTableModel ):
         intersect_imdbids = tmdbmovies_imdbids & plexmovies_imdbids
         second_set = set(map(lambda datum:
                              ( datum[ 'title' ],
-                               datum[ 'year' ] ),
+                               datum[ 'release_date' ].year ),
                              filter(lambda datum: 'imdb_id' in datum and
                                     datum['imdb_id'] in intersect_imdbids,
                                     self.actualMovieData )) )
         total_set = init_set | second_set
-        logging.info( 'total_set: %s.' % total_set )
         self.emitMoviesHave.emit( sorted( total_set ) )
         for datum in self.actualMovieData:
             tup = ( datum['title'], datum['release_date'].year )

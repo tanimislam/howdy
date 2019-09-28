@@ -28,6 +28,9 @@ requests.packages.urllib3.disable_warnings( )
 urllib3.disable_warnings( )
 
 def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
+    """
+    Changes the mapping of one member of the Plex_ server's emails from an old set of emails to a new set of emails. The command line tool, ``plex_config_cli.py``, is a front end to the lower-level functionality implemeted here.
+    """
     assert( plex_email in plex_emails )
     assert( len( set( new_emails ) & set( plex_emails ) ) == 0 )
     query = session.query( PlexGuestEmailMapping )

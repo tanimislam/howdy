@@ -1221,10 +1221,29 @@ class TMDBTableModel( QAbstractTableModel ):
         allmoviesinplex_set = set(map(
             lambda datum: ( datum[ 'title' ],
                             datum[ 'year' ] ), allMoviesInPlex ) )
-        self.emitMoviesHave.emit( sorted( tmdbmovietitles & allmoviesinplex_set ) )
+        init_set = tmdbmovietitles & allmoviesinplex_set
+        #self.emitMoviesHave.emit( sorted( tmdbmovietitles & allmoviesinplex_set ) )
+        #
+        ## now look for the imdb_ids
+        print( 'GOT HERE IN EMITMOVIESHERE' )
+        tmdbmovies_imdbids = set(map(lambda datum: datum[ 'imdb_id' ],
+                                     filter(lambda datum: 'imdb_id' in datum,
+                                            self.actualMovieData ) ) )
+        plexmovies_imdbids = set(map(lambda datum: datum[ 'imdb_id' ],
+                                     filter(lambda datum: 'imdb_id' in datum,
+                                            allMoviesInPlex ) ) )
+        intersect_imdbids = tmdbmovies_imdbids & plexmovies_imdbids
+        second_set = set(map(lambda datum:
+                             ( datum[ 'title' ],
+                               datum[ 'year' ] ),
+                             filter(lambda datum: datum['imdb_id'] in intersect_imdbids,
+                                    self.actualMovieData )) )
+        total_set = init_set | second_set
+        logging.info( 'total_set: %s.' % total_set )
+        self.emitMoviesHave.emit( sorted( total_set ) )
         for datum in self.actualMovieData:
             tup = ( datum['title'], datum['release_date'].year )
-            if tup in allmoviesinplex_set:
+            if tup in total_set:
                 datum[ 'isFound' ] = True
             else:
                 datum[ 'isFound' ] = False

@@ -1232,13 +1232,6 @@ def refresh_library( library_key, library_dict, token, fullURL = 'http://localho
     assert( response.status_code == 200 )
     logging.info( 'refreshing %s Library...' % library_dict[ library_key ] )
 
-def _get_failing_artistalbum( filename ):
-    if os.path.basename( filename ).endswith( '.m4a' ):
-        mp4tag = mutagen.mp4.MP4( filename )
-        if not all([ key in mp4tag for key in ( '\xa9alb', '\xa9ART' ) ]):
-            return filename
-    return None
-
 def oauthCheckGoogleCredentials( ):
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is None:

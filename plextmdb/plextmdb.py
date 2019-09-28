@@ -11,13 +11,13 @@ from plexcore import return_error_raw
 
 def get_tv_ids_by_series_name( series_name: str, verify = True ) -> list:
     response = requests.get( 'https://api.themoviedb.org/3/search/tv',
-                             params = { 'api_key' : tmdb_apiKey,
-                                        'append_to_response': 'images',
-                                        'include_image_language': 'en',
-                                        'language': 'en',
-                                        'sort_by': 'popularity.desc',
-                                        'query' : '+'.join( series_name.split( ) ),
-                                        'page' : 1 }, verify = verify )
+                                params = { 'api_key' : tmdb_apiKey,
+                                           'append_to_response': 'images',
+                                           'include_image_language': 'en',
+                                           'language': 'en',
+                                           'sort_by': 'popularity.desc',
+                                           'query' : '+'.join( series_name.split( ) ),
+                                           'page' : 1 }, verify = verify )
     if response.status_code != 200: return [ ]
     data = response.json( )
     valid_results = list(filter(
@@ -28,9 +28,9 @@ def get_tv_ids_by_series_name( series_name: str, verify = True ) -> list:
 
 def get_tv_info_for_series( tv_id: int, verify: bool = True ):
     response = requests.get( 'https://api.themoviedb.org/3/tv/%d' % tv_id,
-                             params = { 'api_key' : tmdb_apiKey,
-                                        'append_to_response': 'images',
-                                        'language': 'en' }, verify = verify )
+                                params = { 'api_key' : tmdb_apiKey,
+                                           'append_to_response': 'images',
+                                           'language': 'en' }, verify = verify )
     if response.status_code != 200:
         print( response.content )
         return None
@@ -41,15 +41,18 @@ def get_tv_info_for_season( tv_id: int, season: int, verify: bool = True ):
         'https://api.themoviedb.org/3/tv/%d/season/%d' % ( tv_id, season ),
         params = { 'api_key' : tmdb_apiKey,
                    'append_to_response': 'images',
-                   'language': 'en' }, verify = verify )
+                   'language': 'en' }, verify = verify,
+        realms = [ 'TheMovieDB' ], wait = True )
     if response.status_code != 200:
         print( response.content )
         return None
     return response.json( )
 
 def get_tv_imdbid_by_id( tv_id: int, verify: bool = True ) -> str:
-    response = requests.get( 'https://api.themoviedb.org/3/tv/%d/external_ids' % tv_id,
-                             params = { 'api_key' : tmdb_apiKey }, verify = verify )
+    response = requests.get(
+        'https://api.themoviedb.org/3/tv/%d/external_ids' % tv_id,
+        params = { 'api_key' : tmdb_apiKey }, verify = verify,
+        realms = [ 'TheMovieDB' ], wait = True )
     if response.status_code != 200:
         print( 'problem here, %s.' % response.content )
         return None
@@ -92,9 +95,10 @@ def get_episodes_series_tmdb( tv_id: int, verify: bool = True ) -> list:
         return episodes
 
 def get_movie_info( tmdb_id: int, verify = True ):
-    response = requests.get(  'https://api.themoviedb.org/3/movie/%d' % tmdb_id,
-                              params = { 'api_key' : tmdb_apiKey },
-                              verify = verify )
+    response = requests.get(
+        'https://api.themoviedb.org/3/movie/%d' % tmdb_id,
+        params = { 'api_key' : tmdb_apiKey },
+        verify = verify, realms = [ 'TheMovieDB' ], wait = True )
     if response.status_code != 200:
         return None
     return response.json( )
@@ -105,8 +109,10 @@ def get_actor_ids_dict( actor_names, verify = True ):
         actor_ids = [ ]
         params = { 'api_key' : tmdb_apiKey,
                    'query' : '+'.join( actor_name.split( ) ), }
-        response = requests.get( 'https://api.themoviedb.org/3/search/person',
-                                 params = params, verify = verify )
+        response = requests.get(
+            'https://api.themoviedb.org/3/search/person',
+            params = params, verify = verify,
+            realms = [ 'TheMovieDB' ], wait = True )
         if response.status_code != 200:
             continue
         data = response.json()
@@ -128,31 +134,34 @@ def get_actor_ids_dict( actor_names, verify = True ):
 
 def get_movies_by_actors( actor_name_dict, verify = True ):
     if len( actor_name_dict ) == 0: return [ ]
-    response = requests.get( 'https://api.themoviedb.org/3/discover/movie',
-                             params = { 'api_key' : tmdb_apiKey,
-                                        'append_to_response': 'images',
-                                        'include_image_language': 'en',
-                                        'language': 'en',
-                                        'page': 1,
-                                        'sort_by': 'popularity.desc',
-                                        'with_cast' : ','.join(map(lambda num: '%d' % num,
-                                                                   actor_name_dict.values( ) ) ) },
-                             verify = verify )
+    response = requests.get(
+        'https://api.themoviedb.org/3/discover/movie',
+        params = { 'api_key' : tmdb_apiKey,
+                   'append_to_response': 'images',
+                   'include_image_language': 'en',
+                   'language': 'en',
+                   'page': 1,
+                   'sort_by': 'popularity.desc',
+                   'with_cast' : ','.join(map(lambda num: '%d' % num,
+                                              actor_name_dict.values( ) ) ) },
+        verify = verify )
     if response.status_code != 200: return [ ]
     data = response.json( )
     total_pages = data['total_pages']
     results = data['results']
     if total_pages >= 2:
         for pageno in range( 2, total_pages + 1 ):
-            response = requests.get( 'https://api.themoviedb.org/3/discover/movie',
-                                     params = { 'api_key' : tmdb_apiKey,
-                                                'append_to_response': 'images',
-                                                'include_image_language': 'en',
-                                                'language': 'en',
-                                                'sort_by': 'popularity.desc',
-                                                'with_cast' : ','.join(map(lambda num: '%d' % num,
-                                                                           actor_name_dict.values( ) ) ),
-                                                'page' : pageno }, verify = verify )
+            response = requests.get(
+                'https://api.themoviedb.org/3/discover/movie',
+                params = { 'api_key' : tmdb_apiKey,
+                           'append_to_response': 'images',
+                           'include_image_language': 'en',
+                           'language': 'en',
+                           'sort_by': 'popularity.desc',
+                           'with_cast' : ','.join(map(lambda num: '%d' % num,
+                                                      actor_name_dict.values( ) ) ),
+                           'page' : pageno }, verify = verify,
+                realms = [ 'TheMovieDB' ], wait = True )
             if response.status_code != 200:
                 continue
             data = response.json( )
@@ -191,16 +200,17 @@ def get_movies_by_actors( actor_name_dict, verify = True ):
         actualMovieData.append( row )
     return actualMovieData
 
-def get_movies_by_title( title: str, verify = True, apiKey = None ) -> list:
+def get_movies_by_title( title, verify = True, apiKey = None, session = None ):
     if apiKey is None: apiKey = tmdb_apiKey
-    response = requests.get( 'https://api.themoviedb.org/3/search/movie',
-                             params = { 'api_key' : apiKey,
-                                        'append_to_response': 'images',
-                                        'include_image_language': 'en',
-                                        'language': 'en',
-                                        'sort_by': 'popularity.desc',
-                                        'query' : '+'.join( title.split( ) ),
-                                        'page' : 1 }, verify = verify )
+    if session is None: session = requests.Session( )
+    response = session.get( 'https://api.themoviedb.org/3/search/movie',
+                            params = { 'api_key' : apiKey,
+                                       'append_to_response': 'images',
+                                       'include_image_language': 'en',
+                                       'language': 'en',
+                                       'sort_by': 'popularity.desc',
+                                       'query' : '+'.join( title.split( ) ),
+                                       'page' : 1 }, verify = verify )
     if response.status_code != 200: return [ ]
     data = response.json( )
     total_pages = data['total_pages']
@@ -209,14 +219,15 @@ def get_movies_by_title( title: str, verify = True, apiKey = None ) -> list:
     results = sorted( results, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
     if total_pages >= 2:
         for pageno in range( 2, max( 5, total_pages + 1 ) ):
-            response = requests.get( 'https://api.themoviedb.org/3/search/movie',
-                                     params = { 'api_key' : apiKey,
-                                                'append_to_response': 'images',
-                                                'include_image_language': 'en',
-                                                'language': 'en',
-                                                'sort_by': 'popularity.desc',
-                                                'query' : '+'.join( title.split( ) ),
-                                                'page' : pageno }, verify = verify )
+            response = session.get( 'https://api.themoviedb.org/3/search/movie',
+                                    params = { 'api_key' : apiKey,
+                                               'append_to_response': 'images',
+                                               'include_image_language': 'en',
+                                               'language': 'en',
+                                               'sort_by': 'popularity.desc',
+                                               'query' : '+'.join( title.split( ) ),
+                                               'page' : pageno }, verify = verify )
+            logging.info( 'response header = %s.' % response.headers )
             if response.status_code != 200:
                 continue
             data = response.json( )
@@ -271,8 +282,8 @@ def get_imdbid_from_id( id: int, verify = True ):
     if 'imdb_id' not in data: return None
     return data['imdb_id']
 
-def get_movie( title: str, year = None, checkMultiple = True, getAll = False,
-               verify = True ):
+def get_movie( title, year = None, checkMultiple = True,
+               getAll = False, verify = True ):
     movieSearchMainURL = 'https://api.themoviedb.org/3/search/movie'
     params = { 'api_key' : tmdb_apiKey,
                'append_to_response': 'images',

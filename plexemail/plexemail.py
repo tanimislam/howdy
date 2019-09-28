@@ -6,7 +6,7 @@ from email.mime.application import MIMEApplication
 from email.mime.audio import MIMEAudio
 from email.mime.image import MIMEImage
 
-from plexcore import session, plexcore, mainDir
+from plexcore import session, plexcore, mainDir, get_lastupdated_string
 from plexcore import get_formatted_size, get_formatted_duration
 from plexemail import send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
 
@@ -96,13 +96,15 @@ def send_email_movie_none( movieName, verify = True ):
 def get_summary_body( token, nameSection = False, fullURL = 'http://localhost:32400' ):
     # allrows = plexcore.get_allrows( )
     tup_formatting = (
-        plexcore.get_lastupdated_string( dt = plexcore.get_updated_at( token,
-            fullURLWithPort = fullURL ) ), #0
+        get_lastupdated_string( dt = plexcore.get_updated_at(
+            token, fullURLWithPort = fullURL ) ), #0
         get_summary_data_freshair_remote( fullURLWithPort = fullURL, token = token ), #1
-        _get_itemized_string( get_summary_data_thisamericanlife_remote( fullURLWithPort = fullURL,
-                                                                        token = token ) ), #2
+        _get_itemized_string( get_summary_data_thisamericanlife_remote(
+            fullURLWithPort = fullURL,
+            token = token ) ), #2
         get_summary_data_music_remote( fullURLWithPort = fullURL, token = token ), #3
-        _get_itemized_string( get_summary_data_movies_remote( fullURLWithPort = fullURL, token = token ) ), #4
+        _get_itemized_string( get_summary_data_movies_remote(
+            fullURLWithPort = fullURL, token = token ) ), #4
         get_summary_data_television_remote( fullURLWithPort = fullURL, token = token ), #5
     )
     wholestr = open( os.path.join( mainDir, 'resources', 'plexstuff_body_template.tex' ), 'r' ).read( )

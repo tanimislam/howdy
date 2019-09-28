@@ -45,10 +45,24 @@ This contains an on-disk MaxMind_ database, of type :py:class:`geoip2.database.R
 .. _Maxmind: https://www.maxmind.com/en/geoip2-services-and-databases
 """
 
+def get_lastupdated_string( dt = datetime.datetime.now( ) ):
+    """
+    Returns a string representation of a :py:class:`datetime <datetime.datetime>` object.
+
+    :param :py:class:`datetime <datetime.datetime>` dt: the date and time.
+    
+    :returns: a :py:class:`str` with this format, ``Saturday, 28 September 2019, at 3:41 AM``.
+    :rtype: str
+
+    .. seealso:: :py:meth:`get_summary_body <plexemail.plexemail.get_summary_body>`
+    """
+    return dt.strftime('%A, %d %B %Y, at %-I:%M %p')
+
 def return_error_raw( msg ):
     """Returns a default ``tuple`` of type ``None, msg``, where ``msg`` is a str.
 
     :param str msg: the error message.
+    
     :returns: a ``tuple`` with structure ``(None, msg)``. ``msg`` should NEVER be ``SUCCESS``.
     :rtype: tuple
     """

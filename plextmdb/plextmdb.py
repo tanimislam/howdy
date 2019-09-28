@@ -131,71 +131,46 @@ def get_actor_ids_dict( actor_names, verify = True ):
 
 def get_movies_by_actors( actor_name_dict, verify = True ):
     if len( actor_name_dict ) == 0: return [ ]
-    response = requests.get(
-        'https://api.themoviedb.org/3/discover/movie',
-        params = { 'api_key' : tmdb_apiKey,
-                   'append_to_response': 'images',
-                   'include_image_language': 'en',
-                   'language': 'en',
-                   'page': 1,
-                   'sort_by': 'popularity.desc',
-                   'with_cast' : ','.join(map(lambda num: '%d' % num,
-                                              actor_name_dict.values( ) ) ) },
-        verify = verify )
+    for idx in range( 50 ):
+        response = requests.get(
+            'https://api.themoviedb.org/3/discover/movie',
+            params = { 'api_key' : tmdb_apiKey,
+                       'append_to_response': 'images',
+                       'include_image_language': 'en',
+                       'language': 'en',
+                       'page': 1,
+                       'sort_by': 'popularity.desc',
+                       'with_cast' : ','.join(map(lambda num: '%d' % num,
+                                                  actor_name_dict.values( ) ) ) },
+            verify = verify )
+        if response.status_code != 429: break
+        time.sleep( 2.5 )
     if response.status_code != 200: return [ ]
     data = response.json( )
     total_pages = data['total_pages']
     results = data['results']
     if total_pages >= 2:
         for pageno in range( 2, total_pages + 1 ):
-            response = requests.get(
-                'https://api.themoviedb.org/3/discover/movie',
-                params = { 'api_key' : tmdb_apiKey,
-                           'append_to_response': 'images',
-                           'include_image_language': 'en',
-                           'language': 'en',
-                           'sort_by': 'popularity.desc',
-                           'with_cast' : ','.join(map(lambda num: '%d' % num,
-                                                      actor_name_dict.values( ) ) ),
-                           'page' : pageno },
-                verify = verify )
+            for idx in range( 50 ):
+                response = requests.get(
+                    'https://api.themoviedb.org/3/discover/movie',
+                    params = { 'api_key' : tmdb_apiKey,
+                               'append_to_response': 'images',
+                               'include_image_language': 'en',
+                               'language': 'en',
+                               'sort_by': 'popularity.desc',
+                               'with_cast' : ','.join(map(lambda num: '%d' % num,
+                                                          actor_name_dict.values( ) ) ),
+                               'page' : pageno },
+                    verify = verify )
+                if response.status_code != 429: break
+                time.sleep( 2.5 )
             if response.status_code != 200:
                 continue
             data = response.json( )
             results += data[ 'results' ]
     # return results
-    actualMovieData = [ ]
-    moviePosterMainURL = 'https://image.tmdb.org/t/p/w500'
-    movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'
-    for datum in results:
-        if 'poster_path' not in datum or datum['poster_path'] is None:
-            poster_path = None
-        else:
-            poster_path = moviePosterMainURL + datum['poster_path']
-        if 'vote_average' not in datum:
-            vote_average = 0.0
-        else:
-            if 'vote_count' not in datum or int( datum[ 'vote_count' ] ) <= 10:
-                vote_average = 0.0
-            else:
-                vote_average = float( datum[ 'vote_average' ] )
-        try:
-            datetime.datetime.strptime( datum['release_date'], '%Y-%m-%d' ),
-            row = {
-                'title' : datum[ 'title' ],
-                'release_date' : datetime.datetime.strptime(
-                    datum['release_date'], '%Y-%m-%d' ),
-                'popularity' : datum[ 'popularity' ],
-                'vote_average' : vote_average,
-                'overview' : datum[ 'overview' ],
-                'poster_path' : poster_path,
-                'isFound' : False
-            }
-            if 'id' in datum: row[ 'tmdb_id' ] = datum[ 'id' ]
-        except Exception:
-            pass
-        actualMovieData.append( row )
-    return actualMovieData
+    return createProcessedMovieData( results, verify = verify )
 
 def get_movies_by_title( title, verify = True, apiKey = None ):
     if apiKey is None: apiKey = tmdb_apiKey
@@ -239,40 +214,8 @@ def get_movies_by_title( title, verify = True, apiKey = None ):
                        data['results'] ) )
             if len( newresults ) > 0:
                 results += sorted( newresults, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
-    #return results
-    actualMovieData = [ ]
-    moviePosterMainURL = 'https://image.tmdb.org/t/p/w500'
-    movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'
-    for datum in results:
-        if 'poster_path' not in datum or datum['poster_path'] is None:
-            poster_path = None
-        else:
-            poster_path = moviePosterMainURL + datum['poster_path']
-        if 'vote_average' not in datum:
-            vote_average = 0.0
-        else:
-            if 'vote_count' not in datum or int( datum[ 'vote_count' ] ) <= 10:
-                vote_average = 0.0
-            else:
-                vote_average = float( datum[ 'vote_average' ] )
-        try:
-            datetime.datetime.strptime( datum['release_date'], '%Y-%m-%d' ),
-            row = {
-                'title' : datum[ 'title' ],
-                'release_date' : datetime.datetime.strptime( datum['release_date'], '%Y-%m-%d' ),
-                'popularity' : datum[ 'popularity' ],
-                'vote_average' : vote_average,
-                'overview' : datum[ 'overview' ],
-                'poster_path' : poster_path,
-                'isFound' : False
-            }
-            if 'id' in datum:
-                row[ 'tmdb_id' ] = datum[ 'id' ]
-                imdb_id = get_imdbid_from_id( row[ 'tmdb_id' ], verify = verify )
-                if imdb_id is not None: row[ 'imdb_id' ] = imdb_id
-        except Exception: pass
-        actualMovieData.append( row )
-    return actualMovieData
+    # return results
+    return createProcessedMovieData( results, verify = verify )
 
 # Followed advice from https://www.themoviedb.org/talk/5493b2b59251416e18000826?language=en
 def get_imdbid_from_id( id, verify = True ):
@@ -408,8 +351,6 @@ def get_main_genre_movie( movie_elem ):
     return genres[ 0 ]
                              
 def getMovieData( year, genre_id, verify = True ):
-    moviePosterMainURL = 'https://image.tmdb.org/t/p/w500'
-    movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'
     params = { 'api_key' : tmdb_apiKey,
                'append_to_response': 'images',
                'include_image_language': 'en',
@@ -419,9 +360,12 @@ def getMovieData( year, genre_id, verify = True ):
                'sort_by': 'popularity.desc',
                'with_genres': genre_id }
     if genre_id == -1: params.pop( 'with_genres' )
-    response = requests.get(
-        movieListMainURL, params = params,
-        verify = verify )
+    for idx in range( 50 ):
+        response = requests.get(
+            movieListMainURL, params = params,
+            verify = verify )
+        if response.status_code != 429: break
+        time.sleep( 2.5 )
     logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
     total_pages = response.json()['total_pages']
     data = list( filter(lambda datum: datum['title'] is not None and
@@ -429,15 +373,24 @@ def getMovieData( year, genre_id, verify = True ):
                         datum['popularity'] is not None, response.json( )['results'] ) )
     for pageno in range( 2, total_pages + 1 ):
         params['page'] = pageno
-        response = requests.get(
-            movieListMainURL, params = params, verify = verify )
+        for idx in range( 50 ):
+            response = requests.get(
+                movieListMainURL, params = params, verify = verify )
+            if response.status_code != 429: break
+            time.sleep( 2.5 )
         if response.status_code != 200: continue
         logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
         data += list( filter(lambda datum: datum['title'] is not None and
                              datum['release_date'] is not None and
                              datum['popularity'] is not None, response.json( )['results'] ) )
-    actualMovieData = [ ]
-    for datum in data:
+
+    # return results
+    return createProcessedMovieData( results, verify = verify )
+
+def createProcessedMovieData( results, verify = True ):
+    moviePosterMainURL = 'https://image.tmdb.org/t/p/w500'
+    movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'    
+    def processIndividualDatum( datum ):
         if 'poster_path' not in datum or datum['poster_path'] is None:
             poster_path = None
         else:
@@ -449,19 +402,23 @@ def getMovieData( year, genre_id, verify = True ):
                 vote_average = 0.0
             else:
                 vote_average = float( datum[ 'vote_average' ] )
-        row = {
-            'title' : datum[ 'title' ],
-            'release_date' : datetime.datetime.strptime(
-                datum['release_date'], '%Y-%m-%d' ),
-            'popularity' : datum[ 'popularity' ],
-            'vote_average' : vote_average,
-            'overview' : datum[ 'overview' ],
-            'poster_path' : poster_path,
-            'isFound' : False
-        }
-        if 'id' in datum:
-            row[ 'tmdb_id' ] = datum[ 'id' ]
-            imdb_id = get_imdbid_from_id( row[ 'tmdb_id' ], verify = verify )
-            if imdb_id is not None: row[ 'imdb_id' ] = imdb_id
-        actualMovieData.append( row )
-    return actualMovieData
+        try:
+            rd = datetime.datetime.strptime( datum['release_date'], '%Y-%m-%d' )
+            row = {
+                'title' : datum[ 'title' ],
+                'release_date' : rd,
+                'popularity' : datum[ 'popularity' ],
+                'vote_average' : vote_average,
+                'overview' : datum[ 'overview' ],
+                'poster_path' : poster_path,
+                'isFound' : False
+            }
+            if 'id' in datum:
+                row[ 'tmdb_id' ] = datum[ 'id' ]
+                imdb_id = get_imdbid_from_id( row[ 'tmdb_id' ], verify = verify )
+                if imdb_id is not None: row[ 'imdb_id' ] = imdb_id
+            return row
+        except Exception as e:
+            return None
+
+    return list(filter(None, map( processIndividualDatum, results ) ) )

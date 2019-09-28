@@ -9,7 +9,7 @@ from patchwork.files import exists, directory
 
 from plexcore import session, PlexConfig
 
-## validation to see if the data is valid
+## see if the data is valid
 def check_credentials( local_dir, sshpath, password, subdir = None ):
     try:
         #
@@ -117,7 +117,7 @@ def get_rsync_command( data, mystr, do_download = True ):
             mycmd = 'rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass %s ssh" -e ssh %s %s:' % (
                 data[ 'password' ], fullpath, data[ 'sshpath' ] )
             mxcmd =  'rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass XXXX ssh" -e ssh %s %s:' % (
-                data[ 'password' ], fullpath, data[ 'sshpath' ] )
+                fullpath, data[ 'sshpath' ] )
     return mycmd, mxcmd
 
 def download_upload_files( glob_string, numtries = 10, debug_string = False,

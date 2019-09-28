@@ -120,11 +120,10 @@ def getTokenForUsernamePassword( username, password, verify = True ):
     :returns: the Plex_ access token.
     :rtype: str
 
-    .. seealso:
-    
-    * :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`.
-    * :py:meth:`getCredentials <plexcore.plexcore.getCredentials>`.
-    * :py:meth:`pushCredentials <plexcore.plexcore.pushCredentials>`.
+    .. seealso::
+      * :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`.
+      * :py:meth:`getCredentials <plexcore.plexcore.getCredentials>`.
+      * :py:meth:`pushCredentials <plexcore.plexcore.pushCredentials>`.
 
     """
     headers = { 'X-Plex-Client-Identifier' : str( uuid.uuid4( ) ),
@@ -436,6 +435,8 @@ def get_current_date_newsletter( ):
 
     :returns: the date and time of the most recent previous email newsletter.
     :rtype: :py:class:`datetime <datetime.datetime>`.
+    
+    .. seealso:: :py:meth:`set_date_newsletter <plexcore.plexcore.set_date_newsletter>`.
     
     """
     query = session.query( LastNewsletterDate )
@@ -1053,15 +1054,14 @@ def get_libraries( token, fullURL = 'http://localhost:32400', do_full = False, t
 
     :param str token: the Plex_ server access token.
     :param str fullURL: the Plex_ server address.
-    :param bool do_full: if `False`, then the values are the names of the Plex_ libraries. If `True`, then the values are :py:class:`tuple` of the library name and library type. The library type can be one of `movie`, `show`, or `artist`.
+    :param bool do_full: if `False`, then the values are the names of the Plex_ libraries. If ``True``, then the values are :py:class:`tuple` of the library name and library type. The library type can be one of ``movie``, ``show``, or ``artist``.
 
     :returns: a dictionary of libraries on the Plex_ server.
-    :rtype: dict.
+    :rtype: :py:class:`dict`.
 
     .. seealso:
-    
     * :py:meth:`fill_out_movies_stuff <plexcore.plexcore.fill_out_movies_stuff>`.
-    * :py:meth:`get_movie_titles_by_year <plexcore.plexcore.get_movie_titles_by_year>`.
+    * :py:meth:`get_movie_titles_by_year <plexcore.plexcore_attic.get_movie_titles_by_year>`.
     * :py:meth:`get_lastN_movies <plexcore.plexcore.get_lastN_movies>`.
     * :py:meth:`get_summary_data_music_remote <plexemail.plexemail.get_summary_data_music_remote>`.
     * :py:meth:`get_summary_data_television_remote <plexemail.plexemail.get_summary_data_television_remote>`.
@@ -1083,8 +1083,35 @@ def get_libraries( token, fullURL = 'http://localhost:32400', do_full = False, t
         return dict( map( lambda direlem: ( int( direlem['key'] ), ( direlem['title'], direlem['type'] ) ),
                           html.find_all('directory') ) )
 
-def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400',
-                           debug = False, verify = True ):
+def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400', verify = True ):
+    """
+    Creates a :py:class:`tuple`. The first element of the :py:class:`tuple` is a :py:class:`list` of movies from this Plex_ server. Each element in that list is a :py:class:`dict` with the following structure with 12 keys and values, as shown in this example
+
+    .. code-block:: python
+
+       { 'title': 'Blue Collar',
+         'rating': 10.0,
+         'contentrating': 'R',
+         'picurl': 'https://24.5.231.186:32400/library/metadata/46001/art/1569656413',
+         'releasedate': datetime.date(1978, 2, 10),
+         'addedat': datetime.date(2019, 6, 6),
+         'summary': "Fed up with mistreatment at the hands of both management and union brass, and coupled with financial hardships on each man's end, three auto assembly line workers hatch a plan to rob a safe at union headquarters.",
+         'duration': 6820.394,
+         'totsize': 935506414.0,
+         'localpic': True,
+         'imdb_id': 'tt0077248',
+         'genre': 'drama'
+       }
+
+    The second element of the :py:class:`tuple` is a :py:class:`list` of movie genres on the Plex_ server.
+
+    :param str token: the Plex_ server access token.
+    :param str fullURL: the Plex_ server address.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: a :py:class:`tuple` of two lists. The first is a list of all the movies on the Plex_ server. The second is a list of all the movie genres found on the Plex server.
+    :rtype: :py:class:`tuple`.
+    """
     unified_movie_data = { }
     movie_data_rows = [ ]
     problem_rows = [ ]
@@ -1148,25 +1175,25 @@ def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400',
         movie_data_rows += list(
             pool.map( _solve_problem_row, problem_rows ) )
         return movie_data_rows, genres
-    
-def get_movie_titles_by_year(
-        year, fullURL = 'http://localhost:32400', token = None ):
-    if token is None: params = {}
-    else: params = { 'X-Plex-Token' : token }
-    params['year'] = year
-    libraries_dict = get_libraries( token, fullURL = fullURL )
-    if libraries_dict is None:
-        return None
-    keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'Movies' ])
-    response = requests.get( '%s/library/sections/%d/all' % ( fullURL, keynum ),
-                             params = params, verify = False )                             
-    if response.status_code != 200: return None
-    movie_elems = filter( lambda elem: 'title' in elem.attrs,
-                          BeautifulSoup( response.content, 'lxml' ).find_all('video') )
-    return sorted(set(map( lambda movie_elem: movie_elem['title'], movie_elems ) ) )
 
 def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
-                      useLastNewsletterDate = True ):    
+                      useLastNewsletterDate = True, verify = True ):
+    """
+    Returns the last :math:`N` movies that were uploaded to the Plex_ server, either after the last date at which a newsletter was sent out or not.
+
+    :param int lastN: the last :math:`N` movies to be sent out. Must be :math:`\ge 1`.
+    :param str token: the Plex_ server access token.
+    :param str fullURL: the Plex_ server address.
+    :param bool useLastNewsletterDate: if ``True``, then find the last movies after the date of the previous newsletter. If ``False``. don't make that restriction.
+
+    :returns: a :py:class:`list` of Plex_ movies. Each element in the list is  :py:class:`tuple` of the movie: title, year, :py:class:`datetime <datetime.datetime>`, and TMDB_ URL of the movie.
+    :rtype: :py:class:`dict`.
+
+    .. seealso:
+    
+    * :py:meth:`get_summary_data_movies_remote <plexemail.plexemail.get_summary_data_movies_remote>`.
+    * :py:meth:`get_summary_data_movies <plexemail.plexemail.get_summary_data_movies>`.
+    """
     assert( isinstance( lastN, int ) )
     assert( lastN > 0 )
     params = { 'X-Plex-Token' : token }
@@ -1191,19 +1218,19 @@ def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
         elem['title'], int( elem['year'] ),
         datetime.datetime.fromtimestamp( int( elem['addedat'] ) ).
         replace(tzinfo = pytz.timezone( 'US/Pacific' ) ),
-        plextmdb.get_movie( elem['title'] ) ),
+        plextmdb.get_movie( elem['title'], verify = verify ) ),
                     valid_video_elems ) )
 
 #
 ## All this stuff I found at https://support.plex.tv/hc/en-us/articles/201638786-Plex-Media-Server-URL-Commands
-def refresh_library( library_key, library_dict, fullURL = 'http://localhost:32400', token = None ):    
+def refresh_library( library_key, library_dict, token, fullURL = 'http://localhost:32400' ):    
     assert( library_key in library_dict )
-    if token is None: params = { }
-    else: params = { 'X-Plex-Token' : token }
-    response = requests.get( '%s/library/sections/%d/refresh' % ( fullURL, library_key ),
-                             params = params, verify = False )
+    params = { 'X-Plex-Token' : token }
+    response = requests.get(
+        '%s/library/sections/%d/refresh' % ( fullURL, library_key ),
+        params = params, verify = False )
     assert( response.status_code == 200 )
-    print('refreshing %s Library...' % library_dict[ library_key ])
+    logging.info( 'refreshing %s Library...' % library_dict[ library_key ] )
 
 def _get_failing_artistalbum( filename ):
     if os.path.basename( filename ).endswith( '.m4a' ):
@@ -1211,10 +1238,6 @@ def _get_failing_artistalbum( filename ):
         if not all([ key in mp4tag for key in ( '\xa9alb', '\xa9ART' ) ]):
             return filename
     return None
-
-def get_lastupdated_string( dt = datetime.datetime.now( ) ):
-    return dt.strftime('%A, %d %B %Y, at %-I:%M %p')
-
 
 def oauthCheckGoogleCredentials( ):
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
@@ -1276,6 +1299,22 @@ def oauth_store_google_credentials( credentials ):
 #
 ## put in the jackett credentials into here
 def store_jackett_credentials( url, apikey, verify = True ):
+    """
+    stores the Jackett_ server's API credentials into the database of all credentials.
+
+    :param str url: the Jackett_ server's URL.
+    :param str apikey: the Jackett_ server's API key.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: the string ``"SUCCESS"`` if could store the new Jackett_ server credentials. Otherwise, some illuminating error message.
+    
+    :rtype: str
+
+    .. seealso::
+
+      * :py:meth:`get_jackett_credentials <plexcore.plexcore.get_jackett_credentials>`.
+      * :py:meth:`check_jackett_credentials <plexcore.plexcore.check_jackett_credentials>`.
+    """
     actURL, status = check_jackett_credentials(
         url, apikey, verify = verify )
     if status != 'SUCCESS': return status
@@ -1295,9 +1334,22 @@ def store_jackett_credentials( url, apikey, verify = True ):
     session.commit( )
     return 'SUCCESS'
 
-#
-## read in JACKETT credentials here
 def get_jackett_credentials( ):
+    """
+    retrieves the Jackett_ server's API credentials from the stored database.
+
+    :returns: a :py:class:`tuple` of the Jackett_ server's API credentials. First element is the URL of the Jackett_ server. Second element is the API key.
+
+    :rtype: tuple
+
+    .. seealso::
+
+      * :py:meth:`check_jackett_credentials <plexcore.plexcore.check_jackett_credentials>`.
+      * :py:meth:`store_jackett_credentials <plexcore.plexcore.store_jackett_credentials>`.
+    
+    .. _Jackett: https://github.com/Jackett/Jackett
+    """
+    
     query = session.query( PlexConfig ).filter( PlexConfig.service == 'jackett' )
     val = query.first( )
     if val is None: return None
@@ -1306,15 +1358,29 @@ def get_jackett_credentials( ):
     apikey = data['apikey'].strip( )
     return url, apikey
 
-#
-## now check that Jackett credentials work
 def check_jackett_credentials( url, apikey, verify = True ):
+    """
+    validate the Jackett_ server credentials with the provided URL and API key.
+
+    :param str url: the Jackett_ server's URL.
+    :param str apikey: the Jackett_ server's API key.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: a :py:class:`tuple`. If successful, this is a tuple of the server's URL and the string ``"SUCCESS"``. If unsuccessful, this is a tuple of :py:class:`NoneType`  and error message string.
+    
+    :rtype: tuple
+
+    .. seealso::
+    
+      * :py:meth:`get_jackett_credentials <plexcore.plexcore.get_jackett_credentials>`.
+      * :py:meth:`store_jackett_credentials <plexcore.plexcore.store_jackett_credentials>`.
+    """
     endpoint = 'api/v2.0/indexers/all/results/torznab/api'
     #
     ## now check that everything works
     ## first, is URL a valid URL?
     if not validators.url( url ):
-        return "ERROR, %s is not a valid URL" % url
+        return None, "ERROR, %s is not a valid URL" % url
 
     #
     ## second, add a '/' to end of URL
@@ -1328,7 +1394,7 @@ def check_jackett_credentials( url, apikey, verify = True ):
             params = { 'apikey' : apikey, 't' : 'caps' },
             verify = verify )
         if response.status_code != 200:
-            return "ERROR, invalid jackett credentials"
+            return None, "ERROR, invalid jackett credentials"
 
         html = BeautifulSoup( response.content, 'lxml' )
         error_items = html.find_all('error')
@@ -1338,17 +1404,56 @@ def check_jackett_credentials( url, apikey, verify = True ):
     except Exception as e:
         return None, "ERROR, exception emitted: %s." % str( e )
 
-#
-## now get imgurl credentials
 def get_imgurl_credentials( ):
+    """
+    retrieves the Imgur_ API credentials from the stored database.
+
+    :returns: a :py:class:`dict` of the Imgur_ API credentials. Its structure is,
+
+    .. code-block:: python
+    
+       { 'clientID': XXXX,
+         'clientSECRET': XXXX,
+         'clientREFRESHTOKEN': XXXX,
+         'mainALBUMID': XXXX,
+         'mainALBUMTITLE': XXXX }
+
+    :rtype: dict
+
+    .. seealso::
+
+      * :py:meth:`check_imgurl_credentials <plexcore.plexcore.check_imgurl_credentials>`.
+      * :py:meth:`store_imgurl_credentials <plexcore.plexcore.store_imgurl_credentials>`.
+    
+    .. _Imgur: https://imgur.com/
+    """
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'imgurl' ).first( )
     if val is None:
         raise ValueError( "ERROR, COULD NOT FIND IMGUR CREDENTIALS." )
     data_imgurl = val.data
     return data_imgurl
 
-def check_imgurl_credentials( clientID, clientSECRET,
-                              clientREFRESHTOKEN, verify = True ):
+def check_imgurl_credentials(
+        clientID, clientSECRET,
+        clientREFRESHTOKEN, verify = True ):
+    """
+    validate the Imgur_ API credentials with the provided API client ID, secret, and refresh token.
+
+    :param str clientID: the Imgur_ client ID.
+    :param str clientSECRET: the Imgur_ client secret.
+    :param str clientREFRESHTOKEN: the Imgur_ client refresh token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: whether the new credentials are correct.
+    
+    :rtype: bool
+
+    .. seealso::
+
+      * :py:meth:`get_imgurl_credentials <plexcore.plexcore.get_imgurl_credentials>`.
+      * :py:meth:`store_imgurl_credentials <plexcore.plexcore.store_imgurl_credentials>`.
+    
+    """
     response = requests.post(
          'https://api.imgur.com/oauth2/token',
         data = {'client_id': clientID,
@@ -1361,6 +1466,23 @@ def check_imgurl_credentials( clientID, clientSECRET,
     return True
 
 def store_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify = True ):
+    """
+    stores the Imgur_ API credentials into the database of all credentials.
+
+    :param str clientID: the Imgur_ client ID.
+    :param str clientSECRET: the Imgur_ client secret.
+    :param str clientREFRESHTOKEN: the Imgur_ client refresh token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: the string ``"SUCCESS"`` if could store the new Imgur_ credentials. Otherwise, the string ``'ERROR, COULD NOT STORE IMGURL CREDENTIALS.'``.
+    
+    :rtype: str
+
+    .. seealso::
+
+      * :py:meth:`check_imgurl_credentials <plexcore.plexcore.check_imgurl_credentials>`.
+      * :py:meth:`get_imgurl_credentials <plexcore.plexcore.get_imgurl_credentials>`.
+    """
     isValid =  check_imgurl_credentials(
         clientID, clientSECRET, clientREFRESHTOKEN, verify = verify )
     if not isValid: return 'ERROR, COULD NOT STORE IMGURL CREDENTIALS.'
@@ -1378,6 +1500,11 @@ def store_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify
     return 'SUCCESS'
     
 def set_date_newsletter( ):
+    """
+    sets the date of the Plex_ newsletter to :py:meth:`now() <datetime.datetime.now>`.
+
+    .. seealso:: :py:meth:`get_current_date_newsletter <plexcore.plexcore.get_current_date_newsletter>`.
+    """
     query = session.query( LastNewsletterDate )
     backthen = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
     val = query.filter( LastNewsletterDate.date >= backthen ).first( )

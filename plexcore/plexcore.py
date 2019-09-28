@@ -14,7 +14,7 @@ from google.oauth2.credentials import Credentials
 from html import unescape
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
-from urllib.parse import urlencode, urljoin
+from urllib.parse import urlencode, urljoin, urlparse
 from itertools import chain
 from multiprocessing import Manager
 
@@ -501,6 +501,11 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
             duration = 1e-3 * int( movie_elem[ 'duration' ] )
             bitrate, totsize = _get_bitrate_size( movie_elem )
             if bitrate == -1 and totsize != -1: bitrate = 1.0 * totsize / duration
+            imdb_id = None
+            if 'guid' in movie_elem.attrs:
+                guid = movie_elem.get( 'guid' )
+                if 'imdb' in guid: imdb_id = urlparse( guid ).netloc
+                
             data = {
                 'title' : title,
                 'rating' : rating,
@@ -511,7 +516,9 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
                 'summary' : summary,
                 'duration' : duration,
                 'totsize' : totsize,
-                'localpic' : True }
+                'localpic' : True,
+                'imdb_id' : imdb_id }
+            
             movie_data_sub.append( ( first_genre, data ) )
         return movie_data_sub
 
@@ -1093,9 +1100,8 @@ def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400',
     #
     ##
     genres = sorted( unified_movie_data )
-    def _solve_problem_row( input_data ):
-        dat_copy = input_data[ 'dat' ].copy( )
-        session  = input_data[ 'session' ]
+    def _solve_problem_row( dat ):
+        dat_copy = dat.copy( )
         #
         ## first look for the movie
         movies_here = plextmdb.get_movies_by_title(
@@ -1138,18 +1144,9 @@ def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400',
             movie_data_rows.append( dat_copy )
             
     with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
-        sess = requests.Session( )
-        sess.mount( 'https://', requests.adapters.HTTPAdapter(
-            pool_connections = multiprocessing.cpu_count( ),
-            pool_maxsize = multiprocessing.cpu_count( ) ) )
-        sess.mount( 'http://', requests.adapters.HTTPAdapter(
-            pool_connections = multiprocessing.cpu_count( ),
-            pool_maxsize = multiprocessing.cpu_count( ) ) )
-        
+        logging.info( 'number of problem rows: %d.' % len( problem_rows ) )
         movie_data_rows += list(
-            pool.map(
-                _solve_problem_row,
-                map(lambda dat: { 'dat' : dat, 'session' : sess }, problem_rows ) ) )
+            pool.map( _solve_problem_row, problem_rows ) )
         return movie_data_rows, genres
     
 def get_movie_titles_by_year(

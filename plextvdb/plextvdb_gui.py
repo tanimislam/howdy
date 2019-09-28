@@ -50,7 +50,7 @@ class TVDBGUIThread( QThread ):
         self.emitString.emit( mytxt )
         #
         libraries_dict = plexcore.get_libraries(
-            fullURL = self.fullURL, token = self.token, do_full = True )
+            self.token, fullURL = self.fullURL, do_full = True )
         if not any(map(lambda value: 'show' in value[-1], libraries_dict.values( ) ) ):
             raise ValueError( 'Error, could not find TV shows.' )
         library_name = max(map(lambda key: libraries_dict[ key ][ 0 ],
@@ -386,8 +386,8 @@ class TVDBGUI( QDialogWithPrinting ):
                                 
     def __init__( self, token, fullURL, tvdata_on_plex = None,
                   didend = None, toGet = None, verify = True ):
-        super( TVDBGUI, self ).__init__( None, isIsolated = True,
-                                         doQuit = True )
+        super( TVDBGUI, self ).__init__(
+            None, isIsolated = True, doQuit = True )
         self.fullURL = fullURL
         self.token = token
         self.tvdb_token = get_token( verify = verify )

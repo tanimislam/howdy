@@ -543,9 +543,10 @@ def _get_library_stats_movie( key, token, fullURL ='http://localhost:32400', sin
     totsize = sum(map(lambda genre: sorted_by_genres[ genre ][ -2 ], sorted_by_genres ) )
     return key, totnum, totdur, totsize, sorted_by_genres
 
-def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
-                            sinceDate = None, num_threads = 2 * multiprocessing.cpu_count( ),
-                            timeout = None ):
+def _get_library_data_show(
+        key, token, fullURL = 'http://localhost:32400',
+        sinceDate = None, num_threads = 2 * multiprocessing.cpu_count( ),
+        timeout = None ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
@@ -576,13 +577,18 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
     ## videlem.get('index') == episode # in season
     ## videlem.get('parentindex') == season # of show ( season 0 means Specials )
     ## videlem.get('originallyavailableat') == when first aired
-    def _get_show_data( input_tuple ):
+    def _get_show_data( input_data ):
         times_requests_given = [ ]
-        cont, session, slist, t0, timeout, indices = input_tuple
+        cont =    input_data[ 'cont' ]
+        session = input_data[ 'session' ]
+        slist =   input_data[ 'slist' ]
+        t0 =      input_data[ 't0' ]
+        timeout = input_data[ 'timeout' ]
+        indices = input_data[ 'indices' ]
+        #
         html = BeautifulSoup( cont, 'lxml' )
         direlems = html.find_all('directory')
         tvdata_tup = [ ]
-        idx_number = min( indices )
         for idx in indices:
             direlem = direlems[ idx ]
             show = unescape( direlem['title'] )
@@ -685,9 +691,13 @@ def _get_library_data_show( key, token, fullURL = 'http://localhost:32400',
         ## multiprocess chunking of input data among act_num_threads processes
         time0 = time.time( )
         input_tuples = list(
-            map(lambda idx: (
-                response.content, sess, shared_list, time0, timeout,
-                list( range( idx, num_direlems, act_num_threads ) ) ),
+            map(lambda idx: {
+                'cont'    : response.content,
+                'session' : sess,
+                'slist'   : shared_list,
+                't0'      : time0,
+                'timeout' : timeout,
+                'indices' : list( range( idx, num_direlems, act_num_threads ) ) },
                 range( act_num_threads ) ) )
         #
         ## final result reduced after a multiprocessing map
@@ -795,14 +805,6 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                       ( fullURL, key ) )
         return None
     
-    s = requests.Session( )
-    s.mount( 'https://', requests.adapters.HTTPAdapter(
-        pool_connections = num_threads,
-        pool_maxsize = num_threads ) )
-    s.mount( 'http://', requests.adapters.HTTPAdapter(
-        pool_connections = num_threads,
-        pool_maxsize = num_threads ) )
-    
     def valid_track( track_elem ):
         if len(list(track_elem.find_all('media'))) != 1:
             return False
@@ -812,15 +814,19 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
             return False
         return True
     #
-    def _get_artist_data( input_tuple ):
-        cont, timeout, indices = input_tuple
+    def _get_artist_data( input_data ):
+        cont =    input_data[ 'cont' ]
+        session = input_data[ 'session' ]
+        timeout = input_data[ 'timeout' ]
+        indices = input_data[ 'indices' ]
+        #
         html = BeautifulSoup( cont, 'lxml' )
         artist_elems = html.find_all('directory')
         song_data_sub = [ ]
         for idx in indices:
             artist_elem = artist_elems[ idx ]
             newURL = '%s%s' % ( fullURL, artist_elem.get('key') )
-            resp2 = s.get( newURL, params = params, verify = False, timeout = timeout )        
+            resp2 = session.get( newURL, params = params, verify = False, timeout = timeout )        
             if resp2.status_code != 200: continue
             h2 = BeautifulSoup( resp2.content, 'lxml' )
             album_elems = list( h2.find_all('directory') )
@@ -828,7 +834,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
             artist_data = { }
             for album_elem in album_elems:
                 newURL = '%s%s' % ( fullURL, album_elem.get('key') )
-                resp3 = s.get( newURL, params = params, verify = False, timeout = timeout )
+                resp3 = session.get( newURL, params = params, verify = False, timeout = timeout )
                 if resp3.status_code != 200: continue
                 h3 = BeautifulSoup( resp3.content, 'lxml' )
                 track_elems = filter(valid_track, h3.find_all( 'track' ) )
@@ -867,19 +873,41 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
 
     act_num_threads = max( num_threads, multiprocessing.cpu_count( ) )
     len_artistelems = len( BeautifulSoup( response.content, 'lxml' ).find_all('directory') )
-    with multiprocessing.Pool( processes=act_num_threads ) as pool:
+    
+    s = requests.Session( )
+    s.mount( 'https://', requests.adapters.HTTPAdapter(
+        pool_connections = act_num_threads,
+        pool_maxsize = act_num_threads ) )
+    s.mount( 'http://', requests.adapters.HTTPAdapter(
+        pool_connections = act_num_threads,
+        pool_maxsize = act_num_threads ) )
+    
+    with multiprocessing.Pool( processes = act_num_threads ) as pool:
         input_tuples = list(
-            map(lambda idx: ( response.content, timeout, list(range(
-                idx, len_artistelems, act_num_threads ) ) ),
-                range(act_num_threads)))
+            map(lambda idx: {
+                'cont'    : response.content,
+                'session' : s,
+                'timeout' : timeout,
+                'indices' : list(range( idx, len_artistelems, act_num_threads ) ) },
+                range( act_num_threads ) ) )
         song_data = dict(chain.from_iterable(pool.map(
             _get_artist_data, input_tuples ) ) )
         return key, song_data
 
 def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
+    """
+    Returns a :py:class:`list` of the key numbers of all Plex movie libraries on the Plex_ server.
+
+    :param str token: the Plex_ server access token.
+    :param str fullURL: the Plex_ server address.
+
+    :returns: a :py:class:`list` of the Plex_ movie library key numbers.
+    :rtype: list.
+    """
     params = { 'X-Plex-Token' : token }
-    response = requests.get( '%s/library/sections' % fullURL, params = params,
-                             verify = False )
+    response = requests.get(
+        '%s/library/sections' % fullURL, params = params,
+        verify = False )
     if response.status_code != 200: return None
     html = BeautifulSoup( response.content, 'lxml' )
     library_dict = { int( direlem['key'] ) : ( direlem['title'], direlem['type'] ) for
@@ -1012,15 +1040,7 @@ def get_library_stats( key, token, fullURL = 'http://localhost:32400' ):
     else:
         return fullURL, title, mediatype
         
-def get_libraries( fullURL = 'http://localhost:32400', token = None, do_full = False, timeout = None ):
-    if token is None:
-        if fullURL == 'http://localhost:32400':
-            data = checkServerCredentials( doLocal = True )
-        else:
-            data = checkServerCredentials( doLocal = False )
-        if data is None:
-            return None
-        _, token = data
+def get_libraries( token, fullURL = 'http://localhost:32400', do_full = False, timeout = None ):
     params = { 'X-Plex-Token' : token }
     response = requests.get(
         '%s/library/sections' % fullURL,
@@ -1037,21 +1057,12 @@ def get_libraries( fullURL = 'http://localhost:32400', token = None, do_full = F
         return dict( map( lambda direlem: ( int( direlem['key'] ), ( direlem['title'], direlem['type'] ) ),
                           html.find_all('directory') ) )
 
-def fill_out_movies_stuff( fullURL = 'http://localhost:32400', token = None,
+def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400',
                            debug = False, verify = True ):
-    if token is None:
-        if fullURL == 'http://localhost:32400':
-            data = checkServerCredentials( doLocal = True )
-        else:
-            data = checkServerCredentials( doLocal = False )
-        if data is None:
-            return None
-        _, token = data        
     unified_movie_data = { }
     movie_data_rows = [ ]
     problem_rows = [ ]
-    plex_libraries = get_libraries(
-        fullURL, token, do_full = True )
+    plex_libraries = get_libraries( token, fullURL, do_full = True )
     movie_keys = set(filter(lambda key: plex_libraries[ key ][ -1 ] == 'movie',
                             plex_libraries ) )
     library_names = list(map(lambda key: plex_libraries[ key ][ 0 ], movie_keys ) )
@@ -1112,11 +1123,11 @@ def fill_out_movies_stuff( fullURL = 'http://localhost:32400', token = None,
         return movie_data_rows, genres
     
 def get_movie_titles_by_year(
-    year, fullURL = 'http://localhost:32400', token = None ):
+        year, fullURL = 'http://localhost:32400', token = None ):
     if token is None: params = {}
     else: params = { 'X-Plex-Token' : token }
     params['year'] = year
-    libraries_dict = get_libraries( token = token, fullURL = fullURL )
+    libraries_dict = get_libraries( token, fullURL = fullURL )
     if libraries_dict is None:
         return None
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'Movies' ])

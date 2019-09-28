@@ -25,7 +25,7 @@ def get_token_fullURL( request ):
 def get_libraries_dict( get_token_fullURL ):
     fullURL, token = get_token_fullURL
     libraries_dict = plexcore.get_libraries(
-        fullURL = fullURL, token = token, do_full = True )
+        token, fullURL = fullURL, do_full = True )
     print( 'here are the libraries on the PLEX server:')
     for key in sorted( libraries_dict ):
         print( '%d: %s, %s' % ( key, libraries_dict[ key ][ 0 ],

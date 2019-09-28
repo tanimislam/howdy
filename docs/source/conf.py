@@ -54,7 +54,7 @@ extensions = [
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'requests': ('https://2.python-requests.org/en/master', None),
+    'requests': ('https://python-requests.org/en/master', None),
     'beautifulsoup' : ( 'https://www.crummy.com/software/BeautifulSoup/bs4/doc/', None),
     'geoip2' : ( 'https://geoip2.readthedocs.org/en/latest', None),
     'pyqt4' : ( 'https://www.riverbankcomputing.com/static/Docs/PyQt4', None ),

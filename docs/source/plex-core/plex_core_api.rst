@@ -42,7 +42,7 @@ This module implements the functionality to do the following:
 
      * retrieve and summarize data in the Plex_ libraries.
 
-     * miscellaneous functionalities, such as the following: getting formatted date strings from a :py:class:`date <datetime.date>` object.=, 
+     * miscellaneous functionalities, such as the following: getting formatted date strings from a :py:class:`date <datetime.date>` object.
 
 .. automodule:: plexcore.plexcore
    :members:

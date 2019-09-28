@@ -62,7 +62,7 @@ def main( ):
             print('Sorry, now we need to provide an user name and password. Please get one!')
             return
         _, token = data
-        library_dict = plexcore.get_libraries( token = token )
+        library_dict = plexcore.get_libraries( token )
         if opts.do_librarynames:
             print('Here are the %d libraries in this Plex server.' % len( library_dict ) )
             for libraryName in sorted( library_dict.values( ) ):
@@ -110,8 +110,8 @@ def main( ):
                 server_dicts_all[ name ] = ( server_dicts[ stat ][ name ], stat )
         assert( servername in server_dicts_all.keys( ) )
         fullURL = 'https://%s' % server_dicts_all[ servername ][ 0 ]
-        library_dict = plexcore.get_libraries( token = token,
-                                               fullURL = fullURL )
+        library_dict = plexcore.get_libraries(
+            token, fullURL = fullURL )
         if opts.do_librarynames:
             print('Here are the %d libraries on Plex server %s (%s).' %
                   ( len( library_dict ), servername, fullURL ) )

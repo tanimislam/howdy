@@ -1236,7 +1236,8 @@ class TMDBTableModel( QAbstractTableModel ):
         second_set = set(map(lambda datum:
                              ( datum[ 'title' ],
                                datum[ 'year' ] ),
-                             filter(lambda datum: datum['imdb_id'] in intersect_imdbids,
+                             filter(lambda datum: 'imdb_id' in datum and
+                                    datum['imdb_id'] in intersect_imdbids,
                                     self.actualMovieData )) )
         total_set = init_set | second_set
         logging.info( 'total_set: %s.' % total_set )

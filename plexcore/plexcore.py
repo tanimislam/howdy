@@ -1041,6 +1041,25 @@ def get_library_stats( key, token, fullURL = 'http://localhost:32400' ):
         return fullURL, title, mediatype
         
 def get_libraries( token, fullURL = 'http://localhost:32400', do_full = False, timeout = None ):
+    """
+    Gets the :py:class:`dict` of libraries on the Plex_ server. The key is the library number, while the value can be either the name of the library or a :py:class:`tuple` of library name and library type
+
+    :param str token: the Plex_ server access token.
+    :param str fullURL: the Plex_ server address.
+    :param bool do_full: if `False`, then the values are the names of the Plex_ libraries. If `True`, then the values are :py:class:`tuple` of the library name and library type. The library type can be one of `movie`, `show`, or `artist`.
+
+    :returns: a dictionary of libraries on the Plex_ server.
+    :rtype: dict.
+
+    .. seealso:
+    
+    * :py:meth:`fill_out_movies_stuff <plexcore.plexcore.fill_out_movies_stuff>`.
+    * :py:meth:`get_movie_titles_by_year <plexcore.plexcore.get_movie_titles_by_year>`.
+    * :py:meth:`get_lastN_movies <plexcore.plexcore.get_lastN_movies>`.
+    * :py:meth:`get_summary_data_music_remote <plexemail.plexemail.get_summary_data_music_remote>`.
+    * :py:meth:`get_summary_data_television_remote <plexemail.plexemail.get_summary_data_television_remote>`.
+    * :py:meth:`get_summary_data_movies_remote <plexemail.plexemail.get_summary_data_movies_remote>`.
+    """
     params = { 'X-Plex-Token' : token }
     response = requests.get(
         '%s/library/sections' % fullURL,
@@ -1074,8 +1093,9 @@ def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400',
     #
     ##
     genres = sorted( unified_movie_data )
-    def _solve_problem_row( dat ):
-        dat_copy = dat.copy( )
+    def _solve_problem_row( input_data ):
+        dat_copy = input_data[ 'dat' ].copy( )
+        session  = input_data[ 'session' ]
         #
         ## first look for the movie
         movies_here = plextmdb.get_movies_by_title(
@@ -1118,8 +1138,18 @@ def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400',
             movie_data_rows.append( dat_copy )
             
     with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
+        sess = requests.Session( )
+        sess.mount( 'https://', requests.adapters.HTTPAdapter(
+            pool_connections = multiprocessing.cpu_count( ),
+            pool_maxsize = multiprocessing.cpu_count( ) ) )
+        sess.mount( 'http://', requests.adapters.HTTPAdapter(
+            pool_connections = multiprocessing.cpu_count( ),
+            pool_maxsize = multiprocessing.cpu_count( ) ) )
+        
         movie_data_rows += list(
-            pool.map(_solve_problem_row, problem_rows ) )
+            pool.map(
+                _solve_problem_row,
+                map(lambda dat: { 'dat' : dat, 'session' : sess }, problem_rows ) ) )
         return movie_data_rows, genres
     
 def get_movie_titles_by_year(

@@ -18,12 +18,18 @@
 #
 import os, sys
 from functools import reduce
+from sphinx.util import logging
 _mainDir = reduce(lambda x,y: os.path.dirname( x ),
                   range(2), os.path.abspath('.'))
 sys.path.insert( 0, _mainDir )
 
-print( "mainDir = %s" % _mainDir)
-print( os.environ.get('READTHEDOCS') )
+logger = logging.getLogger( __name__ )
+logger.info( "mainDir = %s" % _mainDir)
+logger.info( os.environ.get('READTHEDOCS') )
+
+#
+## now don't verify the TLS
+tls_verify = False
 
 #
 ## following instructions on https://docs.readthedocs.io/en/latest/faq.html#i-get-import-errors-on-libraries-that-depend-on-c-modules

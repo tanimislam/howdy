@@ -51,9 +51,17 @@ This module implements the functionality to do the following:
 plexcore.plexcore_deluge module
 -----------------------------------------
 
-This module implements the functionality to interact with a Seedhost_ seedbox_ `Deluge torrent server`_, by copying a minimal set of the functionality of a `Deluge torrent client`_. The data formatting in this module is largely or wholly copied from the `Deluge SDK <https://deluge.readthedocs.io/en/latest>`_. The much reduced Deluge torrent client, :ref:`plex_deluge_console.py`, is a CLI to this module.
+This module implements the functionality to interact with a Seedhost_ seedbox_ `Deluge torrent server`_, by copying a minimal set of the functionality of a `Deluge torrent client`_. The data formatting in this module is largely or wholly copied from the `Deluge SDK <https://deluge.readthedocs.io/en/latest>`_. The much reduced Deluge torrent client, :ref:`plex_deluge_console.py`, is a CLI front-end to this module.
 
 .. automodule:: plexcore.plexcore_deluge
+   :members:
+
+plexcore.plexcore_rsync module
+-----------------------------------------
+
+This module implements the functionality to interact with a Seedhost_ seedbox_ SSH server to download or upload files and directories using the rsync_ protocol tunneled through SSH. :ref:`rsync_subproc.py` is a CLI front-end to this module.
+
+.. automodule:: plexcore.plexcore_rsync
    :members:
 
 .. these are some URLs
@@ -69,3 +77,4 @@ This module implements the functionality to interact with a Seedhost_ seedbox_ `
 .. _seedbox: https://en.wikipedia.org/wiki/Seedbox
 .. _`Deluge torrent server`: https://deluge-torrent.org
 .. _`Deluge torrent client`: https://en.wikipedia.org/wiki/Deluge_(software)
+.. _rsync: https://en.wikipedia.org/wiki/Rsync

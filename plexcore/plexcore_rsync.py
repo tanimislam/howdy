@@ -11,6 +11,21 @@ from plexcore import session, PlexConfig
 
 ## see if the data is valid
 def check_credentials( local_dir, sshpath, password, subdir = None ):
+    """
+    Checks whether one can download to (or upload from) the directory ``local_dir`` on the Plex_ server to the remote SSH server.
+
+    :param str local_dir: the local directory, on the Plex_ server, into which to download files from the remote SSH server.
+    :param str sshpath: the full path with username and host name for the SSH server. Format is ``'username@hostname'``.
+    :param str password: the password to connect as the SSH server.
+    :param str subdir: if not ``None``, the subdirectory on the remote SSH server from which to download files.
+
+    :returns: if everything works, return ``'SUCCESS'``. If fails, return specific illuminating error messages.
+    :rtype: str
+
+    .. seealso::
+      * :py:meth:`push_credentials <plexcore.plexcore_rsync.push_credentials>`.
+      * :py:meth:`get_credentials <plexcore.plexcore_rsync.get_credentials>`.
+    """
     try:
         #
         ## first, does local directory exist?        
@@ -41,6 +56,22 @@ def check_credentials( local_dir, sshpath, password, subdir = None ):
         return str( e )
 
 def push_credentials( local_dir, sshpath, password, subdir = None ):
+    """
+    Push the rsync'ing setup (``local_dir``, ``sshpath``, ``password``, and ``subdir``), if working, into the SQLite3_ configuration database.
+    
+    :param str local_dir: the local directory, on the Plex_ server, into which to download files from the remote SSH server.
+    :param str sshpath: the full path with username and host name for the SSH server. Format is ``'username@hostname'``.
+    :param str password: the password to connect as the SSH server.
+    :param str subdir: if not ``None``, the subdirectory on the remote SSH server from which to download files.
+    
+    :returns: if successful, return ``'SUCCESS'``. If not, return error messages.
+    
+    .. seealso::
+    
+      * :py:meth:`check_credentials <plexcore.plexcore_rsync.check_credentials>`.
+      * :py:meth:`get_credentials <plexcore.plexcore_rsync.get_credentials>`.
+    """
+    
     #
     ## validation to see if the data is valid
     #
@@ -79,6 +110,23 @@ def push_credentials( local_dir, sshpath, password, subdir = None ):
     return 'SUCCESS'
 
 def get_credentials( ):
+    """
+    Returns the rsync'ing setup from the SQLite3_ configuration database as a :py:class:`dict` in the following form.
+
+    .. code-block:: python
+
+      { 'local_dir' : XXXX,
+        'sshpath' : YYYY@ZZZZ,
+        'password' : AAAA,
+        'subdir' : BBBB }
+
+    :returns: the :py:class:`dict` of the rsync'ing setup if in the SQLite3_ configuration database, otherwise ``None``.
+
+    .. seealso::
+    
+      * :py:meth:`check_credentials <plexcore.plexcore_rsync.check_credentials>`.
+      * :py:meth:`push_credentials <plexcore.plexcore_rsync.push_credentials>`.
+    """
     val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'rsync' ).first( )
     if val is None:
@@ -98,30 +146,53 @@ def get_credentials( ):
     return datan
 
 def get_rsync_command( data, mystr, do_download = True ):
+    """
+    Returns a :py:class:`tuple` of the actual rsync_ command, and the command with password information obscured, to download from or upload to the remote SSH server from the Plex_ server. *We require that sshpass_ exists and is accessible on this system*.
+    
+    :param data: the :py:class:`dict` of rsync'ing configuration, described in :py:meth:`get_credentials <plexcore.plexcore_rsync.get_credentials>`.
+    :param str mystr: the specific rsync_ syntax describing those files/folders to upload or download. See, e.g., `this website <https://www.tecmint.com/rsync-local-remote-file-synchronization-commands/>`_ for some practical examples of file or directory listings.
+
+    :param bool do_download: if ``True``, then download from remote SSH server. If ``False``, then upload to remote SSH server.
+
+    :returns: a :py:class:`tuple` of the actual rsync_ command, and the command with password information obscured, to download from or upload to the remote SSH server from the Plex_ server.
+    :rtype: tuple
+
+    .. _sshpass: https://linux.die.net/man/1/sshpass
+    """    
+    sshpass_exec = find_executable( 'sshpass' )
+    assert( sshpass_exec is not None )
     if do_download:
         if data['subdir'] is not None:
             mainStr = os.path.join( data['subdir'], mystr.strip( ) )
         else: mainStr = mystr.strip( )
-        mycmd = 'rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass %s ssh" -e ssh %s:%s %s/' % (
-            data[ 'password' ], data[ 'sshpath' ], mainStr, data['local_dir'] )
-        mxcmd = 'rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass XXXX ssh" -e ssh %s:%s %s/' % (
-            data[ 'sshpath' ], mainStr, data['local_dir'] )
+        mycmd = 'rsync --remove-source-files -P -avz --rsh="%s %s ssh" -e ssh %s:%s %s/' % (
+            sshpass_exec, data[ 'password' ], data[ 'sshpath' ], mainStr, data['local_dir'] )
+        mxcmd = 'rsync --remove-source-files -P -avz --rsh="%s XXXX ssh" -e ssh %s:%s %s/' % (
+            sshpass_exec, data[ 'sshpath' ], mainStr, data['local_dir'] )
     else:
         fullpath = os.path.join( data['local_dir'], mystr )
         if data['subdir'] is not None:
-            mycmd = 'rsync --remove-source-files -P --rsh="/usr/bin/sshpass %s ssh" -avz -e ssh %s %s:%s/' % (
-                data[ 'password' ], fullpath, data[ 'sshpath' ], data['subdir'] )
-            mxcmd = 'rsync --remove-source-files -P --rsh="/usr/bin/sshpass XXXX ssh" -avz -e ssh %s %s:%s/' % (
-                fullpath, data[ 'sshpath' ], data['subdir'] )
+            mycmd = 'rsync --remove-source-files -P --rsh="%s %s ssh" -avz -e ssh %s %s:%s/' % (
+                sshpass_exec, data[ 'password' ], fullpath, data[ 'sshpath' ], data['subdir'] )
+            mxcmd = 'rsync --remove-source-files -P --rsh="%s XXXX ssh" -avz -e ssh %s %s:%s/' % (
+                sshpass_exec, fullpath, data[ 'sshpath' ], data['subdir'] )
         else:
-            mycmd = 'rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass %s ssh" -e ssh %s %s:' % (
-                data[ 'password' ], fullpath, data[ 'sshpath' ] )
-            mxcmd =  'rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass XXXX ssh" -e ssh %s %s:' % (
-                fullpath, data[ 'sshpath' ] )
+            mycmd = 'rsync --remove-source-files -P -avz --rsh="%s %s ssh" -e ssh %s %s:' % (
+                sshpass_exec, data[ 'password' ], fullpath, data[ 'sshpath' ] )
+            mxcmd = 'rsync --remove-source-files -P -avz --rsh="%s XXXX ssh" -e ssh %s %s:' % (
+                sshpass_exec, fullpath, data[ 'sshpath' ] )
     return mycmd, mxcmd
 
 def download_upload_files( glob_string, numtries = 10, debug_string = False,
                            do_reverse = False ):
+    """
+    Run the system process, using rsync_, to download files and directories from, or upload to, the remote SSH server. *On completion, the source files are all deleted*.
+
+    :param str glob_string: the description of files and directories (such as ``'*.mkv'`` to represent all MKV files) to upload/download.
+    :param int numtries: the number of attempts to run rsync_ before giving up on uploading or downloading.
+    :param bool debug_string: if ``True``, then print out the password-stripped rsync_ command that is being run.
+    :param bool do_reverse: if ``True``, then upload files to remote SSH server. If ``False`` (the default), then download files from the SSH server.
+    """
     assert( numtries > 0 )
     data = get_credentials( )
     if data is None:

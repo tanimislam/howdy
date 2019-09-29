@@ -2,19 +2,19 @@ from plexcore import session, plexcore, mainDir
 from plexcore import get_formatted_size, get_formatted_duration
 from plexemail import send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
 
-def get_summary_data_freshair_remote( token, fullurlwithport = 'http://localhost:32400' ):
-    libraries_dict = plexcore.get_libraries( token, fullurl = fullurlwithport )
+def get_summary_data_freshair_remote( token, fullURL = 'http://localhost:32400' ):
+    libraries_dict = plexcore.get_libraries( token, fullurl = fullURL )
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'npr fresh air' ])
     sincedate = plexcore.get_current_date_newsletter( )
     key, num_songs, _, _, totdur, totsizebytes = plexcore._get_library_stats_artist(
-        keynum, token, fullurl = fullurlwithport )
+        keynum, token, fullurl = fullURL )
     mainstring = 'there are %d episodes of npr fresh air.'  % num_songs
     sizestring = 'the total size of fresh air media is %s.' % get_formatted_size( totsizebytes )
     durstring = 'the total duration of fresh air media is %s.' % get_formatted_duration( totdur )
     if sincedate is not none:
         key, num_songs_since, _, _, \
             totdur_since, totsizebytes_since = plexcore._get_library_stats_artist(
-                keynum, token, fullurl = fullurlwithport, sincedate = sincedate )
+                keynum, token, fullurl = fullURL, sincedate = sincedate )
         if num_songs_since > 0:
             mainstring_since = ' '.join([
                 'since %s, i have added %d new fresh air episodes.' %
@@ -26,11 +26,11 @@ def get_summary_data_freshair_remote( token, fullurlwithport = 'http://localhost
             return ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
     return ' '.join([ mainstring, sizestring, durstring ])
 
-def get_summary_data_thisamericanlife_remote( token, fullURLWithPort = 'http://localhost:32400' ):
-    libraries_dict = plexcore.get_libraries( token, fullURL = fullURLWithPort )
+def get_summary_data_thisamericanlife_remote( token, fullURL = 'http://localhost:32400' ):
+    libraries_dict = plexcore.get_libraries( token, fullURL = fullURL )
     keynum = max([ key for key in libraries_dict if libraries_dict[key] == 'This American Life' ])
     sinceDate = plexcore.get_current_date_newsletter( )
-    key, song_data = plexcore._get_library_data_artist( keynum, token, fullURL = fullURLWithPort )
+    key, song_data = plexcore._get_library_data_artist( keynum, token, fullURL = fullURL )
     num_episodes = 0
     totdur = 0.0
     totsizebytes = 0.0
@@ -51,7 +51,7 @@ def get_summary_data_thisamericanlife_remote( token, fullURLWithPort = 'http://l
         pristrings = [ ' '.join([ mainstring, sizestring, durstring ]), ]
     else:
         key, song_data_since = plexcore._get_library_data_artist(
-            keynum, token, fullURL = fullURLWithPort, sinceDate = sinceDate )
+            keynum, token, fullURL = fullURL, sinceDate = sinceDate )
         num_episodes_since = 0
         totdur_since = 0.0
         totsizebytes_since = 0.0

@@ -188,7 +188,7 @@ You can give it a list of truncated MD5 hashes to get status information on sele
 
 removing torrents (rm or del)
 -------------------------------
-You can remove one or all torrents by running ``plex_deluge_console.py rm`` or ``plex_deluge_console.py del``. You can access the help for this operation by running ``plex_deluge_console.py rm -h``.
+You can remove some or all torrents by running ``plex_deluge_console.py rm`` or ``plex_deluge_console.py del``. You can access the help for this operation by running ``plex_deluge_console.py rm -h``.
 
 .. code-block:: bash
    
@@ -231,13 +231,37 @@ pausing and resuming torrents (pause or resume)
 -------------------------------------------------
 You can pause torrents on the Deluge server by running ``plex_deluge_console.py pause``, and you can resume them by running ``plex_deluge_console.py resume``.
 
-* You can pause/resume specific torrents by running ``plex_deluge_console.py pause md5trunc_1 md5_trunc_2 ...`` or ``plex_deluge_console.py resume md5trunc_1 md5_trunc_2 ...``
 
-* You can pause/resume ALL torrents on the Deluge server by not specifying any truncated MD5 hashes, ``plex_deluge_console.py pause``
+* You can pause/resume specific torrents by running ``plex_deluge_console.py pause md5trunc_1 md5_trunc_2 ...`` or ``plex_deluge_console.py resume md5trunc_1 md5_trunc_2 ...``.
+
+* You can pause/resume ALL torrents on the Deluge server by not specifying any truncated MD5 hashes, ``plex_deluge_console.py pause`` or ``plex_deluge_console.py resume``.  
+
+.. 28-09-2019: Pause and resume don't seem to be working right now when connecting to the Seedhost seedbox Deluge server.
 
 pushing credentials (push)
 ----------------------------------
+You can push new Deluge server credentials (URL, port, username, and password) to the SQLite3_ configuration database. Running ``plex_deluge_console.py push -h`` gives its help syntax,
 
+.. code-block:: bash
+
+   Usage: plex_deluge_console.py [options]
+
+   Options:
+     -h, --help           show this help message and exit
+     --host=URL           URL of the deluge server. Default is localhost.
+     --port=PORT          Port for the deluge server. Default is 12345.
+     --username=USERNAME  Username to login to the deluge server. Default is
+                       	  admin.
+     --password=PASSWORD  Password to login to the deluge server. Default is
+                       	  admin.
+
+Push new Deluge server settings into the configuration database by running,
+
+.. code-block:: bash
+
+   plex_deluge_console.py push --host=HOST --port=PORT --username=USERNAME --password=PASSWORD
+
+If those are valid settings, nothing more happens. If these are invalid settings, then specific error messages will print to the screen.
 
 plex_resynclibs.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -254,3 +278,4 @@ rsync_subproc.py
 .. _rsync: https://en.wikipedia.org/wiki/Rsync
 .. _Plex: https://plex.tv
 .. _`Magnet URI`: https://en.wikipedia.org/wiki/Magnet_URI_scheme
+.. _SQLite3: https://www.sqlite.org/index.html

@@ -69,7 +69,7 @@ Make sure to record the TVDB *project name*, *API key*, and *unique ID*.
 
 The final information one programmatically sends to the TVDB service, through REST commands, is represented as the following JSON data.
 
-.. code-block:: JSON
+.. code-block:: python
 
   {
     "apikey":  "XXXXXXX",

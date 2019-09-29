@@ -23,13 +23,15 @@ _mainDir = reduce(lambda x,y: os.path.dirname( x ),
                   range(2), os.path.abspath('.'))
 sys.path.insert( 0, _mainDir )
 
+is_in_readthedocs = ( os.environ.get( 'READTHEDOCS' ) is not None )
+
 logger = logging.getLogger( __name__ )
 logger.info( "mainDir = %s" % _mainDir)
 logger.info( os.environ.get('READTHEDOCS') )
 
 #
-## now don't verify the TLS
-tls_verify = False
+## now don't verify the TLS if not in READTHEDOCS
+tls_verify = is_in_readthedocs
 
 #
 ## following instructions on https://docs.readthedocs.io/en/latest/faq.html#i-get-import-errors-on-libraries-that-depend-on-c-modules
@@ -65,7 +67,10 @@ intersphinx_mapping = {
     'geoip2' : ( 'https://geoip2.readthedocs.io/en/latest', None),
     'pyqt4' : ( 'https://www.riverbankcomputing.com/static/Docs/PyQt4', None ),
     'requests_oauthlib' : ( 'https://requests-oauthlib.readthedocs.io/en/latest', None ),
-    }
+    'oauth2client' : ( 'https://oauth2client.readthedocs.io/en/latest', None ),
+    'google-auth' : ( 'https://google-auth.readthedocs.io/en/latest', None ),
+    'deluge' : ( 'https://deluge.readthedocs.io/en/latest', None ),
+}
 
 verify = False
 

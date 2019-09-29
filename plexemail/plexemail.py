@@ -499,9 +499,9 @@ def get_summary_data_movies( allrows ):
         totsizebytes = sum(map(lambda row: row[7], cat_mov_rows ) )
         mainstring = 'There are %d movies in this category.' % len( cat_mov_rows )
         sizestring = 'The total size of movie media here is %s.' % \
-            get_formatted_size( totsizebytes )
+          get_formatted_size( totsizebytes )
         durstring = 'The total duration of movie media here is %s.' % \
-            get_formatted_duration( totdur )
+          get_formatted_duration( totdur )
         movstring = ' '.join([ mainstring, sizestring, durstring ])
         catmovstrings[cat] = movstring
     movstrings.append( catmovstrings )    

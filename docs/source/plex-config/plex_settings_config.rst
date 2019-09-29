@@ -2,7 +2,7 @@
 Plexstuff Settings Configuration
 ================================================
 
-This document contains all the needed information to get started on getting set up with all the **Plex server settings** one needs to get up and running with Plexstuff. This setup developed here uses the `Seedhost <https://www.seedhost.eu>`_ `seedbox <https://en.wikipedia.org/wiki/Seedbox>`_ service to downloaded files, using the `Deluge torrent server <https://en.wikipedia.org/wiki/Deluge_(software)>`_, to download to one's home machine.
+This document contains all the needed information to get started on getting set up with all the **Plex server settings** one needs to get up and running with Plexstuff. This setup developed here uses the `Seedhost <https://www.seedhost.eu>`_ `seedbox <https://en.wikipedia.org/wiki/Seedbox>`_ service to downloaded files, using the `Deluge torrent server <https://deluge-torrent.org>`_, to download to one's home machine.
 
 This configuration is handled through the ``plex_config_gui.py``, and consists of the following elements. The *Plex Settings Configuration* document describes the Jackett server settings, where one may use either the Jackett server provided by Seedbox or one's own server.
 

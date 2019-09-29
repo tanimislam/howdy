@@ -130,9 +130,10 @@ def getTokenForUsernamePassword( username, password, verify = True ):
     :rtype: str
 
     .. seealso::
-      * :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`.
-      * :py:meth:`getCredentials <plexcore.plexcore.getCredentials>`.
-      * :py:meth:`pushCredentials <plexcore.plexcore.pushCredentials>`.
+    
+      * :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`
+      * :py:meth:`getCredentials <plexcore.plexcore.getCredentials>`
+      * :py:meth:`pushCredentials <plexcore.plexcore.pushCredentials>`
 
     """
     headers = { 'X-Plex-Client-Identifier' : str( uuid.uuid4( ) ),
@@ -401,7 +402,7 @@ def get_email_contacts( token, verify = True ):
     :returns: list of email addresses of Plex_ friends.
     :rtype: list 
 
-    .. seealso: :py:method:`get_mapped_email_contacts <plexcore.plexcore.get_mapped_email_contacts>`.
+    .. seealso: :py:method:`get_mapped_email_contacts <plexcore.plexcore.get_mapped_email_contacts>`
 
     """
     
@@ -422,7 +423,7 @@ def get_mapped_email_contacts( token, verify = True ):
     :returns: a list of email addresses for Plexstuff emails.
     :rtype: list
 
-    .. seealso: :py:method:`get_email_contacts <plexcore.plexcore.get_email_contacts>`.
+    .. seealso: :py:method:`get_email_contacts <plexcore.plexcore.get_email_contacts>`
 
     """
     emails = get_email_contacts( token, verify = verify )
@@ -445,7 +446,7 @@ def get_current_date_newsletter( ):
     :returns: the date and time of the most recent previous email newsletter.
     :rtype: :py:class:`datetime <datetime.datetime>`.
     
-    .. seealso:: :py:meth:`set_date_newsletter <plexcore.plexcore.set_date_newsletter>`.
+    .. seealso:: :py:meth:`set_date_newsletter <plexcore.plexcore.set_date_newsletter>`
     
     """
     query = session.query( LastNewsletterDate )
@@ -1062,19 +1063,23 @@ def get_libraries( token, fullURL = 'http://localhost:32400', do_full = False, t
     Gets the :py:class:`dict` of libraries on the Plex_ server. The key is the library number, while the value can be either the name of the library or a :py:class:`tuple` of library name and library type
 
     :param str token: the Plex_ server access token.
+    
     :param str fullURL: the Plex_ server address.
-    :param bool do_full: if `False`, then the values are the names of the Plex_ libraries. If ``True``, then the values are :py:class:`tuple` of the library name and library type. The library type can be one of ``movie``, ``show``, or ``artist``.
 
+    :param bool do_full: if `False`, then the values are the names of the Plex_ libraries. If ``True``, then the values are :py:class:`tuple` of the library name and library type. The library type can be one of ``movie``, ``show``, or ``artist``.
+    
     :returns: a dictionary of libraries on the Plex_ server.
     :rtype: :py:class:`dict`.
 
     .. seealso:
+    
     * :py:meth:`fill_out_movies_stuff <plexcore.plexcore.fill_out_movies_stuff>`.
     * :py:meth:`get_movie_titles_by_year <plexcore.plexcore_attic.get_movie_titles_by_year>`.
     * :py:meth:`get_lastN_movies <plexcore.plexcore.get_lastN_movies>`.
     * :py:meth:`get_summary_data_music_remote <plexemail.plexemail.get_summary_data_music_remote>`.
     * :py:meth:`get_summary_data_television_remote <plexemail.plexemail.get_summary_data_television_remote>`.
     * :py:meth:`get_summary_data_movies_remote <plexemail.plexemail.get_summary_data_movies_remote>`.
+    
     """
     params = { 'X-Plex-Token' : token }
     response = requests.get(
@@ -1189,19 +1194,24 @@ def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
                       useLastNewsletterDate = True, verify = True ):
     """
     Returns the last :math:`N` movies that were uploaded to the Plex_ server, either after the last date at which a newsletter was sent out or not.
-
+    
     :param int lastN: the last :math:`N` movies to be sent out. Must be :math:`\ge 1`.
+    
     :param str token: the Plex_ server access token.
+    
     :param str fullURL: the Plex_ server address.
+    
     :param bool useLastNewsletterDate: if ``True``, then find the last movies after the date of the previous newsletter. If ``False``. don't make that restriction.
 
-    :returns: a :py:class:`list` of Plex_ movies. Each element in the list is  :py:class:`tuple` of the movie: title, year, :py:class:`datetime <datetime.datetime>`, and TMDB_ URL of the movie.
+    :returns: a :py:class:`list` of Plex_ movies. Each element in the list is  :py:class:`tuple` of the movie: title, year, :py:class:`datetime <datetime.datetime>`, and `The Movie Database <TMDB_>` URL of the movie.
     :rtype: :py:class:`dict`.
 
     .. seealso:
     
     * :py:meth:`get_summary_data_movies_remote <plexemail.plexemail.get_summary_data_movies_remote>`.
     * :py:meth:`get_summary_data_movies <plexemail.plexemail.get_summary_data_movies>`.
+    
+    .. _TMDB: https://www.themoviedb.org
     """
     assert( isinstance( lastN, int ) )
     assert( lastN > 0 )
@@ -1230,24 +1240,89 @@ def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
         plextmdb.get_movie( elem['title'], verify = verify ) ),
                     valid_video_elems ) )
 
-#
-## All this stuff I found at https://support.plex.tv/hc/en-us/articles/201638786-Plex-Media-Server-URL-Commands
-def refresh_library( library_key, library_dict, token, fullURL = 'http://localhost:32400' ):    
-    assert( library_key in library_dict )
+def refresh_library( key, library_dict, token, fullURL = 'http://localhost:32400' ):
+    """
+    Lower level front-end to ``plex_resynclibs.py`` that refreshes a Plex_ server library. Here I use instructions found in this `Plex forum article on URL commands <https://support.plex.tv/hc/en-us/articles/201638786-Plex-Media-Server-URL-Commands>`_.
+    
+    :param int key: the library number on the Plex_ server.
+    
+    :param :py:class:`dict` library_dict: the dictionary of libraries. The key is Plex_ server library number, and the value is the library name.
+    
+    """
+    assert( key in library_dict )
     params = { 'X-Plex-Token' : token }
     response = requests.get(
-        '%s/library/sections/%d/refresh' % ( fullURL, library_key ),
+        '%s/library/sections/%d/refresh' % ( fullURL, key ),
         params = params, verify = False )
     assert( response.status_code == 200 )
-    logging.info( 'refreshing %s Library...' % library_dict[ library_key ] )
+    logging.info( 'refreshing %s Library...' % library_dict[ key ] )
 
 def oauthCheckGoogleCredentials( ):
+    """
+    Checks whether the `Google OAuth2`_ authentication settings exist in the SQLite3_ configuration database. The format of the authentication data in the configuration database is,
+
+    .. code-block:: python
+    
+      { 'access_token': XXXX,
+        'client_id': YYYY, 
+        'client_secret': ZZZZ,
+        'refresh_token': AAAA,
+        'token_expiry': BBBB,
+        'token_uri': 'https://accounts.google.com/o/oauth2/token',
+        'user_agent': None,
+        'revoke_uri': 'https://oauth2.googleapis.com/revoke',
+        'id_token': None,
+        'id_token_jwt': None,
+        'token_response': { 'access_token': XXXX,
+          'expires_in': 3600,
+          'refresh_token': AAAA,
+          'scope': 'https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/contacts.readonly https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/musicmanager https://www.googleapis.com/auth/spreadsheets',
+          'token_type': 'Bearer' },
+        'scopes': ['https://www.googleapis.com/auth/gmail.send',
+          'https://spreadsheets.google.com/feeds',
+          'https://www.googleapis.com/auth/youtube.readonly',
+          'https://www.googleapis.com/auth/contacts.readonly',
+          'https://www.googleapis.com/auth/musicmanager'],
+        'token_info_uri': 'https://oauth2.googleapis.com/tokeninfo',
+        'invalid': False,
+        '_class': 'OAuth2Credentials',
+        '_module': 'oauth2client.client' }
+
+    If ``data`` is this dictionary, note the scopes defined in the ``data['scopes']`` and ``data['token_response']['scope']``.
+    
+    :returns: a :py:class:`tuple` of status and message. If the settings are in the database, returns ``( True, 'SUCCESS' )``. If they are not, returns ``( False, 'GOOGLE AUTHENTICATION CREDENTIALS DO NOT EXIST.' )``.
+    :rtype: tuple.
+
+    .. seealso::
+
+      * :py:meth:`oauthCheckGoogleCredentials <plexcore.plexcore.oauthCheckGoogleCredentials>`
+      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`
+      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <plexcore.plexcore.oauthGetOauth2ClientGoogleCredentials>`
+      * :py:meth:`oauth_generate_google_permission_url <plexcore.plexcore.oauth_generate_google_permission_url>`
+      * :py:meth:`oauth_store_google_credentials <plexcore.plexcore.oauth_store_google_credentials>`
+
+    .. _`Google OAuth2` : https://developers.google.com/identity/protocols/OAuth2
+    
+    """
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is None:
         return False, 'GOOGLE AUTHENTICATION CREDENTIALS DO NOT EXIST.'
     return True, 'SUCCESS'
 
 def oauthGetGoogleCredentials( verify = True ):
+    """
+    Gets the `Google Oauth2`_ credentials, stored in the SQLite3_ configuration database, in the form of a refreshed :py:class:`Credentials <google.oauth2.credentials.Credentials>` object. The OAuth2 authentication with this method has not been implemented for services yet.
+
+    :returns: a :py:class:`Credentials <google.oauth2.credentials.Credentials>` form of the `Google Oauth2`_ credentials for various Oauth2 services.
+    :rtype: :py:class:`Credentials <google.oauth2.credentials.Credentials>`
+
+    .. seealso::
+
+      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`
+      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <plexcore.plexcore.oauthGetOauth2ClientGoogleCredentials>`
+      * :py:meth:`oauth_generate_google_permission_url <plexcore.plexcore.oauth_generate_google_permission_url>`
+      * :py:meth:`oauth_store_google_credentials <plexcore.plexcore.oauth_store_google_credentials>`
+    """
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is None: return None
     cred_data = val.data
@@ -1258,6 +1333,21 @@ def oauthGetGoogleCredentials( verify = True ):
     return credentials
 
 def oauthGetOauth2ClientGoogleCredentials( ):
+    """
+    Gets the `Google Oauth2`_ credentials, stored in the SQLite3_ configuration database, in the form of a refreshed :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` object. This OAuth2 authentication method IS used for all the services accessed by Plexstuff_.
+
+    :returns: a :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` form of the `Google Oauth2`_ credentials for various Oauth2 services.
+    :rtype: :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>`
+    
+    .. seealso::
+
+      * :py:meth:`oauthCheckGoogleCredentials <plexcore.plexcore.oauthCheckGoogleCredentials>`
+      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`
+      * :py:meth:`oauth_generate_google_permission_url <plexcore.plexcore.oauth_generate_google_permission_url>`
+      * :py:meth:`oauth_store_google_credentials <plexcore.plexcore.oauth_store_google_credentials>`
+
+    .. _Plexstuff: https://plexstuff.readthedocs.io
+    """
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is None: return None
     cred_data = val.data
@@ -1266,6 +1356,36 @@ def oauthGetOauth2ClientGoogleCredentials( ):
     return credentials
 
 def oauth_generate_google_permission_url( ):
+    """
+    Generates a `Google OAuth2`_ web-based flow for all the Google services used in Plexstuff_. Descriptions of OAuth2_ and different flows (web server app, client, etc.)  is almost impossible for me to follow (see `this page on OAuth2 authentication flows <https://auth0.com/docs/api-auth/which-oauth-flow-to-use>`_), I have given up, and I can only understand the specific authentication work flow implemented in Plexstuff_. The authentication process that uses this method is described in :ref:`this subsection <Summary of Setting Up Google Credentials>`. Here are the programmatic steps to finally generate an  :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` object.
+    
+      1. Get the  :py:class:`OAuth2WebServerFlow <oauth2client.client.OAuth2WebServerFlow>` and authentication URI.
+
+      .. code-block:: python
+      
+        flow, auth_uri = oauth_generate_google_permission_url( )
+
+      2. Go to the URL, ``auth_uri``, in a browser, grant permissions, and copy the authorization code in the browser window. This authorization code is referred to as ``authorization_code``.
+
+      3. Create the  :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` using ``authorization_code``.
+    
+      .. code-block:: python
+
+        credentials = flow.step2_exchange( authorization_code )
+
+    :returns: a :py:class:`tuple` of two elements. The first element is an OAuth2_ web server flow object of type :py:class:`OAuth2WebServerFlow <oauth2client.client.OAuth2WebServerFlow>`. The second element is the redirection URI that redirects the user to begin the authorization flow.
+    :rtype: tuple
+    
+    .. seealso::
+
+      * :py:meth:`oauthCheckGoogleCredentials <plexcore.plexcore.oauthCheckGoogleCredentials>`
+      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`
+      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <plexcore.plexcore.oauthGetOauth2ClientGoogleCredentials>`
+      * :py:meth:`oauth_store_google_credentials <plexcore.plexcore.oauth_store_google_credentials>`
+    
+    .. _Oauth2: https://oauth.net/2/
+    """
+    
     #flow = Flow.from_client_secrets_file(
     #    os.path.join( mainDir, 'resources', 'client_secrets.json' ),
     #    scopes = [ 'https://www.googleapis.com/auth/gmail.send',
@@ -1288,6 +1408,18 @@ def oauth_generate_google_permission_url( ):
     return flow, auth_uri
 
 def oauth_store_google_credentials( credentials ):
+    """
+    Store the `Google OAuth2`_ credentials, in the form of a :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` object, into the SQLite3_ configuration database.
+    
+    :param credentials: the :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` object to store into the database.
+
+    .. seealso::
+
+      * :py:meth:`oauthCheckGoogleCredentials <plexcore.plexcore.oauthCheckGoogleCredentials>`
+      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`
+      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <plexcore.plexcore.oauthGetOauth2ClientGoogleCredentials>`
+      * :py:meth:`oauth_generate_google_permission_url <plexcore.plexcore.oauth_generate_google_permission_url>`
+    """
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is not None:
         session.delete( val )
@@ -1302,7 +1434,7 @@ def oauth_store_google_credentials( credentials ):
 ## put in the jackett credentials into here
 def store_jackett_credentials( url, apikey, verify = True ):
     """
-    stores the Jackett_ server's API credentials into the database of all credentials.
+    stores the Jackett_ server's API credentials into the SQLite3_ configuration database.
 
     :param str url: the Jackett_ server's URL.
     :param str apikey: the Jackett_ server's API key.
@@ -1338,7 +1470,7 @@ def store_jackett_credentials( url, apikey, verify = True ):
 
 def get_jackett_credentials( ):
     """
-    retrieves the Jackett_ server's API credentials from the stored database.
+    retrieves the Jackett_ server's API credentials from the SQLite3_ configuration database.
 
     :returns: a :py:class:`tuple` of the Jackett_ server's API credentials. First element is the URL of the Jackett_ server. Second element is the API key.
 
@@ -1408,7 +1540,7 @@ def check_jackett_credentials( url, apikey, verify = True ):
 
 def get_imgurl_credentials( ):
     """
-    retrieves the Imgur_ API credentials from the stored database.
+    retrieves the Imgur_ API credentials from the SQLite3_ configuration database.
 
     :returns: a :py:class:`dict` of the Imgur_ API credentials. Its structure is,
 
@@ -1469,7 +1601,7 @@ def check_imgurl_credentials(
 
 def store_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify = True ):
     """
-    stores the Imgur_ API credentials into the database of all credentials.
+    stores the Imgur_ API credentials into the SQLite3_ configuration database.
 
     :param str clientID: the Imgur_ client ID.
     :param str clientSECRET: the Imgur_ client secret.

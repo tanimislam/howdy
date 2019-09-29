@@ -4,12 +4,12 @@ Core API
 
 This document describes the lower level Plex emailing API, upon which all the command line and GUI tools are based. It lives in ``plexstuff.plexcore``.
 
-``plexcore``
+plexcore module
 ----------------------
 
 This module implements the lower-level functionality that does or has the following:
 
-     * access and retrieve configuration and other data from an SQLite3_ database using SQLAlchemy_ ORM classes. The SQLite3_ database is stored in ``~/.config/plexstuff/app.db``.
+     * access and retrieve configuration and other data from an SQLite3_ database using SQLAlchemy_ object relational mapping (ORM) classes. The SQLite3_ database is stored in ``~/.config/plexstuff/app.db``.
 
      * :py:class:`PlexConfig <plexcore.PlexConfig>` is an ORM class that stores configuration information.
 
@@ -27,13 +27,13 @@ This module implements the lower-level functionality that does or has the follow
 .. automodule:: plexcore
    :members:
 
-``plexcore.plexinitialization``
+plexcore.plexinitialization module
 -----------------------------------------
 
 .. automodule:: plexcore.plexinitialization
    :members:
 
-``plexcore.plexcore``
+plexcore.plexcore module
 -----------------------------------------
 
 This module implements the functionality to do the following:
@@ -47,6 +47,15 @@ This module implements the functionality to do the following:
 .. automodule:: plexcore.plexcore
    :members:
 
+
+plexcore.plexcore_deluge module
+-----------------------------------------
+
+This module implements the functionality to interact with a Seedhost_ seedbox_ `Deluge torrent server`_, by copying a minimal set of the functionality of a `Deluge torrent client`_. The data formatting in this module is largely or wholly copied from the `Deluge SDK <https://deluge.readthedocs.io/en/latest>`_. The much reduced Deluge torrent client, :ref:`plex_deluge_console.py`, is a CLI to this module.
+
+.. automodule:: plexcore.plexcore_deluge
+   :members:
+
 .. these are some URLs
 
 .. _SQLite3: https://www.sqlite.org/index.html
@@ -56,3 +65,7 @@ This module implements the functionality to do the following:
 .. _Subliminal: https://subliminal.readthedocs.io/en/latest
 .. _cfscrape: https://github.com/Anorov/cloudflare-scrape
 .. _CAPTCHA: https://en.wikipedia.org/wiki/CAPTCHA
+.. _Seedhost: https://www.seedhost.eu
+.. _seedbox: https://en.wikipedia.org/wiki/Seedbox
+.. _`Deluge torrent server`: https://deluge-torrent.org
+.. _`Deluge torrent client`: https://en.wikipedia.org/wiki/Deluge_(software)

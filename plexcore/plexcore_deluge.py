@@ -429,8 +429,8 @@ def deluge_pause_torrent( client, torrent_ids ):
     url = client.host
     torrentId_strings = ' '.join(
         list(map(lambda torrentId: torrentId.decode('utf-8').lower( ), torrent_ids ) ) )
-    retval = os.system(  '/usr/bin/deluge-console "connect %s:%d %s %s; pause %s; exit"' % (
-        url, port, username, password, torrentId_strings ) )
+    retval = os.system(  '%s "connect %s:%d %s %s; pause %s; exit"' % (
+        _deluge_exec, url, port, username, password, torrentId_strings ) )
 
 def deluge_resume_torrent( client, torrent_ids ):
     """
@@ -439,14 +439,15 @@ def deluge_resume_torrent( client, torrent_ids ):
     :param client: the `Deluge RPC client`_. In this case, only the configuration info (username, password, URL, and port) are used.
     :param torrent_ids: :py:class:`list` of MD5 hashes on the Deluge server.
     """
+    if _deluge_exec is None: return
     username = client.username
     password = client.password
     port = client.port
     url = client.host
     torrentId_strings = ' '.join(
         list(map(lambda torrentId: torrentId.decode('utf-8').lower( ), torrent_ids ) ) )
-    retval = os.system(  '/usr/bin/deluge-console "connect %s:%d %s %s; resume %s; exit"' % (
-        url, port, username, password, torrentId_strings ) )
+    retval = os.system(  '%s "connect %s:%d %s %s; resume %s; exit"' % (
+        _deluge_exec, url, port, username, password, torrentId_strings ) )
     
 def deluge_format_info( status, torrent_id ):
     """

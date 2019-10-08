@@ -145,6 +145,18 @@ This is a much reduced Deluge command line console client. It does the following
 
 By convention, the variable ``md5_trunc`` refers to a truncated initial substring of the full torrent's MD5 hash. For example, given an MD5 hash of a torrent, such as ``ed53ba61555cab24946ebf2f346752805601a7fb``, a possible ``md5_trunc`` is ``ed5``. One can specify a collection of multiple ``md5_trunc`` as long as they are valid and unique (such as ``md5_trunc_1, md5_trunc_2, ...``).
 
+It may be convenient to have some useful BASH shortcuts for ``plex_deluge_console.py``, which you can store in ``~/.bashrc``. Here is a snippet of self-explanatory aliases I find useful.
+
+.. code-block:: bash
+
+   alias pdci='plex_deluge_console.py info'
+   alias pdcr='plex_deluge_console.py rm'
+   alias pdca='plex_deluge_console.py add'
+   alias pdcp='plex_deluge_console.py pause'
+   alias pdcres='plex_deluge_console.py resume'
+
+
+
 torrent info (info)
 --------------------
 You can get nicely formatted information on a collection of torrents, or all torrents, through running ``plex_deluge_console.py info ...``. ``plex_deluge_console.py info`` will show nicely formatted information on ALL torrents.

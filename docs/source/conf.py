@@ -70,6 +70,8 @@ intersphinx_mapping = {
     'oauth2client' : ( 'https://oauth2client.readthedocs.io/en/latest', None ),
     'google-auth' : ( 'https://google-auth.readthedocs.io/en/latest', None ),
     'deluge' : ( 'https://deluge.readthedocs.io/en/latest', None ),
+    'plexapi' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
+    'subliminal' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
 }
 
 verify = False

@@ -1,3 +1,5 @@
+.. _plex_config_gui.py_label:
+
 =================================================================
 Consolidating Plexstuff Configuration With ``plex_config_gui.py``
 =================================================================

@@ -14,6 +14,8 @@ This section describes the two Plexstuff core command line utilities.
 
 * :ref:`rsync_subproc.py` rsync_ copies (and removes) files from the remote server and optional remote subdirectory, to the local server and local directory, or vice-versa. This tool also allows one to update the location of the remote server, the remote subdirectory, and the local subdirectory. The update of the remote path, and local and remote subdirectories, can also be changed through the ``plex_config_gui.py`` GUI, as described in :numref:`Local and Remote (Seedhost) SSH Setup` and :numref:`Login Services` (see the screen shot in :numref:`login_step02_settings`).
 
+.. _plex_core_cli.py_label:
+
 plex_core_cli.py
 ^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``plex_core_cli.py -h``, produces the following.
@@ -134,6 +136,8 @@ Here is how to do each of the three *operations*.
   
 
   Note that ``A@AA.com`` must be a friend email of the Plex_ server, otherwise this operation will not work.
+
+.. _plex_deluge_console.py_label:
 
 plex_deluge_console.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -275,11 +279,17 @@ Push new Deluge server settings into the configuration database by running,
 
 If those are valid settings, nothing more happens. If these are invalid settings, then specific error messages will print to the screen.
 
+.. _plex_resynclibs.py_label:
+
 plex_resynclibs.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. _plex_store_credentials.py_label:
+
 plex_store_credentials.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+
+.. _rsync_subproc.py_label:
 
 rsync_subproc.py
 ^^^^^^^^^^^^^^^^^^^^

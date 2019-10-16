@@ -218,10 +218,10 @@ def get_movies_by_title( title, verify = True, apiKey = None ):
     return createProcessedMovieData( results, verify = verify )
 
 # Followed advice from https://www.themoviedb.org/talk/5493b2b59251416e18000826?language=en
-def get_imdbid_from_id( id, verify = True ):
+def get_imdbid_from_id( tmdb_id, verify = True ):
     for idx in range( 50 ):
         response = requests.get(
-            'https://api.themoviedb.org/3/movie/%d' % id,
+            'https://api.themoviedb.org/3/movie/%d' % tmdb_id,
             params = { 'api_key' : tmdb_apiKey }, verify = verify )
         if response.status_code != 429: break
         time.sleep( 2.5 )
@@ -351,6 +351,8 @@ def get_main_genre_movie( movie_elem ):
     return genres[ 0 ]
                              
 def getMovieData( year, genre_id, verify = True ):
+    moviePosterMainURL = 'https://image.tmdb.org/t/p/w500'
+    movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'
     params = { 'api_key' : tmdb_apiKey,
                'append_to_response': 'images',
                'include_image_language': 'en',
@@ -367,8 +369,9 @@ def getMovieData( year, genre_id, verify = True ):
         if response.status_code != 429: break
         time.sleep( 2.5 )
     logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
+    logging.debug('KEYS IN RESPONSE: %s.' % response.json( ).keys( ) )
     total_pages = response.json()['total_pages']
-    data = list( filter(lambda datum: datum['title'] is not None and
+    results = list( filter(lambda datum: datum['title'] is not None and
                         datum['release_date'] is not None and
                         datum['popularity'] is not None, response.json( )['results'] ) )
     for pageno in range( 2, total_pages + 1 ):
@@ -380,10 +383,10 @@ def getMovieData( year, genre_id, verify = True ):
             time.sleep( 2.5 )
         if response.status_code != 200: continue
         logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
-        data += list( filter(lambda datum: datum['title'] is not None and
-                             datum['release_date'] is not None and
-                             datum['popularity'] is not None, response.json( )['results'] ) )
-
+        results += list( filter(lambda datum: datum['title'] is not None and
+                                datum['release_date'] is not None and
+                                datum['popularity'] is not None, response.json( )['results'] ) )
+        
     # return results
     return createProcessedMovieData( results, verify = verify )
 

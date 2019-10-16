@@ -131,11 +131,35 @@ Common Design Philosophies and Features for Command Line and GUIs
 
 Since I am forced to use the tools I developed to manage my Plex server, my command line interfaces (CLIs) and GUIs share common features that I hope make these tools *discoverable* and more easily *debuggable*.
 
-The CLIs are programmed with :py:class:`optparse's OptionParser( ) <optparse.OptionParser>` and have a comprehensive help that can accessed via ``<cli_tool> -h``, where ``<cli_tool>`` refers to the the specific Python CLI.
+The CLIs are programmed with :py:class:`optparse's OptionParser( ) <optparse.OptionParser>` and have a comprehensive help that can be accessed via ``<cli_tool> -h``, where ``<cli_tool>`` refers to the the specific Python CLI.
 
 The GUI tools all share common features. One can take a PNG screenshot of each widget and sub-widget with the ``Shift+Ctrl+P`` (or ``Shift+Command+P`` on Mac OS X computers) key combination. This helps to debug issues that may appear in the GUI, and helps to create useful documentation. I always try to put help screens into my GUIs, although not all the GUIs have working help dialogs.
 
 Many of the GUIs and CLIs can be run with  a ``--noverify`` option to access SSL protected URLs and services without verification, which is needed when running in more restricted environments.
+
+In fact, here is a summary of the 23 CLI's and GUI's currently in Plexstuff_.
+
+===============  ====================================================================  ==========================================================
+Functionality    CLI                                                                   GUI
+===============  ====================================================================  ==========================================================
+``plexcore``     - :ref:`plex_core_cli.py <plex_core_cli.py_label>`                    - :ref:`plex_config_gui.py <plex_config_gui.py_label>`
+                 - :ref:`plex_deluge_console.py <plex_deluge_console.py_label>`        - :ref:`plex_core_gui.py <plex_core_gui.py_label>`
+                 - :ref:`plex_resynclibs.py <plex_resynclibs.py_label>`                - :ref:`plex_create_texts.py <plex_create_texts.py_label>`
+                 - :ref:`plex_store_credentials.py <plex_store_credentials.py_label>`
+                 - :ref:`rsync_subproc.py <rsync_subproc.py_label>`
+``plextvdb``     - :ref:`get_plextvdb_batch.py <get_plextvdb_batch.py_label>`          - :ref:`plex_tvdb_totgui.py <plex_tvdb_totgui.py_label>`
+                 - :ref:`get_tv_tor.py <get_tv_tor.py_label>`
+                 - :ref:`plex_tvdb_epinfo.py <plex_tvdb_epinfo.py_label>`
+                 - :ref:`plex_tvdb_epname.py <plex_tvdb_epname.py_label>`
+                 - :ref:`plex_tvdb_futureshows.py <plex_tvdb_futureshows.py_label>`
+                 - :ref:`plex_tvdb_plots.py <plex_tvdb_plots.py_label>`
+``plextmdb``     - :ref:`get_mov_tor.py <get_mov_tor.py_label>`                        - :ref:`plex_tmdb_totgui.py <plex_tmdb_totgui.py_label>`
+``plexmusic``    - :ref:`plex_music_album.py <plex_music_album.py_label>`
+                 - :ref:`plex_music_metafill.py <plex_music_metafill.py_label>`
+                 - :ref:`plex_music_songs.py <plex_music_songs.py_label>`
+                 - :ref:`upload_to_gmusic.py <upload_to_gmusic.py_label>`
+``plexemail``    - :ref:`plex_email_notif.py <plex_email_notif.py_label>`              - :ref:`plex_email_gui.py <plex_email_gui.py_label>`
+===============  ====================================================================  ==========================================================
 
 Table of Contents
 -----------------
@@ -183,3 +207,4 @@ Here are some things I would like to finish.
 .. _Fedora: https://getfedora.org
 .. _CentOS: https://www.centos.org
 .. _fbs: https://www.learnpyqt.com/courses/packaging-and-distribution/packaging-pyqt5-apps-fbs
+.. _Plexstuff: https://plexstuff.readthedocs.io

@@ -8,7 +8,7 @@ This section describes the two Plexstuff core command line utilities.
 
 * :ref:`plex_deluge_console.py` is a mocked up Deluge_ client, whose operation is very similar to the `deluge-console <deluge_console_>`_ command line interface. It is designed for the most common operations of `deluge-console <deluge_console_>`_, using Deluge_ server settings that are described in :numref:`Plexstuff Settings Configuration` and :numref:`Login Services`.
 
-* :ref:`plex_resynclibs.py` summarizes information about the Plex servers to which you have access.
+* :ref:`plex_resynclibs.py` summarizes information about the Plex_ servers to which you have access, summarizes the Plex_ library information for those Plex_ servers which you own, and can also refresh those libraries in your owned servers.
 
 * :ref:`plex_store_credentials.py` sets up the Google OAuth2 services authentication from the command line, similarly to what ``plex_config_gui.py`` does as described in :numref:`Summary of Setting Up Google Credentials` and in :numref:`Music Services` when setting up the `unofficial Google Music API <https://unofficial-google-music-api.readthedocs.io/en/latest>`_.
 
@@ -200,7 +200,7 @@ You can give it a list of truncated MD5 hashes to get status information on sele
    Size: 2.1 GiB/2.1 GiB Ratio: 0.000
    Seed time: 0 days 00:03:44 Active: 0 days 00:03:57
    Tracker status: ubuntu.com: Announce OK
-   
+
 
 removing torrents (rm or del)
 -------------------------------
@@ -283,6 +283,120 @@ If those are valid settings, nothing more happens. If these are invalid settings
 
 plex_resynclibs.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+The help output, when running ``plex_resynclibs.py -h``, produces the following.
+
+.. code-block:: bash
+
+   Usage: plex_resynclibs.py [options]
+
+   Options:
+      -h, --help            show this help message and exit
+      --libraries           If chosen, just give the sorted names of all libraries
+                            in the Plex server.
+      --refresh             If chosen, refresh a chosen library in the Plex
+                            server. Must give a valid name for the library.
+      --summary             If chosen, perform a summary of the chosen library in
+                            the Plex server. Must give a valid name for the
+                            library.
+      --library=LIBRARY     Name of a (valid) library in the Plex server.
+      --servername=SERVERNAME
+                            Optional name of the server to check for.
+      --servernames         If chosen, print out all the servers owned by the
+                            user.
+      --noverify            Do not verify SSL transactions if chosen.
+
+``--noverify`` is a standard option in many of the Plexstuff CLI and GUIs to ignore verification of SSL transactions. It is optional and will default to ``False``.
+
+When running this CLI, you must choose *one and only one* of these options.
+
+* ``--servernames`` gives you the list of the Plex_ servers to which you have access, and which you own.
+
+* ``--libraries``  prints out a list of the libraries on the Plex_ server you chose and which you own. Here you can explicitly choose a Plex_ server by name with ``--servername=SERVERNAME`` or have a default one you own chosen for you.
+
+* ``--summary`` prints out a summary of the Plex_ library you have chosen with ``--library=LIBRARY``.
+
+* ``--refresh`` refreshes the Plex_ library you have chosen withh ``--library=LIBRARY``.
+
+Here I find it useful to show how this tool works by example.
+
+1. First, we can determine those Plex_ servers to which we have access
+
+   .. code-block:: bash
+   
+      plex_resynclibs.py --servernames
+
+   This will print out a nicely formatted table. Each row is a Plex_ server. The columns are the server's name, whether we own it, and its remote URL with port (which is of the form ``https://IP-ADDRESS:PORT``).
+
+   .. code-block:: bash
+
+      Name           Is Owned    URL
+      -------------  ----------  ---------------------------
+      tanim-desktop  True        https://IP-ADDR1:PORT1
+      XXXX    	     False       https://IP-ADDR2:PORT2
+      YYYY	     False       https://IP-ADDR3:PORT3
+
+2. Now we can look for the Plex_ libraries in the Plex_ server *which we own*. If we don't choose a Plex_ server with ``--servername=SERVERNAME``, then the first one in the row which we own will be chosen by default. The syntax is,
+
+   .. code-block:: bash
+
+      plex_resynclibs.py --servername=tanim-desktop --libraries
+
+   This will print out a nicely formatted table. Each row is a library. There is a column of the library's name and its type. I have only shown three of the six Plex_ libraries on my server.
+
+   .. code-block:: bash
+
+      Here are the 6 libraries in this Plex server: tanim-desktop.
+
+      Name                Library Type
+      ------------------  --------------
+      Movies              movie
+      Music               artist
+      XXXX		  AAAA
+      YYYY       	  BBBB
+      TV Shows            show
+      ZZZZ		  CCCC
+
+   ``movie`` means Movies, ``show`` means TV shows, and ``artist`` means music.
+
+3. We can get summary information about each Plex_ library with the ``--summary`` flag and ``--library=LIBRARY``. Here are the three examples on getting summary information on a movie, TV show, and music library. This summary information may take a while.
+
+   * On a movie library.
+
+     .. code-block:: bash
+
+        tanim-desktop $ plex_resynclibs.py --servername=tanim-desktop --library=Movies --summary
+	
+	"Movies" is a movie library. There are 1886 movies here. The total size of movie media is 1.632 TB.
+	The total duration of movie media is 4 months, 20 days, 19 hours, 50 minutes, and 22.054 seconds.
+
+   * On a TV show library.
+
+     .. code-block:: bash
+
+        tanim-desktop $ plex_resynclibs.py --servername=tanim-desktop --library="TV Shows" --summary
+
+	"TV Shows" is a TV library. There are 21167 TV files in 236 TV shows. The total size of TV media is
+	5.301 TB. The total duration of TV shows is 1 year, 2 months, 15 days, 11 hours, 42 minutes, and
+	6.409 seconds.
+
+   * On a music library.
+
+     .. code-block:: bash
+
+        tanim-desktop $ plex_resynclibs.py --servername=tanim-desktop --library=Music --summary
+
+	"Music" is a music library. There are 9911 songs made by 814 artists in 1549 albums. The total size
+	of music media is 54.785 GB. The total duration of music media is 26 days, 18 hours, 59 minutes, and
+	55.185 seconds.
+
+4. Finally, we can refresh a library that we specify with the ``--refresh`` flag and ``--library=LIBRARY``. Here are three examples on how to refresh the movie, TV show, and music library.
+
+   .. code-block:: bash
+
+      plex_resynclibs.py --servername=tanim-desktop --library=Movies --refresh
+      plex_resynclibs.py --servername=tanim-desktop --library="TV Shows" --refresh
+      plex_resynclibs.py --servername=tanim-desktop --library=Music --refresh
+
 
 .. _plex_store_credentials.py_label:
 

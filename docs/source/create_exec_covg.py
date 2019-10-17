@@ -9,8 +9,8 @@ _coverage_dict = {
     'plex_core_cli.py' : True,
     'plex_deluge_console.py' : True,
     'plex_resynclibs.py' : True,
-    'plex_store_credentials.py' : False,
-    'rsync_subproc.py' : False,
+    'plex_store_credentials.py' : True,
+    'rsync_subproc.py' : True,
     #
     'plex_config_gui.py' : True,
     'plex_core_gui.py' : False,

@@ -218,7 +218,8 @@ class HelpDialog( QDialog ):
         myTextArea = QTextEdit( )
         myTextArea.setReadOnly( True )
         myTextArea.setHtml( open( os.path.join(
-            mainDir, 'docs', 'plex_tmdb_totgui_help.html' ), 'r' ).read( ) )
+            mainDir, 'docs', 'attic',
+            'plex_tmdb_totgui_help.html' ), 'r' ).read( ) )
         layout.addWidget( myTextArea )
         self.hide( )
         #

@@ -386,19 +386,34 @@ def get_formatted_duration( totdur ):
     hour_off = 0
     min_off = 0
     if dt.year - 1970 != 0:
-        durstringsplit.append('%d years' % ( dt.year - 1970 ) )
+        if dt.year - 1970 == 1:
+            durstringsplit.append('%d year' % ( dt.year - 1970 ) )
+        else:
+            durstringsplit.append('%d years' % ( dt.year - 1970 ) )
         month_off = 0
     if dt.month != month_off:
-        durstringsplit.append('%d months' % ( dt.month - month_off ) )
+        if dt.month - month_off == 1:
+            durstringsplit.append('%d month' % ( dt.month - month_off ) )
+        else:
+            durstringsplit.append('%d months' % ( dt.month - month_off ) )
         day_off = 0
     if dt.day != day_off:
-        durstringsplit.append('%d days' % ( dt.day - day_off ) )
+        if dt.day - day_off == 1:
+            durstringsplit.append('%d day' % ( dt.day - day_off ) )
+        else:
+            durstringsplit.append('%d days' % ( dt.day - day_off ) )
         hour_off = 0
     if dt.hour != hour_off:
-        durstringsplit.append('%d hours' % ( dt.hour - hour_off ) )
+        if dt.hour - hour_off == 1:
+            durstringsplit.append('%d hour' % ( dt.hour - hour_off ) )
+        else:
+            durstringsplit.append('%d hours' % ( dt.hour - hour_off ) )
         min_off = 0
     if dt.minute != min_off:
-        durstringsplit.append('%d minutes' % ( dt.minute - min_off ) )
+        if dt.minute - min_off == 1:
+            durstringsplit.append('%d minute' % ( dt.minute - min_off ) )
+        else:
+            durstringsplit.append('%d minutes' % ( dt.minute - min_off ) )
     if len(durstringsplit) != 0:
         durstringsplit.append('and %0.3f seconds' % ( dt.second + 1e-6 * dt.microsecond ) )
     else:
@@ -428,7 +443,10 @@ def get_formatted_size( totsizebytes ):
     """
     
     sizestring = ''
-    if totsizebytes >= 1024**3:
+    if totsizebytes >= 1024**4:
+        size_in_tb = totsizebytes * 1.0 / 1024**4
+        sizestring = '%0.3f TB' % size_in_tb
+    elif totsizebytes >= 1024**3:
         size_in_gb = totsizebytes * 1.0 / 1024**3
         sizestring = '%0.3f GB' % size_in_gb
     elif totsizebytes >= 1024**2:

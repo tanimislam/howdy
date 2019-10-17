@@ -372,8 +372,9 @@ def getMovieData( year, genre_id, verify = True ):
     logging.debug('KEYS IN RESPONSE: %s.' % response.json( ).keys( ) )
     total_pages = response.json()['total_pages']
     results = list( filter(lambda datum: datum['title'] is not None and
-                        datum['release_date'] is not None and
-                        datum['popularity'] is not None, response.json( )['results'] ) )
+                           datum['release_date'] is not None and
+                           datum['popularity'] is not None,
+                           response.json( )['results'] ) )
     for pageno in range( 2, total_pages + 1 ):
         params['page'] = pageno
         for idx in range( 50 ):
@@ -385,14 +386,15 @@ def getMovieData( year, genre_id, verify = True ):
         logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
         results += list( filter(lambda datum: datum['title'] is not None and
                                 datum['release_date'] is not None and
-                                datum['popularity'] is not None, response.json( )['results'] ) )
+                                datum['popularity'] is not None,
+                                response.json( )['results'] ) )
         
     # return results
-    return createProcessedMovieData( results, verify = verify )
+    return createProcessedMovieData( results, year = year, verify = verify )
 
-def createProcessedMovieData( results, verify = True ):
+def createProcessedMovieData( results, year = None, verify = True ):
     moviePosterMainURL = 'https://image.tmdb.org/t/p/w500'
-    movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'    
+    movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'
     def processIndividualDatum( datum ):
         if 'poster_path' not in datum or datum['poster_path'] is None:
             poster_path = None
@@ -407,6 +409,7 @@ def createProcessedMovieData( results, verify = True ):
                 vote_average = float( datum[ 'vote_average' ] )
         try:
             rd = datetime.datetime.strptime( datum['release_date'], '%Y-%m-%d' )
+            if year is not None and rd.year != year: return None
             row = {
                 'title' : datum[ 'title' ],
                 'release_date' : rd,

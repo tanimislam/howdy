@@ -402,12 +402,111 @@ Here I find it useful to show how this tool works by example.
 
 plex_store_credentials.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+:numref:`Core Command Line Utilities` describes this executable's functionality very well. First, run this executable, ``plex_store_credentials.py``, which will return this interactive text dialog in the shell.
+
+.. code-block:: bash
+
+   tanim-desktop $ plex_store_credentials.py
+   Please go to this URL in a browser window:https://accounts.google.com/o/oauth2/auth...
+   After giving permission for Google services on your behalf,
+   type in the access code:
+
+Second, go to the URL to which you are instructed. Once you copy that URL into your browser, you will see a browser window as shown in :ref:`Step #3 <google_step03_authorizeaccount>`, :ref:`Step #5 <google_step05_scaryscreen>`, :ref:`Step #6 <google_step06_allowbutton>`, and :ref:`Step #7 <google_step07_oauthtokencopy>` in :numref:`Summary of Setting Up Google Credentials`.
+
+Third, paste the code as described in :ref:`Step #7 <google_step07_oauthtokencopy>` into the interactive text dialog, ``...type in the access code:``. Once successful, you will receive this message in the shell,
+
+.. code-block:: bash
+
+   Success. Stored GOOGLE credentials.
 
 .. _rsync_subproc.py_label:
 
 rsync_subproc.py
 ^^^^^^^^^^^^^^^^^^^^
+The help output, when running ``rsync_subproc.py -h``, produces the following.
 
+.. code-block:: bash
+
+   Usage: rsync_subproc.py [options]
+
+   Options:
+     -h, --help            show this help message and exit
+     -S STRING, --string=STRING
+                           the globbed string to rsync from on the remote
+                           account. Default is "*.mkv".
+     -N NUMTRIES, --numtries=NUMTRIES
+                           number of attempts to go through an rsync process.
+                           Default is 10.
+     -D, --debug           if chosen, then write debug output.
+     -R, --reverse         If chosen, push files from local server to remote.
+                           Since files are deleted from source once done, you
+                           should probably make a copy of the source files if you
+                           want to still keep them afterwards.
+     -P, --push            push RSYNC credentials into configuration file.
+     -L LOCAL_DIR          Name of the local directory into which we download
+                           files and directory. Default is XXXX.
+     --ssh=SSHPATH         SSH path from which to get files.
+     --subdir=SUBDIR       name of the remote sub directory from which to get
+                           files. Optional.
+
+This executable provides a convenient higher-level command-line interface to rsync_ uploading and downloading that resumes on transfer failure, and deletes the origin files once the transfer is complete. One also does not need to execute this command in ``LOCAL_DIR``.
+
+The main rsync_ based uploading and downloading is described in :ref:`rsync_ based functionality`, and setting the SSH credentials, and local and remote locations, is described in :ref:`rsync_subproc settings with --push`.
+
+rsync_ based functionality
+---------------------------
+One can either upload files and directories to, or download files and directories from, the remote location and the remote subdirectory (which we call ``SUBDIR``). The local directory is called ``LOCAL_DIR``. If the remote directory is not defined, it is *by default* the home directory of that account.
+
+The debug flag, ``-D`` or ``--debug``, is extremely useful, as it displays the lower level shell command that is executed to get the rsync_ transfer going.
+
+The files or directories are selected with ``-S STRING`` or ``--string=STRING`` and follows the standard `POSIX globbing <https://en.wikipedia.org/wiki/Glob_(programming)>`_ convention. For instance, you can specify ``-S "The*"`` (``STRING`` in quotations) to select the remote directory ``The Simpsons`` to download. In order to simplify this CLI's behavior,
+
+* There can be no spaces in the ``STRING`` selection.
+
+* The ``STRING`` selection does not behave as a `Regular expression <https://en.wikipedia.org/wiki/Regular_expression>`_.
+
+The ``-N`` or ``--numtries`` flag sets the number of tries that the rsync_ process will attempt before giving up or finishing the transfer. The default is 10, but this number must be :math:`\ge 1`.
+
+To download a remote directory (``SUBDIR/Ubuntu_18.04``) until success into ``LOCAL_DIR``, and delete all files inside the remote directory, you can run this command with debug.
+
+.. code-block:: bash
+
+   tanim-desktop $ rsync_subproc.py -D -S "Ubuntu_*"
+   STARTING THIS RSYNC CMD: rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass XXXX ssh" -e ssh YYYY@ZZZZ:SUBDIR/Ubuntu_* LOCAL_DIR
+   TRYING UP TO 10 TIMES.
+   
+   SUCCESSFUL ATTEMPT 1 / 10 IN 25.875 SECONDS.
+
+Note that after a period of time (here, 25.875 seconds), the process will terminate with either a descriptive success or descriptive failure message. Note that in the debug output, the SSH password is not printed out (except for an ``XXXX``).
+
+To upload the local directory (``LOCAL_DIR/Ubuntu_18.04``) until success into ``SUBDIR``, and delete all files inside the local directory, you can run this command with debug and the ``-R`` or ``--reverse`` flag.
+
+.. code-block:: bash
+
+   tanim-desktop $ rsync_subproc.py -D -R -S Ubuntu*
+   STARTING THIS RSYNC CMD: rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass XXXX ssh" -e ssh LOCAL_DIR/Ubuntu_18.04 YYYY@ZZZZ:SUBDIR/
+   TRYING UP TO 10 TIMES.
+   
+   SUCCESSFUL ATTEMPT 1 / 10 IN 264.802 SECONDS.
+
+
+rsync_subproc settings with --push
+------------------------------------
+Running ``rsync_subproc.py -P`` or ``rsync_subproc.py --push`` will update or set the SSH settings for the remote server, and the local and remote subdirectories. :numref:`Local and Remote (Seedhost) SSH Setup` and :numref:`Login Services` (see the screen shot in :numref:`login_step02_settings`) describe the form that these settings take.
+
+* the format of the SSH setting is ``username@ssh_server``.
+
+* the ``SUBDIR`` is located relative to the ``usename`` home directory on ``ssh_server``, ``$HOME/SUBDIR``.
+
+* the ``LOCAL_DIR`` local directory is described with an absolute path.
+
+Thus, to set settings for ``rsync_subproc.py``, one would run,
+
+.. code-block:: bash
+
+   rsync_subproc.py -P -L LOCAL_DIR --ssh=username@ssh_server --subdir=SUBDIR
+
+Note that here, the SSH password is the same as the remote Deluge_ server's password. See, e.g., :numref:`plex_deluge_console.py` or :numref:`Local and Remote (Seedhost) SSH Setup` and figures therein.
 
 .. _Deluge: https://en.wikipedia.org/wiki/Deluge_(software)
 .. _deluge_console: https://whatbox.ca/wiki/Deluge_Console_Documentation

@@ -1064,7 +1064,8 @@ def get_shows_to_exclude( tvdata = None ):
     # showsToExcludeInDB = sorted( set( showsToExcludeInDB ) & set( tvdata ) )
     return showsToExcludeInDB
 
-def create_tvTorUnits( toGet, restrictMaxSize = True, do_raw = False ):
+def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
+                       do_raw = False ):
     tv_torrent_gets = { }
     tv_torrent_gets.setdefault( 'nonewdirs', [] )
     tv_torrent_gets.setdefault( 'newdirs', {} )
@@ -1090,6 +1091,9 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, do_raw = False ):
         if not restrictMaxSize:
             maxSize *= 10
             maxSize_x265 *= 10
+        if not restrictMinSize:
+            minSize /= 10
+            minSize_x265 /= 10
         #
         ## being too clever
         ## doing torTitle = showFileName.replace("'",'').replace(':','').replace('&', 'and').replace('/', '-')

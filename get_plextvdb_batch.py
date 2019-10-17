@@ -43,6 +43,8 @@ def main( ):
                       default_num_threads )
     parser.add_option('--nomax', dest='do_restrict_maxsize', action='store_false', default=True,
                       help = 'If chosen, do not restrict maximum size of downloaded file.' )
+    parser.add_option('--nomin', dest='do_restrict_minsize', action='store_false', default=True,
+                      help = 'If chosen, do not restrict minimum size of downloaded file.' )
     parser.add_option('--raw', dest='do_raw', action='store_true', default = False,
                       help = 'If chosen, then use the raw string to download the torrent.' )    
     opts, args = parser.parse_args( )
@@ -112,7 +114,8 @@ def main( ):
     #
     ## now download these episodes
     tvTorUnits, newdirs = plextvdb.create_tvTorUnits(
-        toGet, restrictMaxSize = opts.do_restrict_maxsize, do_raw = opts.do_raw )
+        toGet, restrictMaxSize = opts.do_restrict_maxsize,
+        restrictMinSize = opts.do_restrict_minsize, do_raw = opts.do_raw )
     print('%d, here are the %d episodes to get: %s.' % ( step,
         len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname' ], tvTorUnits))))
     step += 1

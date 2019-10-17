@@ -28,7 +28,6 @@ def _print_summary( library_key, library_dict, token, fullURL ):
                               'The total duration of TV shows is %s.' % 
                               get_formatted_duration( data[ 'totdur' ] ) ] )
     elif mediatype == 'artist':
-        num_songs, num_albums, num_artists, totdur, totsize = data[3:]
         num_songs = data[ 'num_songs' ]
         num_artists = data[ 'num_artists' ]
         num_albums = data[ 'num_albums' ]

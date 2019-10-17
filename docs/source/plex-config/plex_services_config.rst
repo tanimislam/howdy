@@ -280,17 +280,23 @@ Since these are all Google services, a single tool sets all of them up given a s
 
 5. In step 3, when you choose a Google account, currently you will be redirected to a scary browser page that says "this app isn't verified". It isn't, but the services still work. If you use Google Chrome or derived browser, click on the *Show Advanced* toggling link. Then click on *Go to Project Default Service Account (unsafe)* to go forward. Here is a screen shot.
 
+.. _google_step05_scaryscreen:
+
 .. figure:: plex-config-services-figures/google_step05_scaryscreen.png
   :width: 100%
   :align: center
 
 6. Plexstuff asks for six different Google authorizations. Click on the *Allow* button.
 
+.. _google_step06_allowbutton:
+
 .. figure:: plex-config-services-figures/google_step06_allowbutton.png
   :width: 100%
   :align: center
 
 7. The final browser window shows a text box with the OAuth2_ token string. Copy that string into the GUI dialog widget in step 4, and press return on the text box in that widget.
+
+.. _google_step07_oauthtokencopy:
 
 .. figure:: plex-config-services-figures/google_step07_oauthtokencopy.png
   :width: 100%

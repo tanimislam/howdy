@@ -2,7 +2,7 @@
 Core Command Line Utilities
 ================================================
 
-This section describes the two Plexstuff core command line utilities.
+This section describes the five Plexstuff core command line utilities.
 
 * :ref:`plex_core_cli.py` shows the list of email addresses, and names, of Plex account holders who have access to your Plex server. It can also show emails and names of all people who can receive email notifications about your Plex server. One can also change the list of email addresses that are notified by email of the Plex server.
 

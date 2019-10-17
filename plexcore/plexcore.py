@@ -179,10 +179,10 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
         token = data[ 'token' ]
         if doLocal: fullURL = 'http://localhost:32400'
         else:
-            dat = get_owned_servers( token, verify = verify )
+            dat = get_all_servers( token, verify = verify )
             if dat is None: return None
-            _, fullURL = max( dat.items( ) )
-            fullURL = 'https://%s' % fullURL
+            name = max(filter(lambda name: dat[ name ][ 'owned' ], dat ) )
+            fullURL = dat[ name ][ 'url' ]
         #
         ## now see if this works
         if not checkWorkingServer: return fullURL, token
@@ -290,12 +290,20 @@ def get_all_servers( token, verify = True ):
 
     :param str token: the Plex str access token, returned by :py:meth:`checkServerCredentials <plexcore.checkServerCredentials>`.
     :param bool verify: optional bool argument, whether to verify SSL connections. Default is ``True``.
-    :returns: a dictionary of servers owned by you. Each key is the Plex_ server's name, and the value is the URL with port.
+    :returns: a dictionary of servers accessible to you. Each key is the Plex_ server's name, and the value is a :py:class:`dict` that looks like this.
+    
+    .. code-block:: python
+       
+       {
+         'owned'        : OWNED, # boolean on whether server owned by you
+         'access token' : TOKEN, # string access token to server
+         'url'          : URL    # remote URL of the form https://IP-ADDRESS:PORT
+       }
+    
     :rtype: dict
 
     .. seealso::
        * :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`
-       * :py:meth:`get_owned_servers <plexcore.plexcore.get_owned_servers>`
 
     .. _Plex: https://plex.tv
 
@@ -307,8 +315,11 @@ def get_all_servers( token, verify = True ):
         return None
     myxml = BeautifulSoup( response.content, 'lxml' )
     server_dict = { }
-    for server_elem in filter(lambda se: len(set([ 'product', 'publicaddress', 'owned' ]) - set( se.attrs ) ) == 0 and
+    for server_elem in filter(lambda se: len(set([ 'product', 'publicaddress', 'owned', 'accesstoken' ]) - set( se.attrs ) ) == 0 and
                               se['product'] == 'Plex Media Server', myxml.find_all('device') ):
+        #
+        ## is device owned by me?
+        is_owned = bool( int( server_elem[ 'owned' ] ) )
         connections = list( filter(lambda elem: elem['local'] == '0', server_elem.find_all('connection') ) )
         if len( connections ) != 1:
             continue
@@ -316,46 +327,10 @@ def get_all_servers( token, verify = True ):
         name = server_elem[ 'name' ]
         host = connection[ 'address' ]
         port = int( connection[ 'port' ] )
-        server_dict[ name ] = '%s:%d' % ( host, port )
-    return server_dict
-    
-def get_owned_servers( token, verify = True ):
-    """Find the Plex_ servers that you own own.
-
-    :param str token: the Plex str access token, returned by :py:meth:`checkServerCredentials`.
-    
-    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
-    
-    :returns: a dictionary of servers owned by you. Each key is the Plex_ server's name, and the value is the URL with port.
-    
-    :rtype: dict
-
-    .. seealso:: 
-       * :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`
-       * :py:meth:`get_all_servers <plexcore.plexcore.get_all_servers>`
-
-    .. _Plex: https://plex.tv
-
-    """
-    response = requests.get( 'https://plex.tv/api/resources',
-                             params = { 'X-Plex-Token' : token },
-                             verify = verify )
-    if response.status_code != 200:
-        return { }
-    myxml = BeautifulSoup( response.content, 'lxml' )
-    server_dict = { }
-    for server_elem in filter(
-            lambda se: len(set([ 'product', 'publicaddress', 'owned' ]) - set( se.attrs ) ) == 0 and
-            se['product'] == 'Plex Media Server', myxml.find_all('device') ):
-        owned = int( server_elem['owned'] )
-        if owned != 1: continue
-        connections = list( filter(lambda elem: elem['local'] == '0', server_elem.find_all('connection') ) )
-        if len( connections ) != 1: continue
-        connection = max( connections )
-        name = server_elem[ 'name' ]
-        host = connection[ 'address' ]
-        port = int( connection[ 'port' ] )
-        server_dict[ name ] = '%s:%d' % ( host, port )
+        server_dict[ name ] = {
+            'owned' : is_owned,
+            'access token' : server_elem[ 'accesstoken' ],
+            'url' : 'https://%s:%d' % ( host, port ) }
     return server_dict
 
 def get_pic_data( plexPICURL, token = None ):
@@ -552,13 +527,13 @@ def _get_library_stats_movie( key, token, fullURL ='http://localhost:32400', sin
     if tup is None: return None
     _, movie_data = tup
     sorted_by_genres = {
-        genre : ( len( movie_data[ genre ] ),
-                  sum( map(lambda tup: tup[-2], movie_data[ genre ] ) ),
-                  sum( map(lambda tup: tup[-1], movie_data[ genre ] ) ) ) for
+        genre : { 'totnum' : len( movie_data[ genre ] ),
+                  'totdur' : sum(list(map(lambda entry: entry['duration'], movie_data[ genre ] ) ) ),
+                  'totsize': sum(list(map(lambda entry: entry['totsize'],  movie_data[ genre ] ) ) ) } for
         genre in movie_data }
-    totnum = sum(map(lambda genre: sorted_by_genres[ genre ][ 0 ], sorted_by_genres ) )
-    totdur = sum(map(lambda genre: sorted_by_genres[ genre ][ -1 ], sorted_by_genres ) )
-    totsize = sum(map(lambda genre: sorted_by_genres[ genre ][ -2 ], sorted_by_genres ) )
+    totnum  = sum(list(map(lambda genre: sorted_by_genres[ genre ][ 'totnum' ], sorted_by_genres ) ) )
+    totdur  = sum(list(map(lambda genre: sorted_by_genres[ genre ][ 'totdur' ], sorted_by_genres ) ) )
+    totsize = sum(list(map(lambda genre: sorted_by_genres[ genre ][ 'totsize'], sorted_by_genres ) ) )
     return key, totnum, totdur, totsize, sorted_by_genres
 
 def _get_library_data_show(
@@ -737,75 +712,58 @@ def _get_library_stats_show(
     _, tvdata = _get_library_data_show( key, token, fullURL = fullURL,
                                         sinceDate = sinceDate )
     numTVshows = len( tvdata )
-    numTVeps = 0
-    totdur = 0.0
-    totsize = 0.0
-    for show in tvdata:
-        numTVeps += sum(map(lambda seasno: len( tvdata[ show ][ seasno ] ),
-                            tvdata[ show ] ) )
-        for seasno in tvdata[ show ]:
-            totdur += sum(map(lambda epno: tvdata[ show ][ seasno ][ epno ][ -2 ],
-                              tvdata[ show ][ seasno ] ) )
-            totsize+= sum(map(lambda epno: tvdata[ show ][ seasno ][ epno ][ -1 ],
-                              tvdata[ show ][ seasno ] ) )
+    numTVeps = sum(list(
+        map(lambda show:
+            sum(list(
+                map(lambda seasno: len( tvdata[ show ]['seasons'][ seasno ]['episodes'] ),
+                    tvdata[ show ]['seasons'] ) ) ),
+            tvdata ) ) )
+    totdur = sum(list(
+        map(lambda show:
+            sum(list(
+                map(lambda seasno:
+                    sum(list(
+                        map(lambda epno: tvdata[ show ]['seasons'][ seasno ]['episodes'][epno]['duration'],
+                            tvdata[ show ]['seasons'][ seasno ]['episodes'] ) ) ),
+                    tvdata[ show ]['seasons'] ) ) ),
+            tvdata ) ) )
+    totsize = sum(list(
+        map(lambda show:
+            sum(list(
+                map(lambda seasno:
+                    sum(list(
+                        map(lambda epno: tvdata[ show ]['seasons'][ seasno ]['episodes'][epno]['size'],
+                            tvdata[ show ]['seasons'][ seasno ]['episodes'] ) ) ),
+                    tvdata[ show ]['seasons'] ) ) ),
+            tvdata ) ) )
     return key, numTVeps, numTVshows, totdur, totsize
 
 def _get_library_stats_artist( key, token, fullURL = 'http://localhost:32400',
                                sinceDate = None ):
-    params = { 'X-Plex-Token' : token }
-    if sinceDate is None:
-        sinceDate = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
-        
-    response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
-                             params = params, verify = False )
-    if response.status_code != 200:
-        return None
-    html = BeautifulSoup( response.content, 'lxml' )
-    artistelems = list(html.find_all('directory'))
-    num_artists = 0
-    num_albums = 0
-    num_songs = 0
-    totdur = 0.0
-    totsize = 0.0
-    def valid_track( track_elem ):
-        if len(list(track_elem.find_all('media'))) != 1:
-            return False
-        media_elem = max( track_elem.find_all('media') )
-        if len(set([ 'bitrate', 'duration' ]) -
-               set(media_elem.attrs) ) != 0:
-            return False
-        return True    
-    for artist_elem in artistelems:
-        newURL = '%s%s' % ( fullURL, artist_elem.get('key') )
-        resp2 = requests.get( newURL, params = params, verify = False )        
-        if resp2.status_code != 200:
-            continue
-        h2 = BeautifulSoup( resp2.content, 'lxml' )
-        album_elems = list( h2.find_all('directory') )
-        albums_here = 0
-        for album_elem in album_elems:
-            newURL = '%s%s' % ( fullURL, album_elem.get('key') )
-            resp3 = requests.get( newURL, params = params, verify = False )
-            if resp3.status_code != 200:
-                continue
-            h3 = BeautifulSoup( resp3.content, 'lxml' )
-            track_elems = filter(valid_track, h3.find_all( 'track' ) )
-            num_songs_here = 0
-            for track_elem in track_elems:
-                if datetime.datetime.fromtimestamp( float( track_elem['addedat'] ) ).date() < sinceDate:
-                    continue
-                num_songs_here += 1
-                media_elem = max(track_elem.find_all('media'))
-                duration = 1e-3 * int( media_elem['duration'] )
-                bitrate = int( media_elem['bitrate'] ) * 1e3 / 8.0
-                totsize += duration * bitrate
-                totdur += duration
-            if num_songs_here > 0:
-                num_songs += num_songs_here
-                albums_here += 1
-        if albums_here > 0:
-            num_albums += albums_here
-            num_artists += 1                
+    _, music_data = _get_library_data_artist(
+        key, token, fullURL = fullURL, sinceDate = sinceDate )
+    num_artists = len( music_data )
+    num_albums = sum(list(
+        map(lambda artist: len( music_data[ artist ] ), music_data ) ) )
+    num_songs = sum(list(
+        map(lambda artist: sum(list(
+            map(lambda album: len( music_data[ artist ][ album ][ 'tracks' ] ),
+                music_data[ artist ] ) ) ),
+            music_data ) ) )
+    totdur = sum(list(
+        map(lambda artist: sum(list(
+            map(lambda album: sum(list(
+                map(lambda track: track[ 'duration' ],
+                    music_data[ artist ][ album ][ 'tracks' ] ) ) ),
+                music_data[ artist ] ) ) ),
+            music_data ) ) )
+    totsize = sum(list(
+        map(lambda artist: sum(list(
+            map(lambda album: sum(list(
+                map(lambda track: track[ 'size' ],
+                    music_data[ artist ][ album ][ 'tracks' ] ) ) ),
+                music_data[ artist ] ) ) ),
+            music_data ) ) )                
     return key, num_songs, num_albums, num_artists, totdur, totsize
 
 def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
@@ -910,6 +868,17 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                 range( act_num_threads ) ) )
         song_data = dict(chain.from_iterable(pool.map(
             _get_artist_data, input_tuples ) ) )
+        #
+        ## now go through each artist + album. If nothing there, then pop.
+        for artist in song_data:
+            albums_to_pop = set(filter(lambda album: len( song_data[ artist ][ album ] ) == 0, song_data[ artist ] ) )
+            for album in albums_to_pop: song_data[ artist ].pop( album )
+
+        #
+        ## now pop the artist that have no albums
+        artists_to_pop = set(filter(lambda artist: len( song_data[ artist ] ) == 0, song_data ) )
+        for artist in artists_to_pop: song_data.pop( artist )
+        
         return key, song_data
 
 def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
@@ -991,7 +960,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
     :param int timeout: optional time, in seconds, to wait for an HTTP conection to the Plex_ server.
     
     :returns: a dictionary of library data on the Plex server.
-    :rtype: dict.
+    :rtype: dict
     
     """
     time0 = time.time( )
@@ -1026,37 +995,118 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
                   ( time.time( ) - time0, title ) )
     return data
 
-def get_library_stats( key, token, fullURL = 'http://localhost:32400' ):
-    params = { 'X-Plex-Token' : token }
-    response = requests.get( '%s/library/sections' % fullURL, params = params,
-                             verify = False )
-    if response.status_code != 200:
-        return None
-    html = BeautifulSoup( response.content, 'lxml' )
-    library_dict = { int( direlem['key'] ) : ( direlem[ 'title' ], direlem[ 'type' ] ) for
-                     direlem in html.find_all('directory') }
+def get_library_stats( key, token, fullURL = 'http://localhost:32400', sinceDate = None ):
+    """
+    Gets summary data on a specific library on the Plex_ server. returned as a :py:class:`dict`. The Plex_ library ``mediatype`` can be one of ``movie`` (Movies), ``show`` (TV shows), or ``artist`` (Music). The common part of the :py:class:`dict` looks like the following.
+
+    .. code-block:: python
+
+       {
+         'fullURL'   : FULLURL,   # URL of the Plex server in the form of https://IP-ADDRESS:PORT
+         'title'     : TITLE,     # name of the Plex library
+         'mediatype' : MEDIATYPE, # one of "movie", "show", or "artist"
+       }
+
+    Here are what the extra parts of this dictionary look like.
+
+    * If the library is a ``movie`` (Movies), then
+
+      .. code-block:: python
+         
+         {
+           'num_movies' : num_movies,     # total number of movies in this library.
+           'totdur'     : totdur,         # total duration in seconds of all movies.
+           'totsize'    : totsize,        # total size in bytes of all movies.
+           'genres'     : sorted_by_genre # another dictionary subdivided by, showing # movies, size, and duration by genre.
+         }
+      
+      ``sorted_by_genre`` is also a :py:class:`dict`, whose keys are the separate movie genres in this Plex_ library (such as ``action``, ``horror``, ``comedy``). Each value in this dictionary is another dictionary that looks like this.
+
+      .. code-block:: python
+
+         {
+           'num_movies' : num_movies_gen, # total number of movies in this genre.
+           'totdur'     : totdur_gen,     # total duration in seconds of movies in this genre.
+           'totsize'    : totsize_gen,    # total size in bytes of movies in this genre.
+         }
+
+    * If the library is a ``show`` (TV Shows), then
+    
+      .. code-block:: python
+         
+         {
+           'num_tveps'   : num_tveps,   # total number of TV episodes in this library.
+           'num_tvshows' : num_tvshows, # total number of TV shows in this library.
+           'totdur'      : totdur,      # total duration in seconds of all TV shows.
+           'totsize'     : totsize      # otal size in bytes of all TV shows.
+         }
+
+    * If the library is an ``artist`` (Music), then
+
+      .. code-block:: python
+
+         {
+           'num_songs'   : num_songs,   # total number of songs in this library.
+           'num_albums'  : num_albums,  # total number of albums in this library.
+           'num_artists' : num_artists, # total number of unique artists in this library.
+           'totdur'      : totdur,      # total duration in seconds of all songs.
+           'totsize'     : totsize      # total size in bytes of all songs.
+         }
+
+    :param int key: the key number of the library in the Plex_ server.
+    :param str token: the Plex_ server access token.
+    :param str fullURL: the Plex_ server address.
+    :param sinceDate: If defined, only tally the library media that was added after this date. This is of type :py:class:`date <datetime.date>`.
+    
+    :returns: a dictionary of summary statistics on the Plex_ library.
+    :rtype: dict
+
+    .. seealso:: :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`.
+    """
+    library_dict = get_libraries( token, fullURL = fullURL, do_full = True )
+    if library_dict is None: return None
     assert( key in library_dict )
     title, mediatype = library_dict[ key ]
+    common_data = {
+        'fullURL'   : fullURL,
+        'title'     : title,
+        'mediatype' : mediatype
+    }
     if mediatype == 'movie':
-        data = _get_library_stats_movie( key, token, fullURL = fullURL )
-        if data is None:
-            return None
-        actkey, num_movies, totdur, totsize, _ = data
-        return fullURL, title, mediatype, num_movies, totdur, totsize
+        data = _get_library_stats_movie( key, token, fullURL = fullURL, sinceDate = sinceDate )
+        if data is None: return None
+        actkey, num_movies, totdur, totsize, sorted_by_genre = data
+        extra_vals = {
+            'num_movies' : num_movies,
+            'totdur'     : totdur,
+            'totsize'    : totsize,
+            'genres'     : sorted_by_genre
+        }
     elif mediatype == 'show':
-        data =  _get_library_stats_show( key, token, fullURL = fullURL )
-        if data is None:
-            return None
+        data =  _get_library_stats_show( key, token, fullURL = fullURL, sinceDate = sinceDate )
+        if data is None: return None
         actkey, num_tveps, num_tvshows, totdur, totsize = data
-        return fullURL, title, mediatype, num_tveps, num_tvshows, totdur, totsize
+        extra_vals = {
+            'num_tveps'   : num_tveps,
+            'num_tvshows' : num_tvshows,
+            'totdur'      : totdur,
+            'totsize'     : totsize
+        }
     elif mediatype == 'artist':
-        data = _get_library_stats_artist( key, token, fullURL = fullURL )
+        data = _get_library_stats_artist( key, token, fullURL = fullURL, sinceDate = sinceDate )
         if data is None:
             return None
         actkey, num_songs, num_albums, num_artists, totdur, totsize = data
-        return fullURL, title, mediatype, num_songs, num_albums, num_artists, totdur, totsize
-    else:
-        return fullURL, title, mediatype
+        extra_vals = {
+            'num_songs'   : num_songs,
+            'num_albums'  : num_albums,
+            'num_artists' : num_artists,
+            'totdur'      : totdur,
+            'totsize'     : totsize
+        }
+    else: return common_data
+    return dict( list( common_data.items( ) ) +
+                 list( extra_vals.items( ) ) )
         
 def get_libraries( token, fullURL = 'http://localhost:32400', do_full = False, timeout = None ):
     """
@@ -1191,7 +1241,7 @@ def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400', verify = T
         return movie_data_rows, genres
 
 def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
-                      useLastNewsletterDate = True, verify = True ):
+                      useLastNewsletterDate = True ):
     """
     Returns the last :math:`N` movies that were uploaded to the Plex_ server, either after the last date at which a newsletter was sent out or not.
     
@@ -1215,30 +1265,36 @@ def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
     """
     assert( isinstance( lastN, int ) )
     assert( lastN > 0 )
-    params = { 'X-Plex-Token' : token }
-    libraries_dict = get_libraries( fullURL = fullURL, token = token )
+    libraries_dict = get_libraries( fullURL = fullURL, token = token, do_full = True )
     if libraries_dict is None: return None
-    keynum = max(filter(lambda key: libraries_dict[key] == 'Movies', libraries_dict))
-    response = requests.get('%s/library/sections/%d/recentlyAdded' % ( fullURL, keynum ),
-                            params = params, verify = False )
-    if response.status_code != 200: return None
-    html = BeautifulSoup( response.content, 'lxml' )
-    valid_video_elems = sorted(filter(lambda elem: len( set([ 'addedat', 'title', 'year' ]) -
-                                                        set( elem.attrs ) ) == 0,
-                                      html.find_all('video') ),
-                               key = lambda elem: -int( elem[ 'addedat' ] ) )[:lastN]
-    if useLastNewsletterDate:
-        lastnewsletterdate = get_current_date_newsletter( )
-        if lastnewsletterdate is not None:
-            valid_video_elems = filter(lambda elem: datetime.datetime.fromtimestamp(
-                int( elem['addedat'] ) ).date( ) >=
-                                       lastnewsletterdate, valid_video_elems )
-    return list(map(lambda elem: (
-        elem['title'], int( elem['year'] ),
-        datetime.datetime.fromtimestamp( int( elem['addedat'] ) ).
-        replace(tzinfo = pytz.timezone( 'US/Pacific' ) ),
-        plextmdb.get_movie( elem['title'], verify = verify ) ),
-                    valid_video_elems ) )
+    keynums = set(filter(lambda keynum: libraries_dict[ keynum ][ 1 ] == 'movie', libraries_dict ) )
+    if len( keynums ) == 0: return None
+    #
+    def _get_lastN( keynum ):
+        params = { 'X-Plex-Token' : token }
+        response = requests.get('%s/library/sections/%d/recentlyAdded' % ( fullURL, keynum ),
+                                params = params, verify = False )
+        if response.status_code != 200: return None
+        html = BeautifulSoup( response.content, 'lxml' )
+        valid_video_elems = sorted(filter(lambda elem: len( set([ 'addedat', 'title', 'year' ]) -
+                                                            set( elem.attrs ) ) == 0,
+                                          html.find_all('video') ),
+                                   key = lambda elem: -int( elem[ 'addedat' ] ) )[:lastN]
+        if useLastNewsletterDate:
+            lastnewsletterdate = get_current_date_newsletter( )
+            if lastnewsletterdate is not None:
+                valid_video_elems = filter(lambda elem: datetime.datetime.fromtimestamp(
+                    int( elem['addedat'] ) ).date( ) >=
+                                           lastnewsletterdate, valid_video_elems )
+        return list(map(lambda elem: (
+            elem['title'], int( elem['year'] ),
+            datetime.datetime.fromtimestamp( int( elem['addedat'] ) ).
+            replace(tzinfo = pytz.timezone( 'US/Pacific' ) ),
+            plextmdb.get_movie( elem['title'], verify = False ) ),
+                        valid_video_elems ) )
+
+    return sorted( chain.from_iterable(map(_get_lastN, keynums ) ),
+                   key = lambda elem: elem[2] )[::-1][:lastN]
 
 def refresh_library( key, library_dict, token, fullURL = 'http://localhost:32400' ):
     """

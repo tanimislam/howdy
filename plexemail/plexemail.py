@@ -1,4 +1,4 @@
-import os, sys, titlecase, datetime, re, time, requests, mimetypes
+import os, sys, titlecase, datetime, re, time, requests, mimetypes, logging
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing, re, httplib2
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -332,89 +332,143 @@ def _get_album_prifile( prifile ):
     else: return None
 
 def get_summary_data_music_remote(
-    token, fullURL = 'http://localhost:32400',
-    library = 'Music' ):
-    libraries_dict = plexcore.get_libraries( token, fullURL = fullURL )
-    keynum = max(filter(lambda key: libraries_dict[ key ] == name, libraries_dict ) )
-    if keynum is None:
-        return None
+    token, fullURL = 'http://localhost:32400' ):
+    libraries_dict = plexcore.get_libraries( token, fullURL = fullURL, do_full = True )
+    if libraries_dict is None: return None
+    keynums = set(filter(lambda keynum: libraries_dict[ keynum ][ 1 ] == 'artist', libraries_dict ) )
+    if len( keynums ) == 0: return None
     sinceDate = plexcore.get_current_date_newsletter( )
-    key, num_songs, num_albums, num_artists, totdur, totsizebytes = plexcore.get_library_stats(
-        keynum, token, fullURL = fullURL )
+    datas = list(map(lambda keynum: plexcore.get_library_stats( keynum, token, fullURL = fullURL ), keynums))
     mainstring = 'There are %d songs made by %d artists in %d albums.' % (
-        num_songs, num_artists, num_albums )
-    sizestring = 'The total size of music media is %s.' % get_formatted_size( totsizebytes )
-    durstring = 'The total duration of music media is %s.' % get_formatted_duration( totdur )
+        sum(list(map(lambda data: data[ 'num_songs' ], datas))),
+        sum(list(map(lambda data: data[ 'num_artists' ], datas))),
+        sum(list(map(lambda data: data[ 'num_albums' ], datas))))
+    sizestring = 'The total size of music media is %s.' % get_formatted_size(
+        sum(list(map(lambda data: data[ 'totsize' ], datas))))
+    durstring = 'The total duration of music media is %s.' % get_formatted_duration(
+        sum(list(map(lambda data: data[ 'totdur' ], datas))))
     if sinceDate is not None:
-        key, num_songs_since, num_albums_since, num_artists_since, \
-            totdur_since, totsizebytes_since = plexcore._get_library_stats_artist(
-                keynum, token, fullURL = fullURL, sinceDate = sinceDate )
-        if num_songs_since > 0:
+        datas_since = list(filter(
+            lambda data_since: data_since[ 'num_songs' ] > 0,
+            map(lambda keynum: plexcore.get_library_stats(
+                keynum, token, fullURL = fullURL, sinceDate = sinceDate ), keynums ) ) )
+        if len( datas_since ) != 0:
+            num_songs_since = sum(list(map(lambda data_since: data_since[ 'num_songs' ], datas_since)))
+            num_artists_since = sum(list(map(lambda data_since: data_since[ 'num_artists' ], datas_since)))
+            num_albums_since = sum(list(map(lambda data_since: data_since[ 'num_albums' ], datas_since)))
+            totsize_since = sum(list(map(lambda data_since: data_since[ 'totsize'], datas_since)))
+            totdur_since = sum(list(map(lambda data_since: data_since[ 'totdur' ], datas_since)))
             mainstring_since = ' '.join([
-                'Since %s, I have added %d songs made by %d artists in %d albums.' %
-                ( sinceDate.strftime( '%B %d, %Y' ), num_songs_since, num_artists_since, num_albums_since ),
+                'Since %s, I have added %d songs made by %d artists in %d albums.' % (
+                    sinceDate.strftime( '%B %d, %Y' ),
+                    num_songs_since, num_artists_since, num_albums_since ),
+                #
                 'The total size of music media I added is %s.' %
-                get_formatted_size( totsizebytes_since ),
+                get_formatted_size( totsize_since ),
+                #
                 'The total duration of music media I added is %s.' %
-                get_formatted_duration( totdur_since ) ])
+                get_formatted_duration( totdur_since ) ] )
             musicstring = ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
             return musicstring
     musicstring = ' '.join([ mainstring, sizestring, durstring ])
     return musicstring
 
 def get_summary_data_television_remote(
-        token, fullURL = 'http://localhost:32400', library = 'TV Shows' ):
-    libraries_dict = plexcore.get_libraries( token, fullURL = fullURL )
-    keynum = max(filter(lambda key: libraries_dict[ key ] == library, libraries_dict ) )
-    if keynum is None:
-        return None
+        token, fullURL = 'http://localhost:32400' ):
+    libraries_dict = plexcore.get_libraries( token, fullURL = fullURL, do_full = True )
+    if libraries_dict is None: return None
+    keynums = set(filter(lambda keynum: libraries_dict[ keynum ][ 1 ] == 'show', libraries_dict ) )
+    if len( keynums ) == 0: return None
+    #
     sinceDate = plexcore.get_current_date_newsletter( )
-    key, numTVeps, numTVshows, totdur, totsizebytes = plexcore.get_library_stats(
-        keynum, token, fullURL = fullURL )
-    sizestring = 'The total size of TV media is %s.' % \
-        get_formatted_size( totsizebytes )
-    durstring = 'The total duration of TV media is %s.' % \
-        get_formatted_duration( totdur )
-    mainstring = 'There are %d TV files in %d TV shows.' % ( numTVeps, numTVshows )
+    datas = list(map(lambda keynum: plexcore.get_library_stats( keynum, token, fullURL = fullURL ),
+                     keynums))
+    sizestring = 'The total size of TV media is %s.' % ( 
+        get_formatted_size( sum(list(map(lambda data: data[ 'totsize' ], datas)))))
+    durstring = 'The total duration of TV media is %s.' % (
+        get_formatted_duration( sum(list(map(lambda data: data[ 'totdur' ], datas)))))
+    mainstring = 'There are %d TV episodes in %d TV shows.' % (
+        sum(list(map(lambda data: data[ 'num_tveps' ], datas))),
+        sum(list(map(lambda data: data[ 'num_tvshows' ], datas))))
     if sinceDate is not None:
-        key, numTVeps_since, numTVshows_since, \
-            totdur_since, totsizebytes_since = plexcore._get_library_stats_show(
-                keynum, token, fullURL = fullURL, sinceDate = sinceDate )
-        if numTVeps_since > 0:
+        datas_since = list(filter(
+            lambda data_since: data_since[ 'num_tveps' ] > 0,
+            map(lambda keynum: plexcore.get_library_stats(
+                keynum, token, fullURL = fullURL, sinceDate = sinceDate ), keynums) ) )
+        if len( datas_since ) > 0:
             mainstring_since = ' '.join([
-                'Since %s, I have added %d TV files in %d TV shows.' %
-                ( sinceDate.strftime('%B %d, %Y'), numTVeps_since, numTVshows_since ),
+                'Since %s, I have added %d TV files in %d TV shows.' % (
+                    sinceDate.strftime('%B %d, %Y'),
+                    sum(list(map(lambda data_since: data_since[ 'num_tveps' ], datas_since))),
+                    sum(list(map(lambda data_since: data_since[ 'num_tvshows' ], datas_since)))),
                 'The total size of TV media I added is %s.' %
-                get_formatted_size( totsizebytes_since ),
+                get_formatted_size(
+                    sum(list(map(lambda data_since: data_since[ 'totsize' ], datas_since)))),
                 'The total duration of TV media I added is %s.' %
-                get_formatted_duration( totdur_since ) ] )
+                get_formatted_duration(
+                    sum(list(map(lambda data_since: data_since[ 'totdur' ], datas_since)))) ])
             tvstring = ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
             return tvstring
     tvstring = ' '.join([ mainstring, sizestring, durstring ])
     return tvstring
 
-def get_summary_data_movies_remote( token, fullURL = 'http://localhost:32400', library = 'Movies' ):
+def get_summary_data_movies_remote( token, fullURL = 'http://localhost:32400' ):
     libraries_dict = plexcore.get_libraries( token, fullURL = fullURL )
-    keynum = max(zip(*list(filter(lambda tup: tup[1] == 'Movies', libraries_dict.items())))[0])
-    if keynum is None: return None
+    if libraries_dict is None: return None
+    keynums = set(filter(lambda keynum: libraries_dict[ keynum ][ 1 ] == 'movie', libraries_dict ) )
+    if len( keynums ) == 0: return None
+    #
     sinceDate = plexcore.get_current_date_newsletter( )
-    _, num_movies, totsizebytes, totdur, \
-        sorted_by_genres = plexcore.get_library_stats( keynum, token, fullURL = fullURL )
+    datas = list(map(lambda keynum: plexcore.get_library_stats( keynum, token, fullURL = fullURL ), keynums ) )
+    num_movies_since = -1
+    sorted_by_genres = { }
+    sorted_by_genres_since = { }
+    for data in datas:
+        data_sorted_by_genre = data[ 'genres' ]
+        for genre in data_sorted_by_genre:
+            if genre not in sorted_by_genres:
+                sorted_by_genres[ genre ] = data_sorted_by_genre[ genre ].copy( )
+                continue
+            sorted_by_genres[ genre ][ 'totum'  ] += data_sorted_by_genre[ genre ][ 'totnum'  ]
+            sorted_by_genres[ genre ][ 'totdur' ] += data_sorted_by_genre[ genre ][ 'totdur'  ]
+            sorted_by_genres[ genre ][ 'totsize'] += data_sorted_by_genre[ genre ][ 'totsize' ]
+    
     if sinceDate is not None:
-        _, num_movies_since, totsizebytes_since, totdur_since, \
-            sorted_by_genres_since = plexcore._get_library_stats_movie(
-                keynum, token, fullURL = fullURL, sinceDate = sinceDate )
-        if num_movies_since > 0:
+        datas_since = list(filter(
+            lambda data_since: data_since[ 'num_movies' ] > 0,
+            map(lambda keynum: plexcore.get_library_stats(
+                keynum, token, fullURL = fullURL, sinceDate = sinceDate ), keynums ) ) )
+        if len( datas_since ) != 0:
+            num_movies_since = sum(list(map(lambda data_since: data_since[ 'num_movies' ], datas_since ) ) )
+            categories_since = set(chain.from_iterable(map(lambda data_since: data_since[ 'genres' ].keys( ) ) ) )
+            totsize_since = sum(list(map(lambda data_since: data_since[ 'totsize' ], datas_since ) ) )
+            totdur_since = sum(list(map(lambda data_since: data_since[ 'totdur' ], datas_since ) ) )
             mainstring_since = ' '.join([
-                'Since %s, I have added %d movies in %d categories.' %
-                ( sinceDate.strftime('%B %d, %Y'), num_movies_since, len( sorted_by_genres_since ) ),
+                'Since %s, I have added %d movies in %d categories.' % (
+                    sinceDate.strftime('%B %d, %Y'), num_movies_since, len( categories_since ) ),
+                #
                 'The total size of movie media I added is %s.' %
-                get_formatted_size( totsizebytes_since ),
+                get_formatted_size( totsize_since ),
+                #
                 'The total duration of movie media I added is %s.' %
                 get_formatted_duration( totdur_since ) ] )
-    categories = sorted( sorted_by_genres )
-    mainstring = 'There are %d movies in %d categories.' % ( num_movies, len( categories ) )
-    sizestring = 'The total size of movie media is %s.' % get_formatted_size( totsizebytes )
+            for data_since in datas_since:
+                data_since_sorted_by_genre = data_since[ 'genres' ]
+                for genre in data_since_sorted_by_genre:
+                    if genre not in sorted_by_genres_since:
+                        sorted_by_genres_since[ genre ] = data_since_sorted_by_genre[ genre ].copy( )
+                        continue
+                    sorted_by_genres_since[ genre ][ 'totum'  ] += data_since_sorted_by_genre[ genre ][ 'totnum'  ]
+                    sorted_by_genres_since[ genre ][ 'totdur' ] += data_since_sorted_by_genre[ genre ][ 'totdur'  ]
+                    sorted_by_genres_since[ genre ][ 'totsize'] += data_since_sorted_by_genre[ genre ][ 'totsize' ]
+            
+    categories = set( sorted_by_genres.keys( ) )
+    num_movies = sum(list(map(lambda data: data[ 'num_movies' ], datas ) ) )
+    totdur = sum(list(map(lambda data: data[ 'totdur' ], datas ) ) )
+    totsize = sum(list(map(lambda data: data[ 'totsize' ], datas ) ) )
+    mainstring = 'There are %d movies in %d categories.' % (
+        num_movies, len( categories ) )
+    sizestring = 'The total size of movie media is %s.' % get_formatted_size( totsize )
     durstring = 'The total duration of movie media is %s.' % get_formatted_duration( totdur )
     #
     ## get last 7 movies that I have added
@@ -439,70 +493,27 @@ def get_summary_data_movies_remote( token, fullURL = 'http://localhost:32400', l
         movstring = ' '.join([ mainstring, sizestring, durstring, lastNstring, finalstring ])
     movstrings = [ movstring, ]
     catmovstrings = {}
-    for cat in categories:
-        num_movies, totdur, totsizebytes = sorted_by_genres[ cat ]
+    for cat in sorted( categories ):
+        num_movies = sorted_by_genres[ cat ][ 'totnum'  ]
+        totdur     = sorted_by_genres[ cat ][ 'totdur'  ]
+        totsize    = sorted_by_genres[ cat ][ 'totsize' ]
         mainstring = 'There are %d movies in this category.' % num_movies
-        sizestring = 'The total size of movie media here is %s.' % \
-            get_formatted_size( totsizebytes )
-        durstring = 'The total duration of movie media here is %s.' % \
-            get_formatted_duration( totdur )
-        if sinceDate is not None and cat in sorted_by_genres_since and num_movies_since > 0:
-            num_movies_since, totdur_since, totsizebytes_since = sorted_by_genres_since[ cat ]
+        sizestring = 'The total size of movie media here is %s.' % get_formatted_size( totsize )
+        durstring = 'The total duration of movie media here is %s.' % get_formatted_duration( totdur )
+        if sinceDate is not None and cat in sorted_by_genres_since and num_movies > 0:
+            num_movies_since = sorted_by_genres_since[ cat ][ 'totnum'  ]
+            totdur_since     = sorted_by_genres_since[ cat ][ 'totdur'  ]
+            totsize_since    = sorted_by_genres_since[ cat ][ 'totsize' ]
             mainstring_since = ' '.join([
                 'Since %s, I have added %d movies in this category.' %
                 ( sinceDate.strftime( '%B %d, %Y' ), num_movies_since ),
                 'The total size of movie media I added here is %s.' %
-                get_formatted_size( totsizebytes_since ),
+                get_formatted_size( totsize_since ),
                 'The total duration of movie media I added here is %s.' %
                 get_formatted_duration( totdur_since ) ] )
             movstring = ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
         else:
             movstring = ' '.join([ mainstring, sizestring, durstring ])
-        catmovstrings[cat] = movstring    
-    movstrings.append( catmovstrings )    
-    return movstrings
-    
-def get_summary_data_movies( allrows ):
-    """FIXME! briefly describe function
-
-    :param list allrows: 
-    :returns: 
-    :rtype: 
-
-    """
-    movie_rows = list(filter(lambda row: '/mnt/media/movies' in row[5] and
-                             row[8] is not None and row[7] is not None, allrows ) )
-    totdur = 1e-3 * sum(map(lambda row: row[8], movie_rows ) )
-    totsizebytes = sum(map(lambda row: row[7], movie_rows ) )
-    categories = set(map(lambda row: row[5].split('/')[4].strip(), movie_rows ) )
-    mainstring = 'There are %d movies in %d categories.' % ( len( movie_rows ), len( categories ) )
-    sizestring = 'The total size of movie media is %s.' % get_formatted_size( totsizebytes )
-    durstring = 'The total duration of movie media is %s.' % get_formatted_duration( totdur )    
-    #
-    ## get last 7 movies that I have added
-    lastN_movies = plexcore.get_lastN_movies( 7 )
-    lastNstrings = [ '', '',
-                     'Here are the last %d movies I have added.' % len( lastN_movies ),
-                     '\\begin{itemize}' ]
-    for title, year, date in lastN_movies:
-        lastNstrings.append( '\item %s (%d), added on %s.' %
-                             ( title, year, date.strftime( '%d %B %Y' ) ) )
-    lastNstrings.append( '\end{itemize}' )
-    lastNstring = '\n'.join( lastNstrings )
-    finalstring = 'Here is a summary by category.'
-    movstring = ' '.join([ mainstring, sizestring, durstring, lastNstring, finalstring ])
-    movstrings = [ movstring, ]
-    catmovstrings = {}
-    for cat in categories:
-        cat_mov_rows = filter(lambda row: '/mnt/media/movies/%s' % cat in row[5], movie_rows )
-        totdur = 1e-3 * sum(map(lambda row: row[8], cat_mov_rows ) )
-        totsizebytes = sum(map(lambda row: row[7], cat_mov_rows ) )
-        mainstring = 'There are %d movies in this category.' % len( cat_mov_rows )
-        sizestring = 'The total size of movie media here is %s.' % \
-          get_formatted_size( totsizebytes )
-        durstring = 'The total duration of movie media here is %s.' % \
-          get_formatted_duration( totdur )
-        movstring = ' '.join([ mainstring, sizestring, durstring ])
-        catmovstrings[cat] = movstring
+        catmovstrings[ cat ] = movstring    
     movstrings.append( catmovstrings )    
     return movstrings

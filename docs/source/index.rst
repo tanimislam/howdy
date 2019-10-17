@@ -146,7 +146,7 @@ Functionality    CLI                                                            
 ===============  =====================================================================  =============================================================
 ``plexcore``     - :ref:`plex_core_cli.py <plex_core_cli.py_label>` |cbox|              - :ref:`plex_config_gui.py <plex_config_gui.py_label>` |cbox|
                  - :ref:`plex_deluge_console.py <plex_deluge_console.py_label>` |cbox|  - :ref:`plex_core_gui.py <plex_core_gui.py_label>`
-                 - :ref:`plex_resynclibs.py <plex_resynclibs.py_label>`                 - :ref:`plex_create_texts.py <plex_create_texts.py_label>`
+                 - :ref:`plex_resynclibs.py <plex_resynclibs.py_label>` |cbox|          - :ref:`plex_create_texts.py <plex_create_texts.py_label>`
                  - :ref:`plex_store_credentials.py <plex_store_credentials.py_label>`
                  - :ref:`rsync_subproc.py <rsync_subproc.py_label>`
 ``plextvdb``     - :ref:`get_plextvdb_batch.py <get_plextvdb_batch.py_label>`           - :ref:`plex_tvdb_totgui.py <plex_tvdb_totgui.py_label>`

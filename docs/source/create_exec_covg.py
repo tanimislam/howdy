@@ -8,7 +8,7 @@ logger.setLevel( logging.INFO )
 _coverage_dict = {
     'plex_core_cli.py' : True,
     'plex_deluge_console.py' : True,
-    'plex_resynclibs.py' : False,
+    'plex_resynclibs.py' : True,
     'plex_store_credentials.py' : False,
     'rsync_subproc.py' : False,
     #
@@ -69,7 +69,3 @@ _table = [
 ]
 
 print( tabulate.tabulate( _table, [ 'Functionality', 'CLI', 'GUI' ], tablefmt = 'rst' ) )
-
-      
-      
-        

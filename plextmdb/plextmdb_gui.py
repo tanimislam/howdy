@@ -26,9 +26,9 @@ class TMDBRefreshMoviesThread( QThread ):
     emitString = pyqtSignal( str )
     endRun = pyqtSignal( )
 
-    def __init__( self, syg ):
+    def __init__( self, tmdbg ):
         super( TMDBRefreshMoviesThread, self ).__init__( )
-        self.syg = syg
+        self.tmdbg = tmdbg
 
     def run( self ):
         time0 = time.time( )
@@ -39,9 +39,18 @@ class TMDBRefreshMoviesThread( QThread ):
         #
         ## now perform the engine calculation
         movie_data_rows, _ = plexcore.fill_out_movies_stuff(
-            token = self.syg.token, fullURL = self.syg.fullURL, verify = self.syg.verify )
-        self.syg.fill_out_movies( movie_data_rows )
-        self.syg.movieRefreshRows.emit( movie_data_rows )
+            token = self.tmdbg.token,
+            fullURL = self.tmdbg.fullURL,
+            verify = self.tmdbg.verify )
+        self.tmdbg.fill_out_movies( movie_data_rows )
+        self.tmdbg.movieRefreshRows.emit( movie_data_rows )
+        #
+        ## what if we already have rows in tmdbtv.tm?
+        tm = self.tmdbg.tmdbtv.tm
+        if len( tm.actualMovieData ) != 0:
+            tm.emitFilterChanged.emit( )
+            tm.emitSummarySignal( )
+        
         #
         ## finished everything
         mytxt = '1, finished refreshing list of movies on Plex server in %0.3f seconds.' % (
@@ -634,33 +643,36 @@ class TMDBGUI( QDialogWithPrinting ):
         self.movieSendList.connect( self.tmdbtv.tm.emitMoviesHere )
         self.emitRating.connect( self.tmdbtv.tm.setFilterRating )
 
-    def _processPushDataButton( self ):
-        progress_dialog = ProgressDialog(
-            self, 'GETTING MOVIES' )
-        initThread = TMDBGUIThread(
-            { 'get movies' : self.tmdbtv.tm.fillOutCalculation } )
-              #'enable matching movies' : self.sdWidget.enableMatching,
-              #'enable minimum rating' : self.sdWidget.enableMinimumRating,
-              #'return movies' : self.emitMovieList } )
-        initThread.emitString.connect( progress_dialog.addText )
-        initThread.endRun.connect( progress_dialog.stopDialog )
-        initThread.start( )
-        progress_dialog.exec_( )
+    # def _processPushDataButton( self ):
+    #     progress_dialog = ProgressDialog(
+    #         self, 'GETTING MOVIES' )
+    #     initThread = TMDBGUIThread(
+    #         { 'get movies' : self.tmdbtv.tm.fillOutCalculation } )
+    #           #'enable matching movies' : self.sdWidget.enableMatching,
+    #           #'enable minimum rating' : self.sdWidget.enableMinimumRating,
+    #           #'return movies' : self.emitMovieList } )
+    #     initThread.emitString.connect( progress_dialog.addText )
+    #     initThread.endRun.connect( progress_dialog.stopDialog )
+    #     initThread.start( )
+    #     progress_dialog.exec_( )
         
     def _connectSelectYearGenreWidget( self ):                
         self.sygWidget.mySignalAndFill.connect( self.tmdbtv.tm.currentStatusAndFill )
+        #
         self.sygWidget.pushDataButton.clicked.connect( self.getChosenMovies )
         self.sygWidget.pushDataButton.clicked.connect( self.sdWidget.enableMatching )
         self.sygWidget.pushDataButton.clicked.connect( self.sdWidget.enableMinimumRating )
         self.sygWidget.pushDataButton.clicked.connect( self.emitMovieList )
+        #
         self.sygWidget.actorNamesLineEdit.returnPressed.connect( self.emitMovieList )
         self.sygWidget.actorNamesLineEdit.returnPressed.connect( self.sdWidget.enableMatching )
         self.sygWidget.actorNamesLineEdit.returnPressed.connect( self.sdWidget.enableMinimumRating )
+        #
         self.sygWidget.movieNameLineEdit.returnPressed.connect( self.emitMovieList )
         self.sygWidget.movieNameLineEdit.returnPressed.connect( self.sdWidget.enableMatching )
         self.sygWidget.movieNameLineEdit.returnPressed.connect( self.sdWidget.enableMinimumRating )
         self.sygWidget.refreshDataButton.clicked.connect( self.refreshMovies )
-        self.sygWidget.mySignalSYG.connect( self.sdWidget.setYearGenre )
+        # self.sygWidget.mySignalSYG.connect( self.sdWidget.setYearGenre )
 
     def _connectStatusDialogWidget( self ):
         self.sdWidget.emitStatusToShow.connect( self.tmdbtv.tm.setFilterStatus )
@@ -693,17 +705,15 @@ class TMDBGUI( QDialogWithPrinting ):
             self.movieSendList.emit( self.all_movies )
 
     def sendNewRating( self ): # error correction
-        currentValInt = int( 10 * self.tmdbtv.tm.minRating )
+        currentVal = self.tmdbtv.tm.minRating
         try:
-            newValInt = max(
-                0, int( 10 * float( self.sdWidget.minimumRatingEdit.text( ) ) ) )
-            self.sdWidget.minimumRatingEdit.setText( '%0.1f' % ( 0.1 * newValInt ) )
-            self.tmdbtv.tm.setFilterRating( 0.1 * newValInt )
+            newVal = max(
+                0.0, float( self.sdWidget.minimumRatingEdit.text( ) ) )
+            self.sdWidget.minimumRatingEdit.setText( '%0.1f' % newVal )
+            self.tmdbtv.tm.setFilterRating( newVal )
         except:
             self.sdWidget.minimumRatingEdit.setText(
-                '%0.1f' % ( currentValInt * 0.1 ) )
-            self.tmdbtv.tm.setFilterRating( 0.1 * currentValInt )
-        
+                '%0.1f' % currentVal )
 
     def fill_out_movies( self, movie_data_rows ):
         def get_tuple_movie_data_row( row ):
@@ -796,19 +806,19 @@ class StatusDialogWidget( QWidget ):
             year, genre, num_entries = tup
             self.currentYear = year
             self.num_entries = num_entries
-            self.statusLabel.setText( '%d %s movies in %d' %
+            self.statusLabel.setText( '%d %s movies here in %d' %
                                       ( num_entries, genre, year ) )
         elif status == 1:
             actors, num_entries = tup
             self.actors = list( actors )
             self.num_entries = num_entries
-            self.statusLabel.setText( '%d movies by %s' % (
+            self.statusLabel.setText( '%d movies here by %s' % (
                 num_entries, ', '.join( actors ) ) )
         elif status == 2:
             movieTitle, num_entries = tup
             self.movieTitle = movieTitle
             self.num_entries = num_entries
-            self.statusLabel.setText( '%d movies with title %s' % (
+            self.statusLabel.setText( '%d movies here with title %s' % (
                 num_entries, movieTitle ) )
 
     def setYearGenre( self, status, tup):
@@ -1083,11 +1093,16 @@ class TMDBTableModel( QAbstractTableModel ):
         self.actualMovieData = [ ]
         self.sortColumn = 2
         self.filterStatus = 2
+        self.status = 0
+        self.tupData = None
+        #
+        ## filtering on name of movie
         self.filterRegexp = QRegExp( '.', Qt.CaseInsensitive,
                                      QRegExp.RegExp )
         #
-        ## stuff passed through
-        self.minRating = -1.0
+        ## filtering on minimum rating
+        self.minRating = 0.0
+        
 
     def infoOnMovieAtRow( self, actualRow ):
         datum = self.actualMovieData[ actualRow ]
@@ -1105,12 +1120,17 @@ class TMDBTableModel( QAbstractTableModel ):
         #
         ## now check on rating
         return datum[ 'vote_average' ] >= self.minRating
-            
 
+    #
+    ## three ways that what can be displayed in TMDBTableModel can be changed
+    ## 1. changing filterStatus -- whether show ALL movies, NOT MY movies, ONLY MY movies
+    ## 2. changing filterRegexp -- only show movies whose titles match that substring
+    ## 3. changing minRating    -- only show movies with MINIMUM rating of X ( 0 <= X <= 10.0 )
     def setFilterStatus( self, filterStatus ):
         self.filterStatus = filterStatus
         self.sort( -1, Qt.AscendingOrder )
         self.emitFilterChanged.emit( )
+        self.emitSummarySignal( )
 
     def setFilterString( self, text ):
         mytext = str( text ).strip( )
@@ -1118,10 +1138,12 @@ class TMDBTableModel( QAbstractTableModel ):
         self.filterRegexp = QRegExp(
             mytext, Qt.CaseInsensitive, QRegExp.RegExp )
         self.emitFilterChanged.emit( )
+        self.emitSummarySignal( )
 
     def setFilterRating( self, minRating ):
         self.minRating = minRating
         self.emitFilterChanged.emit( )
+        self.emitSummarySignal( )
         
     def rowCount( self, parent ):
         return len( self.actualMovieData )
@@ -1161,17 +1183,32 @@ class TMDBTableModel( QAbstractTableModel ):
         initThread.endRun.connect( progress_dialog.stopDialog )
         initThread.start( )
         progress_dialog.exec_( )
-    
+
+    def emitSummarySignal( self ):
+        numRows = len(
+            list(filter(lambda rowNum: self.filterRow( rowNum ),
+                        range( len( self.actualMovieData ) ) ) ) )
+        if self.status == 0:
+            self.mySummarySignal.emit( 0, ( self.year, self.genre, numRows ) )
+        elif self.status == 1:
+            self.mySummarySignal.emit( 1, ( self.actors, numRows ) )
+        elif self.status == 2:
+            self.mySummarySignal.emit( 2, ( self.movieName, numRows ) )
+            
     #
     ## engine code, actually do the calculation
     def fillOutCalculation( self, status, tup ):
         assert( status in ( 0, 1, 2 ) )
+        self.status = status
         if status == 0:
             year, genre_id, genre = tup
             assert( year >= _minyear )
             assert( year <= datetime.datetime.now( ).year )
             assert( genre_id in plextmdb.TMDBEngine(
                 self.verify ).getGenreIds( ) )
+            self.year = year
+            self.genre_id = genre_id
+            self.genre = genre
             #
             ## now do the stuff...
             actualMovieData = plextmdb.getMovieData(
@@ -1182,10 +1219,12 @@ class TMDBTableModel( QAbstractTableModel ):
             ## first figure out which actors are valid
             actor_names_dict = plextmdb.get_actor_ids_dict(
                 actors, verify = self.verify )
+            self.actors = sorted( actor_names_dict )
             actualMovieData = plextmdb.get_movies_by_actors(
                 actor_names_dict, verify = self.verify )
         elif self.status == 2:
             movieName = max( tup )
+            self.movieName = max( tup )
             actualMovieData = plextmdb.get_movies_by_title(
                 movieName, verify = self.verify )
 
@@ -1200,17 +1239,9 @@ class TMDBTableModel( QAbstractTableModel ):
         self.actualMovieData = actualMovieData
         self.endInsertRows( )
         self.sort(2, Qt.AscendingOrder )
-        if status == 0:
-            self.mySummarySignal.emit(
-                0, ( year, genre,
-                     len( self.actualMovieData ) ) )
-        elif status == 1:
-            self.mySummarySignal.emit(
-                1, ( sorted( actor_names_dict ),
-                     len( self.actualMovieData ) ) )
-        elif status == 2:
-            self.mySummarySignal.emit(
-                2, ( movieName, len( self.actualMovieData ) ) )
+        #
+        ## emit information for statusDialogWidget
+        self.emitSummarySignal( )
 
     def emitMoviesHere( self, allMoviesInPlex ):
         tmdbmovietitles = set(map(

@@ -129,7 +129,7 @@ def process_magnet_items( name, raw = False, verify = True ):
             ( get_items_zooqle, get_items_rarbg, #get_items_kickass,
               get_items_torrentz, get_items_eztv_io ) ) )
         jobs.append( pool.apply_async( get_items_tpb, args = (
-            name, opts.maxnum, opts.do_any, False ) ) )
+            name, opts.maxnum, False, False ) ) ) # opts.do_any = False
     else:
         pool = Pool( processes = 3 )
         jobs = list(map(
@@ -151,8 +151,6 @@ if __name__=='__main__':
                       help = 'Maximum number of torrents to look through. Default is 10.')
     parser.add_option('--raw', dest='do_raw', action='store_true', default = False,
                       help = 'If chosen, then use the raw string (for jackett) to download the torrent.' )
-    parser.add_option('--any', dest='do_any', action='store_true', default = False,
-                      help = 'If chosen, make no filter on TV show format.')
     parser.add_option('-f', '--filename', dest='filename', action='store', type=str,
                       help = 'If defined, put torrent or magnet link into filename.')
     parser.add_option('--add', dest='do_add', action='store_true', default = False,
@@ -162,7 +160,7 @@ if __name__=='__main__':
     parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
                       help = 'If chosen, do not verify SSL connections.' )
     parser.add_option('--timing', dest='do_timing', action='store_true', default = False,
-                      help = 'If chosen, show timing information (how long to get TV torrents.')
+                      help = 'If chosen, show timing information (how long to get TV torrents).')
     opts, args = parser.parse_args( )
     assert( opts.name is not None )
     logger = logging.getLogger( )

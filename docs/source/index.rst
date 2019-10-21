@@ -149,12 +149,12 @@ Functionality    CLI                                                            
                  - :ref:`plex_resynclibs.py <plex_resynclibs.py_label>` |cbox|                - :ref:`plex_create_texts.py <plex_create_texts.py_label>`
                  - :ref:`plex_store_credentials.py <plex_store_credentials.py_label>` |cbox|
                  - :ref:`rsync_subproc.py <rsync_subproc.py_label>` |cbox|
-``plextvdb``     - :ref:`get_plextvdb_batch.py <get_plextvdb_batch.py_label>`                 - :ref:`plex_tvdb_totgui.py <plex_tvdb_totgui.py_label>`
-                 - :ref:`get_tv_tor.py <get_tv_tor.py_label>`
-                 - :ref:`plex_tvdb_epinfo.py <plex_tvdb_epinfo.py_label>`
-                 - :ref:`plex_tvdb_epname.py <plex_tvdb_epname.py_label>`
-                 - :ref:`plex_tvdb_futureshows.py <plex_tvdb_futureshows.py_label>`
-                 - :ref:`plex_tvdb_plots.py <plex_tvdb_plots.py_label>`
+``plextvdb``     - :ref:`get_plextvdb_batch.py <get_plextvdb_batch.py_label>` |cbox|          - :ref:`plex_tvdb_totgui.py <plex_tvdb_totgui.py_label>`
+                 - :ref:`get_tv_tor.py <get_tv_tor.py_label>` |cbox|
+                 - :ref:`plex_tvdb_epinfo.py <plex_tvdb_epinfo.py_label>` |cbox|
+                 - :ref:`plex_tvdb_epname.py <plex_tvdb_epname.py_label>` |cbox|
+                 - :ref:`plex_tvdb_futureshows.py <plex_tvdb_futureshows.py_label>` |cbox|
+                 - :ref:`plex_tvdb_plots.py <plex_tvdb_plots.py_label>` |cbox|
 ``plextmdb``     - :ref:`get_mov_tor.py <get_mov_tor.py_label>`                               - :ref:`plex_tmdb_totgui.py <plex_tmdb_totgui.py_label>`
 ``plexmusic``    - :ref:`plex_music_album.py <plex_music_album.py_label>`
                  - :ref:`plex_music_metafill.py <plex_music_metafill.py_label>`

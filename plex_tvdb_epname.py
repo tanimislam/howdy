@@ -23,10 +23,10 @@ def main( ):
                       help = 'If chosen, do not verify the SSL connection.')
     #
     ## big option
-    parser.add_option('--add', dest='do_add', action='store_true', default = False,
-                      help = ' '.join([
-                          'BIG CHANGE. If chosen, allows you to choose and download',
-                          'an episode given a valid series name and episode name.' ]))
+    #parser.add_option('--add', dest='do_add', action='store_true', default = False,
+    #help = ' '.join([
+    #                      'BIG CHANGE. If chosen, allows you to choose and download',
+    #                       'an episode given a valid series name and episode name.' ]))
     opts, args = parser.parse_args( )
     assert( opts.series is not None )
     if opts.do_summary:

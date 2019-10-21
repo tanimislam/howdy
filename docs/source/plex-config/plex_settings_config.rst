@@ -7,8 +7,7 @@ This document contains all the needed information to get started on getting set 
 This configuration is handled through the ``plex_config_gui.py``, and consists of the following elements. The *Plex Settings Configuration* document describes the Jackett server settings, where one may use either the Jackett server provided by Seedbox or one's own server.
 
 1. Plex user settings.
-
-  * Plex server URL.
+   
   * user name.
   * password.
 

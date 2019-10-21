@@ -1,0 +1,10 @@
+[Unit]
+Description=This is my first try at creating a systemd service to replace a cron job. Here, run get_plextvdb_batch_service.py to download new TV shows as they come up every day.
+Wants=get_plextvdb_batch.timer
+
+[Service]
+Type=oneshot
+ExecStart=$PLEXSTUFF_DIR/get_plextvdb_batch.py --maxtime=1200 --num=2
+
+[Install]
+WantedBy=default.target

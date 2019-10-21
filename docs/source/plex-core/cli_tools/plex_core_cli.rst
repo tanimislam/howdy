@@ -489,7 +489,6 @@ To upload the local directory (``LOCAL_DIR/Ubuntu_18.04``) until success into ``
    
    SUCCESSFUL ATTEMPT 1 / 10 IN 264.802 SECONDS.
 
-
 rsync_subproc settings with --push
 ------------------------------------
 Running ``rsync_subproc.py -P`` or ``rsync_subproc.py --push`` will update or set the SSH settings for the remote server, and the local and remote subdirectories. :numref:`Local and Remote (Seedhost) SSH Setup` and :numref:`Login Services` (see the screen shot in :numref:`login_step02_settings`) describe the form that these settings take.

@@ -1,0 +1,13 @@
+[Unit]
+Description=Runs get_plextvdb_batch.py (to download new TV shows) every day at 1:30 AM, 6:30 PM, and 9:30 PM
+Requires=get_plextvdb_batch.service
+
+[Timer]
+Unit=get_plextvdb_batch.service
+OnCalendar=*-*-* 18:30:00
+OnCalendar=*-*-* 21:30:00
+OnCalendar=*-*-* 01:30:00
+Persistent=True
+
+[Install]
+WantedBy=timers.target

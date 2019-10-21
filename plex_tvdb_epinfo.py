@@ -16,8 +16,8 @@ from optparse import OptionParser
 def main( ):
     time0 = time.time( )
     parser = OptionParser( )
-    parser.add_option('-S', '--show', type=str, action='store', dest='show',
-                      help = 'Namer of the TV Show to push into remote server.')
+    parser.add_option('-s', '--show', type=str, action='store', dest='show',
+                      help = 'Name of the TV Show to push into remote server.')
     parser.add_option('-j', '--jsonfile', type=str, action='store', dest='jsonfile', default = 'eps.json',
                       help = 'Name of the JSON file into which to store the episode information. Default is eps.json.' )
     parser.add_option('--debug', dest='do_debug', action='store_true', default = False,

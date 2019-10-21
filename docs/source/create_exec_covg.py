@@ -16,12 +16,12 @@ _coverage_dict = {
     'plex_core_gui.py' : False,
     'plex_create_texts.py' : False,
     #
-    'get_plextvdb_batch.py' : False,
-    'get_tv_tor.py' : False,
-    'plex_tvdb_epinfo.py' : False,
-    'plex_tvdb_epname.py' : False,
-    'plex_tvdb_futureshows.py' : False,
-    'plex_tvdb_plots.py' : False,
+    'get_plextvdb_batch.py' : True,
+    'get_tv_tor.py' : True,
+    'plex_tvdb_epinfo.py' : True,
+    'plex_tvdb_epname.py' : True,
+    'plex_tvdb_futureshows.py' : True,
+    'plex_tvdb_plots.py' : True,
     #
     'plex_tvdb_totgui.py' : False,
     #

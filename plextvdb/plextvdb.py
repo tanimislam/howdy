@@ -877,7 +877,7 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
 
 def get_path_data_on_tvshow( tvdata, tvshow ):
     """
-    This method is used by the :ref:`get_plextvdb_batch.py` tool that can automatically download new episodes. This returns a summary :py:class:`dict` of information on a TV show stored in the Plex_ server (see documentation in :py:meth:`get_library_data <plexcore.plexcore.get_library_data>` that focuses on the format of the dictionary for TV libraries). For example, here is the summary information on `The Simpsons`_ given in the ``tvdata``, the dictionary representation of TV library data. ``$LIBARY_DIR`` is the TV library's location on the Plex_ server.
+    This method is used by the :ref:`get_plextvdb_batch.py` tool that can automatically download new episodes. This returns a summary :py:class:`dict` of information on a TV show stored in the Plex_ server (see documentation in :py:meth:`get_library_data <plexcore.plexcore.get_library_data>` that focuses on the format of the dictionary for TV libraries). For example, here is the summary information on `The Simpsons`_ given in the ``tvdata``, the dictionary representation of TV library data. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server.
 
     .. code-block:: python
         
@@ -923,7 +923,7 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
     
     * ``prefix`` is the root directory in which the episodes of the TV show live.
     * ``showFilename`` is the prefix of all episodes of this TV show. Here for instance, a new Simpsons episode, say S31E06, would start with ``"The Simpsons - s31e06 - ..."``.
-    * ``season_prefix_dict`` is a dictionary of sub-directories, by *season*, in which the episodes live. For example, season 1 episodes live in ``"$LIBARY_DIR/The Simpsons/Season 01"``.
+    * ``season_prefix_dict`` is a dictionary of sub-directories, by *season*, in which the episodes live. For example, season 1 episodes live in ``"$LIBRARY_DIR/The Simpsons/Season 01"``.
     * ``min_inferred_length`` refers to the padding of season number. This :py:class:`integer <int>` must be :math:`\ge 1`. Here ``min_inferred_length = 2``, so seasons are numbered as ``"Season 01"``.
     * ``episode_number_length`` is the formatting on each episode number. Two means that episode numbers for this TV show are formatted as ``01-99``. This becomes important for TV shows in which there are 100 or more episodes in a season, such as `The Adventures of Rocky and Bullwinkle and Friends`_.
     * ``avg_length_mins`` is the average episode length, in minutes.
@@ -1156,7 +1156,7 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
     * ``episodes`` returns a :py:class:`list` of :py:class:`tuple`s of missing episodes. Each tuple is of the form ``( SEASON #, EPISODE #, EPISODE NAME )``.
     * the remaining keys -- ``prefix``, ``showFilename``, ``min_inferred_length``, ``season_prefix_dict``, ``episode_number_length``, ``avg_length_mins`` -- and their values have the same meaning as the summary Plex_ TV library returned by :py:meth:`get_path_data_on_tvshow <plextvdb.plextvdb.get_path_data_on_tvshow>`.
 
-    Here is some example output. ``$LIBARY_DIR`` is the TV library's location on the Plex_ server, and `The Great British Bake Off`_ is a British reality TV show on baking.
+    Here is some example output. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server, and `The Great British Bake Off`_ is a British reality TV show on baking.
 
     .. code-block:: python
 
@@ -1409,7 +1409,7 @@ def get_shows_to_exclude( tvdata = None ):
 def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
                        do_raw = False ):
     """
-    Used by, e.g., :ref:`get_plextvdb_batch.py`, to download missing episodes on the Plex_ TV library. This returns a :py:class:`tuple` of a :py:class:`list` of missing episodes to (torrent) download from the remote Deluge_ torrent server, and a :py:class:`list` of new directories to create, given a set of missing episode information, ``toGet``, as produced by :py:meth:`get_remaining_episodes <plextvdb.plextvdb.get_remaining_episodes>`. ``$LIBARY_DIR`` is the TV library's location on the Plex_ server.
+    Used by, e.g., :ref:`get_plextvdb_batch.py`, to download missing episodes on the Plex_ TV library. This returns a :py:class:`tuple` of a :py:class:`list` of missing episodes to (torrent) download from the remote Deluge_ torrent server, and a :py:class:`list` of new directories to create, given a set of missing episode information, ``toGet``, as produced by :py:meth:`get_remaining_episodes <plextvdb.plextvdb.get_remaining_episodes>`. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server.
 
     * The first element of the tuple is a list of missing episodes to download using the remote Deluge_ server (see :numref:`Seedhost Services Setup` on the server's setup). Each element in the list consists of summary information, as a dictionary, that describes those TV Magnet links to download. Here are the keys.
       

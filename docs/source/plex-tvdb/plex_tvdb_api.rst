@@ -53,4 +53,4 @@ This contains broken, stale, and long-untested and unused Plex TVDB functionalit
 .. _SQLAlchemy: https://www.sqlalchemy.org
 .. _TVDB: https://api.thetvdb.com/swagger
 .. _plex: https://plex.tv
-
+.. _Jackett: https://github.com/Jackett/Jackett

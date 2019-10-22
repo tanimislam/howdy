@@ -811,16 +811,23 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
                          verify = True, showFuture = False ):
     """
     Returns a large and comprehensive :py:class:`list` of TVDB_ episode info on a given TV show. Example TVDB_ show data for `The Simpsons`_, represented as a JSON file, is located in :download:`tvdb_simpsons_info.json </_static/tvdb_simpsons_info.json>`. Each element of the list is an episode, and the list is ordered from earliest aired episode to latest aired episode.
-
+    
     :param int series_id: the TVDB_ database series ID.
+    
     :param str token: the TVDB_ API access token.
-    ;param bool showSpecials: if ``True``, also include episode info for TV specials for that given series. Default is ``True``.
+    
+    :param bool showSpecials: if ``True``, also include episode info for TV specials for that given series. Default is ``True``.
+    
     :param date fromDate: optional first :py:class:`date <datetime.date>` after which to collect TVDB_ episode information. If not defined, then include information on all episodes from the first one aired.
+    
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
     :param bool showFuture: optional argument, if ``True`` then also include information on episodes that have not yet aired.
     
     :returns: the :py:class:`list` of unified TVDB_ information on a TV show. See :download:`tvdb_simpsons_info.json </_static/tvdb_simpsons_info.json>`.
     :rtype: list
+
+    .. _TVDB: https://api.thetvdb.com/swagger
     """
     params = { 'page' : 1 }
     headers = { 'Content-Type' : 'application/json',

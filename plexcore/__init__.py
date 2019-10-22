@@ -589,4 +589,6 @@ def create_all( ):
     Base.metadata.create_all( _engine )
     session.commit( )
 
+#
+## commit all tables BUT ONLY IF NOT READTHEDOCS
 if not os.environ.get('READTHEDOCS'): create_all( )

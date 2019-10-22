@@ -49,3 +49,7 @@ This contains broken, stale, and long-untested and unused Plex TVDB functionalit
 
 .. automodule:: plextvdb.plextvdb_attic
    :members:
+
+.. _SQLAlchemy: https://www.sqlalchemy.org
+.. _TVDB: https://api.thetvdb.com/swagger
+

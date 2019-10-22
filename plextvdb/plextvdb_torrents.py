@@ -11,14 +11,28 @@ from plexcore import plexcore_deluge, get_formatted_size, get_maximum_matchval, 
 from plexcore.plexcore import get_jackett_credentials
 from plextvdb import get_token, plextvdb
 
-def _return_error_couldnotfind( name ):
+_num_to_quit = 10
+
+def return_error_couldnotfind( name ):
+    """
+    Returns a :py:class:`tuple` error message in the format of :py:meth:`return_error_raw <plexcore.return_error_raw>`, but with the message ``"Failure, could not find any tv shows with search term <name>"``, where ``<name>`` is the episode torrent that could not be found.
+
+    :param str name: the episode torrent to be searched.
+    
+    :returns: a :py:class:`tuple` of format :py:meth:`return_error_raw <plexcore.return_error_raw>`, with the error message, ``"Failure, could not find any tv shows with search term <name>"``.
+    :rtype: str
+    
+    .. seealso:: :py:meth:`return_error_raw <plexcore.return_error_raw>`
+    """
     return return_error_raw(
         'Failure, could not find any tv shows with search term %s.' % name )
 
-_num_to_quit = 10
 
 def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None,
                             minsizes = None, maxsizes = None ):
+    """
+    Returns a :py:class:`list` of candidate episode Magnet links found using the `EZTV.IO`_ torrent service.
+    """
     assert( maxnum >= 5 )
     name_split = name.split()
     last_tok = name_split[-1]
@@ -36,7 +50,7 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
     imdb_id = plextvdb.get_imdb_id( series_id, tvdb_token, verify = verify )
     if imdb_id is None or len( imdb_id.strip( ) ) == 0:
         return return_error_raw(
-            'ERROR, COULD NOT FIND IMDB ID FOR SERIES %s.' % series_name )
+            'ERROR, COULD NOT FIND IMDB ID FOR SERIES %s. IMDB ID COULD NOT BE FOUND.' % series_name )
     response = requests.get( 'https://eztv.io/api/get-torrents',
                              params = {
                                  'imdb_id' : int( imdb_id.replace('t','')),
@@ -44,11 +58,12 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
                              verify = verify )
     if response.status_code != 200:
         return return_error_raw(
-            'ERROR, COULD NOT FIND ANY TORRENTS FOR %s IN EZTV.IO' % name )
+            'ERROR, COULD NOT FIND ANY TORRENTS FOR %s IN EZTV.IO. Status code = %d' % (
+                name, response.status_code ) )
     alldat = response.json( )
     if alldat['torrents_count'] == 0:
         return return_error_raw(
-            'ERROR, COULD NOT FIND ANY TORRENTS FOR %s IN EZTV.IO' % name )
+            'ERROR, COULD NOT FIND ANY TORRENTS FOR %s IN EZTV.IO. No magnet links found.' % name )
     all_torrents = alldat[ 'torrents' ]
     for pageno in range( 1, 101 ):
         if alldat[ 'torrents_count' ] < 100: break
@@ -66,6 +81,8 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
     ## now filter on those torrents that have sXXeYY in them
     all_torrents_mine = list(filter(
         lambda tor: last_tok.lower( ) in tor['title'].lower( ), all_torrents ) )
+
+    logging.debug( 'MAGNET LINKS FOUND: %s.' % all_torrents_mine )
 
     #
     ## now perform the filtering
@@ -584,7 +601,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
     torrent_table = html.find("table", id="searchResult")
     torrent_rows = torrent_table("tr") if torrent_table else []
     if len( torrent_rows ) < 2:
-        return _return_error_couldnotfind( name )
+        return return_error_couldnotfind( name )
     labels = list(map(lambda label: process_column_header(label),
                       torrent_rows[0]("th") ) )
     items = []
@@ -613,7 +630,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
             print( str( e ) )
             continue
     if len( items ) == 0:
-        return _return_error_couldnotfind( name )
+        return return_error_couldnotfind( name )
     items.sort(key=lambda d: try_int(d.get('seeders', 0)) +
                try_int(d.get('leechers')), reverse=True)
     return items[:maxnum], 'SUCCESS'

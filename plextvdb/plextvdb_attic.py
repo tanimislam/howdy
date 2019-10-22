@@ -1,7 +1,5 @@
-import requests, os, sys, json, re
+import requests, os, sys
 import logging, datetime, fuzzywuzzy.fuzz
-from PIL import Image
-from io import StringIO
 from dateutil.relativedelta import relativedelta
 
 from plextmdb import tmdb_apiKey
@@ -19,8 +17,9 @@ def get_series_omdb_id( series_name ):
         return None
     if data['totalResults'] == 0:
         return None
-    items = filter(lambda item: 'Poster' in item.keys( ) and item['Poster'] != 'N/A' and 'imdbID' in item.keys( ),
-                   data['Search'])
+    items = list(
+        filter(lambda item: 'Poster' in item.keys( ) and item['Poster'] != 'N/A' and 'imdbID' in item.keys( ),
+               data['Search']) )
     if len( items ) == 0:
         return None
     return items[0]['imdbID']
@@ -101,7 +100,7 @@ def get_tot_epdict_omdb( showName, inYear = None ):
         else:
             valids = filter(lambda item: inYear in item[1], valids )
             if len(valids) == 0:
-                print 'Could not find %s in %d' % ( showName, inYear )
+                print( 'Could not find %s in %d' % ( showName, inYear ) )
                 return None
             imdbID = valids[0][0]
     eps = get_episodes_series_omdb( imdbID )
@@ -139,14 +138,16 @@ def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
             if response.status_code != 200:
                 continue
             data = response.json( )
-            newresults = filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 10.0,
-                                data['results'] )
+            newresults = list(
+                filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 10.0,
+                       data['results'] ) )
             if len( newresults ) > 0:
                 results += sorted( newresults, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
     if len( results ) == 0: return None
-    return map(lambda result: { 'id' : result['id'], 'name' : result['name'],
-                                'airedYear' : datetime.datetime.strptime( result['first_air_date'], '%Y-%m-%d' ).year },
-               results )
+    return list(
+        map(lambda result: { 'id' : result['id'], 'name' : result['name'],
+                             'airedYear' : datetime.datetime.strptime( result['first_air_date'], '%Y-%m-%d' ).year },
+            results ) )
 
 def get_series_tmdb_id( series_name, firstAiredYear = None ):
     results = get_possible_tmdb_ids( series_name, firstAiredYear = firstAiredYear )
@@ -198,4 +199,120 @@ def get_tot_epdict_tmdb( showName, firstAiredYear = None ):
         epno = episode[ 'episode' ]
         tot_epdict.setdefault( seasnum, { } )
         tot_epdict[ seasnum ][ epno ] = title
+    return tot_epdict
+
+def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):
+    import lxml.html, titlecase
+    assert(seasnums >= 1)
+    assert(isinstance(seasnums, int))
+    #
+    def is_epelem(elem):
+        if elem.tag == 'span':
+            if 'class' not in elem.keys(): return False
+            if 'id' not in elem.keys(): return False
+            if elem.get('class') != 'mw-headline': return False
+            if 'Season' not in elem.get('id'): return False
+            return True
+        elif elem.tag == 'td':
+            if 'class' not in elem.keys(): return False
+            if 'style' not in elem.keys(): return False
+            if elem.get('class') != 'summary': return False
+            return True
+        return False
+    #
+    tree = lxml.html.fromstring(requests.get(epURL, verify=verify).content )    
+    epelems = filter(is_epelem, tree.iter())
+    #
+    ## splitting by seasons
+    idxof_seasons = list(zip(*filter(lambda tup: tup[1].tag == 'span',
+                                     enumerate(epelems)))[0]) + \
+        [ len(epelems) + 1, ]
+    totseasons = len(idxof_seasons) - 1
+    assert( seasnums <= totseasons )
+    return { idx + 1 : titlecase.titlecase( epelem.text_content().replace('"','')) for
+             (idx, epelem) in enumerate( epelems[idxof_seasons[seasnums-1]+1:idxof_seasons[seasnums]] ) }
+
+def fix_missing_unnamed_episodes( seriesName, eps, verify = True, showFuture = False ):
+    eps_copy = copy.deepcopy( eps )
+    tmdb_id = plextmdb.get_tv_ids_by_series_name( seriesName, verify = verify )
+    if len( tmdb_id ) == 0: return
+    tmdb_id = tmdb_id[ 0 ]
+    tmdb_tv_info = plextmdb.get_tv_info_for_series( tmdb_id, verify = verify )
+    numeps_in_season = { }
+    for season in tmdb_tv_info['seasons']:
+        if season['season_number'] == 0: continue
+        season_number = season['season_number']
+        numeps = season['episode_count']
+        
+    #
+    ## only fix the non-specials
+    for episode in eps_copy:
+        if episode['airedSeason'] == 0: continue
+
+        
+"""
+Date must be within 4 weeks of now
+"""
+def get_series_updated_fromdate( date, token, verify = True ):
+    """
+    
+    """
+    datetime_now = datetime.datetime.now( )
+    assert( date + relativedelta(weeks=4) >= datetime_now.date( ) )
+    dates_start = list(
+        filter(lambda mydate: mydate < datetime_now.date( ),
+               sorted(map(lambda idx: date + relativedelta(weeks=idx), range(5)))))
+    print( dates_start )
+    #
+    ##
+    headers = { 'Content-Type' : 'application/json',
+                'Authorization' : 'Bearer %s' % token }
+    series_ids = [ ]
+    for mydate in dates_start:
+        dt_start = datetime.datetime( year = mydate.year,
+                                      month = mydate.month,
+                                      day = mydate.day )
+        dt_end = min( dt_start + relativedelta(weeks=1), datetime_now )
+        epochtime = int( time.mktime( dt_start.utctimetuple( ) ) )
+        toTime = int( time.mktime( dt_end.utctimetuple( ) ) )
+        response = requests.get( 'https://api.thetvdb.com/updated/query',
+                                 params = { 'fromTime' : epochtime,
+                                            'toTime' : toTime },
+                                 headers = headers, verify = verify )
+        if response.status_code != 200:
+            continue
+        series_ids += response.json( )['data']
+    return sorted( set( map(lambda elem: elem['id'], series_ids ) ) )
+
+def get_tot_epdict_imdb( showName, verify = True ):
+    from imdb import IMDb
+    token = get_token( verify = verify )
+    id = get_series_id( showName, token, verify = verify )
+    if id is None: return None
+    imdbId = get_imdb_id( id, token, verify = verify )
+    if imdbId is None: return None
+    #
+    ## now run imdbpy
+    time0 = time.time( )
+    ia = IMDb( )
+    imdbId = imdbId.replace('tt','').strip( )
+    series = ia.get_movie( imdbId )
+    ia.update( series, 'episodes' )
+    logging.debug('took %0.3f seconds to get episodes for %s.' % (
+        time.time( ) - time0, showName ) )
+    tot_epdict = { }
+    seasons = sorted( set(filter(lambda seasno: seasno != -1, series['episodes'].keys( ) ) ) )
+    tot_epdict_tvdb = get_tot_epdict_tvdb( showName, verify = verify )
+    for season in seasons:
+        tot_epdict.setdefault( season, { } )
+        for epno in series['episodes'][season]:
+            episode = series['episodes'][season][epno]
+            title = episode[ 'title' ].strip( )
+            try:
+                firstAired_s = episode[ 'original air date' ]
+                firstAired = datetime.datetime.strptime(
+                    firstAired_s, '%d %b. %Y' ).date( )
+            except:
+                firstAired = tot_epdict_tvdb[ season ][ epno ][-1]
+            tot_epdict[ season ][ epno ] = ( title, firstAired )
     return tot_epdict

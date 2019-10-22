@@ -7,16 +7,13 @@ from requests.compat import urljoin
 from multiprocessing import Process, Manager
 from pathos.multiprocessing import Pool
 
-from plexcore import plexcore_deluge, get_formatted_size, get_maximum_matchval
+from plexcore import plexcore_deluge, get_formatted_size, get_maximum_matchval, return_error_raw
 from plexcore.plexcore import get_jackett_credentials
 from plextvdb import get_token, plextvdb
 
 def _return_error_couldnotfind( name ):
-    return _return_error_raw(
+    return return_error_raw(
         'Failure, could not find any tv shows with search term %s.' % name )
-
-def _return_error_raw( msg ):
-    return None, msg
 
 _num_to_quit = 10
 
@@ -28,17 +25,17 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
     status = re.match('^s[0-9]{2}e[0-9]{2}',
                       last_tok.lower( ) )
     if status is None:
-        return _return_error_raw(
+        return return_error_raw(
             'ERROR, LAST TOKEN %s IS NOT SEASON-EPISODE TOKEN.' % last_tok )
     if series_name is None: series_name = ' '.join( name_split[:-1] )
     tvdb_token = get_token( verify = verify )
     series_id = plextvdb.get_series_id( series_name, tvdb_token, verify = verify )
     if series_id is None:
-        return _return_error_raw(
+        return return_error_raw(
             'ERROR, COULD NOT FIND SERIES %s.' % series_name )
     imdb_id = plextvdb.get_imdb_id( series_id, tvdb_token, verify = verify )
     if imdb_id is None or len( imdb_id.strip( ) ) == 0:
-        return _return_error_raw(
+        return return_error_raw(
             'ERROR, COULD NOT FIND IMDB ID FOR SERIES %s.' % series_name )
     response = requests.get( 'https://eztv.io/api/get-torrents',
                              params = {
@@ -46,11 +43,11 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
                                  'limit' : 100, 'page' : 0 },
                              verify = verify )
     if response.status_code != 200:
-        return _return_error_raw(
+        return return_error_raw(
             'ERROR, COULD NOT FIND ANY TORRENTS FOR %s IN EZTV.IO' % name )
     alldat = response.json( )
     if alldat['torrents_count'] == 0:
-        return _return_error_raw(
+        return return_error_raw(
             'ERROR, COULD NOT FIND ANY TORRENTS FOR %s IN EZTV.IO' % name )
     all_torrents = alldat[ 'torrents' ]
     for pageno in range( 1, 101 ):
@@ -101,7 +98,7 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
                   
     all_torrents_mine = all_torrents_mine[:maxnum]
     if len( all_torrents_mine ) == 0:
-        return _return_error_raw(
+        return return_error_raw(
             'ERROR, COULD NOT FIND %s IN EZTV.IO' % name )
     return list(
         map(lambda tor: {
@@ -144,7 +141,7 @@ def get_tv_torrent_zooqle( name, maxnum = 100, verify = True ):
     fullurl = urljoin( url, paramurl )
     response = requests.get( fullurl, verify = verify )
     if response.status_code != 200:
-        return _return_error_raw(
+        return return_error_raw(
             'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname)
     myxml = BeautifulSoup( response.content, 'lxml' )
     def is_valid_elem( elem ):
@@ -179,7 +176,7 @@ def get_tv_torrent_zooqle( name, maxnum = 100, verify = True ):
         'torrent_size' : get_num_forelem( elem, 'contentlength' ) },
                              cand_items ) )
     if len( items_toshow ) == 0:
-        return _return_error_raw(
+        return return_error_raw(
             'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname )
     items = sorted( items_toshow, key = lambda item: -item['seeders'] - item['leechers'] )[:maxnum]
     return items, 'SUCCESS'
@@ -189,19 +186,19 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     candidate_seriesname = ' '.join( name.strip().split()[:-1] )
     epstring = name.strip().split()[-1].upper()
     if not epstring[0] == 'S':
-        return _return_error_raw( 'Error, first string must be an s or S.' )
+        return return_error_raw( 'Error, first string must be an s or S.' )
     epstring = epstring[1:]
     splitseaseps = epstring.split('E')[:2]
     if len( splitseaseps ) != 2:
-        return _return_error_raw( 'Error, string must have a SEASON and EPISODE part.' )
+        return return_error_raw( 'Error, string must have a SEASON and EPISODE part.' )
     try:
         seasno = int( splitseaseps[0] )
     except:
-        return _return_error_raw( 'Error, invalid season number.' )
+        return return_error_raw( 'Error, invalid season number.' )
     try:
         epno = int( splitseaseps[1] )
     except:
-        return _return_error_raw( 'Error, invalid episode number.' )
+        return return_error_raw( 'Error, invalid episode number.' )
     
     tvdb_token = get_token( verify = verify )
     series_id = get_series_id( candidate_seriesname, tvdb_token,
@@ -210,7 +207,7 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
         series_ids = get_possible_ids( candidate_seriesname,
                                        tvdb_token, verify = verify )
         if series_ids is None or len( series_ids ) == 0:
-            return _return_error_raw(
+            return return_error_raw(
                 'ERROR, PLEXTVDB could find no candidate series that match %s' %
                 candidate_seriesname )
         series_id = series_ids[ 0 ]
@@ -224,7 +221,7 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     if response.status_code != 200:
         status = '. '.join([ 'ERROR, problem with rarbg.to: %d' % response.status_code,
                              'Unable to connect to provider.' ])
-        return _return_error_raw( status )
+        return return_error_raw( status )
     token = response.json( )[ 'token' ]
     params = { 'mode' : 'search', 'search_tvdb' : series_id, 'token' : token,
                'format' : 'json_extended', 'category' : 'tv', 'app_id' : 'rarbg-rubygem',
@@ -237,13 +234,13 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     if response.status_code != 200:
         status = '. '.join([ 'ERROR, problem with rarbg.to: %d' % response.status_code,
                              'Unable to connect to provider.' ])
-        return _return_error_raw( status )
+        return return_error_raw( status )
     data = response.json( )
     if 'torrent_results' not in data:
         status = '\n'.join([ 'ERROR, RARBG.TO could not find any torrents for %s %s.' %
                              ( candidate_seriesname, 'E'.join( splitseaseps ) ),
                              'data = %s' % data ])
-        return _return_error_raw( status )
+        return return_error_raw( status )
     data = list( filter(lambda elem: 'title' in elem, data['torrent_results']) )
     filtered_data = list( filter(lambda elem: 'E'.join( splitseaseps ) in elem['title'] and
                                  '720p' in elem['title'] and 'HDTV' in elem['title'], data ) )
@@ -253,7 +250,7 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     if len( filtered_data ) == 0:
         status = 'ERROR, RARBG.TO could not find any torrents for %s %s.' % (
             candidate_seriesname, 'E'.join( splitseaseps ) )
-        return _return_error_raw( status )
+        return return_error_raw( status )
     def get_num_seeders( elem ):
         if 'seeders' in elem: return elem['seeders']
         return 1
@@ -323,7 +320,7 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
                   'leechers': leechers }
         items.append(myitem)
     if len( items ) == 0:
-        return _return_error_raw(
+        return return_error_raw(
             'Failure, no tv shows or series satisfying criteria for getting %s.' % name)
     items.sort(key=lambda d: try_int(d.get('seeders', 0)) +
                try_int(d.get('leechers')), reverse=True)
@@ -336,7 +333,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
     import validators
     data = get_jackett_credentials( )
     if data is None:
-        return _return_error_raw('FAILURE, COULD NOT GET JACKETT SERVER CREDENTIALS')
+        return return_error_raw('FAILURE, COULD NOT GET JACKETT SERVER CREDENTIALS')
     url, apikey = data
     if not url.endswith( '/' ): url = '%s/' % url
     endpoint = 'api/v2.0/indexers/all/results/torznab/api'
@@ -367,10 +364,10 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
         urljoin( url, endpoint ),
         params = _return_params( name ), verify = verify ) # tv shows
     if response.status_code != 200:
-        return _return_error_raw( 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url )
+        return return_error_raw( 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url )
     html = BeautifulSoup( response.content, 'lxml' )
     if len( html.find_all('item') ) == 0:
-        return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
+        return return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
     items = [ ]
     
     def _get_magnet_url( item ):
@@ -467,7 +464,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
                             all(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), must_have ) ),
                             items ) )
     if len( items ) == 0:
-        return _return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
+        return return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
         
     return items[:maxnum], 'SUCCESS'
 
@@ -562,7 +559,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
     response = max( response_arr )
     if response is None: return None, 'FAILURE TIMED OUT'
     if response.status_code != 200:
-        return _return_error_raw( 'FAILURE STATUS CODE = %d' % response.status_code )
+        return return_error_raw( 'FAILURE STATUS CODE = %d' % response.status_code )
         
     def process_column_header(th):
         if th.a:

@@ -6,6 +6,7 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
+import titlecase
 from plextvdb import plextvdb
 from optparse import OptionParser
 
@@ -19,7 +20,7 @@ def main( ):
                       help = 'If chosen, get a summary of all the seasons and episodes for the SERIES.')
     parser.add_option('-S', '--season', dest='season', action='store', type=int,
                       help = 'If chosen, get a list of all episode titles for this season of the SERIES.')
-    parser.add_option('--noverify', dest='do_noverify', action='store_true', default = False,
+    parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
                       help = 'If chosen, do not verify the SSL connection.')
     #
     ## big option
@@ -31,7 +32,7 @@ def main( ):
     assert( opts.series is not None )
     if opts.do_summary:
         seriesName = opts.series.strip( )
-        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName, verify = not opts.do_noverify, showFuture = True )
+        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName, verify = opts.do_verify, showFuture = True )
         if epdicts is None:
             print('Error, could not find %s' % seriesName)
             return
@@ -42,7 +43,7 @@ def main( ):
             print('SEASON %02d: %d episodes' % ( seasno, len( epdicts[ seasno ] ) ) )
     elif opts.season is not None:
         seriesName = opts.series.strip( )
-        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName, verify = not opts.do_noverify, showFuture = True )
+        epdicts = plextvdb.get_tot_epdict_tvdb( seriesName, verify = opts.do_verify, showFuture = True )
         if epdicts is None:
             print( 'Error, could not find %s' % seriesName )
             return
@@ -58,8 +59,8 @@ def main( ):
     else:
         assert( opts.epstring is not None )
         seriesName = opts.series.strip( )
-        token = plextvdb.get_token( verify = not opts.do_noverify )
-        series_id = plextvdb.get_series_id( seriesName, token, verify = not opts.do_noverify )
+        token = plextvdb.get_token( verify = opts.do_verify )
+        series_id = plextvdb.get_series_id( seriesName, token, verify = opts.do_verify )
         if series_id is None:
             print( 'Error, could not find %s' % seriesName )
             return
@@ -82,13 +83,14 @@ def main( ):
         except:
             print( 'Error, invalid episode number.' )
             return
-        data = plextvdb.get_episode_name( series_id, seasno, epno, token )
+        data = plextvdb.get_episode_name( series_id, seasno, epno, token,
+                                          verify = opts.do_verify )
         if data is None:
             print( 'Error, could not find SEASON %02d, EPISODE %02d, in %s.' % (
                 seasno, epno, seriesName ) )
             return
         epname, fa = data
-        print('%s (%s)' % ( epname, fa.strftime('%A, %d %B %Y' ) ) )
+        print('%s (%s)' % ( titlecase.titlecase( epname ), fa.strftime('%A, %d %B %Y' ) ) )
         # not yet implemented
         #if do_add:
         #    plextvdb.download_single_episode_to_folder( series_id, seasno, epno data )

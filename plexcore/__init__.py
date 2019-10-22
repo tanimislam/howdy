@@ -59,7 +59,7 @@ def get_lastupdated_string( dt = datetime.datetime.now( ) ):
     return dt.strftime('%A, %d %B %Y, at %-I:%M %p')
 
 def return_error_raw( msg ):
-    """Returns a default ``tuple`` of type ``None, msg``, where ``msg`` is a str.
+    """Returns a default ``tuple`` of type ``None, msg``, where ``msg`` is a :py:class:`str`.
 
     :param str msg: the error message.
     
@@ -515,8 +515,7 @@ else: session = sessionmaker( )
 ## this will be used to replace all the existing credentials stored in separate tables
 class PlexConfig( Base ):
     """
-    This SQLAlchemy_ ORM class contains the configuration data used for running all the plexstuff tools.
-    Stored into the ``plexconfig`` table in the SQLite3_ configuration database.
+    This SQLAlchemy_ ORM class contains the configuration data used for running all the plexstuff tools. Stored into the ``plexconfig`` table in the SQLite3_ configuration database.
 
     Attributes:
         service: the name of the configuration service we store. Index on this unique key.

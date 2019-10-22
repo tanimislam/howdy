@@ -29,8 +29,8 @@ class ShowsToExclude( Base ): # these are shows you want to exclude
     show = Column( String( 65536 ), index = True, primary_key = True )
 
 #
-## commit all tables
-create_all( )
+## commit all tables BUT ONLY IF NOT READTHEDOCS
+if not os.environ.get('READTHEDOCS'): create_all( )
     
 def save_tvdb_api( username: str, apikey: str, userkey: str, verify = True ):
     """

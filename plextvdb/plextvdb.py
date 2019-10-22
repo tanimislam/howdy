@@ -203,8 +203,7 @@ class TVSeason( object ):
             if 'overview' in epelem: datum[ 'overview' ] = epelem[ 'overview' ]
             self.episodes[ epelem[ 'airedEpisodeNumber' ] ] = datum            
         maxep = max( self.episodes )
-        minep = min( self.episodes )            
-
+        minep = min( self.episodes )
 
 #
 ## method to get all the shows organized by date.
@@ -212,6 +211,26 @@ class TVSeason( object ):
 ## 2)  value is list of tuples
 ## 2a) each tuple is of type date, show name, season, episode number, episode title
 def get_tvdata_ordered_by_date( tvdata ):
+    """
+    This *flattens* the TV data, stored as a nested :py:class:`dict` (see documentation in :py:meth:`get_library_data <plexcore.plexcore.get_library_data>` that focuses on the format of the dictionary for TV libraries) into a dictionary whose keys are the :py:class:`date <datetime.date>` at which episodes have been aired, and whose values are the :py:class:`list` of episodes aired on that date. Each element of that list is a :py:class:`tuple` representing a given episode: ``( SHOW, SEASON #, EPISODE #, EPISODE TITLE )``.
+
+    For example, let ``tvdata`` represent the Plex_ TV library information  collected with :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`. Then here are the episodes on the Plex_ server aired on the *last* date.
+
+    .. code-block:: python
+
+        >> tvdata_flatten = get_tvdata_ordered_by_date( tvdata )
+        >> last_date = max( tvdata_flatten )
+        >> datetime.date(2019, 10, 21)
+        >> tvdata_flatten[ last_date ]
+        >> [('Robot Chicken', 10, 7, 'Snoopy Camino Lindo in: Quick and Dirty Squirrel Shot'), ('Robot Chicken', 10, 8, "Molly Lucero in: Your Friend's Boob"), ('The Deuce', 3, 7, "That's a Wrap"), ('Travel Man: 48 Hours in...', 10, 1, 'Dubrovnik')]
+
+
+    :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`.
+    :returns: a :py:class:`dict` of episodes. Each key is the date a list of episodes aired. The value is the list of episodes.
+    :rtype: dict
+
+    .. seealso:: :py:meth:`create_plot_year_tvdata <plextvdb.plextvdb.create_plot_year_tvdata>`
+    """
     def _get_tuple_list_season( show, seasno ):
         assert( show in tvdata )
         assert( seasno in tvdata[ show ]['seasons'] )
@@ -237,6 +256,16 @@ def get_tvdata_ordered_by_date( tvdata ):
 
 def create_plot_year_tvdata( tvdata_date_dict, year = 2010,
                              shouldPlot = True, dirname = None ):
+    """
+    Creates a calendar eye chart of episodes aired during a given calendar year. This either creates an SVGZ_ file, or shows the chart on the screen. An example chart is shown in :numref:`plex_tvdb_cli_figures_plots_tvdata_2000`.
+    
+    :param dict tvdata_date_dict: the :py:class:`dictionary <dict>` of Plex_ TV library episodes, organized by date aired.
+    :param int year: the calendar year for which to create an eye chart of episodes aired.
+    :param bool shouldPlot: if ``True``, then crate an SVGZ_ file named ``tvdata.YEAR.svgz``. Otherwise plot this eye chart on the screen.
+    :parm str dirname: the directory into which a file should be created (only applicable when ``shouldPlot = True``). If ``None``, then defaults to current working directory. If not ``None``, then must be a valid directory.
+
+    .. _SVGZ: https://en.wikipedia.org/wiki/Scalable_Vector_Graphics#Compression
+    """
     calendar.setfirstweekday( 6 )
     def suncal( mon, year = 2010, current_date = None ):
         if current_date is None:
@@ -398,6 +427,16 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010,
     return fig
     
 def get_series_id( series_name, token, verify = True ):
+    """
+    Returns the TVDB_ series ID given its series name. If no candidate is found, returns ``None``.
+
+    :param str series_name: the series name for which to search.
+    :param str token: the TVDB_ API access token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    :returns: the :py:class:`int` TVDB_ series ID for a series if found, otherwise ``None``.
+    :rtype: str
+    """
     data_ids, status = get_possible_ids( series_name, token, verify = verify )
     if data_ids is None:
         print( 'PROBLEM WITH series %s' % series_name )
@@ -414,6 +453,25 @@ def get_series_id( series_name, token, verify = True ):
     return max( data_matches )[ 'id' ]
 
 def get_possible_ids( series_name, token, verify = True ):
+    """
+    Returns a :py:class:`tuple` of candidate TV shows from the TVDB_ database that match a series name, and status string. If matches could not be found, returns an error :py:class:`tuple` returned by :py:meth:`return_error_raw <plexcore.return_error_raw>` -- first element is ``None``, second element is :py:class:`str` error message.
+
+    The form of the candidate TV shows is a list of dictionaries. Each dictionary is a candidate TV show: the ``'id'`` key is the :py:class:`int` TVDB_ series ID, and the ``'seriesName'`` key is the :py:class:`str` series name. For example, for `The Simpsons`_
+
+    .. code-block:: bash
+
+       >> candidate_series, _ = get_possible_ids( 'The Simpsons', tvdb_token )
+       >> [{'id': 71663, 'seriesName': 'The Simpsons'}, {'id': 76580, 'seriesName': "Paul Merton in Galton & Simpson's..."}, {'id': 153221, 'seriesName': "Jessica Simpson's The Price of Beauty"}]
+    
+    :param str series_name: the series over which to search on the TVDB_ database.
+    :param str token: the TVDB_ API access token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    :returns: a :py:class:`tuple` of candidate TVDB_ series that match ``series_name``, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    :rtype: tuple
+
+    .. _`The Simpsons`: https://en.wikipedia.org/wiki/The_Simpsons
+    """
     params = { 'name' : series_name.replace("'", '') }
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
@@ -464,7 +522,15 @@ def get_possible_ids( series_name, token, verify = True ):
 
 def did_series_end( series_id, token, verify = True, date_now = None ):
     """
-    Check on shows that have ended more than 365 days from the last day
+    Check on shows that have ended more than 365 days from the last day.
+    
+    :param int series_id: the TVDB_ database series ID.
+    :param str token: the TVDB_ API access token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param date date_now: an optional specific last :py:class:`date <datetime.date>` to describe when a show was deemed to have ended. That is, if a show has not aired any episodes more than 365 days before ``date_now``, then define the show as ended. By default, ``date_now`` is the current date.
+
+    :returns: ``True`` if the show is "ended," otherwise ``False``.
+    :rtype: bool
     """
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
@@ -484,15 +550,41 @@ def did_series_end( series_id, token, verify = True, date_now = None ):
     return td.days > 365
 
 def get_imdb_id( series_id, token, verify = True ):
+    """
+    Returns the IMDb_ string ID given a TVDB_ series ID, otherwise return ``None`` if show's IMDb_ ID cannot be found.
+
+    :param int series_id: the TVDB_ database series ID.
+    :param str token: the TVDB_ API access token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: the :py:class:`str` IMDb_ ID of the TV show if found, otherwise ``None``.
+    :rtype: str
+    
+    .. _IMDb: https://en.wikipedia.org/wiki/IMDb
+    """
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
                              headers = headers, verify = verify )
+    logging.debug( 'STATUS CODE OF get_imdb_id( %d, %s, %s ) = %d.' % (
+        series_id, token, verify, response.status_code ) )
     if response.status_code != 200: return None
     data = response.json( )['data']
     return data['imdbId']
 
 def get_episode_id( series_id, airedSeason, airedEpisode, token, verify = True ):
+    """
+    Returns the TVDB_ :py:class:`int` episode ID of an episode, given its TVDB_ series ID, season, and episode number. If cannot be found, then returns ``None``.
+
+    :param int series_id: the TVDB_ database series ID.
+    :param int airedSeason: the season number of the episode.
+    :param int airedEpisode: the aired episode number, in the season.
+    :param str token: the TVDB_ API access token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: the :py:class:`int` TVDB_ episode ID if found, otherwise ``None``.
+    :rtype: int
+    """
     params = { 'page' : 1,
                'airedSeason' : '%d' % airedSeason,
                'airedEpisode' : '%d' % airedEpisode }
@@ -505,6 +597,18 @@ def get_episode_id( series_id, airedSeason, airedEpisode, token, verify = True )
     return data[ 'id' ]
 
 def get_episode_name( series_id, airedSeason, airedEpisode, token, verify = True ):
+    """
+    Returns the episode given its TVDB_ series ID, season number, and episode number. If cannot be found, then returns ``None``.
+
+    :param int series_id: the TVDB_ database series ID.
+    :param int airedSeason: the season number of the episode.
+    :param int airedEpisode: the aired episode number, in the season.
+    :param str token: the TVDB_ API access token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    :returns: the :py:class:`str` episode name.
+    :rtype: str
+    """
     params = { 'page' : 1,
                'airedSeason' : '%d' % airedSeason,
                'airedEpisode' : '%d' % airedEpisode }
@@ -525,21 +629,77 @@ def get_episode_name( series_id, airedSeason, airedEpisode, token, verify = True
     return ( data[ 'episodeName' ], firstAired )
 
 def get_series_info( series_id, token, verify = True ):
+    """
+    Returns a :py:class:`tuple` of TVDB_ summary information AND the string "SUCCESS" for a given Tv show, otherwise returns an error :py:class:`tuple` given by :py:meth:`return_error_raw <plexcore.return_error_raw>`. For example, here is the summary information returned for `The Simpsons`_.
+    
+    .. code-block:: python
+    
+        >> series_id = get_series_id( 'The Simpsons', tvdb_token )
+        >> series_info, _ = get_series_info( series_id, tvdb_token )
+        >> {'id': 71663,
+            'seriesName': 'The Simpsons',
+            'aliases': [],
+            'banner': 'graphical/71663-g13.jpg',
+            'seriesId': '146',
+            'status': 'Continuing',
+            'firstAired': '1989-12-17',
+            'network': 'FOX',
+            'networkId': '',
+            'runtime': '25',
+            'genre': ['Animation', 'Comedy'],
+            'overview': 'Set in Springfield, the average American town, the show focuses on the antics and everyday adventures of the Simpson family; Homer, Marge, Bart, Lisa and Maggie, as well as a virtual cast of thousands. Since the beginning, the series has been a pop culture icon, attracting hundreds of celebrities to guest star. The show has also made name for itself in its fearless satirical take on politics, media and American life in general.',
+            'lastUpdated': 1571687688,
+            'airsDayOfWeek': 'Sunday',
+            'airsTime': '8:00 PM',
+            'rating': 'TV-PG',
+            'imdbId': 'tt0096697',
+            'zap2itId': 'EP00018693',
+            'added': '',
+            'addedBy': None,
+            'siteRating': 8.9,
+            'siteRatingCount': 847,
+            'slug': 'the-simpsons'}
+
+    :param int series_id: the TVDB_ database series ID.
+    :param str token: the TVDB_ API access token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    :returns: a :py:class:`tuple` of candidate TV show info, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    :rtype: tuple
+    """
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
                              headers = headers, verify = verify )
-    if response.status_code != 200: return None, "COULD NOT ACCESS TV INFO SERIES"
+    if response.status_code != 200: return return_error_raw( "COULD NOT ACCESS TV INFO SERIES" )
     data = response.json( )[ 'data' ]
     return data, 'SUCCESS'
     
 
 def get_series_image( series_id, token, verify = True ):
+    """
+    Returns a :py:class:`tuple` of the TVDB_ URL of the TV show's poster AND the string "SUCCESS", if found. Otherwise returns an error :py:class:`tuple` given by :py:meth:`return_error_raw <plexcore.return_error_raw>`. For example, here is the TVDB_ poster URL for `The Simpsons`_.
+    
+    .. code-block:: python
+
+        >> series_id = get_series_id( 'The Simpsons', tvdb_token )
+        >> series_image, _ = get_series_image( series_id, tvdb_token )
+        >> 'https://thetvdb.com/banners/posters/71663-1.jpg'
+
+    :param int series_id: the TVDB_ database series ID.
+    :param str token: the TVDB_ API access token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    :returns: a :py:class:`tuple` of TV show poster URL, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    :rtype: tuple
+
+    .. seealso:: :py:meth:`get_series_season_image <plextvdb.plextvdb.get_series_season_image>`
+    """
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/series/%d/images/query/params' % series_id,
                              headers = headers, verify = verify )
-    if response.status_code != 200: return None, "COULD NOT ACCESS IMAGE URL FOR SERIES"
+    if response.status_code != 200: return return_error_raw( "COULD NOT ACCESS IMAGE URL FOR SERIES" )
     data = response.json( )['data']
     #
     ## first look for poster entries
@@ -586,15 +746,38 @@ def get_series_image( series_id, token, verify = True ):
             firstSeries = data[0]
             if 'fileName' in firstSeries:
                 return 'https://thetvdb.com/banners/%s' % firstSeries['fileName'], "SUCCESS"
-    return None, "COULD NOT DOWNLOAD SERIES INFO FOR SERIES_ID = %d" % series_id ## nothing happened
+    #
+    ## nothing happened
+    return return_error_raw( "COULD NOT DOWNLOAD SERIES INFO FOR SERIES_ID = %d" % series_id )
 
 def get_series_season_image( series_id, airedSeason, token, verify = True ):
+    """
+    Returns a :py:class:`tuple` of the TVDB_ URL of the TV show's SEASON poster AND the string "SUCCESS", if found. Otherwise returns an error :py:class:`tuple` given by :py:meth:`return_error_raw <plexcore.return_error_raw>`. For example, here is the TVDB_ season poster URL for `The Simpsons, season 10`_.
+    
+    .. code-block:: python
+
+        >> series_id = get_series_id( 'The Simpsons', tvdb_token )
+        >> season_image, _ = get_series_image( series_id, 10, tvdb_token )
+        >> 'https://thetvdb.com/banners/seasons/146-10.jpg'
+
+    :param int series_id: the TVDB_ database series ID.
+    :param int airedSeason: the season number of the episode.
+    :param str token: the TVDB_ API access token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    :returns: a :py:class:`tuple` of TV show SEASON poster URL, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    :rtype: tuple
+
+    .. seealso:: :py:meth:`get_series_image <plextvdb.plextvdb.get_series_image>`
+
+    .. _`The Simpsons, season 10`: https://en.wikipedia.org/wiki/The_Simpsons_(season_10)
+    """
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
     response = requests.get( 'https://api.thetvdb.com/series/%d/images/query/params' % series_id,
                              headers = headers, verify = verify )
     if response.status_code != 200:
-        return None, "COULD NOT FIND IMAGES FOR SERIES_ID = %d" % series_id
+        return return_error_raw( "COULD NOT FIND IMAGES FOR SERIES_ID = %d" % series_id )
     data = response.json( )['data']
     #
     ## look for season keytype
@@ -614,35 +797,31 @@ def get_series_season_image( series_id, airedSeason, token, verify = True ):
     response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % series_id,
                              headers = headers, params = params, verify = verify )
     if response.status_code != 200:
-        return None, "COULD NOT GET PROPER IMAGE FROM VALID IMAGE QUERY FOR SERIES_ID = %d AND SEASON = %d" % (
-            series_id, airedSeason )
+        return return_error_raw(
+            "COULD NOT GET PROPER IMAGE FROM VALID IMAGE QUERY FOR SERIES_ID = %d AND SEASON = %d" % (
+                series_id, airedSeason ) )
     season_data = response.json( )['data'][ 0 ]
     if 'fileName' not in season_data:
-        return None, "COULD NOT FIND APPROPRIATE IMAGE URL FROM VALID IMAGE QUERY FOR SERIES_ID = %d AND SEASON = %d" % (
-            series_id, airedSeason )
+        return return_error_raw(
+            "COULD NOT FIND APPROPRIATE IMAGE URL FROM VALID IMAGE QUERY FOR SERIES_ID = %d AND SEASON = %d" % (
+                series_id, airedSeason ) )
     return 'https://thetvdb.com/banners/%s' % season_data[ 'fileName' ], "SUCCESS"
-
-def fix_missing_unnamed_episodes( seriesName, eps, verify = True, showFuture = False ):
-    from plextmdb import plextmdb
-    eps_copy = copy.deepcopy( eps )
-    tmdb_id = plextmdb.get_tv_ids_by_series_name( seriesName, verify = verify )
-    if len( tmdb_id ) == 0: return
-    tmdb_id = tmdb_id[ 0 ]
-    tmdb_tv_info = plextmdb.get_tv_info_for_series( tmdb_id, verify = verify )
-    numeps_in_season = { }
-    for season in tmdb_tv_info['seasons']:
-        if season['season_number'] == 0: continue
-        season_number = season['season_number']
-        numeps = season['episode_count']
-        
-    #
-    ## only fix the non-specials
-    for episode in eps_copy:
-        if episode['airedSeason'] == 0: continue
-
 
 def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
                          verify = True, showFuture = False ):
+    """
+    Returns a large and comprehensive :py:class:`list` of TVDB_ episode info on a given TV show. Example TVDB_ show data for `The Simpsons`_, represented as a JSON file, is located in :download:`tvdb_simpsons_info.json </_static/tvdb_simpsons_info.json>`. Each element of the list is an episode, and the list is ordered from earliest aired episode to latest aired episode.
+
+    :param int series_id: the TVDB_ database series ID.
+    :param str token: the TVDB_ API access token.
+    ;param bool showSpecials: if ``True``, also include episode info for TV specials for that given series. Default is ``True``.
+    :param date fromDate: optional first :py:class:`date <datetime.date>` after which to collect TVDB_ episode information. If not defined, then include information on all episodes from the first one aired.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param bool showFuture: optional argument, if ``True`` then also include information on episodes that have not yet aired.
+    
+    :returns: the :py:class:`list` of unified TVDB_ information on a TV show. See :download:`tvdb_simpsons_info.json </_static/tvdb_simpsons_info.json>`.
+    :rtype: list
+    """
     params = { 'page' : 1 }
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % token }
@@ -686,41 +865,70 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
     #
     ## now postprocess for all problematic shows, use tmdbId
     problem_eps = list(filter(lambda episode: episode['episodeName'] is None,
-                              sData ) )
-    
-        
+                              sData ) )        
     return sData
 
-"""
-Date must be within 4 weeks of now
-"""
-def get_series_updated_fromdate( date, token, verify = True ):
-    assert( date + relativedelta(weeks=4) >= datetime.datetime.now( ).date( ) )
-    datetime_now = datetime.datetime.now( )
-    dates_start = filter(lambda mydate: mydate < datetime_now.date( ),
-                         sorted(map(lambda idx: date + relativedelta(weeks=idx), range(5))))
-    #
-    ##
-    headers = { 'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer %s' % token }
-    series_ids = [ ]
-    for mydate in dates_start:
-        dt_start = datetime.datetime( year = mydate.year,
-                                      month = mydate.month,
-                                      day = mydate.day )
-        dt_end = min( dt_start + relativedelta(weeks=1), datetime_now )
-        epochtime = int( time.mktime( dt_start.utctimetuple( ) ) )
-        toTime = int( time.mktime( dt_end.utctimetuple( ) ) )
-        response = requests.get( 'https://api.thetvdb.com/updated/query',
-                                 params = { 'fromTime' : epochtime,
-                                            'toTime' : toTime },
-                                 headers = headers, verify = verify )
-        if response.status_code != 200:
-            continue
-        series_ids += response.json( )['data']
-    return sorted( set( map(lambda elem: elem['id'], series_ids ) ) )
-
 def get_path_data_on_tvshow( tvdata, tvshow ):
+    """
+    This method is used by the :ref:`get_plextvdb_batch.py` tool that can automatically download new episodes. This returns a summary :py:class:`dict` of information on a TV show stored in the Plex_ server (see documentation in :py:meth:`get_library_data <plexcore.plexcore.get_library_data>` that focuses on the format of the dictionary for TV libraries). For example, here is the summary information on `The Simpsons`_ given in the ``tvdata``, the dictionary representation of TV library data. ``$LIBARY_DIR`` is the TV library's location on the Plex_ server.
+
+    .. code-block:: python
+        
+        >> simpsons_summary = get_path_data_on_tvshow( tvdata, 'The Simpsons' )
+        >> {'prefix': '$LIBRARY_DIR/The Simpsons',
+            'showFileName': 'The Simpsons',
+            'season_prefix_dict': {1: 'Season 01',
+              2: 'Season 02',
+              3: 'Season 03',
+              4: 'Season 04',
+              5: 'Season 05',
+              6: 'Season 06',
+              7: 'Season 07',
+              8: 'Season 08',
+              9: 'Season 09',
+              10: 'Season 10',
+              11: 'Season 11',
+              12: 'Season 12',
+              13: 'Season 13',
+              14: 'Season 14',
+              15: 'Season 15',
+              16: 'Season 16',
+              17: 'Season 17',
+              18: 'Season 18',
+              19: 'Season 19',
+              20: 'Season 20',
+              21: 'Season 21',
+              22: 'Season 22',
+              23: 'Season 23',
+              24: 'Season 24',
+              25: 'Season 25',
+              26: 'Season 26',
+              27: 'Season 27',
+              28: 'Season 28',
+              29: 'Season 29',
+              30: 'Season 30',
+              31: 'Season 31'},
+            'min_inferred_length': 2,
+            'episode_number_length': 2,
+            'avg_length_mins': 22.0}
+    
+    Here is a guide to the keys:
+    
+    * ``prefix`` is the root directory in which the episodes of the TV show live.
+    * ``showFilename`` is the prefix of all episodes of this TV show. Here for instance, a new Simpsons episode, say S31E06, would start with ``"The Simpsons - s31e06 - ..."``.
+    * ``season_prefix_dict`` is a dictionary of sub-directories, by *season*, in which the episodes live. For example, season 1 episodes live in ``"$LIBARY_DIR/The Simpsons/Season 01"``.
+    * ``min_inferred_length`` refers to the padding of season number. This :py:class:`integer <int>` must be :math:`\ge 1`. Here ``min_inferred_length = 2``, so seasons are numbered as ``"Season 01"``.
+    * ``episode_number_length`` is the formatting on each episode number. Two means that episode numbers for this TV show are formatted as ``01-99``. This becomes important for TV shows in which there are 100 or more episodes in a season, such as `The Adventures of Rocky and Bullwinkle and Friends`_.
+    * ``avg_length_mins`` is the average episode length, in minutes.
+
+    :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`.
+    :param str tvshow: the TV show's name.
+
+    :returns: the summary :py:class:`dict` for the TV show on this Plex_ server's TV library. If ``tvshow`` is not found, then returns ``None``.
+    :rtype: dict
+
+    .. _`The Adventures of Rocky and Bullwinkle and Friends`: https://en.wikipedia.org/wiki/The_Adventures_of_Rocky_and_Bullwinkle_and_Friends
+    """
     assert( tvshow in tvdata )
     seasons_info = tvdata[ tvshow ][ 'seasons' ]
     num_cols = set( chain.from_iterable(
@@ -838,6 +1046,28 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
 def get_all_series_didend( tvdata, verify = True,
                            num_threads = 2 * multiprocessing.cpu_count( ),
                            tvdb_token = None ):
+    """
+    Returns a :py:class:`dict` on which TV shows on the Plex_ server have ended. Each key is the TV show, and its value is whether the show ended or not. Here is its format.
+
+    .. code-block:: python
+
+        {
+          '11.22.63': True,
+          'Fargo': False,
+          'Night Court': True,
+          'Two and a Half Men': True,
+          '24': True,
+          ...
+        }
+
+    :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param int num_threads: the number of threads over which to parallelize this calculation. The default is *twice* the number of cores on the CPU.
+    :param str tvdb_token: optional TVDB_ API access token. If ``None``, then gets the TVDB_ API access token with :py:meth:`get_token <plextvdb.get_token>`.
+    
+    :returns: the :py:class:`dict` of TV shows on the Plex_ server and whether each has ended or not.
+    :type: dict
+    """
     time0 = time.time( )
     if tvdb_token is None: tvdb_token = get_token( verify = verify )
     with multiprocessing.Pool(
@@ -913,6 +1143,66 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
                             doShowEnded = False, showsToExclude = None, showFuture = False,
                             num_threads = 2 * multiprocessing.cpu_count( ), token = None,
                             mustHaveTitle = True ):
+    """
+    Returns a :py:class:`dict` of episodes missing from the Plex_ TV library for the TV shows that are in it. Each key in the dictionary is the TV show with missing episodes. The value is another dictionary. Here are their keys and values,
+    
+    * ``episodes`` returns a :py:class:`list` of :py:class:`tuple`s of missing episodes. Each tuple is of the form ``( SEASON #, EPISODE #, EPISODE NAME )``.
+    * the remaining keys -- ``prefix``, ``showFilename``, ``min_inferred_length``, ``season_prefix_dict``, ``episode_number_length``, ``avg_length_mins`` -- and their values have the same meaning as the summary Plex_ TV library returned by :py:meth:`get_path_data_on_tvshow <plextvdb.plextvdb.get_path_data_on_tvshow>`.
+
+    Here is some example output. ``$LIBARY_DIR`` is the TV library's location on the Plex_ server, and `The Great British Bake Off`_ is a British reality TV show on baking.
+
+    .. code-block:: python
+
+       {'The Great British Bake Off': {'episodes': [(5, 12, 'Masterclass 2'),
+       (5, 13, 'Class of 2013'),
+       (5, 14, 'Masterclass 3'),
+       (5, 15, 'Masterclass 4'),
+       (7, 11, 'Class of 2015'),
+       (10, 1, 'Cake Week'),
+       (10, 2, 'Biscuit Week'),
+       (10, 3, 'Bread Week'),
+       (10, 4, 'Dairy Week'),
+       (10, 5, 'The Roaring Twenties'),
+       (10, 6, 'Dessert Week'),
+       (10, 7, 'Festival Week'),
+       (10, 8, 'Pastry Week')],
+      'prefix': '$LIBRARY_DIR/The Great British Bake Off',
+      'showFileName': 'The Great British Bake Off',
+      'min_inferred_length': 1,
+      'season_prefix_dict': {0: 'Specials',
+       1: 'Season 1',
+       2: 'Season 2',
+       3: 'Season 3',
+       4: 'Season 4',
+       5: 'Season 5',
+       6: 'Season 6',
+       7: 'Season 7',
+       8: 'Season 8',
+       9: 'Season 9'},
+      'episode_number_length': 2,
+      'avg_length_mins': 52.0}}
+    
+    :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`.
+    :param bool showSpecials: if ``True``, also include episode info for TV specials for that given series. Default is ``True``.
+    :param date fromDate: optional start :py:class:`date <datetime.date>` from which to search for new episodes. That is, if defined then only look for missing episodes aired on or after this date. If not defined, then look for *any* aired episode missing from this Plex_ TV library.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param bool doShowEnded: if ``True``, then also look for missing episodes from shows that have ended. Default is ``False``.
+    :param list showsToExclude: the list of TV shows on the Plex_ server to ignore. Default is to not ignore any TV show.
+    :param bool showFuture: if ``True``, then also include missing episodes that have not aired yet. Default is ``False``.
+    :param int num_threads: the number of threads over which to parallelize this calculation. The default is *twice* the number of cores on the CPU.
+    :param str token: optional TVDB_ API access token. If ``None``, then gets the TVDB_ API access token with :py:meth:`get_token <plextvdb.get_token>`.
+    :param bool mustHaveTitle: sometimes new episodes are registered in TVDB_ but without titles. Functionality to download missing episodes to the Plex_ server (see, e.g., :ref:`get_plextvdb_batch.py`) fails if the episode does not have a name. If ``True``, then ignore new episodes that do not have titles. Default is ``True``.
+    
+    :returns: a :py:class:`dict` of missing episodes by TV show on the Plex_ server.
+    :rtype: dict
+
+    .. seealso::
+
+       * :py:meth:`get_path_data_on_tvshow <plextvdb.plextvdb.get_path_data_on_tvshow>`.
+       * :ref:`get_plextvdb_batch.py`.
+
+    .. _`The Great British Bake Off`: https://en.wikipedia.org/wiki/The_Great_British_Bake_Off
+    """
     assert( num_threads >= 1 )
     if token is None: token = get_token( verify = verify )
     tvdata_copy = copy.deepcopy( tvdata )
@@ -984,6 +1274,37 @@ def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify
 
 def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token = None,
                            fromDate = None, num_threads = 2 * multiprocessing.cpu_count( ) ):
+    """
+    Returns a :py:class:`dict` on which TV shows on the Plex_ server have a new season to start. Each key is a TV show in the Plex_ library. Each value is another dictionary: ``max_last_season`` is the latest season of the TV show, ``min_next_season`` is the next season to be aired, and ``start_date`` is the first :py:class:`date <datetime.date>` that a new episode will air.
+
+    An example output of this method is shown here,
+    
+    .. code-block:: python
+
+        {'American Crime Story': {'max_last_season': 2,
+          'min_next_season': 3,
+          'start_date': datetime.date(2020, 9, 27)},
+         'BoJack Horseman': {'max_last_season': 5,
+          'min_next_season': 6,
+          'start_date': datetime.date(2019, 10, 25)},
+         'Homeland': {'max_last_season': 7,
+          'min_next_season': 8,
+          'start_date': datetime.date(2020, 2, 9)},
+          ...
+        }
+    
+    :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param list showsToExclude: the list of TV shows on the Plex_ server to ignore. Default is to not ignore any TV show.
+    :param str token: optional TVDB_ API access token. If ``None``, then gets the TVDB_ API access token with :py:meth:`get_token <plextvdb.get_token>`.
+    :param date fromDate: optional start :py:class:`date <datetime.date>` *after* which to search for new episodes. That is, if defined then only look for future episodes aired on or after this date. If not defined, then look for *any* aired episode to be aired after the current date.
+    :param int num_threads: the number of threads over which to parallelize this calculation. The default is *twice* the number of cores on the CPU.
+    
+    :returns: a :py:class:`dict` of TV shows that will start airing new episodes.
+    :rtype: dict
+
+    .. seealso:: :ref:`plex_tvdb_futureshows.py`
+    """
     #
     ## first get all candidate tv shows
     tvdb_token = get_token( verify = verify )
@@ -1032,6 +1353,12 @@ def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token =
         return future_shows_dict
     
 def push_shows_to_exclude( tvdata, showsToExclude ):
+    """
+    Adds a list of new shows to exclude from analysis or update in the Plex_ TV library. This updates the ``showstoexclude`` table in the SQLite3_ configuration database with new shows. The shows in the list must exist in the Plex_ server.
+
+    :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`.
+    :param list showsToExclude: the list of TV shows on the Plex_ server to ignore. Default is to not ignore any TV show.
+    """
     if len( tvdata ) == 0: return
     showsActExclude = set(showsToExclude) & set( tvdata.keys( ) ) # first get the union of shows to exclude
     if len( showsActExclude ) != 0:
@@ -1051,6 +1378,14 @@ def push_shows_to_exclude( tvdata, showsToExclude ):
     session.commit( )
 
 def get_shows_to_exclude( tvdata = None ):
+    """
+    Returns the list of shows in the Plex_ library that are ignored from analysis or update. This queries the ``showstoexclude`` table in the SQLite3_ configuration database.
+
+    :param dict tvdata: Optional Plex_ TV library information, returned by :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`, to query. If not defined, then return the list of excluded TV shows found in the relevant table. If dwfined, returns an intersection of shows found in the table with TV shows in the Plex_ library.
+
+    :returns: a :py:class:`list` of TV shows to ignore.
+    :rtype: list
+    """
     showsToExcludeInDB = sorted( set( map(lambda val: val.show, session.query( ShowsToExclude ).all( ) ) ) )
     if tvdata is None: return showsToExcludeInDB
     if len( tvdata ) == 0: return [ ]
@@ -1066,6 +1401,61 @@ def get_shows_to_exclude( tvdata = None ):
 
 def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
                        do_raw = False ):
+    """
+    Used by, e.g., :ref:`get_plextvdb_batch.py`, to download missing episodes on the Plex_ TV library. This returns a :py:class:`tuple` of a :py:class:`list` of missing episodes to (torrent) download from the remote Deluge_ torrent server, and a :py:class:`list` of new directories to create, given a set of missing episode information, ``toGet``, as produced by :py:meth:`get_remaining_episodes <plextvdb.plextvdb.get_remaining_episodes>`. ``$LIBARY_DIR`` is the TV library's location on the Plex_ server.
+
+    * The first element of the tuple is a list of missing episodes to download using the remote Deluge_ server (see :numref:`Seedhost Services Setup` on the server's setup). Each element in the list consists of summary information, as a dictionary, that describes those TV Magnet links to download. Here are the keys.
+      
+      * ``totFname`` is the destination prefix (without file extension) of the episode on the Plex_ server.
+      * ``torFname`` is the search string to give to the Jackett_ server (see :numref:`The Jackett Server` on the Jackett_ server's setup) to search for and download this episode.
+      * ``minSize`` is the minimum size, in MB, of the H264_ encoded MP4 or MKV episode file to search for.
+      * ``minSize_x265`` is the minimum size, in MB, of the `H265/HEVC`_ encoded MP4 or MKV episode file to search for. By defsault this is smaller than ``minSize``.
+      * ``maxSize`` is the maximum size, in MB, of the H264_ encoded MP4 or MKV episode file to search for.
+      * ``maxSize_x265`` is the maximum size, in MB, of the `H265/HEVC`_ encoded MP4 or MKV episode file to search for. By defsault this is smaller than ``maxSize``.
+      * ``tvshow`` is the name of the TV show to which this missing episode belongs.
+      * ``do_raw`` is a :py:class:`boolean <bool>` flag. If ``True``, then search for this missing episode through the Jackett_ server using available IMDb_ information. If ``False``, then do a raw text search on ``torFname`` to find episode Magnet links.
+
+      For example, here is a representation of a missing episode that will be fed to the Deluge_ server for download.
+
+      .. code-block:: python
+
+           {
+            'totFname': '$LIBRARY_DIR/The Great British Bake Off/Season 5/The Great British Bake Off - s05e12 - Masterclass 2',
+             'torFname': 'The Great British Bake Off S05E12',
+             'minSize': 300,
+             'maxSize': 800,
+             'minSize_x265': 200,
+             'maxSize_x265': 650,
+             'tvshow': 'The Great British Bake Off',
+             'do_raw': False
+           }
+
+    * The second element is a :py:class:`list` of new directories to create for missing episodes. In this example, there are new episodes for season 10 of `The Great British Bake Off`_, but no season 10 directory.
+
+      .. code-block:: python
+
+            [ '$LIBRARY_DIR/The Great British Bake Off/Season 10' ]
+
+    :param dict toGet: a :py:class:`dict` of missing episodes by TV show on the Plex_ server, of the format returned by :py:meth:`get_remaining_episodes <plextvdb.plextvdb.get_remaining_episodes>`.
+    :param bool restrictMaxSize: if ``True``, then restrict the *maximum* size of H264_ or `H265/HEVC`_ videos to search for on the Jackett_ server. Default is ``True``.
+    :param bool restrictMinSize: if ``True``, then restrict the *minimum* size of H264_ or `H265/HEVC`_ videos to search for on the Jackett_ server. Default is ``True``.
+    :param bool do_raw: if ``False``, then search for Magnet links of missing episodes using their IMDb_ information. If ``True``, then search using the raw string. Default is ``False``.
+
+    :returns: a :py:class:`tuple` of two elements. The first element is a :py:class:`list` of missing episodes to search on the Jackett_ server. The second element is a :py:class:`list` of new directories to create for the TV library.
+    :rtype: tuple
+    
+    .. seealso::
+    
+       * :ref:`get_plextvdb_batch.py`.
+       * :py:meth:`get_remaining_episodes <plextvdb.plextvdb.get_remaining_episodes>`.
+       * :py:meth:`download_batched_tvtorrent_shows <plextvdb.plextvdb.download_batched_tvtorrent_shows>`.
+       * :py:meth:`worker_process_download_tvtorrent <plextvdb.plextvdb_torrents.worker_process_download_tvtorrent>`.
+    
+    .. _Deluge: https://en.wikipedia.org/wiki/Deluge_(software)
+    .. _Jackett: https://github.com/Jackett/Jackett
+    .. _H264: https://en.wikipedia.org/wiki/Advanced_Video_Coding
+    .. _`H265/HEVC`: https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding
+    """
     tv_torrent_gets = { }
     tv_torrent_gets.setdefault( 'nonewdirs', [] )
     tv_torrent_gets.setdefault( 'newdirs', {} )
@@ -1126,6 +1516,22 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
 
 def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs = 240, num_iters = 10,
                                       do_raw = False ):
+    """
+    Engine backend code, used by :ref:`get_plextvdb_batch.py`, that  searches for Magnet links for missing episodes on the Jackett_ server, downloads the Magnet links using the Deluge_ server, and finally copies the downloaded missing episodes to the appropriate locations in the Plex_ TV library. This expects the :py:class:`tuple` input returned by :py:meth:`create_tvTorUnits <plextvdb.plextvdb.create_tvTorUnits>` to run.
+
+    :param list tvTorUnits: the :py:class:`list` of missing episodes to search on the Jackett_ server. This is the first element of the :py:class:`tuple` returned by :py:meth:`create_tvTorUnits <plextvdb.plextvdb.create_tvTorUnits>`.
+    :param list newdirs: the :py:class:`list` of new directories to create for the TV library. This is the second element of the :py:class:`tuple` returned by :py:meth:`create_tvTorUnits <plextvdb.plextvdb.create_tvTorUnits>`.
+    :param int maxtime_in_secs: the maximum time to wait for a Magnet link found by the Jackett_ server to fully download through the Deluge_ server. Must be :math:`\ge 60` seconds. Default is 240 seconds.
+    :param int num_iters: the maximum number of Magnet links to try and fully download before giving up. The list of Magnet links to try for each missing episode is ordered from *most* seeders + leechers to *least*. Must be :math:`\ge 1`. Default is 10.
+    :param bool do_raw: if ``False``, then search for Magnet links of missing episodes using their IMDb_ information. If ``True``, then search using the raw string. Default is ``False``.
+
+    .. seealso::
+    
+       * :ref:`get_plextvdb_batch.py`.
+       * :py:meth:`get_remaining_episodes <plextvdb.plextvdb.get_remaining_episodes>`.
+       * :py:meth:`create_tvTorUnits <plextvdb.plextvdb.create_tvTorUnits>`.
+       * :py:meth:`worker_process_download_tvtorrent <plextvdb.plextvdb_torrents.worker_process_download_tvtorrent>`.
+    """
     time0 = time.time( )
     data = plexcore_rsync.get_credentials( )
     assert( data is not None ), "error, could not get rsync download settings."
@@ -1209,41 +1615,65 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
     print( 'these %d files moved to correct destinations in %0.3f seconds.' % (
         len( successfulTvTorUnits ), time.time( ) - time2 ) )
     print( 'processed from start to finish in %0.3f seconds.' % ( time.time( ) - time0 ) )
-
-def get_tot_epdict_imdb( showName, verify = True ):
-    from imdb import IMDb
-    token = get_token( verify = verify )
-    id = get_series_id( showName, token, verify = verify )
-    if id is None: return None
-    imdbId = get_imdb_id( id, token, verify = verify )
-    if imdbId is None: return None
-    #
-    ## now run imdbpy
-    time0 = time.time( )
-    ia = IMDb( )
-    imdbId = imdbId.replace('tt','').strip( )
-    series = ia.get_movie( imdbId )
-    ia.update( series, 'episodes' )
-    logging.debug('took %0.3f seconds to get episodes for %s.' % (
-        time.time( ) - time0, showName ) )
-    tot_epdict = { }
-    seasons = sorted( set(filter(lambda seasno: seasno != -1, series['episodes'].keys( ) ) ) )
-    tot_epdict_tvdb = get_tot_epdict_tvdb( showName, verify = verify )
-    for season in seasons:
-        tot_epdict.setdefault( season, { } )
-        for epno in series['episodes'][season]:
-            episode = series['episodes'][season][epno]
-            title = episode[ 'title' ].strip( )
-            try:
-                firstAired_s = episode[ 'original air date' ]
-                firstAired = datetime.datetime.strptime(
-                    firstAired_s, '%d %b. %Y' ).date( )
-            except:
-                firstAired = tot_epdict_tvdb[ season ][ epno ][-1]
-            tot_epdict[ season ][ epno ] = ( title, firstAired )
-    return tot_epdict
-
+    
 def get_tot_epdict_tvdb( showName, verify = True, showSpecials = False, showFuture = False, token = None ):
+    """
+    Returns a summary nested :py:class:`dict` of episode information for a given TV show.
+
+    * The top level dictionary has keys that are the TV show's seasons. Each value is a second level dictionary of information about each season.
+
+    * The second level dictionary has keys (for each season) that are the season's episodes. Each value is a :py:class:`tuple` of episode name and air date, as a :py:class:`date <datetime.date>`.
+
+    An example for `The Simpsons`_ is shown below,
+
+    .. code-block:: python
+
+        {1 : {1: ('Simpsons Roasting on an Open Fire', datetime.date(1989, 12, 17)),
+          2: ('Bart the Genius', datetime.date(1990, 1, 14)),
+          3: ("Homer's Odyssey", datetime.date(1990, 1, 21)),
+          4: ("There's No Disgrace Like Home", datetime.date(1990, 1, 28)),
+          5: ('Bart the General', datetime.date(1990, 2, 4)),
+          6: ('Moaning Lisa', datetime.date(1990, 2, 11)),
+          7: ('The Call of the Simpsons', datetime.date(1990, 2, 18)),
+          8: ('The Telltale Head', datetime.date(1990, 2, 25)),
+          9: ('Life on the Fast Lane', datetime.date(1990, 3, 18)),
+          10: ("Homer's Night Out", datetime.date(1990, 3, 25)),
+          11: ('The Crepes of Wrath', datetime.date(1990, 4, 15)),
+          12: ('Krusty Gets Busted', datetime.date(1990, 4, 29)),
+          13: ('Some Enchanted Evening', datetime.date(1990, 5, 13))},
+        2: {1: ('Bart Gets an F', datetime.date(1990, 10, 11)),
+          2: ('Simpson and Delilah', datetime.date(1990, 10, 18)),
+          3: ('Treehouse of Horror', datetime.date(1990, 10, 24)),
+          4: ('Two Cars in Every Garage and Three Eyes on Every Fish', datetime.date(1990, 11, 1)),
+          5: ("Dancin' Homer", datetime.date(1990, 11, 8)),
+          6: ('Dead Putting Society', datetime.date(1990, 11, 15)),
+          7: ('Bart vs. Thanksgiving', datetime.date(1990, 11, 22)),
+          8: ('Bart the Daredevil', datetime.date(1990, 12, 6)),
+          9: ('Itchy & Scratchy & Marge', datetime.date(1990, 12, 20)),
+          10: ('Bart Gets Hit by a Car', datetime.date(1991, 1, 10)),
+          11: ('One Fish, Two Fish, Blowfish, Blue Fish', datetime.date(1991, 1, 24)),
+          12: ('The Way We Was', datetime.date(1991, 1, 31)),
+          13: ('Homer vs. Lisa and the Eighth Commandment', datetime.date(1991, 2, 7)),
+          14: ('Principal Charming', datetime.date(1991, 2, 14)),
+          15: ('Oh Brother, Where Art Thou?', datetime.date(1991, 2, 21)),
+          16: ("Bart's Dog Gets an F", datetime.date(1991, 3, 7)),
+          17: ('Old Money', datetime.date(1991, 3, 28)),
+          18: ('Brush With Greatness', datetime.date(1991, 4, 11)),
+          19: ("Lisa's Substitute", datetime.date(1991, 4, 25)),
+          20: ('The War of the Simpsons', datetime.date(1991, 5, 2)),
+          21: ('Three Men and a Comic Book', datetime.date(1991, 5, 9)),
+          22: ('Blood Feud', datetime.date(1991, 8, 11))},
+          ...
+        }
+
+    :param str showName: the TV show's name.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param bool showSpecials: if ``True``, then also include TV specials. These specials will appear in a season ``0`` in this dictionary.
+    :param bool showFuture: optional argument, if ``True`` then also include information on episodes that have not yet aired.
+    
+    :returns: a :py:class:`dict` of TV show episodes that the TVDB_ database has found.
+    :rtype: dict
+    """
     if token is None: token = get_token( verify = verify )
     series_id = get_series_id( showName, token, verify = verify )
     eps = get_episodes_series( series_id, token, verify = verify, showFuture = showFuture )
@@ -1264,34 +1694,3 @@ def get_tot_epdict_tvdb( showName, verify = True, showSpecials = False, showFutu
         tot_epdict.setdefault( seasnum, { } )
         tot_epdict[ seasnum ][ epno ] = ( title, firstAired )
     return tot_epdict
-
-def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):
-    import lxml.html, titlecase
-    assert(seasnums >= 1)
-    assert(isinstance(seasnums, int))
-    #
-    def is_epelem(elem):
-        if elem.tag == 'span':
-            if 'class' not in elem.keys(): return False
-            if 'id' not in elem.keys(): return False
-            if elem.get('class') != 'mw-headline': return False
-            if 'Season' not in elem.get('id'): return False
-            return True
-        elif elem.tag == 'td':
-            if 'class' not in elem.keys(): return False
-            if 'style' not in elem.keys(): return False
-            if elem.get('class') != 'summary': return False
-            return True
-        return False
-    #
-    tree = lxml.html.fromstring(requests.get(epURL, verify=verify).content )    
-    epelems = filter(is_epelem, tree.iter())
-    #
-    ## splitting by seasons
-    idxof_seasons = list(zip(*filter(lambda tup: tup[1].tag == 'span',
-                                     enumerate(epelems)))[0]) + \
-        [ len(epelems) + 1, ]
-    totseasons = len(idxof_seasons) - 1
-    assert( seasnums <= totseasons )
-    return { idx + 1 : titlecase.titlecase( epelem.text_content().replace('"','')) for
-             (idx, epelem) in enumerate( epelems[idxof_seasons[seasnums-1]+1:idxof_seasons[seasnums]] ) }

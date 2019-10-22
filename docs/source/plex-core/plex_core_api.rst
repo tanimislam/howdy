@@ -47,7 +47,6 @@ This module implements the functionality to do the following:
 .. automodule:: plexcore.plexcore
    :members:
 
-
 plexcore.plexcore_deluge module
 -----------------------------------------
 

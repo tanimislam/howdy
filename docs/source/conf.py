@@ -53,11 +53,12 @@ autodoc_mock_imports = [ 'sip', 'PyQt4', 'PyQt4.QtGui', 'PyQt4.QtCore' ]
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-   'sphinx.ext.mathjax',
-   'sphinx.ext.autosectionlabel',
-   'sphinx.ext.autodoc',
-   'sphinx.ext.intersphinx',
-   'sphinx.ext.napoleon'
+    'sphinx.ext.mathjax',
+    'sphinx.ext.autosectionlabel',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.todo'
 ]
 
 intersphinx_mapping = {
@@ -65,6 +66,7 @@ intersphinx_mapping = {
     'requests': ( 'https://requests.kennethreitz.org/en/master/', None),
     'beautifulsoup' : ( 'https://www.crummy.com/software/BeautifulSoup/bs4/doc/', None),
     'geoip2' : ( 'https://geoip2.readthedocs.io/en/latest', None),
+    'imdbpy' : ( 'https://imdbpy.readthedocs.io/en/latest', None),
     'pyqt4' : ( 'https://www.riverbankcomputing.com/static/Docs/PyQt4', None ),
     'requests_oauthlib' : ( 'https://requests-oauthlib.readthedocs.io/en/latest', None ),
     'oauth2client' : ( 'https://oauth2client.readthedocs.io/en/latest', None ),
@@ -73,6 +75,10 @@ intersphinx_mapping = {
     'plexapi' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
     'subliminal' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
 }
+
+#
+## write out todos
+todo_include_todos = True
 
 verify = False
 

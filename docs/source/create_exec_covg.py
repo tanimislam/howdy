@@ -26,7 +26,7 @@ _coverage_dict = {
     #
     'plex_tvdb_totgui.py' : False,
     #
-    'get_mov_tor.py' : False,
+    'get_mov_tor.py' : True,
     #
     'plex_tmdb_totgui.py' : False,
     #

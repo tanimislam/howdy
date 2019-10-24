@@ -131,9 +131,9 @@ def getTokenForUsernamePassword( username, password, verify = True ):
 
     .. seealso::
     
-      * :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`
-      * :py:meth:`getCredentials <plexcore.plexcore.getCredentials>`
-      * :py:meth:`pushCredentials <plexcore.plexcore.pushCredentials>`
+      * :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`.
+      * :py:meth:`getCredentials <plexcore.plexcore.getCredentials>`.
+      * :py:meth:`pushCredentials <plexcore.plexcore.pushCredentials>`.
 
     """
     headers = { 'X-Plex-Client-Identifier' : str( uuid.uuid4( ) ),
@@ -302,8 +302,7 @@ def get_all_servers( token, verify = True ):
     
     :rtype: dict
 
-    .. seealso::
-       * :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`
+    .. seealso:: :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`
 
     .. _Plex: https://plex.tv
 
@@ -431,6 +430,33 @@ def get_current_date_newsletter( ):
         return None
     return val.date
 
+def _get_main_genre_movie( movie_elem ):
+    postprocess_genre_dict = {
+        'sci-fi' : 'science fiction',
+        'adventure' : 'action',
+        'thriler' : 'action',
+        'crime' : 'drama',
+        'romance' : 'drama',
+        'factual' : 'documentary',
+        'war' : 'drama',
+        'mystery' : 'horror' }
+    
+    if len(movie_elem.find_all('genre') ) == 0:
+        val = plextmdb.get_genre_movie( movie_elem[ 'title' ], verify = False )
+        if val is None: return 'unclassified'
+        return val
+    classic_genres = [ 'horror', 'comedy', 'animation', 'documentary', 'drama',
+                       'action', 'hindi', 'horror', 'science fiction' ]
+    genres = list( map(lambda elem: elem['tag'].lower( ).strip( ), movie_elem.find_all( 'genre' ) ) )
+    for genre in genres:
+        if genre in classic_genres:
+            return genre
+    val = plextmdb.get_genre_movie( movie_elem[ 'title' ], verify = False )
+    if val is not None: return val
+    if genres[ 0 ] in postprocess_genre_dict:
+        return postprocess_genre_dict[ genres[ 0 ] ]
+    return genres[ 0 ]                             
+
 def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sinceDate = None,
                              num_threads = 2 * multiprocessing.cpu_count( ), timeout = None ):
     assert( num_threads >= 1 )
@@ -468,7 +494,7 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
             #    first_genre = genres[ 0 ]
             #else:
             #    logging.debug( 'genre not found for %s.' % movie_elem[ 'title' ] )
-            first_genre = plextmdb.get_main_genre_movie( movie_elem )
+            first_genre = _get_main_genre_movie( movie_elem )
             title = movie_elem['title']
             if 'rating' in movie_elem.attrs:
                 rating = float( movie_elem.get('rating') )
@@ -1061,7 +1087,7 @@ def get_library_stats( key, token, fullURL = 'http://localhost:32400', sinceDate
     :returns: a dictionary of summary statistics on the Plex_ library.
     :rtype: dict
 
-    .. seealso:: :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`.
+    .. seealso:: :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`
     """
     library_dict = get_libraries( token, fullURL = fullURL, do_full = True )
     if library_dict is None: return None
@@ -1123,13 +1149,13 @@ def get_libraries( token, fullURL = 'http://localhost:32400', do_full = False, t
 
     .. seealso:
     
-    * :py:meth:`fill_out_movies_stuff <plexcore.plexcore.fill_out_movies_stuff>`.
-    * :py:meth:`get_movie_titles_by_year <plexcore.plexcore_attic.get_movie_titles_by_year>`.
-    * :py:meth:`get_lastN_movies <plexcore.plexcore.get_lastN_movies>`.
-    * :py:meth:`get_summary_data_music_remote <plexemail.plexemail.get_summary_data_music_remote>`.
-    * :py:meth:`get_summary_data_television_remote <plexemail.plexemail.get_summary_data_television_remote>`.
-    * :py:meth:`get_summary_data_movies_remote <plexemail.plexemail.get_summary_data_movies_remote>`.
-    
+        * :py:meth:`fill_out_movies_stuff <plexcore.plexcore.fill_out_movies_stuff>`.
+        * :py:meth:`get_movie_titles_by_year <plexcore.plexcore_attic.get_movie_titles_by_year>`.
+        * :py:meth:`get_lastN_movies <plexcore.plexcore.get_lastN_movies>`.
+        * :py:meth:`get_summary_data_music_remote <plexemail.plexemail.get_summary_data_music_remote>`.
+        * :py:meth:`get_summary_data_television_remote <plexemail.plexemail.get_summary_data_television_remote>`.
+        * :py:meth:`get_summary_data_movies_remote <plexemail.plexemail.get_summary_data_movies_remote>`.
+
     """
     params = { 'X-Plex-Token' : token }
     response = requests.get(
@@ -1258,9 +1284,9 @@ def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
 
     .. seealso:
     
-    * :py:meth:`get_summary_data_movies_remote <plexemail.plexemail.get_summary_data_movies_remote>`.
-    * :py:meth:`get_summary_data_movies <plexemail.plexemail.get_summary_data_movies>`.
-    
+        * :py:meth:`get_summary_data_movies_remote <plexemail.plexemail.get_summary_data_movies_remote>`.
+        * :py:meth:`get_summary_data_movies <plexemail.plexemail.get_summary_data_movies>`.
+
     .. _TMDB: https://www.themoviedb.org
     """
     assert( isinstance( lastN, int ) )
@@ -1351,11 +1377,11 @@ def oauthCheckGoogleCredentials( ):
 
     .. seealso::
 
-      * :py:meth:`oauthCheckGoogleCredentials <plexcore.plexcore.oauthCheckGoogleCredentials>`
-      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`
-      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <plexcore.plexcore.oauthGetOauth2ClientGoogleCredentials>`
-      * :py:meth:`oauth_generate_google_permission_url <plexcore.plexcore.oauth_generate_google_permission_url>`
-      * :py:meth:`oauth_store_google_credentials <plexcore.plexcore.oauth_store_google_credentials>`
+          * :py:meth:`oauthCheckGoogleCredentials <plexcore.plexcore.oauthCheckGoogleCredentials>`.
+          * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`.
+          * :py:meth:`oauthGetOauth2ClientGoogleCredentials <plexcore.plexcore.oauthGetOauth2ClientGoogleCredentials>`.
+          * :py:meth:`oauth_generate_google_permission_url <plexcore.plexcore.oauth_generate_google_permission_url>`.
+          * :py:meth:`oauth_store_google_credentials <plexcore.plexcore.oauth_store_google_credentials>`.
 
     .. _`Google OAuth2` : https://developers.google.com/identity/protocols/OAuth2
     
@@ -1374,10 +1400,10 @@ def oauthGetGoogleCredentials( verify = True ):
 
     .. seealso::
 
-      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`
-      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <plexcore.plexcore.oauthGetOauth2ClientGoogleCredentials>`
-      * :py:meth:`oauth_generate_google_permission_url <plexcore.plexcore.oauth_generate_google_permission_url>`
-      * :py:meth:`oauth_store_google_credentials <plexcore.plexcore.oauth_store_google_credentials>`
+      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`.
+      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <plexcore.plexcore.oauthGetOauth2ClientGoogleCredentials>`.
+      * :py:meth:`oauth_generate_google_permission_url <plexcore.plexcore.oauth_generate_google_permission_url>`.
+      * :py:meth:`oauth_store_google_credentials <plexcore.plexcore.oauth_store_google_credentials>`.
     """
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is None: return None
@@ -1397,10 +1423,10 @@ def oauthGetOauth2ClientGoogleCredentials( ):
     
     .. seealso::
 
-      * :py:meth:`oauthCheckGoogleCredentials <plexcore.plexcore.oauthCheckGoogleCredentials>`
-      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`
-      * :py:meth:`oauth_generate_google_permission_url <plexcore.plexcore.oauth_generate_google_permission_url>`
-      * :py:meth:`oauth_store_google_credentials <plexcore.plexcore.oauth_store_google_credentials>`
+      * :py:meth:`oauthCheckGoogleCredentials <plexcore.plexcore.oauthCheckGoogleCredentials>`.
+      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`.
+      * :py:meth:`oauth_generate_google_permission_url <plexcore.plexcore.oauth_generate_google_permission_url>`.
+      * :py:meth:`oauth_store_google_credentials <plexcore.plexcore.oauth_store_google_credentials>`.
 
     .. _Plexstuff: https://plexstuff.readthedocs.io
     """
@@ -1434,12 +1460,12 @@ def oauth_generate_google_permission_url( ):
     
     .. seealso::
 
-      * :py:meth:`oauthCheckGoogleCredentials <plexcore.plexcore.oauthCheckGoogleCredentials>`
-      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`
-      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <plexcore.plexcore.oauthGetOauth2ClientGoogleCredentials>`
-      * :py:meth:`oauth_store_google_credentials <plexcore.plexcore.oauth_store_google_credentials>`
+      * :py:meth:`oauthCheckGoogleCredentials <plexcore.plexcore.oauthCheckGoogleCredentials>`.
+      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`.
+      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <plexcore.plexcore.oauthGetOauth2ClientGoogleCredentials>`.
+      * :py:meth:`oauth_store_google_credentials <plexcore.plexcore.oauth_store_google_credentials>`.
     
-    .. _Oauth2: https://oauth.net/2/
+    .. _Oauth2: https://oauth.net/2
     """
     
     #flow = Flow.from_client_secrets_file(
@@ -1471,10 +1497,10 @@ def oauth_store_google_credentials( credentials ):
 
     .. seealso::
 
-      * :py:meth:`oauthCheckGoogleCredentials <plexcore.plexcore.oauthCheckGoogleCredentials>`
-      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`
-      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <plexcore.plexcore.oauthGetOauth2ClientGoogleCredentials>`
-      * :py:meth:`oauth_generate_google_permission_url <plexcore.plexcore.oauth_generate_google_permission_url>`
+      * :py:meth:`oauthCheckGoogleCredentials <plexcore.plexcore.oauthCheckGoogleCredentials>`.
+      * :py:meth:`oauthGetGoogleCredentials <plexcore.plexcore.oauthGetGoogleCredentials>`.
+      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <plexcore.plexcore.oauthGetOauth2ClientGoogleCredentials>`.
+      * :py:meth:`oauth_generate_google_permission_url <plexcore.plexcore.oauth_generate_google_permission_url>`.
     """
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is not None:
@@ -1693,7 +1719,7 @@ def set_date_newsletter( ):
     """
     sets the date of the Plex_ newsletter to :py:meth:`now() <datetime.datetime.now>`.
 
-    .. seealso:: :py:meth:`get_current_date_newsletter <plexcore.plexcore.get_current_date_newsletter>`.
+    .. seealso:: :py:meth:`get_current_date_newsletter <plexcore.plexcore.get_current_date_newsletter>`
     """
     query = session.query( LastNewsletterDate )
     backthen = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )

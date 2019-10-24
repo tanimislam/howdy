@@ -7,7 +7,7 @@ These command line executables, graphical user interfaces, and APIs are used to 
 This documentation is organized into sections on :ref:`plex_email_notif.py`, the Plexstuff one-off emailing command line interface; :ref:`plex_email_gui.py`, the Plexstuff one-off emailing and newslettering GUI; and finally on the :ref:`low level API <Email API>`.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Table of Contents
 
    plex_email_notif

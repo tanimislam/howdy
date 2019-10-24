@@ -31,7 +31,41 @@ def return_error_couldnotfind( name ):
 def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None,
                             minsizes = None, maxsizes = None ):
     """
-    Returns a :py:class:`list` of candidate episode Magnet links found using the `EZTV.IO`_ torrent service.
+    Returns a :py:class:`tuple` of candidate episode Magnet links found using the `EZTV.IO`_ torrent service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the episode string on which to search.
+    :param int maxnum: optional argument, the maximum number of magnet links to return. Default is 10. Must be :math:`\ge 5`.
+    :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
+    :param str series_name: optional argument, the TV show for this episode.
+    :param list minsizes: optional :py:class:`list` or :py:class:`tuple` of size at least 2. Here is its meaning if it is not ``None``:
+
+        * if its size is 1, then the minimum size of H264_ and `H265/HEVC`_ encoded videos, in MB, is ``minsizes[ 0 ]``.
+        * if its size is :math:`\ge 2`, then the minimum size of H264_ encoded video, in MB, is ``minsizes[ 0 ]``. The minimum size of `H265/HEVC`_ encoded video, in MB, is ``minsizes[ 1 ]``.
+
+    :param list maxsizes: optional :py:class:`list` or :py:class:`tuple` of size at least 2. Here is its meaning if it is not ``None``:
+
+        * if its size is 1, then the maximum size of H264_ and `H265/HEVC`_ encoded videos, in MB, is ``maxsizes[ 0 ]``.
+        * if its size is :math:`\ge 2`, then the maximum size of H264_ encoded video, in MB, is ``maxsizes[ 0 ]``. The maximum size of `H265/HEVC`_ encoded video, in MB, is ``maxsizes[ 1 ]``.
+
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched episode, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+       
+      * ``title`` is the name of the candidate episode to download.
+      * ``rawtitle`` is also the name of the candidate episode to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+      * ``torrent_size`` is the size of this torrent in bytes.
+      * ``pubdate`` is the :py:class:`date <datetime.date>` at which the magnet link was publshed and put online.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+
+    .. note:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    
+    .. _`EZTV.IO`: https://eztv.io
+    .. _H264: https://en.wikipedia.org/wiki/Advanced_Video_Coding
+    .. _`H265/HEVC`: https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding
     """
     assert( maxnum >= 5 )
     name_split = name.split()
@@ -130,6 +164,27 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
             all_torrents_mine ) ), 'SUCCESS'
 
 def get_tv_torrent_zooqle( name, maxnum = 100, verify = True ):
+    """
+    Returns a :py:class:`tuple` of candidate episode Magnet links found using the Zooqle_ torrent service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the episode string on which to search.
+    :param int maxnum: optional argument, the maximum number of magnet links to return. Default is 100. Must be :math:`\ge 5`.
+    :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched episode, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+
+      * ``title`` is *only* the name of the candidate episode to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+      * ``torrent_size`` is the size of this torrent in bytes.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+    
+    .. _Zooqle: https://zooqle.com
+    """
     assert( maxnum >= 5 )
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
         'udp://tracker.opentrackr.org:1337/announce',
@@ -199,7 +254,30 @@ def get_tv_torrent_zooqle( name, maxnum = 100, verify = True ):
     return items, 'SUCCESS'
 
 def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
+    """
+    Returns a :py:class:`tuple` of candidate episode Magnet links found using the RARBG_ torrent service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the episode string on which to search.
+    :param int maxnum: optional argument, the maximum number of magnet links to return. Default is 10. Must be :math:`\ge 5`.
+    :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched episode, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+
+      * ``title`` is *only* the name of the candidate episode to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+    
+    .. note:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    
+    .. _RARBG: https://en.wikipedia.org/wiki/RARBG    
+    """
     from .plextvdb import get_token, get_series_id, get_possible_ids
+    assert( maxnum >= 5 )
     candidate_seriesname = ' '.join( name.strip().split()[:-1] )
     epstring = name.strip().split()[-1].upper()
     if not epstring[0] == 'S':
@@ -281,6 +359,28 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     return items, 'SUCCESS'
 
 def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
+    """
+    Returns a :py:class:`tuple` of candidate episode Magnet links found using the Torrentz_ torrent service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the episode string on which to search.
+    :param int maxnum: optional argument, the maximum number of magnet links to return. Default is 10. Must be :math:`\ge 5`.
+    :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched episode, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+       
+      * ``title`` is the name of the candidate episode to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+
+    .. note:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    
+    .. _Torrentz: https://en.wikipedia.org/wiki/Torrentz
+    """
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
         'udp://tracker.opentrackr.org:1337/announce',
         'udp://open.demonii.com:1337',
@@ -347,7 +447,47 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
 def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None, keywords = [ ],
                             keywords_exc = [ ], must_have = [ ], verify = True, series_name = None,
                             raw = False ):
+    """
+    Returns a :py:class:`tuple` of candidate episode Magnet links found using the main Jackett_ torrent searching service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the episode string on which to search.
+    :param int maxnum: optional argumeent, the maximum number of magnet links to return. Default is 10. Must be :math:`\ge 5`.
+    :param list minsizes: optional :py:class:`list` or :py:class:`tuple` of size at least 2. Here is its meaning if it is not ``None``:
+
+        * if its size is 1, then the minimum size of H264_ and `H265/HEVC`_ encoded videos, in MB, is ``minsizes[ 0 ]``.
+        * if its size is :math:`\ge 2`, then the minimum size of H264_ encoded video, in MB, is ``minsizes[ 0 ]``. The minimum size of `H265/HEVC`_ encoded video, in MB, is ``minsizes[ 1 ]``.
+
+    :param list maxsizes: optional :py:class:`list` or :py:class:`tuple` of size at least 2. Here is its meaning if it is not ``None``:
+
+        * if its size is 1, then the maximum size of H264_ and `H265/HEVC`_ encoded videos, in MB, is ``maxsizes[ 0 ]``.
+        * if its size is :math:`\ge 2`, then the maximum size of H264_ encoded video, in MB, is ``maxsizes[ 0 ]``. The maximum size of `H265/HEVC`_ encoded video, in MB, is ``maxsizes[ 1 ]``.
+
+    :param list keywords: optional argument. If not empty, the title of the candidate element must have at least one of the keywords in ``keywords``.
+    :param list kewods_exc: optional argument. If not empty, then reject candidate element if title has any keyword in ``keywords_exc``.
+    :param list must_have: optional argument. If not empty, then title of the candidate element must have *all* the keywords in ``must_have``.    
+    :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
+    :param str series_name: optional argument. the TV show for this episode.
+    :param bool raw: if ``True``, uses the IMDb_ information to search for the episode. Otherwise, uses the full string in ``name`` to search for the episode.
+    
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched episode, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+       
+      * ``title`` is the name of the candidate episode to download, and in parentheses the size of the candidate in MB or GB.
+      * ``rawtitle`` also the name of the candidate episode to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+      * ``torrent_size`` is the size of this torrent in bytes.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+
+    .. note:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    
+    .. _Jackett: https://github.com/Jackett/Jackett
+    """
     import validators
+    assert( maxnum >= 5 )
     data = get_jackett_credentials( )
     if data is None:
         return return_error_raw('FAILURE, COULD NOT GET JACKETT SERVER CREDENTIALS')
@@ -485,8 +625,29 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
         
     return items[:maxnum], 'SUCCESS'
 
-def get_tv_torrent_kickass( name, maxnum = 100, verify = True ):
+def get_tv_torrent_kickass( name, maxnum = 10, verify = True ):
+    """
+    Returns a :py:class:`tuple` of candidate episode Magnet links found using the KickAssTorrents_ torrent service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the episode string on which to search.
+    :param int maxnum: optional argument, the maximum number of magnet links to return. Default is 10. Must be :math:`\ge 5`.
+    :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched episode, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+
+      * ``title`` is *only* the name of the candidate episode to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+    
+    .. _KickassTorrents: https://en.wikipedia.org/wiki/KickassTorrents
+    """
     from KickassAPI import Search, Latest, User, CATEGORY, ORDER
+    assert( maxnum >= 5 )
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
         'http://mgtracker.org:2710/announce',
         'http://tracker.internetwarriors.net:1337/announce',
@@ -552,6 +713,29 @@ def get_tv_torrent_kickass( name, maxnum = 100, verify = True ):
     return items_toshow, 'SUCCESS'
 
 def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
+    """
+    Returns a :py:class:`tuple` of candidate episode Magnet links found using the `The Pirate Bay`_ torrent service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the episode string on which to search.
+    :param int maxnum: optional argument, the maximum number of magnet links to return. Default is 100. Must be :math:`\ge 5`.
+    :param bool doAny: optional argument. If ``True``, then only search through TV shows. Otherwise, search through all media.
+    :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched episode, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+
+      * ``title`` is *only* the name of the candidate episode to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+      * ``torrent_size`` is the size of this torrent in bytes.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+    
+    .. _`The Pirate Bay`: https://en.wikipedia.org/wiki/The_Pirate_Bay
+    """
+    
     #surl = urljoin( 'https://thepiratebay3.org', 's/' )
     surl = 'https://thepiratebay.org'
     if not doAny:
@@ -623,7 +807,11 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
             torrent_size = re.sub(r"Size ([\d.]+).+([KMGT]iB)", r"\1 \2", torrent_size)
             #size = convert_size(torrent_size, units = ["B", "KB", "MB", "GB", "TB", "PB"]) or -1
             size = torrent_size
-            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers, 'hash': ''}
+            item = { 'title': title,
+                     'link': download_url,
+                     'torrent_size': size,
+                     'seeders': seeders,
+                     'leechers': leechers }
             #item = {'title': title, 'link': download_url, 'seeders': seeders, 'leechers': leechers }
             items.append(item)
         except Exception as e:
@@ -634,25 +822,6 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
     items.sort(key=lambda d: try_int(d.get('seeders', 0)) +
                try_int(d.get('leechers')), reverse=True)
     return items[:maxnum], 'SUCCESS'
-
-def get_tv_torrent_best( name, maxnum = 100, verify = True ):
-    items = [ ]
-    assert( maxnum >= 5 )
-    items_1, status = get_tv_torrent_tpb(
-        name, maxnum = maxnum, verify = verify )
-    if status == 'SUCCESS':
-        print( len(items) )
-        items += items_1
-    items_1, status = get_tv_torrent_torrentz(
-        name, maxnum = maxnum, verify = verify )
-    if status == 'SUCCESS':
-        items += items_1
-    logging.debug( 'LENGTH OF ALL ITEMS = %d' % len( items ) )
-    if len( items ) == 0:
-        print( "Error, could not find anything with name = %s" % name )
-        return None, None # could find nothing
-    item = max( items, key = lambda item: item['seeders'] + item['leechers'] )
-    return item['title'], item[ 'link' ]
 
 def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, tor_info ):
     from fabric import Connection
@@ -770,6 +939,40 @@ def _worker_process_tvtorrents( client, data, torFileName, totFname,
 def worker_process_download_tvtorrent(
         tvTorUnit, client = None, maxtime_in_secs = 14400, 
         num_iters = 1, kill_if_fail = False ):
+    """
+    Used by, e.g., :ref:`get_plextvdb_batch.py`, to download missing episodes on the Plex_ TV library. Attempts to use the Deluge_ server, specified in :numref:`Seedhost Services Setup`, to download an episode. If successful then uploads the finished episode from the remote SSH server to the Plex_ server and local directory, specified in :numref:`Local and Remote (Seedhost) SSH Setup`.
+
+    :param dict tvTorUnit: a :py:class:`dict` representing a summarized magnet link searching operation on an episode. The format and meaning of this data structure is described in :py:meth:`create_tvTorUnits <plextvdb.plextvdb.create_tvTorUnits>`.
+    :param DelugeRPC client: optional argument, the `DelugeRPCClient <Deluge RPC client_>`_ object that at a low level uses the Deluge_ server to download the Magnet link at the remote SSH server. If ``None``, then this client is created using :py:meth:`get_deluge_client <plexcore.plexcore_deluge.get_deluge_client>`.
+    :param int maxtime_in_secs: optional argument, the maximum time to wait for a Magnet link found by the Jackett_ server to fully download through the Deluge_ server. Must be :math:`\ge 60` seconds. Default is 14400 seconds.
+    :param int num_iters: optional argument, the maximum number of Magnet links to try and fully download before giving up. The list of Magnet links to try for each missing episode is ordered from *most* seeders + leechers to *least*. Must be :math:`\ge 1`. Default is 1.
+    :param bool kill_if_fail: optional argument. If ``True``, then on failing operation kill the torrent download on the Deluge_ server and delete any files associated with it. If ``False``, then keep the torrent download on failure.
+
+    :returns: If successful, creates a two element :py:class:`tuple`: the first element is the base name of the episode that is uploaded to the Plex_ server, and the second element is a status :py:class:`dictionary <dict>` with three keys.
+
+       * the ``status`` is ``"SUCCESS"``.
+       * the ``message`` describes the final status of the operation.
+       * the ``time`` tells how long, in seconds, the successful operation took.
+
+       If unsuccessful, returns a failing tuple: the first element is ``None``, and the the second element is a status :py:class:`dictionary <dict>` with three keys.
+    
+       * the ``status`` is ``"FAILURE"``.
+       * the ``message`` describes the illuminating reason as to how this operation failed.
+       * the ``time`` tells how long, in seconds, the failing operation took.
+
+    :retype tuple
+    
+    .. seealso::
+       
+        * :ref:`get_plextvdb_batch.py`.
+        * :py:meth:`get_remaining_episodes <plextvdb.plextvdb.get_remaining_episodes>`.
+        * :py:meth:`create_tvTorUnits <plextvdb.plextvdb.create_tvTorUnits>`.
+        * :py:meth:`download_batched_tvtorrent_shows <plextvdb.plextvdb.download_batched_tvtorrent_shows>`.
+
+    .. _`Deluge RPC client`: https://github.com/JohnDoee/deluge-client
+    .. _Deluge: https://en.wikipedia.org/wiki/Deluge_(software)
+    """
+    
     time0 = time.time( )
         
     assert( maxtime_in_secs > 0 )

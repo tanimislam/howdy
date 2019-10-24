@@ -12,6 +12,7 @@ google-auth-oauthlib
 google-oauth
 gspread
 httplib2
+imdbpy
 isodate
 KickassAPI
 ThePirateBay

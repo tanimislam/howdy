@@ -1,8 +1,4 @@
 import threading, requests, fuzzywuzzy, os, sys
-from functools import reduce
-_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
-                  os.path.abspath( __file__ ) )
-sys.path.append( _mainDir )
 import re, time, logging, validators
 from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup
@@ -13,6 +9,30 @@ from plexcore.plexcore import get_jackett_credentials
 from plextmdb import plextmdb
 
 def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, tmdb_id = None ):
+    """
+    Returns a :py:class:`tuple` of candidate movie Magnet links found using the main Jackett_ torrent searching service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the movie string on which to search.
+    :param int maxnum: optional argumeent, the maximum number of magnet links to return. Default is 10. Must be :math:`\ge 5`.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param bool doRaw: optional argument. If ``True``, uses the IMDb_ information to search for the movie. Otherwise, uses the full string in ``name`` to search for the movie.
+    :param int tmdb_id: optional argument. If defined, use this TMDB_ movie ID to search for magnet links.
+    
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched movie, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+       
+      * ``title`` is the name of the candidate movie to download, and in parentheses the size of the candidate in MB or GB.
+      * ``rawtitle`` is *only* the name of the candidate movie to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+      * ``torrent_size`` is the size of this torrent in GB.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+    
+    .. _Jackett: https://github.com/Jackett/Jackett
+    """
     time0 = time.time( )
     data = get_jackett_credentials( )
     if data is None:
@@ -31,7 +51,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
             params['q'] = name
             return params
 
-        tmdb_id = plextmdb.get_movie_tmdbids( name )
+        tmdb_id = plextmdb.get_movie_tmdbids( name, verify = verify )
         #if tmdb_id is None or doRaw and not popName:
         #    params['q'] = name
         #    return params
@@ -52,7 +72,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
 
     params = _return_params( name, popName, tmdb_id )
     if popName and 'q' in params: params.pop( 'q' )
-    logging.info( 'params: %s, mainURL = %s' % (
+    logging.debug( 'params: %s, mainURL = %s' % (
         params, urljoin( url, endpoint ) ) )                                                 
     response = requests.get(
         urljoin( url, endpoint ), verify = verify,
@@ -123,6 +143,31 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
     return items[:maxnum], 'SUCCESS'
 
 def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True, tmdb_id = None ):
+    """
+    Returns a :py:class:`tuple` of candidate movie Magnet links found using the `EZTV.IO`_ torrent service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the movie on which to search.
+    :param int maxnum: optional argument, the maximum number of magnet links to return. Default is 10. Must be :math:`\ge 5`.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param str tmdb_id: optional argument. The TMDB_ ID of the movie.
+    
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched movie, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+       
+      * ``title`` is the name of the candidate movie to download, and in parentheses is the size of the download in MB or GB.
+      * ``rawtitle`` is *only* the name of the candidate movie to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+      * ``torrent_size`` is the size of this torrent in MB.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+
+    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
+    
+    .. _`EZTV.IO`: https://eztv.io
+    """
     assert( maxnum >= 5 )
     if tmdb_id is None:
         tmdb_id = plextmdb.get_movie_tmdbids( name, verify = verify )
@@ -130,10 +175,10 @@ def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True, tmdb_id = None 
         return return_error_raw( 'FAILURE, COULD NOT FIND IMDB ID FOR %s.' % name )
     #
     ## check that the name matches
-    movie_name = plextmdb.get_movie_info( tmdb_id )['title'].lower( ).strip( )
+    movie_name = plextmdb.get_movie_info( tmdb_id, verify = verify )['title'].lower( ).strip( )
     if movie_name != name.lower( ).strip( ):
         return return_error_raw( 'FAILURE, COULD NOT FIND IMDB ID FOR %s.' % name )
-    imdb_id = plextmdb.get_imdbid_from_id( tmdb_id )
+    imdb_id = plextmdb.get_imdbid_from_id( tmdb_id, verify = verify )
     if imdb_id is None:
         return return_error_raw( 'FAILURE, COULD NOT FIND IMDB ID FOR %s.' % name )
     response = requests.get( 'https://eztv.io/api/get-torrents',
@@ -175,6 +220,28 @@ def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True, tmdb_id = None 
     
 
 def get_movie_torrent_zooqle( name, maxnum = 10, verify = True ):
+    """
+    Returns a :py:class:`tuple` of candidate movie Magnet links found using the Zooqle_ torrent service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the movie string on which to search.
+    :param int maxnum: optional argument, the maximum number of magnet links to return. Default is 100. Must be :math:`\ge 5`.
+    :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched movie, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+
+      * ``title`` is the name of the candidate movie to download, and in parentheses is the size of the download in MB or GB.
+      * ``rawtitle`` is *only* the name of the candidate movie to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+      * ``torrent_size`` is the size of this torrent in MB.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+    
+    .. _Zooqle: https://zooqle.com
+    """
     assert( maxnum >= 5 )
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
         'udp://tracker.opentrackr.org:1337/announce',
@@ -200,7 +267,7 @@ def get_movie_torrent_zooqle( name, maxnum = 10, verify = True ):
                'fmt' : 'rss' }
     paramurl = '?' + '&'.join(map(lambda tok: '%s=%s' % ( tok, params[ tok ] ), params ) )                                  
     fullurl = urljoin( url, paramurl )
-    response = requests.get( fullurl, verify = ver )
+    response = requests.get( fullurl, verify = verify )
     if response.status_code != 200:
         return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
     myxml = BeautifulSoup( response.content, 'lxml' )
@@ -234,13 +301,37 @@ def get_movie_torrent_zooqle( name, maxnum = 10, verify = True ):
         'seeders' : get_num_forelem( elem, 'seeds' ),
         'leechers' : get_num_forelem( elem, 'peers' ),
         'link' : _get_magnet_link( get_infohash( elem ),
-                                   max( elem.find_all('title' ) ).get_text( ) ) },
-                       cand_items ) )
+                                   max( elem.find_all('title' ) ).get_text( ) ),
+        'torrent_size' : get_num_forelem( elem, 'contentlength' ) },
+                             cand_items ) )
     if len( items_toshow ) == 0:
         return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
     return sorted( items_toshow, key = lambda item: -item['seeders'] - item['leechers'] )[:maxnum], 'SUCCESS'
 
 def get_movie_torrent_rarbg( name, maxnum = 10, verify = True ):
+    """
+    Returns a :py:class:`tuple` of candidate movie Magnet links found using the RARBG_ torrent service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the movie string on which to search.
+    :param int maxnum: optional argument, the maximum number of magnet links to return. Default is 10. Must be :math:`\ge 5`.
+    :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched movie, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+
+      * ``title`` is *only* the name of the candidate movie to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+    
+    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
+    
+    .. _RARBG: https://en.wikipedia.org/wiki/RARBG    
+    """
+    assert( maxnum >= 5 )
     tmdbid = plextmdb.get_movie_tmdbids( name )
     if tmdbid is None:
         return None, 'ERROR, could not find %s in themoviedb.' % name
@@ -289,7 +380,31 @@ def get_movie_torrent_rarbg( name, maxnum = 10, verify = True ):
                                        'link' : elem['download'] }, data ) ) 
     return actdata, 'SUCCESS'
         
-def get_movie_torrent_tpb( name, maxnum = 100, doAny = False, verify = True ):
+def get_movie_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
+    """
+    Returns a :py:class:`tuple` of candidate movie Magnet links found using the `The Pirate Bay`_ torrent service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the movie string on which to search.
+    :param int maxnum: optional argument, the maximum number of magnet links to return. Default is 100. Must be :math:`\ge 5`.
+    :param bool doAny: optional argument. If ``True``, then only search through TV shows. Otherwise, search through all media.
+    :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched movie, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+
+      * ``title`` is *only* the name of the candidate movie to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+      * ``torrent_size`` is the size of this torrent in bytes.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+
+    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
+    
+    .. _`The Pirate Bay`: https://en.wikipedia.org/wiki/The_Pirate_Bay
+    """
     assert( maxnum >= 5 )
     def convert_size(size, default=None, use_decimal=False, **kwargs):
         """
@@ -346,7 +461,7 @@ def get_movie_torrent_tpb( name, maxnum = 100, doAny = False, verify = True ):
 
         return result
 
-    surl = urljoin( 'https://thepiratebay3.org', 's/' )
+    surl = urljoin( 'https://thepiratebay.org', 's/' )
     if not doAny:
         cat = CATEGORIES.VIDEO.MOVIES
     else:
@@ -423,10 +538,34 @@ def get_movie_torrent_tpb( name, maxnum = 100, doAny = False, verify = True ):
         'title' : item['title'],
         'seeders' : item[ 'seeders' ],
         'leechers' : item[ 'leechers' ],
-        'link' : item[ 'link' ] }, items ) ), 'SUCCESS'
+        'link' : item[ 'link' ],
+        'torrent_size' : item[ 'size' ] }, items ) ), 'SUCCESS'
 
-def get_movie_torrent_kickass( name, maxnum = 100, verify = True ):
+def get_movie_torrent_kickass( name, maxnum = 10, verify = True ):
+    """
+    Returns a :py:class:`tuple` of candidate movie Magnet links found using the KickAssTorrents_ torrent service and the string ``"SUCCESS"``, if successful.
+
+    :param str name: the movie string on which to search.
+    :param int maxnum: optional argument, the maximum number of magnet links to return. Default is 10. Must be :math:`\ge 5`.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched movie, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
+
+      * ``title`` is *only* the name of the candidate movie to download.
+      * ``seeders`` is the number of seeds for this Magnet link.
+      * ``leechers`` is the number of leeches for this Magnet link.
+      * ``link`` is the Magnet URI link.
+    
+    If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    
+    :rtype: tuple
+    
+    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
+    
+    .. _KickassTorrents: https://en.wikipedia.org/wiki/KickassTorrents
+    """
     from KickassAPI import Search, Latest, User, CATEGORY, ORDER
+    assert( maxnum >= 5 )
     names_of_trackers = map(lambda tracker: tracker.replace(':', '%3A').replace('/', '%2F'), [
         'http://mgtracker.org:2710/announce',
         'http://tracker.internetwarriors.net:1337/announce',
@@ -485,13 +624,24 @@ def get_movie_torrent_kickass( name, maxnum = 100, verify = True ):
     return items_toshow, 'SUCCESS'
     
 def get_movie_torrent( name, verify = True ):
+    """
+    Returns a :py:class:`tuple` of candidate movie found using `Torrent files <torrent file_>`_ using the `YTS API`_ torrent service and the string ``"SUCCESS"``, if successful.
+    
+    :param str name: the movie string on which to search.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of `Torrent files <torrent file_>`_ that match the searched movie, ordered from *earliest* to *latest* year of release. The second element is the string ``"SUCCESS"``. If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+    :rtype: tuple
+    
+    .. _`YTS API`: https://yts.ag/api
+    .. _`torrent file`: https://en.wikipedia.org/wiki/Torrent_file
+    """
     mainURL = 'https://yts.ag/api/v2/list_movies.json'
     params = { 'query_term' : name, 'order_by' : 'year' }
     response = requests.get( mainURL, params = params, verify = verify )
     if response.status_code != 200:
-        return None, 'Error, could not use the movie service. Exiting...'
+        return return_error_raw( 'Error, could not use the movie service. Exiting...' )
     data = response.json()['data']
     if 'movies' not in data or len(data['movies']) == 0:
-        return None, "Could not find %s, exiting..." % name
+        return return_error_raw( "Could not find %s, exiting..." % name )
     movies = data['movies']
     return movies, 'SUCCESS'

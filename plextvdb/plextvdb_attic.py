@@ -401,13 +401,8 @@ def get_tot_epdict_tmdb( showName, firstAiredYear = None ):
     return tot_epdict
 
 def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):
-    """
-    .. admonition:: Warning!
-       :class: note
-      
-       This may not reliably work at all anymore!
-    
-    Returns a dictionary of episodes from a Wikipedia_ URL for a TV show. This is very brittle and has not been used since 2015.
+    """    
+    Returns a dictionary of episodes from a Wikipedia_ URL for a TV show.
 
     :param str epURL: the Wikipedia_ URL for the TV show.
     :param int seasnums: the season number for which to get episodes.
@@ -415,6 +410,10 @@ def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):
     
     :returns: a :py:class:`dict` of episodes for this season. Each key is the episode number, and each value is the episode name.
     :rtype: dict
+
+    .. warning::
+      
+       This may not reliably work at all anymore! This is very brittle and has not been used since 2015.
 
     .. _Wikipedia: https://en.wikipedia.org
     """

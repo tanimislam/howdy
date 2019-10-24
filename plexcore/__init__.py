@@ -464,11 +464,9 @@ def get_formatted_size_MB( totsizeMB ):
     :param int totsizeMB: size of the file in megabytes.
     
     :returns: Formatted representation of that file size.
-    
     :rtype: str
 
     .. seealso:: :py:meth:`get_formatted_size <plexcore.get_formatted_size>`
-
     """
     if totsizeMB >= 1024:
         size_in_gb = totsizeMB * 1.0 / 1024
@@ -517,15 +515,17 @@ class PlexConfig( Base ):
     """
     This SQLAlchemy_ ORM class contains the configuration data used for running all the plexstuff tools. Stored into the ``plexconfig`` table in the SQLite3_ configuration database.
 
-    Attributes:
-        service: the name of the configuration service we store. Index on this unique key.
-        data: JSON formatted information on the data stored here. For instance, username and password can be stored in the following way
+    :var Column service: the name of the configuration service we store. Index on this unique key. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>` of size 65536.
+    :var Column data: the JSON formatted information on the data stored here. For instance, username and password can be stored in the following way
 
-    .. code:: JSON
+    .. code-block:: python
 
-       { 'username' : <USERNAME>,
-         'password' : <PASSWORD> }
+       { 'username' : USERNAME,
+         'password' : PASSWORD }
 
+    This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`JSON <sqlalchemy.JSON>` object.
+
+    .. _SQLAlchemy: https://www.sqlalchemy.org
     """
     
     #
@@ -542,11 +542,9 @@ class LastNewsletterDate( Base ):
     very likely won't use this at all. Stored into the ``lastnewsletterdate`` table in the
     ``~/.config/plexstuff/app.db`` SQLite3_ configuration database.
         
-    Attributes:
-        date: the name of the configuration service we store.
+    :var Column date: the :py:class:`datetime <datetime.datetime>` when the last newsletter was sent. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`Date <sqlalchemy.Date>` object.
 
     .. _Tautulli: https://tautulli.com
-    .. _SQLAlchemy: https://www.sqlalchemy.org
     """
     #
     ## create the table using Base.metadata.create_all( _engine )
@@ -557,20 +555,15 @@ class LastNewsletterDate( Base ):
     
 class PlexGuestEmailMapping( Base ):
     """
-    This SQLAlchemy_ ORM class contains mapping of emails of Plex_ server users, to other email addresses. This is used to determine other email addresses to which Plexstuff one-off or newsletter emails are delivered. Stored in the ``plexguestemailmapping`` table in the SQLite3_ configuration database.
-
-    The structure of each row in this table is straightforward. Each column in the table is a member of the object in this ORM class. 
+    This SQLAlchemy_ ORM class contains mapping of emails of Plex_ server users, to other email addresses. This is used to determine other email addresses to which Plexstuff one-off or newsletter emails are delivered. Stored in the ``plexguestemailmapping`` table in the SQLite3_ configuration database. The structure of each row in this table is straightforward. Each column in the table is a member of the object in this ORM class. 
     
-    * the main column is *plexemail*, which must be a Plex_ user who has access to the Plex_ server.
-    * the second column is *plexmapping*, which is a collection of **different** email addresses, to which the Plexstuff emails are sent. For example, if a Plex_ user with email address ``A@email.com`` would like to send email to ``B@mail.com`` and ``C@mail.com``, the *plexmapping* column would be ``B@mail.com,C@mail.com``. NONE of the mapped emails will match *plexemail*.
-    * the third column  is *plexreplaceexisting*, a boolean that determines whether Plexstuff email also goes to the Plex_ user's email address. From the example above, if ``True`` then a Plex_ user at ``A@mail.com`` will have email delivered ONLY to ``B@mail.com`` and ``C@mail.com``. If ``False``, then that same Plex_ user will have email delivered to all three email addresses (``A@mail.com``, ``B@mail.com``, and ``C@mail.com``).
+    :var Column plexemail: this is the main column, which must be the email of a Plex_ user who has access to the Plex_ server. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>`.
     
-        
-    Attributes:
-        plexemail: the email address of a Plex_ user who has stream access to the Plex_ server.
-        plexmapping: the mapping, as a comma-delimited string, of other email addresses to deliver Plexstuff emails.
-        plexreplaceexisting: if ``True``, only send Plexstuff emails of Plex_ user to new email addresses. If ``False``, also send to email address of Plex_ user.
+    :var Column plexmapping: this is a collection of **different** email addresses, to which the Plexstuff emails are sent. For example, if a Plex_ user with email address ``A@email.com`` would like to send email to ``B@mail.com`` and ``C@mail.com``, the *plexmapping* column would be ``B@mail.com,C@mail.com``. NONE of the mapped emails will match *plexemail*. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>` of size 65536.
 
+    
+    :var Column plexreplaceexisting: this is a boolean that determines whether Plexstuff email also goes to the Plex_ user's email address. From the example above, if ``True`` then a Plex_ user at ``A@mail.com`` will have email delivered ONLY to ``B@mail.com`` and ``C@mail.com``. If ``False``, then that same Plex_ user will have email delivered to all three email addresses (``A@mail.com``, ``B@mail.com``, and ``C@mail.com``).  This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`Boolean <sqlalchemy.Boolean>`.
+    
     .. _Plex: https://plex.tv
     """
     #
@@ -583,12 +576,10 @@ class PlexGuestEmailMapping( Base ):
     
 def create_all( ):
     """
-    creates the necessary SQLite3_ tables into ``~/.config/plexstuff/app.db`` if they don't already exist.
+    creates the necessary SQLite3_ tables into the database file ``~/.config/plexstuff/app.db`` if they don't already exist, but only if not building documentation in `Read the Docs`_.
 
+    .. _`Read the docs`: https://www.readthedocs.io
     """
+    if not os.environ.get( 'READTHEDOCS' ): return # do nothing if in READTHEDOCS
     Base.metadata.create_all( _engine )
     session.commit( )
-
-#
-## commit all tables BUT ONLY IF NOT READTHEDOCS
-if not os.environ.get('READTHEDOCS'): create_all( )

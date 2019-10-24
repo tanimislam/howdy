@@ -7,7 +7,7 @@ These command line executables, graphical user interfaces, and APIs form the cor
 This documentation is organized into sections on :ref:`command line tools <Core Command Line Utilities>`, :ref:`GUI tools <Core GUIs>`, and finally on the :ref:`low level API <Core API>`.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Table of Contents
 
    cli_tools/plex_core_cli

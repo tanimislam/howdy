@@ -8,7 +8,7 @@ from PIL import Image
 from urllib.parse import urljoin
 from sqlalchemy import Integer, String, Column
 
-from plexcore import mainDir, plexcore, baseConfDir, session, PlexConfig
+from plexcore import mainDir, plexcore, baseConfDir, session, PlexConfig, return_error_raw
 from plexmusic import pygn, parse_youtube_date, format_youtube_date
 
 #
@@ -149,8 +149,9 @@ class MusicInfo( object ):
 
     def get_music_metadatas_album( self, album_name ):
         if album_name not in self.alltrackdata:
-            return None, 'Could not find album = %s for artist = %s with Musicbrainz.' % (
-                album_name, self.artist_name )
+            return return_error_raw(
+                'Could not find album = %s for artist = %s with Musicbrainz.' % (
+                    album_name, self.artist_name ) )
         album_info = self.alltrackdata[ album_name ]
         album_data_dict = [ ]
         total_tracks = len( album_info[ 'tracks' ] )
@@ -175,8 +176,7 @@ class MusicInfo( object ):
                 ( album, self.alltrackdata[ album ]['release-date'].year,
                   len( self.alltrackdata[ album ][ 'tracks' ] ) ), self.alltrackdata ),
             key = lambda tup: tup[1] )
-        print( '%s has %d studio albums.' % ( self.artist_name, len( all_album_data ) ) )
-        print( '\n' )
+        print( '%s has %d studio albums.\n' % ( self.artist_name, len( all_album_data ) ) )
         print( '%s\n' % 
                tabulate.tabulate( all_album_data, headers = [ 'Studio Album', 'Year', '# Tracks' ] ) )
         
@@ -434,7 +434,7 @@ class PlexLastFM( object ):
                 album_name, artist_name )
             return None, error_message
         filename = '%s.%s.png' % ( artist_name, album_name.replace('/', '-' ) )
-        img = Image.open( io.BytesIO( requests.get( album_url ).content ) )
+        img = Image.open( io.BytesIO( requests.get( album_url, verify = self.verify ).content ) )
         img.save( filename, format = 'png' )
         os.chmod( filename, 0o644 )
         return filename, 'SUCCESS'

@@ -580,6 +580,6 @@ def create_all( ):
 
     .. _`Read the docs`: https://www.readthedocs.io
     """
-    if not os.environ.get( 'READTHEDOCS' ): return # do nothing if in READTHEDOCS
+    if os.environ.get( 'READTHEDOCS' ): return # do nothing if in READTHEDOCS
     Base.metadata.create_all( _engine )
     session.commit( )

@@ -137,7 +137,7 @@ Functionality    CLI                                                            
                  - :ref:`plex_tvdb_epname.py <plex_tvdb_epname.py_label>` |cbox|
                  - :ref:`plex_tvdb_futureshows.py <plex_tvdb_futureshows.py_label>` |cbox|
                  - :ref:`plex_tvdb_plots.py <plex_tvdb_plots.py_label>` |cbox|
-``plextmdb``     - :ref:`get_mov_tor.py <get_mov_tor.py_label>`                               - :ref:`plex_tmdb_totgui.py <plex_tmdb_totgui.py_label>`
+``plextmdb``     - :ref:`get_mov_tor.py <get_mov_tor.py_label>` |cbox|                        - :ref:`plex_tmdb_totgui.py <plex_tmdb_totgui.py_label>`
 ``plexmusic``    - :ref:`plex_music_album.py <plex_music_album.py_label>`
                  - :ref:`plex_music_metafill.py <plex_music_metafill.py_label>`
                  - :ref:`plex_music_songs.py <plex_music_songs.py_label>`

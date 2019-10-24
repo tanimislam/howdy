@@ -583,3 +583,5 @@ def create_all( ):
     if os.environ.get( 'READTHEDOCS' ): return # do nothing if in READTHEDOCS
     Base.metadata.create_all( _engine )
     session.commit( )
+
+create_all( ) # OK, now create the missing tables

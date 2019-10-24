@@ -6,7 +6,7 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 from plexmusic import plexmusic
-from plexcore import plexcore
+from plexemail import emailAddress
 from optparse import OptionParser
 
 def main( ):
@@ -34,8 +34,7 @@ def main( ):
     ##    
     plastfm = plexmusic.PlexLastFM( verify = opts.do_verify )
     if opts.do_albums:
-        username, _ = plexcore.getCredentials( verify = False, checkWorkingServer = False )
-        plexmusic.MusicInfo.get_set_musicbrainz_useragent( username )
+        plexmusic.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
         mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
         mi.print_format_album_names( )
         return

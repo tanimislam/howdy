@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import tabulate, os, logging
+from optparse import OptionParser
 
 logger = logging.getLogger( )
 logger.setLevel( logging.INFO )
@@ -47,7 +48,6 @@ def _create_cell( execs ):
         else:
             return '- :ref:`%s <%s>`' % ( exc, '%s_label' % exc )
     return '\n'.join( map(_make_str, execs ) )
-                         
 
 _table = [
     ( "``plexcore``",
@@ -68,4 +68,19 @@ _table = [
       _create_cell([ 'plex_email_notif.py' ]), _create_cell([ 'plex_email_gui.py' ]) )
 ]
 
-print( tabulate.tabulate( _table, [ 'Functionality', 'CLI', 'GUI' ], tablefmt = 'rst' ) )
+_table_tvtorrents = [
+    ( "`EZTV.IO`_", ":py:meth:`get_tv_torrent_eztv_io <plextvdb.plextvdb_torrents.get_tv_torrent_eztv_io>`", False ),
+    ( "Zooqle_", ":py:meth:`get_tv_torrent_zooqle <plextvdb.plextvdb_torrents.get_tv_torrent_zooqle>`", True ),
+    ( "RARBG_", ":py:meth:`get_tv_torrent_rarbg <plextvdb.plextvdb_torrents.get_tv_torrent_rarbg>`", False ),
+    ( "Torrentz_", ":py:meth:`get_tv_torrent_torrentz <plextvdb.plextvdb_torrents.get_tv_torrent_torrentz>`", False ),
+    ( "KickAssTorrents_", ":py:meth:`get_tv_torrent_kickass <plextvdb.plextvdb_torrents.get_tv_torrent_kickass>`", False ),
+    ( "`The Pirate Bay`_", ":py:meth:`get_tv_torrent_tpb <plextvdb.plextvdb_torrents.get_tv_torrent_tpb>`", False ),
+    ( "Jackett_ torrent search", ":py:meth:`get_tv_torrent_jackett <plextvdb.plextvdb_torrents.get_tv_torrent_jackett>`", True )
+]
+
+if __name__ == '__main__':
+    
+    print( tabulate.tabulate( _table, [ 'Functionality', 'CLI', 'GUI' ], tablefmt = 'rst' ) )
+    print('\n\n\n')
+    print( tabulate.tabulate( _table_tvtorrents, [ "Torrent Service", "Search Method", "Does It Work?" ],
+                              tablefmt = 'rst' ) )

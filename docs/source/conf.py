@@ -73,6 +73,7 @@ intersphinx_mapping = {
     'google-auth' : ( 'https://google-auth.readthedocs.io/en/latest', None ),
     'deluge' : ( 'https://deluge.readthedocs.io/en/latest', None ),
     'plexapi' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
+    'sqlalchemy' : ( 'https://www.sqlalchemy.org/docs', None ),
     'subliminal' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
 }
 

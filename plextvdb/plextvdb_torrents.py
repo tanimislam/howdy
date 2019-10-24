@@ -60,8 +60,6 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
     If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
     
     :rtype: tuple
-
-    .. note:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
     
     .. _`EZTV.IO`: https://eztv.io
     .. _H264: https://en.wikipedia.org/wiki/Advanced_Video_Coding
@@ -272,7 +270,7 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     
     :rtype: tuple
     
-    .. note:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
     
     .. _RARBG: https://en.wikipedia.org/wiki/RARBG    
     """
@@ -377,7 +375,7 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     
     :rtype: tuple
 
-    .. note:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
     
     .. _Torrentz: https://en.wikipedia.org/wiki/Torrentz
     """
@@ -482,7 +480,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
     
     :rtype: tuple
 
-    .. note:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
     
     .. _Jackett: https://github.com/Jackett/Jackett
     """
@@ -644,6 +642,8 @@ def get_tv_torrent_kickass( name, maxnum = 10, verify = True ):
     
     :rtype: tuple
     
+    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    
     .. _KickassTorrents: https://en.wikipedia.org/wiki/KickassTorrents
     """
     from KickassAPI import Search, Latest, User, CATEGORY, ORDER
@@ -732,12 +732,15 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
     If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
     
     :rtype: tuple
+
+    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
     
     .. _`The Pirate Bay`: https://en.wikipedia.org/wiki/The_Pirate_Bay
     """
     
     #surl = urljoin( 'https://thepiratebay3.org', 's/' )
     surl = 'https://thepiratebay.org'
+    assert( maxnum >= 5 )
     if not doAny:
         cat = CATEGORIES.VIDEO.TV_SHOWS
     else:
@@ -960,7 +963,7 @@ def worker_process_download_tvtorrent(
        * the ``message`` describes the illuminating reason as to how this operation failed.
        * the ``time`` tells how long, in seconds, the failing operation took.
 
-    :retype tuple
+    :rtype: tuple
     
     .. seealso::
        

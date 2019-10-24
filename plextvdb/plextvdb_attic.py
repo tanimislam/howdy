@@ -1,11 +1,24 @@
-import requests, os, sys
+import requests, os, sys, time
 import logging, datetime, fuzzywuzzy.fuzz
 from dateutil.relativedelta import relativedelta
+from imdb import IMDb
 
 from plextmdb import tmdb_apiKey
+from plextvdb import get_token, plextvdb
 
-def get_series_omdb_id( series_name ):
-    params = { 's' : series_name, 'type' : 'series', 'plot' : 'full' }
+def get_series_omdb_id( series_name, apikey ):
+    """
+    Returns the most likely IMDB_ key, using the OMDB_ API, for a TV show.
+
+    :param str series_name: the series name.
+    :param str apikey: the OMDB_ API key.
+    
+    :returns: the IMDB_ key associated with ``series_name``.
+    :rtype: str
+
+    .. _OMDB: http://www.omdbapi.com
+    """
+    params = { 's' : series_name, 'type' : 'series', 'plot' : 'full', 'apikey' : apikey }
     response = requests.get( 'http://www.omdbapi.com',
                              params = params )
     if response.status_code != 200:
@@ -24,10 +37,25 @@ def get_series_omdb_id( series_name ):
         return None
     return items[0]['imdbID']
 
-def get_possible_omdb_ids( series_name ):
-    params = { 's' : series_name, 'type' : 'series', 'plot' : 'full' }
-    response = requests.get( 'http://www.omdbapi.com',
-                             params = params )
+def get_possible_omdb_ids( series_name, apikey ):
+    """
+    Returns a :py:class:`list` of basic information on TV shows from the OMDB_ API search of a TV show. Each element in the list is a :py:class:`tuple`: the first element is the IMDB_ series ID, and the second element is a :py:class:`list` of years during which the TV series has aired. For example, for `The Simpsons`_.
+
+    .. code-block:: python
+    
+        >> get_possible_omdb_ids( 'The Simpsons', omdb_apikey )
+        >> [ ( 'tt0096697', [ 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 ] ) ]
+
+    If unsuccessful, then returns ``None``.
+
+    :param str series_name: the series name.
+    :param str apikey: the OMDB_ API key.
+    
+    :returns: a :py:class:`list` of IMDB_ based information on TV shows that match the series name. If unsuccessful, returns ``None``.
+    :rtype: list
+    """
+    params = { 's' : series_name, 'type' : 'series', 'plot' : 'full', 'apikey' : apikey }
+    response = requests.get( 'http://www.omdbapi.com', params = params )
     if response.status_code != 200:
         return None
     data = response.json( )
@@ -37,8 +65,9 @@ def get_possible_omdb_ids( series_name ):
         return None
     if data['totalResults'] == 0:
         return None
-    items = filter(lambda item: 'Poster' in item.keys( ) and item['Poster'] != 'N/A' and 'imdbID' in item.keys( ),
-                   data['Search'])
+    items = list(
+        filter(lambda item: 'Poster' in item.keys( ) and item['Poster'] != 'N/A' and 'imdbID' in item.keys( ),
+               data['Search']) )
     if len( items ) == 0:
         return None
     currentYear = datetime.datetime.now( ).year
@@ -49,22 +78,63 @@ def get_possible_omdb_ids( series_name ):
             endYear = currentYear
         else:
             endYear = int( splitYears[ 1 ] )
-        return range( startYear, endYear + 1 )
-    return map( lambda item: ( item['imdbID'], get_range_years( item ) ), items )
+        return list( range( startYear, endYear + 1 ) )
+    return list( map( lambda item: ( item['imdbID'], get_range_years( item ) ), items ) )
 
-"""
-Does not show the specials for the TV series
-"""
-def get_episodes_series_omdb( imdbID, fromDate = None ):
+
+#
+## Does not show the specials for the TV series
+def get_episodes_series_omdb( imdbID, apikey, fromDate = None ):
+    """
+    Returns a :py:class:`list` of episodes found using the OMDB_ API. Each element has the following keys,
+    
+    * ``Title`` is the episode name.
+    * ``Released`` is the :py:class:`str` representation of the date it was aired.
+    * ``Episode`` is the episode number in the season.
+    * ``airedSeason`` is the season in which the episode was aired.
+    * ``imdbID`` is the IMDB_ episode ID.
+    * ``imdbRating`` is the episode rating (out of 10.0) on IMDB_.
+
+    For example, for `The Simpsons`_,
+
+    .. code-block:: python
+
+        [{'Title': 'The Call of the Simpsons',
+          'Released': '1990-02-18',
+          'Episode': 7,
+          'imdbRating': '7.9',
+          'imdbID': 'tt0701228',
+          'airedSeason': 1},
+         {'Title': 'The Telltale Head',
+          'Released': '1990-02-25',
+          'Episode': 8,
+          'imdbRating': '7.7',
+          'imdbID': 'tt0756398',
+          'airedSeason': 1},
+         {'Title': 'Life on the Fast Lane',
+          'Released': '1990-03-18',
+          'Episode': 9,
+          'imdbRating': '7.5',
+          'imdbID': 'tt0701152',
+          'airedSeason': 1},
+         ...
+        ]
+    
+    :param str imdbID: the IMDB_ ID of the TV show.
+    :param str apiKey: the OMDB_ API key.
+    
+    :returns: a :py:class:`list` of IMDB_ episode information for the TV show.
+    :rtype: list
+    """
     response = requests.get( 'http://www.omdbapi.com',
-                             params = { 'i' : imdbID, 'type' : 'series', 'plot' : 'full' } )
+                             params = { 'i' : imdbID, 'type' : 'series', 'plot' : 'full', 'apikey' : apikey } )
     if response.status_code != 200: return None
     data = response.json( )
     numSeasons = int( data[ 'totalSeasons' ] )
     currentDate = datetime.datetime.now( ).date( )
     sData = [ ]
-    for season in xrange( 1, numSeasons + 1 ):
-        params_season = { 'i' : imdbID, 'type' : 'series', 'plot' : 'full', 'Season' : season }
+    for season in range( 1, numSeasons + 1 ):
+        params_season = { 'i' : imdbID, 'type' : 'series', 'plot' : 'full', 'Season' : season, 'apikey' : apikey }
         response_season = requests.get( 'http://omdbapi.com', params = params_season )
         if response_season.status_code != 200: continue
         data_season = response_season.json( )
@@ -87,23 +157,68 @@ def get_episodes_series_omdb( imdbID, fromDate = None ):
         ## get last episode
         if len( episodes_valid ) == 0: continue
         last_ep = max(episodes_valid, key = lambda episode: datetime.datetime.strptime( episode[ 'Released' ], '%Y-%m-%d' ).date( ) )['Episode']
-        sData += filter(lambda episode: episode['Episode'] <= last_ep, episodes_valid)
+        sData += list( filter(lambda episode: episode['Episode'] <= last_ep, episodes_valid) )
     return sData
 
-def get_tot_epdict_omdb( showName, inYear = None ):
+def get_tot_epdict_omdb( showName, apikey, inYear = None ):
+    """
+     Returns a :py:class:`dict` of episodes found from the OMDB_ API. The top level dictionary's keys are the season numbers, and each value is the next-level dictionary of season information. The next level, season dictionary's keys are the episode number, and its values are the episode names. For example, for `The Simpsons`_ (here the collection of episodes is incomplete),
+    
+    .. code-block:: python
+        
+        {
+         1: {7: 'The Call of the Simpsons',
+          8: 'The Telltale Head',
+          9: 'Life on the Fast Lane',
+          10: "Homer's Night Out",
+          11: 'The Crepes of Wrath',
+          12: 'Krusty Gets Busted',
+          13: 'Some Enchanted Evening'},
+         2: {1: 'Bart Gets an F',
+          2: 'Simpson and Delilah',
+          3: 'Treehouse of Horror',
+          4: 'Two Cars in Every Garage and Three Eyes on Every Fish',
+          6: 'Dead Putting Society',
+          12: 'The Way We Was',
+          13: 'Homer vs. Lisa and the 8th Commandment',
+          14: 'Principal Charming',
+          15: 'Oh Brother, Where Art Thou?',
+          16: "Bart's Dog Gets an F",
+          17: 'Old Money',
+          18: 'Brush with Greatness',
+          19: "Lisa's Substitute",
+          20: 'The War of the Simpsons',
+          21: 'Three Men and a Comic Book',
+          22: 'Blood Feud'},
+         ...
+        }
+
+    If unsuccessful, then returns ``None``.
+
+    :param str showName: the series name.
+    :param str apikey: the OMDB_ API key.
+    :param int inYear: optional argument. If given, then search for those TV shows whose episodes aired in ``inYear``.
+    :returns: a :py:class:`dict` of episode information for that TV show.
+    :rtype: dict
+
+    .. seealso::
+    
+       * :py:meth:`get_tot_epdict_imdb <plextvdb.plextvdb_attic.get_tot_epdict_imdb>`.
+       * :py:meth:`get_tot_epdict_tmdb <plextvdb.plextvdb_attic.get_tot_epdict_tmdb>`.
+    """
     if inYear is None:
-        imdbID = get_series_omdb_id( showName )
+        imdbID = get_series_omdb_id( showName, apikey )
     else:
-        valids = get_possible_omdb_ids( showName )
+        valids = get_possible_omdb_ids( showName, apikey )
         if len(valids) == 1:
             imdbID = valid[0][0]
         else:
-            valids = filter(lambda item: inYear in item[1], valids )
+            valids = list( filter(lambda item: inYear in item[1], valids ) )
             if len(valids) == 0:
                 print( 'Could not find %s in %d' % ( showName, inYear ) )
                 return None
             imdbID = valids[0][0]
-    eps = get_episodes_series_omdb( imdbID )
+    eps = get_episodes_series_omdb( imdbID, apikey )
     tot_epdict = { }
     for episode in eps:
         seasnum = episode[ 'airedSeason' ]
@@ -114,6 +229,19 @@ def get_tot_epdict_omdb( showName, inYear = None ):
     return tot_epdict
 
 def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
+    """
+    Returns a :py:class:`list` of candidate TMDB_ TV shows given the series name. Each element in the list is a dictionary: the ``id`` is the TMDB_ series ID, and ``airedYear`` is the year in which the first episode aired. If nothing is found, returns ``None``. For example, for `The Simpsons`_,
+
+    .. code-block:: python
+
+        [{'id': 456, 'name': 'The Simpsons', 'airedYear': 1989},
+         {'id': 73980, 'name': 'Da Suisa', 'airedYear': 2013}]
+
+    :param str series_name: the series name.
+    :param int firstAiredYear: optional argument. If provided, filter on TV shows that were first aired that year.
+    :returns: a :py:class:`list` of candidate TMDB_ TV shows, otherwise ``None``.
+    :rtype: list
+    """
     params = { 'api_key' : tmdb_apiKey, 'query' : '+'.join( series_name.split( ) ) }
     if firstAiredYear is not None:
         params[ 'first_air_date_year' ] = firstAiredYear
@@ -150,14 +278,52 @@ def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
             results ) )
 
 def get_series_tmdb_id( series_name, firstAiredYear = None ):
+    """
+    Returns the first TMDB_ series ID for a TV show. Otherwise returns ``None`` if no TV series could be found.
+    
+    :param str series_name: the series name.
+    :param int firstAiredYear: optional argument. If provided, filter on TV shows that were first aired that year.
+    :returns: the TMDB_ series ID for that TV show.
+    :rtype: int
+
+    .. _TMDB: https://www.themoviedb.org/documentation/api?language=en-US
+    """
     results = get_possible_tmdb_ids( series_name, firstAiredYear = firstAiredYear )
     if len( results ) == 0: return None
     return results[0]['id']
 
-"""
-Ignore specials (season 0) for now...
-"""
+#
+##Ignore specials (season 0) for now...
 def get_episodes_series_tmdb( tmdbID, fromDate = None ):
+    """
+    Returns a :py:class:`list` of episodes returned by the TMDB_ API. Each element is a dictionary: ``name`` is the episode name, ``airedDate`` is the :py:class:`date <datetime.date>` the episode aired, ``season`` is the season it aired, and ``episode`` is the episode number in that season. For example, for for `The Simpsons`_,
+    
+    .. code-block:: python
+
+       >> series_id = get_series_tmdb_id( 'The Simpsons' )
+       >> episodes_tmdb = get_episodes_series_tmdb( series_id )
+       >> [{'name': 'Simpsons Roasting on an Open Fire',
+            'airedDate': datetime.date(1989, 12, 17),
+            'season': 1,
+            'episode': 1},
+           {'name': 'Bart the Genius',
+            'airedDate': datetime.date(1990, 1, 14),
+            'season': 1,
+            'episode': 2},
+           {'name': "Homer's Odyssey",
+            'airedDate': datetime.date(1990, 1, 21),
+            'season': 1,
+            'episode': 3},
+           ...
+          ]
+
+    :param int tmdbID: the TMDB_ series ID.
+    :param date fromDate: optional argument, of type :py:class:`date <datetime.date>`. If given, then only return episodes aired on or after this date.
+    :returns: a :py:class:`list` of episoes returned by the TMDB_ database.
+    :rtype: list
+
+    .. _`The Simpsons`: https://en.wikipedia.org/wiki/The_Simpsons
+    """
     response = requests.get( 'https://api.themoviedb.org/3/tv/%d' % tmdbID,
                              params = { 'api_key' : tmdb_apiKey }, verify = False )
     if response.status_code != 200:
@@ -189,6 +355,39 @@ def get_episodes_series_tmdb( tmdbID, fromDate = None ):
     return sData
 
 def get_tot_epdict_tmdb( showName, firstAiredYear = None ):
+    """
+    Returns a :py:class:`dict` of episodes found from the TMDB_ API. The top level dictionary's keys are the season numbers, and each value is the next-level dictionary of season information. The next level, season dictionary's keys are the episode number, and its values are the episode names. For example, for `The Simpsons`_,
+
+    .. code-block:: python
+    
+          {1: {1: 'Simpsons Roasting on an Open Fire',
+           2: 'Bart the Genius',
+           3: "Homer's Odyssey",
+           4: "There's No Disgrace Like Home",
+           5: 'Bart the General',
+           6: 'Moaning Lisa',
+           7: 'The Call of the Simpsons',
+           8: 'The Telltale Head',
+           9: 'Life on the Fast Lane',
+           10: "Homer's Night Out",
+           11: 'The Crepes of Wrath',
+           12: 'Krusty Gets Busted',
+           13: 'Some Enchanted Evening'},
+           ...
+          }
+    
+    If unsuccessful, then returns ``None``.
+
+    :param str showName: the series name.
+    :param int firstAiredYear: optional argument. If provided, filter on TV shows that were first aired that year.
+    :returns: a :py:class:`dict` of episode information for that TV show.
+    :rtype: dict
+
+    .. seealso::
+    
+       * :py:meth:`get_tot_epdict_imdb <plextvdb.plextvdb_attic.get_tot_epdict_imdb>`.
+       * :py:meth:`get_tot_epdict_omdb <plextvdb.plextvdb_attic.get_tot_epdict_omdb>`.
+    """
     tmdbID = get_series_tmdb_id( showName, firstAiredYear = firstAiredYear )
     if tmdbID is None: return None
     eps = get_episodes_series_tmdb( tmdbID )
@@ -202,6 +401,23 @@ def get_tot_epdict_tmdb( showName, firstAiredYear = None ):
     return tot_epdict
 
 def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):
+    """
+    .. admonition:: Warning!
+       :class: note
+      
+       This may not reliably work at all anymore!
+    
+    Returns a dictionary of episodes from a Wikipedia_ URL for a TV show. This is very brittle and has not been used since 2015.
+
+    :param str epURL: the Wikipedia_ URL for the TV show.
+    :param int seasnums: the season number for which to get episodes.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: a :py:class:`dict` of episodes for this season. Each key is the episode number, and each value is the episode name.
+    :rtype: dict
+
+    .. _Wikipedia: https://en.wikipedia.org
+    """
     import lxml.html, titlecase
     assert(seasnums >= 1)
     assert(isinstance(seasnums, int))
@@ -233,6 +449,11 @@ def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):
              (idx, epelem) in enumerate( epelems[idxof_seasons[seasnums-1]+1:idxof_seasons[seasnums]] ) }
 
 def fix_missing_unnamed_episodes( seriesName, eps, verify = True, showFuture = False ):
+    """
+    This supposedly uses the TMDB_ API to find names for episodes that the TVDB_ API cannot find.
+    
+    .. todo:: As of |date|, I still don't understand the purpose behind this method. and no other methods call this method. I might remove this method altogether.
+    """
     eps_copy = copy.deepcopy( eps )
     tmdb_id = plextmdb.get_tv_ids_by_series_name( seriesName, verify = verify )
     if len( tmdb_id ) == 0: return
@@ -250,12 +471,18 @@ def fix_missing_unnamed_episodes( seriesName, eps, verify = True, showFuture = F
         if episode['airedSeason'] == 0: continue
 
         
-"""
-Date must be within 4 weeks of now
-"""
+#
+## Date must be within 4 weeks of now
 def get_series_updated_fromdate( date, token, verify = True ):
     """
+    a :py:class:`set` of TVDB_ series IDs of TV shows that have been updated *at least* four weeks fron now.
     
+    :param date date: the :py:class:`date <datetime.date>` after which to look for updated TV shws.
+    :param str token: the TVDB_ API access token.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: a :py:class:`set` of TVDB_ series IDs.
+    :rtype: set
     """
     datetime_now = datetime.datetime.now( )
     assert( date + relativedelta(weeks=4) >= datetime_now.date( ) )
@@ -285,11 +512,27 @@ def get_series_updated_fromdate( date, token, verify = True ):
     return sorted( set( map(lambda elem: elem['id'], series_ids ) ) )
 
 def get_tot_epdict_imdb( showName, verify = True ):
-    from imdb import IMDb
+    """
+    Returns a summary nested :py:class:`dict` of episode information for a given TV show, using :py:class:`IMDb <imdb.IMDb>` class in the `IMDB Python Package`_.
+
+    * The top level dictionary has keys that are the TV show's seasons. Each value is a second level dictionary of information about each season.
+
+    * The second level dictionary has keys (for each season) that are the season's episodes. Each value is a :py:class:`tuple` of episode name and air date, as a :py:class:`date <datetime.date>`.
+
+    An example of the structure of this dictionary can be found in :py:meth:`get_tot_epdict_tvdb <plextvdb.plextvdb.get_tot_epdict_tvdb>`.
+
+    .. seealso::
+
+       * :py:meth:`get_tot_epdict_tvdb <plextvdb.plextvdb.get_tot_epdict_tvdb>`.
+       * :py:meth:`get_tot_epdict_omdb <plextvdb.plextvdb_attic.get_tot_epdict_omdb>`.
+       * :py:meth:`get_tot_epdict_tmdb <plextvdb.plextvdb_attic.get_tot_epdict_tmdb>`.
+
+    .. _`IMDB Python Package`: https://imdbpy.readthedocs.io/en/latest
+    """
     token = get_token( verify = verify )
-    id = get_series_id( showName, token, verify = verify )
-    if id is None: return None
-    imdbId = get_imdb_id( id, token, verify = verify )
+    tvdb_id = plextvdb.get_series_id( showName, token, verify = verify )
+    if tvdb_id is None: return None
+    imdbId = plextvdb.get_imdb_id( tvdb_id, token, verify = verify )
     if imdbId is None: return None
     #
     ## now run imdbpy
@@ -302,8 +545,8 @@ def get_tot_epdict_imdb( showName, verify = True ):
         time.time( ) - time0, showName ) )
     tot_epdict = { }
     seasons = sorted( set(filter(lambda seasno: seasno != -1, series['episodes'].keys( ) ) ) )
-    tot_epdict_tvdb = get_tot_epdict_tvdb( showName, verify = verify )
-    for season in seasons:
+    tot_epdict_tvdb = plextvdb.get_tot_epdict_tvdb( showName, verify = verify )
+    for season in sorted( set( seasons ) & set( tot_epdict_tvdb ) ):
         tot_epdict.setdefault( season, { } )
         for epno in series['episodes'][season]:
             episode = series['episodes'][season][epno]

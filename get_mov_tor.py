@@ -176,31 +176,36 @@ def main( ):
     parser.add_option('--maxnum', dest='maxnum', type=int, action='store', default = 10,
                       help = 'Maximum number of torrents to look through. Default is 10.')
     parser.add_option('--timeout', dest='timeout', type=int, action='store', default = 60,
-                      help = 'Timeout on when to quit getting torrents (in seconds). Default is 60 seconds..' )
-    parser.add_option('--any', dest='do_any', action='store_true', default = False,
-                      help = 'If chosen, make no filter on movie format.')
+                      help = 'Timeout on when to quit searching for torrents (in seconds). Default is 60 seconds..' )
+    #parser.add_option('--any', dest='do_any', action='store_true', default = False,
+    #                  help = 'If chosen, make no filter on movie format.')
     parser.add_option('-f', '--filename', dest='filename', action='store', type=str,
                       help = 'If defined, put option into filename.')
     parser.add_option('--bypass', dest='do_bypass', action='store_true', default=False,
                       help = 'If chosen, bypass YTS.AG.')
     parser.add_option('--nozooq', dest='do_nozooq', action='store_true', default=False,
                       help = 'If chosen, bypass ZOOQLE.')
-    parser.add_option('--torrentz', dest='do_torrentz', action='store_true', default=False,
-                      help = 'If chosen, also look through TORRENTZ to get magnet link.')
+    #parser.add_option('--torrentz', dest='do_torrentz', action='store_true', default=False,
+    #                  help = 'If chosen, also look through TORRENTZ to get magnet link.')
     parser.add_option('--info', dest='do_info', action='store_true', default = False,
                       help = 'If chosen, run in info mode.' )
     parser.add_option('--add', dest='do_add', action='store_true', default = False,
-                      help = 'If chosen, push the magnet link into the deluge server.' )  
+                      help = 'If chosen, push the magnet link or torrent file into the deluge server.' )  
     parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
                       help = 'If chosen, do not verify SSL connections.' )
     parser.add_option('--timing', dest='do_timing', action='store_true', default = False,
-                      help = 'If chosen, show timing information (how long to get TV torrents.')
+                      help = 'If chosen, show timing information (how long to get movie torrents).')
     parser.add_option('--doRaw', dest='do_raw', action='store_true', default = False,
                       help = 'If chosen, do not use IMDB matching for Jackett torrents.')
     opts, args = parser.parse_args( )
     assert( opts.timeout >= 10 )
     assert( opts.name is not None )
     if opts.do_info: logging.basicConfig( level = logging.INFO )
+    #
+    num_both = 0
+    if opts.filename is not None: num_both += 1
+    if opts.do_add: num_both += 1
+    assert( num_both != 2 ), "error, at most either one of --f or --add must be set, NOT both."
     #
     time0 = time.time( )
     tmdb_id = None
@@ -224,8 +229,8 @@ def main( ):
     if get_jackett_credentials( ) is None:
         jobs += list(map(lambda func: pool.apply_async( func, args = ( opts.name, opts.maxnum ) ),
                          ( get_items_rarbg, get_items_tpb ) ) )
-        if opts.do_torrentz:
-            jobs.append( pool.apply_async( get_items_torrentz, args = ( opts.name, opts.maxnum ) ) )
+        #if opts.do_torrentz:
+        #    jobs.append( pool.apply_async( get_items_torrentz, args = ( opts.name, opts.maxnum ) ) )
     else:
         jobs.append( pool.apply_async(
             get_items_jackett, args = ( opts.name, tmdb_id, opts.maxnum, opts.do_verify, opts.do_raw ) ) )

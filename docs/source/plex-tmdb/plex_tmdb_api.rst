@@ -31,7 +31,7 @@ This module contains the main back-end functionality used by the :ref:`get_mov_t
    :members:
 
 plextmdb.plextmdb_torrents module
-----------------------------------
+--------------------------------------
 
 This module implements higher level interfaces to the Jackett_ torrent searching server, and functionality that allows for the automatic download of episodes missing from the Plex_ Movie library. It is very similar to the :ref:`plextvdb.plextvdb_torrents <plextvdb.plextvdb_torrents module>`, except for the following differences.
 

@@ -167,6 +167,7 @@ def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True, tmdb_id = None 
     .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
     
     .. _`EZTV.IO`: https://eztv.io
+    .. _`Star Trek Beyond`: https://en.wikipedia.org/wiki/Star_Trek_Beyond
     """
     assert( maxnum >= 5 )
     if tmdb_id is None:

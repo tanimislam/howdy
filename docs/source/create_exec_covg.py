@@ -78,9 +78,22 @@ _table_tvtorrents = [
     ( "Jackett_ torrent search", ":py:meth:`get_tv_torrent_jackett <plextvdb.plextvdb_torrents.get_tv_torrent_jackett>`", True )
 ]
 
+_table_movietorrents = [
+    ( "`EZTV.IO`_", ":py:meth:`get_movie_torrent_eztv_io <plextmdb.plextmdb_torrents.get_movie_torrent_eztv_io>`", False ),
+    ( "Zooqle_", ":py:meth:`get_movie_torrent_zooqle <plextmdb.plextmdb_torrents.get_movie_torrent_zooqle>`", True ),
+    ( "RARBG_", ":py:meth:`get_movie_torrent_rarbg <plextmdb.plextmdb_torrents.get_movie_torrent_rarbg>`", False ),
+    ( "KickAssTorrents_", ":py:meth:`get_movie_torrent_kickass <plextmdb.plextmdb_torrents.get_movie_torrent_kickass>`", False ),
+    ( "`The Pirate Bay`_", ":py:meth:`get_movie_torrent_tpb <plextmdb.plextmdb_torrents.get_movie_torrent_tpb>`", False ),
+    ( "Jackett_ torrent search", ":py:meth:`get_movie_torrent_jackett <plextmdb.plextmdb_torrents.get_movie_torrent_jackett>`", True ),
+    ( "`YTS API`_", ":py:meth:`get_movie_torrent <plextmdb.plextmdb_torrents.get_movie_torrent>`", True )
+]
+
 if __name__ == '__main__':
     
     print( tabulate.tabulate( _table, [ 'Functionality', 'CLI', 'GUI' ], tablefmt = 'rst' ) )
     print('\n\n\n')
     print( tabulate.tabulate( _table_tvtorrents, [ "Torrent Service", "Search Method", "Does It Work?" ],
+                              tablefmt = 'rst' ) )
+    print('\n\n\n')
+    print( tabulate.tabulate( _table_movietorrents, [ "Torrent Service", "Search Method", "Does It Work?" ],
                               tablefmt = 'rst' ) )

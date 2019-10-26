@@ -154,6 +154,8 @@ html_sidebars = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_css_files = [ 'rtd_dark.css' ]
+
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #

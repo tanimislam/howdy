@@ -76,7 +76,7 @@ Here are the command line inputs that change the operation of this execution.
 
 * ``--nums`` sets the number of top choices of Magnet links through which to search (see :ref:`point #3 <get_plextvdb_batch.py_point3label>`). This must be positive.
 
-* ``--numthreads`` sets the number of threads used for downloading new episodes onto the Plex_ server (see :ref:`point #2 <_get_plextvdb_batch.py_point2label>`).
+* ``--numthreads`` sets the number of threads used for downloading new episodes onto the Plex_ server (see :ref:`point #2 <get_plextvdb_batch.py_point2label>`).
 
 * The ``--nomin`` flag means that there is no *lower* limit to the size of episode files to be downloaded onto the Plex_ server (see :ref:`point #1 <get_plextvdb_batch.py_point1label>`).
 
@@ -347,9 +347,9 @@ Here are the three ways to get information on episodes for a specified TV show. 
      SEASON 31: 6 episodes
 
 * To get a summary of episodes aired (so far) for a given season and a TV show, for example run ``plex_tvdb_epname.py -s "The Simpsons" -S 10``.
-  
-  .. code-block:: bash
 
+  .. code-block:: bash
+       
      23 episodes in SEASON 10 of The Simpsons.
      Episode 01/23: Lard of the Dance (Sunday, 23 August 1998)
      Episode 02/23: The Wizard of Evergreen Terrace (Sunday, 20 September 1998)
@@ -376,9 +376,9 @@ Here are the three ways to get information on episodes for a specified TV show. 
      Episode 23/23: Thirty Minutes Over Tokyo (Sunday, 16 May 1999)
 
 * To get summary information on a specific episode, for example run ``plex_tvdb_epname.py -s "The Simpsons" -e s30e10`` (season 30, episode 10).
-
+  
   .. code-block:: bash
-
+     
      tanim-desktop $ plex_tvdb_epname.py -s "The Simpsons" -e s30e10
      'Tis the 30th Season (Sunday, 09 December 2018)     
 
@@ -391,7 +391,7 @@ The help output, when running ``plex_tvdb_futureshows.py -h``, produces the foll
 .. code-block:: bash
 
    Usage: plex_tvdb_futureshows.py [options]
-
+   
    Options:
      -h, --help  show this help message and exit
      --noverify  If chosen, do not verify the SSL connection.

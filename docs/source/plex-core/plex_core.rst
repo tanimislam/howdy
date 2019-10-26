@@ -13,3 +13,10 @@ This documentation is organized into sections on :ref:`command line tools <Core 
    cli_tools/plex_core_cli
    gui_tools/plex_core_gui
    plex_core_api
+
+TODO
+-------
+
+I would like to enhance :ref:`plex_create_texts.py` to allow for the more versatile `reStructuredText`_ to be converted into HTML documents.
+
+_`reStructuredText`: https://en.wikipedia.org/wiki/ReStructuredText

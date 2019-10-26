@@ -11,4 +11,10 @@ These command line executables, graphical user interfaces, and APIs are used to 
    cli_tools/plex_music_cli
    plex_music_api
 
+TODO
+-----
+
+Create a comprehensive GUI for the Plex_ music library similar to what I have made for the TV library (:ref:`plex_tvdb_totgui.py`) and movie library (:ref:`plex_tmdb_totgui.py`).
+
+.. _Plex: https://plex.tv
 .. _Tautulli: https://tautulli.com

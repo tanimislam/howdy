@@ -6,9 +6,8 @@ from googleapiclient.discovery import build
 from itertools import chain
 from PIL import Image
 from urllib.parse import urljoin
-from sqlalchemy import Integer, String, Column
-
-from plexcore import mainDir, plexcore, baseConfDir, session, PlexConfig
+#
+from plexcore import mainDir, plexcore, baseConfDir, session, PlexConfig, return_error_raw
 from plexmusic import pygn, parse_youtube_date, format_youtube_date
 
 #
@@ -149,8 +148,9 @@ class MusicInfo( object ):
 
     def get_music_metadatas_album( self, album_name ):
         if album_name not in self.alltrackdata:
-            return None, 'Could not find album = %s for artist = %s with Musicbrainz.' % (
-                album_name, self.artist_name )
+            return return_error_raw(
+                'Could not find album = %s for artist = %s with Musicbrainz.' % (
+                    album_name, self.artist_name ) )
         album_info = self.alltrackdata[ album_name ]
         album_data_dict = [ ]
         total_tracks = len( album_info[ 'tracks' ] )
@@ -175,8 +175,7 @@ class MusicInfo( object ):
                 ( album, self.alltrackdata[ album ]['release-date'].year,
                   len( self.alltrackdata[ album ][ 'tracks' ] ) ), self.alltrackdata ),
             key = lambda tup: tup[1] )
-        print( '%s has %d studio albums.' % ( self.artist_name, len( all_album_data ) ) )
-        print( '\n' )
+        print( '%s has %d studio albums.\n' % ( self.artist_name, len( all_album_data ) ) )
         print( '%s\n' % 
                tabulate.tabulate( all_album_data, headers = [ 'Studio Album', 'Year', '# Tracks' ] ) )
         
@@ -372,15 +371,20 @@ class PlexLastFM( object ):
         
     @classmethod
     def get_album_url( cls, album_url_entries ):
-        sorting_list_size = { 'large' : 0,
-                              'extralarge' : 1,
-                              'mega' : 2, 'medium' : 3, 'small' : 4,
-                              '' : 5 }
-        sorted_entries = sorted( filter(lambda entry: 'size' in entry and
-                                        '#text' in entry and
-                                        entry['size'] in sorting_list_size, album_url_entries ),
-                                 key = lambda entry: sorting_list_size[ entry['size'] ] )
+        sorting_list_size = {            
+            'mega' : 0, 'extralarge' : 1,
+            'large' : 2, 'medium' : 3,
+            'small' : 4, '' : 5 }
+        sorted_entries = sorted(
+            filter(lambda entry: 'size' in entry and
+                   '#text' in entry and
+                   entry['size'] in sorting_list_size, album_url_entries ),
+            key = lambda entry: sorting_list_size[ entry['size'] ] )
         if len( sorted_entries ) == 0: return None
+        logging.debug( 'entries: %s' % list(
+            map(lambda entry: ( entry['#text'], entry['size'] ), sorted_entries ) ) )
+        logging.debug( 'chosen entry: %s, %s' % ( sorted_entries[ 0 ][ '#text' ],
+                                                  sorted_entries[ 0 ][ 'size' ] ) )
         return sorted_entries[ 0 ][ '#text' ]
     
     def __init__( self, data = None, verify = True ):
@@ -402,46 +406,48 @@ class PlexLastFM( object ):
                                  verify = self.verify )
         data = response.json( )
         if 'error' in data:
-            return None, "ERROR: %s" % data['message']
+            return return_error_raw(
+                "ERROR: %s" % data['message'] )
         return data, 'SUCCESS'
         
         
     def get_album_info( self, artist_name, album_name ):
-        response = requests.get( self.endpoint,
-                                 params = { 'method' : 'album.getinfo',
-                                            'album' : album_name,
-                                            'artist' : artist_name,
-                                            'api_key' : self.api_key,
-                                            'format' : 'json',
-                                            'lang' : 'en' },
-                                 verify = self.verify )
+        response = requests.get(
+            self.endpoint,
+            params = { 'method' : 'album.getinfo',
+                       'album' : album_name,
+                       'artist' : artist_name,
+                       'api_key' : self.api_key,
+                       'format' : 'json',
+                       'lang' : 'en' },
+            verify = self.verify )
         data = response.json( )
         if 'error' in data:
-            return None, "ERROR: %s" % data['message']
+            return return_error_raw( "ERROR: %s" % data['message'] )
         return data['album'], 'SUCCESS'
         
     def get_album_image( self, artist_name, album_name ):
         album, status = self.get_album_info( artist_name, album_name )
         if status != 'SUCCESS':
-            return None, status
+            return return_error_raw( status )
         if 'image' not in album:
             error_message = 'Could not find album art for album = %s for artist = %s.' % (
                 album_name, artist_name )
-            return None, error_message
+            return return_error_raw( error_message )
         album_url = PlexLastFM.get_album_url( album[ 'image' ] )
         if album_url is None:
             error_message = "Could not find album art for album = %s for artist = %s." % (
                 album_name, artist_name )
-            return None, error_message
+            return return_error_raw( error_message )
         filename = '%s.%s.png' % ( artist_name, album_name.replace('/', '-' ) )
-        img = Image.open( io.BytesIO( requests.get( album_url ).content ) )
+        img = Image.open( io.BytesIO( requests.get( album_url, verify = self.verify ).content ) )
         img.save( filename, format = 'png' )
         os.chmod( filename, 0o644 )
         return filename, 'SUCCESS'
         
     def get_song_listing( self, artist_name, album_name ):
         album, status = self.get_album_info( artist_name, album_name )
-        if status != 'SUCCESS': return None, status
+        if status != 'SUCCESS': return return_error_raw( status )
         track_listing = sorted(map(lambda track: ( titlecase.titlecase( track['name'] ),
                                                    int( track[ '@attr' ][ 'rank' ] ) ),
                                    album['tracks']['track'] ), key = lambda tup: tup[1] )
@@ -464,7 +470,7 @@ class PlexLastFM( object ):
                                  verify = self.verify )
         data = response.json( )
         if 'error' in data:
-            return None, "ERROR: %s" % data[ 'message' ]
+            return return_error_raw( "ERROR: %s" % data[ 'message' ] )
         track = data['track']
         logging.debug( track )
         #
@@ -580,10 +586,11 @@ class PlexLastFM( object ):
         album, status = self.get_album_info( artist_name = artist_name,
                                              album_name = album_name )
         if status != 'SUCCESS':
-            return None, status
+            return return_error_raw( status )
         if len( album[ 'tracks' ][ 'track' ] ) == 0:
-            return None, "Error, could find no tracks for artist = %s, album = %s." % (
-                artist_name, album_name )
+            return return_error_raw(
+                "Error, could find no tracks for artist = %s, album = %s." % (
+                    artist_name, album_name ) )
         if 'mbid' in album:
             album_mbid = album['mbid']
             data = musicbrainzngs.get_release_by_id(
@@ -674,8 +681,9 @@ class PlexMusic( object ):
                                       artist = titlecase.titlecase( artist_name ),
                                       verify = self.verify )
         if 'album_art_url' not in metadata_album or len( metadata_album[ 'album_art_url' ].strip( ) ) == 0:
-            return None, 'Could not find album = %s for artist = %s.' % (
-                album_name, titlecase.titlecase( artist_name ) )
+            return return_error_raw(
+                'Could not find album = %s for artist = %s.' % (
+                    album_name, titlecase.titlecase( artist_name ) ) )
         filename = '%s.%s.png' % ( artist_name, album_name.replace('/', '-') )
         img = Image.open( io.BytesIO( requests.get(
             metadata_album[ 'album_art_url' ], verify = self.verify ).content ) )
@@ -722,8 +730,9 @@ class PlexMusic( object ):
                                       artist = artist_name )
         if titlecase.titlecase( album_name ) != \
            titlecase.titlecase( metadata_album[ 'album_title' ] ):
-            return None, 'COULD NOT FIND ALBUM = %s FOR ARTIST = %s' % (
-                album_name, artist_name )
+            return return_error_raw(
+                'COULD NOT FIND ALBUM = %s FOR ARTIST = %s' % (
+                    album_name, artist_name ) )
         album_url = ''
         if 'album_art_url' in metadata_album:
             album_url = metadata_album[ 'album_art_url' ]
@@ -754,25 +763,27 @@ class PlexMusic( object ):
         #
         ## now see if I can get the necessary metadata
         if 'album_artist_name' not in metadata_song:
-            return None, "ERROR, COULD NOT FIND ARTIST = %s" % artist_name
+            return return_error_raw( "ERROR, COULD NOT FIND ARTIST = %s" % artist_name )
         if metadata_song[ 'album_artist_name' ] != artist_name:
-            return None, "ERROR, COULD NOT FIND ARTIST = %s" % artist_name
+            return return_error_raw( "ERROR, COULD NOT FIND ARTIST = %s" % artist_name )
         #
         if 'track_title' not in metadata_song:
-            return None, 'ERROR, COULD NOT FIND SONG = %s FOR ARTIST = %s.' % (
-                titlecase.titlecase( song_name ), artist_name )
+            return return_error_raw( 'ERROR, COULD NOT FIND SONG = %s FOR ARTIST = %s.' % (
+                titlecase.titlecase( song_name ), artist_name ) )
         if titlecase.titlecase( metadata_song['track_title'] ) != \
            titlecase.titlecase( song_name ):
-            return None, "ERROR, COULD NOT FIND ARTIST = %s, SONG = %s." % (
-                artist_name, titlecase.titlecase( song_name ) )
+            return return_error_raw( "ERROR, COULD NOT FIND ARTIST = %s, SONG = %s." % (
+                artist_name, titlecase.titlecase( song_name ) ) )
         #
         if 'album_title' not in metadata_song:
-            return None, "ERROR, COULD NOT FIND ALBUM FOR ARTIST = %s, SONG = %s." % (
-                artist_name, titlecase.titlecase( song_name ) )
+            return return_error_raw(
+                "ERROR, COULD NOT FIND ALBUM FOR ARTIST = %s, SONG = %s." % (
+                    artist_name, titlecase.titlecase( song_name ) ) )
         #
         if 'track_number' not in metadata_song:
-            return None, "ERROR, COULD NOT FIND TRACK NUMBER FOR ARTIST = %s, SONG = %s." % (
-                artist_name, titlecase.titlecase( song_name ) )
+            return return_error_raw(
+                "ERROR, COULD NOT FIND TRACK NUMBER FOR ARTIST = %s, SONG = %s." % (
+                    artist_name, titlecase.titlecase( song_name ) ) )
         #
         ##
         return self.get_music_metadata_lowlevel( metadata_song )

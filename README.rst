@@ -2,6 +2,10 @@
 Plexstuff - Yet Another Way to Manage Your Plex_ Server's Content
 ###################################################################
 
+.. image:: https://badges.gitter.im/plexstuff/community.svg
+   :alt: Join the chat at https://gitter.im/plexstuff/community
+   :target: https://gitter.im/plexstuff/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+
 Plexstuff is a (hopefully) useful SDK that I have developed to manage (and download) the movies, television shows, and music in which I am interested. I hope that it is, or becomes, a worthy member of the rich community of services used to manage one's media.
 
 Here are a few of the best known high level media management services:

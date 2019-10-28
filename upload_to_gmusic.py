@@ -23,11 +23,7 @@ if __name__=='__main__':
     parser.add_option('-f', '--filenames', dest='filenames', action='store', type=str,
                       help = 'Give the list of filenames to put into the Google Music Player.')
     parser.add_option('-P', dest='do_push', action='store_true', default = False,
-                      help = 'If chosen, then push Google Music credentials into configuration database.' )
-    parser.add_option('-e', dest='email', action='store', type=str,
-                      help = 'Google Music email.' )
-    parser.add_option('-p', dest='password', action='store', type=str,
-                      help = 'Google Music password.' )
+                      help = 'If chosen, then push Google Music API Mobileclient credentials into the configuration database.' )
     opts, args = parser.parse_args()
     if not opts.do_push:
         if opts.filenames is None:
@@ -36,9 +32,10 @@ if __name__=='__main__':
             fnames = _files_from_glob(opts.filenames)
         else:
             fnames = _files_from_commas(opts.filenames)
-        plexmusic.upload_to_gmusic(fnames)
+        plexmusic.upload_to_gmusic( fnames )
     else:
-        if any( map(lambda tok: tok is not None, ( opts.email, opts.password ) ) ):
-            raise ValueError( "Error, must define both Google Music email and password." )
-        plexmusic.save_gmusic_creds( opts.email.strip( ), opts.password.strip( ) )
+        pass
+        #if any( map(lambda tok: tok is not None, ( opts.email, opts.password ) ) ):
+        #    raise ValueError( "Error, must define both Google Music email and password." )
+        #plexmusic.save_gmusic_creds( opts.email.strip( ), opts.password.strip( ) )
         

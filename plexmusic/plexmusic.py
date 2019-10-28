@@ -1308,13 +1308,14 @@ class PlexMusic( object ):
     :var str userID: Gracenote_ API app user ID.
     :var bool verify: whether to verify SSL connections.
 
-    :raise ValueError: if cannot find the Gracenote_API configuration information in the database.
+    :raise ValueError: if cannot find the Gracenote_ API configuration information in the database.
     
     .. warning::
 
        As of October 20, 2019, this API is probably not functional anymore. A discussion is found on the `Pygn`_ Python Gracenote_ API implementation, https://github.com/cweichen/pygn/issues/14. It was nice while it lasted!
 
     .. _Pygn: https://github.com/cweichen/pygn
+    .. _Gracenote: https://developer.gracenote.com/web-api
     """
     
     @classmethod

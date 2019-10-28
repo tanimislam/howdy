@@ -1,5 +1,5 @@
 ================================================
-Music API
+Plex Music API
 ================================================
 
 This document describes the lower level Plexstuff Music API, upon which the :ref:`command line tools <Music Command Line Utilities>`  are built. It lives in ``plexstuff.plexmusic``.
@@ -24,6 +24,14 @@ This contains the low-level functionality that does three things.
 * Uploads music to one's own `Google Play Music`_ account using GMusicAPI_, and sets its credentials.
 
 .. automodule:: plexmusic.plexmusic
+   :members:
+
+plexmusic.pygn module
+------------------------
+
+This contains functionality used by the :py:class:`PlexMusic <plexmusic.plexmusic.PlexMusic>` higher level object interface to the Gracenote_ API.
+
+.. automodule:: plexmusic.pygn
    :members:
 
 .. URLs here

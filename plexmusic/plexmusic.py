@@ -414,6 +414,23 @@ def gmusicmanager( useMobileclient = False, verify = True, device_id = None ):
     finally:
         mmg.logout( )
 
+def gmusicmanager_fixlogin( mmg ):
+    """
+    Workaround to deal with following problem: cannot create an authorized GmusicAPI :py:class:`Mobileclient <gmusicapi.Mobileclient>` because the device ID automatically found is not one of the :py:class:`set` of authorized device IDs.
+
+    :param Mobileclient mmg: the erroring out :py:class:`Mobileclient <gmusicapi.Mobileclient>` music manager.
+    :raise ValueError: if the music manager has not errored out.
+    :raise ValueError: if the music manager is not a :py:class:`Mobileclient <gmusicapi.Mobileclient>`.
+
+    .. seealso:: :py:meth:`get_gmusicmanager <plexmusic.plexmusic.get_gmusicmanager>`
+    """
+    assert( isinstance( mmg, gmusicapi.Mobileclient ) ), "error, music manager object must be a Mobileclient"
+    assert( len( mmg.error_device_ids ) != 0 ), "error, did not find the right device_id previously."
+    credentials = oauth_get_google_credentials( )
+    device_id = min( mmg.error_device_ids )
+    mmg.logout( )
+    mmg.oauth_login( oauth_credentials = credentials, device_id = device_id )
+
 def get_gmusicmanager( useMobileclient = False, verify = True, device_id = None ):
     """
     Returns a GmusicAPI_ manager used to perform operations on one's `Google Play Music`_ account. If the Musicmanager is instantiated but cannot find the device (hence properly authorize for operation), then the attribute ``error_device_ids`` is a non-empty :py:class:`set` of valid device IDs.

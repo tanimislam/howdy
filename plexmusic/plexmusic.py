@@ -440,6 +440,7 @@ def get_gmusicmanager( useMobileclient = False, verify = True, device_id = None 
     :param str device_id: optional argument. If defined, then attempt to use this MAC ID to register the music manager.
 
     :raise ValueError: if cannot instantiate the Musicmanager.
+    :raise AssertionError: if cannot get machine's MAC id.
 
     .. seealso:: :py:meth:`gmusicmanager <plexmusic.plexmusic.gmusicmanager>`
     """
@@ -447,7 +448,7 @@ def get_gmusicmanager( useMobileclient = False, verify = True, device_id = None 
     #
     ## first copy this code from gmusic.mobileclient
     ## because base method to determine device id by gmusicapi fails when cannot be found
-    def return_deviceid( ):
+    def return_deviceid( replace_colons = True ):
         from uuid import getnode as getmac
         from gmusicapi.utils import utils
         try:
@@ -457,23 +458,29 @@ def get_gmusicmanager( useMobileclient = False, verify = True, device_id = None 
                               " Provide an android_id (and be"
                               " sure to provide the same one on future runs).")
             device_id = utils.create_mac_string( mac_int )
-            device_id = device_id.replace( ':', '' )
-            return device_id
+            if replace_colons:
+                return device_id.replace( ':', '' )
+            else: return device_id
         except Exception:
             pass
         try:
             import netifaces
-            valid_ifaces = list( filter(lambda iface: iface.lower( ) != 'lo', netifaces.interfaces( ) ) )
+            valid_ifaces = list( filter(lambda iface: iface.lower( ) != 'lo',
+                                        netifaces.interfaces( ) ) )
             if len( valid_ifaces ) == 0: return None
             valid_iface = max( valid_ifaces )
             iface_tuples =  netifaces.ifaddresses( valid_iface )[ netifaces.AF_LINK ]
             if len( iface_tuples ) == 0: return None
             hwaddr = max( iface_tuples )[ 'addr' ].upper( )
-            return hwaddr.replace(':', '')
+            if replace_colons:
+                return hwaddr.replace(':', '')
+            else: return hwaddr
         except Exception:
             return None
 
     if not useMobileclient:
+        if device_id is None: device_id = return_deviceid( replace_colons = False )
+        assert( device_id is not None ), "error, could not determine the local MAC id"
         mmg = gmusicapi.Musicmanager(
             debug_logging = False, verify_ssl = verify )
         credentials = plexcore.oauthGetOauth2ClientGoogleCredentials( )
@@ -595,6 +602,7 @@ def upload_to_gmusic(filenames, verify = True):
     filenames_valid = list(filter(lambda fname: os.path.isfile(fname), set(filenames)))
     if len(filenames_valid) != 0:
         with gmusicmanager( useMobileclient = False, verify = verify ) as mmg:
+            if len( mmg.error_device_ids ) != 0: gmusicmanager_fixlogin( mmg )
             mmg.upload(filenames_valid)
 
 def download_best_song( artist_name, song_name, youtube = None,

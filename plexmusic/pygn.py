@@ -1,12 +1,16 @@
 """
-pygn.py
+pygn (pronounced "pigeon") is a simple Python client for the Gracenote_ Music Web API, which can retrieve Artist, Album and Track metadata with the most common options.
 
-pygn (pronounced "pigeon") is a simple Python client for the Gracenote Music 
-Web API, which can retrieve Artist, Album and Track metadata with the most 
-common options.
+You will need a Gracenote_ Client ID to use this module. Please contact developers@gracenote.com to get one.
 
-You will need a Gracenote Client ID to use this module. Please contact 
-developers@gracenote.com to get one.
+This module has been enhanced in the following ways beyond the main version, that lives in https://github.com/cweichen/pygn.
+
+* Uses the requests_ module for HTTP processing.
+* debug logging is now handled through the logging_ module in ``DEBUG`` mode.
+* extensively fleshed out documentation.
+
+.. _requests: https://requests.kennethreitz.org
+.. _logging: https://docs.python.org/3/library/logging.html
 """
 
 from __future__ import print_function
@@ -71,7 +75,7 @@ def register(clientID, verify = True):
     :param str clientID: the Gracenote_ client ID.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :returns: the Gracenote_ user ID if valid client ID.
-    :rtype str
+    :rtype: str
 
     .. _Gracenote: https://developer.gracenote.com/web-api    
     """

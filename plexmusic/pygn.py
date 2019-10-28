@@ -25,8 +25,7 @@ DEBUG = True # change back to FALSE
 
 class gnmetadata(dict):
 	"""
-	This class is a dictionary containing metadata fields that are available 
-	for the queried item.
+	This class is a dictionary containing metadata fields that are available for the queried item.
 	"""
 	def __init__(self):
 		# Basic Metadata
@@ -63,17 +62,18 @@ class gnmetadata(dict):
 
 def register(clientID, verify = True):
     """
-    This function registers an application as a user of the Gracenote service
+    This function registers an application as a user of the Gracenote service.
     
-    It takes as a parameter a clientID string in the form of 
-    "NNNNNNN-NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN" and returns a userID in a 
-    similar format.
+    It takes as a parameter a clientID string in the form of "NNNNNNN-NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN" and returns a userID in a similar format.
     
-    As the quota of number of users (installed applications or devices) is 
-    typically much lower than the number of queries, best practices are for a
-    given installed application to call this only once, store the UserID in 
-    persistent storage (e.g. filesystem), and then use these IDs for all 
-    subsequent calls to the service.
+    As the quota of number of users (installed applications or devices) is typically much lower than the number of queries, best practices are for a given installed application to call this only once, store the UserID in persistent storage (e.g. filesystem), and then use these IDs for all subsequent calls to the service.
+    
+    :param str clientID: the Gracenote_ client ID.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :returns: the Gracenote_ user ID if valid client ID.
+    :rtype str
+
+    .. _Gracenote: https://developer.gracenote.com/web-api    
     """
     
     # Create XML request
@@ -98,21 +98,43 @@ def register(clientID, verify = True):
         userID = userElem.text
         
     return userID
-#*****************************************************************************************************************************************		
-# Added by Fabian in order to cover the Rhythm API
-# Returns a list of gnmetadata dictionaries 
 
-def createRadio(clientID='', userID='', artist='', track='', mood='', era='', genre='', popularity ='', similarity = '', count='10', verify = True):
+def createRadio(clientID, userID, artist = '', track = '', mood = '', era = '',
+                genre = '', popularity = None, similarity = None, count = 10, verify = True):
     """
-    Queries a Radio playlist
-    """
-    if clientID=='' or userID=='':
-        print('ClientID and UserID are required')
-        return None
+    Queries a set of radio stations on Gracenote_ to create, and returns a :py:class:`list` of :py:class:`gnmetadata <plexmusic.pygn.gnmetadata>` dictionaries corresponding to those radio stations that have been created. This was created by the GitHub_ user Fabian_ to cover the `Gracenote Rhythm`_ API.
 
-    if artist=='' and track=='' and mood=='' and era=='' and genre=='':
-        print('Must query with at least one field (artist, track, genre, mood, era)')
-        return None
+    :param str clientID: the Gracenote_ client ID.
+    :param str userID: the Gracenote_ user ID.
+    :param str artist: the artist name.
+    :param str track: the song name.
+    :param str mood: the song mood.
+    :param str era: the song era.
+    :param str genre: the genre.
+    :param str popularity: optional argument. The song popularity.
+    :param str similarity: optional argument. The song similariy.
+    :param int count: optional argument, the maximum number of matches to return, must be :math:`\ge 1`. Default is ``10``.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    :returns: a :py:class:`list` of :py:class:`gnmetadata <plexmusic.pygn.gnmetadata>` radio stations that match the above query.
+    :rtype: list
+
+    :raise ValueError: if all of ``artist``, ``track``, ``mood``, ``era``, and ``genre`` are empty.
+    :raise ValueError: if ``count`` :math:`\le 0`.
+
+    .. _GitHub: https://github.com
+    .. _`Gracenote Rhythm`: https://developer.gracenote.com/rhythm-api
+    .. _Fabian: https://github.com/fabian1811
+    """
+    # if clientID=='' or userID=='':
+    #     print('ClientID and UserID are required')
+    #     return None
+
+    # if artist=='' and track=='' and mood=='' and era=='' and genre=='':
+    #     print('Must query with at least one field (artist, track, genre, mood, era)')
+    #     return None
+    assert( len(list(map(lambda val: val.strip( ) != '', ( artist, track, mood, era, genre ) ) ) ) != 0), "error, must query with at least one field (artist, track, genre, mood, era)"
+    assert( count >= 1 )
 
     #Create XML request
     query = _gnquery()
@@ -123,26 +145,25 @@ def createRadio(clientID='', userID='', artist='', track='', mood='', era='', ge
     query.addQuery('RADIO_CREATE')
 	
     if artist!='' or track!='':
-        query.addTextSeed(artist,track)
+        query.addTextSeed(artist, track)
 
     if mood!='' or era!='' or genre!='':
-        query.addAttributeSeed(mood,era,genre)
+        query.addAttributeSeed(mood, era, genre)
 			
     query.addQueryOption('SELECT_EXTENDED', 'COVER,REVIEW,ARTIST_BIOGRAPHY,ARTIST_IMAGE,ARTIST_OET,MOOD,TEMPO,LINK')
     query.addQueryOption('SELECT_DETAIL', 'GENRE:3LEVEL,MOOD:2LEVEL,TEMPO:3LEVEL,ARTIST_ORIGIN:4LEVEL,ARTIST_ERA:2LEVEL,ARTIST_TYPE:2LEVEL')	
 
-    if popularity!='':
+    if popularity is not None:
         query.addQueryOption('FOCUS_POPULARITY', popularity)
-    if similarity!='':
+    if similarity is not None:
         query.addQueryOption('FOCUS_SIMILARITY', similarity)
 
-    query.addQueryOption('RETURN_COUNT', count)
+    query.addQueryOption('RETURN_COUNT', '%d' % count )
 
     queryXML = query.toString()
-
-    if DEBUG:
-        logging.debug('QUERY:')
-        logging.debug(queryXML)
+    
+    logging.debug('QUERY:')
+    logging.debug(queryXML)
 
     # POST query
     response = requests.post( _gnurl( clientID ), data = queryXML, verify = verify )
@@ -150,14 +171,7 @@ def createRadio(clientID='', userID='', artist='', track='', mood='', era='', ge
     #response = urllib_request.urlopen(_gnurl(clientID), queryXML)
     #`responseXML = response.read()
 
-    myPlaylist = []
-
-    for x in range(1, int(count)):
-        track = _parseRadioMetadata(responseXML,x)		
-        myPlaylist.append(track)
-	
-    print(responseXML)
-    
+    myPlaylist = list(map(lambda x: _parseRadioMetadata( responseXML, x ), range( 1, count ) ) )
     return myPlaylist
 
 #*****************************************************************************************************************************************		
@@ -165,15 +179,36 @@ def createRadio(clientID='', userID='', artist='', track='', mood='', era='', ge
 # Returns a list of gnmetadata dictionaries 
 
 
-def radioEvent(clientID='', userID='', radioID='', gnID='', event ='TRACK_PLAYED', count='10', popularity ='', similarity = '', verify = True):
-    if clientID=='' or userID=='':
-        print('ClientID and UserID are required')
-        return None
+def radioEvent(clientID, userID, radioID, GNID, event ='TRACK_PLAYED',
+               count = 10, popularity = None, similarity = None, verify = True):
+    """
+    Queries a set of radio stations on Gracenote_ to find based on certain queries, and returns a :py:class:`list` of :py:class:`gnmetadata <plexmusic.pygn.gnmetadata>` dictionaries corresponding to those radio stations that have been found. This was created by the GitHub_ user Fabian_ to cover the `Gracenote Rhythm`_ API.
 
-    if radioID=='' or gnID=='':
-        print('Event query must contain the radioID and gnID')
-        return None
+    :param str clientID: the Gracenote_ client ID.
+    :param str userID: the Gracenote_ user ID.
+    :param str GNID: the Gracenote_ music ID of the music data.
+    :param str event: optional argument, search on what happened to the song whose Gracenote_ ID is ``GNID``. Default is ``TRACK_PLAYED``.
+    :param str genre: the genre.
+    :param int count: optional argument, the maximum number of matches to return, must be :math:`\ge 1`. Default is ``10``.
+    :param str popularity: optional argument. The song popularity.
+    :param str similarity: optional argument. The song similariy.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
+    :returns: a :py:class:`list` of :py:class:`gnmetadata <plexmusic.pygn.gnmetadata>` radio stations that match the above query.
+    :rtype: list
+    
+    :raise ValueError: if ``count`` :math:`\le 0`.
+    """
+    # if clientID=='' or userID=='':
+    #     print('ClientID and UserID are required')
+    #     return None
+
+    # if radioID=='' or GNID=='':
+    #     print('Event query must contain the radioID and GNID')
+    #     return None
+    assert( count >= 1 )
+    
+    
     #Create XML request
     query = _gnquery()
     
@@ -184,13 +219,13 @@ def radioEvent(clientID='', userID='', radioID='', gnID='', event ='TRACK_PLAYED
     
     query.addRadioID(radioID)
     
-    query.addQueryEVENT(event, gnID)
+    query.addQueryEVENT(event, GNID)
     
-    query.addQueryOption('RETURN_COUNT', count)
+    query.addQueryOption('RETURN_COUNT', '%d' % count)
     
-    if popularity!='':
+    if popularity is not None:
         query.addQueryOption('FOCUS_POPULARITY', popularity)
-    if similarity!='':
+    if similarity is not None:
         query.addQueryOption('FOCUS_SIMILARITY', similarity)
 
     query.addQueryOption('SELECT_EXTENDED', 'COVER,REVIEW,ARTIST_BIOGRAPHY,ARTIST_IMAGE,ARTIST_OET,MOOD,TEMPO,LINK')
@@ -198,10 +233,9 @@ def radioEvent(clientID='', userID='', radioID='', gnID='', event ='TRACK_PLAYED
     
     query.addQueryOption('RETURN_SETTINGS', 'YES')
     
-    queryXML = query.toString()
-    if DEBUG:	
-        logging.debug('QUERY:')
-        logging.debug(queryXML)
+    queryXML = query.toString( )
+    logging.debug('QUERY:')
+    logging.debug(queryXML)
         	
     # POST query
     response = requests.post( _gnurl( clientID ), data = queryXML, verify = verify )
@@ -209,31 +243,30 @@ def radioEvent(clientID='', userID='', radioID='', gnID='', event ='TRACK_PLAYED
     #response = urllib_request.urlopen(_gnurl(clientID), queryXML)
     #responseXML = response.read()
     
-    myPlaylist = []
-    
-    for x in range(1, int(count)):
-        track = _parseRadioMetadata(responseXML,x)		
-        myPlaylist.append(track)
-	
-    print(responseXML)
-    
+    myPlaylist = list(map(lambda x: _parseRadioMetadata( responseXML, x ), range( 1, count ) ) )
     return myPlaylist
 
 #***********************************************************************************************************************
-def search(clientID='', userID='', artist='', album='', track='', toc='', verify = True ):
+def search(clientID, userID, artist='', album='', track='', toc='', verify = True ):
     """
-    Queries the Gracenote service for a track, album, artist, or TOC
+    Queries the Gracenote service for a track, album, artist, or TOC entry. TOC is a string of offsets in the format, ``150 20512 30837 50912 64107 78357 ...``.
+
+    :param str clientID: the Gracenote_ API client ID.
+    :param str userID: the Gracenote_ API user ID.
+    :param str artist: the artist name.
+    :param str album: the song album.
+    :param str track: the song name.
+    :param str toc: the album's string of offsets in the following format, ``150 20512 30837 50912 64107 78357 ...``.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     
-    TOC is a string of offsets in the format '150 20512 30837 50912 64107 78357 ...' 
+    :returns: a :py:class:`gnmetadata <plexmusic.pygn.gnmetadata>` of album metadata corresponding to this query.
+    :rtype: :py:class:`gnmetadata <plexmusic.pygn.gnmetadata>`
+
+    :raise ValueError: if all of ``artist``, ``album``, ``track``, ``toc``, are empty.
+    :raise ValueError: if ``count`` :math:`\le 0`.
     """
-
-    if clientID=='' or userID=='':
-        print('ClientID and UserID are required')
-        return None
-
-    if artist=='' and album=='' and track=='' and toc=='':
-        print('Must query with at least one field (artist, album, track, toc)')
-        return None
+    assert( count >= 1 )
+    assert( len(list(map(lambda val: val.strip( ) != '', ( artist, album, track, toc ) ) ) ) != 0 ), 'Must query with at least one field (artist, album, track, toc)'
 	
     # Create XML request
     query = _gnquery()
@@ -255,11 +288,10 @@ def search(clientID='', userID='', artist='', album='', track='', toc='', verify
 	
     queryXML = query.toString()
     
-    if DEBUG:
-        logging.debug('------------')
-        logging.debug('QUERY XML')
-        logging.debug('------------')
-        logging.debug(queryXML)
+    logging.debug('------------')
+    logging.debug('QUERY XML')
+    logging.debug('------------')
+    logging.debug(queryXML)
 	
     # POST query
     #response = urllib_request.urlopen(_gnurl(clientID), queryXML)
@@ -267,11 +299,10 @@ def search(clientID='', userID='', artist='', album='', track='', toc='', verify
     response = requests.post( _gnurl( clientID ), data = queryXML, verify = verify )
     responseXML = response.content
   
-    if DEBUG:
-        logging.debug('------------')
-        logging.debug('RESPONSE XML')
-        logging.debug('------------')
-        logging.debug(responseXML)
+    logging.debug('------------')
+    logging.debug('RESPONSE XML')
+    logging.debug('------------')
+    logging.debug(responseXML)
 
     # Create GNTrackMetadata object
     metadata = gnmetadata()
@@ -329,9 +360,8 @@ def search(clientID='', userID='', artist='', album='', track='', toc='', verify
             metadata['artist_type'] = _getMultiElemText(trackElem, 'ARTIST_TYPE', 'ORD', 'ID')
 
     # Parse tracklist
-    metadata['tracks'] = []
-    for trackElem in albumElem.iter('TRACK'):
-        trackdata = {}
+    def create_trackdata( trackElem ):
+        trackdata = { }
         
         trackdata['track_number'] = _getElemText(trackElem, 'TRACK_NUM')
         trackdata['track_gnid'] = _getElemText(trackElem, 'GN_ID')
@@ -351,9 +381,9 @@ def search(clientID='', userID='', artist='', album='', track='', toc='', verify
         if trackElem.find('ARTIST_TYPE') is not None:
             trackdata['artist_type'] = _getMultiElemText(trackElem, 'ARTIST_TYPE', 'ORD', 'ID')
 
-    metadata['tracks'].append(trackdata)
+        return trackdata
+    metadata['tracks'] = list(map(create_trackdata, albumElem.iter('TRACK')))
     return metadata
-
 
 def _parseRadioMetadata(responseXML, number):
 	# Create GNTrackMetadata object
@@ -417,9 +447,20 @@ def _parseRadioMetadata(responseXML, number):
 
 				return metadata
 
-def get_discography(clientID='', userID='', artist='', rangeStart=1, rangeEnd=10, verify = True ):
+def get_discography(clientID, userID, artist, rangeStart = 1, rangeEnd = 10,
+                    verify = True ):
     """
-    Queries the Gracenote service for all albums containing an artist
+    Queries the Gracenote_ API service for all albums containing an artist.
+
+    :param str clientID: the Gracenote_ client ID.
+    :param str userID: the Gracenote_ user ID.
+    :param str artist: the artist name.
+    :param int rangeStart: optional argument. This is the order for the *HIGHEST* cardinal rank of an album that matches a given album name associated with the artist (lower number is better). Must be :math:`\ge 1`, and default is ``1``.
+    :param int rangeEnd: optional argument. This is the order for the *LOWEST* cardinal rank of an album that matches a given album name associated with the artist (lower number is better). Must be :math:`\ge 1`, :math:`ge` ``rangeStart``, and default is ``10``.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    :returns: a :py:class:`list` of all albums found for ``artist``. Each album is stored as :py:class:`gnmetadata <plexmusic.pygn.gnmetadata>`.
+    :rtype: :py:class:`gnmetadata <plexmusic.pygn.gnmetadata>`
     """
 
     if clientID=='' or userID=='':
@@ -442,11 +483,10 @@ def get_discography(clientID='', userID='', artist='', rangeStart=1, rangeEnd=10
     
     queryXML = query.toString()
 
-    if DEBUG:
-        logging.debug('------------')
-        logging.debug('QUERY XML')
-        logging.debug('------------')
-        logging.debug(queryXML)
+    logging.debug('------------')
+    logging.debug('QUERY XML')
+    logging.debug('------------')
+    logging.debug(queryXML)
         
     # POST query
     response = reqests.post( _gnurl( clientID ), data = queryXML, verify = verify )
@@ -454,11 +494,10 @@ def get_discography(clientID='', userID='', artist='', rangeStart=1, rangeEnd=10
     #response = urllib_request.urlopen(_gnurl(clientID), queryXML)
     #responseXML = response.read()
     
-    if DEBUG:
-        logging.debug('------------')
-        logging.debug('RESPONSE XML')
-        logging.debug('------------')
-        logging.debug(responseXML)
+    logging.debug('------------')
+    logging.debug('RESPONSE XML')
+    logging.debug('------------')
+    logging.debug(responseXML)
 
     # Create result array
     discography = []
@@ -519,9 +558,16 @@ def get_discography(clientID='', userID='', artist='', rangeStart=1, rangeEnd=10
         discography.append(metadata)
     return discography
 
-def fetch(clientID='', userID='', GNID='', verify = True ):
+def fetch(clientID, userID, GNID, verify = True ):
     """
-    Fetches a track or album by GN ID
+    Fetches a track or album by their Gracenote_ API ID.
+
+    :param str clientID: the Gracenote_ API client ID.
+    :param str userID: the Gracenote_ API user ID.
+    :param str GNID: the Gracenote_ music ID of the music data.
+
+    :returns: a :py:class:`gnmetadata <plexmusic.pygn.gnmetadata>` containing the metadata for the album.
+    :rtype: :py:class:`gnmetadata <plexmusic.pygn.gnmetadata>`
     """
     
     if clientID=='' or userID=='':
@@ -543,11 +589,10 @@ def fetch(clientID='', userID='', GNID='', verify = True ):
     
     queryXML = query.toString()
     
-    if DEBUG:
-        logging.debug('------------')
-        logging.debug('QUERY XML')
-        logging.debug('------------')
-        logging.debug(queryXML)
+    logging.debug('------------')
+    logging.debug('QUERY XML')
+    logging.debug('------------')
+    logging.debug(queryXML)
     
     # POST query
     response = requests.post( _gnurl( clientID ), data = queryXML, verify = verify )
@@ -555,11 +600,10 @@ def fetch(clientID='', userID='', GNID='', verify = True ):
     #response = urllib_request.urlopen(_gnurl(clientID), queryXML)
     #responseXML = response.read()
     
-    if DEBUG:
-        logging.debug('------------')
-        logging.debug('RESPONSE XML')
-        logging.debug('------------')
-        logging.debug(responseXML)
+    logging.debug('------------')
+    logging.debug('RESPONSE XML')
+    logging.debug('------------')
+    logging.debug(responseXML)
     
     # Create GNTrackMetadata object
     metadata = gnmetadata()
@@ -617,7 +661,7 @@ def fetch(clientID='', userID='', GNID='', verify = True ):
             metadata['artist_type'] = _getMultiElemText(trackElem, 'ARTIST_TYPE', 'ORD', 'ID')
 
     # Parse tracklist
-    metadata['tracks'] = []
+    metadata['tracks'] = [ ]
     for trackElem in albumElem.iter('TRACK'):
         trackdata = {}
         
@@ -644,15 +688,26 @@ def fetch(clientID='', userID='', GNID='', verify = True ):
 
 def _gnurl( clientID ):
     """
-    Helper function to form URL to Gracenote service
+    Helper function to form URL to Gracenote_ API service.
+    
+    :param str clientID: the Gracenote_ client ID.
+    :returns: the lower level URL to the Gracenote_ API.
+    :rtype: str
     """
     clientIDprefix = clientID.split('-')[0]
-    return 'https://c' + clientIDprefix + '.web.cddbp.net/webapi/xml/1.0/'
+    return 'https://c%s.web.cddbp.net/webapi/xml/1.0/' % clientIDprefix
 	
 def _getOET(clientID, userID, GNID, verify = True ):
     """
-    Helper function to retrieve Origin, Era, and Artist Type by direct album 
-    fetch
+    Helper function to retrieve Origin, Era, and Artist Type by direct album fetch.
+    
+    :param str clientID: the Gracenote_ client ID.
+    :param str userID: the Gracenote_ user ID.
+    :param str GNID: the Gracenote_ music ID of the music data.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: a :py:class:`tuple` of ``artistOrigin``, ``artistEra``, and ``artistType``.
+    :retype: tuple
     """
     # Create XML request
     query = _gnquery()
@@ -665,11 +720,10 @@ def _getOET(clientID, userID, GNID, verify = True ):
     
     queryXML = query.toString()
     
-    if DEBUG:
-        logging.debug('------------')
-        logging.debug('QUERY XML (from _getOET())')
-        logging.debug('------------')
-        logging.debug(queryXML)
+    logging.debug('------------')
+    logging.debug('QUERY XML (from _getOET())')
+    logging.debug('------------')
+    logging.debug(queryXML)
         
     # POST query
     response = requests.post( _gnurl( clientID ), data = queryXML, verify = verify )
@@ -677,11 +731,10 @@ def _getOET(clientID, userID, GNID, verify = True ):
     #response = urllib_request.urlopen(_gnurl(clientID), queryXML)
     #albumXML = response.read()
     
-    if DEBUG:
-        logging.debug('------------')
-        logging.debug('RESPONSE XML (from _getOET())')
-        logging.debug('------------')
-        logging.debug(albumXML)
+    logging.debug('------------')
+    logging.debug('RESPONSE XML (from _getOET())')
+    logging.debug('------------')
+    logging.debug(albumXML)
     
     # Parse XML
     responseTree = xml.etree.ElementTree.fromstring(albumXML)
@@ -695,14 +748,21 @@ def _getOET(clientID, userID, GNID, verify = True ):
 	
 class _gnquery( object ):
     """
-    A utility class for creating and configuring an XML query for POST'ing to
-    the Gracenote service
+    A utility class for creating and configuring an XML query for POST'ing to the Gracenote service.
+    
+    :var Element root: the :py:class:`XML Element <xml.etree.ElementTree.Element>` root used for storing and querying XML data. This element has tag ``QUERIES``.
     """
     
     def __init__(self):
         self.root = xml.etree.ElementTree.Element('QUERIES')
         
     def addAuth(self, clientID, userID):
+        """
+        Adds authentication information as a sub-element of ``root``, ``auth``, with tag ``AUTH``. The two sub-elements of ``auth`` are ``client`` (with tag ``CLIENT``) and ``user`` (with tag ``USER``).
+        
+        :param str clientID: the Gracenote_ client ID.
+        :param str userID: the Gracenote_ user ID.
+        """
         auth = xml.etree.ElementTree.SubElement(self.root, 'AUTH')
         client = xml.etree.ElementTree.SubElement(auth, 'CLIENT')
         user = xml.etree.ElementTree.SubElement(auth, 'USER')
@@ -711,6 +771,11 @@ class _gnquery( object ):
         user.text = userID
 	
     def addQuery(self, cmd):
+        """
+        Adds a query element as a sub-element of ``root``, with tag ``QUERY``.
+        
+        :param str cmd: the command to add to the XML tree data.
+        """
         query = xml.etree.ElementTree.SubElement(self.root, 'QUERY')
         query.attrib['CMD'] = cmd
     
@@ -790,12 +855,12 @@ class _gnquery( object ):
             text.attrib['TYPE'] = "TRACK"
             text.text = track
             
-    def addQueryEVENT(self, eventType, gnID):
+    def addQueryEVENT(self, eventType, GNID):
         query = self.root.find('QUERY')
         event = xml.etree.ElementTree.SubElement(query, 'EVENT')
         event.attrib['TYPE'] = eventType
         gnidTag = xml.etree.ElementTree.SubElement(event, 'GN_ID')
-        gnidTag.text = gnID
+        gnidTag.text = GNID
         
     def addRadioID(self, radioID):
         query = self.root.find('QUERY')
@@ -806,8 +871,15 @@ class _gnquery( object ):
         
 def _getElemText(parentElem, elemName, elemAttribName=None, elemAttribValue=None):
     """
-    XML parsing helper function to find child element with a specific name, 
-    and return the text value
+    XML parsing helper function to find child element with a specific name, and return the text value. Either both ``elemAttribName`` and ``elemAttribValue`` are ``None``, or neither is ``None``.
+    
+    :param SubElement parentElem: the :py:class:`XML SubElement <xml.etree.ElementTree.SubElement>` to query.
+    :param str elemName: search for XML elements with this tag.
+    :param str elemAttribName: optional argument. If defined, filter on those XML elements with this attribute name.
+    :param str elemAttribValue: optional argument. If defined, filter on those XML elements whose attribute name is given by ``elemAttribName`` and whose value is ``elemAttribValue``.
+
+    :returns: the text associated with the XML element, if found. Otherwise, returns ``""``.
+    :rtype: str
     """
     elems = parentElem.findall(elemName)
     for elem in elems:
@@ -822,17 +894,31 @@ def _getElemText(parentElem, elemName, elemAttribName=None, elemAttribValue=None
 
 def _getElemAttrib(parentElem, elemName, elemAttribName):
     """
-    XML parsing helper function to find child element with a specific name, 
-    and return the value of a specified attribute
+    XML parsing helper function to find child element with a specific name, and return the value of a specified attribute.
+    
+    :param SubElement parentElem: the :py:class:`XML SubElement <xml.etree.ElementTree.SubElement>` to query.
+    :param str elemName: search for XML elements with this tag.
+    :param str elemAttribName: filter on those XML elements with this attribute name.
+    
+    :returns: the attribute value associated with the XML element whose tag is ``elemName`` and whose attribute is ``elemAttribName``.
+    :rtype: str
     """
     elem = parentElem.find(elemName)
     if elem is not None:
         return elem.attrib[elemAttribName]
+    return None
 
 def _getMultiElemText(parentElem, elemName, topKey, bottomKey):
     """
-    XML parsing helper function to return a 2-level dict of multiple elements
-    by a specified name, using topKey as the first key, and bottomKey as the second key
+    XML parsing helper function to return a 2-level :py:class:`dict` of multiple elements by a specified name, using ``topKey`` as the first key, and ``bottomKey`` as the second key.
+    
+    :param SubElement parentElem: the :py:class:`XML SubElement <xml.etree.ElementTree.SubElement>` to query.
+    :param str elemName: search for XML elements with this tag.
+    :param str topKey: filter on those XML elements with this attribute name.
+    :param str bottomKey: filter on those XML elements with this attribute name.
+
+    :returns: a two-level :py:class:`dict` consisting of keys given by ``elem.attrib[ topKey ]``, and values given by a dictionary: ``{ bottomKey: elem.attrib[ bottomKey ], 'TEXT' : elem.text }``. In addition, for an element whose attributes are not in ``topKey``, there is a key of ``0`` and value of ``{ bottomKey: elem.attrib[ bottomKey ], 'TEXT' : elem.text }``.
+    :rtype: dict
     """
     elems = parentElem.findall(elemName)
     result = {} # 2-level dictionary of items, keyed by topKey and then bottomKey

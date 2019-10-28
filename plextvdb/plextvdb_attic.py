@@ -451,7 +451,7 @@ def fix_missing_unnamed_episodes( seriesName, eps, verify = True, showFuture = F
     """
     This supposedly uses the TMDB_ API to find names for episodes that the TVDB_ API cannot find.
     
-    .. todo:: As of |date|, I still don't understand the purpose behind this method. and no other methods call this method. I might remove this method altogether.
+    .. warning:: As of |date|, I still don't understand the purpose behind this method. and no other methods call this it. I might remove this method altogether.
     """
     eps_copy = copy.deepcopy( eps )
     tmdb_id = plextmdb.get_tv_ids_by_series_name( seriesName, verify = verify )

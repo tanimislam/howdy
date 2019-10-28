@@ -1335,3 +1335,53 @@ class GoogleOauth2Dialog( QDialogWithPrinting ):
             self.authCredentials.setText( '' )
             self.emitState.emit( False )
         self.close( )
+
+class GMusicMobileClientOauth2Dialog( QDialogWithPrinting ):
+    def __init__( self, parent ):
+        super( GoogleOauth2Dialog, self ).__init__(
+            parent, isIsolated = True, doQuit = False ):
+        self.setModal( True )
+        self.setWindowTitle( 'PLEX ACCOUNT GOOGLE MUSIC MOBILECLIENT CREDENTIALS' )
+        mainLayout = QVBoxLayout( )
+        self.setLayout( mainLayout )
+        self.verify = parent.verify
+        #
+        mainLayout.addWidget( QLabel( 'TOOL TO STORE GOOGLE MUSIC MOBILECLIENT AS OAUTH2 TOKENS.' ) )
+        #
+        authWidget = QWidget( )
+        authLayout = QGridLayout( )
+        authWidget.setLayout( authLayout )
+        self.authCredentials = QLineEdit( )
+        self.authCredentials.setEchoMode( QLineEdit.Password )
+        authLayout.addWidget( QLabel( 'CREDENTIALS:' ), 0, 0, 1, 1 )
+        authLayout.addWidget( self.authCredentials, 0, 1, 1, 4 )
+        mainLayout.addWidget( authWidget )
+        #
+        self.statusLabel = QLabel( )
+        mainLayout.addWidget( self.statusLabel )
+        #
+        self.authCredentials.returnPressed.connect( self.check_authCredentials )
+        self.setFixedWidth( 550 )
+        self.setFixedHeight( self.sizeHint( ).height( ) )
+        #
+        self.flow, url = plexmusic.oauth_generate_google_permission_url( )
+        webbrowser.open_new_tab( url )
+        self.hide( )
+
+    def check_authCredentials( self ):
+        self.statusLabel.setText( '' )
+        self.authCredentials.setText( str( self.authCredentials.text( ) ).strip( ) )
+        authorization_code = str( self.authCredentials.text( ) )
+        try:
+            if not self.verify: http = httplib2.Http( disable_ssl_certificate_validation = True )
+            else: http = httplib2.Http( )
+            credentials = self.flow.step2_exchange( authorization_code, http = http )
+            plexmusic.oauth_store_google_credentials( credentials )
+            self.authCredentials.setText( '' )
+            self.accept( )
+            self.emitState.emit( True )
+        except:
+            self.statusLabel.setText( 'ERROR: INVALID AUTHORIZATION CODE.' )
+            self.authCredentials.setText( '' )
+            self.emitState.emit( False )
+        self.close( )

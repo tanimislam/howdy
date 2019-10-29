@@ -38,6 +38,7 @@
     "requests_oauthlib" : "https://requests-oauthlib.readthedocs.io",
     "rsa" : "https://stuvel.eu/rsa",
     "six" : "https://six.readthedocs.io",
+    "git+https://github.com/sphinx-contrib/youtube.git#egg=sphinxcontrib-youtube" : "https://github.com/sphinx-contrib/youtube",
     "SQLAlchemy" : "https://www.sqlalchemy.org/docs",
     "subliminal" : "https://subliminal.readthedocs.io",
     "tabulate" : "https://github.com/astanin/python-tabulate",

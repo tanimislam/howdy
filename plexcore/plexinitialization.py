@@ -139,7 +139,7 @@ class PlexInitialization( object ):
                     sys.exit( 0 )
             
             #
-            ## first see if we have pip on this machine
+            ## first see if we have pip on this machine, install if don't
             try: val = imp.find_module( 'pip' )
             except ImportError: _choose_install_pip( )
             
@@ -149,13 +149,37 @@ class PlexInitialization( object ):
             reqs = sorted( set( map(lambda line: line.replace('\n', '').strip(),
                                     open( os.path.join( mainDir, 'resources',
                                                         'requirements.txt' ), 'r' ).readlines( ) ) ) )
+            #
+            ## TODO -- ignore any requirements that start with git+
+            ## WILL HAVE TO FIGURE OUT HOW TO GET THE REQUIREMENTS INFORMATION
+            ## 1. what package name corresponds to git module (take git+https:// URL -- how to get the package name)?
+            ## 2. may have to make YET ANOTHER table in the database called, "here is row where download git+https://. value is package name
+            ## 3. OR, contract is the standard "here is a git/svn/etc repository containing the python package that pip tries to install."
+            ##   a. Meaning, contains EGG info as in git+https://<GIT-URL>#egg=<package-name>, for example git+https://github.com/sphinx-contrib/youtube.git#egg=sphinxcontrib.youtube
+            ##   b. package name comes after reqs = sorted(filter(lambda req: not req.startswith('git+'), reqs ) )
+            ##   c. of course, the thing installed with git+https://<GIT-URL> MUST have <package-name>, or process will not work.
             reqs_remain = [ ]
             for req in reqs:
-                try: val = imp.find_module( req )
-                except ImportError: 
-                    try: val = pkg_resources.require([ req ])
-                    except pkg_resources.DistributionNotFound:
-                        reqs_remain.append( req )
+                if not req.startswith( 'git+' ): req_act = req
+                else:
+                    req_act_string = req.split('#')[-1].strip( )
+                    if not req_act_string.lower( ).startswith('egg='):
+                        raise ValueError("Error, requirement line = %s is missing an #egg= definition")
+                    req_act = req_act_string.split('=')[1].strip( )
+                #
+                ## first use imp.find_module to find module
+                try:
+                    val = imp.find_module( req_act )
+                    continue
+                except ImportError:
+                    pass
+                #
+                ## otherwise use pkg_resources.require to find module
+                try:
+                    val = pkg_resources.require([ req_act ])
+                    continue
+                except pkg_resources.DistributionNotFound as err:
+                    reqs_remain.append( req )
             #
             if len( reqs_remain ) != 0:
                 _choose_install_local( reqs_remain )

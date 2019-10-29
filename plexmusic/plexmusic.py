@@ -457,6 +457,8 @@ def gmusicmanager( useMobileclient = False, verify = True, device_id = None ):
     :param str device_id: optional argument. If defined, then attempt to use this MAC ID to register the music manager.
 
     .. seealso:: :py:meth:`get_gmusicmanager <plexmusic.plexmusic.get_gmusicmanager>`
+
+    .. _`Google Play Music`: https://play.google.com/music/listen
     """
     mmg = get_gmusicmanager( useMobileclient = useMobileclient, verify = verify,
                              device_id = device_id )

@@ -6,7 +6,7 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import os, datetime, io, zipfile, logging
+import os, datetime, io, zipfile, logging, requests
 from plexmusic import plexmusic
 from plexcore import plexcore
 from plexemail import plexemail, emailAddress
@@ -163,7 +163,7 @@ def _download_songs_oldformat( opts ):
 
     #
     ## scenario #1: just get the list of albums
-    if opts.do_albums:
+    if opts.do_albums: # use the --artist= --albums
         try:
             mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
             mi.print_format_album_names( )
@@ -174,7 +174,7 @@ def _download_songs_oldformat( opts ):
                 opts.artist_name.strip( ) ) )
             return   
         
-    elif opts.album_name is not None:
+    elif opts.album_name is not None: # use the --artist= --album=
         all_songs_downloaded = [ ]
         if opts.do_lastfm:
             album_data_dict, status = lastfm.get_music_metadatas_album(
@@ -206,7 +206,12 @@ def _download_songs_oldformat( opts ):
         data_dict = album_data_dict[ 0 ]
         artist_name = data_dict[ 'artist' ]
         album_name = data_dict[ 'album' ]
-        album_tracks = data_dict[ 'total tracks' ]        
+        album_tracks = data_dict[ 'total tracks' ]
+        album_url = data_dict[ 'album url' ]
+        image_data = None
+        if album_url != '':
+            image_data = io.BytesIO(
+                requests.get( album_url, verify = opts.do_verify ).content )
         print( 'ACTUAL ARTIST: %s' % artist_name )
         print( 'ACTUAL ALBUM: %s' % album_name )
         if 'year' in data_dict:
@@ -232,12 +237,13 @@ def _download_songs_oldformat( opts ):
             plexmusic.get_youtube_file( youtubeURL, filename )
             #
             ## now fill out the metadata
-            plexmusic.fill_m4a_metadata( filename, data_dict, verify = pm.verify )
+            plexmusic.fill_m4a_metadata( filename, data_dict, verify = pm.verify,
+                                         image_data = image_data )
             #
             ##
             os.chmod( filename, 0o644 )
             all_songs_downloaded.append( ( artist_name, song_name, filename ) )
-    else:
+    else: # --artist= --songs=
         assert( opts.song_names is not None )
         song_names = map(lambda song_name: song_name.strip( ), opts.song_names.split(';'))
         all_songs_downloaded = list(filter(

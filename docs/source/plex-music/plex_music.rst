@@ -24,6 +24,5 @@ Plex Music TODO
 
   * The sender is currently the owner of the Plex_ server. Perhaps make this more transparent?
 
-
 .. _Plex: https://plex.tv
 .. _Tautulli: https://tautulli.com

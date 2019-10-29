@@ -184,20 +184,26 @@ This executable has two modes of operation. In each mode, for each song in the c
   For songs in order in tha album `Moon Safari`_ by Air_. Below is an animation showing how this works in practice when downloading these songs. Here we always choose YouTube_ clip #1.
 
   .. _plex_music_metafill_songs:
-  
-  .. figure:: plex-music-cli-figures/plex_music_metafill_songs.gif
+
+.. comment
+..figure:: plex-music-cli-figures/plex_music_metafill_songs.gif
+
+  .. youtube:: PflzMfN4A9w
      :width: 100%
-     :align: center
+..     :align: center
 
   The list of songs came from the LastFM_ service, and Gracenote_ cannot find Air_ songs in `Moon Safari`_ with the names ``Ce Matin-Là`` and ``Le Voyage De Pénélope`` due (probably) to diacritical accents.
 
 * In the second mode of operation, give it the album name with ``-A`` or ``--album``. For example ``plex_music_metafill.py -a Air -A "Moon Safari"`` to get all ten songs in this album,
 
   .. _plex_music_metafill_album:
-  
-  .. figure:: plex-music-cli-figures/plex_music_metafill_album.gif
+
+.. comment
+..figure:: plex-music-cli-figures/plex_music_metafill_album.gif
+
+  .. youtube:: OMu5wpb49Sw
      :width: 100%
-     :align: center
+..     :align: center
 
   Here Gracenote_ is able to find all songs, including ``Ce Matin La`` (instead of ``Ce Matin-Là``) and ``Le Voyage De Penelope`` (instead of ``Le Voyage De Pénélope``).
   

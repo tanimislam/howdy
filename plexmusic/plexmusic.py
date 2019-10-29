@@ -1397,7 +1397,7 @@ class PlexMusic( object ):
     
     .. warning::
 
-       As of October 20, 2019, this API is probably not functional anymore. A discussion is found on the `Pygn`_ Python Gracenote_ API implementation, https://github.com/cweichen/pygn/issues/14. It was nice while it lasted!
+       As of October 20, 2019, this API may not be generally functional. A discussion is found on the `Pygn`_ Python Gracenote_ API implementation, https://github.com/cweichen/pygn/issues/14.
 
     .. _Pygn: https://github.com/cweichen/pygn
     .. _Gracenote: https://developer.gracenote.com/web-api

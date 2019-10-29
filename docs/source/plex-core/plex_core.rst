@@ -4,7 +4,7 @@ Plex Core Functionality
 
 These command line executables, graphical user interfaces, and APIs form the core functionality in Plexstuff. The API lives in ``plexstuff.plexcore``. These tools form the infrastructural basis of higher level tools to manage :ref:`television shows <Plex TVDB Functionality>`, :ref:`movies <Plex TMDB Functionality>`, :ref:`music <Plex Music Functionality>`, and :ref:`email <Plex Email Functionality>`.
 
-This documentation is organized into sections on :ref:`command line tools <Core Command Line Utilities>`, :ref:`GUI tools <Core GUIs>`, and finally on the :ref:`low level API <Core API>`.
+This documentation is organized into sections on :ref:`command line tools <Core Command Line Utilities>`, :ref:`GUI tools <Core GUIs>`, :ref:`low level API <Core API>`, and finally the :ref:`TODO <Plex Core TODO>`.
 
 .. toctree::
    :maxdepth: 2

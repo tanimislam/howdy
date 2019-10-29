@@ -43,7 +43,7 @@ class TVShow( object ):
         :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`.
         :param str token: optional argument. The TVDB_ API access token.
         :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
-        :param debug False: optional argument. If ``True``, run with ``DEBUG`` logging mode. Default is ``False``.
+        :param debug False: optional argument. If ``True``, run with :py:const:`DEBUG <logging.DEBUG>` :py:mod:`logging` mode. Default is ``False``.
         :param int num_threads: the number of threads over which to parallelize this calculation. The default is *twice* the number of cores on the CPU.
 
         :returns: a :py:class:`dict`, whose keys are the TV show names and whose values are the :py:class:`TVShow <plextvdb.plextvdb.TVSeason>` associated with that TV show.

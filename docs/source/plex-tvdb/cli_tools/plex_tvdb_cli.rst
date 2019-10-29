@@ -66,9 +66,9 @@ Here are the common flags and command line inputs.
 
 * ``--token`` allows you to explicitly set the Plex_ access token for the server.
 
-* ``--info`` prints out ``INFO`` level logging output.
+* ``--info`` prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
 
-* ``--debug`` prints out ``DEBUG`` level logging output.
+* ``--debug`` prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
 
 Here are the command line inputs that change the operation of this execution.
 
@@ -140,7 +140,7 @@ The help output, when running ``get_tv_tor.py -h``, produces the following.
 
 These are common flags used by all standard operations of this CLI.
 
-* ``--info`` prints out ``INFO`` level logging output.
+* ``--info`` prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
 
 * ``--noverify`` does not verify SSL connections.
 
@@ -148,7 +148,7 @@ These are common flags used by all standard operations of this CLI.
 
 The ``-n`` or ``--name`` flag is used to specify the TV show and episode, for example `The Simpsons S30E10 <simpsons_s30e10_>`_ (`The Simpsons <the_simpsons_>`_, season 30 and episode 10)
 
-Here is how to get an episode, `The Simpsons S30E10 <simpsons_s30e10_>`_. We then choose a given Magnet link by number, and the Magnet URI is printed out. The choices are sorted by the total number of seeds (SE) and leechers (LE) found for that link. By default, the IMDb_ information for this episode (TV show and season) is used to look for Magnet links.
+Here is how to get an episode, `The Simpsons S30E10 <simpsons_s30e10_>`_. We choose a given Magnet link by number, and the Magnet URI is printed out. The choices are sorted by the total number of seeds (SE) and leechers (LE) found for that link. By default, the IMDb_ information for this episode (TV show and season) is used to look for Magnet links.
 
 .. code-block:: bash
 
@@ -250,7 +250,7 @@ The help output, when running ``plex_tvdb_epinfo.py -h``, produces the following
 
 * ``-j`` or ``--jsonfile`` specifies the name of the JSON file. The file's name must end in ``.json``.
 
-* ``--debug`` prints out ``DEBUG`` level logging output.
+* ``--debug`` prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
 
 For example, to upload information about `The Simpsons <the_simpsons_>`_ into a file, ``the_simpsons.json``, in the remote SSH server and the remote home directory (``REMOTE_HOME_DIR``).
 
@@ -402,7 +402,7 @@ The help output, when running ``plex_tvdb_futureshows.py -h``, produces the foll
 
 * ``--local`` specifies that we look for a local (``https://localhost:3400``) running Plex_ server.
 
-* ``--info`` prints out ``INFO`` level logging output.
+* ``--info`` prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
 
 This executable prints out summary information on TV shows, that exist on the Plex_ server, excluding those shows that will not be searched. In this example, `The Great British Bake-Off <https://en.wikipedia.org/wiki/The_Great_British_Bake_Off>`_ is going to be ignored. The output format during evaluation is descriptive because the process can take more than a few seconds.
 

@@ -44,3 +44,4 @@ termcolor
 titlecase
 validators
 youtube_dl
+git+https://github.com/sphinx-contrib/youtube.git#egg=sphinxcontrib-youtube

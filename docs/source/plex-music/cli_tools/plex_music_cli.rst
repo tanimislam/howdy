@@ -10,7 +10,7 @@ This section describes the four Plexstuff music command line utilities.
 
 * :ref:`plex_music_songs.py` does...
 
-* :ref:`upload_to_gmusic.py` does...
+* :ref:`upload_to_gmusic.py` uploads MP3_ or M4A_ music files to one's `Google Play Music`_ account, or pushes the appropriate :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` credentials into the SQLite3_ configuration database.
 
 .. _plex_music_album.py_label:
 
@@ -147,7 +147,7 @@ Here are the common elements of its operation,
 
 * the artist must always be specified with the ``-a`` or ``--artist`` setting.
 
-This executable has two modes of operation. In each mode, for each song in the collection, this tool finds that song, finds that clip, and asks the user to choose a selection with a number from ``1`` to at most ``maxnum``. For example, here I choose YouTube_ clip #1 for the first track in the `Moon Safari`_ album released by Air_,
+This executable has two modes of operation. In each mode, for each song in the collection, this tool finds that song, finds that clip, and asks the user to choose a selection with a number from ``1`` to at most ``maxnum``. For convenience, each YouTube_ clip also shows its duration in MM:SS format. For example, here I choose YouTube_ clip #1 for the first track in the `Moon Safari`_ album released by Air_,
 
 .. code-block:: bash
 
@@ -183,7 +183,24 @@ This executable has two modes of operation. In each mode, for each song in the c
 
   For songs in order in tha album `Moon Safari`_ by Air_. Below is an animation showing how this works in practice when downloading these songs. Here we always choose YouTube_ clip #1.
 
-     
+  .. _plex_music_metafill_songs:
+  
+  .. figure:: plex-music-cli-figures/plex_music_metafill_songs.gif
+     :width: 100%
+     :align: center
+
+  The list of songs came from the LastFM_ service, and Gracenote_ cannot find Air_ songs in `Moon Safari`_ with the names ``Ce Matin-Là`` and ``Le Voyage De Pénélope`` due (probably) to diacritical accents.
+
+* In the second mode of operation, give it the album name with ``-A`` or ``--album``. For example ``plex_music_metafill.py -a Air -A "Moon Safari"`` to get all ten songs in this album,
+
+  .. _plex_music_metafill_album:
+  
+  .. figure:: plex-music-cli-figures/plex_music_metafill_album.gif
+     :width: 100%
+     :align: center
+
+  Here Gracenote_ is able to find all songs, including ``Ce Matin La`` (instead of ``Ce Matin-Là``) and ``Le Voyage De Penelope`` (instead of ``Le Voyage De Pénélope``).
+  
 .. _plex_music_songs.py_label:
 
 plex_music_songs.py
@@ -193,6 +210,45 @@ plex_music_songs.py
 
 upload_to_gmusic.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+The help output, when running ``upload_to_gmusic.py -h``, produces the following.
+
+.. code-block:: bash
+
+   Usage: upload_to_gmusic.py [options]
+
+   Options:
+     -h, --help            show this help message and exit
+     -f FILENAMES, --filenames=FILENAMES
+			   Give the list of filenames to put into the Google
+			   Music Player.
+     -P                    If chosen, then push Google Music API Mobileclient
+			   credentials into the configuration database.
+     --noverify            If chosen, do not verify SSL connections.
+
+The ``--noverify`` flag disables verification of SSL HTTP connections. The standard operation of this tool is to *upload* songs to your `Google Play Music`_ account. The ``-f`` or ``--filenames`` argument can take semicolon-delimited filenames, or standard POSIX globs, for example,
+
+.. code-block:: bash
+
+   upload_to_gmusic.py -f "Air.*m4a"
+
+attempts to upload all filenames that match ``Air.*m4a``.
+
+The other mode of operation, running with the ``-P`` flag without specifying files to upload, attempts to refresh the :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` OAuth2 credentials. Its operation is similar to that of :ref:`plex_store_credentials.py`. These dialogs in the shell appear,
+
+.. code-block:: bash
+
+   tanim-desktop $ upload_to_gmusic.py -P
+   Please go to this URL in a browser window:https://accounts.google.com/o/oauth2/auth...
+   After giving permission for Google services on your behalf,
+   type in the access code:
+
+Second, go to the URL to which you are instructed. Once you copy that URL into your browser, you will follow a set of prompts asking you to choose which Google account to allow access, and to allow permissions for this app to access your `Google Play Music`_ account.
+
+Third, paste the code similar to as described in :ref:`Step #7 <google_step07_oauthtokencopy>` into the interactive text dialog, ``...type in the access code:``. Once successful, you will receive this message in the shell,
+
+.. code-block:: bash
+
+   Success. Stored GMusicAPI Mobileclient credentials.
 
 
 .. _YouTube: https://www.youtube.com
@@ -208,3 +264,6 @@ upload_to_gmusic.py
 .. _PNG: https://en.wikipedia.org/wiki/Portable_Network_Graphics
 .. _Air: https://en.wikipedia.org/wiki/Air_(band)
 .. _`Moon Safari`: https://en.wikipedia.org/wiki/Moon_Safari
+.. _M4A: https://en.wikipedia.org/wiki/MPEG-4_Part_14
+.. _MP3: https://en.wikipedia.org/wiki/MP3
+.. _`Google Play Music`: https://play.google.com/music/listen

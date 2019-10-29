@@ -402,7 +402,17 @@ Here I find it useful to show how this tool works by example.
 
 plex_store_credentials.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
-:numref:`Core Command Line Utilities` describes this executable's functionality very well. First, run this executable, ``plex_store_credentials.py``, which will return this interactive text dialog in the shell.
+:numref:`Core Command Line Utilities` describes this executable's functionality very well. Its help screen can be displayed by running ``plex_store_credentials.py -h``,
+
+.. code-block:: bash
+
+   Usage: plex_store_credentials.py [options]
+
+   Options:
+     -h, --help  show this help message and exit
+     --noverify  If chosen, do not verify SSL connections.
+
+The ``--noverify`` flag disables the verification of SSL connections. First, run this executable, ``plex_store_credentials.py``, which will return this interactive text dialog in the shell.
 
 .. code-block:: bash
 

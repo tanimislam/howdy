@@ -30,10 +30,10 @@ _coverage_dict = {
     #
     'plex_tmdb_totgui.py' : False,
     #
-    'plex_music_album.py' : False,
-    'plex_music_metafill.py' : False,
+    'plex_music_album.py' : True,
+    'plex_music_metafill.py' : True,
     'plex_music_songs.py' : False,
-    'upload_to_gmusic.py' : False,
+    'upload_to_gmusic.py' : True,
     #
     'plex_email_notif.py' : False,
     #

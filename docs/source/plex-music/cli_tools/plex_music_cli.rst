@@ -185,9 +185,6 @@ This executable has two modes of operation. In each mode, for each song in the c
 
   .. _plex_music_metafill_songs:
 
-.. comment
-..figure:: plex-music-cli-figures/plex_music_metafill_songs.gif
-
   .. youtube:: PflzMfN4A9w
      :width: 100%
 ..     :align: center
@@ -197,9 +194,6 @@ This executable has two modes of operation. In each mode, for each song in the c
 * In the second mode of operation, give it the album name with ``-A`` or ``--album``. For example ``plex_music_metafill.py -a Air -A "Moon Safari"`` to get all ten songs in this album,
 
   .. _plex_music_metafill_album:
-
-.. comment
-..figure:: plex-music-cli-figures/plex_music_metafill_album.gif
 
   .. youtube:: OMu5wpb49Sw
      :width: 100%

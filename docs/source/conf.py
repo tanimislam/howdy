@@ -63,19 +63,19 @@ extensions = [
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'requests': ( 'https://requests.kennethreitz.org', None),
+    'requests': ( 'https://requests.kennethreitz.org/en/master/', None),
     'beautifulsoup' : ( 'https://www.crummy.com/software/BeautifulSoup/bs4/doc/', None),
-    'geoip2' : ( 'https://geoip2.readthedocs.io', None),
-    'imdbpy' : ( 'https://imdbpy.readthedocs.io', None),
+    'geoip2' : ( 'https://geoip2.readthedocs.io/en/latest', None),
+    'imdbpy' : ( 'https://imdbpy.readthedocs.io/en/latest', None),
     'pyqt4' : ( 'https://www.riverbankcomputing.com/static/Docs/PyQt4', None ),
     'requests_oauthlib' : ( 'https://requests-oauthlib.readthedocs.io/en/latest', None ),
-    'oauth2client' : ( 'https://oauth2client.readthedocs.io', None ),
-    'google-auth' : ( 'https://google-auth.readthedocs.io', None ),
-    'deluge' : ( 'https://deluge.readthedocs.io', None ),
-    'plexapi' : ( 'https://python-plexapi.readthedocs.io', None ),
+    'oauth2client' : ( 'https://oauth2client.readthedocs.io/en/latest', None ),
+    'google-auth' : ( 'https://google-auth.readthedocs.io/en/latest', None ),
+    'deluge' : ( 'https://deluge.readthedocs.io/en/latest', None ),
+    'plexapi' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
     'sqlalchemy' : ( 'https://www.sqlalchemy.org/docs', None ),
-    'subliminal' : ( 'https://subliminal.readthedocs.io', None ),
-    'musicbrainzngs' : ( 'https://python-musicbrainzngs.readthedocs.io', None ),
+    'subliminal' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
+    'musicbrainzngs' : ( 'https://python-musicbrainzngs.readthedocs.io/en/latest', None ),
 }
 
 #

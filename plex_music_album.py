@@ -21,12 +21,17 @@ def main( ):
                       help = ' '.join([
                           'If chosen, print the song listing in a format recognized by plex_music_metafill.py',
                           'for downloading a collection of songs.' ]) )
-    parser.add_option('--albums', dest='do_albums', action='store_true', default = False,
-                      help = 'If chosen, then get a list of all the songs in all studio albums for the artist.' )
+    parser.add_option( '--albums', dest='do_albums', action='store_true', default = False,
+                       help = 'If chosen, then get a list of all the songs in all studio albums for the artist.' )
     parser.add_option( '--debug', dest='do_debug', action='store_true', default=False,
                        help = 'Run with debug mode turned on.' )
-    parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
-                      help = 'If chosen, do not verify SSL connections.' )
+    parser.add_option( '--noverify', dest='do_verify', action='store_false', default = True,
+                       help = 'If chosen, do not verify SSL connections.' )
+    parser.add_option( '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
+                       help = ' '.join([
+                           'If chosen, use Musicbrainz to get the artist metadata.',
+                           'Note that this is expensive, and is always applied when the --albums flag is set.' ]))
+    plexmusic.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
     opts, args = parser.parse_args( )
     assert( opts.artist_name is not None )
     if not opts.do_albums: assert( opts.album_name is not None )
@@ -34,19 +39,29 @@ def main( ):
     ##    
     plastfm = plexmusic.PlexLastFM( verify = opts.do_verify )
     if opts.do_albums:
-        plexmusic.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
         mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
         mi.print_format_album_names( )
         return
     
     if not opts.do_songs: # just get the song image
-        _, status = plastfm.get_album_image( opts.artist_name, opts.album_name )
+        if opts.do_musicbrainz:
+            mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
+            _, status = mi.get_album_image( opts.album_name )
+        else:
+            _, status = plastfm.get_album_image( opts.artist_name, opts.album_name )
         if status != 'SUCCESS':
             print( status )
         return
 
-    track_listing, status = plastfm.get_song_listing(
-        opts.artist_name, album_name = opts.album_name )
+    #
+    ## now get song listing, --songs is chosen
+    if opts.do_musicbrainz:
+        mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
+        track_listing, status = mi.get_song_listing(
+            opts.artist_name )
+    else:
+        track_listing, status = plastfm.get_song_listing(
+            opts.artist_name, album_name = opts.album_name )
     if status != 'SUCCESS':
         print( status )
         return

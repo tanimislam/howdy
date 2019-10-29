@@ -276,12 +276,14 @@ class MusicInfo( object ):
         trackinfo = musicbrainzngs.get_release_by_id( rid, includes = ['recordings'] )[
             'release']['medium-list']
         try:
-            image_datas = musicbrainzngs.get_image_list( rid )
-            if len( image_datas ) == 0: album_url = ''
+            image_datas = musicbrainzngs.get_image_list( rid )[ 'images' ]
+            if len( image_datas ) == 0:
+                album_url = ''
             else:
                 image_data = image_datas[ 0 ]
                 album_url = image_data[ 'image' ]
-        except: album_url = ''
+        except Exception as e:
+            album_url = ''
         
         #
         ## collapse multiple discs into single disk with more tracknumbers
@@ -367,6 +369,55 @@ class MusicInfo( object ):
                 trackinfo[ 'duration' ] = int( album_info[ 'tracks' ][ trackno ][ 1 ] )
             album_data_dict.append( trackinfo )
         return album_data_dict, 'SUCCESS'
+
+    def get_album_image( self, album_name ):
+        """
+        :param str album_name: album_name.
+        :returns: If successful, downloads the album image into a PNG_ file named "artist_name.album_name.png", and returns a two-element :py:class:`tuple`, whose first element is the PNG_ filename, and whose second element is the string ``"SUCCESS"``. If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+        :rtype: tuple
+        """
+        if album_name not in self.alltrackdata:
+            return return_error_raw(
+                'Could not find album = %s for artist = %s with Musicbrainz.' % (
+                    album_name, self.artist_name ) )
+        album_info = self.alltrackdata[ album_name ]
+        album_url = album_info[ 'album url' ]
+        filename = '%s.%s.png' % ( self.artist_name, album_name.replace('/', '-' ) )
+        img = Image.open( io.BytesIO( requests.get( album_url, verify = False ).content ) )
+        img.save( filename, format = 'png' )
+        os.chmod( filename, 0o644 )
+        return filename, 'SUCCESS'
+
+    def get_song_listing( self, album_name ):
+        """
+        :param str album_name: album_name.
+        :returns: If successful, returns a two-element :py:class:`tuple`, whose first element is the list of songs ordered by track number, and whose second element is the string ``"SUCCESS"``. Each element in this list is a :py:class:`tuple` of song number and track number. For example, for `Moon Safari`_ by Air_,
+
+        .. code-block:: python
+
+            [("La Femme d'Argent", 1),
+             ('Sexy Boy', 2),
+             ('All I Need', 3),
+             ('Kelly Watch the Stars', 4),
+             ('Talisman', 5),
+             ('Remember', 6),
+             ('You Make It Easy', 7),
+             ('Ce Matin-Là', 8),
+             ('New Star in the Sky (Chanson Pour Solal)', 9),
+             ('Le Voyage De Pénélope', 10)]
+        
+        If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+        
+        :rtype: tuple
+        """
+        if album_name not in self.alltrackdata:
+            return return_error_raw(
+                'Could not find album = %s for artist = %s with Musicbrainz.' % (
+                    album_name, self.artist_name ) )
+        data, status = self.get_music_metadatas_album( album_name )
+        track_listing = sorted(map(lambda elem: ( elem[ 'song' ], elem[ 'tracknumber' ] ), data ),
+                               key = lambda tup: tup[1] )
+        return track_listing, 'SUCCESS'
 
     def print_format_album_names( self ):
         """
@@ -660,13 +711,15 @@ def get_youtube_service( verify = True ):
     #                 cache_discovery = False ) 
     return youtube
 
-def fill_m4a_metadata( filename, data_dict, verify = True ):
+def fill_m4a_metadata( filename, data_dict, verify = True, image_data = None ):
     """
     Low level method that populates the metadata of an M4A_ music file.
 
     :param str filename: a candidate M4A_ music file name.
     :param dict data_dict: a dictionary of candidate music metadata with the following obligatory keys: ``song``, ``album``, ``artist``, ``year``, ``tracknumber``, and ``total tracks``. If the URL of the album image, ``album url``, is defined, then also provides the album image into the M4A_ file.
+    :param BytesIO image_data: optional argument. If defined, is a :py:class:`BytesIO <io.BytesIO>` binary data representtion of a candidate PNG_ image file.
     
+    .. _PNG: https://en.wikipedia.org/wiki/Portable_Network_Graphics
     .. _M4A: https://en.wikipedia.org/wiki/MPEG-4_Part_14
     """
     assert( os.path.isfile( filename ) )
@@ -681,7 +734,14 @@ def fill_m4a_metadata( filename, data_dict, verify = True ):
     if 'year' in data_dict: mp4tags[ '\xa9day' ] = [ str(data_dict[ 'year' ]), ]
     mp4tags[ 'trkn' ] = [ ( data_dict[ 'tracknumber' ],
                             data_dict[ 'total tracks' ] ), ]
-    if data_dict[ 'album url' ] != '':
+    if image_data is not None:
+        with io.BytesIO( ) as csio2:
+            img = Image.open( image_data )
+            img.save( csio2, format = 'png' )
+            mp4tags[ 'covr' ] = [
+                mutagen.mp4.MP4Cover( csio2.getvalue( ),
+                                      mutagen.mp4.MP4Cover.FORMAT_PNG ), ]
+    elif data_dict[ 'album url' ] != '':
         with io.BytesIO( requests.get(
                 data_dict[ 'album url' ], verify = verify ).content ) as csio, io.BytesIO( ) as csio2:
             img = Image.open( csio )
@@ -1034,8 +1094,6 @@ class PlexLastFM( object ):
         :param str album_name: album_name.
         :returns: If successful, downloads the album image into a PNG_ file named "artist_name.album_name.png", and returns a two-element :py:class:`tuple`, whose first element is the PNG_ filename, and whose second element is the string ``"SUCCESS"``. If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <plexcore.return_error_raw>`.
         :rtype: tuple
-
-        .. _PNG: https://en.wikipedia.org/wiki/Portable_Network_Graphics
         """
         album, status = self.get_album_info( artist_name, album_name )
         if status != 'SUCCESS':
@@ -1454,7 +1512,7 @@ class PlexMusic( object ):
         artist_name = metadata_song[ 'album_artist_name' ]
         metadata_album = pygn.search(clientID = self.clientID, userID = self.userID,
                                      artist = titlecase.titlecase( artist_name ),
-                                     album = album_title )
+                                     album = album_title, verify = self.verify )
         total_tracks = len( metadata_album['tracks'] )
         album_url = ''
         if 'album_art_url' in metadata_album:
@@ -1495,7 +1553,7 @@ class PlexMusic( object ):
         """
         metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,
                                       album = album_name,
-                                      artist = artist_name )
+                                      artist = artist_name, verify = self.verify )
         if titlecase.titlecase( album_name ) != \
            titlecase.titlecase( metadata_album[ 'album_title' ] ):
             return return_error_raw(

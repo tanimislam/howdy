@@ -5,12 +5,9 @@ You will need a Gracenote_ Client ID to use this module. Please contact develope
 
 This module has been enhanced in the following ways beyond the main version, that lives in https://github.com/cweichen/pygn.
 
-* Uses the requests_ module for HTTP processing.
-* debug logging is now handled through the logging_ module in ``DEBUG`` mode.
+* Uses the :py:mod:`requests` module for HTTP processing.
+* debug logging is now handled through the :py:mod:`logging` module in :py:const:`DEBUG <logging.DEBUG>` mode.
 * extensively fleshed out documentation.
-
-.. _requests: https://requests.kennethreitz.org
-.. _logging: https://docs.python.org/3/library/logging.html
 """
 
 from __future__ import print_function
@@ -23,9 +20,6 @@ try:
 except ImportError:
     import urllib2 as urllib_request # for python 2
     import urllib as urllib_parse # for python 2
-
-# Set DEBUG to True if you want this module to print out the query and response XML
-DEBUG = True # change back to FALSE
 
 class gnmetadata(dict):
 	"""
@@ -267,9 +261,7 @@ def search(clientID, userID, artist='', album='', track='', toc='', verify = Tru
     :rtype: :py:class:`gnmetadata <plexmusic.pygn.gnmetadata>`
 
     :raise ValueError: if all of ``artist``, ``album``, ``track``, ``toc``, are empty.
-    :raise ValueError: if ``count`` :math:`\le 0`.
     """
-    assert( count >= 1 )
     assert( len(list(map(lambda val: val.strip( ) != '', ( artist, album, track, toc ) ) ) ) != 0 ), 'Must query with at least one field (artist, album, track, toc)'
 	
     # Create XML request

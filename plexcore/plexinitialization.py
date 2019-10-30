@@ -14,20 +14,20 @@ def _choose_install_local( requirements ):
     try:
         iidx = int( iidx.strip( ) )
         if iidx not in choicedict:
-            print('YOU HAVE CHOSEN NEITHER 1 (YES) OR 2 (NO). EXITING...')
+            print( 'YOU HAVE CHOSEN NEITHER 1 (YES) OR 2 (NO). EXITING...' )
             sys.exit( 0 )
         if iidx == 2:
-            print('YOU HAVE CHOSEN NOT TO INSTALL THESE PACKAGES. EXITING...')
+            print( 'YOU HAVE CHOSEN NOT TO INSTALL THESE PACKAGES. EXITING...' )
             sys.exit( 0 )
     except ValueError:
-        print('YOU HAVE CHOSEN NEITHER 1 (YES) OR 2 (NO). EXITING...')
+        print( 'YOU HAVE CHOSEN NEITHER 1 (YES) OR 2 (NO). EXITING...' )
         sys.exit( 0 )
     _install_packages_local( requirements )
-    print('FINISHED INSTALLING EVERYTHING. RESTART YOUR APP.')
+    print( 'FINISHED INSTALLING EVERYTHING. RESTART YOUR APP.' )
     sys.exit( 0 )
 
 def _install_packages_local( requirements ):
-    from pip._internal import main
+    from pip._internal.main import main
     try:
         main( [ 'install', '--user', '--upgrade' ] + requirements +
               [ '--trusted-host', 'pypi.python.org' ] +

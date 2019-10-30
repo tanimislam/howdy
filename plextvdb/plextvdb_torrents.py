@@ -416,9 +416,9 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     scraper = cfscrape.create_scraper( )
     response = scraper.get( url, params = search_params, verify = verify )
     if response.status_code != 200:
-        return None, 'FAILURE, request for %s did not work.' % name
+        return return_error_raw( 'FAILURE, request for %s did not work.' % name )
     if not response.content.startswith(b'<?xml'):
-        return None, 'ERROR, request content is not a valid XML block.'
+        return return_error_raw( 'ERROR, request content is not a valid XML block.' )
     html = BeautifulSoup( response.content, 'lxml' )
     items = []
     for item in html('item'):
@@ -693,9 +693,10 @@ def get_tv_torrent_kickass( name, maxnum = 10, verify = True ):
         #                         lookup.torrent_link is not None,
         #                         Search( name, category = CATEGORY.TV ) ),
         #                  key = lambda lookup: get_size( lookup ) )[:maxnum]
-        if len(lookups) == 0: return None, 'FAILURE, COULD FIND NOTHING THAT MATCHES %s' % name
+        if len(lookups) == 0: return return_error_raw(
+                'FAILURE, COULD FIND NOTHING THAT MATCHES %s' % name )
     except Exception as e:
-        return None, 'FAILURE: %s' % e
+        return return_error_raw( 'FAILURE: %s' % e )
 
     def create_magnet_link( lookup ):
         info_hash = os.path.basename( lookup.torrent_link ).lower( )
@@ -761,7 +762,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
     e.set( )
     t.join( )
     response = max( response_arr )
-    if response is None: return None, 'FAILURE TIMED OUT'
+    if response is None: return return_error_raw( 'FAILURE TIMED OUT' )
     if response.status_code != 200:
         return return_error_raw( 'FAILURE STATUS CODE = %d' % response.status_code )
         
@@ -833,22 +834,29 @@ def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, t
     suffix = os.path.basename( file_name ).split('.')[-1].strip( )
     new_file = os.path.join( 'downloads', '%s.%s' % ( os.path.basename( totFname ), suffix ) )
     uname = client.username
+    password = client.password
     host = client.host    
-    with Connection( host, user = uname ) as conn:
+    with Connection( host, user = uname, connect_kwargs =
+                     { 'password' : password } ) as conn:
+        if 'key_filename' in conn.connect_kwargs:
+            conn.connect_kwargs.pop( 'key_filename' )
         #
         ## first copy the file from src to destination
         cmd = 'cp "%s" "%s"' % ( file_name, new_file )
         try: r = conn.run( cmd, hide = True )
-        except: return None, 'ERROR, could not properly run %s.' % cmd
+        except: return return_error_raw(
+                'ERROR, could not properly run %s.' % cmd )
         cmd = 'chmod 644 "%s"' % new_file
         try: r = conn.run( cmd, hide = True )
-        except: return None, 'ERROR, could not properly run %s.' % cmd
+        except: return return_error_raw(
+                'ERROR, could not properly run %s.' % cmd )
         #
         ## if ends in mp4
         if suffix == 'mp4':
             cmd = '~/.local/bin/mp4tags -s "" "%s"' % new_file
             try: r = conn.run( cmd, hide = True )
-            except: return None, 'Error, could not properly run %s.' % cmd
+            except: return return_error_raw(
+                    'Error, could not properly run %s.' % cmd )
             #
             ## check for some ENGLISH srt files. If found, then do the following
             # 1) locate the SRT file with name ENGLISH in it

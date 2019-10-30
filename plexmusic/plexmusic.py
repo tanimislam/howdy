@@ -7,8 +7,8 @@ from itertools import chain
 from PIL import Image
 from urllib.parse import urljoin
 #
-from plexcore import mainDir, plexcore, baseConfDir, session, PlexConfig, return_error_raw
-from plexcore import session, PlexConfig
+from plexcore import mainDir, plexcore, baseConfDir, session, PlexConfig
+from plexcore import return_error_raw, get_maximum_matchval
 from plexmusic import pygn, parse_youtube_date, format_youtube_date
 
 def oauth_store_google_credentials( credentials ):
@@ -388,10 +388,77 @@ class MusicInfo( object ):
         os.chmod( filename, 0o644 )
         return filename, 'SUCCESS'
 
-    def get_music_metadata( self, song_name ):
+    def get_music_metadata( self, song_name, min_criterion_score = 85 ):
         """
-        :param str song_name: the song name 
+        :param str song_name: name of the song.
+        :param int min_criterion_score: the minimum score to accept for a string similarity comparison between ``song_name`` and any track created by this artist. ``70`` :math:`le` ``min_criterion_score`` :math:`le` ``100``, and the default is ``85``. The :py:meth:`get_maximum_matchval <plexcore.get_maximum_matchval>` performs the string comparison. If no track matches ``song_name``, then track data for a track that is the closest match (while having a similarity score :math:`ge` ``min_criterion_score``) to ``song_name`` is returned.
+        :returns: if successful, a two element :py:class:`tuple`. First element is a :py:class:`dict` of information on the song, and the second element is the string ``"SUCCESS"``. For example, for the Air_ song `Kelly Watch the Stars`_ in `Moon Safari`_, the closest match is ``Kelly, Watch the Stars!``.
+
+          .. code-block:: python
+        
+               {'album': 'Moon Safari',
+                'artist': 'Air',
+                'year': 1998,
+                'tracknumber': 4,
+                'total tracks': 10,
+                'song': 'Kelly, Watch the Stars!',
+                'duration': 225.746,
+                'album url': 'http://coverartarchive.org/release/66c2ceb8-d369-4d8c-b702-490838855977/21141679576.jpg'}
+
+          If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+        
+        :rtype: tuple
         """
+        assert( min_criterion_score >= 70 and min_criterion_score <= 100 )
+        
+        def is_track_in_album( album_name, song_name ):
+            trackdata = self.alltrackdata[ album_name ][ 'tracks' ]
+            matches = len(list(filter(lambda trkno: trackdata[ trkno ][ 0 ] == song_name,
+                                      trackdata)))
+            return matches > 0
+
+        def best_song_match( song_name ):
+            alltracks = set( chain.from_iterable(
+                map(lambda album_name: set(
+                    map(lambda trkno: self.alltrackdata[ album_name ][ 'tracks' ][ trkno ][ 0 ],
+                        self.alltrackdata[ album_name ][ 'tracks' ] ) ),
+                    self.alltrackdata ) ) )
+            best_matches = list( filter(lambda song: get_maximum_matchval( song, song_name ) >= 
+                                        min_criterion_score, alltracks ) )
+            if len( best_matches ) == 0: return None
+            return max( best_matches, key = lambda song: get_maximum_matchval( song, song_name ) )
+            
+        #
+        ## find the single album in which the song is found
+        album_matches = list(filter(lambda album_name: is_track_in_album( album_name, song_name ),
+                                    self.alltrackdata ) )
+        if len( album_matches ) == 0:
+            best_match = best_song_match( song_name )
+            if best_match is None:
+                return return_error_raw( 'Could not find song = %s produced by artist = %s.' % (
+                    song_name, self.artist ) )
+            album_match = max(list(filter(
+                lambda album_name: is_track_in_album( album_name, best_match ),
+                                    self.alltrackdata ) ) )
+        else:
+            best_match = song_name
+            album_match = max( album_matches )
+        #
+        ## now get all the info for this song
+        albumdata = self.alltrackdata[ album_match ]
+        trackdata = albumdata[ 'tracks' ]
+        tracknumber = min(list(filter(
+            lambda trkno: trackdata[ trkno ][ 0 ] == best_match,
+            trackdata)))
+        return {
+            'album'  : album_match,
+            'artist' : self.artist_name,
+            'tracknumber' : tracknumber,
+            'year' : albumdata[ 'release-date' ].year,
+            'total tracks' : len( trackdata ),
+            'song' : best_match,
+            'duration' : trackdata[ tracknumber ][ 1 ],
+            'album url' : albumdata[ 'album url' ] }, 'SUCCESS'
 
     def get_song_listing( self, album_name ):
         """
@@ -1162,20 +1229,20 @@ class PlexLastFM( object ):
         :param str song_name: name of the song.
         :param str artist_name: name of the artist.
         :param bool all_data: optional argument. If ``False``, then perform a cursory search for metadata on the selected song. If ``True``, then perform a more careful search. Default is ``False``. Running with ``True`` can work if running with ``False`` does not produce a result.
-        :returns: if successful, returns a two element :py:class:`tuple`. First element is a :py:class:`dict` of information on the song, and the second element is the string ``"SUCCESS"``. For example, for the Air_ song `Kelly Watch the Stars`_ in `Moon Safari`_,
+        :returns: if successful, returns a two element :py:class:`tuple`. First element is a :py:class:`dict` of information on the song, and the second element is the string ``"SUCCESS"``. For example, for the Air_ song `Kelly Watch the Stars`_ in `Moon Safari`_. the closest match is ``Kelly, Watch the Stars!``.
+        
+           .. code-block:: python
 
-        .. code-block:: python
+               {'album': 'Moon Safari',
+                'artist': 'Air',
+                'year': 1998,
+                'tracknumber': 4,
+                'total tracks': 10,
+                'song': 'Kelly, Watch the Stars!',
+                'duration': 225.746,
+                'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png'}
 
-            {'album': 'Moon Safari',
-             'artist': 'Air',
-             'year': 1998,
-             'tracknumber': 4,
-             'total tracks': 10,
-             'song': 'Kelly, Watch the Stars!',
-             'duration': 225.746,
-             'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png'}
-
-        If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+          If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <plexcore.return_error_raw>`.
 
         :rtype: tuple
 
@@ -1595,18 +1662,18 @@ class PlexMusic( object ):
         :param str artist_name: name of the artist.
         :returns: if successful, returns a two element :py:class:`tuple`. First element is a :py:class:`dict` of information on the song, and the second element is the string ``"SUCCESS"``. For example, for the Air_ song `Kelly Watch the Stars`_ in `Moon Safari`_,
 
-        .. code-block:: python
+          .. code-block:: python
+        
+              {'album': 'Moon Safari',
+               'artist': 'Air',
+               'year': 1998,
+               'tracknumber': 4,
+               'total tracks': 10,
+               'song': 'Kelly, Watch the Stars!',
+               'duration': 225.746,
+               'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png'}
 
-            {'album': 'Moon Safari',
-             'artist': 'Air',
-             'year': 1998,
-             'tracknumber': 4,
-             'total tracks': 10,
-             'song': 'Kelly, Watch the Stars!',
-             'duration': 225.746,
-             'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png'}
-
-        If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+          If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <plexcore.return_error_raw>`.
 
         :rtype: tuple
         """

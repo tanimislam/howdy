@@ -96,7 +96,7 @@ def get_tvdb_api( ) -> dict:
              'apikey' : data['apikey'],
              'userkey' : data['userkey'] }
 
-def get_token( verify: bool = True, data = None ) -> str:
+def get_token( verify = True, data = None ):
     """
     Returns the TVDB_ API token that allows access to the TVDB_ database. If there are errors, then returns :py:class:`None`.
 

@@ -23,18 +23,17 @@ def main( ):
     parser = OptionParser( )
     parser.add_option( '--years', dest='s_years', action='store', type=str,
                        help = 'Give a list of years as a string, such as "1980,1981". Optional.' )
-    parser.add_option('--noverify', dest='do_noverify', action='store_true', default = False,
-                      help = 'If chosen, do not verify the SSL connection.')
     parser.add_option('--local', dest='do_local', action='store_true',
                       default = False, help = 'Check for locally running plex server.')
     parser.add_option('--dirname', dest='dirname', action='store', type=str, default = os.getcwd( ),
                       help = 'Directory into which to store those plots. Default is %s.' %
                       os.getcwd( ) )
+    parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
+                      help = 'If chosen, do not verify SSL connections.' )
     opts, args = parser.parse_args( )
 
     #
-    ## function to do the processing
-    
+    ## function to do the processing    
     step = 0
     print( '%d, started on %s' % ( step, datetime.datetime.now( ).strftime(
         '%B %d, %Y @ %I:%M:%S %p' ) ) )
@@ -49,7 +48,8 @@ def main( ):
             
     #
     ## get plex server token
-    dat = plexcore.checkServerCredentials( doLocal = True )
+    dat = plexcore.checkServerCredentials(
+        doLocal = opts.do_local, verify = opts.do_verify  )
     if dat is None:
         step += 1
         print('\n'.join([
@@ -61,7 +61,8 @@ def main( ):
     fullURL, token = dat
     #
     ## first find out which libraries are the TV show ones
-    library_dict = plexcore.get_libraries( token, fullURL = fullURL, do_full = True )
+    library_dict = plexcore.get_libraries(
+        token, fullURL = fullURL, do_full = True )
     if library_dict is None:
         step += 1
         print('\n'.join([

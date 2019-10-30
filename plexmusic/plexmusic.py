@@ -1271,7 +1271,6 @@ class PlexLastFM( object ):
         #
         ## now see if we have an album with mbid, fill out ALL the metadata
         if 'mbid' in track[ 'album' ]:
-            print( 'got here, mbid = %s.' % track[ 'album' ][ 'mbid' ] )
             music_metadata = { }
             album_mbid = track[ 'album' ][ 'mbid' ]
             data = musicbrainzngs.get_release_by_id(

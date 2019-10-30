@@ -67,6 +67,7 @@ intersphinx_mapping = {
     'requests': ( 'https://requests.kennethreitz.org/en/master/', None),
     'beautifulsoup' : ( 'https://www.crummy.com/software/BeautifulSoup/bs4/doc/', None),
     'geoip2' : ( 'https://geoip2.readthedocs.io/en/latest', None),
+    'gmusicapi' : ( 'https://unofficial-google-music-api.readthedocs.io/en/latest', None ),
     'imdbpy' : ( 'https://imdbpy.readthedocs.io/en/latest', None),
     'pyqt4' : ( 'https://www.riverbankcomputing.com/static/Docs/PyQt4', None ),
     'requests_oauthlib' : ( 'https://requests-oauthlib.readthedocs.io/en/latest', None ),

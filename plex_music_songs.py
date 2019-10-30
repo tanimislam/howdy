@@ -75,28 +75,38 @@ def _download_actual_song(
                 assert( mi.artist == a_name )
             else:
                 mi = plexmusic.MusicInfo( a_name )
+            data_dict, status = mi.get_music_metadata( s_name )
+            if status == 'SUCCESS': return data_dict, status
+            return return_error_raw( status )
+        elif do_whichone == 'LASTFM':
+            data_dict, status = lastfm.get_music_metadata(
+                song_name = s_name, artist_name = a_name )
+            if status == 'SUCCESS': return data_dict, status
 
-            
-                
-            
+            #
+            ## now musicbrainz
+            if mi is not None:
+                assert( mi.artist == a_name )
+            else:
+                mi = plexmusic.MusicInfo( a_name )
+            data_dict, status = mi.get_music_metadata( s_name )
+            if status == 'SUCCESS': return data_dict, status
+            return return_error_raw( status )
+        else:
+            if mi is not None:
+                assert( mi.artist == a_name )
+            else:
+                mi = plexmusic.MusicInfo( a_name )
+            data_dict, status = mi.get_music_metadata( s_name )
+            if status == 'SUCCESS': return data_dict, status
+            return return_error_raw( status )
     
     try:
-        if do_whichone == 'GRACENOTE':
-            next_ones = [ 'LASTFM', 'MUSICBRAINZ' ]
-            data_dict, status = pm.get_music_metadata(
-                song_name = s_name, artist_name = a_name )
-            
-        if not do_lastfm:
-            data_dict, status = pm.get_music_metadata(
-                song_name = s_name,
-                artist_name = a_name )
-        else: status = 'FAILURE'
+        data_dict, status = process_data_dict(
+            pm, lastfm, s_name, a_name, do_whichone, mi = mi )
         if status != 'SUCCESS':
-            data_dict, status = lastfm.get_music_metadata(
-                song_name = s_name, artist_name = a_name, all_data = True )
-            if status != 'SUCCESS':
-                print( 'PROBLEM GETTING %s, %s: %s.' % ( s_name, a_name, status ) )
-                return None
+            print( 'PROBLEM GETTING %s, %s: %s.' % ( s_name, a_name, status ) )
+            return None
     except Exception as e:
         import traceback
         traceback.print_exc(file=sys.stdout)
@@ -224,7 +234,7 @@ def _download_songs_oldformat( opts ):
                     print( status )
                     return
             except Exception as e:
-                print( 'Could not get find artist = %s with Musicbrainz.' % (
+                print( 'Could not find artist = %s with Musicbrainz.' % (
                     opts.artist_name.strip( ) ) )
                 return
         else:
@@ -300,10 +310,10 @@ def main( ):
                        help = 'If defined, then use ALBUM information to get all the songs in order from the album.' )
     #parser.add_option( '--albums', dest='do_albums', action='store_true', default = False,
     #                   help = 'If chosen, then print out all the studio albums this artist has put out.' )
-    parser.add_option( '-e', '--email', dest='email', type=str, action='store',
-                       help = 'If defined with an email address, will email these songs to the recipient with that email address.')
-    parser.add_option( '-n', '--ename', dest='email_name', type=str, action='store',
-                       help = 'Only works if --email is defined. Optional argument to include the name of the recipient.' )
+    #parser.add_option( '-e', '--email', dest='email', type=str, action='store',
+    #                   help = 'If defined with an email address, will email these songs to the recipient with that email address.')
+    #parser.add_option( '-n', '--ename', dest='email_name', type=str, action='store',
+    #                   help = 'Only works if --email is defined. Optional argument to include the name of the recipient.' )
     parser.add_option( '--new', dest='do_new', action='store_true', default = False,
                        help = ' '.join([
                            "If chosen, use the new format for getting the song list.",
@@ -325,6 +335,9 @@ def main( ):
     logger = logging.getLogger( )
     logger.setLevel( logging.CRITICAL )
     if opts.do_debug: logger.setLevel( logging.DEBUG )
+    #
+    ## must set TRUE only ONE of --lastfm or --musicbrainz
+    assert( len(list(filter(lambda tok: tok is True, ( opts.do_lastfm, opts.do_musicbrainz ) ) ) ) <= 1 ), "error, can do at most one of --lastfm or --musicbrainz"
 
     if not opts.do_new: all_songs_downloaded = _download_songs_oldformat( opts )
     else: all_songs_downloaded = _download_songs_newformat( opts )

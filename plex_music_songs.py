@@ -9,7 +9,7 @@ signal.signal( signal.SIGINT, signal_handler )
 import os, datetime, io, zipfile, logging, requests
 from plexmusic import plexmusic
 from plexcore import plexcore
-from plexemail import plexemail, emailAddress
+from plexemail import plexemail, emailAddress, emailName
 from optparse import OptionParser
 
 def _get_final_song_name( song_name, dur ):
@@ -52,58 +52,59 @@ def _choose_youtube_item( name, maxnum = 10, verify = True ):
         return None
     return youtubeURL
 
+def _process_data_dict( pm, lastfm, s_name, a_name, do_whichone, mi = None,
+                        process_to_end = True ):
+     if do_whichone == 'GRACENOTE':
+         next_ones = [ 'LASTFM', 'MUSICBRAINZ' ]
+         data_dict, status = pm.get_music_metadata(
+             song_name = s_name, artist_name = a_name )
+         if status == 'SUCCESS': return data_dict, status
+         if not_process_to_end:
+             return return_error_raw( status )
+
+         #
+         ## now lastfm
+         data_dict, status = lastfm.get_music_metadata(
+             song_name = s_name, artist_name = a_name )
+         if status == 'SUCCESS': return data_dict, status
+         
+         #
+         ## now musicbrainz
+         if mi is not None:
+             assert( mi.artist_name == a_name )
+         else:
+             mi = plexmusic.MusicInfo( a_name )
+             data_dict, status = mi.get_music_metadata( s_name )
+             if status == 'SUCCESS': return data_dict, status
+             return return_error_raw( status )
+     elif do_whichone == 'LASTFM':
+         data_dict, status = lastfm.get_music_metadata(
+             song_name = s_name, artist_name = a_name )
+         if status == 'SUCCESS': return data_dict, status
+         if not process_to_end: return return_error_raw( status )
+         
+         #
+         ## now musicbrainz
+         if mi is not None:
+             assert( mi.artist_name == a_name )
+         else: mi = plexmusic.MusicInfo( a_name )
+         data_dict, status = mi.get_music_metadata( s_name )
+         if status == 'SUCCESS': return data_dict, status
+         return return_error_raw( status )
+     else:
+         if mi is not None:
+             assert( mi.artist == a_name )
+         else: mi = plexmusic.MusicInfo( a_name )
+         data_dict, status = mi.get_music_metadata( s_name )
+         if status == 'SUCCESS': return data_dict, status
+         return return_error_raw( status) 
+
 def _download_actual_song(
-        pm, lastfm, s_name, a_name, maxnum, do_whichone = 'GRACENOTE', mi = None ):
+        pm, lastfm, s_name, a_name, maxnum, do_whichone = 'GRACENOTE', mi = None, process_to_end = True ):
     assert( do_whichone in ( 'GRACENOTE', 'LASTFM', 'MUSICBRAINZ' ) ), "error, metadata service = %s should be one of GRACENOTE, LASTFM, or MUSICBRAINZ" % do_whichone
-
-    def process_data_dict( pm, lastfm, s_name, a_name, do_whichone, mi = None ):
-        if do_whichone == 'GRACENOTE':
-            next_ones = [ 'LASTFM', 'MUSICBRAINZ' ]
-            data_dict, status = pm.get_music_metadata(
-                song_name = s_name, artist_name = a_name )
-            if status == 'SUCCESS': return data_dict, status
-
-            #
-            ## now lastfm
-            data_dict, status = lastfm.get_music_metadata(
-                song_name = s_name, artist_name = a_name )
-            if status == 'SUCCESS': return data_dict, status
-
-            #
-            ## now musicbrainz
-            if mi is not None:
-                assert( mi.artist == a_name )
-            else:
-                mi = plexmusic.MusicInfo( a_name )
-            data_dict, status = mi.get_music_metadata( s_name )
-            if status == 'SUCCESS': return data_dict, status
-            return return_error_raw( status )
-        elif do_whichone == 'LASTFM':
-            data_dict, status = lastfm.get_music_metadata(
-                song_name = s_name, artist_name = a_name )
-            if status == 'SUCCESS': return data_dict, status
-
-            #
-            ## now musicbrainz
-            if mi is not None:
-                assert( mi.artist == a_name )
-            else:
-                mi = plexmusic.MusicInfo( a_name )
-            data_dict, status = mi.get_music_metadata( s_name )
-            if status == 'SUCCESS': return data_dict, status
-            return return_error_raw( status )
-        else:
-            if mi is not None:
-                assert( mi.artist == a_name )
-            else:
-                mi = plexmusic.MusicInfo( a_name )
-            data_dict, status = mi.get_music_metadata( s_name )
-            if status == 'SUCCESS': return data_dict, status
-            return return_error_raw( status )
-    
     try:
-        data_dict, status = process_data_dict(
-            pm, lastfm, s_name, a_name, do_whichone, mi = mi )
+        data_dict, status = _process_data_dict(
+            pm, lastfm, s_name, a_name, do_whichone, mi = mi, process_to_end = process_to_end )
         if status != 'SUCCESS':
             print( 'PROBLEM GETTING %s, %s: %s.' % ( s_name, a_name, status ) )
             return None
@@ -154,24 +155,27 @@ def _email_songs( opts, all_songs_downloaded ):
     # if not status:
     #     print( "Error, do not have correct Google credentials." )
     #    return
-    songs_by_list = '\n'.join(map(lambda tup: '\item %s - %s.' % ( tup[0], tup[1] ),
-                                  all_songs_downloaded ) )
+    songs_by_list = '\n'.join( map(
+        lambda tup: '\item %s - %s.' % ( tup[0], tup[1] ),
+        all_songs_downloaded ) )
     num_songs = len( all_songs_downloaded )
     num_artists = len( set( map(lambda tup: tup[0], all_songs_downloaded ) ) )
     if num_songs == 1: num_songs_string = "1 song"
     else: num_songs_string = "%d songs" % num_songs
     if num_artists == 1: num_artists_string = "1 artist"
     else: num_artists_string = "%d artists" % num_artists
+    if emailName is not None: name = emailName
+    else: name = 'Your friendly Plex admin'
+    #
     body = """I have emailed you %s from %s:
     \\begin{enumerate}
     %s
     \end{enumerate}
     Have a good day!
     
-    Tanim
-    """ % ( num_songs_string,
-            num_artists_string,
-            songs_by_list )
+    %s
+    """ % ( num_songs_string, num_artists_string,
+            songs_by_list, name )
     finalString = '\n'.join([ 'Hello Friend,', '', body ])
     htmlString = plexcore.latexToHTML( finalString )
     subject = 'The %s with %s you requested.' % (
@@ -187,14 +191,28 @@ def _email_songs( opts, all_songs_downloaded ):
 def _download_songs_newformat( opts ):
     assert( opts.song_names is not None )
     assert( opts.artist_names is not None )
+    assert( len(list(filter(lambda tok: tok is True,
+                            ( opts.do_lastfm, opts.do_musicbrainz ) ) ) ) <= 1 )
     #
     ## first get the music metadata
     pm = plexmusic.PlexMusic( verify = opts.do_verify )
-    song_names = map(lambda song_name: song_name.strip( ), opts.song_names.split(';'))
-    artist_names = map(lambda artist_name: artist_name.strip( ), opts.artist_names.split(';'))
+    lastfm = plexmusic.PlexLastFM( verify = opts.do_verify )
+    do_whichone = 'GRACENOTE'
+    if opts.do_lastfm: do_whichone = 'LASTFM'
+    if opts.do_musicbrainz: do_whichone = 'MUSICBRAINZ'
+    song_names = list(
+        map(lambda song_name: song_name.strip( ), opts.song_names.split(';')))
+    artist_names = list(
+        map(lambda artist_name: artist_name.strip( ), opts.artist_names.split(';')))
+    artist_names_dict = dict(map(lambda artist_name: ( artist_name, None ), set( artist_names ) ) )
+    if opts.do_musicbrainz:
+        artist_names_dict = dict(map(lambda artist_name: (
+            artist_name, plexmusic.MusicInfo( artist_name ), set( artist_names ) ) ) )
     all_songs_downloaded = list(
-        filter(None, map(lambda tup: _download_actual_song( pm, tup[0], tup[1], opts.maxnum, opts.do_lastfm ),
-                         filter(None, zip( song_names, artist_names ) ) ) ) )    
+        filter(None, map(lambda tup: _download_actual_song(
+            pm, lastfm, tup[0], tup[1], opts.maxnum, do_whichone = do_whichone,
+            mi = artist_names_dict[ tup[ 1 ] ], process_to_end = True ),
+                         filter(None, zip( song_names, artist_names ) ) ) ) )
     return all_songs_downloaded
 
 def _download_songs_oldformat( opts ):
@@ -203,7 +221,7 @@ def _download_songs_oldformat( opts ):
     ## first get music metadata
     pm = plexmusic.PlexMusic( verify = opts.do_verify )
     lastfm = plexmusic.PlexLastFM( verify = opts.do_verify )
-
+    
     #
     ## scenario #1: just get the list of albums
     if opts.do_albums: # use the --artist=<arg> --albums
@@ -298,10 +316,10 @@ def _download_songs_oldformat( opts ):
 def main( ):
     plexmusic.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
     parser = OptionParser( )
-    parser.add_option( '-s', '--songs', dest='song_names', type=str, action='store',
-                       help = 'Names of the song to put into M4A files. Separated by ;' )
     parser.add_option( '-a', '--artist', dest='artist_name', type=str, action='store',
                        help = 'Name of the artist to put into the M4A file.' )
+    parser.add_option( '-s', '--songs', dest='song_names', type=str, action='store',
+                       help = 'Names of the song to put into M4A files. Separated by ;' )
     parser.add_option( '--maxnum', dest='maxnum', type=int, action='store',
                        default = 10, help = ' '.join([ 
                            'Number of YouTube video choices to choose for each of your songs.'
@@ -324,9 +342,9 @@ def main( ):
     parser.add_option( '--lastfm', dest='do_lastfm', action='store_true', default = False,
                        help = 'If chosen, then only use the LastFM API to get song metadata.' )
     parser.add_option( '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
-                       help = ' '.join([
+                       help = ' '.join( [
                            'If chosen, use Musicbrainz to get the artist metadata.',
-                           'Note that this is expensive, and only applies if the -A (--album) or --albums flag is chosen.' ]))
+                           'Note that this is expensive.' ] ) )
     parser.add_option( '--noverify', dest='do_verify', action='store_false', default=True,
                        help = 'Do not verify SSL transactions if chosen.' )
     parser.add_option( '--debug', dest='do_debug', action='store_true', default=False,

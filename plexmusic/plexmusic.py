@@ -53,12 +53,12 @@ def oauth_get_google_credentials( ):
 ## this is not tested all that much, but perhaps it is useful to some people
 class MusicInfo( object ):
     """
-    This object uses the MusicBrainz_ API, through the higher level musicbrainzngs_ Python module, to get information on songs, albums, and artists.
+    This object uses the MusicBrainz_ API, through the higher level :py:mod:`musicbrainzngs` Python module, to get information on songs, albums, and artists.
 
     :param str artist_name: the artist over which to search.
     :param str artist_mbid: optional argument. If not ``None``, then information on this artist uses this MusicBrainz_ artist ID to get its info. Default is ``None``.
     
-    :var dict artist: the low level information on a specific artist, returned by musicbrainzngs_. For example, for the artist _Air, this looks like,
+    :var dict artist: the low level information on a specific artist, returned by :py:mod:`musicbrainzngs`. For example, for the artist _Air, this looks like,
 
       .. code-block:: python
 
@@ -134,7 +134,6 @@ class MusicInfo( object ):
 
     .. _MusicBrainz: https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2
     .. _SQLite3: https://www.sqlite.org/index.html
-    .. _musicbrainzngs: https://python-musicbrainzngs.readthedocs.io
     .. _Air: https://en.wikipedia.org/wiki/Air_(band)
     .. _`Moon Safari`: https://en.wikipedia.org/wiki/Moon_Safari
     """
@@ -215,7 +214,7 @@ class MusicInfo( object ):
         Used by the constructor to get the collection of studio albums released by this artist.
         
         :param int ambid: the MusicBrainz_ artist ID.
-        :returns: a :py:class:`list`, where each element of the list is low musicbrainzngs_ music collection information. The album information is a :py:class:`dict` with the following keys,
+        :returns: a :py:class:`list`, where each element of the list is low-level :py:mod:`musicbrainzngs` music collection information. The album information is a :py:class:`dict` with the following keys,
           
           * ``id`` is the MusicBrainz_ album ID.
           * ``type`` is the type of the release (for example,  ``Album`` s a studio released album).
@@ -243,7 +242,7 @@ class MusicInfo( object ):
     @classmethod
     def get_album_info( cls, album ):
         """
-        :param dict album: a dictionary of low-level album info returned by musicbrainzngs_ associated with this studio album.
+        :param dict album: a dictionary of low-level album info returned by :py:mod:`musicbrainzngs` associated with this studio album.
         :returns: a two-element :py:class:`tuple` if successful, otherwise returns ``None``. The first is the studio album name, and each second element is a :py:class:`dict` containing summary album info of that album. See the ``altrackdata`` dictionary in :py:class:`MusicInfo <plexmusic.plexmusic.MusicInfo>` to understand the description of summary album information.
         :rtype: tuple
         """
@@ -892,7 +891,7 @@ def youtube_search(youtube, query, max_results = 10):
 
 class PlexLastFM( object ):
     """
-    This object uses the LastFM_ API, through the higher level musicbrainzngs_ Python module, to get information on songs, albums, and artists. Where possible, this extracts additional song metadata using the MusicBrainz_ API.
+    This object uses the LastFM_ API, through the higher level :py:mod:`musicbrainzngs` Python module, to get information on songs, albums, and artists. Where possible, this extracts additional song metadata using the MusicBrainz_ API.
     
     :param dict data: optional argument, containg the LastFM_ API data: ``api_key``, ``api_secret``, ``application_name``, and ``username``. See :numref:`The Gracenote and LastFM APIs` to understand how to set up the LastFM_ API credentials. If not given, then gets the LastFM_ API data from :py:meth:`PlexLastFM.get_lastfm_credentials <plexmusic.plexmusic.PlexLastFM.get_lastfm_credentials>`.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.

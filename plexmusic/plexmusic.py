@@ -388,6 +388,11 @@ class MusicInfo( object ):
         os.chmod( filename, 0o644 )
         return filename, 'SUCCESS'
 
+    def get_music_metadata( self, song_name ):
+        """
+        :param str song_name: the song name 
+        """
+
     def get_song_listing( self, album_name ):
         """
         :param str album_name: album_name.

@@ -33,7 +33,7 @@ def main( ):
 
     #
     ## get plex server token
-    dat = plexcore.checkServerCredentials( doLocal = True )
+    dat = plexcore.checkServerCredentials( doLocal = opts.do_local, verify = opts.do_verify )
     if dat is None:
         step += 1
         print('\n'.join([

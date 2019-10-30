@@ -52,11 +52,44 @@ def _choose_youtube_item( name, maxnum = 10, verify = True ):
         return None
     return youtubeURL
 
-def _download_actual_song( pm, lastfm, s_name, a_name, maxnum, do_lastfm ):
+def _download_actual_song(
+        pm, lastfm, s_name, a_name, maxnum, do_whichone = 'GRACENOTE', mi = None ):
+    assert( do_whichone in ( 'GRACENOTE', 'LASTFM', 'MUSICBRAINZ' ) ), "error, metadata service = %s should be one of GRACENOTE, LASTFM, or MUSICBRAINZ" % do_whichone
+
+    def process_data_dict( pm, lastfm, s_name, a_name, do_whichone, mi = None ):
+        if do_whichone == 'GRACENOTE':
+            next_ones = [ 'LASTFM', 'MUSICBRAINZ' ]
+            data_dict, status = pm.get_music_metadata(
+                song_name = s_name, artist_name = a_name )
+            if status == 'SUCCESS': return data_dict, status
+
+            #
+            ## now lastfm
+            data_dict, status = lastfm.get_music_metadata(
+                song_name = s_name, artist_name = a_name )
+            if status == 'SUCCESS': return data_dict, status
+
+            #
+            ## now musicbrainz
+            if mi is not None:
+                assert( mi.artist == a_name )
+            else:
+                mi = plexmusic.MusicInfo( a_name )
+
+            
+                
+            
+    
     try:
+        if do_whichone == 'GRACENOTE':
+            next_ones = [ 'LASTFM', 'MUSICBRAINZ' ]
+            data_dict, status = pm.get_music_metadata(
+                song_name = s_name, artist_name = a_name )
+            
         if not do_lastfm:
-            data_dict, status = pm.get_music_metadata( song_name = s_name,
-                                                       artist_name = a_name )
+            data_dict, status = pm.get_music_metadata(
+                song_name = s_name,
+                artist_name = a_name )
         else: status = 'FAILURE'
         if status != 'SUCCESS':
             data_dict, status = lastfm.get_music_metadata(
@@ -163,7 +196,7 @@ def _download_songs_oldformat( opts ):
 
     #
     ## scenario #1: just get the list of albums
-    if opts.do_albums: # use the --artist= --albums
+    if opts.do_albums: # use the --artist=<arg> --albums
         try:
             mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
             mi.print_format_album_names( )
@@ -265,8 +298,8 @@ def main( ):
                            'Default is 10.' ]))
     parser.add_option( '-A', '--album', dest='album_name', type=str, action='store',
                        help = 'If defined, then use ALBUM information to get all the songs in order from the album.' )
-    parser.add_option( '--albums', dest='do_albums', action='store_true', default = False,
-                       help = 'If chosen, then print out all the studio albums this artist has put out.' )
+    #parser.add_option( '--albums', dest='do_albums', action='store_true', default = False,
+    #                   help = 'If chosen, then print out all the studio albums this artist has put out.' )
     parser.add_option( '-e', '--email', dest='email', type=str, action='store',
                        help = 'If defined with an email address, will email these songs to the recipient with that email address.')
     parser.add_option( '-n', '--ename', dest='email_name', type=str, action='store',

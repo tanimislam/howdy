@@ -52,58 +52,107 @@ def _choose_youtube_item( name, maxnum = 10, verify = True ):
         return None
     return youtubeURL
 
-def _process_data_dict( pm, lastfm, s_name, a_name, do_whichone, mi = None,
-                        process_to_end = True ):
-     if do_whichone == 'GRACENOTE':
-         next_ones = [ 'LASTFM', 'MUSICBRAINZ' ]
-         data_dict, status = pm.get_music_metadata(
-             song_name = s_name, artist_name = a_name )
-         if status == 'SUCCESS': return data_dict, status
-         if not_process_to_end:
-             return return_error_raw( status )
+def _process_data_album_dict(
+        pm, lastfm, alb_name, a_name, do_whichone, mi = None,
+        process_to_end = True ):
+    assert( do_whichone in ( 'GRACENOTE', 'LASTFM', 'MUSICBRAINZ' ) ), "error, metadata service = %s should be one of GRACENOTE, LASTFM, or MUSICBRAINZ" % do_whichone
+    if do_whichone == 'GRACENOTE':
+        album_data_dict, status = pm.get_music_metadatas_album(
+            a_name, alb_name )
+        if status == 'SUCCESS': return album_data_dict, status
+        if not_process_to_end:
+            return return_error_raw( status )
 
-         #
-         ## now lastfm
-         data_dict, status = lastfm.get_music_metadata(
-             song_name = s_name, artist_name = a_name )
-         if status == 'SUCCESS': return data_dict, status
+        #
+        ## now lastfm
+        album_data_dict, status = lastfm.get_music_metadatas_album(
+            a_name, alb_name )
+        if status == 'SUCCESS': return album_data_dict, status
+        
+        #
+        ## now musicbrainz
+        if mi is not None:
+            assert( mi.artist_name == a_name )
+        else: mi = plexmusic.MusicInfo( a_name )
+        album_data_dict, status = mi.get_music_metadatas_album( alb_name )
+        if status == 'SUCCESS': return album_data_dict, status
+        return return_error_raw( status )
+    elif do_whichone == 'LASTFM':
+        album_data_dict, status = lastfm.get_music_metadatas_album(
+            a_name, alb_name )
+        if status == 'SUCCESS': return album_data_dict, status
+        if not process_to_end: return return_error_raw( status )
+        
+        #
+        ## now musicbrainz
+        if mi is not None:
+            assert( mi.artist_name == a_name )
+        else: mi = plexmusic.MusicInfo( a_name )
+        album_data_dict, status = mi.get_music_metadatas_album( alb_name )
+        if status == 'SUCCESS': return album_data_dict, status
+        return return_error_raw( status )
+    else:
+        if mi is not None:
+            assert( mi.artist_name == a_name )
+        else: mi = plexmusic.MusicInfo( a_name )
+        album_data_dict, status = mi.get_music_metadatas_album( alb_name )
+        if status == 'SUCCESS': return album_data_dict, status
+        return return_error_raw( status )
+
+def _process_data_song_dict(
+        pm, lastfm, s_name, a_name, do_whichone, mi = None,
+        process_to_end = True ):
+    assert( do_whichone in ( 'GRACENOTE', 'LASTFM', 'MUSICBRAINZ' ) ), "error, metadata service = %s should be one of GRACENOTE, LASTFM, or MUSICBRAINZ" % do_whichone
+    if do_whichone == 'GRACENOTE':
+        data_dict, status = pm.get_music_metadata(
+            song_name = s_name, artist_name = a_name )
+        if status == 'SUCCESS': return data_dict, status
+        if not_process_to_end:
+            return return_error_raw( status )
+        
+        #
+        ## now lastfm
+        data_dict, status = lastfm.get_music_metadata(
+            song_name = s_name, artist_name = a_name )
+        if status == 'SUCCESS': return data_dict, status
          
-         #
-         ## now musicbrainz
-         if mi is not None:
-             assert( mi.artist_name == a_name )
-         else:
-             mi = plexmusic.MusicInfo( a_name )
-             data_dict, status = mi.get_music_metadata( s_name )
-             if status == 'SUCCESS': return data_dict, status
-             return return_error_raw( status )
-     elif do_whichone == 'LASTFM':
-         data_dict, status = lastfm.get_music_metadata(
-             song_name = s_name, artist_name = a_name )
-         if status == 'SUCCESS': return data_dict, status
-         if not process_to_end: return return_error_raw( status )
-         
-         #
-         ## now musicbrainz
-         if mi is not None:
-             assert( mi.artist_name == a_name )
-         else: mi = plexmusic.MusicInfo( a_name )
-         data_dict, status = mi.get_music_metadata( s_name )
-         if status == 'SUCCESS': return data_dict, status
-         return return_error_raw( status )
-     else:
-         if mi is not None:
-             assert( mi.artist == a_name )
-         else: mi = plexmusic.MusicInfo( a_name )
-         data_dict, status = mi.get_music_metadata( s_name )
-         if status == 'SUCCESS': return data_dict, status
-         return return_error_raw( status) 
+        #
+        ## now musicbrainz
+        if mi is not None:
+            assert( mi.artist_name == a_name )
+        else:
+            mi = plexmusic.MusicInfo( a_name )
+            data_dict, status = mi.get_music_metadata( s_name )
+            if status == 'SUCCESS': return data_dict, status
+            return return_error_raw( status )
+    elif do_whichone == 'LASTFM':
+        data_dict, status = lastfm.get_music_metadata(
+            song_name = s_name, artist_name = a_name )
+        if status == 'SUCCESS': return data_dict, status
+        if not process_to_end: return return_error_raw( status )
+        
+        #
+        ## now musicbrainz
+        if mi is not None:
+            assert( mi.artist_name == a_name )
+        else: mi = plexmusic.MusicInfo( a_name )
+        data_dict, status = mi.get_music_metadata( s_name )
+        if status == 'SUCCESS': return data_dict, status
+        return return_error_raw( status )
+    else:
+        if mi is not None:
+            assert( mi.artist_name == a_name )
+        else: mi = plexmusic.MusicInfo( a_name )
+        data_dict, status = mi.get_music_metadata( s_name )
+        if status == 'SUCCESS': return data_dict, status
+        return return_error_raw( status) 
 
 def _download_actual_song(
-        pm, lastfm, s_name, a_name, maxnum, do_whichone = 'GRACENOTE', mi = None, process_to_end = True ):
+        pm, lastfm, s_name, a_name, maxnum, do_whichone = 'GRACENOTE',
+        mi = None, process_to_end = True ):
     assert( do_whichone in ( 'GRACENOTE', 'LASTFM', 'MUSICBRAINZ' ) ), "error, metadata service = %s should be one of GRACENOTE, LASTFM, or MUSICBRAINZ" % do_whichone
     try:
-        data_dict, status = _process_data_dict(
+        data_dict, status = _process_data_song_dict(
             pm, lastfm, s_name, a_name, do_whichone, mi = mi, process_to_end = process_to_end )
         if status != 'SUCCESS':
             print( 'PROBLEM GETTING %s, %s: %s.' % ( s_name, a_name, status ) )
@@ -224,46 +273,35 @@ def _download_songs_oldformat( opts ):
     
     #
     ## scenario #1: just get the list of albums
-    if opts.do_albums: # use the --artist=<arg> --albums
-        try:
-            mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
-            mi.print_format_album_names( )
-            return
-        except Exception as e:
-            logging.error( e, exc_info = True )
-            print( 'Could not get find artist = %s with Musicbrainz.' % (
-                opts.artist_name.strip( ) ) )
-            return   
-        
-    elif opts.album_name is not None: # use the --artist= --album=
+    # if opts.do_albums: # use the --artist=<arg> --albums
+    #     try:
+    #         mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
+    #         mi.print_format_album_names( )
+    #         return
+    #     except Exception as e:
+    #         logging.error( e, exc_info = True )
+    #         print( 'Could not get find artist = %s with Musicbrainz.' % (
+    #             opts.artist_name.strip( ) ) )
+    #         return   
+    if opts.album_name is not None: # use the --artist= --album=
         all_songs_downloaded = [ ]
+        #
+        ## figure out order of music metadata services to get
+        mi = None
         if opts.do_lastfm:
-            album_data_dict, status = lastfm.get_music_metadatas_album(
-                opts.artist_name, opts.album_name )
-            if status != 'SUCCESS':
-                print( status )
-                return
+            do_whichone = 'LASTFM'
         elif opts.do_musicbrainz:
-            try:
-                mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
-                album_data_dict, status = mi.get_music_metadatas_album(
-                    opts.album_name.strip( ) )
-                if status != 'SUCCESS':
-                    print( status )
-                    return
-            except Exception as e:
-                print( 'Could not find artist = %s with Musicbrainz.' % (
-                    opts.artist_name.strip( ) ) )
-                return
-        else:
-            album_data_dict, status = pm.get_music_metadatas_album(
-                opts.artist_name, opts.album_name )
-            if status != 'SUCCESS':
-                album_data_dict, status = lastfm.get_music_metadatas_album(
-                    opts.artist_name, opts.album_name )
-                if status != 'SUCCESS':
-                    print( status )
-                    return
+            do_whichone = 'MUSICBRAINZ'
+            mi = plexmusic.MusicInfo( opts.artist_name )
+        else: do_whichone = 'GRACENOTE'
+        album_data_dict, status = _process_data_album_dict(
+            pm, lastfm, opts.album_name.strip( ), opts.artist_name,
+            do_whichone, mi = mi )
+        if status != 'SUCCESS':
+            print( status )
+            return
+        #
+        ##
         data_dict = album_data_dict[ 0 ]
         artist_name = data_dict[ 'artist' ]
         album_name = data_dict[ 'album' ]
@@ -304,13 +342,28 @@ def _download_songs_oldformat( opts ):
             ##
             os.chmod( filename, 0o644 )
             all_songs_downloaded.append( ( artist_name, song_name, filename ) )
-    else: # --artist= --songs=
+    else: # use --artist= --songs=
         assert( opts.song_names is not None )
-        song_names = map(lambda song_name: song_name.strip( ), opts.song_names.split(';'))
+        #
+        ## order of the music metadata to get
+        mi = None
+        if opts.do_lastfm:
+            do_whichone = 'LASTFM'
+        elif opts.do_musicbrainz:
+            do_whichone = 'MUSICBRAINZ'
+            mi = plexmusic.MusicInfo( opts.artist_name )
+        else: do_whichone = 'GRACENOTE'
+        #
+        ## now do the processing
+        song_names = list(
+            map(lambda song_name: song_name.strip( ), opts.song_names.split(';')))
         all_songs_downloaded = list(filter(
-            None,  map(lambda song_name: _download_actual_song(
-                pm, lastfm, song_name, opts.artist_name, opts.maxnum, opts.do_lastfm ),
-                       song_names ) ) )
+            None,
+            map(lambda song_name:
+                _download_actual_song(
+                    pm, lastfm, song_name, opts.artist_name, opts.maxnum,
+                    do_whichone, mi = mi, process_to_end = False ),
+                song_names ) ) )
     return all_songs_downloaded
 
 def main( ):
@@ -325,7 +378,7 @@ def main( ):
                            'Number of YouTube video choices to choose for each of your songs.'
                            'Default is 10.' ]))
     parser.add_option( '-A', '--album', dest='album_name', type=str, action='store',
-                       help = 'If defined, then use ALBUM information to get all the songs in order from the album.' )
+                       help = 'If defined, then get all the songs in order from the album.' )
     #parser.add_option( '--albums', dest='do_albums', action='store_true', default = False,
     #                   help = 'If chosen, then print out all the studio albums this artist has put out.' )
     #parser.add_option( '-e', '--email', dest='email', type=str, action='store',
@@ -359,7 +412,7 @@ def main( ):
 
     if not opts.do_new: all_songs_downloaded = _download_songs_oldformat( opts )
     else: all_songs_downloaded = _download_songs_newformat( opts )
-    if opts.email is not None: _email_songs( opts, all_songs_downloaded )
+    # if opts.email is not None: _email_songs( opts, all_songs_downloaded )
         
 if __name__=='__main__':
     main( )

@@ -209,11 +209,12 @@ class MusicInfo( object ):
     ##
     ## first, get all the release-groups of the artist
     @classmethod
-    def get_albums_lowlevel( cls, ambid ):
+    def get_albums_lowlevel( cls, ambid, do_all = False ):
         """
         Used by the constructor to get the collection of studio albums released by this artist.
         
         :param int ambid: the MusicBrainz_ artist ID.
+        :param bool do_all: if ``True``, then return all the MusicBrainz_ album info provided. If ``False``, then do not include albums that have been classified as remixes or mixtapes. Default is ``False``.
         :returns: a :py:class:`list`, where each element of the list is low-level :py:mod:`musicbrainzngs` music collection information. The album information is a :py:class:`dict` with the following keys,
           
           * ``id`` is the MusicBrainz_ album ID.
@@ -237,6 +238,15 @@ class MusicInfo( object ):
         rgdata = musicbrainzngs.get_artist_by_id(
             ambid, includes=[ 'release-groups' ],
             release_type=['album'] )['artist']['release-group-list']
+        if do_all: return rgdata
+        #
+        def is_mixtape( elem ):
+            if 'secondary-type-list' not in elem: return False
+            if any(map(lambda typ: 'mixtape' in typ.lower( ) or 'remix' in typ.lower( ) or
+                       'live' in typ.lower( ), elem['secondary-type-list'])):
+                return True
+            return False
+        rgdata = list(filter(lambda elem: not is_mixtape( elem ), rgdata))
         return rgdata
 
     @classmethod
@@ -435,7 +445,7 @@ class MusicInfo( object ):
             best_match = best_song_match( song_name )
             if best_match is None:
                 return return_error_raw( 'Could not find song = %s produced by artist = %s.' % (
-                    song_name, self.artist ) )
+                    song_name, self.artist_name ) )
             album_match = max(list(filter(
                 lambda album_name: is_track_in_album( album_name, best_match ),
                                     self.alltrackdata ) ) )

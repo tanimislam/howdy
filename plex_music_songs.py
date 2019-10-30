@@ -8,7 +8,7 @@ def signal_handler( signal, frame ):
 signal.signal( signal.SIGINT, signal_handler )
 import os, datetime, io, zipfile, logging, requests
 from plexmusic import plexmusic
-from plexcore import plexcore
+from plexcore import plexcore, return_error_raw
 from plexemail import plexemail, emailAddress, emailName
 from optparse import OptionParser
 

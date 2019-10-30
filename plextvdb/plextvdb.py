@@ -1143,9 +1143,10 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
              'episode_number_length' : max_eps_len,
              'avg_length_mins' : avg_length_secs // 60 }
 
-def get_all_series_didend( tvdata, verify = True,
-                           num_threads = 2 * multiprocessing.cpu_count( ),
-                           tvdb_token = None ):
+def get_all_series_didend(
+        tvdata, verify = True,
+        num_threads = 2 * multiprocessing.cpu_count( ),
+        tvdb_token = None ):
     """
     Returns a :py:class:`dict` on which TV shows on the Plex_ server have ended. Each key is the TV show, and its value is whether the show ended or not. Here is its format.
 
@@ -1239,10 +1240,11 @@ def _get_series_id_perproc( input_tuple ):
         if didEnd is None or didEnd: return None
     return show, series_id
     
-def get_remaining_episodes( tvdata, showSpecials = True, fromDate = None, verify = True,
-                            doShowEnded = False, showsToExclude = None, showFuture = False,
-                            num_threads = 2 * multiprocessing.cpu_count( ), token = None,
-                            mustHaveTitle = True ):
+def get_remaining_episodes(
+        tvdata, showSpecials = True, fromDate = None, verify = True,
+        doShowEnded = False, showsToExclude = None, showFuture = False,
+        num_threads = 2 * multiprocessing.cpu_count( ), token = None,
+        mustHaveTitle = True ):
     """
     Returns a :py:class:`dict` of episodes missing from the Plex_ TV library for the TV shows that are in it. Each key in the dictionary is the TV show with missing episodes. The value is another dictionary. Here are their keys and values,
     
@@ -1407,13 +1409,13 @@ def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token =
     """
     #
     ## first get all candidate tv shows
-    tvdb_token = get_token( verify = verify )
+    if token is None: token = get_token( verify = verify )
     if fromDate is None: fromDate = datetime.datetime.now( ).date( )
     toGet_future_cands = get_remaining_episodes(
         tvdata, showSpecials = False, fromDate = fromDate,
         doShowEnded = False, showsToExclude = showsToExclude,
         mustHaveTitle = False, token = token, showFuture = True,
-        num_threads = num_threads )
+        num_threads = num_threads, verify = verify )
     logging.info( 'tvdata size = %d, toGet_future_cands size = %d.' % (
         len( tvdata ), len( toGet_future_cands ) ) )
     #
@@ -1432,7 +1434,7 @@ def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token =
     def get_new_season_start( input_tuple ):
         show, max_last_season, min_next_season, verify = input_tuple
         epdicts = get_tot_epdict_tvdb(
-            show, verify = verify, token = tvdb_token, showFuture = True )
+            show, verify = verify, token = token, showFuture = True )
         def _get_min_date_season( epdicts, seasno ):
             return min(map(lambda epno: epdicts[ seasno ][ epno ][ -1 ], epdicts[seasno] ) )
         date_min = min(map(lambda seasno: _get_min_date_season( epdicts, seasno ),
@@ -1716,7 +1718,9 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
         len( successfulTvTorUnits ), time.time( ) - time2 ) )
     print( 'processed from start to finish in %0.3f seconds.' % ( time.time( ) - time0 ) )
     
-def get_tot_epdict_tvdb( showName, verify = True, showSpecials = False, showFuture = False, token = None ):
+def get_tot_epdict_tvdb(
+        showName, verify = True, showSpecials = False,
+        showFuture = False, token = None ):
     """
     Returns a summary nested :py:class:`dict` of episode information for a given TV show.
 

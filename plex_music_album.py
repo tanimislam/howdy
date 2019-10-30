@@ -58,7 +58,7 @@ def main( ):
     if opts.do_musicbrainz:
         mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
         track_listing, status = mi.get_song_listing(
-            opts.artist_name )
+            opts.album_name )
     else:
         track_listing, status = plastfm.get_song_listing(
             opts.artist_name, album_name = opts.album_name )

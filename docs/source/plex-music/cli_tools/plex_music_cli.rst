@@ -372,7 +372,8 @@ Here, one specifies the collection of songs to download by giving the artist and
 
 download songs using ``--artist`` and ``--album`` flag
 -------------------------------------------------------
-Here, one specifies the collection of songs to download by giving the artist and album through ``--album``. The metadata service to use here is :ref:`*progressive* <progressive_selection>`. You can get the list of albums produced by the artist by running :ref:`plex_music_albums.py --artist=<artist> --albums <plex_music_album_get_albums>`. For example, to get the album `Moon Safari`_ by Air_ using the MusicBrainz_ service,
+
+Here, one specifies the collection of songs to download by giving the artist and album through ``--album``. The metadata service to use here is :ref:`*progressive* <progressive_selection>`. You can get the list of albums produced by the artist by running :ref:`plex_music_albums.py --artist="artist" --albums <plex_music_album_get_albums>`. For example, to get the album `Moon Safari`_ by Air_ using the MusicBrainz_ service,
 
 .. _plex_music_songs_download_artist_album:
 
@@ -383,6 +384,7 @@ Here, one specifies the collection of songs to download by giving the artist and
 
 download songs using ``--new``, ``--artists`` and ``--songs``
 ---------------------------------------------------------------------
+
 Here, one uses the `--new`` flag and specifies, IN ORDER, the artists (using the ``--artists`` argument) and respective songs (using the ``--songs`` argument)  to download the collection of songs. Artists are separated by ";" and songs are separated by ";". The metadata service to use here is :ref:`*exclusive* <exclusive_selection>`. For example, to get these two songs by two different artists using the MusicBrainz_ service,
 
 * `Different <https://youtu.be/YNB2Cw5y66o>`_ by `Ximena Sariñana <https://en.wikipedia.org/wiki/Ximena_Sari%C3%B1ana>`_.
@@ -399,13 +401,14 @@ whose video is shown below,
 
 .. _plex_music_songs_download_artists_songs_list:
 
-.. youtube:: FWRvLPwTYT0
+.. youtube:: cRvxkGb2q3Y
    :width: 100%
 
 .. _upload_to_gmusic.py_label:
 
 upload_to_gmusic.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 The help output, when running ``upload_to_gmusic.py -h``, produces the following.
 
 .. code-block:: bash

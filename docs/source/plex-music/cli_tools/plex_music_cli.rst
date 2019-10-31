@@ -300,9 +300,9 @@ Once the metadata service finds the metadata for those songs, the CLI provides a
 Here is an example where the music service, here MusicBrainz_, finds a song match to Remember_ by Air_ first the metadata service (here MusicBrainz_) finds a match to Remember_ by Air_,
 
 1. The service finds the match and prints out the artist, album, and song.
-   
+       	       	     	 
    .. code-block::
-
+   
       ACTUAL ARTIST: Air
       ACTUAL ALBUM: Moon Safari
       ACTUAL SONG: Remember (02:34)

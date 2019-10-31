@@ -32,7 +32,7 @@ _coverage_dict = {
     #
     'plex_music_album.py' : True,
     'plex_music_metafill.py' : True,
-    'plex_music_songs.py' : False,
+    'plex_music_songs.py' : True,
     'upload_to_gmusic.py' : True,
     #
     'plex_email_notif.py' : False,

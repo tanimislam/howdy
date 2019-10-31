@@ -1339,7 +1339,7 @@ class GoogleOauth2Dialog( QDialogWithPrinting ):
 class GMusicMobileClientOauth2Dialog( QDialogWithPrinting ):
     def __init__( self, parent ):
         super( GoogleOauth2Dialog, self ).__init__(
-            parent, isIsolated = True, doQuit = False ):
+            parent, isIsolated = True, doQuit = False )
         self.setModal( True )
         self.setWindowTitle( 'PLEX ACCOUNT GOOGLE MUSIC MOBILECLIENT CREDENTIALS' )
         mainLayout = QVBoxLayout( )

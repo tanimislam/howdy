@@ -365,7 +365,7 @@ Here, one specifies the collection of songs to download by giving the artist and
 
 .. _plex_music_songs_download_artist_songs:
 
-.. youtube:: FWRvLPwTYT0
+.. youtube:: TE1Qd8z3Gnk
    :width: 100%
 
 .. _download_by_artist_album:

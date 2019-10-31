@@ -256,7 +256,7 @@ def _download_songs_newformat( opts ):
     artist_names_dict = dict(map(lambda artist_name: ( artist_name, None ), set( artist_names ) ) )
     if opts.do_musicbrainz:
         artist_names_dict = dict(map(lambda artist_name: (
-            artist_name, plexmusic.MusicInfo( artist_name ), set( artist_names ) ) ) )
+            artist_name, plexmusic.MusicInfo( artist_name ) ), set( artist_names ) ) )
     all_songs_downloaded = list(
         filter(None, map(lambda tup: _download_actual_song(
             pm, lastfm, tup[0], tup[1], opts.maxnum, do_whichone = do_whichone,

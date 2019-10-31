@@ -140,7 +140,7 @@ Functionality    CLI                                                            
 ``plextmdb``     - :ref:`get_mov_tor.py <get_mov_tor.py_label>` |cbox|                        - :ref:`plex_tmdb_totgui.py <plex_tmdb_totgui.py_label>`
 ``plexmusic``    - :ref:`plex_music_album.py <plex_music_album.py_label>` |cbox|
                  - :ref:`plex_music_metafill.py <plex_music_metafill.py_label>` |cbox|
-                 - :ref:`plex_music_songs.py <plex_music_songs.py_label>`
+                 - :ref:`plex_music_songs.py <plex_music_songs.py_label>` |cbox|
                  - :ref:`upload_to_gmusic.py <upload_to_gmusic.py_label>` |cbox|
 ``plexemail``    - :ref:`plex_email_notif.py <plex_email_notif.py_label>`                     - :ref:`plex_email_gui.py <plex_email_gui.py_label>`
 ===============  ===========================================================================  =============================================================

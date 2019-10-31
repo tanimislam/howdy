@@ -70,7 +70,7 @@ Here are the three operations,
 	
 * The ``--albums`` flag gets a formatted, pretty-printed list of albums released by an artist.  Here, the ``-a`` or ``--artist`` (artist) need to be specified. For example, for Air_,
 
-  .. code-block:: bash
+   .. code-block:: bash
 
      tanim-desktop $ plex_music_albums.py -a Air --albums
      
@@ -189,7 +189,6 @@ This executable has two modes of operation. In each mode, for each song in the c
 
   .. youtube:: PflzMfN4A9w
      :width: 100%
-..     :align: center
 
   The list of songs came from the LastFM_ service, and Gracenote_ cannot find Air_ songs in `Moon Safari`_ with the names ``Ce Matin-Là`` and ``Le Voyage De Pénélope`` due (probably) to diacritical accents.
 
@@ -198,8 +197,6 @@ This executable has two modes of operation. In each mode, for each song in the c
   .. _plex_music_metafill_album:
 
   .. youtube:: OMu5wpb49Sw
-     :width: 100%
-..     :align: center
 
   Here Gracenote_ is able to find all songs, including ``Ce Matin La`` (instead of ``Ce Matin-Là``) and ``Le Voyage De Penelope`` (instead of ``Le Voyage De Pénélope``).
   
@@ -300,9 +297,9 @@ Once the metadata service finds the metadata for those songs, the CLI provides a
 Here is an example where the music service, here MusicBrainz_, finds a song match to Remember_ by Air_ first the metadata service (here MusicBrainz_) finds a match to Remember_ by Air_,
 
 1. The service finds the match and prints out the artist, album, and song.
-   
+       	       	     	 
    .. code-block::
-
+   
       ACTUAL ARTIST: Air
       ACTUAL ALBUM: Moon Safari
       ACTUAL SONG: Remember (02:34)
@@ -365,7 +362,7 @@ Here, one specifies the collection of songs to download by giving the artist and
 
 .. _plex_music_songs_download_artist_songs:
 
-.. youtube:: FWRvLPwTYT0
+.. youtube:: W8pmTqFJy68
    :width: 100%
 
 .. _download_by_artist_album:
@@ -377,7 +374,7 @@ Here, one specifies the collection of songs to download by giving the artist and
 
 .. _plex_music_songs_download_artist_album:
 
-.. youtube:: ItKkt8pwMaY
+.. youtube:: njkhP5VE7Kc
    :width: 100%
 
 .. _download_by_artists_songs_list:

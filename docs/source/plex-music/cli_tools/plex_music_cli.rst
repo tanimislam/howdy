@@ -8,7 +8,7 @@ This section describes the four Plexstuff music command line utilities.
 
 * :ref:`plex_music_metafill.py` is an older Plex_ Music executable. It gets choices and song clips from YouTube_ and music metadata using the Gracenote_ API. This was an earlier trial to improve the functionality of :ref:`plex_music_songs.py`.
 
-* :ref:`plex_music_songs.py` does...
+* :ref:`plex_music_songs.py` is a work-horse CLI that can do three things ( :ref:`download songs with artist and song list <download_by_artist_songs>`, :ref:`download songs with artist and album <download_by_artist_album>`, or :ref:`download a list of songs with a list of corresponding artists <download_by_artists_songs_list>` ) using the three music metadata services (Gracenote_, LastFM_, or MusicBrainz_).
 
 * :ref:`upload_to_gmusic.py` uploads MP3_ or M4A_ music files to one's `Google Play Music`_ account, or pushes the appropriate :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` credentials into the SQLite3_ configuration database.
 
@@ -66,6 +66,8 @@ Here are the three operations,
      :width: 100%
      :align: center
 
+.. _plex_music_album_get_albums:
+	
 * The ``--albums`` flag gets a formatted, pretty-printed list of albums released by an artist.  Here, the ``-a`` or ``--artist`` (artist) need to be specified. For example, for Air_,
 
   .. code-block:: bash
@@ -205,6 +207,200 @@ This executable has two modes of operation. In each mode, for each song in the c
 
 plex_music_songs.py
 ^^^^^^^^^^^^^^^^^^^^^^
+The help output, when running ``plex_music_songs.py -h``, produces the following.
+
+.. code-block:: bash
+
+     Usage: plex_music_songs.py [options]
+
+     Options:
+       -h, --help            show this help message and exit
+       -a ARTIST_NAME, --artist=ARTIST_NAME
+			     Name of the artist to put into the M4A file.
+       -s SONG_NAMES, --songs=SONG_NAMES
+			     Names of the song to put into M4A files. Separated by
+			     ;
+       --maxnum=MAXNUM       Number of YouTube video choices to choose for each of
+			     your songs.Default is 10.
+       -A ALBUM_NAME, --album=ALBUM_NAME
+			     If defined, then get all the songs in order from the
+			     album.
+       --new                 If chosen, use the new format for getting the song
+			     list. Instead of -a or --artist, will look for
+			     --artists. Each artist is separated by a ';'.
+       --artists=ARTIST_NAMES
+			     List of artists. Each artist is separated by a ';'.
+       --lastfm              If chosen, then only use the LastFM API to get song
+			     metadata.
+       --musicbrainz         If chosen, use Musicbrainz to get the artist metadata.
+			     Note that this is expensive.
+       --noverify            Do not verify SSL transactions if chosen.
+       --debug               Run with debug mode turned on.
+
+In all three operations, here are required arguments or common flags,
+
+* ``-a`` or ``--artist``: the artist must always be specified.
+
+* ``--maxnum`` specifies the maximum number of YouTube_ video clips from which to choose. This number must be :math:`\ge 1`, and its default is ``10``.
+
+* ``--noverify`` does not verify SSL connections.
+
+* ``--debug`` prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
+       
+The complicated collection of flags and arguments allows ``plex_music_songs.py`` to download a collection of songs in three ways,
+
+* in :numref:`download_by_artist_songs`, by specifying artist and list of songs.
+
+* in :numref:`download_by_artist_album`, by specifying artist and album.
+
+* in :numref:`download_by_artists_songs_list`, by specifying a corresponding list of songs with matching artists.
+
+and using three music metadata services: Gracenote_, LastFM_, and MusicBrainz_. The Gracenote_ service is used or started with by default, but,
+
+* ``--lastfm`` says to use or start with the LastFM_ API.
+
+* ``--musicbrainz`` says to use or start with the MusicBrainz_ API.
+
+* At most only one of ``--lastfm`` or ``--musicbrainz`` can be specified.
+
+Each of the three operations can be either *progressive* or *exclusive*.
+
+.. _progressive_selection:
+
+* *progressive* means that the selection and downloading of songs starts with a given music service. If that service does not work, then it continues by order until successful. For example, if the Gracenote_ service does not work, then try LastFM_; if LastFM_ does not work, then try MusicBrainz_; if MusicBrainz_ does not work, then give up. :numref:`order_progress_music_service` summarizes how this process works, based on the metadata choice flag (`--lastfm``, ``--musicbrainz``, or none). The number in each cell determines the order in which to try until success -- 1 means 1st, 2 means 2nd, etc.
+
+   .. _order_progress_music_service:
+
+   =================  ============  =========  ==============
+   metadata flag        Gracenote_  LastFM_    MusicBrainz_
+   =================  ============  =========  ==============
+   default (no flag)             1  2          3
+   ``--lastfm``                  1  2
+   ``--musicbrainz``             1
+   =================  ============  =========  ==============
+
+.. _exclusive_selection:
+   
+* *exclusive* means that the selection of downloading of songs *only uses* a single given music service; if the songs cannot be found using it, then it gives up. :numref:`order_exclusive_music_service` summarizes how this process works, matching metadata flag to music service.
+
+  .. _order_exclusive_music_service:
+
+  =================  ============  =========  ==============
+  metadata flag      Gracenote_    LastFM_    MusicBrainz_
+  =================  ============  =========  ==============
+  default (no flag)  1
+  ``--lastfm``                     1
+  ``--musicbrainz``                           1
+  =================  ============  =========  ==============
+
+Once the metadata service finds the metadata for those songs, the CLI provides a selection of YouTube_ clips corresponding to a given song *AND* what the music metadata service thinks is the best match to the selected song. Each clip also shows the length (in MM:SS format) to allow you to choose the clip that is high ranking and whose length best matches the song's length.
+
+.. _example_song_youtube_clip:
+
+Here is an example where the music service, here MusicBrainz_, finds a song match to Remember_ by Air_ first the metadata service (here MusicBrainz_) finds a match to Remember_ by Air_,
+
+1. The service finds the match and prints out the artist, album, and song.
+   
+   .. code-block::
+
+      ACTUAL ARTIST: Air
+      ACTUAL ALBUM: Moon Safari
+      ACTUAL SONG: Remember (02:34)
+
+   MusicBrainz_ always gives the song length after the song name (ACTUAL SONG row). LastFM_ may do so if it can find the song's length (by itself using the MusicBrainz_ API). Gracenote_ does not have the song length information.
+
+   
+2. A selection of candidate YouTube_ clips are given, with durations. I find it best to choose a clip that is as highly ranked as possible and whose duration matches the actual song's duration (if provided).
+
+   .. code-block::
+
+      ACTUAL ARTIST: Air
+      ACTUAL ALBUM: Moon Safari
+      ACTUAL SONG: Remember (02:34)
+      Choose YouTube video:
+      1: Air - Remember (04:13)
+      2: Remember (02:35)
+      3: Air - Remember (02:49)
+      4: Remember (David Whitaker Version) (02:22)
+      5: Air - Remember – Live in San Francisco (03:04)
+      6: Air - Remember (03:41)
+      7: Air - Remember – Outside Lands 2016, Live in San Francisco (02:40)
+      8: Air - Remember (Original Mix) (03:14)
+      9: AIR - Remember live@ FOX Oakland (02:38)
+      10: Air - Remember (02:24)
+
+3. Make a selection from the command line, such as ``2`` (because the high ranking clip's duration matches the song's duration very closely). The song then downloads into the file, ``Air.Remember.m4a``, in the current working directory.
+
+   .. code-block:: bash
+
+      ACTUAL ARTIST: Air
+      ACTUAL ALBUM: Moon Safari
+      ACTUAL SONG: Remember (02:34)
+      Choose YouTube video:
+      1: Air - Remember (04:13)
+      2: Remember (02:35)
+      3: Air - Remember (02:49)
+      4: Remember (David Whitaker Version) (02:22)
+      5: Air - Remember – Live in San Francisco (03:04)
+      6: Air - Remember (03:41)
+      7: Air - Remember – Outside Lands 2016, Live in San Francisco (02:40)
+      8: Air - Remember (Original Mix) (03:14)
+      9: AIR - Remember live@ FOX Oakland (02:38)
+      10: Air - Remember (02:24)
+      2
+      [youtube] JqMdhEy4hG8: Downloading webpage
+      [youtube] JqMdhEy4hG8: Downloading video info webpage
+      WARNING: Unable to extract video title
+      [youtube] JqMdhEy4hG8: Downloading js player vflGnuoiU
+      [youtube] JqMdhEy4hG8: Downloading js player vflGnuoiU
+      [download] Destination: Air.Remember.m4a
+      [download] 100% of 2.38MiB in 00:02
+      [ffmpeg] Correcting container in "Air.Remember.m4a"
+
+.. _download_by_artist_songs:
+
+download songs using ``--songs`` and ``--artist`` flag
+--------------------------------------------------------
+Here, one specifies the collection of songs to download by giving the artist and list of songs through ``--songs``. Each song is separated by a ";". The metadata service to use here is :ref:`*progressive* <progressive_selection>`. For example, to get `Don't be Light`_ and `Mer du Japon`_ by Air_ using the MusicBrainz_ service,
+
+.. _plex_music_songs_download_artist_songs:
+
+.. youtube:: FWRvLPwTYT0
+   :width: 100%
+
+.. _download_by_artist_album:
+
+download songs using ``--artist`` and ``--album`` flag
+-------------------------------------------------------
+Here, one specifies the collection of songs to download by giving the artist and album through ``--album``. The metadata service to use here is :ref:`*progressive* <progressive_selection>`. You can get the list of albums produced by the artist by running :ref:`plex_music_albums.py --artist=<artist> --albums <plex_music_album_get_albums>`. For example, to get the album `Moon Safari`_ by Air_ using the MusicBrainz_ service,
+
+.. _plex_music_songs_download_artist_album:
+
+.. youtube:: ItKkt8pwMaY
+   :width: 100%
+
+.. _download_by_artists_songs_list:
+
+download songs using ``--new``, ``--artists`` and ``--songs``
+---------------------------------------------------------------------
+Here, one uses the `--new`` flag and specifies, IN ORDER, the artists (using the ``--artists`` argument) and respective songs (using the ``--songs`` argument)  to download the collection of songs. Artists are separated by ";" and songs are separated by ";". The metadata service to use here is :ref:`*exclusive* <exclusive_selection>`. For example, to get these two songs by two different artists using the MusicBrainz_ service,
+
+* `Different <https://youtu.be/YNB2Cw5y66o>`_ by `Ximena Sariñana <https://en.wikipedia.org/wiki/Ximena_Sari%C3%B1ana>`_.
+
+* `Piensa en Mí <https://youtu.be/LkPn2ny5V4E>`_ by `Natalia Lafourcade <https://en.wikipedia.org/wiki/Natalia_Lafourcade>`_.
+
+We run this command,
+
+.. code-block:: bash
+
+   plex_music_service.py --new --artists="Ximena Sariñana;Natalia Lafourcade" -s "Different;Piensa en Mí" --musicbrainz
+
+whose video is shown below,
+
+.. _plex_music_songs_download_artists_songs_list:
+
+.. youtube:: FWRvLPwTYT0
+   :width: 100%
 
 .. _upload_to_gmusic.py_label:
 
@@ -267,3 +463,6 @@ Third, paste the code similar to as described in :ref:`Step #7 <google_step07_oa
 .. _M4A: https://en.wikipedia.org/wiki/MPEG-4_Part_14
 .. _MP3: https://en.wikipedia.org/wiki/MP3
 .. _`Google Play Music`: https://play.google.com/music/listen
+.. _Remember: https://youtu.be/D7umgkNX8NM
+.. _`Don't be Light`: https://youtu.be/ysk_dQ39ctE
+.. _`Mer du Japon`: https://youtu.be/Sjq4_sHy06U

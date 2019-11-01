@@ -294,7 +294,7 @@ Once the metadata service finds the metadata for those songs, the CLI provides a
 
 .. _example_song_youtube_clip:
 
-Here is an example where the music service, here MusicBrainz_, finds a song match to Remember_ by Air_ first the metadata service (here MusicBrainz_) finds a match to Remember_ by Air_,
+Here ``plex_music_songs.py`` looks for a song, Remember_ by Air_, using the music service MusicBrainz_,
 
 1. The service finds the match and prints out the artist, album, and song.
        	       	     	 
@@ -307,7 +307,7 @@ Here is an example where the music service, here MusicBrainz_, finds a song matc
    MusicBrainz_ always gives the song length after the song name (ACTUAL SONG row). LastFM_ may do so if it can find the song's length (by itself using the MusicBrainz_ API). Gracenote_ does not have the song length information.
 
    
-2. A selection of candidate YouTube_ clips are given, with durations. I find it best to choose a clip that is as highly ranked as possible and whose duration matches the actual song's duration (if provided).
+2. A selection of candidate YouTube_ clips are given, each with duration. I find it best to choose a clip that is as highly ranked as possible and whose duration matches the actual song's duration (if provided).
 
    .. code-block::
 
@@ -370,7 +370,7 @@ Here, one specifies the collection of songs to download by giving the artist and
 download songs using ``--artist`` and ``--album`` flag
 -------------------------------------------------------
 
-Here, one specifies the collection of songs to download by giving the artist and album through ``--album``. The metadata service to use here is :ref:`*progressive* <progressive_selection>`. You can get the list of albums produced by the artist by running :ref:`plex_music_albums.py --artist="artist" --albums <plex_music_album_get_albums>`. For example, to get the album `Moon Safari`_ by Air_ using the MusicBrainz_ service,
+One specifies the collection of songs to download by giving the artist and album through ``--album``. The metadata service to use is :ref:`*progressive* <progressive_selection>`. You can get the list of albums produced by the artist by running :ref:`plex_music_albums.py --artist="artist" --albums <plex_music_album_get_albums>`. :numref:`plex_music_songs_download_artist_album` demonstrates how to get the album `Moon Safari`_ by Air_ using the MusicBrainz_ service,
 
 .. _plex_music_songs_download_artist_album:
 

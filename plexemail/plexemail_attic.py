@@ -9,8 +9,8 @@ def get_summary_data_freshair_remote( token, fullURL = 'http://localhost:32400' 
     key, num_songs, _, _, totdur, totsizebytes = plexcore._get_library_stats_artist(
         keynum, token, fullurl = fullURL )
     mainstring = 'there are %d episodes of npr fresh air.'  % num_songs
-    sizestring = 'the total size of fresh air media is %s.' % get_formatted_size( totsizebytes )
-    durstring = 'the total duration of fresh air media is %s.' % get_formatted_duration( totdur )
+    sizestring = 'the total size of npr fresh air media is %s.' % get_formatted_size( totsizebytes )
+    durstring = 'the total duration of npr fresh air media is %s.' % get_formatted_duration( totdur )
     if sincedate is not none:
         key, num_songs_since, _, _, \
             totdur_since, totsizebytes_since = plexcore._get_library_stats_artist(

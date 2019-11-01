@@ -290,7 +290,7 @@ Each of the three operations can be either *progressive* or *exclusive*.
   ``--musicbrainz``                           1
   =================  ============  =========  ==============
 
-Once the metadata service finds the metadata for those songs, the CLI provides a selection of YouTube_ clips corresponding to a given song *AND* what the music metadata service thinks is the best match to the selected song. Each clip also shows the length (in MM:SS format) to allow you to choose the clip that is high ranking and whose length best matches the song's length.
+Once the metadata service finds the metadata for those songs, the CLI provides a selection of YouTube_ clips corresponding to a given song *AND* what the music metadata service thinks is the best match to the selected song. Each clip also shows the length (in MM:SS format) to let you choose one that is high ranking and whose length best matches the song's length.
 
 .. _example_song_youtube_clip:
 
@@ -304,8 +304,7 @@ Here ``plex_music_songs.py`` looks for a song, Remember_ by Air_, using the musi
       ACTUAL ALBUM: Moon Safari
       ACTUAL SONG: Remember (02:34)
 
-   MusicBrainz_ always gives the song length after the song name (ACTUAL SONG row). LastFM_ may do so if it can find the song's length (by itself using the MusicBrainz_ API). Gracenote_ does not have the song length information.
-
+   MusicBrainz_ always gives the song length after the song name (ACTUAL SONG row). LastFM_ may do so if it can find the song's length (by internally using the MusicBrainz_ API). Gracenote_ does not have the song length information.
    
 2. A selection of candidate YouTube_ clips are given, each with duration. I find it best to choose a clip that is as highly ranked as possible and whose duration matches the actual song's duration (if provided).
 
@@ -369,7 +368,6 @@ Here, one specifies the collection of songs to download by giving the artist and
 
 download songs using ``--artist`` and ``--album`` flag
 -------------------------------------------------------
-
 One specifies the collection of songs to download by giving the artist and album through ``--album``. The metadata service to use is :ref:`*progressive* <progressive_selection>`. You can get the list of albums produced by the artist by running :ref:`plex_music_albums.py --artist="artist" --albums <plex_music_album_get_albums>`. :numref:`plex_music_songs_download_artist_album` demonstrates how to get the album `Moon Safari`_ by Air_ using the MusicBrainz_ service,
 
 .. _plex_music_songs_download_artist_album:
@@ -381,7 +379,6 @@ One specifies the collection of songs to download by giving the artist and album
 
 download songs using ``--new``, ``--artists`` and ``--songs``
 ---------------------------------------------------------------------
-
 Here, one uses the `--new`` flag and specifies, IN ORDER, the artists (using the ``--artists`` argument) and respective songs (using the ``--songs`` argument)  to download the collection of songs. Artists are separated by ";" and songs are separated by ";". The metadata service to use here is :ref:`*exclusive* <exclusive_selection>`. For example, to get these two songs by two different artists using the MusicBrainz_ service,
 
 * `Different <https://youtu.be/YNB2Cw5y66o>`_ by `Ximena Sariñana <https://en.wikipedia.org/wiki/Ximena_Sari%C3%B1ana>`_.
@@ -405,7 +402,6 @@ whose video is shown below,
 
 upload_to_gmusic.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 The help output, when running ``upload_to_gmusic.py -h``, produces the following.
 
 .. code-block:: bash

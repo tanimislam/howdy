@@ -8,7 +8,7 @@ This section describes the four Plexstuff music command line utilities.
 
 * :ref:`plex_music_metafill.py` is an older Plex_ Music executable. It gets choices and song clips from YouTube_ and music metadata using the Gracenote_ API. This was an earlier trial to improve the functionality of :ref:`plex_music_songs.py`.
 
-* :ref:`plex_music_songs.py` is a work-horse CLI that can do three things ( :ref:`download songs with artist and song list <download_by_artist_songs>`, :ref:`download songs with artist and album <download_by_artist_album>`, or :ref:`download a list of songs with a list of corresponding artists <download_by_artists_songs_list>` ) using the three music metadata services (Gracenote_, LastFM_, or MusicBrainz_).
+* :ref:`plex_music_songs.py` is a work-horse CLI that can do three things (:ref:`download songs with artist and song list <download_by_artist_songs>`, :ref:`download songs with artist and album <download_by_artist_album>`, or :ref:`download a list of songs with a list of corresponding artists <download_by_artists_songs_list>`) using the three music metadata services (Gracenote_, LastFM_, or MusicBrainz_).
 
 * :ref:`upload_to_gmusic.py` uploads MP3_ or M4A_ music files to one's `Google Play Music`_ account, or pushes the appropriate :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` credentials into the SQLite3_ configuration database.
 

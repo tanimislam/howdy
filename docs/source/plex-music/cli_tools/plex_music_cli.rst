@@ -264,7 +264,7 @@ Each of the three operations can be either *progressive* or *exclusive*.
 
 .. _progressive_selection:
 
-* *progressive* means that the selection and downloading of songs starts with a given music service. If that service does not work, then it continues by order until successful. For example, if the Gracenote_ service does not work, then try LastFM_; if LastFM_ does not work, then try MusicBrainz_; if MusicBrainz_ does not work, then give up. :numref:`order_progress_music_service` summarizes how this process works, based on the metadata choice flag (`--lastfm``, ``--musicbrainz``, or none). The number in each cell determines the order in which to try until success -- 1 means 1st, 2 means 2nd, etc.
+* *progressive* means that the selection and downloading of songs starts with a given music service. If that service does not work, then it continues by order until successful. For example, if the Gracenote_ service does not work, then try LastFM_; if LastFM_ does not work, then try MusicBrainz_; if MusicBrainz_ does not work, then give up. :numref:`order_progress_music_service` summarizes how this process works, based on the metadata choice flag (``--lastfm``, ``--musicbrainz``, or none). The number in each cell determines the order in which to try until success -- 1 means 1st, 2 means 2nd, etc.
 
    .. _order_progress_music_service:
 

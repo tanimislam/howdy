@@ -107,7 +107,7 @@ Here are the three operations,
        New Star in the Sky (Chanson Pour Solal)          9
        Le Voyage De Pénélope                            10
 
-.. _plex_music_abum_songs_formatted:
+  .. _plex_music_abum_songs_formatted:
 
   * If we run with the ``--formatted`` flag, then the output is a semi-colon-delimited collection of songs in this album. This is an input format that can then be processed by :ref:`plex_music_metafill.py`. For songs in the `Moon Safari`_ album released by Air_,
 

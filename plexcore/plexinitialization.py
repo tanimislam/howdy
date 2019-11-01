@@ -27,7 +27,11 @@ def _choose_install_local( requirements ):
     sys.exit( 0 )
 
 def _install_packages_local( requirements ):
-    from pip._internal.main import main
+    try:
+        from pip._internal.main import main
+    except:
+        try: from pip._internal import main
+        except: raise ValueError("could not find main method in pip." )
     try:
         main( [ 'install', '--user', '--upgrade' ] + requirements +
               [ '--trusted-host', 'pypi.python.org' ] +

@@ -72,24 +72,24 @@ Here are the three operations,
 
    .. code-block:: bash
 
-     tanim-desktop $ plex_music_albums.py -a Air --albums
-     
-     Air has 7 studio albums.
+      tanim-desktop $ plex_music_albums.py -a Air --albums
 
-     Studio Album                         Year    # Tracks
-     ---------------------------------  ------  ----------
-     Moon Safari                          1998          10
-     10 000 Hz Legend                     2001          12
-     City Reading (Tre Storie Western)    2003          19
-     Talkie Walkie                        2004          11
-     Pocket Symphony                      2006          12
-     Love 2                               2009          12
-     Music for Museum                     2014           9
+      Air has 7 studio albums.
+
+      Studio Album                         Year    # Tracks
+      ---------------------------------  ------  ----------
+      Moon Safari                          1998          10
+      10 000 Hz Legend                     2001          12
+      City Reading (Tre Storie Western)    2003          19
+      Talkie Walkie                        2004          11
+      Pocket Symphony                      2006          12
+      Love 2                               2009          12
+      Music for Museum                     2014           9
 
 * The ``--song`` flag returns a list of songs released on a specific album by the artist. Here, the ``-a`` or ``--artist`` (artist) and ``-A`` or ``--album`` (album) need to be specified.
 
   * By default, the standard pretty-printed formatting if we do not use the ``--formatted`` flag. To get all the songs in track order for `Moon Safari`_ album released by Air_,
-
+  
     .. code-block:: bash
 
        tanim-desktop $ plex_music_album.py -a Air -A "Moon Safari" --songs		  
@@ -149,7 +149,7 @@ Here are the common elements of its operation,
 
 * the artist must always be specified with the ``-a`` or ``--artist`` setting.
 
-This executable has two modes of operation. In each mode, for each song in the collection, this tool finds that song, finds that clip, and asks the user to choose a selection with a number from ``1`` to at most ``maxnum``. For convenience, each YouTube_ clip also shows its duration in MM:SS format. For example, here I choose YouTube_ clip #1 for the first track in the `Moon Safari`_ album released by Air_,
+This executable has two modes of operation. In each mode, for each song in the collection, this tool finds that song, finds that clip, and asks the user to select a clip with a number from ``1`` to at most ``maxnum``. For convenience, each YouTube_ clip also shows its duration in MM:SS format. For example, here I choose YouTube_ clip #1 for the first track in the `Moon Safari`_ album released by Air_,
 
 .. code-block:: bash
 
@@ -299,7 +299,7 @@ Here ``plex_music_songs.py`` looks for a song, Remember_ by Air_, using the musi
 
 1. The service finds the match and prints out the artist, album, and song.
        	       	     	 
-   .. code-block::
+   .. code-block:: bash
    
       ACTUAL ARTIST: Air
       ACTUAL ALBUM: Moon Safari
@@ -309,7 +309,7 @@ Here ``plex_music_songs.py`` looks for a song, Remember_ by Air_, using the musi
    
 2. A selection of candidate YouTube_ clips are given, each with duration. I find it best to choose a clip that is as highly ranked as possible and whose duration matches the actual song's duration (if provided).
 
-   .. code-block::
+   .. code-block:: bash
 
       ACTUAL ARTIST: Air
       ACTUAL ALBUM: Moon Safari
@@ -369,7 +369,7 @@ Here, one specifies the collection of songs to download by giving the artist and
 
 download songs using ``--artist`` and ``--album`` flag
 -------------------------------------------------------
-One specifies the collection of songs to download by giving the artist and album through ``--album``. The metadata service to use is :ref:`progressive <progressive_selection>`. You can get the list of albums produced by the artist by running :ref:`plex_music_albums.py --artist="artist" --albums <plex_music_album_get_albums>`. :numref:`plex_music_songs_download_artist_album` demonstrates how to get the album `Moon Safari`_ by Air_ using the MusicBrainz_ service,
+One specifies the collection of songs to download by giving the artist and album through ``--album``. The metadata service to use is :ref:`progressive <progressive_selection>`. You can get the list of albums produced by the artist by running :ref:`plex_music_albums.py --artist="artist" --albums <plex_music_album_get_albums>`. The clip below demonstrates how to get the album `Moon Safari`_ by Air_ using the MusicBrainz_ service,
 
 .. _plex_music_songs_download_artist_album:
 

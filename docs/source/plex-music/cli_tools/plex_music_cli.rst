@@ -183,7 +183,7 @@ This executable has two modes of operation. In each mode, for each song in the c
 
      La Femme d'Argent;Sexy Boy;All I Need;Kelly Watch the Stars;Talisman;Remember;You Make It Easy;Ce Matin-Là;New Star in the Sky (Chanson Pour Solal);Le Voyage De Pénélope
 
-  For songs in order in tha album `Moon Safari`_ by Air_. Below is an animation showing how this works in practice when downloading these songs. Here we always choose YouTube_ clip #1.
+  For songs in order in the album `Moon Safari`_ by Air_. Below is an animation showing how this works in practice when downloading these songs. Here we always choose YouTube_ clip #1.
 
   .. _plex_music_metafill_songs:
 
@@ -195,8 +195,9 @@ This executable has two modes of operation. In each mode, for each song in the c
 * In the second mode of operation, give it the album name with ``-A`` or ``--album``. For example ``plex_music_metafill.py -a Air -A "Moon Safari"`` to get all ten songs in this album,
 
   .. _plex_music_metafill_album:
-
+  
   .. youtube:: OMu5wpb49Sw
+     :width: 100%
 
   Here Gracenote_ is able to find all songs, including ``Ce Matin La`` (instead of ``Ce Matin-Là``) and ``Le Voyage De Penelope`` (instead of ``Le Voyage De Pénélope``).
   
@@ -357,7 +358,7 @@ Here ``plex_music_songs.py`` looks for a song, Remember_ by Air_, using the musi
 
 download songs using ``--songs`` and ``--artist`` flag
 --------------------------------------------------------
-Here, one specifies the collection of songs to download by giving the artist and list of songs through ``--songs``. Each song is separated by a ";". The metadata service to use here is :ref:`*progressive* <progressive_selection>`. For example, to get `Don't be Light`_ and `Mer du Japon`_ by Air_ using the MusicBrainz_ service,
+Here, one specifies the collection of songs to download by giving the artist and list of songs through ``--songs``. Each song is separated by a ";". The metadata service to use here is :ref:`progressive <progressive_selection>`. For example, to get `Don't be Light`_ and `Mer du Japon`_ by Air_ using the MusicBrainz_ service,
 
 .. _plex_music_songs_download_artist_songs:
 
@@ -368,7 +369,7 @@ Here, one specifies the collection of songs to download by giving the artist and
 
 download songs using ``--artist`` and ``--album`` flag
 -------------------------------------------------------
-One specifies the collection of songs to download by giving the artist and album through ``--album``. The metadata service to use is :ref:`*progressive* <progressive_selection>`. You can get the list of albums produced by the artist by running :ref:`plex_music_albums.py --artist="artist" --albums <plex_music_album_get_albums>`. :numref:`plex_music_songs_download_artist_album` demonstrates how to get the album `Moon Safari`_ by Air_ using the MusicBrainz_ service,
+One specifies the collection of songs to download by giving the artist and album through ``--album``. The metadata service to use is :ref:`progressive <progressive_selection>`. You can get the list of albums produced by the artist by running :ref:`plex_music_albums.py --artist="artist" --albums <plex_music_album_get_albums>`. :numref:`plex_music_songs_download_artist_album` demonstrates how to get the album `Moon Safari`_ by Air_ using the MusicBrainz_ service,
 
 .. _plex_music_songs_download_artist_album:
 
@@ -379,7 +380,7 @@ One specifies the collection of songs to download by giving the artist and album
 
 download songs using ``--new``, ``--artists`` and ``--songs``
 ---------------------------------------------------------------------
-Here, one uses the `--new`` flag and specifies, IN ORDER, the artists (using the ``--artists`` argument) and respective songs (using the ``--songs`` argument)  to download the collection of songs. Artists are separated by ";" and songs are separated by ";". The metadata service to use here is :ref:`*exclusive* <exclusive_selection>`. For example, to get these two songs by two different artists using the MusicBrainz_ service,
+Here, one uses the `--new`` flag and specifies, IN ORDER, the artists (using the ``--artists`` argument) and respective songs (using the ``--songs`` argument)  to download the collection of songs. Artists are separated by ";" and songs are separated by ";". The metadata service to use here is :ref:`exclusive <exclusive_selection>`. For example, to get these two songs by two different artists using the MusicBrainz_ service,
 
 * `Different <https://youtu.be/YNB2Cw5y66o>`_ by `Ximena Sariñana <https://en.wikipedia.org/wiki/Ximena_Sari%C3%B1ana>`_.
 

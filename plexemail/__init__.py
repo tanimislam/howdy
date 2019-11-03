@@ -13,6 +13,15 @@ from PIL import Image
 from plexcore import plexcore
 
 def send_email_lowlevel( msg, verify = True ):
+    """
+    Sends out an email using the _`Google Contacts API`. If process is unsuccessfull, prints out an error message, ``"problem with <TO-EMAIL>"``, where ``<TO-EMAIL>`` is the recipient's email address.
+
+    :param MIMEMultiPart msg: the :py:class:`MIMEMultiPart <email.mime.multipart.MIMEMultiPart>` email message to send. At a high level, this is an email with body, sender, recipients, and optional attachments.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    .. _`Google Contacts API` https://developers.google.com/contacts/v3
+    """
+    
     data = { 'raw' : base64.urlsafe_b64encode(
         msg.as_bytes( ) ).decode('utf-8') }
     #
@@ -31,6 +40,14 @@ def send_email_lowlevel( msg, verify = True ):
     except: print('problem with %s' % msg['To'] )
     
 def send_email_localsmtp( msg ):
+    """
+    Sends the email using the :py:class:`SMTP <smtplib.SMTP>` Python functionality to send through a local SMTP_ server. `This blog post`_ describes how I set up a GMail relay using my local SMTP_ server on my Ubuntu_ machine.
+
+    :param MIMEMultiPart msg: the :py:class:`MIMEMultiPart <email.mime.multipart.MIMEMultiPart>` email message to send. At a high level, this is an email with body, sender, recipients, and optional attachments.
+    
+    .. _SMTP: https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol
+    .. _`This blog post`: https://tanimislamblog.wordpress.com/2018/11/19/sendmail-relay-setup-and-implementation
+    """
     smtp_conn = smtplib.SMTP('localhost', 25 )
     smtp_conn.ehlo( 'test' )
     smtp_conn.sendmail( msg['From'], [ msg["To"], ], msg.as_string( ) )

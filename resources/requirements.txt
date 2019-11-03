@@ -37,6 +37,7 @@ requests
 requests_oauthlib
 rsa
 six
+sphinx-issues
 SQLAlchemy
 subliminal
 tabulate

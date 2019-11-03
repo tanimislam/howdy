@@ -59,7 +59,8 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
-    'sphinxcontrib.youtube'
+    'sphinxcontrib.youtube',
+    'sphinx_issues'
 ]
 
 intersphinx_mapping = {

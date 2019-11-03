@@ -3,7 +3,7 @@
 from plexcore import plexcore, session
 from plexemail import get_email_contacts_dict
 from optparse import OptionParser
-import requests
+import requests, tabulate
 
 def _print_format_names( plex_emails, header_name = 'PLEX' ):
     print( '\n'.join([
@@ -21,27 +21,9 @@ def _print_format_names( plex_emails, header_name = 'PLEX' ):
         else:
             print( '\n'.join([ '%d %s FRIENDS WITH NAMES' % ( num_with_names, header_name.upper( ) ), '' ]))
         #
-        max_len_name = max(map(lambda tup: len( tup[ 0 ] ),
-                               filter(lambda tup: tup[0] is not None, email_contacts_dict ) ) )
-        num, rem = divmod( max_len_name, 5 )
-        if rem != 0 or num == 0: num += 1
-        num_spac = 5 * num
-        #
-        max_len_email = max(map(lambda tup: len( tup[ 1 ] ),
-                                filter(lambda tup: tup[0] is not None, email_contacts_dict ) ) )
-        num, rem = divmod( max_len_email, 5 )
-        if rem != 0 or num == 0: num += 1
-        num_spac_email = 5 * num            
-        #    
-        str_format_name = '%%-%02ds' % num_spac
-        str_format_email = '%%-%02ds' % num_spac_email
-        fmt_line = '%s  |  %s' % ( str_format_name, str_format_email )
-        print( fmt_line % ( 'NAME', 'EMAIL' ) )
-        print( ''.join([
-                    ''.join( ['-'] * ( num_spac + 2 ) ), '|',
-                    ''.join( ['-'] * ( num_spac_email + 2 ) ) ]) )
-        for name, email in sorted(filter(lambda tup: tup[0] is not None, email_contacts_dict ), key = lambda tup: tup[0].split()[-1] ):
-            print( fmt_line % ( name, email ) )
+        names_emails = sorted(filter(lambda tup: tup[0] is not None, email_contacts_dict),
+                              key = lambda tup: tup[0].split( )[-1] )
+        print( '%s\n' % tabulate.tabulate( names_emails, headers = [ 'NAME', 'EMAIL' ] ) )
         if num_wo_names != 0: print('\n')
         
     if num_wo_names != 0:
@@ -49,18 +31,8 @@ def _print_format_names( plex_emails, header_name = 'PLEX' ):
             print( '\n'.join([ '%d %s FRIEND WITHOUT NAMES' % ( num_wo_names, header_name.upper( ) ), '' ]))
         else:
             print( '\n'.join([ '%d %s FRIENDS WITHOUT NAMES' % ( num_wo_names, header_name.upper( ) ), '' ]))
-            
-        max_len_email = max(map(lambda tup: len( tup[ 1 ] ),
-                                filter(lambda tup: tup[0] is None, email_contacts_dict ) ) )
-        num, rem = divmod( max_len_email, 5 )
-        if rem != 0 or num == 0: num += 1
-        num_spac_email = 5 * num
-            
-        str_format = '%%-%02ds' % num_spac_email
-        print( str_format % 'EMAIL' )
-        print( ''.join( ['-'] * num_spac_email ) )
-        for _, email in sorted(filter(lambda tup: tup[0] is None, email_contacts_dict ), key = lambda tup: tup[1] ):
-            print( str_format % email )
+        emails_only = sorted(map(lambda tup: tup[1], filter(lambda tup: tup[0] is None, email_contacts_dict ) ) )
+        print( '%s\n' % tabulate.tabulate( emails_only, headers = [ 'EMAIL' ] ) )
 
 def main( ):
     parser = OptionParser( )

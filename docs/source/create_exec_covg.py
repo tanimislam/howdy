@@ -35,7 +35,7 @@ _coverage_dict = {
     'plex_music_songs.py' : True,
     'upload_to_gmusic.py' : True,
     #
-    'plex_email_notif.py' : False,
+    'plex_email_notif.py' : True,
     #
     'plex_email_gui.py' : False }
 

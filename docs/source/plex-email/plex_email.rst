@@ -10,7 +10,7 @@ This documentation is organized into sections on :ref:`plex_email_notif.py`, the
    :maxdepth: 2
    :caption: Table of Contents
 
-   plex_email_notif
+   cli-tools/plex_email_notif
    plex_email_gui
    plex_email_api
 

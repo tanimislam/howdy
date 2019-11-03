@@ -20,8 +20,8 @@ def main( ):
     parser.add_option('--body', dest='body', action='store', type=str, default = 'This is a test.',
                       help = 'Body of the email to be sent. Default is "This is a test."')
     opts, args = parser.parse_args( )
-    if opts.do_debug:
-        logging.basicConfig( level = logging.DEBUG )
+    logger = logging.getLogger( )
+    if opts.do_debug: logger.setLevel( level = logging.DEBUG )
     status, _ = plexcore.oauthCheckGoogleCredentials( )
     if not status:
         print( "Error, do not have correct Google credentials." )

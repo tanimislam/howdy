@@ -6,7 +6,6 @@ This document describes the lower level Plexstuff Music API, upon which the :ref
 
 plexmusic module
 ------------------
-
 This contains only three methods: two format durations strings for YouTube_ clips, and a third is used to search for M4A_ music files that are missing artist or album information.
 
 .. automodule:: plexmusic

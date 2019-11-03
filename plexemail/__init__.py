@@ -14,12 +14,13 @@ from plexcore import plexcore
 
 def send_email_lowlevel( msg, verify = True ):
     """
-    Sends out an email using the _`Google Contacts API`. If process is unsuccessfull, prints out an error message, ``"problem with <TO-EMAIL>"``, where ``<TO-EMAIL>`` is the recipient's email address.
+    Sends out an email using the `Google Contacts API`_. If process is unsuccessfull, prints out an error message, ``"problem with <TO-EMAIL>"``, where ``<TO-EMAIL>`` is the recipient's email address.
 
     :param MIMEMultiPart msg: the :py:class:`MIMEMultiPart <email.mime.multipart.MIMEMultiPart>` email message to send. At a high level, this is an email with body, sender, recipients, and optional attachments.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
     .. _`Google Contacts API` https://developers.google.com/contacts/v3
+    .. _Ubuntu: https://www.ubuntu.com
     """
     
     data = { 'raw' : base64.urlsafe_b64encode(
@@ -57,6 +58,7 @@ def send_email_localsmtp( msg ):
 def get_email_contacts_dict( emailList, verify = True ):
     if len( emailList ) == 0: return [ ]
     credentials = plexcore.oauthGetOauth2ClientGoogleCredentials( )
+    assert( credentials is not None )
     http_auth = credentials.authorize( httplib2.Http(
         disable_ssl_certificate_validation = not verify ) )
     people_service = build( 'people', 'v1', http = http_auth,

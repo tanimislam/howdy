@@ -1227,7 +1227,7 @@ class PlexLastFM( object ):
         return track_listing, 'SUCCESS'
 
     #
-    ## note that lastfm does not provide a releasedate at all. This music metadata is not going to arrive at all
+    ## note that lastfm does not provide a releasedate at all.
     ## see, e.g., https://github.com/pylast/pylast/issues/177.
     ## also, https://github.com/feross/last-fm/issues/2.
     ## documentation found here, https://www.last.fm/api/show/album.getInfo, is incorrect.
@@ -1257,10 +1257,7 @@ class PlexLastFM( object ):
 
         .. note::
         
-           LastFM_ does not provide a release date at all. This music metadata is not going to arrive at all. Furthermore, LastFM_ documentation shown here (https://www.last.fm/api/show/album.getInfo) is incorrect. See, e.g,
-        
-            * https://github.com/pylast/pylast/issues/177.
-            * https://github.com/feross/last-fm/issues/2
+           LastFM_ does not provide a release date at all. Furthermore, LastFM_ documentation shown here (https://www.last.fm/api/show/album.getInfo) is incorrect. See, e.g, :issue:`pylast/pylast#177` and :issue:`feross/last-fm#2`.
 
         .. _`Kelly Watch the Stars`: https://en.wikipedia.org/wiki/Kelly_Watch_the_Stars
         """

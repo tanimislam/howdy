@@ -19,7 +19,7 @@ def send_email_lowlevel( msg, verify = True ):
     :param MIMEMultiPart msg: the :py:class:`MIMEMultiPart <email.mime.multipart.MIMEMultiPart>` email message to send. At a high level, this is an email with body, sender, recipients, and optional attachments.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
-    .. _`Google Contacts API` https://developers.google.com/contacts/v3
+    .. _`Google Contacts API`: https://developers.google.com/contacts/v3
     .. _Ubuntu: https://www.ubuntu.com
     """
     
@@ -56,6 +56,14 @@ def send_email_localsmtp( msg ):
 
 
 def get_email_contacts_dict( emailList, verify = True ):
+    """
+    Returns the Google contacts given a set of emails, all using the `Google Contacts API`_.
+
+    :param list emailList: the :py:class:`list` of emails, used to determine to whom it belongs.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :returns: a :py:class:`list` of two-element :py:class:`tuple`. The first element is the Google conatct name. The second element is a primary email associated with that contact.
+    :rtype: list
+    """
     if len( emailList ) == 0: return [ ]
     credentials = plexcore.oauthGetOauth2ClientGoogleCredentials( )
     assert( credentials is not None )
@@ -106,6 +114,40 @@ def get_email_contacts_dict( emailList, verify = True ):
     return emails_array
 
 class PlexIMGClient( object ):
+    """
+    This object contains and implements the collection of images located in a single main album in the Imgur_ account. This uses the Imgur_ API to peform all operations. This object is constructed using Imgur_ credentials -- the client ID, secret, and refresh token -- stored in the SQLite3_ configuration database, and stores the following attributes: the client ID, secret, refresh token, and the *access token* used for API access to your Imgur_ album and images.
+
+    If the Imgur_ albums cannot be accessed, or there are no albums, then ``self.albumID = None``, the ``self.imgHashes`` is an empty :py:class:`dict`.
+
+    The main album ID is stored as a :py:class:`string <str>` in the Imgur_ configuration under the ``mainALBUMID`` key, if it exists; otherwise the Imgur_ configuration dictionary does not have a ``mainALBUMID`` key.
+
+    * If there is no main album ID defined, or if there is no album with that ID, then we choose the first album found, and reset the Imgur_ configuration data into the SQLite3_ database with this album ID and name.
+
+    * If the configured album exists in our Imgur_ library, then continue with this the main album.
+
+    Once the main album is found, populate ``self.imghashes`` with all the pictures in this album. The pictures in an album in our Imgur_ account are expected to be filled through methods in this object.
+
+    * The key is the MD5_ hash of the image in that library.
+    
+    * The value is a four element :py:class:`tuple`: image name, image ID, the URL link to this image, and the :py:class:`datetime <datetime.datetime>` at which the image was uploaded.
+
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :var bool verify: whether to verify SSL connections.
+    :var str access_token: the persistent API access token to the user's Imgur_ account.
+    :var str clientID: the Imgur_ client ID.
+    :var str clientSECRET: the Imgur_ client secret.
+    :var str albumID: the hashed name of the main album.
+    :var dict imghashes: the structure of images stored in the main album.
+
+    :raise ValueError: if images in the new album cannot be accessed.
+
+    .. seealso:: :py:meth:`refreshImages <plexemail.PlexIMGClient.refreshImages>`
+    
+    .. _Imgur: https://imgur.com
+    .. _SQLite3: https://www.sqlite.org/index.html
+    .. _MD5: https://en.wikipedia.org/wiki/MD5
+    """    
     def __init__( self, verify = True ):
         #
         ## https://api.imgur.com/oauth2 advice on using refresh tokens
@@ -122,28 +164,123 @@ class PlexIMGClient( object ):
                                   verify = self.verify )
         if response.status_code != 200:
             raise ValueError( "ERROR, COULD NOT GET ACCESS TOKEN." )
-        self.access_token = response.json()[ 'access_token' ]
-        self.albumID = data_imgurl['mainALBUMID']
+        data = response.json( )
+        self.access_token = data[ 'access_token' ]
+        self.clientID = clientID
+        self.clientSECRET = clientSECRET
+        self.imghashes = { }
+        #
+        ## now first see if there are any albums
+        response = requests.get( 'https://api.imgur.com/3/account/me/albums',
+                                 headers = { 'Authorization' : 'Bearer %s' % self.access_token },
+                                 verify = self.verify )
+
+        #
+        ## error state #1: cannot access my own albums
+        if response.status_code != 200:
+            self.albumID = None
+            return
+
+        #
+        ## error state #2: do not have any albums
+        imgDatas = response.json( )[ 'data' ]
+        if len( imgDatas ) == 0:
+            self.albumID = None
+            return
+
+        #
+        ## three possible situations
+        ## #1: if mainALBUMID not defined OR album name not defined, use first img hash
+        if 'mainALBUMID' not in data_imgurl or data_imgurl[ 'mainALBUMID' ] not in set(map(lambda imgData: imgData['title'], imgDatas)):
+            self.albumID = imgDatas[ 0 ][ 'id' ]
+            albumName = imgDatas[ 0 ][ 'title' ]
+            #
+            ## put new information into database
+            plexcore.store_imgurl_credentials(
+                clientID, clientSECRET, clientREFRESHTOKEN, 
+                mainALBUMID = self.albumID,
+                mainALBUMNAME = albumName,
+                verify = self.verify )
+        else:
+            self.albumID = data_imgurl['mainALBUMID']
         #
         ## now get all the images in that album
         ## remember: Authorization: Bearer YOUR_ACCESS_TOKEN
-        response = requests.get( 'https://api.imgur.com/3/album/%s/images' % self.albumID,
-                                 headers = { 'Authorization' : 'Bearer %s' % self.access_token },
-                                 verify = False )
-        if response.status_code != 200:
-            raise ValueError("ERROR, COULD NOT ACCESS ALBUM IMAGES." )
-        self.imghashes = { }
-        all_imgs = response.json( )[ 'data' ]
-        for imgurl_img in all_imgs:
-            imgMD5 = imgurl_img[ 'name' ]
-            imgID = imgurl_img[ 'id' ]
-            imgLINK = imgurl_img[ 'link' ]
-            imgName = imgurl_img[ 'title' ]
-            imgDateTime = datetime.datetime.fromtimestamp(
-                imgurl_img[ 'datetime' ] )
-            self.imghashes[ imgMD5 ] = [ imgName, imgID, imgLINK, imgDateTime ]
+        self.refreshImages( )
 
+    def set_main_album( self, new_album_name ):
+        """
+        Sets or changes the main Imgur_ album used for storing and displaying images to a new album name. If ``new_album_name`` exists in the Imgur_ account, then sets that name. If ``new_album_name`` does not exist, then creates this new Imgur_ album.
+
+        Once this album is set or created,
+
+        * sets the new Imgur_ credentials using :py:meth:`store_imgur_credentials <plexcore.plexcore.store_imgurl_credentials>`.
+
+        * populates ``self.imghashes`` with all the images found in this library. Of course, if the album does not exist, then ``self.imghashes`` is an empty :py:class:`dict`.
+        
+        :param str new_album_name: the new name of the Imgur_ album to use for images.
+        :raise ValueError: if images in the new album cannot be accessed.
+
+        .. seealso:: :py:meth:`refreshImages <plexemail.PlexIMGClient.refreshImages>`
+        """
+
+        #
+        ## if nothing there, then make new album
+        response = requests.get( 'https://api.imgur.com/3/account/me/albums',
+                                 headers = { 'Authorization' : 'Bearer %s' % self.access_token },
+                                 verify = self.verify )
+        if response.status_code != 200:
+            return
+
+        imgDatas = response.json( )[ 'data' ]
+        imgNames = dict(map(lambda imgData: ( imgData[ 'title' ], imgData[ 'id' ] ), imgDatas ) )
+        if new_album_name in imgNames:
+            self.albumID = imgNames[ new_album_name ]
+            
+        else: # create this album
+            response = requests.post( 'https://api.imgur.com/3/album',
+                                      headers = { 'Authorization' : 'Bearer %s' % self.access_token },
+                                      data = { 'title' : new_album_name, 'privacy' : 'public' },
+                                      verify = self.verify )
+            if response.status_code != 200: return
+            data = response.json( )[ 'data' ]
+            self.albumID = data[ 'id' ]
+
+        #
+        ## put new information into database
+        plexcore.store_imgurl_credentials(
+            self.clientID, self.clientSECRET, self.clientREFRESHTOKEN, 
+            mainALBUMID = self.albumID,
+            mainALBUMNAME = new_album_name,
+            verify = self.verify )
+            
+        #
+        ## now get all the images in that album
+        ## remember: Authorization: Bearer YOUR_ACCESS_TOKEN
+        self.refreshImages( )
+
+    def get_candidate_album_names( self ):
+        """
+        :returns: a :py:class:`list` of album names in the Imgur_ account. :py:meth:`set_main_album <plexemail.PlexIMGClient.set_main_album>` can use this method to determine the valid album name to choose.
+        """
+        response = requests.get( 'https://api.imgur.com/3/account/me/albums',
+                                 headers = { 'Authorization' : 'Bearer %s' % self.access_token },
+                                 verify = self.verify )
+        if response.status_code != 200:
+            return [ ]
+
+        imgDatas = response.json( )[ 'data' ]
+        imgNames = dict(map(lambda imgData: ( imgData[ 'title' ], imgData[ 'id' ] ), imgDatas ) )
+        return sorted( imgNames )
+            
     def refreshImages( self ):
+        """
+        Refreshes the collection of images in the main Imgur_ album, by filling out ``self.imghashes``. The pictures in an album in our Imgur_ account are expected to be filled through methods in this object.
+
+        * The key is the MD5_ hash of the image in that library.
+    
+        * The value is a four element :py:class:`tuple`: image name, image ID, the URL link to this image, and the :py:class:`datetime <datetime.datetime>` at which the image was uploaded.
+        """
         response = requests.get( 'https://api.imgur.com/3/album/%s/images' % self.albumID,
                                  headers = { 'Authorization' : 'Bearer %s' % self.access_token },
                                  verify = self.verify )
@@ -161,6 +298,24 @@ class PlexIMGClient( object ):
             self.imghashes[ imgMD5 ] = [ imgName, imgID, imgLINK, imgDatetime ]
             
     def upload_image( self, b64img, name, imgMD5 = None ):
+        """
+        Uploads a Base64_ encoded file into the main Imgur_ album. If the image exists, then returns information (from ``self.imghashes``) about the file. If not, create it, put it into ``self.imghashes``, and then return its information.
+
+        :param str b64img: the Base64_ representation of the image.
+        :param str name: name of the image.
+        :param str imgMD5: optional argument. This is the MD5_ hash of the image. If not provided, this is calculated for that image represented by ``b64img``.
+
+        :returns: a 4-element :py:class:`tuple`: image name, image ID, the URL link to this image, and the :py:class:`datetime <datetime.datetime>` at which the image was uploaded.
+        :rtype: tuple
+
+        .. seealso::
+
+           * :py:meth:`refreshImages <plexemail.PlexIMGClient.refreshImages>`
+           * :py:meth:`delete_image <plexemail.PlexIMGClient.delete_image>`
+           * :py:meth:`change_name <plexemail.PlexIMGClient.change_name>`
+
+        .. _Base64: https://en.wikipedia.org/wiki/Base64
+        """
         if imgMD5 is None:
             imgMD5 = hashlib.md5( b64img ).hexdigest( )
         if imgMD5 in self.imghashes:
@@ -187,6 +342,20 @@ class PlexIMGClient( object ):
         return ( name, imgID, link, imgDateTime )
 
     def delete_image( self, b64img, imgMD5 = None ):
+        """
+        Removes an image from the main Imgur_ library.
+
+        :param str b64img: the Base64_ representation of the image.
+        :param str imgMD5: optional argument. This is the MD5_ hash of the image. If not provided, this is calculated for that image represented by ``b64img``.
+
+        :returns: ``True`` if image can be found and returned. Otherwise returns ``False``.
+        :rtype: bool
+
+        .. seealso::
+
+           * :py:meth:`upload_image <plexemail.PlexIMGClient.upload_image>`
+           * :py:meth:`change_name <plexemail.PlexIMGClient.change_name>`
+        """
         if imgMD5 is None:
             imgMD5 = hashlib.md5( b64img ).hexdigest( )
         if imgMD5 not in self.imghashes:
@@ -200,6 +369,19 @@ class PlexIMGClient( object ):
         return True
 
     def change_name( self, imgMD5, new_name ):
+        """
+        Changes the name of an image in the main Imgur_ library.
+
+        :param str imgMD5: this is the MD5_ hash of the image in the main Imgur_ library.
+        :param str new_name: the new name to give this image.
+        :returns: ``True`` if image could be found and its name changed. Otherwise returns ``False``.
+        :rtype: bool
+
+        .. seealso::
+
+           * :py:meth:`upload_image <plexemail.PlexIMGClient.upload_image>`
+           * :py:meth:`delete_image <plexemail.PlexIMGClient.delete_image>`
+        """
         assert( os.path.basename( new_name ).endswith('.png') )
         if imgMD5 not in self.imghashes:
             return False
@@ -212,9 +394,48 @@ class PlexIMGClient( object ):
         return True
 
 class PNGPicObject( object ):
+    """
+    This provides a GUI widget to the Imgur_ interface implemented in :py:class:`PlexIMGClient <plexemail.PlexIMGClient>`. Initializaton of the image can either upload this image to the Imgur_ account, or retrieve the image from the main Imgur_ album. This object can also launch a GUI dialog window through :py:meth:`getInfoGUI <plexemail.PNGPicObject.getInfoGUI>`.
+
+    :param dict initdata: the low-level dictionary that contains important information on the image, located in a file, that will either be uploaded into the main Imgur_ album or merely kept in memory. The main key that determines operation is ``initialization``. It can be one of ``"FILE"`` or ``"SERVER"``.
+
+      If ``initialization`` is ``"FILE"``, then upload the the image to the main album in the Imgur_ account. Here are the required keys in ``initdata``.
+
+      * ``filename`` is the location of the image file on disk.
+    
+      * ``actName`` is the PNG filename to be used. It must end in ``png``.
+
+      If ``initialization`` is ``"SERVER"``, then retrieve this image from the main album in the Imgur_ account. Here are the required keys in ``initdata``.
+
+      * ``imgurlink`` is the URL link to the image.
+    
+      * ``imgName`` is the name of the image.
+
+      * ``imgMD5`` is the MD5_ hash of the image.
+    
+      * ``imgDateTime`` is the :py:class:`datetime <datetime.datetime>` at which the image was initially uploaded into the main Imgur_ album.
+
+    :param PlexIMGClient pImgClient: the :py:class:`PlexIMGClient <plexemail.PlexIMGClient>` used to access and manipulate (add, delete, rename) images in the main Imgur_ album.
+
+    :var str actName: the file name without full path, which must end in ``png``.
+    :var QImage img: the :py:class:`QImage <PyQt4.QtGui.QImage>` representation of this image.
+    :var Image originalImage: the :py:class:`Image <PIL.Image>` representation of this image.
+    :var float originalWidth: the inferred width in cm.
+    :var float currentWidth: the current image width in cm. It starts off as equal to ``originalWidth``
+    :var str b64string: the Base64_ encoded representation of this image as a PNG file.
+    :var str imgurlLink: the URL link to the image.
+    :var datetime imgDateTime: the :py:class:`datetime <datetime.datetime>` at which this image was first uploaded to the main album in the Imgur_ account.
+
+    :raise ValueError: if ``initdata['initialization']`` is neither ``"FILE"`` nor ``"SERVER"``.
+    """
     
     @classmethod
     def createPNGPicObjects( cls, pImgClient ):
+        """
+        :param PlexIMGClient pImgClient: the :py:class:`PlexIMGClient <plexemail.PlexIMGClient>` used to access and manipulate (add, delete, rename) images in the main Imgur_ album.
+        :returns: a :py:class:`list` of :py:class:`PNGPicObject <plexemail.PNGPicObject>` representing the images in the main Imgur_ album.
+        :rtype: list
+        """
         pngPICObjects = [ ]
         def _create_object( imgMD5 ):
             imgName, imgID, imgurlLink, imgDateTime = pImgClient.imghashes[ imgMD5 ]
@@ -282,6 +503,14 @@ class PNGPicObject( object ):
             self.b64string = base64.b64encode( buf.getvalue( ) )
         
     def getInfoGUI( self, parent ):
+        """
+        Launches a :py:class:`QDialog <PyQt4.QtGui.QDialog>` that contains the underlying image and some other labels: ``ACTNAME`` is the actual PNG file name, ``URL`` is the image's Imgur_ link, and ``UPLOADED AT`` is the date and time at which the file was uploaded. An example image is shown below,
+
+        .. image:: /_static/plexemail_pngpicobject_infogui.png
+           :width: 100%
+        
+        :param QWidget parent: the parent :py:class:`QWidget <PyQt4.QtGui.QWidget>` that acts as the :py:class:`QDialog <PyQt4.QtGui.QDialog>` window's parent. Can be ``None``.
+        """
         qdl = QDialog( parent )
         qdl.setModal( True )
         myLayout = QVBoxLayout( )
@@ -302,6 +531,10 @@ class PNGPicObject( object ):
         result = qdl.exec_( )
 
     def b64String( self ):
+        """
+        :returns: a 3-element :py:class:`tuple` on the image incorporated into this object: its Base64_ string, its width in pixels, and the Imgur_ link.
+        :rtype: tuple
+        """
         #assert( self.currentWidth > 0 )
         #buffer = StringIO( )
         #reldif = abs( 2 * ( self.originalWidth - self.currentWidth ) / ( self.originalWidth + self.currentWidth ) )
@@ -310,6 +543,12 @@ class PNGPicObject( object ):
         return self.b64string, self.currentWidth, self.imgurlLink
 
     def changeName( self, new_name, pImgClient ):
+        """
+        changes the filename into a new name.
+
+        :param str new_name: the new name of the image file to be changed in the main album on the Imgur_ account. This must end in ``png``.
+        :param PlexIMGClient pImgClient: the :py:class:`PlexIMGClient <plexemail.PlexIMGClient>` used to access and manipulate (add, delete, rename) images in the main Imgur_ album.
+        """
         assert( new_name.endswith( '.png' ) )
         status = pImgClient.change_name( self.imgMD5, os.path.basename( new_name ) )
         if not status: return

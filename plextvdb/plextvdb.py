@@ -1460,6 +1460,8 @@ def push_shows_to_exclude( tvdata, showsToExclude ):
 
     :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`.
     :param list showsToExclude: the list of TV shows on the Plex_ server to ignore. Default is to not ignore any TV show.
+
+    .. seealso:: :py:meth:`get_shows_to_exclude <plextvdb.plextvdb.get_shows_to_exclude>`
     """
     if len( tvdata ) == 0: return
     showsActExclude = set(showsToExclude) & set( tvdata.keys( ) ) # first get the union of shows to exclude
@@ -1483,12 +1485,15 @@ def get_shows_to_exclude( tvdata = None ):
     """
     Returns the list of shows in the Plex_ library that are ignored from analysis or update. This queries the ``showstoexclude`` table in the SQLite3_ configuration database.
 
-    :param dict tvdata: Optional Plex_ TV library information, returned by :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`, to query. If not defined, then return the list of excluded TV shows found in the relevant table. If dwfined, returns an intersection of shows found in the table with TV shows in the Plex_ library.
+    :param dict tvdata: Optional Plex_ TV library information, returned by :py:meth:`get_library_data <plexcore.plexcore.get_library_data>`, to query. If not defined, then return the list of excluded TV shows found in the relevant table. If defined, returns an intersection of shows found in the table with TV shows in the Plex_ library.
 
     :returns: a :py:class:`list` of TV shows to ignore.
     :rtype: list
+
+    .. seealso:: :py:meth:`push_shows_to_exclude <plextvdb.plextvdb.push_shows_to_exclude>`
     """
-    showsToExcludeInDB = sorted( set( map(lambda val: val.show, session.query( ShowsToExclude ).all( ) ) ) )
+    showsToExcludeInDB = sorted( set( map(lambda val: val.show,
+                                          session.query( ShowsToExclude ).all( ) ) ) )
     if tvdata is None: return showsToExcludeInDB
     if len( tvdata ) == 0: return [ ]
     # notHere = set(showsToExcludeInDB) - set( tvdata )

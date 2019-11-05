@@ -76,7 +76,7 @@ def latexToHTML( latexString ):
     :returns: the final prettified, formatted HTML string.
     
     :rtype: str
-
+    
     .. _LaTeX: https://www.latex-project.org
     .. _Pandoc: https://pandoc.org
     .. _BeautifulSoup: https://www.crummy.com/software/BeautifulSoup/bs4/doc
@@ -1681,7 +1681,8 @@ def check_imgurl_credentials(
         return False
     return True
 
-def store_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify = True ):
+def store_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify = True,
+                              mainALBUMID = None, mainALBUMNAME = None ):
     """
     stores the Imgur_ API credentials into the SQLite3_ configuration database.
 
@@ -1689,6 +1690,8 @@ def store_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify
     :param str clientSECRET: the Imgur_ client secret.
     :param str clientREFRESHTOKEN: the Imgur_ client refresh token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param str mainALBUMID: optional argument. If given, then store this album hash into the database.
+    :param str mainALBUMNAME: optional argument. If given, then store this album hash into the database.
     
     :returns: the string ``"SUCCESS"`` if could store the new Imgur_ credentials. Otherwise, the string ``'ERROR, COULD NOT STORE IMGURL CREDENTIALS.'``.
     
@@ -1702,15 +1705,21 @@ def store_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify
     isValid =  check_imgurl_credentials(
         clientID, clientSECRET, clientREFRESHTOKEN, verify = verify )
     if not isValid: return 'ERROR, COULD NOT STORE IMGURL CREDENTIALS.'
+    datum = {
+        'clientID' : clientID,
+        'clientSECRET' : clientSECRET,
+        'clientREFRESHTOKEN' : clientREFRESHTOKEN
+    }
+    if mainALBUMID is not None:
+        datum[ 'mainALBUMID' ] = mainALBUMID
+    if mainALBUMNAME is not None:
+        datum[ 'mainALBUMNAME' ] = mainALBUMNAME
+    
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'imgurl' ).first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = PlexConfig(
-        service = 'imgurl',
-        data = { 'clientID' : clientID,
-                 'clientSECRET' : clientSECRET,
-                 'clientREFRESHTOKEN' : clientREFRESHTOKEN } )
+    newval = PlexConfig( service = 'imgurl', data = datum )
     session.add( newval )
     session.commit( )
     return 'SUCCESS'

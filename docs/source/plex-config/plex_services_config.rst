@@ -193,7 +193,7 @@ The lower level generation of Imgur credentials use `requests-oauthlib <https://
        'account_username': <account_username>,
        'expires_at': zzzzz }
 
-   Copy ``token['refresh_token']`` with ``client_ID`` and ``secret_ID`` to authorize your Imgur client. Here, you can follow instructions as given in `the Imgur API page <https://apidocs.imgur.com>`.
+   Copy ``token['refresh_token']`` with ``client_ID`` and ``secret_ID`` to authorize your Imgur client. Here, you can follow instructions as given in `the Imgur API page <https://apidocs.imgur.com>`_.
 
 The Gracenote and LastFM APIs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -21,7 +21,7 @@ class TVShow( object ):
     :param dict seriesInfo: the subdictionary of the Plex_ TV library information returned by :py:meth:`get_library_data <plexcore.plexcore.get_library_data>` associated with ``seriesName``. If ``tvdata`` is the Plex_ TV library information, then ``seriesInfo = tvdata[ seriesName ]``.
     :param str token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
-    :param bool showSpecials: optional argument. If ``True``, then also collect information on TV specials associated with this TV show. Default is ``False``.
+    :Param bool showSpecials: optional argument. If ``True``, then also collect information on TV specials associated with this TV show. Default is ``False``.
 
     :var int seriesId:  the TVDB_ series ID.
     :var str seriesName: the series name,

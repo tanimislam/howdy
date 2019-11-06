@@ -95,13 +95,13 @@ def processValidHTMLWithPNG( html, pngDataDict, doEmbed = False ):
 
     :param str html: the initial HTML document into which images are to be embedded.
     
-    :param dict pngDataDict: dictionary of PNG data. Key is the name of the PNG file (must end in .png). Value is a tuple of type ``(b64data, widthInCM, url)``. ``b64data`` is the `Base 64 encoded`_ binary representation of the PNG image. ``widthInCm`` is the image width in cm. ``url`` is thje URL address of the image.
+    :param dict pngDataDict: dictionary of PNG data. Key is the name of the PNG file (must end in .png). Value is a tuple of type ``(b64data, widthInCM, url)``. ``b64data`` is the `Base 64 encoded`_ binary representation of the PNG image. ``widthInCm`` is the image width in cm. ``url`` is the URL address of the image.
     
     :param bool doEmbed: If ``True``, then the image source tag uses the `Base 64 encoded` data. If ``False``, the image source tag is the URL.
     :returns: prettified HTML document with the images located in it.
     :rtype: str
 
-    .. _Base 64 encoded: https://en.wikipedia.org/wiki/Base64
+    .. _`Base 64 encoded`: https://en.wikipedia.org/wiki/Base64
     """
     htmlData = BeautifulSoup( html, 'lxml' )
     pngNames = set(filter(
@@ -288,7 +288,7 @@ def pushCredentials( username, password ):
 def get_all_servers( token, verify = True ):
     """Find all the Plex_ servers for which you have access.
 
-    :param str token: the Plex str access token, returned by :py:meth:`checkServerCredentials <plexcore.checkServerCredentials>`.
+    :param str token: the Plex :py:class:`str` access token, returned by :py:meth:`checkServerCredentials <plexcore.checkServerCredentials>`.
     :param bool verify: optional bool argument, whether to verify SSL connections. Default is ``True``.
     :returns: a dictionary of servers accessible to you. Each key is the Plex_ server's name, and the value is a :py:class:`dict` that looks like this.
     

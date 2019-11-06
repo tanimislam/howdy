@@ -313,7 +313,7 @@ class PlexIMGClient( object ):
            * :py:meth:`refreshImages <plexemail.PlexIMGClient.refreshImages>`
            * :py:meth:`delete_image <plexemail.PlexIMGClient.delete_image>`
            * :py:meth:`change_name <plexemail.PlexIMGClient.change_name>`
-
+        
         .. _Base64: https://en.wikipedia.org/wiki/Base64
         """
         if imgMD5 is None:

@@ -154,7 +154,7 @@ Functionality    CLI                                                            
 .. _sshpass: https://linux.die.net/man/1/sshpass
 .. _pandoc: https://pandoc.org
 .. _sudo: https://en.wikipedia.org/wiki/Sudo
-.. _LaTeX: https://en.wikipedia.org/wiki/LaTeX
+.. _LaTeX: https://www.latex-project.org
 .. _ghc: https://www.haskell.org/ghc
 .. _stack: https://docs.haskellstack.org/en/stable/README
 .. _cabal: http://hackage.haskell.org/package/cabal-install

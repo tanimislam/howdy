@@ -1,30 +1,16 @@
 import os, sys, titlecase, datetime, json, re, urllib, time
-from functools import reduce
-_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
-                  os.path.abspath(__file__) )
-sys.path.append( _mainDir )
-
-import mutagen.mp3, mutagen.mp4, glob, multiprocessing
+import pathos.multiprocessing as multiprocessing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from plexemail import plexemail, plexemail_basegui, emailAddress, emailName
-from plexcore import plexcore, mainDir
+from plexcore import plexcore, mainDir, QDialogWithPrinting
 
 class PlexEmailGUI( QWidget ):
-    class EmailSendDialog( QDialog ):
-        def screenGrab( self ):
-            fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                      os.path.expanduser( '~' ),
-                                                      'PNG Images (*.png)' ) )
-            if len( os.path.basename( fname.strip( ) ) ) == 0: return
-            if not fname.lower( ).endswith( '.png' ):
-                fname = fname + '.png'
-            qpm = QPixmap.grabWidget( self )
-            qpm.save( fname )
+    class EmailSendDialog( QDialogWithPrinting ):
         
         def __init__( self, parent ):
-            super( PlexEmailGUI.EmailSendDialog, self ).__init__( parent )
+            super( PlexEmailGUI.EmailSendDialog, self ).__init__( parent, isIsolated = False )
             self.setModal( True )
             self.setWindowTitle( 'SEND EMAILS' )
             self.selectTestButton = QPushButton( 'TEST ADDRESS', self )
@@ -88,8 +74,9 @@ class PlexEmailGUI( QWidget ):
                 button.setChecked( True )
 
         def sendEmail( self ):
-            validLists = map(lambda button: str( button.text( ) ).strip( ),
-                             filter(lambda button: button.isChecked( ), self.allRadioButtons ) )
+            validLists = list(
+                map(lambda button: str( button.text( ) ).strip( ),
+                    filter(lambda button: button.isChecked( ), self.allRadioButtons ) ) )
             if len(validLists) == 0:
                 return
             input_tuples = []
@@ -108,28 +95,20 @@ class PlexEmailGUI( QWidget ):
             ## now send the emails
             time0 = time.time( )
             self.statusLabel.setText( 'STARTING TO SEND EMAILS...')
-            pool = multiprocessing.Pool( processes = multiprocessing.cpu_count( ) )
-            pool.map( plexemail.send_individual_email_perproc, input_tuples )
-            self.statusLabel.setText( 'SENT %d EMAILS IN %0.3f SECONDS.' %
-                                      ( len( input_tuples ), time.time() - time0 ) )
-            #
-            ## if I have sent out ALL EMAILS, then I mean to update the newsletter
-            if len(validLists) == len( self.allRadioButtons ):
-                plexcore.set_date_newsletter( )
+            with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
+                list( pool.map( plexemail.send_individual_email_perproc, input_tuples ) )
+                self.statusLabel.setText( 'SENT %d EMAILS IN %0.3f SECONDS.' %
+                                          ( len( input_tuples ), time.time() - time0 ) )
+                #
+                ## if I have sent out ALL EMAILS, then I mean to update the newsletter
+                if len(validLists) == len( self.allRadioButtons ):
+                    plexcore.set_date_newsletter( )
             
-    class PrePostAmbleDialog( QDialog ):
-        def screenGrab( self ):
-            fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                      os.path.expanduser( '~' ),
-                                                      'PNG Images (*.png)' ) )
-            if len( os.path.basename( fname.strip( ) ) ) == 0: return
-            if not fname.lower( ).endswith( '.png' ):
-                fname = fname + '.png'
-            qpm = QPixmap.grabWidget( self )
-            qpm.save( fname )
+    class PrePostAmbleDialog( QDialogWithPrinting ):
         
         def __init__( self, parent, title = 'Preamble' ):
-            super( PlexEmailGUI.PrePostAmbleDialog, self ).__init__( parent )
+            super( PlexEmailGUI.PrePostAmbleDialog, self ).__init__(
+                parent, isIsolated = False )
             self.parent = parent
             self.sectionNameWidget = QLineEdit( titlecase.titlecase( title ) )
             self.testTextButton = QPushButton( 'TEST TEXT' )
@@ -280,11 +259,11 @@ class PlexEmailGUI( QWidget ):
         if len( os.path.basename( fname.strip( ) ) ) == 0:
             return
         if not fname.lower( ).endswith( '.png' ):
-            fname = fname + '.png'
+            fname = '%s.png' % fname
         qpm = QPixmap.grabWidget( self )
         qpm.save( fname )
             
-    def __init__( self, token, doLocal = True, doLarge = False ):
+    def __init__( self, doLocal = True, doLarge = False, verify = True ):
         super( PlexEmailGUI, self ).__init__( )
         self.resolution = 1.0
         if doLarge:
@@ -296,7 +275,12 @@ class PlexEmailGUI( QWidget ):
         font-family: Consolas;
         font-size: %d;
         }""" % ( int( 11 * self.resolution ) ) )
-        self.doLocal = doLocal
+        dat = plexcore.checkServerCredentials(
+            doLocal = doLocal, verify = verify )
+        if dat is None:
+            raise ValueError( "Error, cannot access the Plex media server." )
+        self.fullURL, self.token = dat
+            
         self.mainEmailCanvas = QTextEdit( self )
         self.mainEmailCanvas.setReadOnly( True )
         self.testEmailButton = QPushButton( 'TEST EMAIL', self )
@@ -311,8 +295,7 @@ class PlexEmailGUI( QWidget ):
         self.postambleDialog = PlexEmailGUI.PrePostAmbleDialog( self, title = 'POSTAMBLE' )
         self.preamble = ''
         self.postamble = ''
-        self.token = token
-        self.getContacts( token )
+        self.getContacts( self.token )
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         #
@@ -363,11 +346,10 @@ class PlexEmailGUI( QWidget ):
             print( 'COMMON PNG FILES: %s.' % sorted( set( pngDataPRE.keys( ) ) &
                                                      set( pngDataPOST.keys( ) ) ) )
             print( "I HOPE YOU KNOW WHAT YOU'RE DOING." )
-        htmlString = plexemail.get_summary_html( preambleText = preambleText,
-                                                 postambleText = postambleText,
-                                                 pngDataDict = pngData,
-                                                 token = self.token,
-                                                 doLocal = self.doLocal )
+        htmlString = plexemail.get_summary_html(
+            self.token, fullURL = self.fullURL,
+            preambleText = preambleText, postambleText = postambleText,
+            pngDataDict = pngData ):
         if len(htmlString) != 0:
             self.mainEmailCanvas.setHtml( htmlString )
             self.sendEmailButton.setEnabled( True )

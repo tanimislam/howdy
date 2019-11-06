@@ -1,5 +1,6 @@
 import os, sys, titlecase, datetime, re, time, requests, mimetypes, logging
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing, re, httplib2
+from itertools import chain
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
@@ -11,7 +12,22 @@ from plexcore import get_formatted_size, get_formatted_duration
 from plexemail import send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
 
 def send_email_movie_torrent( movieName, data, isJackett = False, verify = True ):
-    assert( emailAddress is not None ), "Error, email address must not be None"
+    """
+    Sends an individual torrent file or magnet link to the Plex_ user's email, using the `GMail API`_.
+
+    :param str movieName: the name of the movie.
+    :param str data: the Base64_ encoded file, if torrent file. Otherwise the magnet URI link if magnet link.
+    :param bool isJackett: :py:class:`boolean <bool>` flag used to determine whether ``data`` is a torrent file or magnet link. If ``False``, then expects a torrent file. If ``True``, then expects a magnet link. Default is ``False``.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: the string ``"SUCCESS"`` if nothing goes wrong.
+    :rtype: str
+    
+    :raise AssertionError: if the current Plex_ account user's email address does not exist.
+    
+    .. _`GMail API`: https://developers.google.com/gmail/api
+    """
+    Assert( emailAddress is not None ), "Error, email address must not be None"
     if emailName is None:
         emailString = emailAddress
         name = 'Friend'
@@ -63,6 +79,17 @@ def send_email_movie_torrent( movieName, data, isJackett = False, verify = True 
     return 'SUCCESS'
 
 def send_email_movie_none( movieName, verify = True ):
+    """
+    Request an individual movie from the Plex_ server's administrator, using the `GMail API`_.
+
+    :param str movieName: the name of the movie.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: the string ``"SUCCESS"`` if nothing goes wrong.
+    :rtype: str
+    
+    :raise AssertionError: if the current Plex_ account user's email address does not exist.
+    """
     assert( emailAddress is not None ), "Error, email address must not be None"
     if emailName is None:
         emailString = emailAddress
@@ -93,19 +120,33 @@ def send_email_movie_none( movieName, verify = True ):
     send_email_lowlevel( msg, verify = verify )
     return 'SUCCESS'
 
-def get_summary_body( token, nameSection = False, fullURL = 'http://localhost:32400' ):
-    # allrows = plexcore.get_allrows( )
+def get_summary_body( token, nameSection = False, fullURL = 'http://localhost:32400', verify = True ):
+    """
+    Returns the summary body of the Plex_ newsletter email as a LaTeX_ string document, for the Plex_ server.
+
+    :param str token: the Plex_ access token.
+    :param bool nameSection: if ``True``, then include this summary in its own section called ``"Summary"``. If not, then return as a stand-alone LaTeX_ document.
+    :param str fullURL: the Plex_ server URL.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
+    :returns: the LaTeX_ document representing the summary of the media on the Plex_ server.
+    :rtype: str
+
+    .. seealso::
+    
+       * :py:meth:`get_summary_data_music_remote <plexemail.plexemail.get_summary_data_music_remote>`
+       * :py:meth:`get_summary_data_movies_remote <plexemail.plexemail.get_summary_data_movies_remote>`
+       * :py:meth:`get_summary_data_television_remote <plexemail.plexemail.get_summary_data_television_remote>`
+
+    .. _LaTeX: https://www.latex-project.org
+    """
     tup_formatting = (
         get_lastupdated_string( dt = plexcore.get_updated_at(
-            token, fullURLWithPort = fullURL ) ), #0
-        get_summary_data_freshair_remote( fullURLWithPort = fullURL, token = token ), #1
-        _get_itemized_string( get_summary_data_thisamericanlife_remote(
-            fullURLWithPort = fullURL,
-            token = token ) ), #2
-        get_summary_data_music_remote( fullURLWithPort = fullURL, token = token ), #3
+            token, fullURL = fullURL ) ), #0
+        get_summary_data_music_remote( fullURL = fullURL, token = token ), #1
         _get_itemized_string( get_summary_data_movies_remote(
-            fullURLWithPort = fullURL, token = token ) ), #4
-        get_summary_data_television_remote( fullURLWithPort = fullURL, token = token ), #5
+            fullURL = fullURL, token = token ) ), #2
+        get_summary_data_television_remote( fullURL = fullURL, token = token ), #3
     )
     wholestr = open( os.path.join( mainDir, 'resources', 'plexstuff_body_template.tex' ), 'r' ).read( )
     wholestr = wholestr % tup_formatting
@@ -114,6 +155,11 @@ def get_summary_body( token, nameSection = False, fullURL = 'http://localhost:32
     return wholestr
 
 def send_individual_email_perproc( input_tuple ):
+    """
+    A tuple-ized version used by the :py:mod:`multiprocessing` module to send out individual emails.
+
+    :param tuple input_tuple: an expected four-element :py:class:`tuple`: the HTML email body, the access token, the recipient's email, and the recipient's name.
+    """
     mainHTML, access_token, email, name = input_tuple
     while True:
         try:
@@ -126,6 +172,13 @@ def send_individual_email_perproc( input_tuple ):
                 print('Problem sending to %s <%s>. Trying again...' % ( name, email ) )
     
 def test_email( subject = None, htmlstring = None, verify = True ):
+    """
+    Sends a test email to the Plex_ user's email address.
+    
+    :param str subject: optional argument. The email subject. If not defined, the subject is ``"Plex Email Newsletter for <MONTH> <YEAR>"``.
+    :param str htmlstring: optional argument. The email body as an HTML :py:class:`str` document. If not defined, the body is ``"This is a test."``.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    """
     assert( emailAddress is not None ), "Error, email address must not be None"
     if emailName is None: emailString = emailAddress
     else: emailString = '%s <%s>' % ( emailName, emailAddress )
@@ -143,6 +196,21 @@ def test_email( subject = None, htmlstring = None, verify = True ):
 
 def send_individual_email_full( mainHTML, subject, email, name = None, attach = None,
                                attachName = None, attachType = 'txt', verify = True ):
+    """
+    Sends the HTML email, with optional *single* attachment, to a single recipient email address, using the `GMail API`_. Unlike :py:meth:`send_individual_email_full_withsingleattach <plexemail.plexemail.send_individual_email_full_withsingleattach>`, the attachment type is *also* set.
+
+    :param str mainHTML: the email body as an HTML :py:class:`str` document.
+    :Param str subject: the email subject.
+    :Param str email: the recipient email address.
+    :param str name: optional argument. If given, the recipient's name.
+    :param date mydate: optional argument. The :py:class:`date <datetime.date>` at which the email is sent. Default is :py:meth:`now( ) <datetime.datetime.now>`.
+    :param str attach: optional argument. If defined, the Base64_ encoded attachment.
+    :param str attachName: optional argument. The :py:class:`list` of attachment names, if there is an attachment. If defined, then ``attachData`` must also be defined.
+    :param str attachType: the attachment type. Default is ``txt``.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    :raise AssertionError: if the current Plex_ account user's email address does not exist.
+    """
     assert( emailAddress is not None ), "Error, email address must not be None"
     if emailName is None: emailString = emailAddress
     else: emailString = '%s <%s>' % ( emailName, emailAddress )
@@ -169,6 +237,20 @@ def send_individual_email_full_withsingleattach(
         mainHTML, subject, email, name = None,
         attachData = None, attachName = None,
         verify = True ):
+    """
+    Sends the HTML email, with optional *single* attachment, to a single recipient email address, using the `GMail API`_.
+
+    :param str mainHTML: the email body as an HTML :py:class:`str` document.
+    :param str subject: the email subject.
+    :Param str email: the recipient email address.
+    :param str name: optional argument. If given, the recipient's name.
+    :param date mydate: optional argument. The :py:class:`date <datetime.date>` at which the email is sent. Default is :py:meth:`now( ) <datetime.datetime.now>`.
+    :param str attachData: optional argument. If defined, the Base64_ encoded attachment.
+    :param str attachName: optional argument. The :py:class:`list` of attachment names, if there is an attachment. If defined, then ``attachData`` must also be defined.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    :raise AssertionError: if the current Plex_ account user's email address does not exist.
+    """
     assert( emailAddress is not None ), "Error, email address must not be None"
     if emailName is None: emailString = emailAddress
     else: emailString = '%s <%s>' % ( emailName, emailAddress )
@@ -200,6 +282,21 @@ def send_individual_email_full_withsingleattach(
 def send_individual_email_full_withattachs(
         mainHTML, subject, email, name = None,
         attachNames = None, attachDatas = None ):
+    """
+    Sends the HTML email, with optional attachments, to a single recipient email address. This uses the :py:class:`SMTP <smtplib.SMTP>` Python functionality to send through a local SMTP_ server (see :py:meth:`send_email_localsmtp <plexemail.send_email_localsmtp>`).
+
+    :param str mainHTML: the email body as an HTML :py:class:`str` document.
+    :param str subject: the email subject.
+    :param str email: the recipient email address.
+    :param str name: optional argument. If given, the recipient's name.
+    :param date mydate: optional argument. The :py:class:`date <datetime.date>` at which the email is sent. Default is :py:meth:`now( ) <datetime.datetime.now>`.
+    :param list attachNames: optional argument. The :py:class:`list` of attachment names, if attachments are used. If defined, then ``attachDatas`` must also be defined.
+    :param list attachDatas: optional argument. If defined, the :py:class:`list` of attachments with corresponding name described in ``attachNames``. Each entry is a Base64_ encoded attachment.
+
+    :raise AssertionError: if the current Plex_ account user's email address does not exist.
+
+    .. _Base64: https://en.wikipedia.org/wiki/Base64
+    """
     assert( emailAddress is not None ), "Error, email address must not be None"
     if emailName is None: fromEmail = emailAddress
     else: fromEmail = '%s <%s>' % ( emailName, emailAddress )
@@ -238,8 +335,19 @@ def send_individual_email_full_withattachs(
 
 def send_individual_email(
         mainHTML, email, name = None,
-        mydate = datetime.datetime.now().date(),
+        mydate = datetime.datetime.now().date( ),
         verify = True ):
+    """
+    sends the HTML email to a single recipient email address using the `GMail API`_. The subject is ``"Plex Email Newsletter for <MONTH> <YEAR>"``.
+
+    :Param str mainHTML: the email body as an HTML :py:class:`str` document.
+    :param str email: the recipient email address.
+    :param str name: optional argument. If given, the recipient's name.
+    :param date mydate: optional argument. The :py:class:`date <datetime.date>` at which the email is sent. Default is :py:meth:`now( ) <datetime.datetime.now>`.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    :raise AssertionError: if the current Plex_ account user's email address does not exist.
+    """
     assert( emailAddress is not None ), "Error, email address must not be None"
     if emailName is None: fromEmail = emailAddress
     else: fromEmail = '%s <%s>' % ( emailName, emailAddress )
@@ -259,16 +367,26 @@ def send_individual_email(
     msg.attach( body )
     send_email_lowlevel( msg, verify = verify )
 
-def get_summary_html( preambleText = '', postambleText = '', pngDataDict = { },
-                      name = None, token = None, doLocal = True ):
-    data = plexcore.checkServerCredentials( doLocal = doLocal, verify = False )
-    if data is None:
-        print('Sorry, now we need to provide an user name and password. Please get one!')
-        return
-    fullURL, token = data
+def get_summary_html( token, fullURL = 'http://localhost:32400',
+                      preambleText = '', postambleText = '', pngDataDict = { },
+                      name = None ):
+    """
+    Creates a Plex_ newsletter summary HTML email of the media on the Plex_ server. Used by the email GUI to send out summary emails.
+    
+    :param str token: the Plex_ access token.
+    :param str fullURL: the Plex_ server URL.
+    :param str preambleText: optional argument. The LaTeX_ formatted preamble text (text section *before* summary), if non-empty. Default is ``""``.
+    :param str postambleText: optional argument. The LaTeX_ formatted text, in a section *after* the summary. if non-empty. Default is ``""``.
+    :param dict pngDataDict: optional argument. A :py:class:`dict` of PNG images stored in the Imgur_ main album. The structure of this dictionary is described in :py:meth:`processValidHTMLWithPNG <plexcore.plexcore.processValidHTMLWithPNG>`. Default is ``{}``.
+    :param str name: optional argument. If given, the recipient's name.
+
+    :returns: an HTML :py:class:`string <str>` document of the Plex_ newletter email.
+    :rtype: str
+    
+    .. seealso:: :py:meth:`get_summary_body <plexemail.plexemail.get_summary_body>`
+    """
     nameSection = False
-    if len(preambleText.strip()) != 0:
-        nameSection = True
+    if len(preambleText.strip( ) ) != 0: nameSection = True
     if name is None:
         name = 'Friend'
     tup_formatting = (
@@ -331,8 +449,20 @@ def _get_album_prifile( prifile ):
         return ( prifile, album )
     else: return None
 
-def get_summary_data_music_remote(
-    token, fullURL = 'http://localhost:32400' ):
+def get_summary_data_music_remote( token, fullURL = 'http://localhost:32400' ):
+    """
+    This returns summary information on songs from all music libraries on the Plex_ server, for use as part of the Plex_ newsletter sent out to one's Plex_ server friends. The email first summarizes ALL the music data, and then summarizes the music data uploaded and processed since the last newsletter's date. For example,
+
+       There are 15008 songs made by 821 artists in 1593 albums. The total size of music media is 259.680 GB. The total duration of music media is 6 months, 4 days, 11 hours, 5 minutes, and 30.837 seconds. Since June 11, 2017, I have added 3336 songs made by 275 artists in 442 albums. The total size of music media I added is 47.744 GB. The total duration of music media I added is 1 month, 6 days, 53 minutes, and 47.884 seconds.
+
+    :param str token: the Plex_ access token.
+    :param str fullURL: the Plex_ server URL.
+    
+    :returns: a :py:class:`str` description of music media in all music libraries on the Plex_ server.
+    :rtype: str
+
+    .. seealso:: :py:meth:`get_summary_body <plexemail.plexemail.get_summary_body>`
+    """
     libraries_dict = plexcore.get_libraries( token, fullURL = fullURL, do_full = True )
     if libraries_dict is None: return None
     keynums = set(filter(lambda keynum: libraries_dict[ keynum ][ 1 ] == 'artist', libraries_dict ) )
@@ -373,8 +503,20 @@ def get_summary_data_music_remote(
     musicstring = ' '.join([ mainstring, sizestring, durstring ])
     return musicstring
 
-def get_summary_data_television_remote(
-        token, fullURL = 'http://localhost:32400' ):
+def get_summary_data_television_remote( token, fullURL = 'http://localhost:32400' ):
+    """
+    This returns summary information on TV media from all television libraries on the Plex_ server, for use as part of the Plex_ newsletter sent out to one's Plex_ server friends. The email first summarizes ALL the TV data, and then summarizes the TV data uploaded and processed since the last newsletter's date. For example,
+    
+       There are 21380 TV episodes in 240 TV shows. The total size of TV media is 5.381 TB. The total duration of TV media is 1 year, 2 months, 19 days, 13 hours, 35 minutes, and 10.818 seconds. Since June 11, 2017, I have added 10030 TV files in 240 TV shows. The total size of TV media I added is 2.429 TB. The total duration of TV media I added is 6 months, 19 days, 3 hours, 28 minutes, and 17.170 seconds.
+
+    :param str token: the Plex_ access token.
+    :param str fullURL: the Plex_ server URL.
+    
+    :returns: a :py:class:`str` description of TV media in all TV libraries on the Plex_ server.
+    :rtype: str
+
+    .. seealso:: :py:meth:`get_summary_body <plexemail.plexemail.get_summary_body>`
+    """
     libraries_dict = plexcore.get_libraries( token, fullURL = fullURL, do_full = True )
     if libraries_dict is None: return None
     keynums = set(filter(lambda keynum: libraries_dict[ keynum ][ 1 ] == 'show', libraries_dict ) )
@@ -413,7 +555,18 @@ def get_summary_data_television_remote(
     return tvstring
 
 def get_summary_data_movies_remote( token, fullURL = 'http://localhost:32400' ):
-    libraries_dict = plexcore.get_libraries( token, fullURL = fullURL )
+    """
+    This returns summary information on movie media from all movie libraries on the Plex_ server, for use as part of the Plex_ newsletter sent out to one's Plex_ server friends. The email first summarizes ALL the movie data, and then summarizes the movie data uploaded and processed since the last newsletter's date. Unlike :py:meth:`get_summary_data_music_remote <plexemail.plexemail.get_summary_data_music_remote>` and :py:meth:`get_summary_data_television_remote <plexemail.plexemail.get_summary_data_television_remote>`, this returns a :py:class:`list` of strings rather than a string.
+
+    :param str token: the Plex_ access token.
+    :param str fullURL: the Plex_ server URL.
+    
+    :returns: a :py:class:`list` containing the itemized summaries of movie media from all movie libraries on the Plex_ server. The format of the individual text is in LaTeX_ format.
+    :rtype: list
+
+    .. seealso:: :py:meth:`get_summary_body <plexemail.plexemail.get_summary_body>`
+    """
+    libraries_dict = plexcore.get_libraries( token, fullURL = fullURL, do_full = True )
     if libraries_dict is None: return None
     keynums = set(filter(lambda keynum: libraries_dict[ keynum ][ 1 ] == 'movie', libraries_dict ) )
     if len( keynums ) == 0: return None
@@ -440,7 +593,7 @@ def get_summary_data_movies_remote( token, fullURL = 'http://localhost:32400' ):
                 keynum, token, fullURL = fullURL, sinceDate = sinceDate ), keynums ) ) )
         if len( datas_since ) != 0:
             num_movies_since = sum(list(map(lambda data_since: data_since[ 'num_movies' ], datas_since ) ) )
-            categories_since = set(chain.from_iterable(map(lambda data_since: data_since[ 'genres' ].keys( ) ) ) )
+            categories_since = set(chain.from_iterable(map(lambda data_since: data_since[ 'genres' ].keys( ), datas_since ) ) )
             totsize_since = sum(list(map(lambda data_since: data_since[ 'totsize' ], datas_since ) ) )
             totdur_since = sum(list(map(lambda data_since: data_since[ 'totdur' ], datas_since ) ) )
             mainstring_since = ' '.join([

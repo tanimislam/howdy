@@ -62,7 +62,6 @@ class TMDBRefreshMoviesThread( QThread ):
         self.emitString.emit( mytxt )
         self.endRun.emit( )
         
-
 class TMDBGUIFilloutCalculationThread( QThread ):
     emitString = pyqtSignal( str )
     endRun = pyqtSignal( )

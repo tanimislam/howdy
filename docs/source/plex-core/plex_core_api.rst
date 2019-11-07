@@ -76,4 +76,5 @@ This module implements the functionality to interact with a Seedhost_ seedbox_ S
 .. _seedbox: https://en.wikipedia.org/wiki/Seedbox
 .. _`Deluge torrent server`: https://deluge-torrent.org
 .. _`Deluge torrent client`: https://en.wikipedia.org/wiki/Deluge_(software)
+.. _Plex: https://www.plex.tv
 .. _rsync: https://en.wikipedia.org/wiki/Rsync

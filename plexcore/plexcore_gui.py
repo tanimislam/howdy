@@ -1,9 +1,8 @@
 import os, sys, requests, webbrowser, logging
 from requests_oauthlib import OAuth2Session
-from PyQt4.QtGui import QAbstractItemView, QAction, QBrush, QCursor, QDialog
-from PyQt4.QtGui import QGridLayout, QHBoxLayout, QHeaderView, QLabel, QLineEdit
-from PyQt4.QtGui import QMenu, QPushButton, QTableView, QVBoxLayout, QWidget
-from PyQt4.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, Qt
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QDialog, QGridLayout, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMenu, QPushButton, QTableView, QVBoxLayout, QWidget
+from PyQt5.QtGui import QBrush, QCursor
+from PyQt5.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, Qt
 
 from plexcore import plexcore, QDialogWithPrinting
 from plexcore import plexcore_deluge, plexcore_rsync, get_popularity_color
@@ -988,8 +987,8 @@ class PlexConfigGUI( QDialogWithPrinting ):
             #    self.processCurrentRow )
             #
             self.setShowGrid( True )
-            self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
-            self.horizontalHeader( ).setResizeMode( QHeaderView.Fixed )
+            self.verticalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
+            self.horizontalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
             self.setSelectionBehavior( QAbstractItemView.SelectRows )
             self.setSelectionMode( QAbstractItemView.SingleSelection ) # single row
             #

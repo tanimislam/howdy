@@ -20,9 +20,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
 from fuzzywuzzy.fuzz import partial_ratio
-from PyQt4.QtGui import QLabel, QDialog, QAction, QMenu, QVBoxLayout
-from PyQt4.QtGui import QTextEdit, QApplication, QColor, QFileDialog, QPixmap
-from PyQt4.QtCore import pyqtSignal, QTimer
+from PyQt5.QtWidgets import QAction, QApplication, QDialog, QFileDialog, QLabel, QMenu, QTextEdit, QVBoxLayout
+from PyQt5.QtGui import QColor, QPixmap, QFontDatabase
+from PyQt5.QtCore import pyqtSignal, QTimer
 
 # resource file and stuff
 baseConfDir = os.path.abspath( os.path.expanduser( '~/.config/plexstuff' ) )
@@ -73,8 +73,8 @@ def get_popularity_color( hpop, alpha = 1.0 ):
 
     :param float hpop: the value (between 0 and 1) of the color.
     :param float alpha: The alpha value of the color (between 0 and 1).
-    :returns: a :class:`QColor <PyQt4.QtGui.QColor>` object to put into a :class:`QWidget <PyQt4.QtGui.QWidget>`, or converted into a hex color.
-    :rtype: :class:`QColor <PyQt4.QtGui.QColor>`
+    :returns: a :class:`QColor <PyQt5.QtGui.QColor>` object to put into a :class:`QWidget <PyQt5.QtGui.QWidget>`, or converted into a hex color.
+    :rtype: :class:`QColor <PyQt5.QtGui.QColor>`
 
     """
     assert( hpop >= 0 )
@@ -89,12 +89,12 @@ def get_popularity_color( hpop, alpha = 1.0 ):
 ## a QLabel with save option of the pixmap
 class QLabelWithSave( QLabel ):
     """
-    A convenient PyQt4_ widget that inherits from :py:class:`QLabel <PyQt4.QtGui.QLabel>`, but allows screen shots.
+    A convenient PyQt5_ widget that inherits from :py:class:`QLabel <PyQt5.QtGui.QLabel>`, but allows screen shots.
     """
     
     def screenGrab( self ):
         """
-        take a screen shot of itself and save to a PNG file through a :py:class:`QFileDialog <PyQt4.QtGui.QFileDialog>` widget.
+        take a screen shot of itself and save to a PNG file through a :py:class:`QFileDialog <PyQt5.QtGui.QFileDialog>` widget.
         """
         fname = str( QFileDialog.getSaveFileName(
             self, 'Save Pixmap', os.path.expanduser( '~' ),
@@ -111,7 +111,7 @@ class QLabelWithSave( QLabel ):
     def contextMenuEvent( self, event ):
         """Constructs a `context menu`_ with a single action, *Save Pixmap*, that takes a screen shot of this widget, using :py:meth:`screenGrab <plexcore.QLabelWithSave.screenGrab>`.
 
-        :param QEvent event: default :py:class:`QEvent <PyQt4.QtCore.QEvent>` argument needed to create a context menu. Is not used in this reimplementation.
+        :param QEvent event: default :py:class:`QEvent <PyQt5.QtCore.QEvent>` argument needed to create a context menu. Is not used in this reimplementation.
 
         .. _`context menu`: https://en.wikipedia.org/wiki/Context_menu
 
@@ -124,22 +124,22 @@ class QLabelWithSave( QLabel ):
 
 class QDialogWithPrinting( QDialog ):
     """
-    A convenient PyQt4_ widget, inheriting from :py:class:`QDialog <PyQt4.QtGui.QDialog>`, that allows for screen grabs and keyboard shortcuts to either hide this dialog window or quit the underlying program. This PyQt4_ widget is also resizable, in relative increments of 5% larger or smaller, to a maximum of :math:`1.05^5` times the initial size, and to a minimum of :math:`1.05^{-5}` times the initial size.
+    A convenient PyQt5_ widget, inheriting from :py:class:`QDialog <PyQt5.QtGui.QDialog>`, that allows for screen grabs and keyboard shortcuts to either hide this dialog window or quit the underlying program. This PyQt5_ widget is also resizable, in relative increments of 5% larger or smaller, to a maximum of :math:`1.05^5` times the initial size, and to a minimum of :math:`1.05^{-5}` times the initial size.
     
     Args:
-        parent (:py:class:`QWidget <PyQt4.QtGui.QWidget>`): the parent :py:class:`QWidget <PyQt4.QtGui.QWidget>` to this dialog widget.
+        parent (:py:class:`QWidget <PyQt5.QtGui.QWidget>`): the parent :py:class:`QWidget <PyQt5.QtGui.QWidget>` to this dialog widget.
         isIsolated (bool): If ``True``, then this widget is detached from its parent. If ``False``, then this widget is embedded into a layout in the parent widget.
         doQuit (bool): if ``True``, then using the quit shortcuts (``Esc`` or ``Ctrl+Shift+Q``) will cause the underlying program to exit. Otherwise, hide the progress dialog.
 
      Attributes:
-        indexScalingSignal: a :py:class:`pyqtSignal <PyQt4.QtCore.pyqtSignal>` that can be connected to other PyQt4_ events or methods, if resize events want to be recorded.
+        indexScalingSignal: a :py:class:`pyqtSignal <PyQt5.QtCore.pyqtSignal>` that can be connected to other PyQt5_ events or methods, if resize events want to be recorded.
     """
     
     indexScalingSignal = pyqtSignal( int )
     
     def screenGrab( self ):
         """
-        take a screen shot of itself and saver to a PNG file through a :py:class:`QFileDialog <PyQt4.QtGui.QFileDialog>` widget.
+        take a screen shot of itself and saver to a PNG file through a :py:class:`QFileDialog <PyQt5.QtGui.QFileDialog>` widget.
         """
         fname = str( QFileDialog.getSaveFileName(
             self, 'Save Screenshot', os.path.expanduser( '~' ),
@@ -250,9 +250,9 @@ class QDialogWithPrinting( QDialog ):
 
 class ProgressDialog( QDialogWithPrinting ):
     """
-    A convenient PyQt4_ widget, inheriting from :py:class:`QDialogWithPrinting <plexcore.QDialogWithPrinting>`, that acts as a GUI blocking progress window for longer lasting operations. Like its parent class, this dialog widget is also resizable. This shows the passage of the underlying slow process in 5 second increments.
+    A convenient PyQt5_ widget, inheriting from :py:class:`QDialogWithPrinting <plexcore.QDialogWithPrinting>`, that acts as a GUI blocking progress window for longer lasting operations. Like its parent class, this dialog widget is also resizable. This shows the passage of the underlying slow process in 5 second increments.
 
-    This progress dialog exposes three methods -- :py:meth:`addText <plexcore.ProgressDialog.addText>`, :py:meth:`stopDialog <plexcore.ProgressDialog.stopDialog>`, and :py:meth:`startDialog <plexcore.ProgressDialog.startDialog>` -- to which a custom :py:class:`QThread <PyQt4.QtCore.QThread>` object can connect.
+    This progress dialog exposes three methods -- :py:meth:`addText <plexcore.ProgressDialog.addText>`, :py:meth:`stopDialog <plexcore.ProgressDialog.stopDialog>`, and :py:meth:`startDialog <plexcore.ProgressDialog.startDialog>` -- to which a custom :py:class:`QThread <PyQt5.QtCore.QThread>` object can connect.
     
     * :py:meth:`startDialog <plexcore.ProgressDialog.startDialog>` is triggered on long operation start, sometimes with an initial message.
     
@@ -260,20 +260,20 @@ class ProgressDialog( QDialogWithPrinting ):
     
     * :py:meth:`stopDialog <plexcore.ProgressDialog.stopDialog>` is triggered on process end.
 
-    :param QWidget parent: the parent :py:class:`QWidget <PyQt4.QtGui.QWidget>` on which this dialog widget blocks.
-    :param str windowTitle: the label to put on this progress dialog in an internal :py:class:`QLabel <PyQt4.QtGui.QLabel>`.
+    :param QWidget parent: the parent :py:class:`QWidget <PyQt5.QtGui.QWidget>` on which this dialog widget blocks.
+    :param str windowTitle: the label to put on this progress dialog in an internal :py:class:`QLabel <PyQt5.QtGui.QLabel>`.
     :param bool doQuit: if ``True``, then using the quit shortcuts (``Esc`` or ``Ctrl+Shift+Q``) will cause the underlying program to exit. Otherwise, hide the progress dialog.
 
     :var mainDialog: the main dialog widget in this GUI.
     :var parsedHTML: the :py:class:`BeautifulSoup <bs4.BeautifulSoup>` structure that contains the indexable tree of progress dialogs.
-    :var elapsedTime: the bottom :py:class:`QLabel <PyQt4.QtGui.QLabel>` widget that displays how much time (in seconds) has passed.
-    :var timer: the :py:class:`QTimer <PyQt4.QtCore.QTimer>` sub-thread that listens every 5 seconds before emitting a signal.
+    :var elapsedTime: the bottom :py:class:`QLabel <PyQt5.QtGui.QLabel>` widget that displays how much time (in seconds) has passed.
+    :var timer: the :py:class:`QTimer <PyQt5.QtCore.QTimer>` sub-thread that listens every 5 seconds before emitting a signal.
     :var float t0: the UNIX time, in seconds with resolution of microseconds.
     
-    :vartype mainDialog: :py:class:`QTextEdit <PyQt4.QtGui.QTextEdit>`
+    :vartype mainDialog: :py:class:`QTextEdit <PyQt5.QtGui.QTextEdit>`
     :vartype parsedHTML: :py:class:`BeautifulSoup <bs4.BeautifulSoup>`
-    :vartype elapsedTime: :py:class:`QLabel <PyQt4.QtGui.QLabel>`
-    :vartype timer: :py:class:`QTimer <PyQt4.QtCore.QTimer>`
+    :vartype elapsedTime: :py:class:`QLabel <PyQt5.QtGui.QLabel>`
+    :vartype timer: :py:class:`QTimer <PyQt5.QtCore.QTimer>`
     """
     def __init__( self, parent, windowTitle = "", doQuit = True ):
         super( ProgressDialog, self ).__init__(
@@ -313,7 +313,7 @@ class ProgressDialog( QDialogWithPrinting ):
 
     def showTime( self ):
         """
-        method connected to the internal :py:attr:`timer` that prints out how many seconds have passed, on the underlying :py:attr:`elapsedTime` :py:class:`QLabel <PyQt4.QtGui.QLabel>`.
+        method connected to the internal :py:attr:`timer` that prints out how many seconds have passed, on the underlying :py:attr:`elapsedTime` :py:class:`QLabel <PyQt5.QtGui.QLabel>`.
         """
         dt = time.time( ) - self.t0
         self.elapsedTime.setText(
@@ -510,7 +510,7 @@ def get_maximum_matchval( check_string, input_string ):
 
 def returnQAppWithFonts( ):
     """
-    returns a customized :py:class:`QApplication <PyQt4.QtGui.QApplication>` with all custom fonts loaded.
+    returns a customized :py:class:`QApplication <PyQt5.QtGui.QApplication>` with all custom fonts loaded.
     """
     app = QApplication([])
     fontNames = sorted(glob.glob( os.path.join( mainDir, 'resources', '*.tff' ) ) )

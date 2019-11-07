@@ -1,9 +1,8 @@
 import os, sys, titlecase, datetime, pypandoc
 import json, re, urllib, time, glob, multiprocessing
 from bs4 import BeautifulSoup
-from PyQt4.QtGui import QLineEdit, QFont, QFontMetrics, QFontDatabase, QTextEdit
-from PyQt4.QtGui import QVBoxLayout, QWidget, QGridLayout, QLabel, QPushButton
-from PyQt4.QtGui import QDialog, QAction
+from PyQt5.QtWidgets import QAction, QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtGui import QFont, QFontDatabase, QFontMetrics
 
 from plexcore import plexcore, mainDir, QDialogWithPrinting
 from plexemail import plexemail, plexemail_basegui, emailAddress, emailName

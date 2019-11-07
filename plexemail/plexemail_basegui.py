@@ -1,8 +1,8 @@
 import os, sys, numpy, glob, datetime
 from PIL import Image
-from PyQt4.QtGui import QVBoxLayout, QTableView, QFileDialog, QHeaderView, QAbstractItemView
-from PyQt4.QtGui import QAction, QColor, QBrush, QMenu, QCursor
-from PyQt4.QtCore import QAbstractTableModel, Qt
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QFileDialog, QHeaderView, QMenu, QTableView, QVBoxLayout
+from PyQt5.QtGui import QBrush, QColor, QCursor
+from PyQt5.QtCore import QAbstractTableModel, Qt
 
 from plexcore import plexcore, QDialogWithPrinting
 from plexemail import PlexIMGClient, PNGPicObject
@@ -42,8 +42,8 @@ class PNGPicTableView( QTableView ):
         self.parent = parent
         self.setModel( parent.pngPicTableModel )
         self.setShowGrid( True )
-        self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
-        self.horizontalHeader( ).setResizeMode( QHeaderView.Fixed )
+        self.verticalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
+        self.horizontalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
         self.setSelectionBehavior( QAbstractItemView.SelectRows )
         self.setSelectionMode( QAbstractItemView.SingleSelection )
         self.setSortingEnabled( True )

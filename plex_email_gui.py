@@ -8,7 +8,8 @@ def signal_handler( signal, frame ):
 signal.signal( signal.SIGINT, signal_handler )
 
 import os, logging, warnings, qdarkstyle
-from PyQt4.QtGui import QApplication, QStyleFactory, QIcon
+from PyQt5.QtWidgets import QApplication, QStyleFactory
+from PyQt5.QtGui import QIcon
 from optparse import OptionParser
 warnings.simplefilter( 'ignore' )
 
@@ -19,7 +20,7 @@ from plexcore.plexcore_gui import returnToken, returnGoogleAuthentication
 
 def main( info = False, doLocal = True, doLarge = False, verify = True, onlyEmail = False ):
     app = QApplication([])
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
+    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     icn = QIcon( os.path.join(
         mainDir, 'resources', 'icons', 'plex_email_gui.png' ) )
     app.setWindowIcon( icn )

@@ -1,11 +1,8 @@
 import numpy, os, sys, requests
 import logging, glob, datetime, pickle, gzip
-from PyQt4.QtGui import QAbstractItemView, QAction, QBrush, QComboBox, QCursor
-from PyQt4.QtGui import QDialog, QFileDialog, QFrame, QGridLayout, QHeaderView
-from PyQt4.QtGui import QImage, QLabel, QLineEdit, QMenu, QPalette
-from PyQt4.QtGui import QPixmap, QSortFilterProxyModel, QStyledItemDelegate, QTableView, QTextEdit
-from PyQt4.QtGui import QVBoxLayout, QWidget
-from PyQt4.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, QRegExp, Qt
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QComboBox, QDialog, QFileDialog, QFrame, QGridLayout, QHeaderView, QLabel, QLineEdit, QMenu, QStyledItemDelegate, QTableView, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtGui import QBrush, QCursor, QImage, QPalette, QPixmap
+from PyQt5.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, QRegExp, QSortFilterProxyModel, Qt
 
 from plextmdb import plextmdb
 from plexcore import plexcore, QDialogWithPrinting, get_popularity_color
@@ -109,8 +106,8 @@ class MyMovieTableView( QTableView ):
             self.setItemDelegateForColumn(
                 idx, StringEntryDelegate( self ) )
         self.setShowGrid( True )
-        self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
-        self.horizontalHeader( ).setResizeMode( QHeaderView.Fixed )
+        self.verticalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
+        self.horizontalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
         self.setSelectionBehavior( QAbstractItemView.SelectRows )
         self.setSelectionMode( QAbstractItemView.SingleSelection ) # single row        
         self.setSortingEnabled( True )
@@ -156,7 +153,7 @@ class MyMovieQSortFilterProxyModel( QSortFilterProxyModel ):
         super(MyMovieQSortFilterProxyModel, self).__init__( parent )
         #
         self.setSourceModel( tm )
-        tm.emitFilterChanged.connect( self.filterChanged )
+        tm.emitFilterChanged.connect( self.invalidateFilter )
         
     def sort( self, ncol, order ):
         self.sourceModel( ).sort( ncol, order )

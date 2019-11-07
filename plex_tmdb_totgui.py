@@ -10,12 +10,11 @@ from plexcore import plexcore, returnQAppWithFonts, mainDir
 from plextmdb import plextmdb_totgui
 from optparse import OptionParser
 import logging, os, qdarkstyle, time, numpy
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtGui import QIcon
 
 def main(info = False, doLocal = True, doLarge = False, verify = True):
     app = returnQAppWithFonts( )
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
+    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     icn = QIcon( os.path.join(
         mainDir, 'resources', 'icons', 'plex_tmdb_totgui.png' ) )
     app.setWindowIcon( icn )

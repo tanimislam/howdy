@@ -73,7 +73,7 @@ def get_popularity_color( hpop, alpha = 1.0 ):
 
     :param float hpop: the value (between 0 and 1) of the color.
     :param float alpha: The alpha value of the color (between 0 and 1).
-    :returns: a :class:`QColor <PyQt5.QtGui.QColor>` object to put into a :class:`QWidget <PyQt5.QtGui.QWidget>`, or converted into a hex color.
+    :returns: a :class:`QColor <PyQt5.QtGui.QColor>` object to put into a :class:`QWidget <PyQt5.QtWidgets.QWidget>`.
     :rtype: :class:`QColor <PyQt5.QtGui.QColor>`
 
     """
@@ -89,12 +89,14 @@ def get_popularity_color( hpop, alpha = 1.0 ):
 ## a QLabel with save option of the pixmap
 class QLabelWithSave( QLabel ):
     """
-    A convenient PyQt5_ widget that inherits from :py:class:`QLabel <PyQt5.QtGui.QLabel>`, but allows screen shots.
+    A convenient PyQt5_ widget that inherits from :py:class:`QLabel <PyQt5.QtWidgets.QLabel>`, but allows screen shots.
+
+    .. _PyQt5: https://www.riverbankcomputing.com/static/Docs/PyQt5
     """
     
     def screenGrab( self ):
         """
-        take a screen shot of itself and save to a PNG file through a :py:class:`QFileDialog <PyQt5.QtGui.QFileDialog>` widget.
+        take a screen shot of itself and save to a PNG file through a :py:class:`QFileDialog <PyQt5.QtWidgets.QFileDialog>` widget.
         """
         fname = str( QFileDialog.getSaveFileName(
             self, 'Save Pixmap', os.path.expanduser( '~' ),
@@ -124,15 +126,19 @@ class QLabelWithSave( QLabel ):
 
 class QDialogWithPrinting( QDialog ):
     """
-    A convenient PyQt5_ widget, inheriting from :py:class:`QDialog <PyQt5.QtGui.QDialog>`, that allows for screen grabs and keyboard shortcuts to either hide this dialog window or quit the underlying program. This PyQt5_ widget is also resizable, in relative increments of 5% larger or smaller, to a maximum of :math:`1.05^5` times the initial size, and to a minimum of :math:`1.05^{-5}` times the initial size.
+    A convenient PyQt5_ widget, inheriting from :py:class:`QDialog <PyQt5.QtWidgets.QDialog>`, that allows for screen grabs and keyboard shortcuts to either hide this dialog window or quit the underlying program. This PyQt5_ widget is also resizable, in relative increments of 5% larger or smaller, to a maximum of :math:`1.05^5` times the initial size, and to a minimum of :math:`1.05^{-5}` times the initial size.
     
     Args:
-        parent (:py:class:`QWidget <PyQt5.QtGui.QWidget>`): the parent :py:class:`QWidget <PyQt5.QtGui.QWidget>` to this dialog widget.
+        parent (:py:class:`QWidget <PyQt5.QtWidgets.QWidget>`): the parent :py:class:`QWidget <PyQt5.QtWidgets.QWidget>` to this dialog widget.
         isIsolated (bool): If ``True``, then this widget is detached from its parent. If ``False``, then this widget is embedded into a layout in the parent widget.
         doQuit (bool): if ``True``, then using the quit shortcuts (``Esc`` or ``Ctrl+Shift+Q``) will cause the underlying program to exit. Otherwise, hide the progress dialog.
 
-     Attributes:
-        indexScalingSignal: a :py:class:`pyqtSignal <PyQt5.QtCore.pyqtSignal>` that can be connected to other PyQt5_ events or methods, if resize events want to be recorded.
+     
+    :var indexScalingSignal: a :py:class:`pyqtSignal <PyQt5.QtCore.pyqtSignal>` that can be connected to other PyQt5_ events or methods, if resize events want to be recorded.
+    :type indexScalingSignal: :py:class:`pyqtSignal <PyQt5.QtCore.pyqtSignal>`
+
+    :var int initWidth: the initial width of the GUI in pixels.
+    :var int initHeight: the initial heigth of the GUI in pixels.    
     """
     
     indexScalingSignal = pyqtSignal( int )

@@ -273,7 +273,7 @@ class ProgressDialog( QDialogWithPrinting ):
 
     :var mainDialog: the main dialog widget in this GUI.
     :var parsedHTML: the :py:class:`BeautifulSoup <bs4.BeautifulSoup>` structure that contains the indexable tree of progress dialogs.
-    :var elapsedTime: the bottom :py:class:`QLabel <PyQt5.QtGui.QLabel>` widget that displays how much time (in seconds) has passed.
+    :var elapsedTime: the bottom :py:class:`QLabel <PyQt5.QtWidgets.QLabel>` widget that displays how much time (in seconds) has passed.
     :var timer: the :py:class:`QTimer <PyQt5.QtCore.QTimer>` sub-thread that listens every 5 seconds before emitting a signal.
     :var float t0: the UNIX time, in seconds with resolution of microseconds.
     

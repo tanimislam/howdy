@@ -37,13 +37,15 @@ TODO
 
 Here are some things I would like to finish.
 
-* Fill out documentation for all the CLIs and GUIs.
-* Fill out documentation for the lower level APIs.
-* Fill out help dialogs for the CLIs and GUIs.
+* Fill out documentation for all the CLIs (|cbox|) and GUIs.
+* Fill out documentation for the lower level APIs (|cbox|) and the GUI APIs.
+* Fill out help dialogs for the GUIs.
 * Complete the testing suite.
-* Streamline the OAuth2 authentication process, and provide more logical authorization and verification work flows.
-* Transition GUIs to use PyQt5_, with the eventual use of fbs_.
+* Streamline the OAuth2_ authentication process, and provide more logical authorization and verification work flows.
+* Transition GUIs to use PyQt5_ (|cbox|), with the eventual use of fbs_.
 
+.. |cbox| unicode:: U+2611 .. BALLOT BOX WITH CHECK
+  
 .. these are the links
 .. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki
 .. _Plex: https://plex.tv
@@ -65,3 +67,4 @@ Here are some things I would like to finish.
 .. _CentOS: https://www.centos.org
 .. _fbs: https://www.learnpyqt.com/courses/packaging-and-distribution/packaging-pyqt5-apps-fbs
 .. _Plexstuff: https://plexstuff.readthedocs.io
+.. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0

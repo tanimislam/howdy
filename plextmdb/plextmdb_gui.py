@@ -1,13 +1,15 @@
 import numpy, os, sys, requests, json, base64, time
-from functools import reduce
-_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
-                  os.path.abspath( __file__ ) )
-sys.path.append( _mainDir )
 import logging, glob, datetime, textwrap, titlecase
 from pathos.multiprocessing import Pool
 from itertools import chain
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QAbstractItemView, QAction, QBrush, QButtonGroup, QColor
+from PyQt4.QtGui import QComboBox, QCursor, QDialog, QFileDialog, QFont
+from PyQt4.QtGui import QFontMetrics, QFrame, QGridLayout, QHBoxLayout, QHeaderView
+from PyQt4.QtGui import QImage, QLabel, QLineEdit, QMenu, QPalette, QPixmap
+from PyQt4.QtGui import QPushButton, QRadioButton, QSizePolicy, QSortFilterProxyModel, QSpinBox
+from PyQt4.QtGui import QStyledItemDelegate, QTableView, QTextEdit, QVBoxLayout, QWidget
+from PyQt4.QtCore import pyqtSignal, QAbstractTableModel, QEvent, QModelIndex, QRegExp
+from PyQt4.QtCore import QThread, Qt
 
 from plextmdb import plextmdb, plextmdb_torrents
 from plexcore import plexcore, get_popularity_color, get_formatted_size_MB, plexcore_deluge
@@ -845,32 +847,32 @@ class StatusDialogWidget( QWidget ):
         self.movieTitles = sorted( movieTitles )
         
     def showMatchingMovies( self ):
-        if len( self.movieTitles ) > 0:
-            dlg = QDialog( self )
-            dlg.setWindowTitle( '%d Matching Movies For %d' % (
-                len( self.movieTitles ), self.currentYear ) )
-            myLayout = QVBoxLayout( )
-            dlg.setLayout( myLayout )
-            qte = QTextEdit( self )
-            qf = QFont( )
-            qf.setFamily( 'Consolas' )
-            qf.setPointSize( 11 )
-            qfm = QFontMetrics( qf )
-            qte.setFixedWidth( 60 * qfm.width( 'A' ) )
-            qte.setReadOnly( True )
-            qte.setStyleSheet("""
-            QTextEdit {
-            background-color: #373949;
-            }""" )
-            myLayout.addWidget( qte )
-            dlg.setFixedWidth( dlg.sizeHint( ).width( ) )
-            dlg.setFixedHeight( 450 )
-            qte.setPlainText('\n'.join([
-                '%02d: %s' % ( idx + 1, title ) for
-                (idx, title ) in
-                enumerate( self.movieTitles )  ]) )
-            dlg.show( )
-            result = dlg.exec_( )
+        if len( self.movieTitles ) == 0: return
+        dlg = QDialog( self )
+        dlg.setWindowTitle( '%d Matching Movies For %d' % (
+            len( self.movieTitles ), self.currentYear ) )
+        myLayout = QVBoxLayout( )
+        dlg.setLayout( myLayout )
+        qte = QTextEdit( self )
+        qf = QFont( )
+        qf.setFamily( 'Consolas' )
+        qf.setPointSize( 11 )
+        qfm = QFontMetrics( qf )
+        qte.setFixedWidth( 60 * qfm.width( 'A' ) )
+        qte.setReadOnly( True )
+        qte.setStyleSheet("""
+        QTextEdit {
+        background-color: #373949;
+        }""" )
+        myLayout.addWidget( qte )
+        dlg.setFixedWidth( dlg.sizeHint( ).width( ) )
+        dlg.setFixedHeight( 450 )
+        qte.setPlainText('\n'.join([
+            '%02d: %s' % ( idx + 1, title ) for
+            (idx, title ) in
+            enumerate( self.movieTitles )  ]) )
+        dlg.show( )
+        result = dlg.exec_( )
         
 class SelectYearGenreWidget( QWidget ):
     mySignalSYG = pyqtSignal( int, tuple )

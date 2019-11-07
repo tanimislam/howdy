@@ -1,5 +1,3 @@
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
 import os, sys, numpy, glob, datetime, inspect
 import logging, requests, time, io, PIL.Image
 import pickle, gzip
@@ -8,6 +6,12 @@ import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
 from itertools import chain
 from urllib.parse import urlparse
+from PyQt4.QtGui import QAbstractItemView, QAction, QButtonGroup, QColor, QComboBox
+from PyQt4.QtGui import QCursor, QGridLayout, QHBoxLayout, QHeaderView, QImage
+from PyQt4.QtGui import QLabel, QLineEdit, QMenu, QPushButton, QRadioButton
+from PyQt4.QtGui import QSortFilterProxyModel, QStackedWidget, QTableView, QTextEdit, QVBoxLayout
+from PyQt4.QtGui import QWidget, QBrush, QPixmap
+from PyQt4.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, QRegExp, QThread, Qt
 
 from plextvdb import plextvdb, get_token
 from plextvdb.plextvdb_season_gui import TVDBSeasonGUI

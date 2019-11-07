@@ -1,12 +1,9 @@
-import os, sys
-from functools import reduce
-_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
-                  os.path.abspath( __file__ ) )
-sys.path.append( _mainDir )
-import requests, webbrowser, logging
+import os, sys, requests, webbrowser, logging
 from requests_oauthlib import OAuth2Session
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt4.QtGui import QAbstractItemView, QAction, QBrush, QCursor, QDialog
+from PyQt4.QtGui import QGridLayout, QHBoxLayout, QHeaderView, QLabel, QLineEdit
+from PyQt4.QtGui import QMenu, QPushButton, QTableView, QVBoxLayout, QWidget
+from PyQt4.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, Qt
 
 from plexcore import plexcore, QDialogWithPrinting
 from plexcore import plexcore_deluge, plexcore_rsync, get_popularity_color
@@ -981,7 +978,6 @@ class PlexConfigMusicWidget( PlexConfigWidget ):
 ## main configuration dialog
 ## we look at the following login settings
 class PlexConfigGUI( QDialogWithPrinting ):
-    #
     class PlexConfigTableView( QTableView ):
         def __init__( self, parent ):
             super( PlexConfigGUI.PlexConfigTableView, self ).__init__( parent )

@@ -1,11 +1,11 @@
 import numpy, os, sys, requests
-from functools import reduce
-_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
-                  os.path.abspath( __file__ ) )
-sys.path.append( _mainDir )
 import logging, glob, datetime, pickle, gzip
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QAbstractItemView, QAction, QBrush, QComboBox, QCursor
+from PyQt4.QtGui import QDialog, QFileDialog, QFrame, QGridLayout, QHeaderView
+from PyQt4.QtGui import QImage, QLabel, QLineEdit, QMenu, QPalette
+from PyQt4.QtGui import QPixmap, QSortFilterProxyModel, QStyledItemDelegate, QTableView, QTextEdit
+from PyQt4.QtGui import QVBoxLayout, QWidget
+from PyQt4.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, QRegExp, Qt
 
 from plextmdb import plextmdb
 from plexcore import plexcore, QDialogWithPrinting, get_popularity_color

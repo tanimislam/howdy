@@ -1,9 +1,11 @@
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
-from bs4 import BeautifulSoup
 import copy, numpy, sys, requests
 import logging, datetime
 import io, PIL.Image, base64
+from bs4 import BeautifulSoup
+from PyQt4.QtGui import QAbstractItemView, QAction, QColor, QComboBox, QHBoxLayout
+from PyQt4.QtGui import QHeaderView, QImage, QLabel, QLineEdit, QPixmap, QBrush
+from PyQt4.QtGui import QSortFilterProxyModel, QTableView, QTextEdit, QVBoxLayout, QWidget
+from PyQt4.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, QRegExp, Qt
 
 from plextvdb import plextvdb
 from plexcore import plexcore, QDialogWithPrinting, QLabelWithSave

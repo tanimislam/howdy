@@ -63,7 +63,7 @@ class TMDBEngine( object ):
         :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
         """
         def __init__( self, verify = True ):
-            from PyQt4.QtGui import QFontDatabase
+            from PyQt5.QtGui import QFontDatabase
             mainURL = 'https://api.themoviedb.org/3/genre/movie/list'
             params = { 'api_key' : tmdb_apiKey }
             response = requests.get( mainURL, params = params, verify = verify )

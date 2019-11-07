@@ -2,14 +2,9 @@ import numpy, os, sys, requests, json, base64, time
 import logging, glob, datetime, textwrap, titlecase
 from pathos.multiprocessing import Pool
 from itertools import chain
-from PyQt4.QtGui import QAbstractItemView, QAction, QBrush, QButtonGroup, QColor
-from PyQt4.QtGui import QComboBox, QCursor, QDialog, QFileDialog, QFont
-from PyQt4.QtGui import QFontMetrics, QFrame, QGridLayout, QHBoxLayout, QHeaderView
-from PyQt4.QtGui import QImage, QLabel, QLineEdit, QMenu, QPalette, QPixmap
-from PyQt4.QtGui import QPushButton, QRadioButton, QSizePolicy, QSortFilterProxyModel, QSpinBox
-from PyQt4.QtGui import QStyledItemDelegate, QTableView, QTextEdit, QVBoxLayout, QWidget
-from PyQt4.QtCore import pyqtSignal, QAbstractTableModel, QEvent, QModelIndex, QRegExp
-from PyQt4.QtCore import QThread, Qt
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QButtonGroup, QComboBox, QDialog, QFileDialog, QFrame, QGridLayout, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMenu, QPushButton, QRadioButton, QSizePolicy, QSpinBox, QStyledItemDelegate, QTableView, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtGui import QBrush, QColor, QCursor, QFont, QFontMetrics, QImage, QPalette, QPixmap
+from PyQt5.QtCore import pyqtSignal, QAbstractTableModel, QEvent, QModelIndex, QRegExp, QSortFilterProxyModel, QThread, Qt
 
 from plextmdb import plextmdb, plextmdb_torrents
 from plexcore import plexcore, get_popularity_color, get_formatted_size_MB, plexcore_deluge
@@ -264,8 +259,8 @@ class TMDBTorrents( QDialogWithPrinting ):
             self.parent = parent
             self.setModel( parent.tmdbTorrentModel )
             self.setShowGrid( True )
-            self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
-            self.horizontalHeader( ).setResizeMode( QHeaderView.Fixed )
+            self.verticalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
+            self.horizontalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
             self.setSelectionBehavior( QAbstractItemView.SelectRows )
             self.setSelectionMode( QAbstractItemView.SingleSelection )
             self.setSortingEnabled( True )
@@ -1022,8 +1017,8 @@ class TMDBTableView( QTableView ):
         self.setItemDelegateForColumn(3, StringEntryDelegate( self ) )
         #
         self.setShowGrid( True )
-        self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
-        self.horizontalHeader( ).setResizeMode( QHeaderView.Fixed )
+        self.verticalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
+        self.horizontalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
         self.setSelectionBehavior( QAbstractItemView.SelectRows )
         self.setSelectionMode( QAbstractItemView.SingleSelection ) # single row        
         self.setSortingEnabled( True )
@@ -1073,11 +1068,11 @@ class TMDBQSortFilterProxyModel( QSortFilterProxyModel ):
         super(TMDBQSortFilterProxyModel, self).__init__( parent )
         #
         self.setSourceModel( tm )
-        tm.emitFilterChanged.connect( self.filterChanged )
+        tm.emitFilterChanged.connect( self.invalidateFilter )
 
     def sort( self, ncol, order ):
         self.sourceModel( ).sort( ncol, order )
-
+        
     def filterAcceptsRow( self, rowNumber, sourceParent ):
         return self.sourceModel( ).filterRow( rowNumber )
         

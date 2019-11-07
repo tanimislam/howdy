@@ -124,10 +124,10 @@ class PlexInitialization( object ):
                 #
                 ## first see if we have PyQt4
                 try:
-                    val = imp.find_module( 'PyQt4' )
-                    from PyQt4.QtGui import QFontDatabase
+                    val = imp.find_module( 'PyQt5' )
+                    from PyQt5.QtGui import QFontDatabase
                 except ImportError:
-                    print( 'ERROR, YOU NEED TO INSTALL PyQt4 ON YOUR MACHINE.' )
+                    print( 'ERROR, YOU NEED TO INSTALL PyQt5 ON YOUR MACHINE.' )
                     sys.exit( 0 )
                 #
                 ## now see if we have sshpass

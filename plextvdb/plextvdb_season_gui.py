@@ -2,10 +2,9 @@ import copy, numpy, sys, requests
 import logging, datetime
 import io, PIL.Image, base64
 from bs4 import BeautifulSoup
-from PyQt4.QtGui import QAbstractItemView, QAction, QColor, QComboBox, QHBoxLayout
-from PyQt4.QtGui import QHeaderView, QImage, QLabel, QLineEdit, QPixmap, QBrush
-from PyQt4.QtGui import QSortFilterProxyModel, QTableView, QTextEdit, QVBoxLayout, QWidget
-from PyQt4.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, QRegExp, Qt
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QComboBox, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QTableView, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtGui import QBrush, QColor, QImage, QPixmap
+from PyQt5.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, QRegExp, QSortFilterProxyModel, Qt
 
 from plextvdb import plextvdb
 from plexcore import plexcore, QDialogWithPrinting, QLabelWithSave
@@ -278,8 +277,8 @@ class TVDBSeasonTableView( QTableView ):
             self.processCurrentRow )
         #
         self.setShowGrid( True )
-        self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
-        self.horizontalHeader( ).setResizeMode( QHeaderView.Fixed )
+        self.verticalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
+        self.horizontalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
         self.setSelectionBehavior( QAbstractItemView.SelectRows )
         self.setSelectionMode( QAbstractItemView.SingleSelection ) # single row     
         self.setSortingEnabled( True )
@@ -321,7 +320,7 @@ class TVDBSeasonQSortFilterProxyModel( QSortFilterProxyModel ):
     def __init__( self, parent, model ):
         super( TVDBSeasonQSortFilterProxyModel, self ).__init__( parent )
         self.setSourceModel( model )
-        model.emitFilterChanged.connect( self.filterChanged )
+        model.emitFilterChanged.connect( self.invalidateFilter )
 
     def sort( self, ncol, order ):
         self.sourceModel( ).sort( ncol, order )

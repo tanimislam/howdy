@@ -8,12 +8,13 @@ def signal_handler( signal, frame ):
 signal.signal( signal.SIGINT, signal_handler )
 import qdarkstyle, logging, glob, os
 from optparse import OptionParser
-from PyQt4.QtGui import QApplication, QIcon
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QIcon
 from plexcore import plexcore_gui, mainDir
 
 def main( info = False, doLocal = True, verify = True ):
     app = QApplication([])
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
+    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     icn = QIcon( os.path.join(
         mainDir, 'resources', 'icons', 'plex_config_gui.png' ) )
     app.setWindowIcon( icn )

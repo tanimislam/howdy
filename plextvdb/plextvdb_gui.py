@@ -6,12 +6,9 @@ import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
 from itertools import chain
 from urllib.parse import urlparse
-from PyQt4.QtGui import QAbstractItemView, QAction, QButtonGroup, QColor, QComboBox
-from PyQt4.QtGui import QCursor, QGridLayout, QHBoxLayout, QHeaderView, QImage
-from PyQt4.QtGui import QLabel, QLineEdit, QMenu, QPushButton, QRadioButton
-from PyQt4.QtGui import QSortFilterProxyModel, QStackedWidget, QTableView, QTextEdit, QVBoxLayout
-from PyQt4.QtGui import QWidget, QBrush, QPixmap
-from PyQt4.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, QRegExp, QThread, Qt
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QButtonGroup, QComboBox, QGridLayout, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMenu, QPushButton, QRadioButton, QStackedWidget, QTableView, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtGui import QBrush, QColor, QCursor, QImage, QPixmap
+from PyQt5.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, QRegExp, QSortFilterProxyModel, QThread, Qt
 
 from plextvdb import plextvdb, get_token
 from plextvdb.plextvdb_season_gui import TVDBSeasonGUI
@@ -488,8 +485,7 @@ class TVDBGUI( QDialogWithPrinting ):
                 pickle.dump(
                     self.missing_eps,
                     gzip.open( os.path.join( os.path.expanduser( '~/.config/plexstuff/tests' ),
-                                             'toGet.pkl.gz' ),
-                               'wb' ) )      
+                                             'toGet.pkl.gz' ), 'wb' ) )
         saveAction = QAction( 'Save TV data', menu )
         saveAction.triggered.connect( _save_out_data )
         menu.addAction( saveAction )
@@ -505,8 +501,8 @@ class TVDBTableView( QTableView ):
             self.processCurrentRow )
         #
         self.setShowGrid( True )
-        self.verticalHeader( ).setResizeMode( QHeaderView.Fixed )
-        self.horizontalHeader( ).setResizeMode( QHeaderView.Fixed )
+        self.verticalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
+        self.horizontalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
         self.setSelectionBehavior( QAbstractItemView.SelectRows )
         self.setSelectionMode( QAbstractItemView.SingleSelection ) # single row        
         self.setSortingEnabled( True )
@@ -564,7 +560,7 @@ class TVDBQSortFilterProxyModel( QSortFilterProxyModel ):
     def __init__( self, parent, model ):
         super( TVDBQSortFilterProxyModel, self ).__init__( parent )
         self.setSourceModel( model )
-        model.emitFilterChanged.connect( self.filterChanged )
+        model.emitFilterChanged.connect( self.invalidateFilter )
 
     def sort( self, ncol, order ):
         self.sourceModel( ).sort( ncol, order )

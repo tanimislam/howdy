@@ -7,8 +7,9 @@ import base64, httplib2, numpy, glob
 import hashlib, requests, io, datetime
 import pathos.multiprocessing as multiprocessing
 from apiclient.discovery import build
-from PyQt4.QtGui import *
 from PIL import Image
+from PyQt5.QtWidgets import QDialog, QLabel, QVBoxLayout
+from PyQt5.QtGui import QImage, QPalette, QPixmap
 
 from plexcore import plexcore
 
@@ -504,12 +505,13 @@ class PNGPicObject( object ):
         
     def getInfoGUI( self, parent ):
         """
-        Launches a :py:class:`QDialog <PyQt4.QtGui.QDialog>` that contains the underlying image and some other labels: ``ACTNAME`` is the actual PNG file name, ``URL`` is the image's Imgur_ link, and ``UPLOADED AT`` is the date and time at which the file was uploaded. An example image is shown below,
+        Launches a :py:class:`QDialog <PyQt5.QtWidgets.QDialog>` that contains the underlying image and some other labels: ``ACTNAME`` is the actual PNG file name, ``URL`` is the image's Imgur_ link, and ``UPLOADED AT`` is the date and time at which the file was uploaded. An example image is shown below,
 
         .. image:: /_static/plexemail_pngpicobject_infogui.png
            :width: 100%
         
-        :param QWidget parent: the parent :py:class:`QWidget <PyQt4.QtGui.QWidget>` that acts as the :py:class:`QDialog <PyQt4.QtGui.QDialog>` window's parent. Can be ``None``.
+        :param QWidget parent: the parent :py:class:`QWidget <PyQt5.QtWidgets.QWidget>` that acts as the :py:class:`QDialog <PyQt5.QtWidgets.QDialog>` window's parent. Can be ``None``.
+        :type parent: :py:class:`QWidget <PyQt5.QtWidgets.QWidget>`
         """
         qdl = QDialog( parent )
         qdl.setModal( True )

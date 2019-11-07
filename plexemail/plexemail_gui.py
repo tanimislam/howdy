@@ -1,10 +1,8 @@
 import os, sys, titlecase, datetime, json, re, urllib, time, glob
 import pathos.multiprocessing as multiprocessing
 from itertools import chain
-from PyQt4.QtGui import QAction, QButtonGroup, QComboBox, QDialog, QFont
-from PyQt4.QtGui import QFontMetrics, QGridLayout, QHBoxLayout, QLabel, QLineEdit
-from PyQt4.QtGui import QPushButton, QRadioButton, QTextEdit, QVBoxLayout, QWidget
-from PyQt4.QtGui import QFileDialog, QFontDatabase
+from PyQt5.QtWidgets import QAction, QButtonGroup, QComboBox, QDialog, QFileDialog, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QRadioButton, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtGui import QFont, QFontDatabase, QFontMetrics
 
 from plexemail import plexemail, plexemail_basegui, emailAddress, emailName, get_email_contacts_dict
 from plexcore import plexcore, mainDir, QDialogWithPrinting

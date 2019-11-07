@@ -141,7 +141,7 @@ Here are the steps used to get working Imgur API access using the ``plex_config_
    :width: 100%
    :align: center
 
-7. This **should** work -- the *Plex config credentials* widget should show **WORKING** under the Imgur settings panel. If this does not work, then close the Imgur URL dialog in :numref:`imgur_step06b_copyURLdialog` with the ``Esc`` key, and generate a new client secret as shown in :numref:`imgur_step02_getclientsecret`, and repeat until you are able to generate good Imgur client credential.
+7. This **should** work -- the *Plex config credentials* widget should show **WORKING** under the Imgur settings panel. If this does not work, then close the Imgur URL dialog in :numref:`imgur_step06b_copyURLdialog` with the ``Esc`` key, and generate a new client secret as shown in :numref:`imgur_step02_getclientsecret`, and repeat until you are able to generate good Imgur client credentials.
 
 Low Level Imgur Credentials
 ---------------------------
@@ -193,7 +193,7 @@ The lower level generation of Imgur credentials use `requests-oauthlib <https://
        'account_username': <account_username>,
        'expires_at': zzzzz }
 
-   Copy ``token['refresh_token']`` with ``client_ID`` and ``secret_ID`` to authorize your Imgur client. Here, you can follow instructions as given in `the Imgur API page <https://apidocs.imgur.com>`.
+   Copy ``token['refresh_token']`` with ``client_ID`` and ``secret_ID`` to authorize your Imgur client. Here, you can follow instructions as given in `the Imgur API page <https://apidocs.imgur.com>`_.
 
 The Gracenote and LastFM APIs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -266,9 +266,10 @@ class ProgressDialog( QDialogWithPrinting ):
     
     * :py:meth:`stopDialog <plexcore.ProgressDialog.stopDialog>` is triggered on process end.
 
-    :param QWidget parent: the parent :py:class:`QWidget <PyQt5.QtGui.QWidget>` on which this dialog widget blocks.
-    :param str windowTitle: the label to put on this progress dialog in an internal :py:class:`QLabel <PyQt5.QtGui.QLabel>`.
+    :param parent: the parent :py:class:`QWidget <PyQt5.QtWidgets.QWidget>` on which this dialog widget blocks.
+    :param str windowTitle: the label to put on this progress dialog in an internal :py:class:`QLabel <PyQt5.QtWidgets.QLabel>`.
     :param bool doQuit: if ``True``, then using the quit shortcuts (``Esc`` or ``Ctrl+Shift+Q``) will cause the underlying program to exit. Otherwise, hide the progress dialog.
+    :type parent: :py:class:`QWidget <PyQt5.QtWidgets.QWidget>`
 
     :var mainDialog: the main dialog widget in this GUI.
     :var parsedHTML: the :py:class:`BeautifulSoup <bs4.BeautifulSoup>` structure that contains the indexable tree of progress dialogs.
@@ -276,9 +277,9 @@ class ProgressDialog( QDialogWithPrinting ):
     :var timer: the :py:class:`QTimer <PyQt5.QtCore.QTimer>` sub-thread that listens every 5 seconds before emitting a signal.
     :var float t0: the UNIX time, in seconds with resolution of microseconds.
     
-    :vartype mainDialog: :py:class:`QTextEdit <PyQt5.QtGui.QTextEdit>`
+    :vartype mainDialog: :py:class:`QTextEdit <PyQt5.QtWidgets.QTextEdit>`
     :vartype parsedHTML: :py:class:`BeautifulSoup <bs4.BeautifulSoup>`
-    :vartype elapsedTime: :py:class:`QLabel <PyQt5.QtGui.QLabel>`
+    :vartype elapsedTime: :py:class:`QLabel <PyQt5.QtWidgets.QLabel>`
     :vartype timer: :py:class:`QTimer <PyQt5.QtCore.QTimer>`
     """
     def __init__( self, parent, windowTitle = "", doQuit = True ):
@@ -319,7 +320,7 @@ class ProgressDialog( QDialogWithPrinting ):
 
     def showTime( self ):
         """
-        method connected to the internal :py:attr:`timer` that prints out how many seconds have passed, on the underlying :py:attr:`elapsedTime` :py:class:`QLabel <PyQt5.QtGui.QLabel>`.
+        method connected to the internal :py:attr:`timer` that prints out how many seconds have passed, on the underlying :py:attr:`elapsedTime` :py:class:`QLabel <PyQt5.QtWidgets.QLabel>`.
         """
         dt = time.time( ) - self.t0
         self.elapsedTime.setText(
@@ -516,7 +517,7 @@ def get_maximum_matchval( check_string, input_string ):
 
 def returnQAppWithFonts( ):
     """
-    returns a customized :py:class:`QApplication <PyQt5.QtGui.QApplication>` with all custom fonts loaded.
+    returns a customized :py:class:`QApplication <PyQt5.QtWidgets.QApplication>` with all custom fonts loaded.
     """
     app = QApplication([])
     fontNames = sorted(glob.glob( os.path.join( mainDir, 'resources', '*.tff' ) ) )

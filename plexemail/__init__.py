@@ -510,7 +510,7 @@ class PNGPicObject( object ):
         .. image:: /_static/plexemail_pngpicobject_infogui.png
            :width: 100%
         
-        :param QWidget parent: the parent :py:class:`QWidget <PyQt5.QtWidgets.QWidget>` that acts as the :py:class:`QDialog <PyQt5.QtWidgets.QDialog>` window's parent. Can be ``None``.
+        :param parent: the parent :py:class:`QWidget <PyQt5.QtWidgets.QWidget>` that acts as the :py:class:`QDialog <PyQt5.QtWidgets.QDialog>` window's parent. Can be ``None``.
         :type parent: :py:class:`QWidget <PyQt5.QtWidgets.QWidget>`
         """
         qdl = QDialog( parent )

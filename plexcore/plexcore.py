@@ -304,8 +304,6 @@ def get_all_servers( token, verify = True ):
 
     .. seealso:: :py:meth:`checkServerCredentials <plexcore.plexcore.checkServerCredentials>`
 
-    .. _Plex: https://plex.tv
-
     """
     response = requests.get( 'https://plex.tv/api/resources',
                              params = { 'X-Plex-Token' : token },

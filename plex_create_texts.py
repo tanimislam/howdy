@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 import pypandoc, glob, os, sys, textwrap, qdarkstyle
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 from plexcore import mainDir, returnQAppWithFonts
 
 def checkValidLaTeX( myString ):
@@ -18,27 +19,13 @@ class MainGUI( QWidget ):
 
     def printHTML( self ):
         mainText = r"""
-            \documentclass[12pt, fleqn]{article}
-            \usepackage{amsmath, amsfonts, graphicx, hyperref}
-
-            \\begin{document}
-
             %s
-
-            \end{document}
             """ % ( self.latexOutput.toPlainText( ).strip( ) )
         self.printString( mainText, toHTML = True )
 
     def printMarkdown( self ):
         mainText = r"""
-            \documentclass[12pt, fleqn]{article}
-            \usepackage{amsmath, amsfonts, graphicx, hyperref}
-
-            \\begin{document}
-
             %s
-
-            \end{document}
             """ % ( self.latexOutput.toPlainText( ).strip( ) )
         self.printString( mainText, toHTML = False )
 
@@ -68,12 +55,15 @@ class MainGUI( QWidget ):
         if toHTML:
             myHTML =  pypandoc.convert_text(
                 myString, 'html', format = 'latex',
-                extra_args = [ '-s' ] )
-            print( myHTML )
+                extra_args = [ '-s', '--mathjax' ] )
             qte.setHtml( pypandoc.convert_text(
                 myString, 'html', format = 'latex',
                 extra_args = [ '-s' ] ) )
         else:
+            myMD = pypandoc.convert_text(
+                myString, 'markdown', format = 'latex',
+                extra_args = [ '-s' ] )
+            print( myMD )
             qte.setPlainText( pypandoc.convert_text(
                 myString, 'markdown', format = 'latex',
                 extra_args = [ '-s' ] ) )
@@ -85,9 +75,10 @@ class MainGUI( QWidget ):
                 name = 'Markdown'
                 suffix = 'md'
             while( True ):
-                fname = str( QFileDialog.getSaveFileName( qdl, 'Save %s' % name,
-                                                          os.path.expanduser( '~' ),
-                                                          filter = '*.%s' % suffix ) )
+                fname = str( QFileDialog.getSaveFileName(
+                    qdl, 'Save %s' % name,
+                    os.path.expanduser( '~' ),
+                    filter = '*.%s' % suffix ) )
                 if fname.lower().endswith('.%s' % suffix) or len( os.path.basename( fname ) ) == 0:
                     break
             if fname.lower().endswith('.%s' % suffix ):
@@ -152,6 +143,6 @@ class MainGUI( QWidget ):
 
 if __name__=='__main__':
     app = returnQAppWithFonts( )
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )                       
+    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )                       
     mg = MainGUI( )
     result = app.exec_( )

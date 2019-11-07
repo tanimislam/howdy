@@ -362,7 +362,6 @@ def get_movies_by_actors( actor_name_dict, verify = True ):
     return createProcessedMovieData( results, verify = verify )
 
 def get_movies_by_title( title, verify = True, apiKey = None ):
-<<<<<<< HEAD
     """
     Gets a collection of movies that the TMDB_ database finds that matches a movie name.
 
@@ -389,8 +388,6 @@ def get_movies_by_title( title, verify = True, apiKey = None ):
 
     .. seealso:: :py:meth:`get_movie_tmdbids <plextmdb.plextmdb.get_movie_tmdbids>`
     """
-=======
->>>>>>> b788923a1584c136bb7ba78fe1f35775b1495b88
     if apiKey is None: apiKey = tmdb_apiKey
     for idx in range( 50 ):
         response = requests.get(
@@ -436,7 +433,6 @@ def get_movies_by_title( title, verify = True, apiKey = None ):
     return createProcessedMovieData( results, verify = verify )
 
 # Followed advice from https://www.themoviedb.org/talk/5493b2b59251416e18000826?language=en
-<<<<<<< HEAD
 def get_imdbid_from_id( tmdb_id, verify = True ):
     """
     Finds the IMDB_ ID for a movie from its TMDB_ ID.
@@ -449,12 +445,6 @@ def get_imdbid_from_id( tmdb_id, verify = True ):
     for idx in range( 50 ):
         response = requests.get(
             'https://api.themoviedb.org/3/movie/%d' % tmdb_id,
-=======
-def get_imdbid_from_id( id, verify = True ):
-    for idx in range( 50 ):
-        response = requests.get(
-            'https://api.themoviedb.org/3/movie/%d' % id,
->>>>>>> b788923a1584c136bb7ba78fe1f35775b1495b88
             params = { 'api_key' : tmdb_apiKey }, verify = verify )
         if response.status_code != 429: break
         time.sleep( 2.5 )
@@ -505,7 +495,6 @@ def get_movie( title, year = None, checkMultiple = True,
     else:
         return results
 
-<<<<<<< HEAD
 def get_movie_tmdbids( title, year = None, getAll = False, verify = True ):
     """
     Gets either a :py:class:`list` of TMDB_ movie IDs that match a movie name, or a single best TMDB_ movie ID.
@@ -517,10 +506,6 @@ def get_movie_tmdbids( title, year = None, getAll = False, verify = True ):
     :returns: If ``getAll` is ``True``, then return a :py:class:`list` of all TMDB_ movie IDs that match ``title``. If `it is `False``, then return a single (:py:class:`int`) best TMDB_ movie ID match to ``title``. If there are no matches, return ``None``.
     :rtype: If ``getAll`` is ``True``, a :py:class:`list`. If ``getAll`` is ``False``, an :py:class:`int`.
     """
-=======
-def get_movie_tmdbids( title, year = None,
-                       getAll = False, verify = True ):
->>>>>>> b788923a1584c136bb7ba78fe1f35775b1495b88
     results = get_movie( title, year = year, checkMultiple = True, getAll = True,
                          verify = verify )
     if results is None: return None
@@ -580,7 +565,6 @@ def get_genre_movie( title, year = None, checkMultiple = True, verify = True ):
         if val == 'family':
             return 'drama'
 
-<<<<<<< HEAD
 def getMovieData( year, genre_id, verify = True ):
     """
     This returns all the movies found by TMDB_ in a given year, of a given TMDB_ genre ID.
@@ -620,36 +604,6 @@ def getMovieData( year, genre_id, verify = True ):
     
        This method can take an arbitrary long time to run. The author has seen this method take :math:`\ge 600` seconds in some instances. One should be careful when testing this functionality.
     """
-=======
-def get_main_genre_movie( movie_elem ):
-    postprocess_genre_dict = {
-        'sci-fi' : 'science fiction',
-        'adventure' : 'action',
-        'thriler' : 'action',
-        'crime' : 'drama',
-        'romance' : 'drama',
-        'factual' : 'documentary',
-        'war' : 'drama',
-        'mystery' : 'horror' }
-    
-    if len(movie_elem.find_all('genre') ) == 0:
-        val = get_genre_movie( movie_elem[ 'title' ] )
-        if val is None: return 'unclassified'
-        return val
-    classic_genres = [ 'horror', 'comedy', 'animation', 'documentary', 'drama',
-                       'action', 'hindi', 'horror', 'science fiction' ]
-    genres = list( map(lambda elem: elem['tag'].lower( ).strip( ), movie_elem.find_all( 'genre' ) ) )
-    for genre in genres:
-        if genre in classic_genres:
-            return genre
-    val = get_genre_movie( movie_elem[ 'title' ] )
-    if val is not None: return val
-    if genres[ 0 ] in postprocess_genre_dict:
-        return postprocess_genre_dict[ genres[ 0 ] ]
-    return genres[ 0 ]
-                             
-def getMovieData( year, genre_id, verify = True ):
->>>>>>> b788923a1584c136bb7ba78fe1f35775b1495b88
     moviePosterMainURL = 'https://image.tmdb.org/t/p/w500'
     movieListMainURL = 'https://api.themoviedb.org/3/discover/movie'
     params = { 'api_key' : tmdb_apiKey,
@@ -661,18 +615,12 @@ def getMovieData( year, genre_id, verify = True ):
                'sort_by': 'popularity.desc',
                'with_genres': genre_id }
     if genre_id == -1: params.pop( 'with_genres' )
-<<<<<<< HEAD
     for idx in range( 50 ):
         response = requests.get(
             movieListMainURL, params = params,
             verify = verify )
         if response.status_code != 429: break
         time.sleep( 2.5 )
-=======
-    response = requests.get(
-        movieListMainURL, params = params,
-        verify = verify )
->>>>>>> b788923a1584c136bb7ba78fe1f35775b1495b88
     logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
     logging.debug('KEYS IN RESPONSE: %s.' % response.json( ).keys( ) )
     total_pages = response.json()['total_pages']
@@ -682,16 +630,11 @@ def getMovieData( year, genre_id, verify = True ):
                            response.json( )['results'] ) )
     for pageno in range( 2, total_pages + 1 ):
         params['page'] = pageno
-<<<<<<< HEAD
         for idx in range( 50 ):
             response = requests.get(
                 movieListMainURL, params = params, verify = verify )
             if response.status_code != 429: break
             time.sleep( 2.5 )
-=======
-        response = requests.get(
-            movieListMainURL, params = params, verify = verify )
->>>>>>> b788923a1584c136bb7ba78fe1f35775b1495b88
         if response.status_code != 200: continue
         logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
         results += list( filter(lambda datum: datum['title'] is not None and
@@ -731,7 +674,6 @@ def createProcessedMovieData( results, year = None, verify = True ):
                 vote_average = 0.0
             else:
                 vote_average = float( datum[ 'vote_average' ] )
-<<<<<<< HEAD
         try:
             rd = datetime.datetime.strptime( datum['release_date'], '%Y-%m-%d' )
             if year is not None and rd.year != year: return None
@@ -753,21 +695,3 @@ def createProcessedMovieData( results, year = None, verify = True ):
             return None
 
     return list(filter(None, map( processIndividualDatum, results ) ) )
-=======
-        row = {
-            'title' : datum[ 'title' ],
-            'release_date' : datetime.datetime.strptime(
-                datum['release_date'], '%Y-%m-%d' ),
-            'popularity' : datum[ 'popularity' ],
-            'vote_average' : vote_average,
-            'overview' : datum[ 'overview' ],
-            'poster_path' : poster_path,
-            'isFound' : False
-        }
-        if 'id' in datum:
-            row[ 'tmdb_id' ] = datum[ 'id' ]
-            imdb_id = get_imdbid_from_id( row[ 'tmdb_id' ], verify = verify )
-            if imdb_id is not None: row[ 'imdb_id' ] = imdb_id
-        actualMovieData.append( row )
-    return actualMovieData
->>>>>>> b788923a1584c136bb7ba78fe1f35775b1495b88

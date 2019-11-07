@@ -122,8 +122,8 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
                 'tvdb_token' : tvdb_token,
                 'verify' : verify
             }
-        for epno in map(lambda tup: tup[1], bad_eps ):
-            if epno not in tvseason.episodes: continue
+        for epno in filter(lambda epn: epn in tvseason.episodes,
+                           map(lambda tup: tup[1], bad_eps ) ):
             tvdb_epinfo = tvseason.episodes[epno]
             episodes[epno]['date aired'] = tvdb_epinfo[ 'airedDate' ]
         #

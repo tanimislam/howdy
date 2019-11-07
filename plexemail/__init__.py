@@ -295,7 +295,7 @@ class PlexIMGClient( object ):
             imgName = imgurl_img[ 'title' ]
             imgDateTime = datetime.datetime.fromtimestamp(
                 imgurl_img[ 'datetime' ] )
-            self.imghashes[ imgMD5 ] = [ imgName, imgID, imgLINK, imgDatetime ]
+            self.imghashes[ imgMD5 ] = [ imgName, imgID, imgLINK, imgDateTime ]
             
     def upload_image( self, b64img, name, imgMD5 = None ):
         """

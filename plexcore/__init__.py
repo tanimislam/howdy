@@ -10,8 +10,6 @@ mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
                  os.path.abspath( __file__ ) )
 sys.path.append( mainDir )
 
-#
-## not working right now when doing read the docs
 from plexcore import plexinitialization
 _ = plexinitialization.PlexInitialization( )
 
@@ -22,7 +20,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
 from fuzzywuzzy.fuzz import partial_ratio
-from PyQt4.QtGui import QLabel, QDialog, QAction, QMenu, QVBoxLayout, QTextEdit, QApplication, QColor, QFileDialog, QPixmap
+from PyQt4.QtGui import QLabel, QDialog, QAction, QMenu, QVBoxLayout
+from PyQt4.QtGui import QTextEdit, QApplication, QColor, QFileDialog, QPixmap
 from PyQt4.QtCore import pyqtSignal, QTimer
 
 # resource file and stuff
@@ -95,7 +94,7 @@ class QLabelWithSave( QLabel ):
     
     def screenGrab( self ):
         """
-        take a screen shot of itself and save to a PNG file through a :py:class:`QFileDialog <PyQt4.QtGui.QFileDialog>`.
+        take a screen shot of itself and save to a PNG file through a :py:class:`QFileDialog <PyQt4.QtGui.QFileDialog>` widget.
         """
         fname = str( QFileDialog.getSaveFileName(
             self, 'Save Pixmap', os.path.expanduser( '~' ),
@@ -112,9 +111,9 @@ class QLabelWithSave( QLabel ):
     def contextMenuEvent( self, event ):
         """Constructs a `context menu`_ with a single action, *Save Pixmap*, that takes a screen shot of this widget, using :py:meth:`screenGrab <plexcore.QLabelWithSave.screenGrab>`.
 
-        :param event: default :py:class:`QEvent <PyQt4.QtCore.QEvent>` argument needed to create a context menu. Is not used in this method.
+        :param QEvent event: default :py:class:`QEvent <PyQt4.QtCore.QEvent>` argument needed to create a context menu. Is not used in this reimplementation.
 
-        .. _context menu: https://en.wikipedia.org/wiki/Context_menu
+        .. _`context menu`: https://en.wikipedia.org/wiki/Context_menu
 
         """
         menu = QMenu( self )
@@ -140,7 +139,7 @@ class QDialogWithPrinting( QDialog ):
     
     def screenGrab( self ):
         """
-        take a screen shot of itself and saver to a PNG file through a :py:class:`QFileDialog <PyQt4.QtGui.QFileDialog>`.
+        take a screen shot of itself and saver to a PNG file through a :py:class:`QFileDialog <PyQt4.QtGui.QFileDialog>` widget.
         """
         fname = str( QFileDialog.getSaveFileName(
             self, 'Save Screenshot', os.path.expanduser( '~' ),
@@ -201,17 +200,21 @@ class QDialogWithPrinting( QDialog ):
         self.reset_sizes( )
         #
         ## set up actions
+
+        #
+        ## make bigger
         makeBiggerAction = QAction( self )
         makeBiggerAction.setShortcut( 'Ctrl+|' )
         makeBiggerAction.triggered.connect( self.makeBigger )
         self.addAction( makeBiggerAction )
         #
-        
+        ## make smaller
         makeSmallerAction = QAction( self )
         makeSmallerAction.setShortcut( 'Ctrl+_' )
         makeSmallerAction.triggered.connect( self.makeSmaller )
         self.addAction( makeSmallerAction )
         #
+        ## reset to original size
         resetSizeAction = QAction( self )
         resetSizeAction.setShortcut( 'Shift+Ctrl+R' )
         resetSizeAction.triggered.connect( self.resetSize )
@@ -257,10 +260,20 @@ class ProgressDialog( QDialogWithPrinting ):
     
     * :py:meth:`stopDialog <plexcore.ProgressDialog.stopDialog>` is triggered on process end.
 
-    Args:
-        parent (:py:class:`QWidget <PyQt4.QtGui.QWidget>`): the parent :py:class:`QWidget <PyQt4.QtGui.QWidget>` on which this dialog widget blocks.
-        windowTitle (str): the label to put on this progress dialog in an internal :py:class:`QLabel <PyQt4.QtGui.QLabel>`.
-        doQuit (bool): if ``True``, then using the quit shortcuts (``Esc`` or ``Ctrl+Shift+Q``) will cause the underlying program to exit. Otherwise, hide the progress dialog.
+    :param QWidget parent: the parent :py:class:`QWidget <PyQt4.QtGui.QWidget>` on which this dialog widget blocks.
+    :param str windowTitle: the label to put on this progress dialog in an internal :py:class:`QLabel <PyQt4.QtGui.QLabel>`.
+    :param bool doQuit: if ``True``, then using the quit shortcuts (``Esc`` or ``Ctrl+Shift+Q``) will cause the underlying program to exit. Otherwise, hide the progress dialog.
+
+    :var mainDialog: the main dialog widget in this GUI.
+    :var parsedHTML: the :py:class:`BeautifulSoup <bs4.BeautifulSoup>` structure that contains the indexable tree of progress dialogs.
+    :var elapsedTime: the bottom :py:class:`QLabel <PyQt4.QtGui.QLabel>` widget that displays how much time (in seconds) has passed.
+    :var timer: the :py:class:`QTimer <PyQt4.QtCore.QTimer>` sub-thread that listens every 5 seconds before emitting a signal.
+    :var float t0: the UNIX time, in seconds with resolution of microseconds.
+    
+    :vartype mainDialog: :py:class:`QTextEdit <PyQt4.QtGui.QTextEdit>`
+    :vartype parsedHTML: :py:class:`BeautifulSoup <bs4.BeautifulSoup>`
+    :vartype elapsedTime: :py:class:`QLabel <PyQt4.QtGui.QLabel>`
+    :vartype timer: :py:class:`QTimer <PyQt4.QtCore.QTimer>`
     """
     def __init__( self, parent, windowTitle = "", doQuit = True ):
         super( ProgressDialog, self ).__init__(
@@ -299,6 +312,9 @@ class ProgressDialog( QDialogWithPrinting ):
         self.show( )
 
     def showTime( self ):
+        """
+        method connected to the internal :py:attr:`timer` that prints out how many seconds have passed, on the underlying :py:attr:`elapsedTime` :py:class:`QLabel <PyQt4.QtGui.QLabel>`.
+        """
         dt = time.time( ) - self.t0
         self.elapsedTime.setText(
             '%0.1f seconds passed' % dt )
@@ -560,7 +576,6 @@ class PlexGuestEmailMapping( Base ):
     :var Column plexemail: this is the main column, which must be the email of a Plex_ user who has access to the Plex_ server. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>`.
     
     :var Column plexmapping: this is a collection of **different** email addresses, to which the Plexstuff emails are sent. For example, if a Plex_ user with email address ``A@email.com`` would like to send email to ``B@mail.com`` and ``C@mail.com``, the *plexmapping* column would be ``B@mail.com,C@mail.com``. NONE of the mapped emails will match *plexemail*. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>` of size 65536.
-
     
     :var Column plexreplaceexisting: this is a boolean that determines whether Plexstuff email also goes to the Plex_ user's email address. From the example above, if ``True`` then a Plex_ user at ``A@mail.com`` will have email delivered ONLY to ``B@mail.com`` and ``C@mail.com``. If ``False``, then that same Plex_ user will have email delivered to all three email addresses (``A@mail.com``, ``B@mail.com``, and ``C@mail.com``).  This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`Boolean <sqlalchemy.Boolean>`.
     
@@ -576,7 +591,7 @@ class PlexGuestEmailMapping( Base ):
     
 def create_all( ):
     """
-    creates the necessary SQLite3_ tables into the database file ``~/.config/plexstuff/app.db`` if they don't already exist, but only if not building documentation in `Read the Docs`_.
+    creates the necessary SQLite3_ tables into the database file ``~/.config/plexstuff/app.db`` if they don't already exist, but only if not building documentation in `Read the docs`_.
 
     .. _`Read the docs`: https://www.readthedocs.io
     """

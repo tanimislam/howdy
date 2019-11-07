@@ -1,32 +1,25 @@
 import os, sys, titlecase, datetime, pypandoc
 import json, re, urllib, time, glob, multiprocessing
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 from bs4 import BeautifulSoup
+from PyQt4.QtGui import QLineEdit, QFont, QFontMetrics, QFontDatabase, QTextEdit
+from PyQt4.QtGui import QVBoxLayout, QWidget, QGridLayout, QLabel, QPushButton
+from PyQt4.QtGui import QDialog, QAction
 
 from plexcore import plexcore, mainDir, QDialogWithPrinting
 from plexemail import plexemail, plexemail_basegui, emailAddress, emailName
 from plexemail import get_email_contacts_dict
-
-def _checkValidLaTeX( myString ):
-    try:
-        mainHTML = BeautifulSoup(
-            pypandoc.convert_text( myString, 'html', format = 'latex',
-                                   extra_args = [ '-s' ] ), 'lxml' )
-        return True, mainHTML.prettify( )
-    except RuntimeError:
-        return False, None
 
 class QLineCustom( QLineEdit ):
     def __init__( self ):
         super( QLineCustom, self ).__init__( )
         
     def returnPressed( ):
-        self.setText( titlecase.titlecase( str( self.text( ) ).strip( ) ) )
+        self.setText( titlecase.titlecase( self.text( ) ).strip( ) )
 
 class PlexEmailMyGUI( QDialogWithPrinting ):
-    def __init__( self, token, doLarge = False, verify = True ):
-        super( PlexEmailMyGUI, self ).__init__( None, )
+    
+    def __init__( self, doLocal = True, doLarge = False, verify = True ):
+        super( PlexEmailMyGUI, self ).__init__( None )
         self.resolution = 1.0
         self.verify = verify
         if doLarge:
@@ -38,6 +31,12 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         font-family: Consolas;
         font-size: %d;
         }""" % ( int( 11 * self.resolution ) ) )
+        dat = plexcore.checkServerCredentials(
+            doLocal = doLocal, verify = self.verify )
+        if dat is None:
+            raise ValueError( "Error, cannot access the Plex media server." )
+        self.fullURL, self.token = dat
+        #
         self.setWindowTitle( 'SEND CUSTOM EMAIL' )
         qf = QFont( )
         qf.setFamily( 'Consolas' )
@@ -57,7 +56,7 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         #
         self.emails_array = get_email_contacts_dict(
             plexcore.get_mapped_email_contacts(
-                token, verify = self.verify ), verify = self.verify )
+                self.token, verify = self.verify ), verify = self.verify )
         self.emails_array.append(( emailName, emailAddress ) )
         #
         self.pngWidget = plexemail_basegui.PNGWidget( self )
@@ -89,11 +88,6 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         self.emailSendButton.clicked.connect( self.sendEmail )
         self.emailTestButton.clicked.connect( self.testEmail )
         self.pngAddButton.clicked.connect( self.addPNGs )
-        #
-        quitAction = QAction( self )
-        quitAction.setShortcuts([ 'Ctrl+Q', 'Esc' ])
-        quitAction.triggered.connect( sys.exit )
-        self.addAction( quitAction )
         #
         self.setFixedWidth( 55 * qfm.width( 'A' ) )
         self.setFixedHeight( 33 * qfm.height( ) )
@@ -207,8 +201,10 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         
         \end{document}
         """ % self.mainEmailCanvas.toPlainText( ).strip( )
-        status, html = _checkValidLaTeX( mainText )
+        html = plexcore.latexToHTML( mainText )
         html = plexcore.processValidHTMLWithPNG( html, self.pngWidget.getAllDataAsDict( ) )
+        status = True
+        if html is None: status = False
         return status, html
 
     def toHTML( self, filename ):
@@ -222,7 +218,7 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
             self.emailSendButton.setEnabled( False )
             self.statusLabel.setText( 'INVALID LaTeX' )
             return
-        subject = titlecase.titlecase( str( self.subjectLine.text( ) ).strip( ) )
+        subject = titlecase.titlecase( self.subjectLine.text( ).strip( ) )
         if len(subject) == 0:
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
         for name, email in self.emails_array:
@@ -236,14 +232,10 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
             self.emailSendButton.setEnabled( False )
             self.statusLabel.setText( 'INVALID LaTeX' )
             return
-        subject = titlecase.titlecase( str( self.subjectLine.text( ) ).strip( ) )
+        subject = titlecase.titlecase( self.subjectLine.text( ).strip( ) )
         if len(subject) == 0:
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
         #
         plexemail.send_individual_email_full(
             html, subject, emailAddress, name = emailName )
         self.statusLabel.setText( 'EMAILS SENT TO %s.' % emailAddress.upper( ) )
-
-if __name__=='__main__':
-    app = QApplication([])
-    

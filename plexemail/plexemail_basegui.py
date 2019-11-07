@@ -1,12 +1,8 @@
-import os, sys
-from functools import reduce
-_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
-                  os.path.abspath(__file__) )
-sys.path.append( _mainDir )
-import base64,numpy, glob, hashlib, requests, io, datetime
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os, sys, numpy, glob, datetime
 from PIL import Image
+from PyQt4.QtGui import QVBoxLayout, QTableView, QFileDialog, QHeaderView, QAbstractItemView
+from PyQt4.QtGui import QAction, QColor, QBrush, QMenu, QCursor
+from PyQt4.QtCore import QAbstractTableModel, Qt
 
 from plexcore import plexcore, QDialogWithPrinting
 from plexemail import PlexIMGClient, PNGPicObject
@@ -19,9 +15,9 @@ class PNGWidget( QDialogWithPrinting ):
     
     def __init__( self, parent ):
         if parent is not None:
-            super( PNGWidget, self ).__init__( parent, isIsolated = True, doQuit = True )
-        else:
             super( PNGWidget, self ).__init__( parent, isIsolated = True, doQuit = False )
+        else:
+            super( PNGWidget, self ).__init__( parent, isIsolated = True, doQuit = True )
         self.setModal( True )
         self.parent = parent
         self.setWindowTitle( 'PNG IMAGES' )
@@ -32,11 +28,6 @@ class PNGWidget( QDialogWithPrinting ):
         self.pngPicTableModel = PNGPicTableModel( self )
         self.pngTV = PNGPicTableView( self )
         myLayout.addWidget( self.pngTV )
-        #
-        printAction = QAction( self )
-        printAction.setShortcut( 'Shift+Ctrl+P' )
-        printAction.triggered.connect( self.screenGrab )
-        self.addAction( printAction )
         #
         # self.setFixedWidth( self.pngTV.sizeHint( ).width( ) )
         self.setFixedHeight( 450 )
@@ -155,12 +146,9 @@ class PNGPicTableModel( QAbstractTableModel ):
 
     def headerData( self, col, orientation, role ):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            if col == 0:
-                return 'PNG PICTURE'
-            elif col == 1:
-                return 'WIDTH IN CM'
-            elif col == 2:
-                return 'UPLOADED'
+            if col == 0: return 'PNG PICTURE'
+            elif col == 1: return 'WIDTH IN CM'
+            elif col == 2: return 'UPLOADED'
         return None
 
     def setData( self, index, value, role ):
@@ -187,8 +175,7 @@ class PNGPicTableModel( QAbstractTableModel ):
                 return False
 
     def data( self, index, role ):
-        if not index.isValid( ):
-            return ""
+        if not index.isValid( ): return ""
         row = index.row( )
         col = index.column( )
         if role == Qt.BackgroundRole:

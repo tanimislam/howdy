@@ -1,12 +1,15 @@
-import os, sys, titlecase, datetime, json, re, urllib, time
+import os, sys, titlecase, datetime, json, re, urllib, time, glob
 import pathos.multiprocessing as multiprocessing
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from itertools import chain
+from PyQt4.QtGui import QAction, QButtonGroup, QComboBox, QDialog, QFont
+from PyQt4.QtGui import QFontMetrics, QGridLayout, QHBoxLayout, QLabel, QLineEdit
+from PyQt4.QtGui import QPushButton, QRadioButton, QTextEdit, QVBoxLayout, QWidget
+from PyQt4.QtGui import QFileDialog, QFontDatabase
 
-from plexemail import plexemail, plexemail_basegui, emailAddress, emailName
+from plexemail import plexemail, plexemail_basegui, emailAddress, emailName, get_email_contacts_dict
 from plexcore import plexcore, mainDir, QDialogWithPrinting
 
-class PlexEmailGUI( QWidget ):
+class PlexEmailGUI( QDialogWithPrinting ):
     class EmailSendDialog( QDialogWithPrinting ):
         
         def __init__( self, parent ):
@@ -19,11 +22,12 @@ class PlexEmailGUI( QWidget ):
             self.myButtonGroup = QButtonGroup( self )
             if emailName is None: emailString = emailAddress
             else: emailString = '%s <%s>' % ( emailName, emailAddress )
-            self.allRadioButtons = map( lambda name: QRadioButton( name, self ),
-                                        [ emailString, ] +
-                                        sorted(map( lambda idx: parent.emailComboBox.itemText( idx ),
-                                                    range( parent.emailComboBox.count() ) ) ) )
-            self.mainHtml = unicode( parent.mainEmailCanvas.toHtml( ) ).strip( )
+            self.allRadioButtons = list(
+                map( lambda name: QRadioButton( name, self ),
+                     [ emailString, ] +
+                     sorted(map( lambda idx: parent.emailComboBox.itemText( idx ),
+                                 range( parent.emailComboBox.count() ) ) ) ) )
+            self.mainHtml = parent.mainEmailCanvas.toHtml( ).strip( )
             for button in self.allRadioButtons:
                 self.myButtonGroup.addButton( button )
             self.myButtonGroup.setExclusive( False )
@@ -55,23 +59,18 @@ class PlexEmailGUI( QWidget ):
             self.selectAllButton.clicked.connect( self.selectAll )
             self.sendEmailButton.clicked.connect( self.sendEmail )
             #
-            printAction = QAction( self )
-            printAction.setShortcut( 'Shift+Ctrl+P' )
-            printAction.triggered.connect( self.screenGrab )
-            self.addAction( printAction )
-            #
             self.setFixedWidth( self.sizeHint( ).width( ) )
             self.setFixedHeight( self.sizeHint( ).height( ) )
             self.show( )
 
         def selectTest( self ):
             self.allRadioButtons[0].setChecked( True )
-            for button in self.allRadioButtons[1:]:
-                button.setChecked( False )
+            list(map(lambda button: button.setChecked( False ),
+                     self.allRadioButtons[1:]))
 
         def selectAll( self ):
-            for button in self.allRadioButtons:
-                button.setChecked( True )
+            list(map(lambda button: button.setChecked( True ),
+                     self.allRadioButtons ) )
 
         def sendEmail( self ):
             validLists = list(
@@ -149,16 +148,11 @@ class PlexEmailGUI( QWidget ):
             #
             self.testTextButton.clicked.connect( self.checkValidLaTeX )
             self.pngAddButton.clicked.connect( self.addPNGs )
-            #            
+            #
             openAction = QAction( self )
             openAction.setShortcut( 'Ctrl+O' )
             openAction.triggered.connect( self.openLatex )
             self.addAction( openAction )
-            #
-            printAction = QAction( self )
-            printAction.setShortcut( 'Shift+Ctrl+P' )
-            printAction.triggered.connect( self.screenGrab )
-            self.addAction( printAction )
             #
             self.setFixedHeight( 650 )
             self.setFixedWidth( self.sizeHint( ).width( ) )
@@ -214,9 +208,9 @@ class PlexEmailGUI( QWidget ):
             self.isValidLaTeX = True
             self.statusLabel.setText( "VALID TEXT" )
             if not self.YesButton.isChecked( ): return
-            htmlString = plexcore.processValidHTMLWithPNG( htmlString,
-                                                           self.pngWidget.getAllDataAsDict( ),
-                                                           doEmbed = True )
+            htmlString = plexcore.processValidHTMLWithPNG(
+                htmlString, self.pngWidget.getAllDataAsDict( ),
+                doEmbed = True )
             qdl = QDialog( self )
             qdl.setModal( True )
             qdlLayout = QVBoxLayout( )
@@ -227,45 +221,30 @@ class PlexEmailGUI( QWidget ):
             qte.setHtml( htmlString )
             qdl.setFixedWidth( 350 )
             qdl.setFixedHeight( 550 )
-            qdl.setWindowTitle( 'EXAMPLE WORKING HTML FOR %s' %
-                                self.windowTitle( ) )
+            qdl.setWindowTitle(
+                'EXAMPLE WORKING HTML FOR %s' % self.windowTitle( ) )
             qdl.show( )
             result = qdl.exec_( )
 
         def sendValidLaTeX( self, showSection = True ):
             self.NoButton.toggle( )
             self.checkValidLaTeX( )
-            myStr = unicode( self.textEdit.toPlainText( ).toUtf8( ), encoding='UTF-8').strip( )
-            if self.isValidLaTeX:
-                if showSection:
-                    myString = unicode( """
-                    \section{%s}
-                    
-                    %s
-                    """ % ( str( self.sectionNameWidget.text( ) ).strip( ),
-                            myStr ) )
-                else:
-                    myString = unicode( """
-                    %s
-                    """ % myStr )
-                return myString, self.pngWidget.getAllDataAsDict( )
-            else:
-                return "", { }
-
-    def screenGrab( self ):
-        fname = str( QFileDialog.getSaveFileName( self, 'Save Screenshot',
-                                                  os.path.expanduser( '~' ),
-                                                  filter = '*.png' ) )
-        if len( os.path.basename( fname.strip( ) ) ) == 0:
-            return
-        if not fname.lower( ).endswith( '.png' ):
-            fname = '%s.png' % fname
-        qpm = QPixmap.grabWidget( self )
-        qpm.save( fname )
+            myStr = self.textEdit.toPlainText( ).strip( )
+            if not self.isValidLaTeX: return "", { }
+            #
+            if showSection:
+                myString = """
+                \section{%s}
+                
+                %s
+                """ % ( self.sectionNameWidget.text( ).strip( ), myStr )
+            else: myString = myStr
+            return myString, self.pngWidget.getAllDataAsDict( )
             
     def __init__( self, doLocal = True, doLarge = False, verify = True ):
-        super( PlexEmailGUI, self ).__init__( )
+        super( PlexEmailGUI, self ).__init__( None )
         self.resolution = 1.0
+        self.verify = verify
         if doLarge:
             self.resolution = 2.0
         for fontFile in glob.glob( os.path.join( mainDir, 'resources', '*.ttf' ) ):
@@ -276,7 +255,7 @@ class PlexEmailGUI( QWidget ):
         font-size: %d;
         }""" % ( int( 11 * self.resolution ) ) )
         dat = plexcore.checkServerCredentials(
-            doLocal = doLocal, verify = verify )
+            doLocal = doLocal, verify = self.verify )
         if dat is None:
             raise ValueError( "Error, cannot access the Plex media server." )
         self.fullURL, self.token = dat
@@ -290,7 +269,7 @@ class PlexEmailGUI( QWidget ):
         self.sendEmailButton.setEnabled( False )
         self.testEmailButton.setEnabled( False )
         self.emailComboBox = QComboBox( )
-        self.setWindowTitle( 'TEST PLEX EMAIL NEWSLETTER' )
+        self.setWindowTitle( 'PLEX EMAIL NEWSLETTER' )
         self.preambleDialog = PlexEmailGUI.PrePostAmbleDialog( self, title = 'PREAMBLE' )
         self.postambleDialog = PlexEmailGUI.PrePostAmbleDialog( self, title = 'POSTAMBLE' )
         self.preamble = ''
@@ -312,20 +291,11 @@ class PlexEmailGUI( QWidget ):
         #
         myLayout.addWidget( self.mainEmailCanvas )
         #
-        quitAction = QAction( self )
-        quitAction.setShortcuts( ['Ctrl+Q', 'Esc' ] )
-        quitAction.triggered.connect( sys.exit )
-        self.addAction( quitAction )
         self.testEmailButton.clicked.connect( self.createSummaryEmail )
         # self.getContactsButton.clicked.connect( self.getContacts )
         self.preambleButton.clicked.connect( self.preambleDialog.show )
         self.postambleButton.clicked.connect( self.postambleDialog.show )
         self.sendEmailButton.clicked.connect( self.sendEmail )
-        #
-        printAction = QAction( self )
-        printAction.setShortcut( 'Shift+Ctrl+P' )
-        printAction.triggered.connect( self.screenGrab )
-        self.addAction( printAction )
         #
         qf = QFont( )
         qf.setFamily( 'Consolas' )
@@ -340,7 +310,7 @@ class PlexEmailGUI( QWidget ):
         self.sendEmailButton.setEnabled( False )
         preambleText, pngDataPRE = self.preambleDialog.sendValidLaTeX( False )
         postambleText, pngDataPOST = self.postambleDialog.sendValidLaTeX( )
-        pngData = dict( pngDataPRE.items( ) + pngDataPOST.items( ) )
+        pngData = dict( chain.from_iterable([ pngDataPRE.items( ), pngDataPOST.items( ) ]) )
         if len(pngData) != len(pngDataPRE) + len( pngDataPOST ) and len(pngData) != 0:
             print( 'ERROR, MUST HAVE SOME INTERSECTIONS IN PNG FILE NAMES.' )
             print( 'COMMON PNG FILES: %s.' % sorted( set( pngDataPRE.keys( ) ) &
@@ -349,7 +319,7 @@ class PlexEmailGUI( QWidget ):
         htmlString = plexemail.get_summary_html(
             self.token, fullURL = self.fullURL,
             preambleText = preambleText, postambleText = postambleText,
-            pngDataDict = pngData ):
+            pngDataDict = pngData )
         if len(htmlString) != 0:
             self.mainEmailCanvas.setHtml( htmlString )
             self.sendEmailButton.setEnabled( True )
@@ -359,20 +329,21 @@ class PlexEmailGUI( QWidget ):
         result = qd.exec_( )            
         
     def getContacts( self, token ):
-        emails = plexcore.get_mapped_email_contacts( token )
-        if len(emails) == 0:
-            return
+        emails = plexcore.get_mapped_email_contacts(
+            token, verify = self.verify )
+        if len(emails) == 0: return
         self.testEmailButton.setEnabled( True )
         #
         ## now do some google client magic to get the names
-        name_emails = plexemail.get_email_contacts_dict( emails )
+        name_emails = get_email_contacts_dict(
+            emails, verify = self.verify )
         self.emailComboBox.clear( )
-        items = []
-        for name, email in name_emails:
+        def get_email( input_tuple ):
+            name, email = input_tuple
             if name is not None:
-                items.append('%s <%s>' % ( name, email ) )
-            else:
-                items.append( email )
-        self.emailComboBox.addItems( sorted( items ) )
+                return '%s <%s>' % ( name, email )
+            return email
+        self.emailComboBox.addItems(
+            sorted( map( get_email, name_emails ) ) )
         self.emailComboBox.setEditable( False )
         self.emailComboBox.setCurrentIndex( 0 )

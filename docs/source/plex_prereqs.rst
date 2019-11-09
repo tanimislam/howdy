@@ -6,15 +6,19 @@ To get started, I assume you have your own Plex server. In order to get started 
 
 Prerequisites
 -------------
-You will need to have PyQt4_, sshpass_, and pandoc_ on your machine. `Pandoc <pandoc_>`_ is needed by Plexstuff tools that convert emails written in LaTeX_ into HTML. On Debian based systems (such as Ubuntu_. Mint_, or Debian_), you can install PyQt4_, sshpass_, and pandoc_ with the following command (as sudo_ or root).
+You will need to have PyQt5_, sshpass_, and pandoc_ on your machine. `Pandoc <pandoc_>`_ is needed by Plexstuff tools that convert emails written in LaTeX_ into HTML. On Debian based systems (such as Ubuntu_. Mint_, or Debian_), you can install PyQt5_, sshpass_, and pandoc_ with the following command (as sudo_ or root).
 
 .. code:: bash
 
-  sudo apt install python3-pyqt4 sshpass pandoc
+   sudo apt install python3-pyqt5 sshpass pandoc
 
-Equivalent commands to install PyQt4_ and sshpass_ exist on `Red Hat`_ based systems, such as Fedora_ or CentOS_.
+Equivalent commands to install PyQt5_ and sshpass_ exist on `Red Hat`_ based systems, such as Fedora_ or CentOS_. *An even easier way to install the latest version of PyQt5_ on you account is with this command*,
 
-In a common scenario, you may need to use Plexstuff on a Linux machine you do not administer or own. Typically PyQt4_ and sshpass_ are installed, but pandoc_ is a more niche tool that must be installed by hand into your home directory if it has not been installed by default. By my convention the executables and other resources (such as includes and libraries) will be installed under ``~/.local``. Sources of necessary tools will be decompressed and live in ``~/.local/src``. Here are the eight steps I used in order to get pandoc_ installed.
+.. code:: bash
+
+   pip3 install --user pyqt5
+
+In a common scenario, you may need to use Plexstuff on a Linux machine you do not administer or own. Typically PyQt5_ and sshpass_ are installed, but pandoc_ is a more niche tool that must be installed by hand into your home directory if it has not been installed by default. By my convention the executables and other resources (such as includes and libraries) will be installed under ``~/.local``. Sources of necessary tools will be decompressed and live in ``~/.local/src``. Here are the eight steps I used in order to get pandoc_ installed.
 
 1. Ensure that ``~/.local/bin`` and ``~/.cabal/bin`` are in your PATH.
 
@@ -149,7 +153,6 @@ Functionality    CLI                                                            
 .. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki
 .. _Plex: https://plex.tv
 .. _PlexAPI: https://python-plexapi.readthedocs.io/en/latest/introduction.html
-.. _PyQt4: https://www.riverbankcomputing.com/static/Docs/PyQt4/index.html
 .. _PyQt5: https://www.riverbankcomputing.com/static/Docs/PyQt5/index.html
 .. _sshpass: https://linux.die.net/man/1/sshpass
 .. _pandoc: https://pandoc.org

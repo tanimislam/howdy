@@ -4,6 +4,8 @@ import pypandoc, glob, os, sys, textwrap, qdarkstyle
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtNetwork import QNetworkAccessManager
 from plexcore import mainDir, returnQAppWithFonts
 
 def checkValidLaTeX( myString ):
@@ -15,21 +17,43 @@ def checkValidLaTeX( myString ):
     except RuntimeError:
         return False
 
+class DemoShowFormulas( QWebEngineView ):
+    def __init__( self, parent ):
+        super( DemoShowFormulas, self ).__init__( parent )
+        #channel = QWebChannel( self )
+        #self.page( ).setWebChannel( channel )
+        #channel.registerObject( 'thisFormula', self )
+        #
+        # self.setHtml( myhtml )
+        #self.loadFinished.connect( self.on_loadFinished )
+        #self.initialized = False
+        #
+        self._manager = QNetworkAccessManager( self )
+
+    def on_loadFinished( self ):
+        self.initialized = True
+
+    def waitUntilReady( self ):
+        if not self.initialized:
+            loop = QEventLoop( )
+            self.loadFinished.connect( loop.quit )
+            loop.exec_( )
+    
 class MainGUI( QWidget ):
 
     def printHTML( self ):
         mainText = r"""
             %s
             """ % ( self.latexOutput.toPlainText( ).strip( ) )
-        self.printString( mainText, toHTML = True )
+        self.printString( mainText, name = 'HTML' )
 
     def printMarkdown( self ):
         mainText = r"""
             %s
             """ % ( self.latexOutput.toPlainText( ).strip( ) )
-        self.printString( mainText, toHTML = False )
+        self.printString( mainText, name = 'Markdown' )
 
-    def printString( self, myString, toHTML = True ):
+    def printString( self, myString, name = 'HTML' ):
         self.statusLabel.setText( '' )
         if not checkValidLaTeX( myString ):
             statusLabel.setText( 'INVALID LATEX' )
@@ -38,8 +62,9 @@ class MainGUI( QWidget ):
         qdl.setModal( True )
         qsb = QPushButton( 'SAVE' )
         qdl.setModal( True )
-        qte = QTextEdit( qdl )
-        qte.setReadOnly( True )
+        qte = DemoShowFormulas( qdl )
+        #qte = QTextEdit( qdl )
+        #qte.setReadOnly( True )
         qdlLayout = QVBoxLayout( )
         qdl.setLayout( qdlLayout )
         qdlLayout.addWidget( qsb )
@@ -52,35 +77,31 @@ class MainGUI( QWidget ):
         qte.setFixedHeight( 550 )
         qdl.setFixedWidth( 85 * qfm.width( 'A' ) )
         qdl.setFixedHeight( 550 )
-        if toHTML:
+        if name == 'HTML':
             myHTML =  pypandoc.convert_text(
                 myString, 'html', format = 'latex',
                 extra_args = [ '-s', '--mathjax' ] )
             qte.setHtml( pypandoc.convert_text(
                 myString, 'html', format = 'latex',
-                extra_args = [ '-s' ] ) )
-        else:
+                extra_args = [ '-s', '--mathjax' ] ) )
+        elif name == 'Markdown':
             myMD = pypandoc.convert_text(
                 myString, 'markdown', format = 'latex',
                 extra_args = [ '-s' ] )
-            print( myMD )
-            qte.setPlainText( pypandoc.convert_text(
-                myString, 'markdown', format = 'latex',
-                extra_args = [ '-s' ] ) )
+            #qte.setPlainText( pypandoc.convert_text(
+            #    myString, 'markdown', format = 'latex',
+            #    extra_args = [ '-s' ] ) )
         def saveFilename( ):
-            if toHTML:
-                name = 'HTML'
+            if name == 'HTML':
                 suffix = 'html'
-            else:
-                name = 'Markdown'
+            elif name == 'Markdown':
                 suffix = 'md'
-            while( True ):
-                fname = str( QFileDialog.getSaveFileName(
-                    qdl, 'Save %s' % name,
-                    os.path.expanduser( '~' ),
-                    filter = '*.%s' % suffix ) )
-                if fname.lower().endswith('.%s' % suffix) or len( os.path.basename( fname ) ) == 0:
-                    break
+            fname = str( QFileDialog.getSaveFileName(
+                qdl, 'Save %s' % name,
+                os.path.expanduser( '~' ),
+                filter = '*.%s' % suffix ) )
+            if not fname.lower().endswith('.%s' % suffix): return
+            if len( os.path.basename( fname ) ) == 0: return
             if fname.lower().endswith('.%s' % suffix ):
                 with open( fname, 'w') as openfile:
                     openfile.write('%s\n' % textwrap.fill( str( qte.toPlainText( ) ).strip( ) ) )

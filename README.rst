@@ -18,6 +18,8 @@ Here are some of the best known lower APIs used to help one manage your Plex_ se
 
 * `PlexAPI <PlexAPI_>`_ are the unofficial bindings to the Plex API. They are based off the older `unofficial Plex API <unofficial_plex_api_>`_. I still use it because it seems to offer more freedom (such as finer grained multithreaded HTTP requests, and access to remote servers) than PlexAPI_.
 
+The command line tools are built using Python's OptionParser_ module, and the GUIs are built with PyQt5_.
+
 The comprehensive documentation lives in HTML created with `Sphinx <http://www.sphinx-doc.org/en/master/>`_, and now in the `Read the Docs <Plexstuff_>`_ page for this project. To generate the documentation, go to the ``docs`` subdirectory. In that directory, run ``make html``. Load ``docs/build/html/index.html`` into a browser to see the documentation.
 
 
@@ -25,7 +27,6 @@ The comprehensive documentation lives in HTML created with `Sphinx <http://www.s
 .. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki
 .. _Plex: https://plex.tv
 .. _PlexAPI: https://python-plexapi.readthedocs.io/en/latest/introduction.html
-.. _PyQt4: https://www.riverbankcomputing.com/static/Docs/PyQt4/index.html
 .. _PyQt5: https://www.riverbankcomputing.com/static/Docs/PyQt5/index.html
 .. _sshpass: https://linux.die.net/man/1/sshpass
 .. _pandoc: https://pandoc.org
@@ -42,4 +43,5 @@ The comprehensive documentation lives in HTML created with `Sphinx <http://www.s
 .. _CentOS: https://www.centos.org
 .. _fbs: https://www.learnpyqt.com/courses/packaging-and-distribution/packaging-pyqt5-apps-fbs
 .. _Plexstuff: https://plexstuff.readthedocs.io
-.. _Plex: https://plex.tv
+.. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0
+.. _OptionParser: https://docs.python.org/3/library/optparse.html#optparse.OptionParser

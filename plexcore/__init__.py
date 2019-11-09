@@ -97,14 +97,16 @@ class QLabelWithSave( QLabel ):
     def screenGrab( self ):
         """
         take a screen shot of itself and save to a PNG file through a :py:class:`QFileDialog <PyQt5.QtWidgets.QFileDialog>` widget.
+
+        .. seealso:: :py:meth:`QDialogWithPrinting.screenGrab <plexcore.QDialogWithPrinting.screenGrab>`
         """
-        fname = str( QFileDialog.getSaveFileName(
+        fname, _ = QFileDialog.getSaveFileName(
             self, 'Save Pixmap', os.path.expanduser( '~' ),
-            filter = '*.png' ) )
+            filter = '*.png' )
         if len( os.path.basename( fname.strip( ) ) ) == 0: return
         if not fname.lower( ).endswith( '.png' ):
             fname = '%s.png' % fname
-        qpm = self.pixmap( )
+        qpm = self.grab( )
         qpm.save( fname )
 
     def __init__( self, parent = None ):
@@ -146,14 +148,16 @@ class QDialogWithPrinting( QDialog ):
     def screenGrab( self ):
         """
         take a screen shot of itself and saver to a PNG file through a :py:class:`QFileDialog <PyQt5.QtGui.QFileDialog>` widget.
+        
+        .. seealso:: :py:meth:`QLabelWithSave.screenGrab <plexcore.QLabelWithSave.screenGrab>`
         """
-        fname = str( QFileDialog.getSaveFileName(
+        fname, _ = QFileDialog.getSaveFileName(
             self, 'Save Screenshot', os.path.expanduser( '~' ),
-            filter = '*.png' ) )
+            filter = '*.png' )
         if len( os.path.basename( fname.strip( ) ) ) == 0: return
         if not fname.lower( ).endswith( '.png' ):
             fname = '%s.png' % fname
-        qpm = QPixmap.grabWidget( self )
+        qpm = self.grab( )
         qpm.save( fname )
 
     def reset_sizes( self ):

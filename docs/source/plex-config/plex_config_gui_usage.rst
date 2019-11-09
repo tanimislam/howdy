@@ -19,7 +19,7 @@ As described in :numref:`Plexstuff Services Configuration` and :numref:`Plexstuf
 The document is organized into these three sections.
 
 * :ref:`Login Services` describes the dialog window that sets the login services.
-* :ref:`Credentials Services` describes the dialog window that sets the credentials.
+* :ref:`Credentials Services` describes the dialog window that sets the credentials. :numref:`Choosing Main Imgur_ Album` describes how to select one's main Imgur_ album used for the storage and retrieval of images when writing newsletter emails (see :numref:`plex_email_gui.py`).
 * :ref:`Music Services` describes the dialog window that applies the settings for music services.
 
 Login Services
@@ -63,6 +63,9 @@ The *PLEX CREDENTIALS CONFIGURATION* widget is organized into four services: the
 
 Apply the TMDB service settings according to :numref:`The Movie Database (TMDB) API`. Apply the TVDB service settings according to :numref:`The Television Database (TVDB) API`. Apply the Imgur settings according to :numref:`The Imgur API`. Finally, follow instructions in :numref:`Summary of Setting Up Google Credentials` to set up all six of the Google and Google-related services that Plexstuff uses.
 
+Choosing Main Imgur_ Album
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Music Services
 ----------------------------
 
@@ -91,3 +94,4 @@ The email address is taken from the login email for your Plex_ account. You can 
 .. _Plex: https://plex.tv
 .. _Deluge: https://en.wikipedia.org/wiki/Deluge_(software)
 .. _Jackett: https://github.com/Jackett/Jackett
+.. _Imgur: https://imgur.com

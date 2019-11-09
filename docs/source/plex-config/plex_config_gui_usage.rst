@@ -57,6 +57,8 @@ As described in :numref:`Summary of Setting Up Google Credentials`, right click 
 
 The *PLEX CREDENTIALS CONFIGURATION* widget is organized into four services: the `TMDB service <https://www.themoviedb.org>`_, the `TVDB service <https://www.thetvdb.com>`_, the `Imgur image hosting service <https://imgur.com>`_, and Google's services (see :numref:`Plexstuff Services Configuration` for a list). Here is a screen shot.
 
+.. plex_credentials_mainfigure:
+
 .. figure:: plex-config-gui-figures/plex_credentials_mainfigure.png
   :width: 100%
   :align: center
@@ -65,6 +67,9 @@ Apply the TMDB service settings according to :numref:`The Movie Database (TMDB) 
 
 Choosing Main Imgur_ Album
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The *IMGUR* panel in the *PLEX CREDENTIALS CONFIGURATION* widget has a row that shows the main Imgur_ album -- that contains the PNG images that can accessed, added, and removed -- used by :ref:`plex_email_gui.py` to insert images. The middle :py:class:`QLabel <PyQt5.QtWidgets.QLabel>` says the name of the main Imgur_ album that is being used; in :numref:`plex_credentials_mainfigure` this is ``MAIN IMGUR ALBUM``. The button labeled ``MAIN ALBUMS`` launches a GUI that allows us to choose, among other things, the main Imgur_ album to use for choosing images.
+
+
 
 Music Services
 ----------------------------

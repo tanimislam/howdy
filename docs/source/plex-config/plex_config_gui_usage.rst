@@ -57,7 +57,7 @@ As described in :numref:`Summary of Setting Up Google Credentials`, right click 
 
 The *PLEX CREDENTIALS CONFIGURATION* widget is organized into four services: the `TMDB service <https://www.themoviedb.org>`_, the `TVDB service <https://www.thetvdb.com>`_, the `Imgur image hosting service <https://imgur.com>`_, and Google's services (see :numref:`Plexstuff Services Configuration` for a list). Here is a screen shot.
 
-.. plex_credentials_mainfigure:
+.. _plex_credentials_mainfigure:
 
 .. figure:: plex-config-gui-figures/plex_credentials_mainfigure.png
   :width: 100%
@@ -67,8 +67,57 @@ Apply the TMDB service settings according to :numref:`The Movie Database (TMDB) 
 
 Choosing Main Imgur_ Album
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The *IMGUR* panel in the *PLEX CREDENTIALS CONFIGURATION* widget has a row that shows the main Imgur_ album -- that contains the PNG images that can accessed, added, and removed -- used by :ref:`plex_email_gui.py` to insert images. The middle :py:class:`QLabel <PyQt5.QtWidgets.QLabel>` says the name of the main Imgur_ album that is being used; in :numref:`plex_credentials_mainfigure` this is ``MAIN IMGUR ALBUM``. The button labeled ``MAIN ALBUMS`` launches a GUI that allows us to choose, among other things, the main Imgur_ album to use for choosing images.
+The *IMGUR* panel in the *PLEX CREDENTIALS CONFIGURATION* widget has a row that shows the main Imgur_ album -- that contains the PNG images that can accessed, added, and removed -- used by :ref:`plex_email_gui.py` to insert images. The middle :py:class:`QLabel <PyQt5.QtWidgets.QLabel>` says the name of the main Imgur_ album that is being used; in :numref:`plex_credentials_mainfigure` this is ``MAIN IMGUR ALBUM``. The button labeled ``MAIN ALBUMS`` launches a GUI that allows us to choose, among other things, the main Imgur_ album to use for choosing images. In this GUI, the album names are shown alphabetically.
 
+.. figure:: plex-config-gui-figures/plex_imgurlchoosealbum_main.png
+   :width: 100%
+   :align: center
+
+This GUI can do four things: :ref:`add a new album (and make it the main Imgur album) <add_album>`, :ref:`select an existing album as the main Imgur album <select_album>`, :ref:`delete an existing Imgur album <delete_album>`, and :ref:`rename the main Imgur album <rename_album>`. These all occur through a popup menu triggered with a right click.
+
+.. figure:: plex-config-gui-figures/plex_imgurlchoosealbum_choices.png
+   :width: 100%
+   :align: center
+
+.. _add_album:
+
+* We can add a new album, and make it the new Imgur_ album, by choosing the ``Add`` option in the popup menu. We give it a name different from the other Imgur_ albums; if we choose a name that matches, then nothing happens. The new album is created, with (naturally) no images in it, and is made the MAIN Imgur_ album.
+
+  .. figure:: plex-config-gui-figures/plex_imgurlchoosealbum_add.png
+     :width: 100%
+     :align: center
+
+.. _select_album:
+
+* We can set the main Imgur_ album, by choosing the ``Set Main Option`` in the popup menu and selecting (in BLUE) the album.
+
+  .. figure:: plex-config-gui-figures/plex_imgurlchoosealbum_setmain.png
+     :width: 100%
+     :align: center
+
+.. _delete_album:
+
+* We can delete the Imgur_ album, by choosing the ``Delete`` option in the popup menu. This choice also removes all pictures in this album.
+
+  * If the album we delete is *NOT* the main Imgur_ album, then only that album's entry in this table is removed.
+  * If the album we delete is the main Imgur_ album, then the main Imgur_ album's entry is removed, *AND* the new main Imgur_ album is alphabetically the first of the remaining albums.
+  * If there was previously only *one* album, then the table is empty and there are no main Imgur_ albums with this account. Images can be used only after :ref:`creating an Imgur album <add_album>` and then adding new images to it as shown in :ref:`plex_email_gui.py`.
+
+  :numref:`plex_imgurlchoosealbum_delete` demonstrates what happens when we delete a non-main album.
+
+  .. _plex_imgurlchoosealbum_delete:
+
+  .. figure:: plex-config-gui-figures/plex_imgurlchoosealbum_delete.png
+     :width: 100%
+     :align: center
+
+.. _rename_album:
+
+* And we can rename the main Imgur_ album, by choosing the ``Rename`` option in the popup menu. This new name cannot be any of the album names currently in the Imgur_ account, otherwise nothing occurs.
+
+  .. figure:: plex-config-gui-figures/plex_imgurlchoosealbum_rename.png
+     :width: 100%
+     :align: center
 
 
 Music Services

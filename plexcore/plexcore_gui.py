@@ -1,7 +1,7 @@
 import os, sys, requests, webbrowser, logging
 from requests_oauthlib import OAuth2Session
-from PyQt5.QtWidgets import QAbstractItemView, QAction, QDialog, QGridLayout, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMenu, QPushButton, QTableView, QVBoxLayout, QWidget
-from PyQt5.QtGui import QBrush, QCursor
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QDialog, QGridLayout, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMenu, QPushButton, QTableView, QVBoxLayout, QWidget, QInputDialog
+from PyQt5.QtGui import QBrush, QCursor, QColor
 from PyQt5.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, Qt
 
 from plexcore import plexcore, QDialogWithPrinting
@@ -9,6 +9,182 @@ from plexcore import plexcore_deluge, plexcore_rsync, get_popularity_color
 from plexmusic import plexmusic
 from plextmdb import get_tmdb_api, save_tmdb_api, plextmdb
 from plextvdb import get_tvdb_api, save_tvdb_api, check_tvdb_api, get_token
+from plexemail import PlexIMGClient
+
+class PlexImgurChooseAlbumWidget( QDialogWithPrinting ):
+    changedAlbumSignal = pyqtSignal( str )
+    
+    def showHelpInfo( self ):
+        pass
+
+    def __init__( self, parent, data_imgurl, verify = True ):
+        super( PlexImgurChooseAlbumWidget, self ).__init__(
+            parent, doQuit = False, isIsolated = True )
+        self.pIMGClient = PlexIMGClient( verify = verify, data_imgurl = data_imgurl )
+        self.currentAlbumInfo = self.pIMGClient.get_candidate_albums( )
+        self.main_album_name = self.pIMGClient.get_main_album_name( )
+        #
+        self.setModal( True )
+        self.setWindowTitle( 'ALBUMS IN IMGUR ACCOUNT' )
+        myLayout = QVBoxLayout( )
+        self.setLayout( myLayout )
+        self.albumTM = PlexImgurChooseAlbumTableModel( self )
+        self.albumTV = PlexImgurChooseAlbumTableView( self )
+        myLayout.addWidget( self.albumTV )
+        #
+        ##
+        self.setFixedHeight( 450 )
+        self.setFixedWidth( 430 )
+        self.hide( )
+
+    def add_album( self, new_album_name ):
+        valid_names = set( self.currentAlbumInfo )
+        if new_album_name in valid_names: return # do nothing
+        self.pIMGClient.set_main_album( new_album_name )
+        self.update( )
+
+    def rename_main_album( self, new_album_name ):
+        if self.main_album_name is None: return
+        if self.main_album_name == new_album_name: return
+        self.pIMGClient.change_album_name( new_album_name )
+        self.update( )
+
+    def delete_album( self, album_name ):
+        if album_name not in set( self.currentAlbumInfo ): return
+        self.pIMGClient.delete_candidate_album( album_name )
+        self.update( )
+
+    def set_main_album( self, album_name ):
+        if self.main_album_name is None: return
+        if self.main_album_name == album_name: return
+        if len( self.currentAlbumInfo ) == 0: return
+        if album_name not in self.currentAlbumInfo: return
+        self.pIMGClient.set_main_album( album_name )
+        self.update( )
+
+    def update( self ):
+        self.currentAlbumInfo = self.pIMGClient.get_candidate_albums( )
+        self.main_album_name = self.pIMGClient.get_main_album_name( )
+        self.albumTM.update( )
+        self.changedAlbumSignal.emit( self.main_album_name )
+        
+class PlexImgurChooseAlbumTableView( QTableView ):
+    def __init__( self, parent ):
+        super( PlexImgurChooseAlbumTableView, self ).__init__( parent )
+        self.parent = parent
+        self.setModel( self.parent.albumTM )
+        self.setShowGrid( True )
+        self.verticalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
+        self.horizontalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
+        self.setSelectionBehavior( QAbstractItemView.SelectRows )
+        self.setSelectionMode( QAbstractItemView.SingleSelection )
+        self.setSortingEnabled( False )
+        #
+        self.setColumnWidth( 0, 250 )
+        self.setColumnWidth( 1, 150 )
+        #
+        toBotAction = QAction( self )
+        toBotAction.setShortcut( 'End' )
+        toBotAction.triggered.connect( self.scrollToBottom )
+        self.addAction( toBotAction )
+        #
+        toTopAction = QAction( self )
+        toTopAction.setShortcut( 'Home' )
+        toTopAction.triggered.connect( self.scrollToTop )
+        self.addAction( toTopAction )
+
+    def add( self ):
+        val, okPressed = QInputDialog.getText( self, "Candidate New Album Name", "Name:", QLineEdit.Normal, "" )
+        if val.strip( ) == "": return
+        if not okPressed: return
+        self.parent.add_album( val.strip( ) )
+
+    def rename_main_album( self ):
+        val, okPressed = QInputDialog.getText( self, "Rename Main Album", "Name:", QLineEdit.Normal, "" )
+        if val.strip( ) == "": return
+        if not okPressed: return
+        self.parent.rename_main_album( val.strip( ) )
+
+    def delete_album( self ):
+        indices_valid = filter(lambda index: index.column( ) == 0,
+                               self.selectionModel( ).selectedIndexes( ) )
+        row = max(map(lambda index: index.row( ), indices_valid ) )
+        album_at_row = self.parent.albumTM.get_album_at_row( row )
+        self.parent.delete_album( album_at_row )
+
+    def set_main_album( self ):
+        indices_valid = filter(lambda index: index.column( ) == 0,
+                               self.selectionModel( ).selectedIndexes( ) )
+        row = max(map(lambda index: index.row( ), indices_valid ) )
+        album_at_row = self.parent.albumTM.get_album_at_row( row )
+        self.parent.set_main_album( album_at_row )
+
+    def contextMenuEvent( self, evt ):
+        menu = QMenu( self )
+        addAction = QAction( 'Add', menu )
+        addAction.triggered.connect( self.add )
+        menu.addAction( addAction )
+        if len( self.parent.currentAlbumInfo ) != 0:
+            setMainAction = QAction( 'Set Main Album', menu )
+            setMainAction.triggered.connect( self.set_main_album )
+            menu.addAction( setMainAction )
+            renameAction = QAction( 'Rename', menu )
+            renameAction.triggered.connect( self.rename_main_album )
+            menu.addAction( renameAction )
+            deleteAction = QAction( 'Delete', menu )
+            deleteAction.triggered.connect( self.delete_album )
+            menu.addAction( deleteAction )
+        menu.popup( QCursor.pos( ) )
+
+class PlexImgurChooseAlbumTableModel( QAbstractTableModel ):
+    def __init__( self, parent ):
+        super( PlexImgurChooseAlbumTableModel, self ).__init__( parent )
+        self.parent = parent
+        self.sortedAlbumNames = [ ]
+        self.main_album = None
+        self.update( )
+
+    def rowCount( self, parent ):
+        return len( self.sortedAlbumNames )
+
+    def columnCount( self, parent ):
+        return 2
+
+    def flags( self, index ):
+        return Qt.ItemIsEnabled | Qt.ItemIsSelectable
+
+    def headerData( self, col, orientation, role ):
+        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+            if col == 0: return 'ALBUM NAME'
+            elif col == 1: return '# OF PICS'
+        return None
+
+    def update( self ):
+        self.layoutAboutToBeChanged.emit( )
+        self.sortedAlbumNames = sorted( self.parent.currentAlbumInfo )
+        self.main_album = self.parent.main_album_name
+        self.layoutChanged.emit( )
+
+    def get_album_at_row( self, row ):
+        assert( row >= 0 )
+        assert( row < len( self.sortedAlbumNames ) )
+        return self.sortedAlbumNames[ row ]
+        
+    def data( self, index, role ):
+        if not index.isValid( ): return ""
+        row = index.row( )
+        col = index.column( )
+        if role == Qt.BackgroundRole and self.sortedAlbumNames[ row ] == self.parent.main_album_name:
+            color = QColor( "orange" )
+            color.setAlphaF( 0.2 )
+            return QBrush( color )
+        elif role == Qt.DisplayRole:
+            album_at_row = self.sortedAlbumNames[ row ]
+            if col == 0: # name
+                return album_at_row
+            elif col == 1: # number of pics
+                return len(
+                    self.parent.currentAlbumInfo[ album_at_row ][ 'images' ] )
 
 class PlexConfigWidget( QDialogWithPrinting ):
     workingStatus = pyqtSignal( dict )
@@ -84,10 +260,17 @@ class PlexConfigCredWidget( PlexConfigWidget ):
                 clientID = imgur_credentials[ 'clientID' ]
                 clientSECRET = imgur_credentials[ 'clientSECRET' ]
                 clientREFRESHTOKEN = imgur_credentials[ 'clientREFRESHTOKEN' ]
-                return clientID, clientSECRET, clientREFRESHTOKEN
-            except: return '', '', ''
+                mainALBUMID = ''
+                if 'mainALBUMID' in imgur_credentials:
+                    mainALBUMID = imgur_credentials[ 'mainALBUMID' ]
+                mainALBUMNAME = ''
+                if 'mainALBUMNAME' in imgur_credentials:
+                    mainALBUMNAME = imgur_credentials[ 'mainALBUMNAME' ]
+                return clientID, clientSECRET, clientREFRESHTOKEN, mainALBUMNAME
+            except Exception as e:
+                return '', '', '', ''
 
-        clientID, clientSECRET, clientREFRESHTOKEN = _get_creds( )            
+        clientID, clientSECRET, clientREFRESHTOKEN, mainALBUMNAME = _get_creds( )            
         try:
             if not plexcore.check_imgurl_credentials(
                     clientID, clientSECRET, clientREFRESHTOKEN,
@@ -95,16 +278,20 @@ class PlexConfigCredWidget( PlexConfigWidget ):
                 raise ValueError( "Error, invalid imgurl creds.")
             self.imgurl_id.setText( clientID )
             self.imgurl_secret.setText( clientSECRET )
+            self.imgurl_mainAlbumName.setText( mainALBUMNAME )
             self.imgurl_id.setStyleSheet( "QWidget {background-color: #370b4f;}" )
             self.imgurl_secret.setStyleSheet( "QWidget {background-color: #370b4f;}" )
             self.imgurl_status.setText( 'WORKING' )
+            self.imgurl_seeMainAlbum.setEnabled( True )
             self._emitWorkingStatusDict[ 'IMGURL' ] = True
         except Exception as e:
             self.imgurl_id.setText( clientID )
             self.imgurl_secret.setText( clientSECRET )
+            self.imgurl_mainAlbumName.setText( '' )
             self.imgurl_id.setStyleSheet( "QWidget {background-color: purple;}" )
             self.imgurl_secret.setStyleSheet( "QWidget {background-color: purple;}" )
             self.imgurl_status.setText( 'NOT WORKING' )
+            self.imgurl_seeMainAlbum.setEnabled( False )
             self._emitWorkingStatusDict[ 'IMGURL' ] = False
 
         #
@@ -184,6 +371,17 @@ class PlexConfigCredWidget( PlexConfigWidget ):
         ioauth2dlg.show( )
         ioauth2dlg.exec_( )
 
+    def setIMGURLMainAlbumConfig( self ):
+        data_imgurl = plexcore.get_imgurl_credentials( )
+        picaw = PlexImgurChooseAlbumWidget(
+            self, data_imgurl = data_imgurl, verify = False )
+        def changeMAINNAME( newAlbumMainName ):
+            self.imgurl_mainAlbumName.setText( newAlbumMainName )
+
+        picaw.changedAlbumSignal.connect( changeMAINNAME )
+        picaw.show( )
+        picaw.exec_( )
+
     def pushGoogleConfig( self ): # this is done by button
         def checkStatus( state ):
             if state:
@@ -259,6 +457,9 @@ class PlexConfigCredWidget( PlexConfigWidget ):
         self.imgurl_status = QLabel( )
         self.imgurl_oauth = QPushButton( 'CLIENT REFRESH' )
         self.imgurl_oauth.setAutoDefault( False )
+        self.imgurl_mainAlbumName = QLabel( )
+        self.imgurl_seeMainAlbum = QPushButton( 'MAIN ALBUMS' )
+        self.imgurl_seeMainAlbum.setAutoDefault( False )
         imgurlWidget = QWidget( )
         imgurlWidget.setStyleSheet("""
         QWidget {
@@ -273,6 +474,9 @@ class PlexConfigCredWidget( PlexConfigWidget ):
         imgurlLayout.addWidget( self.imgurl_id, 1, 1, 1, 3 )
         imgurlLayout.addWidget( QLabel( 'SECRET' ), 2, 0, 1, 1 )
         imgurlLayout.addWidget( self.imgurl_secret, 2, 1, 1, 3 )
+        imgurlLayout.addWidget( QLabel( 'MAIN ALBUM NAME' ), 3, 0, 1, 1 )
+        imgurlLayout.addWidget( self.imgurl_mainAlbumName, 3, 1, 2, 1 )
+        imgurlLayout.addWidget( self.imgurl_seeMainAlbum, 3, 3, 1, 1 )
         myLayout.addWidget( imgurlWidget )
         #self.imgurl_id.returnPressed.connect(
         #    self.pushIMGURLConfig )
@@ -280,6 +484,8 @@ class PlexConfigCredWidget( PlexConfigWidget ):
         #    self.pushIMGURLConfig )
         self.imgurl_oauth.clicked.connect(
             self.pushIMGURLConfig )
+        self.imgurl_seeMainAlbum.clicked.connect(
+            self.setIMGURLMainAlbumConfig )
         #
         ## google
         self.google_oauth = QPushButton( 'CLIENT REFRESH' )

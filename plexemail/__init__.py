@@ -133,6 +133,7 @@ class PlexIMGClient( object ):
     * The value is a four element :py:class:`tuple`: image name, image ID, the URL link to this image, and the :py:class:`datetime <datetime.datetime>` at which the image was uploaded.
 
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param dict data_imgurl: optional argument. If defined, must have the following keys: ``clientID``, ``clientSECRET``, and ``clientREFRESHTOKEN``. Must be consistent with :py:class:`dict` returned by :py:meth:`get_imgurl_credentials <plexcore.get_imgurl_credentials>`.
     
     :var bool verify: whether to verify SSL connections.
     :var str access_token: the persistent API access token to the user's Imgur_ account.
@@ -149,11 +150,12 @@ class PlexIMGClient( object ):
     .. _SQLite3: https://www.sqlite.org/index.html
     .. _MD5: https://en.wikipedia.org/wiki/MD5
     """    
-    def __init__( self, verify = True ):
+    def __init__( self, verify = True, data_imgurl = None ):
         #
         ## https://api.imgur.com/oauth2 advice on using refresh tokens
         self.verify = verify
-        data_imgurl = plexcore.get_imgurl_credentials( )
+        if data_imgurl is None:
+            data_imgurl = plexcore.get_imgurl_credentials( )
         clientID = data_imgurl[ 'clientID' ]
         clientSECRET = data_imgurl[ 'clientSECRET' ]
         clientREFRESHTOKEN = data_imgurl[ 'clientREFRESHTOKEN' ]
@@ -169,6 +171,7 @@ class PlexIMGClient( object ):
         self.access_token = data[ 'access_token' ]
         self.clientID = clientID
         self.clientSECRET = clientSECRET
+        self.clientREFRESHTOKEN = clientREFRESHTOKEN
         self.imghashes = { }
         #
         ## now first see if there are any albums
@@ -184,17 +187,18 @@ class PlexIMGClient( object ):
 
         #
         ## error state #2: do not have any albums
-        imgDatas = response.json( )[ 'data' ]
-        if len( imgDatas ) == 0:
+        albumDatas = response.json( )[ 'data' ]
+        if len( albumDatas ) == 0:
             self.albumID = None
             return
 
         #
         ## three possible situations
         ## #1: if mainALBUMID not defined OR album name not defined, use first img hash
-        if 'mainALBUMID' not in data_imgurl or data_imgurl[ 'mainALBUMID' ] not in set(map(lambda imgData: imgData['title'], imgDatas)):
-            self.albumID = imgDatas[ 0 ][ 'id' ]
-            albumName = imgDatas[ 0 ][ 'title' ]
+        if 'mainALBUMID' not in data_imgurl or data_imgurl[ 'mainALBUMID' ] not in set(map(lambda albumData: albumData['id'], albumDatas)):
+            sorting_cand = min(map(lambda albumData: ( albumData[ 'id' ], albumData[ 'title' ] ), albumDatas ),
+                               key = lambda tup: tup[1] )
+            self.albumID, albumName = sorting_cand
             #
             ## put new information into database
             plexcore.store_imgurl_credentials(
@@ -207,6 +211,43 @@ class PlexIMGClient( object ):
         #
         ## now get all the images in that album
         ## remember: Authorization: Bearer YOUR_ACCESS_TOKEN
+        self.refreshImages( )
+
+    def get_main_album_name( self ):
+        """
+        :returns: the name of the main Imgur_ album, if albums exist on this account. Otherwise returns ``None``.
+        :rtype: str
+        """
+        if self.albumID is None: return None
+        response = requests.get( 'https://api.imgur.com/3/album/%s' % self.albumID,
+                                 headers = { 'Authorization' : 'Bearer %s' % self.access_token },
+                                 verify = self.verify )
+        if response.status_code != 200: return None
+        return response.json( )[ 'data' ][ 'title' ]
+
+    def change_album_name( self, new_album_name ):
+        """
+        Changes the main album name to a new name, only if the new name is different from the old name.
+
+        :param str new_album_name: the new name to change the main Imgur_ album.
+
+        .. seealso:: :py:meth:`refreshImages <plexemail.PlexIMGClient.refreshImages>`
+        """
+        if new_album_name == self.get_main_album_name( ): return
+        response = requests.post( 'https://api.imgur.com/3/album/%s' % self.albumID,
+                                  data = { 'title' : new_album_name },
+                                  headers = { 'Authorization' : 'Bearer %s' % self.access_token },
+                                  verify = self.verify )
+        if response.status_code != 200: return
+
+        #
+        ## put new information into database
+        plexcore.store_imgurl_credentials(
+            self.clientID, self.clientSECRET, self.clientREFRESHTOKEN, 
+            mainALBUMID = self.albumID,
+            mainALBUMNAME = new_album_name,
+            verify = self.verify )
+        
         self.refreshImages( )
 
     def set_main_album( self, new_album_name ):
@@ -233,10 +274,10 @@ class PlexIMGClient( object ):
         if response.status_code != 200:
             return
 
-        imgDatas = response.json( )[ 'data' ]
-        imgNames = dict(map(lambda imgData: ( imgData[ 'title' ], imgData[ 'id' ] ), imgDatas ) )
-        if new_album_name in imgNames:
-            self.albumID = imgNames[ new_album_name ]
+        albumDatas = response.json( )[ 'data' ]
+        albumNames = dict(map(lambda albumData: ( albumData[ 'title' ], albumData[ 'id' ] ), albumDatas ) )
+        if new_album_name in albumNames:
+            self.albumID = albumNames[ new_album_name ]
             
         else: # create this album
             response = requests.post( 'https://api.imgur.com/3/album',
@@ -263,16 +304,88 @@ class PlexIMGClient( object ):
     def get_candidate_album_names( self ):
         """
         :returns: a :py:class:`list` of album names in the Imgur_ account. :py:meth:`set_main_album <plexemail.PlexIMGClient.set_main_album>` can use this method to determine the valid album name to choose.
+
+        .. seealso:: :py:meth:`get_candidate_albums <plexemail.PlexIMGClient.get_candidate_albums>`
+        """
+        return sorted( self.get_candidate_albums( ) )
+
+    def get_candidate_albums( self ):
+        """
+        :returns: a :py:class:`dict` of album information, organized by album name. Each key in the top-level dictionary is the album name. Each value is a lower level dictionary: the ``id`` key is the album ID, and the ``images`` key is a :py:class:`list` of low-level Imgur_ image information.
         """
         response = requests.get( 'https://api.imgur.com/3/account/me/albums',
                                  headers = { 'Authorization' : 'Bearer %s' % self.access_token },
                                  verify = self.verify )
-        if response.status_code != 200:
-            return [ ]
+        if response.status_code != 200: return { }
+        albumDatas = response.json( )[ 'data' ]
+        # now for each album, get all the photos associated with this album
+        def get_album_images( albumID ):
+            response = requests.get( 'https://api.imgur.com/3/album/%s/images' % albumID, 
+                                     headers = { 'Authorization' : 'Bearer %s' % self.access_token },
+                                     verify = self.verify )
+            if response.status_code != 200: return []
+            return response.json( )[ 'data' ]
+                                      
+        return dict(map(lambda albumData: ( albumData[ 'title' ],
+                                          { 'id' : albumData[ 'id' ],
+                                            'images' : get_album_images( albumData[ 'id' ] ) } ),
+                        albumDatas))
 
-        imgDatas = response.json( )[ 'data' ]
-        imgNames = dict(map(lambda imgData: ( imgData[ 'title' ], imgData[ 'id' ] ), imgDatas ) )
-        return sorted( imgNames )
+    def delete_candidate_album( self, candidate_album_name ):
+        """
+        This deletes the candidate album from the Imgur_ account. This album with that name must exist in the Imgur_ account.
+        :param str candidate_album_name: the name of the album to remove, with its underlying images.
+        
+        .. seealso:: :py:meth:`refreshImages <plexemail.PlexIMGClient.refreshImages>`
+        """
+        cand_albums = self.get_candidate_albums( )
+        if cand_albums is None: return
+        if candidate_album_name not in set(cand_albums): return
+        main_album = self.get_main_album_name( )
+        #
+        ## remove all images from album
+        def remove_album_images( ):
+            image_ids = list( map( lambda image_elem: image_elem[ 'id' ],
+                                   cand_albums[ candidate_album_name ][ 'images' ] ) )
+            album_id = cand_albums[ candidate_album_name ][ 'id' ]
+            response = requests.post( 'https://api.imgur.com/3/album/%s/remove_images' % album_id,
+                                      headers = { 'Authorization' : 'Bearer %s' % self.access_token },
+                                      data = { 'ids' : image_ids }, verify = self.verify )
+            if response.status_code != 200:
+                raise ValueError( "Error, problem removing images from %s." % candidate_album_name )
+        
+        #
+        ## I identify 3 situations
+        ## a) > 1 set of albums, candidate_album_name IS main album
+        ## b) > 1 set of albums, candidate_album_name NOT main album
+        ## c) = 1 set of albums, candidate_album_name IS main album
+        album_id = cand_albums[ candidate_album_name ][ 'id' ]
+        if len( cand_albums ) == 1: # main_album == candidate_album_name
+            assert( main_album == candidate_album_name )
+            self.albumID = None
+
+        elif len( cand_albums ) > 1 and main_album == candidate_album_name:
+            first_album_left = min( set( cand_albums ) - set([ main_album ] ) )
+            self.set_main_album( first_album_left )
+
+        remove_album_images( )
+        response = requests.delete( 'https://api.imgur.com/3/album/%s' % album_id,
+                                    headers = { 'Authorization' : 'Bearer %s' % self.access_token },
+                                    verify = False )
+        if response.status_code != 200:
+            raise ValueError( "Error, could not delete album %s." % candidate_album_name )
+
+        #
+        ## put new information into database
+        if self.albumID is not None:
+            plexcore.store_imgurl_credentials(
+                self.clientID, self.clientSECRET, self.clientREFRESHTOKEN, 
+                mainALBUMID = self.albumID,
+                mainALBUMNAME = self.get_main_album_name( ),
+                verify = self.verify )
+
+        self.refreshImages( )
+        
             
     def refreshImages( self ):
         """
@@ -282,12 +395,13 @@ class PlexIMGClient( object ):
     
         * The value is a four element :py:class:`tuple`: image name, image ID, the URL link to this image, and the :py:class:`datetime <datetime.datetime>` at which the image was uploaded.
         """
+        self.imghashes = { }
+        if self.albumID is None: return
         response = requests.get( 'https://api.imgur.com/3/album/%s/images' % self.albumID,
                                  headers = { 'Authorization' : 'Bearer %s' % self.access_token },
                                  verify = self.verify )
         if response.status_code != 200:
             raise ValueError("ERROR, COULD NOT ACCESS ALBUM IMAGES." )
-        self.imghashes = { }        
         all_imgs = response.json( )[ 'data' ]
         for imgurl_img in all_imgs:
             imgMD5 = imgurl_img[ 'name' ]

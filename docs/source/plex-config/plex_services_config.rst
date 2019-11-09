@@ -6,7 +6,7 @@ This document contains all the needed information to get started on getting set 
 
 * Identifying movies using `the Movie Database <https://www.themoviedb.org>`_.
 * Identifying television shows and episodes using `the Television Database <https://www.thetvdb.com>`_.
-* Uploading images for emails using the `Imgur image service <https://imgur.com>`_.
+* Uploading images for emails using the `Imgur image service <Imgur_>`_.
 * Populating music metadata using either the `Gracenote API <https://developer.gracenote.com/web-api>`_ or the `LastFM API <https://www.last.fm/api>`_.
 * Using the `Jackett proxy server <https://github.com/Jackett/Jackett>`_ to consolidate torrent searches among 20-30 public torrent trackers (such as `Torrentz2 <https://torrentz2.eu>`_, `RARBG <http://rarbg.to/index70.php>`_, `Kickass Torrents <https://en.wikipedia.org/wiki/KickassTorrents>`_, and `The Pirate Bay <https://thepiratebay.org>`_) through a single search API and service without `CAPTCHAs <https://en.wikipedia.org/wiki/CAPTCHA>`_ and other usability restrictions.
 * A bevy of Google services to do the following.s
@@ -78,7 +78,7 @@ The final information one programmatically sends to the TVDB service, through RE
    }
 
 The Imgur API
-^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 Incomplete information on setting up Imgur API access can be found on `this website <https://apidocs.imgur.com/?version=latest>`_. High level instructions to generate valid Imgur client credentials are described in :numref:`Generate Imgur Credentials Using ``Plexstuff```. 
 
@@ -141,7 +141,11 @@ Here are the steps used to get working Imgur API access using the ``plex_config_
    :width: 100%
    :align: center
 
-7. This **should** work -- the *Plex config credentials* widget should show **WORKING** under the Imgur settings panel. If this does not work, then close the Imgur URL dialog in :numref:`imgur_step06b_copyURLdialog` with the ``Esc`` key, and generate a new client secret as shown in :numref:`imgur_step02_getclientsecret`, and repeat until you are able to generate good Imgur client credentials.
+7. This **should** work -- the *Plex config credentials* widget should show **WORKING** under the Imgur_ settings panel. If this does not work, then close the Imgur URL dialog in :numref:`imgur_step06b_copyURLdialog` with the ``Esc`` key, and generate a new client secret as shown in :numref:`imgur_step02_getclientsecret`, and repeat until you are able to generate good Imgur_ client credentials.
+
+   .. warning::
+
+      The author of this code has *sucessfully* set up Imgur_ credentials only on Linux machines. He was *unsuccessful* when trying to set up credentials on Mac OS X machines. Success or failure may be tied to subtly broken custom OAuth2_ Python authentication mechanisms, that Imgur_ requires, on the Mac.
 
 Low Level Imgur Credentials
 ---------------------------
@@ -306,3 +310,4 @@ If all goes well, then all the Google services needed by Plexstuff will have bee
 
 .. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0
 .. _unofficial_google_music_api: https://unofficial-google-music-api.readthedocs.io/en/latest
+.. _Imgur: https://imgur.com

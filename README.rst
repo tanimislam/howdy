@@ -48,7 +48,30 @@ To be able to use all the CLIs, GUIs, and API functionality, there are ``12`` se
 |main_config_gui|                            |login_config_gui|                           |credentials_config_gui|                                |music_config_gui|
 `12 total settings <sec_main_config_gui_>`_  `4 login settings <sec_login_config_gui_>`_  `4 credential settings <sec_credentials_config_gui_>`_  `4 music settings <sec_music_config_gui_>`_
 ===========================================  ===========================================  ======================================================  ===========================================
-	   
+
+What Are Some Interesting Command Line Executables?
+-----------------------------------------------------------------
+You can try out `plex_music_songs.py`_ to get individual songs or all the songs in an artist's studio album, or `plex_music_album.py <https://plexstuff.readthedocs.io/en/latest/plex-music/cli_tools/plex_music_cli.html#plex-music-album-py>`_ to find all the studio albums an artist released. Here are three YouTube_ clips that show `plex_music_songs.py`_ in action, and were made with `Embed YouTube`_.
+
+.. |plex_music_songs_clip1| image:: https://img.youtube.com/vi/W8pmTqFJy68/0.jpg
+   :width: 100%
+   :align: middle
+   :target: https://www.youtube.com/watch?v=W8pmTqFJy68
+
+.. |plex_music_songs_clip2| image:: https://img.youtube.com/vi/njkhP5VE7Kc/0.jpg
+   :width: 100%
+   :align: middle
+   :target: https://www.youtube.com/watch?v=njkhP5VE7Kc
+
+.. |plex_music_songs_clip3| image:: https://img.youtube.com/vi/W8pmTqFJy68/0.jpg
+   :width: 100%
+   :align: middle
+   :target: https://www.youtube.com/watch?v=cRvxkGb2q3Y
+
+===========================================  ===========================================  ===========================================
+|plex_music_songs_clip1|                     |plex_music_songs_clip2|                     |plex_music_songs_clip3|                  
+===========================================  ===========================================  ===========================================
+
 .. links to plexstuff sections
 
 .. _sec_main_config_gui: https://plexstuff.readthedocs.io/en/latest/plex-config/plex_config_gui_usage.html
@@ -79,3 +102,6 @@ To be able to use all the CLIs, GUIs, and API functionality, there are ``12`` se
 .. _Plexstuff: https://plexstuff.readthedocs.io
 .. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0
 .. _OptionParser: https://docs.python.org/3/library/optparse.html#optparse.OptionParser
+.. _`Embed YouTube`: http://embedyoutube.org
+.. _`plex_music_songs.py`: https://plexstuff.readthedocs.io/en/latest/plex-music/cli_tools/plex_music_cli.html#plex-music-songs-py
+.. _Youtube: https://www.youtube.com

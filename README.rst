@@ -22,6 +22,40 @@ The command line tools are built using Python's OptionParser_ module, and the GU
 
 The comprehensive documentation lives in HTML created with `Sphinx <http://www.sphinx-doc.org/en/master/>`_, and now in the `Read the Docs <Plexstuff_>`_ page for this project. To generate the documentation, go to the ``docs`` subdirectory. In that directory, run ``make html``. Load ``docs/build/html/index.html`` into a browser to see the documentation.
 
+Quick and Dirty -- How Do I Get It Working?
+--------------------------------------------
+Although discussed in the `Sphinx documentation <Plexstuff_>`_, to get everything working you need pandoc_, sshpass_, and PyQt5_. Getting all this on Linux machines is probably more straightforward than on Macs and Windows machines.
+
+To be able to use all the CLIs, GUIs, and API functionality, there are ``12`` sets of configurations that need to work: four for login, four for credentials, and four for music.
+
+.. |main_config_gui| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_config_gui_serviceswidget.png
+   :width: 100%
+   :align: middle
+
+.. |login_config_gui| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_login_mainfigure.png
+   :width: 100%
+   :align: middle
+
+.. |credentials_config_gui| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_credentials_mainfigure.png
+   :width: 100%
+   :align: middle
+
+.. |music_config_gui| image:: https://plexstuff.readthedocs.io/en/latest/_images/plexmusic_mainfigure.png
+   :width: 100%
+   :align: middle
+
+===========================================  ===========================================  ======================================================  ===========================================
+|main_config_gui|                            |login_config_gui|                           |credentials_config_gui|                                |music_config_gui|
+`12 total settings <sec_main_config_gui_>`_  `4 login settings <sec_login_config_gui_>`_  `4 credential settings <sec_credentials_config_gui_>`_  `4 music settings <sec_music_config_gui_>`_
+===========================================  ===========================================  ======================================================  ===========================================
+	   
+.. links to plexstuff sections
+
+.. _sec_main_config_gui: https://plexstuff.readthedocs.io/en/latest/plex-config/plex_config_gui_usage.html
+.. _sec_login_config_gui: https://plexstuff.readthedocs.io/en/latest/plex-config/plex_config_gui_usage.html#login-services
+.. _sec_credentials_config_gui: https://plexstuff.readthedocs.io/en/latest/plex-config/plex_config_gui_usage.html#credentials-services
+.. _sec_music_config_gui: https://plexstuff.readthedocs.io/en/latest/plex-config/plex_config_gui_usage.html#music-services
+	   
 
 .. these are the links
 .. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki

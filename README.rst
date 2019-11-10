@@ -9,8 +9,8 @@ Plexstuff is a (hopefully) useful SDK that I have developed to manage the movies
 
 Here are a few of the best known high level media management services:
 
-* `Radarr <https://radarr.video/>`_ or `Couchpotato <https://couchpota.to/>`_ to manage your movies (automatically download them, etc.).
-* `Sonarr <https://sonarr.tv/>`_ or `Sickrage <https://www.sickrage.ca/>`_ to manage your television shows (automatically download them as they become available, for instance).
+* `Radarr <https://radarr.video/>`_ or `Couchpotato <https://couchpota.to/>`_ to manage your movies.
+* `Sonarr <https://sonarr.tv/>`_ or `Sickrage <https://www.sickrage.ca/>`_ to manage your television shows.
 * `Lidarr <https://lidarr.audio/>`_ to manage your music.
 * `Subliminal <https://subliminal.readthedocs.io/en/latest/>`_ to download movie and TV show subtitles.
 

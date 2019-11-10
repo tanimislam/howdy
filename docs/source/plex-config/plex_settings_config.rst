@@ -119,4 +119,4 @@ You have already set up your SSH account by registering a Seedhost account. Pres
 
 * The remote directory on the Seedhost account, where torrent files are downloaded, is typically ``downloads``. Put that into the *SUB DIR* text box.
 
-* Choose the local directory where the torrent files from the remote Seedhost SSH server download. This is used by the Plexstuff tools ``rsync_subproc.py`` and ``get_plextvdb_batch.py``. Put this local directory into the *LOCAL DIR* text box.
+* Choose the local directory where the torrent files from the remote Seedhost SSH server download. This is used by the Plexstuff tools :ref:`rsync_subproc.py` and :ref:`get_plextvdb_batch.py`. Put this local directory into the *LOCAL DIR* text box.

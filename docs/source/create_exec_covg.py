@@ -88,12 +88,29 @@ _table_movietorrents = [
     ( "`YTS API`_", ":py:meth:`get_movie_torrent <plextmdb.plextmdb_torrents.get_movie_torrent>`", True )
 ]
 
+_table_showconfig_settings = [
+    ( "|main_config_gui|", "|login_config_gui|", "|credentials_config_gui|", "|music_config_gui|" ),
+    ( "`12 total settings <sec_main_config_gui_>`_",
+      "`4 login settings <sec_login_config_gui_>`_",
+      "`4 credential settings <sec_credentials_config_gui_>`_",
+      "`4 music settings <sec_music_config_gui_>`_" ) ]
+
 if __name__ == '__main__':
     
+    print( 'WHICH CLIs and GUIs FINISHED\n' )
+    print( '%s\n' % ''.join( ['-'] * 50 ) )
     print( tabulate.tabulate( _table, [ 'Functionality', 'CLI', 'GUI' ], tablefmt = 'rst' ) )
     print('\n\n\n')
+    print( 'WHICH TV TORRENT SERVICES WORK\n' )
+    print( '%s\n' % ''.join( ['-'] * 50 ) )
     print( tabulate.tabulate( _table_tvtorrents, [ "Torrent Service", "Search Method", "Does It Work?" ],
                               tablefmt = 'rst' ) )
     print('\n\n\n')
+    print( 'WHICH TV TORRENT SERVICES WORK\n' )
+    print( '%s\n' % ''.join( ['-'] * 50 ) )
     print( tabulate.tabulate( _table_movietorrents, [ "Torrent Service", "Search Method", "Does It Work?" ],
                               tablefmt = 'rst' ) )
+    print('\n\n\n')
+    print( 'WHICH CONFIGURATION SETTINGS\n' )
+    print( '%s\n' % ''.join( ['-'] * 50 ) )
+    print( tabulate.tabulate( _table_showconfig_settings, tablefmt = 'rst' ) )

@@ -1,5 +1,8 @@
 .. image:: https://badges.gitter.im/plexstuff/community.svg
    :target: https://gitter.im/plexstuff/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
+   
+.. image:: https://readthedocs.org/projects/plexstuff/badge/?version=latest
+   :target: https://plexstuff.readthedocs.io/en/latest
 
 ###################################################################
 Plexstuff - Yet Another Way to Manage Your Plex_ Server's Content

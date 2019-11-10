@@ -15,14 +15,14 @@ Here are a few of the best known high level media management services:
 * `Radarr <https://radarr.video/>`_ or `Couchpotato <https://couchpota.to/>`_ to manage your movies.
 * `Sonarr <https://sonarr.tv/>`_ or `Sickrage <https://www.sickrage.ca/>`_ to manage your television shows.
 * `Lidarr <https://lidarr.audio/>`_ to manage your music.
-* `Subliminal <https://subliminal.readthedocs.io/en/latest/>`_ to download movie and TV show subtitles.
+* `Subliminal <https://subliminal.readthedocs.io/en/latest/>`_ to download subtitles of movies and TV shows.
 
 Here are some of the best known lower APIs used to help one manage your Plex_ server.
 
 * `Tautulli <https://tautulli.com>`_ to monitor your Plex_ server.
 * `Jackett <https://github.com/Jackett/Jackett>`_ is a relatively successful proxy server that consolidates the torrent search from a large number of public, private, and semi-private torrent trackers and services into a single search user interface and API.
 
-* `PlexAPI <PlexAPI_>`_ are the unofficial bindings to the Plex API. They are based off the older `unofficial Plex API <unofficial_plex_api_>`_. I still use it because it seems to offer more freedom (such as finer grained multithreaded HTTP requests, and access to remote servers) than PlexAPI_.
+* `PlexAPI <PlexAPI_>`_ is the unofficial bindings to the Plex API. They are based off the older `unofficial Plex API <unofficial_plex_api_>`_. I still use it because it seems to offer more freedom (such as finer grained multithreaded HTTP requests, and access to remote servers) than PlexAPI_.
 
 The command line tools are built using Python's OptionParser_ module, and the GUIs are built with PyQt5_.
 

@@ -12,7 +12,7 @@ You will need to have PyQt5_, sshpass_, and pandoc_ on your machine. `Pandoc <pa
 
    sudo apt install python3-pyqt5 sshpass pandoc
 
-Equivalent commands to install PyQt5_ and sshpass_ exist on `Red Hat`_ based systems, such as Fedora_ or CentOS_. *An even easier way to install the latest version of PyQt5_ on you account is with this command*,
+Equivalent commands to install PyQt5_ and sshpass_ exist on `Red Hat`_ based systems, such as Fedora_ or CentOS_. *An even easier way to install the latest version of PyQt5 on your user account is with this command*,
 
 .. code:: bash
 

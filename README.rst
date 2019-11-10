@@ -49,6 +49,11 @@ To be able to use all the CLIs, GUIs, and API functionality, there are ``12`` se
 `12 total settings <sec_main_config_gui_>`_  `4 login settings <sec_login_config_gui_>`_  `4 credential settings <sec_credentials_config_gui_>`_  `4 music settings <sec_music_config_gui_>`_
 ===========================================  ===========================================  ======================================================  ===========================================
 	   
+This is my most popular YouTube_ clip, Pray for Mojo.
+
+.. youtube:: OlDEzmSff3M
+   :width: 100%
+
 .. links to plexstuff sections
 
 .. _sec_main_config_gui: https://plexstuff.readthedocs.io/en/latest/plex-config/plex_config_gui_usage.html

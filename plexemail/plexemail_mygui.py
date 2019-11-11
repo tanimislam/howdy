@@ -1,7 +1,7 @@
 import os, sys, titlecase, datetime, pypandoc
 import json, re, urllib, time, glob, multiprocessing
 from bs4 import BeautifulSoup
-from PyQt5.QtWidgets import QAction, QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAction, QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QVBoxLayout, QWidget, QTabWidget
 from PyQt5.QtGui import QFont, QFontDatabase, QFontMetrics
 
 from plexcore import plexcore, mainDir, QDialogWithPrinting, plexcore_texts_gui
@@ -151,9 +151,15 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
         qdl.setWindowTitle( 'HTML EMAIL BODY' )
         qte = plexcore_texts_gui.DemoShowFormulas( qdl )
+        qter = QTextEdit( self )
+        qter.setReadOnly( True )
+        qter.setPlainText( '%s\n' % html )
         qdlLayout = QVBoxLayout( )
         qdl.setLayout( qdlLayout )
-        qdlLayout.addWidget( qte )
+        tw = QTabWidget( self )
+        tw.addTab( qte, 'RENDERED HTML' )
+        tw.addTab( qter, 'RAW HTML' )
+        qdlLayout.addWidget( tw )
         qf = QFont( )
         qf.setFamily( 'Consolas' )
         qf.setPointSize( int( 11 * self.resolution ) )

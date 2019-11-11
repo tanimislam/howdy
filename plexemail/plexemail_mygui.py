@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from PyQt5.QtWidgets import QAction, QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QVBoxLayout, QWidget
 from PyQt5.QtGui import QFont, QFontDatabase, QFontMetrics
 
-from plexcore import plexcore, mainDir, QDialogWithPrinting
+from plexcore import plexcore, mainDir, QDialogWithPrinting, plexcore_texts_gui
 from plexemail import plexemail, plexemail_basegui, emailAddress, emailName
 from plexemail import get_email_contacts_dict
 
@@ -45,7 +45,7 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         self.mainEmailCanvas.setTabStopWidth( 2 * qfm.width( 'A' ) )
         self.subjectLine = QLineCustom( )
         self.statusLabel = QLabel( )
-        self.checkLaTeXButton = QPushButton( '\n'.join('PRINT EMAIL'.split( ) ) )
+        self.checkRSTButton = QPushButton( '\n'.join('PRINT EMAIL'.split( ) ) )
         self.emailListButton = QPushButton( '\n'.join( 'PLEX GUESTS'.split( ) ) )
         self.emailSendButton = QPushButton( '\n'.join( 'SEND EMAIL'.split( ) ) )
         self.emailTestButton = QPushButton( '\n'.join( 'TEST EMAIL'.split( ) ) )
@@ -67,7 +67,7 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         topWidget = QWidget( )
         topLayout = QGridLayout( )
         topWidget.setLayout( topLayout )
-        topLayout.addWidget( self.checkLaTeXButton, 0, 0, 1, 2 )
+        topLayout.addWidget( self.checkRSTButton, 0, 0, 1, 2 )
         topLayout.addWidget( self.emailListButton, 0, 2, 1, 2 )
         topLayout.addWidget( self.emailSendButton, 0, 4, 1, 2 )
         topLayout.addWidget( self.emailTestButton, 0, 6, 1, 2 )
@@ -83,7 +83,7 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
             self.emailListButton.setEnabled( False )
             self.emailTestButton.setEnabled( False )
         self.emailListButton.clicked.connect( self.showEmails )
-        self.checkLaTeXButton.clicked.connect( self.checkLaTeX )
+        self.checkRSTButton.clicked.connect( self.checkRST )
         self.emailSendButton.clicked.connect( self.sendEmail )
         self.emailTestButton.clicked.connect( self.testEmail )
         self.pngAddButton.clicked.connect( self.addPNGs )
@@ -130,43 +130,27 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         qdl.show( )
         result = qdl.exec_( )
 
-    def checkLaTeX( self ):
+    def checkRST( self ):
         self.statusLabel.setText( '' )
         myStr = self.mainEmailCanvas.toPlainText( ).strip( )
         if len( myStr ) == 0:
             self.emailSendButton.setEnabled( False )
-            self.statusLabel.setText( 'INVALID LaTeX' )
+            self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
             return
-        mainText = r"""
-        \documentclass{article}
-        \usepackage{amsmath, amsfonts, graphicx, hyperref}
-        
-        \begin{document}
-        
-        Hello Friend,
-
-        %s
-        
-        \end{document}
-        """ % myStr
-        html = plexcore.latexToHTML( mainText )
-        if html is None:
+        mainText = '\n'.join([ 'Hello Friend,', '', myStr ])
+        if not plexcore_texts_gui.checkValidConversion( mainText, form = 'rst' ):
             self.emailSendButton.setEnabled( False )
             self.emailTestButton.setEnabled( False )
-            self.statusLabel.setText( 'INVALID LaTeX' )
+            self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
             return
-        html = plexcore.processValidHTMLWithPNG(
-            html, self.pngWidget.getAllDataAsDict( ),
-            doEmbed = True )
+        html = plexcore_texts_gui.convertString( mainText, form = 'rst' )
         self.emailSendButton.setEnabled( True )
         self.emailTestButton.setEnabled( True )
-        self.statusLabel.setText( 'VALID LaTeX' )
+        self.statusLabel.setText( 'VALID RESTRUCTUREDTEXT' )
         #
-        qdl = QDialog( self )
+        qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
         qdl.setWindowTitle( 'HTML EMAIL BODY' )
-        qdl.setModal( True )
-        qte = QTextEdit( qdl )
-        qte.setReadOnly( True )
+        qte = plexcore_texts_gui.DemoShowFormulas( qdl )
         qdlLayout = QVBoxLayout( )
         qdl.setLayout( qdlLayout )
         qdlLayout.addWidget( qte )
@@ -178,33 +162,18 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         qdl.setFixedHeight( 550 )
         qte.setHtml( html )
         qdl.show( )
-        def _close( ):
-            qdl.close( )
-        closeAction = QAction( self )
-        closeAction.setShortcuts( [ 'Esc' ] )
-        closeAction.triggered.connect( _close )
         #
         ##
         result = qdl.exec_( )
 
     def getHTML( self ):
-        mainText = r"""
-        \documentclass{article}
-        \usepackage{amsmath, amsfonts, graphicx, hyperref}
-        
-        \begin{document}
-        
-        Hello Friend,
-
-        %s
-        
-        \end{document}
-        """ % self.mainEmailCanvas.toPlainText( ).strip( )
-        html = plexcore.latexToHTML( mainText )
-        html = plexcore.processValidHTMLWithPNG( html, self.pngWidget.getAllDataAsDict( ) )
-        status = True
-        if html is None: status = False
-        return status, html
+        mainText = '\n'.join([ 'Hello Friend', '', self.mainEmailCanvas.toPlainText( ).strip( ) ])
+        try:
+            html = plexcore_texts_gui.convertString( mainText, form = 'rst' )
+            # html = plexcore.processValidHTMLWithPNG( html, self.pngWidget.getAllDataAsDict( ) )
+            return True, html
+        except Exception as e:
+            return False, None
 
     def toHTML( self, filename ):
         self.statusLabel.setText( 'TO HTML FILE' )
@@ -215,7 +184,7 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         status, html = self.getHTML( )
         if not status:
             self.emailSendButton.setEnabled( False )
-            self.statusLabel.setText( 'INVALID LaTeX' )
+            self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
             return
         subject = titlecase.titlecase( self.subjectLine.text( ).strip( ) )
         if len(subject) == 0:
@@ -229,10 +198,10 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         status, html = self.getHTML( )
         if not status:
             self.emailSendButton.setEnabled( False )
-            self.statusLabel.setText( 'INVALID LaTeX' )
+            self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
             return
         subject = titlecase.titlecase( self.subjectLine.text( ).strip( ) )
-        if len(subject) == 0:
+        if len( subject ) == 0:
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
         #
         plexemail.send_individual_email_full(

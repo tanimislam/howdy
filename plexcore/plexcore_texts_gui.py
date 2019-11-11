@@ -1,4 +1,4 @@
-import pypandoc, glob, os, sys, textwrap
+import pypandoc, glob, os, sys, textwrap, logging
 from PyQt5.QtWidgets import QAction, QFileDialog, QLabel, QPushButton, QTabBar, QTabWidget, QTextEdit, QVBoxLayout, QWidget
 from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -26,7 +26,7 @@ def convertString( myString, form = 'latex' ):
             myString, 'html', format = form.lower( ),
             extra_args = [ '-s', '--mathjax' ] )
     except RuntimeError as e:
-        logging.error( "Error, could not convert %s of format %s. Error = %s." % (
+        print( "Error, could not convert %s of format %s. Error = %s." % (
             myString, form.lower( ), str( e ) ) )
         return None
 

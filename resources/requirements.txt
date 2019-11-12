@@ -29,6 +29,7 @@ pyasn1
 pyasn1-modules
 pypandoc
 pyqt5
+PyQtWebEngine
 python-geoip-geolite2
 python-Levenshtein
 python-magic

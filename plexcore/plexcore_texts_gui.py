@@ -1,4 +1,6 @@
 import pypandoc, glob, os, sys, textwrap, logging
+from docutils.examples import html_parts
+from bs4 import BeautifulSoup
 from PyQt5.QtWidgets import QAction, QFileDialog, QLabel, QPushButton, QTabBar, QTabWidget, QTextEdit, QVBoxLayout, QWidget
 from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -22,6 +24,10 @@ def checkValidConversion( myString, form = 'latex' ):
 def convertString( myString, form = 'latex' ):
     assert( form.lower( ) in ( 'latex', 'markdown', 'rst' ) ), "error, format = %s not one of 'latex', 'markdown', or 'rst'" % form.lower( )
     try:
+        if form.lower( ) == 'rst': # use docutils instead
+            html_body = html_parts( myString )[ 'whole' ]
+            html = BeautifulSoup( html_body, 'lxml' )
+            return html.prettify( )
         return pypandoc.convert_text(
             myString, 'html', format = form.lower( ),
             extra_args = [ '-s', '--mathjax' ] )

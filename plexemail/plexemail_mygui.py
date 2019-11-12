@@ -151,7 +151,7 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         #
         qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
         qdl.setWindowTitle( 'HTML EMAIL BODY' )
-        qte = plexcore_texts_gui.DemoShowFormulas( qdl )
+        qte = plexcore_texts_gui.HtmlView( qdl )
         qter = QTextEdit( self )
         qter.setReadOnly( True )
         qter.setPlainText( '%s\n' % html )

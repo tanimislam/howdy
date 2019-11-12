@@ -36,10 +36,9 @@ def convertString( myString, form = 'latex' ):
             myString, form.lower( ), str( e ) ) )
         return None
 
-
-class DemoShowFormulas( QWebEngineView ):
+class HtmlView( QWebEngineView ):
     def __init__( self, parent ):
-        super( DemoShowFormulas, self ).__init__( parent )
+        super( HtmlView, self ).__init__( parent )
         #channel = QWebChannel( self )
         #self.page( ).setWebChannel( channel )
         #channel.registerObject( 'thisFormula', self )
@@ -48,8 +47,19 @@ class DemoShowFormulas( QWebEngineView ):
         #self.loadFinished.connect( self.on_loadFinished )
         #self.initialized = False
         #
+        self._setupActions( )
         self._manager = QNetworkAccessManager( self )
 
+    def _setupActions( self ):
+        backAction = QAction( self )
+        backAction.setShortcut( 'Shift+Ctrl+1' )
+        backAction.triggered.connect( self.back )
+        self.addAction( backAction )
+        forwardAction = QAction( self )
+        forwardAction.setShortcut( 'Shift+Ctrl+2' )
+        forwardAction.triggered.connect( self.forward )
+        self.addAction( forwardAction )        
+        
     def on_loadFinished( self ):
         self.initialized = True
 
@@ -99,7 +109,7 @@ class ConvertWidget( QDialogWithPrinting ):
         qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
         qdl.setModal( True )
         qsb = QPushButton( 'SAVE' )
-        qte = DemoShowFormulas( qdl )
+        qte = HtmlView( qdl )
         qdlLayout = QVBoxLayout( )
         qdl.setLayout( qdlLayout )
         qdlLayout.addWidget( qsb )

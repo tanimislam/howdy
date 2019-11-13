@@ -152,11 +152,11 @@ class PlexIMGClient( object ):
     """
 
     @classmethod
-    def getImageMD5( cls, image ):
+    def get_image_md5( cls, image ):
         """
         :returns: the MD5_ hash of the image.
-        :param image: the image object.
-        :type image: :py:class:`Image <PIL.Image>`
+        :param image: the native Pillow PNG image object.
+        :type image: :py:class:`PngImageFile <PIL.PngImagePlugin.PngImageFile>`
         """
         buf = io.BytesIO( )
         image.save( buf, format = 'PNG' )

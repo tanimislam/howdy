@@ -81,6 +81,7 @@ intersphinx_mapping = {
     'sqlalchemy' : ( 'https://www.sqlalchemy.org/docs', None ),
     'subliminal' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
     'musicbrainzngs' : ( 'https://python-musicbrainzngs.readthedocs.io/en/latest', None ),
+    'pillow' : ( 'https://pillow.readthedocs.io/en/stable', None ),
 }
 
 #

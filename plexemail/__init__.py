@@ -8,8 +8,8 @@ import hashlib, requests, io, datetime
 import pathos.multiprocessing as multiprocessing
 from apiclient.discovery import build
 from PIL import Image
-from PyQt5.QtWidgets import QDialog, QLabel, QVBoxLayout
-from PyQt5.QtGui import QImage, QPalette, QPixmap
+from PyQt5.QtWidgets import QDialog, QLabel, QVBoxLayout, QMenu
+from PyQt5.QtGui import QImage, QPalette, QPixmap, QCursor
 
 from plexcore import plexcore
 
@@ -149,7 +149,21 @@ class PlexIMGClient( object ):
     .. _Imgur: https://imgur.com
     .. _SQLite3: https://www.sqlite.org/index.html
     .. _MD5: https://en.wikipedia.org/wiki/MD5
-    """    
+    """
+
+    @classmethod
+    def getImageMD5( cls, image ):
+        """
+        :returns: the MD5_ hash of the image.
+        :param image: the image object.
+        :type image: :py:class:`Image <PIL.Image>`
+        """
+        buf = io.BytesIO( )
+        image.save( buf, format = 'PNG' )
+        b64string = base64.b64encode( buf.getvalue( ) )
+        imgMD5 = hashlib.md5( b64string ).hexdigest( )
+        return imgMD5
+    
     def __init__( self, verify = True, data_imgurl = None ):
         #
         ## https://api.imgur.com/oauth2 advice on using refresh tokens

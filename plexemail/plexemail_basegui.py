@@ -1,6 +1,6 @@
-import os, sys, numpy, glob, datetime
+import os, sys, numpy, glob, datetime, uuid
 from PIL import Image
-from PyQt5.QtWidgets import QAbstractItemView, QAction, QFileDialog, QHeaderView, QMenu, QTableView, QVBoxLayout
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QFileDialog, QHeaderView, QMenu, QTableView, QVBoxLayout, QApplication
 from PyQt5.QtGui import QBrush, QColor, QCursor
 from PyQt5.QtCore import QAbstractTableModel, Qt
 
@@ -64,49 +64,76 @@ class PNGPicTableView( QTableView ):
         self.addAction( toTopAction )
 
     def add( self ):
-        pngFileName = str( QFileDialog.getOpenFileName( self, 'Choose PNG file', os.getcwd( ),
-                                                        filter = '*.png' ) )
+        pngFileName, _ = QFileDialog.getOpenFileName(
+            self, 'Choose PNG file', os.getcwd( ), filter = '*.png' )
         if len( os.path.basename( pngFileName.strip( ) ) ) == 0:
             return
         if not os.path.isfile( pngFileName ):
             return
-        numNow = len( self.parent.pngPicTableModel.pngPicObjects ) + 1
-        while( True ):
-            actName = 'figure_%03d.png' % numNow
-            if actName not in set(map(lambda obj: obj.actName, self.parent.pngPicTableModel.pngPicObjects ) ):
-                break
-            numNow += 1
+
+        #
+        ## now check to see if this image already in pIMGClient
+        imgMD5 = PlexIMGClient.getImageMD5( Image.open( pngFileName.strip( ) ) )
+        if imgMD5 in self.parent.pIMGClient.imghashes: return
+        
+        #
+        ## now collisions in name are not allowed, just pick a random name
+        if os.path.basename( pngFileName.strip( ) ) in set(
+                map(lambda pngpo: pngpo.actName, self.parent.pngPicTableModel.pngPicObjects ) ):
+            actName = os.path.join( os.path.dirname( pngFileName.strip( ) ),
+                                    'figure-%s.png' % str( uuid.uuid4( ) ).split('-')[0] )
+        else:
+            actName = pngFileName.strip( )
+            
         self.parent.pngPicTableModel.addPicObject(
             PNGPicObject( {
                 'initialization' : 'FILE',
                 'filename' : pngFileName,
                 'actName' : actName }, self.parent.pIMGClient ) )
 
+    
+    def copyImageURL( self ):
+        indices_valid = list(
+            filter(lambda index: index.column( ) == 0,
+                   self.selectionModel().selectedIndexes( ) ) )
+        if indices_valid is None or len( indices_valid ) == 0: return
+        row = max(map(lambda index: index.row( ), indices_valid ) )
+        self.parent.pngPicTableModel.copyURLAtRow( row )
+        
     def info( self ):
         indices_valid = list(
             filter(lambda index: index.column( ) == 0,
                    self.selectionModel().selectedIndexes( ) ) )
+        if indices_valid is None or len( indices_valid ) == 0: return
         row = max(map(lambda index: index.row( ), indices_valid ) )
         self.parent.pngPicTableModel.infoOnPicAtRow( row )
 
     def remove( self ):
-        indices_valid = filter(lambda index: index.column( ) == 0,
-                               self.selectionModel().selectedIndexes( ) )
+        indices_valid = list(
+            filter(lambda index: index.column( ) == 0,
+                   self.selectionModel().selectedIndexes( ) ) )
+        if indices_valid is None or len( indices_valid ) == 0: return
         row = max(map(lambda index: index.row( ), indices_valid ) )
         self.parent.pngPicTableModel.removePicObject( row )
 
     def removeAndDelete( self ):
-        indices_valid = filter(lambda index: index.column( ) == 0,
-                               self.selectionModel().selectedIndexes( ) )
+        indices_valid = list(
+            filter(lambda index: index.column( ) == 0,
+                   self.selectionModel().selectedIndexes( ) ) )
+        if indices_valid is None or len( indices_valid ) == 0: return
         row = max(map(lambda index: index.row( ), indices_valid ) )
         self.parent.pngPicTableModel.removeAndDeletePicObject( row )
         
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
         addAction = QAction( 'Add', menu )
+        addAction.setShortcut( 'Ctrl+O' )
         addAction.triggered.connect( self.add )
         menu.addAction( addAction )
         if len( self.parent.pngPicTableModel.pngPicObjects ) != 0:
+            copyURLAction = QAction( 'Copy Image URL', menu )
+            copyURLAction.triggered.connect( self.copyImageURL )
+            menu.addAction( copyURLAction )
             infoAction = QAction( 'Information', menu )
             infoAction.triggered.connect( self.info )
             menu.addAction( infoAction)
@@ -116,7 +143,7 @@ class PNGPicTableView( QTableView ):
             removeAndDeleteAction = QAction( 'Remove and Delete', menu )
             removeAndDeleteAction.triggered.connect( self.removeAndDelete )
             menu.addAction( removeAndDeleteAction )
-        menu.popup( QCursor.pos( ) )        
+        menu.popup( QCursor.pos( ) )
 
 class PNGPicTableModel( QAbstractTableModel ):
     def __init__( self, parent ):
@@ -192,10 +219,21 @@ class PNGPicTableModel( QAbstractTableModel ):
 
     def sort( self, col, order ): # sort on datetime
         self.layoutAboutToBeChanged.emit( )
-        print( self.pngPicObjects[0].imgDateTime )
-        self.pngPicObjects.sort(
-            key = lambda pngpo: -datetime.datetime.timestamp( pngpo.imgDateTime ) )
+        if col == 0: # name
+            self.pngPicObjects.sort(
+                key = lambda pngpo: pngpo.actName  )
+        elif col == 1: # image width
+            self.pngPicObjects.sort(
+                key = lambda pngpo: -pngpo.originalWidth )
+        elif col == 2: # date uploaded
+            self.pngPicObjects.sort(
+                key = lambda pngpo: -datetime.datetime.timestamp( pngpo.imgDateTime ) )
         self.layoutChanged.emit( )
+
+    def copyURLAtRow( self, row ):
+        assert( row >= 0 and row < len( self.pngPicObjects ) )
+        pngpo = self.pngPicObjects[ row ]
+        QApplication.clipboard( ).setText( pngpo.imgurlLink )
 
     def removePicObject( self, row ):
         assert( row >= 0 and row < len( self.pngPicObjects ) )

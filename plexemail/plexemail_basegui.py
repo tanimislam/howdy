@@ -73,7 +73,8 @@ class PNGPicTableView( QTableView ):
 
         #
         ## now check to see if this image already in pIMGClient
-        imgMD5 = PlexIMGClient.getImageMD5( Image.open( pngFileName.strip( ) ) )
+        imgMD5 = PlexIMGClient.get_image_md5(
+            Image.open( pngFileName.strip( ) ) )
         if imgMD5 in self.parent.pIMGClient.imghashes: return
         
         #

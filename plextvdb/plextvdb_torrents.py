@@ -75,6 +75,9 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
             'ERROR, LAST TOKEN %s IS NOT SEASON-EPISODE TOKEN.' % last_tok )
     if series_name is None: series_name = ' '.join( name_split[:-1] )
     tvdb_token = get_token( verify = verify )
+    if tvdb_token is None:
+        return return_error_raw(
+            'ERROR, COULD NOT ACCESS API.THETVDB.COM' )
     series_id = plextvdb.get_series_id( series_name, tvdb_token, verify = verify )
     if series_id is None:
         return return_error_raw(
@@ -493,6 +496,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
     if not url.endswith( '/' ): url = '%s/' % url
     endpoint = 'api/v2.0/indexers/all/results/torznab/api'
     tvdb_token = get_token( verify = verify )
+    logging.debug( '%s: tvdb_token is None? %s.' % ( name, tvdb_token is None ) )
     name_split = name.split()
     last_tok = name_split[-1].lower( )
     status = re.match('^s[0-9]{2}e[0-9]{2}',

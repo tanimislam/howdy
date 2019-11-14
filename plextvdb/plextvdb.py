@@ -575,9 +575,7 @@ def get_possible_ids( series_name, tvdb_token, verify = True ):
         data = response.json( )[ 'data' ]
         return list(map(lambda dat: {
             'id' : dat['id'], 'seriesName' : dat['seriesName'] }, data ) ), 'SUCCESS'
-    
-    
-    
+        
     # quick hack to get this to work
     ## was a problem with show AQUA TEEN HUNGER FORCE FOREVER
     params = { 'name' : ' '.join( series_name.replace("'", '').split()[:-1] ) }
@@ -600,9 +598,9 @@ def get_possible_ids( series_name, tvdb_token, verify = True ):
         return return_error_raw( 'Error, could not find TMDB ids for %s.' % series_name )
     tot_data = [ ]
     for imdb_id in imdb_ids:
-        response = requests.get( 'https://api.thetvdb.com/search/series',
-                                 params = { 'imdbId' : imdb_id }, headers = headers,
-                                 verify = verify )
+        response = requests.get(
+            'https://api.thetvdb.com/search/series',
+            params = { 'imdbId' : imdb_id }, headers = headers, verify = verify )
         if response.status_code != 200: continue
         data = response.json( )[ 'data' ]
         for dat in data:

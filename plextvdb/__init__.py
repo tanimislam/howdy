@@ -1,4 +1,4 @@
-import os, requests, json, sys
+import os, requests, json, sys, logging
 from functools import reduce
 from sqlalchemy import Column, String
 
@@ -113,7 +113,11 @@ def get_token( verify = True, data = None ):
     response = requests.post( 'https://api.thetvdb.com/login',
                               data = json.dumps( data ),
                               verify = verify, headers = headers )
-    if response.status_code != 200: return None
+    if response.status_code != 200:
+        logging.debug( ' '.join([
+            'Error, bad response: %s.' % response.status_code,
+            'here is content: %s.' % response.content ]))
+        return None
     return response.json( )[ 'token' ]
 
 def refresh_token( token: str, verify: bool = True ):

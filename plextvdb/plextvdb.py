@@ -545,7 +545,7 @@ def get_series_id( series_name, token, verify = True ):
         return data_match[ 'id' ]
     return max( data_matches )[ 'id' ]
 
-def get_possible_ids( series_name, token, verify = True ):
+def get_possible_ids( series_name, tvdb_token, verify = True ):
     """
     Returns a :py:class:`tuple` of candidate TV shows from the TVDB_ database that match a series name, and status string. If matches could not be found, returns an error :py:class:`tuple` returned by :py:meth:`return_error_raw <plexcore.return_error_raw>` -- first element is ``None``, second element is :py:class:`str` error message.
 
@@ -557,7 +557,7 @@ def get_possible_ids( series_name, token, verify = True ):
        >> [{'id': 71663, 'seriesName': 'The Simpsons'}, {'id': 76580, 'seriesName': "Paul Merton in Galton & Simpson's..."}, {'id': 153221, 'seriesName': "Jessica Simpson's The Price of Beauty"}]
     
     :param str series_name: the series over which to search on the TVDB_ database.
-    :param str token: the TVDB_ API access token.
+    :param str tvdb_token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
     :returns: a :py:class:`tuple` of candidate TVDB_ series that match ``series_name``, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
@@ -567,7 +567,7 @@ def get_possible_ids( series_name, token, verify = True ):
     """
     params = { 'name' : series_name.replace("'", '') }
     headers = { 'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer %s' % token }
+                'Authorization' : 'Bearer %s' % tvdb_token }
     response = requests.get( 'https://api.thetvdb.com/search/series',
                              params = params, headers = headers,
                              verify = verify )
@@ -582,7 +582,7 @@ def get_possible_ids( series_name, token, verify = True ):
     ## was a problem with show AQUA TEEN HUNGER FORCE FOREVER
     params = { 'name' : ' '.join( series_name.replace("'", '').split()[:-1] ) }
     headers = { 'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer %s' % token }
+                'Authorization' : 'Bearer %s' % tvdb_token }
     response = requests.get( 'https://api.thetvdb.com/search/series',
                              params = params, headers = headers,
                              verify = verify )
@@ -613,12 +613,12 @@ def get_possible_ids( series_name, token, verify = True ):
     #
     return return_error_raw( 'Error, could not find series ids for %s.' % series_name )
 
-def did_series_end( series_id, token, verify = True, date_now = None ):
+def did_series_end( series_id, tvdb_token, verify = True, date_now = None ):
     """
     Check on shows that have ended more than 365 days from the last day.
     
     :param int series_id: the TVDB_ database series ID.
-    :param str token: the TVDB_ API access token.
+    :param str tvdb_token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :param date date_now: an optional specific last :py:class:`date <datetime.date>` to describe when a show was deemed to have ended. That is, if a show has not aired any episodes more than 365 days before ``date_now``, then define the show as ended. By default, ``date_now`` is the current date.
 
@@ -626,7 +626,7 @@ def did_series_end( series_id, token, verify = True, date_now = None ):
     :rtype: bool
     """
     headers = { 'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer %s' % token }
+                'Authorization' : 'Bearer %s' % tvdb_token }
     response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
                              headers = headers, verify = verify )
     if response.status_code != 200: return None
@@ -638,16 +638,16 @@ def did_series_end( series_id, token, verify = True, date_now = None ):
     if date_now is None: date_now = datetime.datetime.now( ).date( )
     last_date = max(map(lambda epdata: datetime.datetime.strptime(
         epdata['firstAired'], '%Y-%m-%d' ).date( ),
-                        get_episodes_series( series_id, token, verify = verify ) ) )
+                        get_episodes_series( series_id, tvdb_token, verify = verify ) ) )
     td = date_now - last_date
     return td.days > 365
 
-def get_imdb_id( series_id, token, verify = True ):
+def get_imdb_id( series_id, tvdb_token, verify = True ):
     """
     Returns the IMDb_ string ID given a TVDB_ series ID, otherwise return ``None`` if show's IMDb_ ID cannot be found.
 
     :param int series_id: the TVDB_ database series ID.
-    :param str token: the TVDB_ API access token.
+    :param str tvdb_token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     
     :returns: the :py:class:`str` IMDb_ ID of the TV show if found, otherwise ``None``.
@@ -656,23 +656,23 @@ def get_imdb_id( series_id, token, verify = True ):
     .. _IMDb: https://en.wikipedia.org/wiki/IMDb
     """
     headers = { 'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer %s' % token }
+                'Authorization' : 'Bearer %s' % tvdb_token }
     response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
                              headers = headers, verify = verify )
     logging.debug( 'STATUS CODE OF get_imdb_id( %d, %s, %s ) = %d.' % (
-        series_id, token, verify, response.status_code ) )
+        series_id, tvdb_token, verify, response.status_code ) )
     if response.status_code != 200: return None
     data = response.json( )['data']
     return data['imdbId']
 
-def get_episode_id( series_id, airedSeason, airedEpisode, token, verify = True ):
+def get_episode_id( series_id, airedSeason, airedEpisode, tvdb_token, verify = True ):
     """
     Returns the TVDB_ :py:class:`int` episode ID of an episode, given its TVDB_ series ID, season, and episode number. If cannot be found, then returns ``None``.
 
     :param int series_id: the TVDB_ database series ID.
     :param int airedSeason: the season number of the episode.
     :param int airedEpisode: the aired episode number, in the season.
-    :param str token: the TVDB_ API access token.
+    :param str tvdb_token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     
     :returns: the :py:class:`int` TVDB_ episode ID if found, otherwise ``None``.
@@ -682,21 +682,21 @@ def get_episode_id( series_id, airedSeason, airedEpisode, token, verify = True )
                'airedSeason' : '%d' % airedSeason,
                'airedEpisode' : '%d' % airedEpisode }
     headers = { 'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer %s' % token }
+                'Authorization' : 'Bearer %s' % tvdb_token }
     response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/query' % series_id,
                              params = params, headers = headers, verify = verify )
     if response.status_code != 200: return None
     data = max( response.json( )[ 'data' ] )
     return data[ 'id' ]
 
-def get_episode_name( series_id, airedSeason, airedEpisode, token, verify = True ):
+def get_episode_name( series_id, airedSeason, airedEpisode, tvdb_token, verify = True ):
     """
     Returns the episode given its TVDB_ series ID, season number, and episode number. If cannot be found, then returns ``None``.
 
     :param int series_id: the TVDB_ database series ID.
     :param int airedSeason: the season number of the episode.
     :param int airedEpisode: the aired episode number, in the season.
-    :param str token: the TVDB_ API access token.
+    :param str tvdb_token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
     :returns: the :py:class:`str` episode name.
@@ -706,7 +706,7 @@ def get_episode_name( series_id, airedSeason, airedEpisode, token, verify = True
                'airedSeason' : '%d' % airedSeason,
                'airedEpisode' : '%d' % airedEpisode }
     headers = { 'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer %s' % token }
+                'Authorization' : 'Bearer %s' % tvdb_token }
     response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/query' % series_id,
                              params = params, headers = headers, verify = verify )
     if response.status_code != 200: return None
@@ -721,7 +721,7 @@ def get_episode_name( series_id, airedSeason, airedEpisode, token, verify = True
     
     return ( data[ 'episodeName' ], firstAired )
 
-def get_series_info( series_id, token, verify = True ):
+def get_series_info( series_id, tvdb_token, verify = True ):
     """
     Returns a :py:class:`tuple` of TVDB_ summary information AND the string "SUCCESS" for a given Tv show, otherwise returns an error :py:class:`tuple` given by :py:meth:`return_error_raw <plexcore.return_error_raw>`. For example, here is the summary information returned for `The Simpsons`_.
     
@@ -754,14 +754,14 @@ def get_series_info( series_id, token, verify = True ):
             'slug': 'the-simpsons'}
 
     :param int series_id: the TVDB_ database series ID.
-    :param str token: the TVDB_ API access token.
+    :param str tvdb_token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
     :returns: a :py:class:`tuple` of candidate TV show info, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
     :rtype: tuple
     """
     headers = { 'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer %s' % token }
+                'Authorization' : 'Bearer %s' % tvdb_token }
     response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
                              headers = headers, verify = verify )
     if response.status_code != 200: return return_error_raw( "COULD NOT ACCESS TV INFO SERIES" )
@@ -769,7 +769,7 @@ def get_series_info( series_id, token, verify = True ):
     return data, 'SUCCESS'
     
 
-def get_series_image( series_id, token, verify = True ):
+def get_series_image( series_id, tvdb_token, verify = True ):
     """
     Returns a :py:class:`tuple` of the TVDB_ URL of the TV show's poster AND the string "SUCCESS", if found. Otherwise returns an error :py:class:`tuple` given by :py:meth:`return_error_raw <plexcore.return_error_raw>`. For example, here is the TVDB_ poster URL for `The Simpsons`_.
     
@@ -780,7 +780,7 @@ def get_series_image( series_id, token, verify = True ):
         >> 'https://thetvdb.com/banners/posters/71663-1.jpg'
 
     :param int series_id: the TVDB_ database series ID.
-    :param str token: the TVDB_ API access token.
+    :param str tvdb_token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
     :returns: a :py:class:`tuple` of TV show poster URL, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
@@ -789,7 +789,7 @@ def get_series_image( series_id, token, verify = True ):
     .. seealso:: :py:meth:`get_series_season_image <plextvdb.plextvdb.get_series_season_image>`
     """
     headers = { 'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer %s' % token }
+                'Authorization' : 'Bearer %s' % tvdb_token }
     response = requests.get( 'https://api.thetvdb.com/series/%d/images/query/params' % series_id,
                              headers = headers, verify = verify )
     if response.status_code != 200: return return_error_raw( "COULD NOT ACCESS IMAGE URL FOR SERIES" )
@@ -843,7 +843,7 @@ def get_series_image( series_id, token, verify = True ):
     ## nothing happened
     return return_error_raw( "COULD NOT DOWNLOAD SERIES INFO FOR SERIES_ID = %d" % series_id )
 
-def get_series_season_image( series_id, airedSeason, token, verify = True ):
+def get_series_season_image( series_id, airedSeason, tvdb_token, verify = True ):
     """
     Returns a :py:class:`tuple` of the TVDB_ URL of the TV show's SEASON poster AND the string "SUCCESS", if found. Otherwise returns an error :py:class:`tuple` given by :py:meth:`return_error_raw <plexcore.return_error_raw>`. For example, here is the TVDB_ season poster URL for `The Simpsons, season 10`_.
     
@@ -855,7 +855,7 @@ def get_series_season_image( series_id, airedSeason, token, verify = True ):
 
     :param int series_id: the TVDB_ database series ID.
     :param int airedSeason: the season number of the episode.
-    :param str token: the TVDB_ API access token.
+    :param str tvdb_token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
     :returns: a :py:class:`tuple` of TV show SEASON poster URL, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
@@ -866,7 +866,7 @@ def get_series_season_image( series_id, airedSeason, token, verify = True ):
     .. _`The Simpsons, season 10`: https://en.wikipedia.org/wiki/The_Simpsons_(season_10)
     """
     headers = { 'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer %s' % token }
+                'Authorization' : 'Bearer %s' % tvdb_token }
     response = requests.get( 'https://api.thetvdb.com/series/%d/images/query/params' % series_id,
                              headers = headers, verify = verify )
     if response.status_code != 200:
@@ -900,14 +900,14 @@ def get_series_season_image( series_id, airedSeason, token, verify = True ):
                 series_id, airedSeason ) )
     return 'https://thetvdb.com/banners/%s' % season_data[ 'fileName' ], "SUCCESS"
 
-def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
+def get_episodes_series( series_id, tvdb_token, showSpecials = True, fromDate = None,
                          verify = True, showFuture = False ):
     """
     Returns a large and comprehensive :py:class:`list` of TVDB_ episode info on a given TV show. Example TVDB_ show data for `The Simpsons`_, represented as a JSON file, is located in :download:`tvdb_simpsons_info.json </_static/tvdb_simpsons_info.json>`. Each element of the list is an episode, and the list is ordered from earliest aired episode to latest aired episode.
     
     :param int series_id: the TVDB_ database series ID.
     
-    :param str token: the TVDB_ API access token.
+    :param str tvdb_token: the TVDB_ API access token.
     
     :param bool showSpecials: if ``True``, also include episode info for TV specials for that given series. Default is ``True``.
     
@@ -924,7 +924,7 @@ def get_episodes_series( series_id, token, showSpecials = True, fromDate = None,
     """
     params = { 'page' : 1 }
     headers = { 'Content-Type' : 'application/json',
-                'Authorization' : 'Bearer %s' % token }
+                'Authorization' : 'Bearer %s' % tvdb_token }
     response = requests.get( 'https://api.thetvdb.com/series/%d/episodes' % series_id,
                              params = params, headers = headers, verify = verify )
     if response.status_code != 200: return None

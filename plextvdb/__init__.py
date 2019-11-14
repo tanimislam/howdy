@@ -32,7 +32,7 @@ class ShowsToExclude( Base ): # these are shows you want to exclude
 ## commit all tables (implicit check on whether in READTHEDOCS variable is set
 create_all( )
     
-def save_tvdb_api( username: str, apikey: str, userkey: str, verify = True ):
+def save_tvdb_api( username, apikey, userkey, verify = True ):
     """
     Saves the information on the TVDB_ API access into the ``tvdb`` configuration service in the ``plexconfig`` table. Details of how to set up the configuration in :ref:`TVDB API configuation <The Television Database (TVDB) API>`, which uses ``plex_config_gui.py``.
 
@@ -43,6 +43,8 @@ def save_tvdb_api( username: str, apikey: str, userkey: str, verify = True ):
 
     :returns: a satus :py:class:`string <str>`. If successful, returns ``"SUCCESS"``. If unsuccessful, returns ``"FAILURE, COULD NOT SAVE TVDB API STUFF"``.
     :rtype: str
+
+    .. seealso:: :py:meth:`check_tvdb_api <plextvdb.check_tvdb_api>`
     """
     #
     ## first check if works
@@ -62,7 +64,7 @@ def save_tvdb_api( username: str, apikey: str, userkey: str, verify = True ):
     session.commit( )
     return 'SUCCESS'
 
-def check_tvdb_api( username, apikey, userkey, verify = True ) -> bool:
+def check_tvdb_api( username, apikey, userkey, verify = True ):
     token = get_token( verify = verify,
                        data = {  'apikey' : apikey,
                                  'username' : username,
@@ -70,7 +72,7 @@ def check_tvdb_api( username, apikey, userkey, verify = True ) -> bool:
     if token is None: return False
     return True
 
-def get_tvdb_api( ) -> dict:
+def get_tvdb_api( ):
     """
     Returns the :py:class:`dictionary <dict>` of TVDB_ API credentials (see  :ref:`TVDB API configuation <The Television Database (TVDB) API>`), taken from the ``tvdb`` configuration service in the ``plexconfig`` table. The form of the dictionary is,
 
@@ -109,18 +111,50 @@ def get_token( verify = True, data = None ):
     if data is None:
         try: data = get_tvdb_api( )
         except: return None
-    headers = { 'Content-Type' : 'application/json' }
-    response = requests.post( 'https://api.thetvdb.com/login',
-                              data = json.dumps( data ),
-                              verify = verify, headers = headers )
-    if response.status_code != 200:
-        logging.debug( ' '.join([
-            'Error, bad response: %s.' % response.status_code,
-            'here is content: %s.' % response.content ]))
-        return None
-    return response.json( )[ 'token' ]
+    #
+    ## as of 12 NOVEMBER 2019, api.thetvdb.com does not work. Black-hole and /dev/null type
+    ## responses from administrative staff. Here is what works. It is rickety, it is god-awful,
+    ## if you have a problem tweet it. If you raise enough of a stink, you may be banned from
+    ## using api.thetvdb.com.
+    ##
+    import shlex, subprocess
+    from distutils.spawn import find_executable
 
-def refresh_token( token: str, verify: bool = True ):
+    curl_exec = find_executable( 'curl' )
+    if curl_exec is None:
+        logging.info( 'Cannot find curl executable.' )
+        return None
+    apikey = data[ 'apikey' ]
+    if verify:
+        mystr = "%s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"apikey\": \"%s\"}' 'https://api.thetvdb.com/login'" % (
+            curl_exec, apikey )
+    else:
+        mystr = "%s -k -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"apikey\": \"%s\"}' 'https://api.thetvdb.com/login'" % (
+            curl_exec, apikey )
+    proc = subprocess.Popen(
+        shlex.split( mystr ), stdout = subprocess.PIPE,
+        stderr = subprocess.STDOUT )
+    stdout_val, stderr_val = proc.communicate( )
+    try:
+        data = json.loads( stdout_val.decode('utf-8' ).split('\n')[-1] )
+        return data[ 'token' ]
+    except Exception as e:
+        logging.info( 'Error, TVDB API key = %s does not work. Error reason is %s.' % (
+            apikey, str( e ) ) )
+        return None
+    
+    #headers = { 'Content-Type' : 'application/json' }
+    # response = requests.post( 'https://api.thetvdb.com/login',
+    #                           data = json.dumps( data ),
+    #                           verify = verify, headers = headers )
+    # if response.status_code != 200:
+    #     logging.debug( ' '.join([
+    #         'Error, bad response: %s.' % response.status_code,
+    #         'here is content: %s.' % response.content ]))
+    #     return None
+    #return response.json( )[ 'token' ]
+
+def refresh_token( token, verify = True ):
     """
     Refreshes the TVDB_ API token.
 

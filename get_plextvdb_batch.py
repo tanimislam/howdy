@@ -8,7 +8,7 @@ signal.signal( signal.SIGINT, signal_handler )
 import os, numpy, glob, time, datetime
 import multiprocessing, logging
 from plexcore import plexcore
-from plextvdb import plextvdb
+from plextvdb import plextvdb, get_token
 from optparse import OptionParser
 
 def finish_statement( step ):
@@ -93,11 +93,20 @@ def main( ):
     time0 = time.time( )
     tvdata = plexcore.get_library_data(
         tvlib_title, token = token, num_threads = opts.numthreads )
+    print( '%d, found %d shows in the TV library, in %0.3f seconds.' % (
+        step, len( tvdata ), time.time( ) - time0 ) )
+    step += 1
     showsToExclude = plextvdb.get_shows_to_exclude( tvdata )
     if len( showsToExclude ) != 0:
         print( '%d, excluding these TV shows: %s.' % (
             step, '; '.join( showsToExclude ) ) )
         step += 1
+    tvdb_token = get_token( )
+    if tvdb_token is None:
+        print( '\n'.join([
+            '%d, error, could not access the TVDB API server in %0.3f seconds. Exiting...' % (
+                step, time.time( ) - time0 ) ] ) )
+        return
     toGet = plextvdb.get_remaining_episodes(
         tvdata, showSpecials = False,
         showsToExclude = showsToExclude,

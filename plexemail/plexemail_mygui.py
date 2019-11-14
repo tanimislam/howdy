@@ -174,10 +174,10 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         self.mainEmailCanvas.setTabStopWidth( 2 * qfm.width( 'A' ) )
         self.subjectLine = QLineCustom( )
         self.statusLabel = QLabel( )
-        self.checkRSTButton = QPushButton( '\n'.join('PRINT EMAIL'.split( ) ) )
+        self.checkRSTButton = QPushButton( '\n'.join( 'CHECK EMAIL'.split( ) ) )
         self.emailListButton = QPushButton( '\n'.join( 'PLEX GUESTS'.split( ) ) )
-        self.emailSendButton = QPushButton( '\n'.join( 'SEND EMAIL'.split( ) ) )
-        self.emailTestButton = QPushButton( '\n'.join( 'TEST EMAIL'.split( ) ) )
+        self.emailSendButton = QPushButton( '\n'.join( 'SEND ALL EMAIL'.split( ) ) )
+        self.emailTestButton = QPushButton( '\n'.join( 'SEND TEST EMAIL'.split( ) ) )
         self.pngShowButton = QPushButton( 'SHOW PNGS' )
         self.emailSendButton.setEnabled( False )
         self.emailTestButton.setEnabled( False )
@@ -221,13 +221,6 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         self.setFixedHeight( 33 * qfm.height( ) )
         self.show( )
 
-    def contextMenuEvent( self, event ):
-        menu = QMenu( self )
-        screenGrabAction = QAction( 'screenGrab', menu )
-        screenGrabAction.triggered.connect( self.screenGrab )
-        menu.addAction( screenGrabAction )
-        menu.popup( QCursor.pos( ) )
-
     def showPNGs( self ):
         self.pngWidget.show( )
         # self.pngAddButton.setEnabled( False )
@@ -261,6 +254,7 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         myStr = self.mainEmailCanvas.toPlainText( ).strip( )
         if len( myStr ) == 0:
             self.emailSendButton.setEnabled( False )
+            self.emailTestButton.setEnabled( False )
             self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
             return
         mainText = '\n'.join([ 'Hello Friend,', '', myStr ])

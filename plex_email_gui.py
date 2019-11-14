@@ -45,6 +45,10 @@ if __name__=='__main__':
                       help = 'If chosen, make the GUI (widgets and fonts) LARGER to help with readability.')
     parser.add_option('--noverify', dest='do_verify', action='store_false',
                       default = True, help = 'Do not verify SSL transactions if chosen.')
+    parser.add_option('--extraemails', dest='extraemails', type=str, action='store',
+                      help = 'If defined, the list of extra emails to send.' )
+    parser.add_option('--extranames', dest = 'extranames', type=str, action='store',
+                      help = 'If defined, the list of extra names to send.' )
     opts, args = parser.parse_args( )
     main( info = opts.do_info, doLocal = opts.do_local, verify = opts.do_verify,
           onlyEmail = opts.do_onlyemail )

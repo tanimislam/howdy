@@ -1,4 +1,4 @@
-import requests, os, sys, time
+import requests, os, sys, time, json
 import logging, datetime, fuzzywuzzy.fuzz
 from dateutil.relativedelta import relativedelta
 from imdb import IMDb
@@ -272,10 +272,13 @@ def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
             if len( newresults ) > 0:
                 results += sorted( newresults, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
     if len( results ) == 0: return None
-    return list(
-        map(lambda result: { 'id' : result['id'], 'name' : result['name'],
-                             'airedYear' : datetime.datetime.strptime( result['first_air_date'], '%Y-%m-%d' ).year },
-            results ) )
+    def get_candidate_show( result ):
+        try:
+            entry = { 'id' : result['id'], 'name' : result['name'],
+                      'airedYear' : datetime.datetime.strptime( result['first_air_date'], '%Y-%m-%d' ).year }
+            return entry
+        except: return None
+    return list(filter(None, map(get_candidate_show, results ) ) )
 
 def get_series_tmdb_id( series_name, firstAiredYear = None ):
     """

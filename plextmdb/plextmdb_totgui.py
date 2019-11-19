@@ -20,7 +20,6 @@ class TMDBTotGUIThread( ProgressDialogThread ):
         self.token = token
         self.verify = verify
         self.movie_data_rows = movie_data_rows
-        self.time0 = time0
         
     def run( self ):
         self.progress_dialog.show( )
@@ -41,7 +40,7 @@ class TMDBTotGUIThread( ProgressDialogThread ):
         logging.info( mystr )
         self.emitString.emit( mystr )
         self.movieDataRowsSignal.emit( self.movie_data_rows )
-        self.progress_dialog.stopDialog( )
+        self.stopDialog.emit( )
         
 class TMDBTotGUI( QDialogWithPrinting ):
     emitNewToken = pyqtSignal( str )
@@ -49,7 +48,6 @@ class TMDBTotGUI( QDialogWithPrinting ):
     def process_movie_data_rows_init( self, movie_data_rows ):
         #
         ## now change everything
-        # self.progress_dialog.stopDialog( )
         self.setWindowTitle( 'PLEX MOVIE GUI' )
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )

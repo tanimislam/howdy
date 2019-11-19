@@ -925,7 +925,9 @@ def get_episodes_series( series_id, tvdb_token, showSpecials = True, fromDate = 
                 'Authorization' : 'Bearer %s' % tvdb_token }
     response = requests.get( 'https://api.thetvdb.com/series/%d/episodes' % series_id,
                              params = params, headers = headers, verify = verify )
-    if response.status_code != 200: return None
+    if response.status_code != 200:
+        logging.debug( 'could not get episodes for series_id = %d.' % series_id )
+        return None
     data = response.json( )
     links = data[ 'links' ]
     lastpage = links[ 'last' ]
@@ -1229,9 +1231,11 @@ def _get_series_id_perproc( input_tuple ):
     token = input_tuple[ 'token' ]
     verify = input_tuple[ 'verify' ]
     doShowEnded = input_tuple[ 'doShowEnded' ]
-    series_id = get_series_id( show, token, verify = verify )
+    if 'tvdbid' not in input_tuple:
+        series_id = get_series_id( show, token, verify = verify )
+    else: series_id = input_tuple[ 'tvdbid' ]
     if series_id is None:
-        logging.debug( 'something happened with show %s' % show )
+        logging.info( 'something happened with show %s' % show )
         return None
     if not doShowEnded:
         didEnd = did_series_end( series_id, token, verify = verify )
@@ -1312,10 +1316,15 @@ def get_remaining_episodes(
     with multiprocessing.Pool( processes = max( num_threads, multiprocessing.cpu_count( ) ) ) as pool:
         input_tuples = list(
             map(lambda show: {
+                'show' : show, 'token' : token, 'verify' : verify, 'doShowEnded' : doShowEnded,
+                'tvdbid' : tvdata_copy[ show ][ 'tvdbid' ] },
+                filter(lambda show: 'tvdbid' in tvdata_copy[ show ], tvdata_copy ) ) )
+        input_tuples_2 = list(
+            map(lambda show: {
                 'show' : show, 'token' : token, 'verify' : verify, 'doShowEnded' : doShowEnded },
-                tvdata_copy ) )
+                filter(lambda show: 'tvdbid' not in tvdata_copy[ show ], tvdata_copy ) ) )
         tvshow_id_map = dict(filter(
-            None, pool.map( _get_series_id_perproc, input_tuples ) ) )
+            None, pool.map( _get_series_id_perproc, input_tuples + input_tuples_2 ) ) )
         
     #if fromDate is not None:
     #    series_ids = set( get_series_updated_fromdate( fromDate, token ) )

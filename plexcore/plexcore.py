@@ -1,8 +1,4 @@
 import os, glob, datetime, gspread, logging, sys, numpy, urllib3
-from functools import reduce
-_mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
-                   os.path.abspath( __file__ ) )
-sys.path.append( _mainDir )
 import uuid, requests, pytz, pypandoc, time, json, validators
 import pathos.multiprocessing as multiprocessing
 # oauth2 stuff
@@ -626,6 +622,19 @@ def _get_library_data_show(
                 'summary' : summary,
                 'picurl' : picurl
             }
+            #
+            ## now look for tvdb ID for series
+            tvdbID = None
+            for leafElem in leafElems:
+                if 'parentguid' not in leafElem.attrs: continue
+                pguid = leafElem.attrs[ 'parentguid']
+                prs = urlparse( pguid )
+                try:
+                    tvdbID = int( prs.netloc )
+                    break
+                except: pass
+            if tvdbID is not None: showdata[ 'tvdbid' ] = tvdbID
+            #
             for idx, leafElem in enumerate(leafElems):
                 newURL = urljoin( fullURL, leafElem[ 'key' ] )
                 resp3 = session.get( newURL, params = params, verify = False, timeout = timeout )

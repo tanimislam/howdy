@@ -59,12 +59,13 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
                   plex_tv_data, toGet, tvdb_token,
                   plex_token, verify = True, parent = None ):
         super( TVDBSeasonGUI, self ).__init__( parent, isIsolated = False, doQuit = False )
+        self.hide( )
         self.setModal( True )
         self.parent = parent
         assert( seriesName in plex_tv_data )
         assert( seasno in plex_tv_data[ seriesName ]['seasons'] )
         plex_tv_episodes = plex_tv_data[ seriesName ]['seasons'][ seasno ].copy( )
-        seasonPICURL = plex_tv_episodes['seasonpicurl']
+        seasonPICURL = plex_tv_episodes[ 'seasonpicurl' ]
         #
         self.setWindowTitle( '%s season %02d' % ( seriesName, seasno ) )
         self.currentEpisode = None
@@ -138,12 +139,28 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
         self.leftImageWidget = QLabelWithSave( )
         self.leftImageWidget.setFixedWidth( 200 )
         if seasonPICURL is not None:
-            self.picData = plexcore.get_pic_data(
-                seasonPICURL, plex_token )
-            qpm = QPixmap.fromImage(
-                QImage.fromData( self.picData ) )
-            qpm = qpm.scaledToWidth( 200 )
-            self.leftImageWidget.setPixmap( qpm )
+            try:
+                self.picData = plexcore.get_pic_data(
+                    seasonPICURL, plex_token )
+                qpm = QPixmap.fromImage(
+                    QImage.fromData( self.picData ) )
+                qpm = qpm.scaledToWidth( 200 )
+                self.leftImageWidget.setPixmap( qpm )
+            except:
+                self.picData = None
+
+            if self.picData is None and 'tvdbid' in plex_tv_data[ seriesName ]:
+                imgURL, status = plextvdb.get_series_season_image(
+                    plex_tvd_data[ seriesName ][ 'tvdbid' ], 
+                    seasno, tvdb_token, verify = verify )
+                if status == 'SUCCESS':
+                    self.picData = requests.get( imgURL, verify = verify ).content
+                    qpm = QPixmap.fromImage(
+                        QImage.fromData( self.picData ) )
+                    qpm = qpm.scaledToWidth( 200 )
+                    self.leftImageWidget.setPixmap( qpm )
+                else: self.picData = None
+                
         else: self.picData = None
         topLayout.addWidget( self.leftImageWidget )
         self.seasonSummaryArea = QTextEdit( )
@@ -195,7 +212,7 @@ class TVDBSeasonGUI( QDialogWithPrinting ):
         self.filterStatusComboBox.currentIndexChanged.connect( self.tm.setFilterStatus )
         #
         ## all this for now...
-        self.show( )
+        # self.show( )
 
     def processEpisode( self, episode ):
         seriesName = episode[ 'seriesName' ]

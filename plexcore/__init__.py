@@ -22,7 +22,7 @@ from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
 from fuzzywuzzy.fuzz import partial_ratio
 from PyQt5.QtWidgets import QAction, QApplication, QDialog, QFileDialog, QLabel, QMenu, QTextEdit, QVBoxLayout
 from PyQt5.QtGui import QColor, QPixmap, QFontDatabase
-from PyQt5.QtCore import pyqtSignal, QTimer
+from PyQt5.QtCore import pyqtSignal, QTimer, QThread
 
 # resource file and stuff
 baseConfDir = os.path.abspath( os.path.expanduser( '~/.config/plexstuff' ) )
@@ -258,6 +258,66 @@ class QDialogWithPrinting( QDialog ):
                 quitAction.triggered.connect( sys.exit )
             self.addAction( quitAction )
 
+class ProgressDialogThread( QThread ):
+    """
+    This subclassing of :py:class:`QThread <PyQt5.QtCore.QThread>` provides a convenient scaffolding to run, in a non-blocking fashion, some long-running processes with an asssociated :py:class:`ProgressDialog <plexcore.ProgressDialog>` widget.
+
+    Subclasses of this object need to have a particular structure for their ``__init__`` method. The first three arguments MUST be ``self``, ``parent``, ``self`` is a reference to this object. ``parent`` is the parent :py:class:`QWidget <PyQt5.QtWidgets.QWidget>` to which the :py:class:`ProgressDialog <plexcore.ProgressDialog>` attribute, named ``progress_dialog``, is the child. ``title`` is the title of ``progress_dialog``. Here is an example, where an example class named ``ProgressDialogThreadChildClass`` inherits from  :py:class:`ProgressDialogThread <plexcore.ProgressDialogThread>`.
+
+    .. code-block:: python
+
+       def __init__( self, parent, *args, **kwargs ):
+           super( ProgressDialogThreadChildClass, self ).__init__( parent, title )
+
+           # own code to initialize based on *args and **kwargs
+
+    This thing has an associated :py:meth:`run <ProgressDialogThread.run>` method that is expected to be partially implemented in the following manner for subclasses of :py:class:`ProgressDialogThread <plexstuff.ProgressDialogThread>`.
+
+    * It must start with ``self.progress_dialog.show( )`` to show the progress dialog widget.
+
+    * It must end with this command, ``self.stopDialog.emit( )`` to hide the progress dialog widget.
+
+    Here is an example.
+
+    .. code-block:: python
+
+       def run( self ):
+           self.progress_dialog.show( )
+           # run its own way
+           self.stopDialog.emit( )
+
+    In the :py:meth:`run <plexstuff.ProgressDialogThread.run>` method, if one wants to print out something into ``progess_dialog``, then there should be these types of commands in ``run``: ``self.emitString.emit( mystr )``, where ``mystr`` is a :py:class:`str` message to show in ``progress_dialog``, and ``emitString`` is a :py:class:`pyqtsignal <PyQt5.QtCore.pyqtSignal>` connected to the ``progress_dialog`` object's :py:meth:`addText( ) <plexcore.ProgressDialog.addText>`.
+    
+    :param parent: the parent widget for which this long-lasting process will pop up a progress dialog.
+    :param str title: the title for the ``progress_dialog`` widget.
+    :type parent: :py:class:`QWidget <PyQt5.QtWidgets.QWidget>`
+
+    :var emitString: the signal, with :py:class:`str` signature, that is triggered to send progress messages into ``progress_dialog``.
+    :var stopDialog: the signal that is triggered to stop the ``progress_dialog``, calling :py:meth:`stopDialog <plexcore.ProgressDialog.stopDialog>`.
+    :var startDialog: the signal, with :py:class:`str` signature, that is triggered to restart the ``progress_dialog`` widget, calling :py:class:`startDialog <plexcore.ProgressDialog.startDialog>`.
+    :var progress_dialog: the GUI that shows, in a non-blocking fashion, the progress on some longer-running method.
+    :type emitString: :py:class:`pyqtSignal <PyQt5.QtCore.pyqtSignal>`
+    :type stopDialog: :py:class:`pyqtSignal <PyQt5.QtCore.pyqtSignal>`
+    :type startDialog: :py:class:`pyqtSignal <PyQt5.QtCore.pyqtSignal>`
+    :type progress_dialog: :py:class:`ProgressDialog <plexcore.ProgressDialog>`
+    
+    .. seealso:: :py:class:`ProgressDialog <plexcore.ProgressDialog>`
+    """
+    emitString = pyqtSignal( str )
+    stopDialog = pyqtSignal( )
+    startDialog= pyqtSignal( str )
+    
+    def __init__( self, parent, title ):
+        super( ProgressDialogThread, self ).__init__( )
+        self.progress_dialog = ProgressDialog( parent, title )
+        #
+        ## must do these things because unsafe to manipulate this thing from separate thread
+        self.emitString.connect( self.progress_dialog.addText )
+        self.stopDialog.connect( self.progress_dialog.stopDialog )
+        self.startDialog.connect( self.progress_dialog.startDialog )
+        self.progress_dialog.hide( )
+    
+            
 class ProgressDialog( QDialogWithPrinting ):
     """
     A convenient PyQt5_ widget, inheriting from :py:class:`QDialogWithPrinting <plexcore.QDialogWithPrinting>`, that acts as a GUI blocking progress window for longer lasting operations. Like its parent class, this dialog widget is also resizable. This shows the passage of the underlying slow process in 5 second increments.
@@ -345,9 +405,9 @@ class ProgressDialog( QDialogWithPrinting ):
         self.mainDialog.setHtml( self.parsedHTML.prettify( ) )
 
     def stopDialog( self ):
-        """stops running, and hides, this progress dialog.
         """
-        
+        stops running, and hides, this progress dialog.
+        """
         self.timer.stop( )
         self.hide( )
 
@@ -368,6 +428,9 @@ class ProgressDialog( QDialogWithPrinting ):
         self.mainDialog.setHtml( self.parsedHTML.prettify( ) )
         if len( initString ) != 0:
             self.addText( initString )
+        self.timer.stop( ) # if not already stopped
+        self.t0 = time.time( )
+        self.timer.start( 5000 )
         self.show( )
 
 def splitall( path_init ):

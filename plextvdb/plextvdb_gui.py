@@ -14,18 +14,18 @@ from plextvdb import plextvdb, get_token
 from plextvdb.plextvdb_season_gui import TVDBSeasonGUI
 from plexcore import plexcore, geoip_reader, QLabelWithSave, mainDir
 from plexcore import get_formatted_size, get_formatted_duration
-from plexcore import QDialogWithPrinting, ProgressDialog
+from plexcore import QDialogWithPrinting, ProgressDialogThread
 from plextmdb import plextmdb
 
-class TVDBGUIThread( QThread ):
-    emitString = pyqtSignal( str )
+class TVDBGUIThread( ProgressDialogThread ):
     finalData = pyqtSignal( dict )
     
-    def __init__( self, fullURL, token, tvdb_token,
+    def __init__( self, parent, fullURL, token, tvdb_token,
                   tvdata_on_plex = None,
                   didend = None, toGet = None, verify = False,
                   showsToExclude = [ ], num_threads = 16 ):
-        super( QThread, self ).__init__( )
+        super( TVDBGUIThread, self ).__init__(
+            parent,  'PLEX TV GUI PROGRESS WINDOW' )
         self.fullURL = fullURL
         self.token = token
         self.tvdb_token = tvdb_token
@@ -35,15 +35,17 @@ class TVDBGUIThread( QThread ):
         self.verify = verify
         self.showsToExclude = showsToExclude
         self.num_threads = num_threads
+        self.finalData.connect( parent.process_final_state )
 
-    def reset( self, showsToExclude = [ ] ):
+    def reset( self, showsToExclude = [ ], eraseTVData = True ):
         self.tvdata_on_plex = None
         self.didend = None
         self.toGet = None
         self.showsToExclude = showsToExclude
 
     def run( self ):
-        time0 = time.time( )
+        self.progress_dialog.show( )
+        time0 = self.progress_dialog.t0
         final_data_out = { }
         mytxt = '0, started loading in data on %s.' % (
             datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
@@ -153,6 +155,7 @@ class TVDBGUIThread( QThread ):
             set( self.tvdata_on_plex ) & set( toGet ) - set( self.showsToExclude ) ) )
         final_data_out[ 'missing_eps' ] = missing_eps
         self.finalData.emit( final_data_out )
+        self.stopDialog.emit( ) # now stop everything
         
 class TVDBGUI( QDialogWithPrinting ):
     mySignal = pyqtSignal( list )
@@ -268,7 +271,6 @@ class TVDBGUI( QDialogWithPrinting ):
     def process_final_state( self, final_data_out ):
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
-        self.progress_dialog.stopDialog( )
         #
         self.library_name = final_data_out[ 'library_name' ]
         self.tvdata_on_plex = final_data_out[ 'tvdata_on_plex' ]
@@ -386,31 +388,29 @@ class TVDBGUI( QDialogWithPrinting ):
         self.reset_sizes( ) # get current actual size
                                 
     def __init__( self, token, fullURL, tvdata_on_plex = None,
-                  didend = None, toGet = None, verify = True ):
+                  didend = None, toGet = None, verify = True, doLarge = False ):
         super( TVDBGUI, self ).__init__(
             None, isIsolated = True, doQuit = True )
         self.fullURL = fullURL
         self.token = token
         self.tvdb_token = get_token( verify = verify )
         self.verify = verify
+        if not doLarge: fontSize = 11
+        else: fontSize = 22
         self.setStyleSheet("""
         QWidget {
         font-family: Consolas;
-        font-size: 11;
-        }""" )
+        font-size: %d;
+        }""" % fontSize )
         self.hide( )
-        self.progress_dialog = ProgressDialog(
-            self, 'PLEX TV GUI PROGRESS WINDOW' )
         #
         showsToExclude = plextvdb.get_shows_to_exclude(
             tvdata_on_plex )
         self.initThread = TVDBGUIThread(
-            self.fullURL, self.token, self.tvdb_token,
+            self, self.fullURL, self.token, self.tvdb_token,
             tvdata_on_plex = tvdata_on_plex,
             didend = didend, toGet = toGet, verify = verify,
             showsToExclude = showsToExclude )
-        self.initThread.emitString.connect( self.progress_dialog.addText )
-        self.initThread.finalData.connect( self.process_final_state )
         self.initThread.start( )
 
     def process_final_state_refresh( self, final_data_out ):
@@ -420,7 +420,7 @@ class TVDBGUI( QDialogWithPrinting ):
         #
         self.tm.fillOutCalculation( )
         #
-        self.progress_dialog.stopDialog( )
+        self.initThread.stopDialog.emit( )
         
     def processPlexInfo( self ):
         self.tokenLabel.setText( self.token )
@@ -434,7 +434,7 @@ class TVDBGUI( QDialogWithPrinting ):
         else: self.locationLabel.setText( 'LOCALHOST' )
 
     def refreshTVShows( self ):
-        self.progress_dialog.startDialog( 'REFRESHING TV SHOWS' )
+        self.initThread.startDialog.emit( 'REFRESHING TV SHOWS' )
         showsToExclude = plextvdb.get_shows_to_exclude( )
         self.initThread.reset( showsToExclude )
         self.initThread.start( )
@@ -724,6 +724,47 @@ class TVDBTableModel( QAbstractTableModel ):
             elif col == 5:
                 return data[ 'numMissing' ]
 
+class TVDBShowGUIThread( ProgressDialogThread ):
+    seriesWidgetsSignal = pyqtSignal( int )
+    fillOutGUI = pyqtSignal( )
+    
+    def __init__( self, parent, sorted_seasons ):
+        super( TVDBShowGUIThread, self ).__init__(
+            parent, 'GETTING TV SHOW INFO FOR %s.' % parent.seriesName )
+        self.seriesWidgetsSignal.connect(
+            parent.fillOutSeriesWidget )
+        self.fillOutGUI.connect( parent.fillOutGUI )
+        self.sorted_seasons = sorted( set( sorted_seasons ) )
+        self.seriesName = parent.seriesName
+
+    def run( self ):
+        self.progress_dialog.show( )
+        time0 = self.progress_dialog.t0
+        seasons_widgets = { }
+        step = 0
+        mytxt = '%d, started loading in season data for %s on %s.' % (
+            step, self.seriesName, datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
+        step += 1
+        logging.info( mytxt )
+        self.emitString.emit( mytxt )
+        #
+        for season in self.sorted_seasons:
+            self.seriesWidgetsSignal.emit( season )
+            mytxt = '%d, added %s season %d / %d in %0.3f seconds.' % (
+                step, self.seriesName, season, len( self.sorted_seasons ), time.time( ) - time0 )
+            step += 1
+            logging.info( mytxt )
+            self.emitString.emit( mytxt )
+        #
+        ## now done
+        mytxt = '%d, finished loading in season data for %s on %s.' % (
+            step, self.seriesName, datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
+        logging.info( mytxt )
+        self.emitString.emit( mytxt )
+        self.fillOutGUI.emit( )
+        self.stopDialog.emit( )
+        
+
 class TVDBShowGUI( QDialogWithPrinting ):
     def __init__( self, seriesName, tvdata, missing_eps,
                   tvdb_token, plex_token,
@@ -734,13 +775,38 @@ class TVDBShowGUI( QDialogWithPrinting ):
             assert( isinstance( parent, QDialogWithPrinting ) )
         self.setModal( True )
         assert( seriesName in tvdata )
+        self.seriesName = seriesName
+        self.tvdata = tvdata
+        self.missing_eps = missing_eps
+        self.tvdb_token = tvdb_token
+        self.plex_token = plex_token
+        self.parent = parent
+        self.verify = verify
         seriesInfo = tvdata[ seriesName ]
-        self.setWindowTitle( seriesName )
+        sorted_seasons = sorted( set( seriesInfo[ 'seasons' ] ) - set([ 0 ]) )
+        self.series_widgets = { }
+        #
+        ## cannot get this type of threading to work, perhaps b/c creates new widgets
+        #self.tvdbsguithread = TVDBShowGUIThread( self, sorted_seasons )
+        #self.tvdbsguithread.start( )
+        for season in sorted_seasons:
+            self.fillOutSeriesWidget( season )
+            logging.info( 'added %s season %d / %d.' % (
+                seriesName, season, len( sorted_seasons ) ) )
+        self.fillOutGUI( )
+
+    def fillOutSeriesWidget( self, season ):
+        self.series_widgets[ season ] = TVDBSeasonGUI(
+            self.seriesName, season, self.tvdata, self.missing_eps, self.tvdb_token,
+            self.plex_token, verify = self.verify, parent = self.parent )
+
+    def fillOutGUI( self ):
+        self.setWindowTitle( self.seriesName )
+        sorted_seasons = sorted( self.series_widgets )
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         #
         ## top widget contains a set of seasons in a QComboBox
-        sorted_seasons = sorted( set( seriesInfo[ 'seasons' ] ) - set([ 0 ]) )
         topWidget = QWidget( )
         topLayout = QHBoxLayout( )
         topWidget.setLayout( topLayout )
@@ -748,7 +814,7 @@ class TVDBShowGUI( QDialogWithPrinting ):
         topLeftWidget = QWidget( )
         topLeftLayout = QHBoxLayout( )
         topLeftWidget.setLayout( topLeftLayout )
-        topLeftLayout.addWidget( QLabel( seriesName ) )
+        topLeftLayout.addWidget( QLabel( self.seriesName ) )
         topLayout.addWidget( topLeftWidget )
         #
         topRightWidget = QWidget( )
@@ -769,31 +835,22 @@ class TVDBShowGUI( QDialogWithPrinting ):
         #
         ## now a stacked layout
         self.seasonWidget = QStackedWidget( )
-        self.series_widgets = { }
-        num_seasons = len(sorted_seasons)
-        for season in sorted_seasons:
-            self.series_widgets[ season ] = TVDBSeasonGUI(
-                seriesName, season, tvdata, missing_eps, tvdb_token, plex_token,
-                verify = verify, parent = parent )
+        for season in sorted( self.series_widgets ):
             self.seasonWidget.addWidget( self.series_widgets[ season ] )
-            logging.info( 'added %s season %d / %d.' % (
-                seriesName, season, num_seasons ) )
         first_season = min( self.series_widgets )
         myLayout.addWidget( self.seasonWidget )
         #
         ## set size
         self.setFixedWidth( self.series_widgets[ first_season ].sizeHint( ).width( ) * 1.05 )
-        #self.setFixedWidth( 800 )
         self.setFixedHeight( 800 )
         #
         ## connect
+        def selectSeason( idx ):
+            self.seasonWidget.setCurrentIndex( idx )
         seasonSelected.installEventFilter( self )
-        seasonSelected.currentIndexChanged.connect( self.selectSeason )
+        seasonSelected.currentIndexChanged.connect( selectSeason )
         for season in self.series_widgets:
             self.indexScalingSignal.connect(
                 self.series_widgets[ season ].rescale )
         ##
         self.show( )
-
-    def selectSeason( self, idx ):
-        self.seasonWidget.setCurrentIndex( idx )

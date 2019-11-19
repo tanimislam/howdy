@@ -765,7 +765,6 @@ def get_series_info( series_id, tvdb_token, verify = True ):
     if response.status_code != 200: return return_error_raw( "COULD NOT ACCESS TV INFO SERIES" )
     data = response.json( )[ 'data' ]
     return data, 'SUCCESS'
-    
 
 def get_series_image( series_id, tvdb_token, verify = True ):
     """
@@ -809,6 +808,8 @@ def get_series_image( series_id, tvdb_token, verify = True ):
             #assert( 'fileName' in firstPoster )
             if 'fileName' in firstPoster:
                 return 'https://thetvdb.com/banners/%s' % firstPoster['fileName'], "SUCCESS"
+    #
+    ## then look for fan art ones
     fanart_ones = list(
         filter(lambda elem: 'keyType' in elem.keys( ) and elem['keyType'] == 'fanart', data ) )
     if len( fanart_ones ) != 0:
@@ -823,8 +824,12 @@ def get_series_image( series_id, tvdb_token, verify = True ):
             firstFanart = data[0]
             if 'fileName' in firstFanart:
                 return 'https://thetvdb.com/banners/%s' % firstFanart['fileName'], "SUCCESS"
+
+    #
+    ## finally look for fan art ones
     series_ones = list(
-        filter(lambda elem: 'keyType' in elem.keys( ) and elem['keyType'] == 'series') )
+        filter(lambda elem: 'keyType' in elem.keys( ) and elem['keyType'] == 'series', data ) )
+    logging.info( 'number of series: %d.' % len( series_ones ) )
     if len( series_ones ) != 0:
         series_one = series_ones[ 0 ]
         params = { 'keyType' : 'series' }
@@ -832,6 +837,8 @@ def get_series_image( series_id, tvdb_token, verify = True ):
             params['resolution'] = series_one['resolution'][0]
         response = requests.get( 'https://api.thetvdb.com/series/%d/images/query' % series_id,
                                  headers = headers, params = params, verify = verify )
+        logging.info( 'response status code = %s. params = %s.' % (
+            response.status_code, params ) )
         if response.status_code == 200:
             data = response.json( )['data']
             firstSeries = data[0]
@@ -1174,10 +1181,13 @@ def get_all_series_didend(
     with multiprocessing.Pool(
             processes = max(num_threads, multiprocessing.cpu_count( ) ) ) as pool:
         date_now = datetime.datetime.now( ).date( )
-        tvshow_id_map = dict(filter(
+        tvshow_id_list = list(map(lambda seriesName: ( seriesName, tvdata[ seriesName ][ 'tvdbid' ] ),
+                                  filter(lambda seriesName: 'tvdbid' in tvdata[ seriesName ], tvdata ) ) )
+        tvshow_id_list_2 = list(filter(
             None, pool.map(lambda seriesName: (
                 seriesName, get_series_id( seriesName, tvdb_token, verify = verify ) ),
-                           tvdata ) ) )
+                           filter(lambda seriesName: 'tvdbid' not in tvdata[ seriesName ], tvdata ) ) ) )
+        tvshow_id_map = dict( tvshow_id_list + tvshow_id_list_2 )
         tvshows_notfound = set( tvdata ) - set( tvshow_id_map )
         tvid_didend_map = dict(filter(
             lambda tup: tup is not None,

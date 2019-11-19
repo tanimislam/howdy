@@ -296,6 +296,7 @@ class ProgressDialogThread( QThread ):
     :var stopDialog: the signal that is triggered to stop the ``progress_dialog``, calling :py:meth:`stopDialog <plexcore.ProgressDialog.stopDialog>`.
     :var startDialog: the signal, with :py:class:`str` signature, that is triggered to restart the ``progress_dialog`` widget, calling :py:class:`startDialog <plexcore.ProgressDialog.startDialog>`.
     :var progress_dialog: the GUI that shows, in a non-blocking fashion, the progress on some longer-running method.
+    :var int time0: a convenience attribute, the UTC time at which the ``progress_dialog`` object was first instantiated. Can be used to determine the time each submethod takes (for example, ``time.time( ) - self.time0``).
     :type emitString: :py:class:`pyqtSignal <PyQt5.QtCore.pyqtSignal>`
     :type stopDialog: :py:class:`pyqtSignal <PyQt5.QtCore.pyqtSignal>`
     :type startDialog: :py:class:`pyqtSignal <PyQt5.QtCore.pyqtSignal>`
@@ -316,7 +317,7 @@ class ProgressDialogThread( QThread ):
         self.stopDialog.connect( self.progress_dialog.stopDialog )
         self.startDialog.connect( self.progress_dialog.startDialog )
         self.progress_dialog.hide( )
-    
+        self.time0 = self.progress_dialog.t0
             
 class ProgressDialog( QDialogWithPrinting ):
     """

@@ -246,7 +246,8 @@ def get_tv_torrent_zooqle( name, maxnum = 100, verify = True ):
         'link' : _get_magnet_link(
             get_infohash( elem ),
             max( elem.find_all('title' ) ).get_text( ) ),
-        'torrent_size' : get_num_forelem( elem, 'contentlength' ) },
+        'torrent_size' : float(
+            get_num_forelem( elem, 'contentlength' ) * 1.0 / 1024**2 ) },
                              cand_items ) )
     if len( items_toshow ) == 0:
         return return_error_raw(

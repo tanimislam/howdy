@@ -270,7 +270,7 @@ def get_movie_torrent_zooqle( name, maxnum = 10, verify = True ):
     fullurl = urljoin( url, paramurl )
     response = requests.get( fullurl, verify = verify )
     if response.status_code != 200:
-        return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
+        return return_error_raw( 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname )
     myxml = BeautifulSoup( response.content, 'lxml' )
     def is_valid_elem( elem ):
         names = set(map(lambda elm: elm.name, elem.find_all( ) ) )
@@ -303,10 +303,10 @@ def get_movie_torrent_zooqle( name, maxnum = 10, verify = True ):
         'leechers' : get_num_forelem( elem, 'peers' ),
         'link' : _get_magnet_link( get_infohash( elem ),
                                    max( elem.find_all('title' ) ).get_text( ) ),
-        'torrent_size' : get_num_forelem( elem, 'contentlength' ) },
+        'torrent_size' : float( get_num_forelem( elem, 'contentlength' ) * 1.0 / 1024**2 ) },
                              cand_items ) )
     if len( items_toshow ) == 0:
-        return None, 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname
+        return return_error_raw( 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname )
     return sorted( items_toshow, key = lambda item: -item['seeders'] - item['leechers'] )[:maxnum], 'SUCCESS'
 
 def get_movie_torrent_rarbg( name, maxnum = 10, verify = True ):

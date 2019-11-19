@@ -15,7 +15,7 @@ import qdarkstyle, logging, os, warnings
 
 warnings.simplefilter("ignore")
 
-def main( info = False, doLocal = True, verify = True ):
+def main( info = False, doLocal = True, doLarge = False, verify = True ):
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     icn = QIcon( os.path.join( mainDir, 'resources', 'icons', 'plex_tvdb_gui.png' ) )
@@ -23,7 +23,7 @@ def main( info = False, doLocal = True, verify = True ):
     if info: logging.basicConfig( level = logging.INFO )
     fullURL, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
-    tvdb_gui = TVDBGUI( token, fullURL, verify = verify )
+    tvdb_gui = TVDBGUI( token, fullURL, verify = verify, doLarge = doLarge )
     result = app.exec_( )
     return tvdb_gui
 
@@ -31,6 +31,8 @@ def main( info = False, doLocal = True, verify = True ):
 ## start the application here
 if __name__=='__main__':
     parser = OptionParser( )
+    parser.add_option('--large', dest='do_large', action='store_true',
+                      default = False, help = 'Run with large fonts to help with readability.' )
     parser.add_option('--local', dest='do_local', action='store_true',
                       default = False, help = 'Check for locally running plex server.')
     parser.add_option('--info', dest='do_info', action='store_true',
@@ -38,4 +40,5 @@ if __name__=='__main__':
     parser.add_option('--noverify', dest='do_verify', action='store_false',
                       default = True, help = 'Do not verify SSL transactions if chosen.')    
     opts, args = parser.parse_args( )
-    main( info = opts.do_info, doLocal = opts.do_local, verify = opts.do_verify )
+    main( info = opts.do_info, doLocal = opts.do_local, doLarge = opts.do_large, verify = opts.do_verify )
+    

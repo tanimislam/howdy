@@ -6,16 +6,16 @@ from PyQt5.QtCore import pyqtSignal, QThread
 
 from plextmdb import plextmdb, plextmdb_mygui, plextmdb_gui
 from plexcore import plexcore, plexcore_gui, mainDir
-from plexcore import QDialogWithPrinting, ProgressDialog
+from plexcore import QDialogWithPrinting, ProgressDialog, ProgressDialogThread
     
-class TMDBTotGUIThread( QThread ):
+class TMDBTotGUIThread( ProgressDialogThread ):
     
     movieDataRowsSignal = pyqtSignal( list )
-    emitString = pyqtSignal( str )
-    
-    def __init__( self, fullURL, token, movie_data_rows = None,
+
+    def __init__( self, parent, fullURL, token, movie_data_rows = None,
                   verify = False, time0 = -1 ):
-        super( QThread, self ).__init__( )
+        super( TMDBTotGUIThread, self ).__init__(
+            parent, 'PLEX MOVIE GUI PROGRESS WINDOW' )
         self.fullURL = fullURL
         self.token = token
         self.verify = verify
@@ -23,6 +23,7 @@ class TMDBTotGUIThread( QThread ):
         self.time0 = time0
         
     def run( self ):
+        self.progress_dialog.show( )
         mystr = '0, started loading in movie data on %s.' % (
             datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) )
         logging.info( mystr )
@@ -40,6 +41,7 @@ class TMDBTotGUIThread( QThread ):
         logging.info( mystr )
         self.emitString.emit( mystr )
         self.movieDataRowsSignal.emit( self.movie_data_rows )
+        self.progress_dialog.stopDialog( )
         
 class TMDBTotGUI( QDialogWithPrinting ):
     emitNewToken = pyqtSignal( str )
@@ -47,7 +49,7 @@ class TMDBTotGUI( QDialogWithPrinting ):
     def process_movie_data_rows_init( self, movie_data_rows ):
         #
         ## now change everything
-        self.progress_dialog.stopDialog( )
+        # self.progress_dialog.stopDialog( )
         self.setWindowTitle( 'PLEX MOVIE GUI' )
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
@@ -103,17 +105,15 @@ class TMDBTotGUI( QDialogWithPrinting ):
         self.tabWidget = QTabWidget( self )
         self.tabWidget.setStyleSheet( 'QTabBar::tab { width: 340px; }' )
         self.hide( )
-        self.progress_dialog = ProgressDialog(
-            self, 'PLEX MOVIE GUI PROGRESS WINDOW' )
+        #self.progress_dialog = ProgressDialog(
+        #    self, 'PLEX MOVIE GUI PROGRESS WINDOW' )
         #
         ## have this happen in background, hope it works without crashing...
         self.mainInitThread = TMDBTotGUIThread(
-            fullurl, token, movie_data_rows = movie_data_rows,
+            self, fullurl, token, movie_data_rows = movie_data_rows,
             verify = self.verify, time0 = time0 )
         self.mainInitThread.movieDataRowsSignal.connect(
             self.process_movie_data_rows_init )
-        self.mainInitThread.emitString.connect(
-            self.progress_dialog.addText )
         self.mainInitThread.start( ) # make the magic start...
 
     def _setupActions( self ):

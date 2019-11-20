@@ -628,17 +628,20 @@ def did_series_end( series_id, tvdb_token, verify = True, date_now = None ):
     response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
                              headers = headers, verify = verify )
     if response.status_code != 200: return None
-    data = response.json( )['data']
-    
-    if data['status'] != 'Ended': return False
-    #
-    ## now check when the last date of the show was
-    if date_now is None: date_now = datetime.datetime.now( ).date( )
-    last_date = max(map(lambda epdata: datetime.datetime.strptime(
-        epdata['firstAired'], '%Y-%m-%d' ).date( ),
-                        get_episodes_series( series_id, tvdb_token, verify = verify ) ) )
-    td = date_now - last_date
-    return td.days > 365
+    try:
+        data = response.json( )['data']
+        
+        if data['status'] != 'Ended': return False
+        #
+        ## now check when the last date of the show was
+        if date_now is None: date_now = datetime.datetime.now( ).date( )
+        last_date = max(map(lambda epdata: datetime.datetime.strptime(
+            epdata['firstAired'], '%Y-%m-%d' ).date( ),
+                            get_episodes_series( series_id, tvdb_token, verify = verify ) ) )
+        td = date_now - last_date
+        return td.days > 365
+    except:
+        raise ValueError("Error, no JSON in the response for show with TVDB ID = %d." % series_id )
 
 def get_imdb_id( series_id, tvdb_token, verify = True ):
     """
@@ -1241,16 +1244,20 @@ def _get_series_id_perproc( input_tuple ):
     token = input_tuple[ 'token' ]
     verify = input_tuple[ 'verify' ]
     doShowEnded = input_tuple[ 'doShowEnded' ]
-    if 'tvdbid' not in input_tuple:
-        series_id = get_series_id( show, token, verify = verify )
-    else: series_id = input_tuple[ 'tvdbid' ]
-    if series_id is None:
-        logging.info( 'something happened with show %s' % show )
+    try:
+        if 'tvdbid' not in input_tuple:
+            series_id = get_series_id( show, token, verify = verify )
+        else: series_id = input_tuple[ 'tvdbid' ]
+        if series_id is None:
+            logging.info( 'something happened with show %s' % show )
+            return None
+        if not doShowEnded:
+            didEnd = did_series_end( series_id, token, verify = verify )
+            if didEnd is None or didEnd: return None
+        return show, series_id
+    except Exception as e:
+        print( 'problem getting %s, error = %s.' % ( show, str( e ) ) )
         return None
-    if not doShowEnded:
-        didEnd = did_series_end( series_id, token, verify = verify )
-        if didEnd is None or didEnd: return None
-    return show, series_id
     
 def get_remaining_episodes(
         tvdata, showSpecials = True, fromDate = None, verify = True,

@@ -1,4 +1,4 @@
-import requests, os, sys, time, json
+import requests, os, sys, time, json, titlecase
 import logging, datetime, fuzzywuzzy.fuzz
 from dateutil.relativedelta import relativedelta
 from imdb import IMDb
@@ -349,7 +349,7 @@ def get_episodes_series_tmdb( tmdbID, fromDate = None ):
                 if fromDate is not None:
                     if date < fromDate:
                         continue
-                sData.append( { 'name' : episode['name'],
+                sData.append( { 'name' : titlecase.titlecase( episode['name'] ),
                                 'airedDate' : date,
                                 'season' : season_number,
                                 'episode' : episode['episode_number'] } )
@@ -399,8 +399,9 @@ def get_tot_epdict_tmdb( showName, firstAiredYear = None ):
         seasnum = episode[ 'season' ]
         title = episode[ 'name' ]
         epno = episode[ 'episode' ]
+        airedDate = episode[ 'airedDate' ]
         tot_epdict.setdefault( seasnum, { } )
-        tot_epdict[ seasnum ][ epno ] = title
+        tot_epdict[ seasnum ][ epno ] = ( title, airedDate )
     return tot_epdict
 
 def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):

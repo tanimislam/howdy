@@ -359,24 +359,24 @@ def get_episodes_series_tmdb( tmdbID, fromDate = None ):
 
 def get_tot_epdict_tmdb( showName, firstAiredYear = None ):
     """
-    Returns a :py:class:`dict` of episodes found from the TMDB_ API. The top level dictionary's keys are the season numbers, and each value is the next-level dictionary of season information. The next level, season dictionary's keys are the episode number, and its values are the episode names. For example, for `The Simpsons`_,
+    Returns a :py:class:`dict` of episodes found from the TMDB_ API. The top level dictionary's keys are the season numbers, and each value is the next-level dictionary of season information. The next level, season dictionary's keys are the episode number, and its values are a two-element :tuple: of episode names and aired dates (as a :py:class:`date <datetime.date>` object). This two level dictionary has the same format as the output from :py:meth:`get_tot_epdict_tvdb <plextvdb.plextvdb.get_tot_epdict_tvdb>`. For example, for `The Simpsons`_,
 
     .. code-block:: python
-    
-          {1: {1: 'Simpsons Roasting on an Open Fire',
-           2: 'Bart the Genius',
-           3: "Homer's Odyssey",
-           4: "There's No Disgrace Like Home",
-           5: 'Bart the General',
-           6: 'Moaning Lisa',
-           7: 'The Call of the Simpsons',
-           8: 'The Telltale Head',
-           9: 'Life on the Fast Lane',
-           10: "Homer's Night Out",
-           11: 'The Crepes of Wrath',
-           12: 'Krusty Gets Busted',
-           13: 'Some Enchanted Evening'},
-           ...
+
+          {1: {1: ('Simpsons Roasting on an Open Fire', datetime.date(1989, 12, 17)),
+            2: ('Bart the Genius', datetime.date(1990, 1, 14)),
+            3: ("Homer's Odyssey", datetime.date(1990, 1, 21)),
+            4: ("There's No Disgrace Like Home", datetime.date(1990, 1, 28)),
+            5: ('Bart the General', datetime.date(1990, 2, 4)),
+            6: ('Moaning Lisa', datetime.date(1990, 2, 11)),
+            7: ('The Call of the Simpsons', datetime.date(1990, 2, 18)),
+            8: ('The Telltale Head', datetime.date(1990, 2, 25)),
+            9: ('Life on the Fast Lane', datetime.date(1990, 3, 18)),
+            10: ("Homer's Night Out", datetime.date(1990, 3, 25)),
+            11: ('The Crepes of Wrath', datetime.date(1990, 4, 15)),
+            12: ('Krusty Gets Busted', datetime.date(1990, 4, 29)),
+            13: ('Some Enchanted Evening', datetime.date(1990, 5, 13))},
+            ...
           }
     
     If unsuccessful, then returns ``None``.
@@ -388,6 +388,7 @@ def get_tot_epdict_tmdb( showName, firstAiredYear = None ):
 
     .. seealso::
     
+       * :py:meth:`get_tot_epdics_tvdb <plextvdb.plextvdb.get_tot_epdict_tvdb>`.
        * :py:meth:`get_tot_epdict_imdb <plextvdb.plextvdb_attic.get_tot_epdict_imdb>`.
        * :py:meth:`get_tot_epdict_omdb <plextvdb.plextvdb_attic.get_tot_epdict_omdb>`.
     """

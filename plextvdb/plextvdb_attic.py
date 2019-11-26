@@ -388,7 +388,7 @@ def get_tot_epdict_tmdb( showName, firstAiredYear = None ):
 
     .. seealso::
     
-       * :py:meth:`get_tot_epdics_tvdb <plextvdb.plextvdb.get_tot_epdict_tvdb>`.
+       * :py:meth:`get_tot_epdict_tvdb <plextvdb.plextvdb.get_tot_epdict_tvdb>`.
        * :py:meth:`get_tot_epdict_imdb <plextvdb.plextvdb_attic.get_tot_epdict_imdb>`.
        * :py:meth:`get_tot_epdict_omdb <plextvdb.plextvdb_attic.get_tot_epdict_omdb>`.
     """

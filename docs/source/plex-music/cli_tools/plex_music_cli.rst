@@ -273,8 +273,8 @@ Each of the three operations can be either *progressive* or *exclusive*.
    metadata flag        Gracenote_  LastFM_    MusicBrainz_
    =================  ============  =========  ==============
    default (no flag)             1  2          3
-   ``--lastfm``                  1  2
-   ``--musicbrainz``             1
+   ``--lastfm``                     1          2
+   ``--musicbrainz``                           1
    =================  ============  =========  ==============
 
 .. _exclusive_selection:

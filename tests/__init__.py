@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, signal
 from functools import reduce
 mainDir = reduce(lambda x,y: os.path.dirname( x ), range(2),
                  os.path.abspath( __file__ ) )

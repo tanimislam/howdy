@@ -400,7 +400,7 @@ class TVDBGUI( QDialogWithPrinting ):
         self.setStyleSheet("""
         QWidget {
         font-family: Consolas;
-        font-size: %d;
+        font-size: %dpx;
         }""" % fontSize )
         self.hide( )
         #

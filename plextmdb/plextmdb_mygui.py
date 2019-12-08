@@ -1,6 +1,6 @@
 import numpy, os, sys, requests
 import logging, glob, datetime, pickle, gzip
-from PyQt5.QtWidgets import QAbstractItemView, QAction, QComboBox, QDialog, QFileDialog, QFrame, QGridLayout, QHeaderView, QLabel, QLineEdit, QMenu, QStyledItemDelegate, QTableView, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QComboBox, QDialog, QFileDialog, QFrame, QGridLayout, QHeaderView, QLabel, QLineEdit, QMenu, QStyledItemDelegate, QTableView, QTextEdit, QVBoxLayout, QHBoxLayout, QWidget
 from PyQt5.QtGui import QBrush, QCursor, QImage, QPalette, QPixmap
 from PyQt5.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, QRegExp, QSortFilterProxyModel, Qt
 
@@ -34,27 +34,36 @@ class TMDBMyGUI( QDialogWithPrinting ):
     def __init__( self, token, movie_data_rows, isIsolated = True, verify = True ):
         super( TMDBMyGUI, self ).__init__( None, isIsolated = isIsolated )
         tmdbEngine = plextmdb.TMDBEngine( verify = verify )
-        if isIsolated: self.setWindowTitle( 'My Own Movies' )
+        if isIsolated:
+            self.setWindowTitle( 'My Own Movies' )
+            self.setStyleSheet("""
+            QWidget {
+            font-family: Consolas;
+            font-size: 11px;
+            }""" )
         #
         self.token = token
         self.verify = verify
         self.myTableView = MyMovieTableView( self )
         self.genreComboBox = QComboBox( self )
         self.genreComboBox.setEditable( False )
-        self.movieLineEdit = QLineEdit( )
+        self.movieLineEdit = QLineEdit( self )
+        self.minPopuLineEdit = QLineEdit( self )
         self.genreLabel = QLabel( self )
         #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         #print 
-        topWidget = QWidget( )
+        topWidget = QWidget( self )
         topLayout = QGridLayout( )
         topWidget.setLayout( topLayout )
-        topLayout.addWidget( self.genreLabel, 0, 0, 1, 4 )
-        topLayout.addWidget( QLabel( 'GENRE:' ), 0, 4, 1, 1 )
-        topLayout.addWidget( self.genreComboBox, 0, 5, 1, 1 )
-        topLayout.addWidget( QLabel( 'MOVIE NAME:' ), 1, 0, 1, 1 )
-        topLayout.addWidget( self.movieLineEdit, 1, 1, 1, 5 )
+        topLayout.addWidget( self.genreLabel, 0, 0, 1, 5 )
+        topLayout.addWidget( QLabel( 'GENRE:' ), 0, 5, 1, 1 )
+        topLayout.addWidget( self.genreComboBox, 0, 6, 1, 1 )
+        topLayout.addWidget( QLabel( 'MIN POPU.:' ), 1, 0, 1, 1 )
+        topLayout.addWidget( self.minPopuLineEdit, 1, 1, 1, 4 )
+        topLayout.addWidget( QLabel( 'MOVIE NAME' ), 1, 5, 1, 1 )
+        topLayout.addWidget( self.movieLineEdit, 1, 6, 1, 1 )
         myLayout.addWidget( topWidget )
         #
         myLayout.addWidget( self.myTableView )

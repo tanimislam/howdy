@@ -9,7 +9,7 @@ testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
 @pytest.fixture( scope="module" )
 def get_movie_data_rows( request, get_token_fullURL ):
     time0 = time.time( )
-    ebuild = request.config.option.do_rebuild
+    rebuild = request.config.option.do_rebuild
     doLocal = request.config.option.do_local
     verify = request.config.option.do_verify
     fullURL, token = get_token_fullURL

@@ -95,7 +95,7 @@ class TMDBTotGUI( QDialogWithPrinting ):
         self.setStyleSheet("""
         QWidget {
         font-family: Consolas;
-        font-size: %d;
+        font-size: %dpx;
         }""" % ( int( 11 * self.resolution ) ) )
         #
         self.helpDialog = HelpDialog( self )

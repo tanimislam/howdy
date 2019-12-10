@@ -1,19 +1,30 @@
 #!/usr/bin/env python3
 
-import signal, logging
-from . import signal_handler
+import signal, sys
+def signal_handler( signal, frame ):
+    print( "You pressed Ctrl+C. Exiting...")
+    sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-from plexcore import plexcore
+#
+from functools import reduce
+import logging, os, pickle, gzip, qdarkstyle
+mainDir = reduce(lambda x,y: os.path.dirname( x ), range(2),
+                 os.path.abspath( __file__ ) )
+sys.path.append( mainDir )
+#
+from plexcore import plexcore, returnQAppWithFonts
 from plextmdb import plextmdb_mygui
 from optparse import OptionParser
-from . import test_plexcore, test_tmdbgui
 
 def main(debug = False, doLocal = True, verify = True ):
-    app = test_tmdbgui.get_app_standalone( )
+    testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
+    app = returnQAppWithFonts( )
+    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     if debug: logging.basicConfig( level = logging.DEBUG )
     fullurl, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
-    movie_data_rows = test_tmdbgui.get_movie_data_rows_standalone( )
+    movie_data_rows = pickle.load( gzip.open(
+        os.path.join( testDir, 'movie_data_rows.pkl.gz' ), 'rb' ) )
     tmdb_mygui = plextmdb_mygui.TMDBMyGUI(
         token, movie_data_rows, verify = verify )
     result = app.exec_( )

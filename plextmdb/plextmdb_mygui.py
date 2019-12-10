@@ -1,6 +1,6 @@
 import numpy, os, sys, requests
 import logging, glob, datetime, pickle, gzip
-from PyQt5.QtWidgets import QAbstractItemView, QAction, QComboBox, QDialog, QFileDialog, QFrame, QGridLayout, QHeaderView, QLabel, QLineEdit, QMenu, QStyledItemDelegate, QTableView, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAbstractItemView, QAction, QComboBox, QDialog, QFileDialog, QFrame, QGridLayout, QHeaderView, QLabel, QLineEdit, QMenu, QStyledItemDelegate, QTableView, QTextEdit, QVBoxLayout, QHBoxLayout, QWidget
 from PyQt5.QtGui import QBrush, QCursor, QImage, QPalette, QPixmap
 from PyQt5.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, QRegExp, QSortFilterProxyModel, Qt
 
@@ -30,31 +30,73 @@ _columnMapping = {
 #     'totsize' : totsize }
 
 
-class TMDBMyGUI( QDialogWithPrinting ):    
+class TMDBMyGUI( QDialogWithPrinting ):
+    emitMinPopularity = pyqtSignal( float )
+
+    @classmethod
+    def create_decades_in_order( cls,  movie_data_rows ):
+        decades_sorted_set = sorted(
+            set( map(lambda entry: 10 * int( entry['releasedate' ].year * 0.1 ),
+                     movie_data_rows ) ) )
+        max_decade = max( decades_sorted_set )
+        decades_in_order_dict = { -1 : 'BEFORE 1900' }
+        for decade in range( 1900, max_decade + 10, 10 ):
+            decades_in_order_dict[ decade ] = '%04ds' % decade
+        return decades_in_order_dict
+    
     def __init__( self, token, movie_data_rows, isIsolated = True, verify = True ):
         super( TMDBMyGUI, self ).__init__( None, isIsolated = isIsolated )
         tmdbEngine = plextmdb.TMDBEngine( verify = verify )
-        if isIsolated: self.setWindowTitle( 'My Own Movies' )
+        if isIsolated:
+            self.setWindowTitle( 'My Own Movies' )
+            self.setStyleSheet("""
+            QWidget {
+            font-family: Consolas;
+            font-size: 11px;
+            }""" )
         #
         self.token = token
         self.verify = verify
         self.myTableView = MyMovieTableView( self )
         self.genreComboBox = QComboBox( self )
         self.genreComboBox.setEditable( False )
-        self.movieLineEdit = QLineEdit( )
-        self.genreLabel = QLabel( self )
+        self.decadesComboBox = QComboBox( self )
+        self.decadesComboBox.setEditable( False )
+        self.movieLineEdit = QLineEdit( self )
+        self.minPopuLineEdit = QLineEdit( self )
+        self.numMoviesLabel = QLabel( self )
+        self.minPopularity = 0.0
+        self.minPopuLineEdit.setText( '%0.1f' % self.minPopularity )
         #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         #print 
-        topWidget = QWidget( )
+        topWidget = QWidget( self )
         topLayout = QGridLayout( )
         topWidget.setLayout( topLayout )
-        topLayout.addWidget( self.genreLabel, 0, 0, 1, 4 )
-        topLayout.addWidget( QLabel( 'GENRE:' ), 0, 4, 1, 1 )
-        topLayout.addWidget( self.genreComboBox, 0, 5, 1, 1 )
-        topLayout.addWidget( QLabel( 'MOVIE NAME:' ), 1, 0, 1, 1 )
-        topLayout.addWidget( self.movieLineEdit, 1, 1, 1, 5 )
+        colnums = [
+            [ 2, 1, 1, 1, 1 ],
+            [ 1, 1, 1, 3 ] ]
+        #
+        ## top row
+        arr = numpy.array( colnums[ 0 ], dtype=int )
+        cumarray =  numpy.cumsum(numpy.concatenate([
+            [ 0 ], arr[:-1] ]))
+        topLayout.addWidget( self.numMoviesLabel, 0, cumarray[ 0 ], 1, arr[ 0 ] )
+        topLayout.addWidget( QLabel( 'GENRE:' ), 0, cumarray[ 1 ], 1, arr[ 1 ] )
+        topLayout.addWidget( self.genreComboBox, 0, cumarray[ 2 ], 1, arr[ 2 ] )
+        topLayout.addWidget( QLabel( 'DECADE:' ), 0, cumarray[ 3 ], 1, arr[ 3 ] )
+        topLayout.addWidget( self.decadesComboBox, 0, cumarray[ 4 ], 1, arr[ 4 ] )
+        #
+        ## bottom row
+        arr = numpy.array( colnums[ 1 ], dtype=int )
+        cumarray =  numpy.cumsum(numpy.concatenate([
+            [ 0 ], arr[:-1] ]))
+        topLayout.addWidget( QLabel( 'MIN POPU.:' ), 1, cumarray[ 0 ], 1, arr[ 0 ] )
+        topLayout.addWidget( self.minPopuLineEdit, 1, cumarray[ 1 ], 1, arr[ 1 ] )
+        topLayout.addWidget( QLabel( 'MOVIE NAME' ), 1, cumarray[ 2 ], 1, arr[ 2 ] )
+        topLayout.addWidget( self.movieLineEdit, 1, cumarray[ 3 ], 1, arr[ 3 ] )
+        #
         myLayout.addWidget( topWidget )
         #
         myLayout.addWidget( self.myTableView )
@@ -62,35 +104,64 @@ class TMDBMyGUI( QDialogWithPrinting ):
         ## set size, make sure not resizable
         self.setFixedWidth( 680 )
         #
+        ## do this part first
+        self.fill_out_movies( movie_data_rows )
+        #
         self.genreComboBox.installEventFilter( self )
         self.genreComboBox.currentIndexChanged.connect( self.changeGenre )
-        self.myTableView.tm.emitGenreNumMovies.connect( self.setGenreStatus )
-        self.movieLineEdit.textChanged.connect( self.myTableView.tm.setFilterString )            
+        self.myTableView.tm.emitNumMovies.connect( self.setStatus )
+        self.movieLineEdit.textChanged.connect( self.myTableView.tm.setFilterString )
         #
-        ##
-        self.fill_out_movies( movie_data_rows )
+        ## change the decade for the movie to look at
+        self.decadesComboBox.installEventFilter( self )
+        self.decadesComboBox.currentIndexChanged.connect( self.changeDecade )
+        #
+        ## change the minimum popularity with editing
+        self.minPopuLineEdit.returnPressed.connect( self.checkMinPopularity )
+        self.emitMinPopularity.connect( self.myTableView.tm.setFilterMinPopularity )
         #
         ##
         self.show( )
-
+        
     def fill_out_movies( self, movie_data_rows ):
         genres = sorted( set(
             map(lambda row: row[ 'genre' ], movie_data_rows ) ) )
         self.genreComboBox.addItems( genres )
         self.genreComboBox.addItem( 'ALL' )
         self.genreComboBox.setCurrentIndex( len( genres ) )
+        #
+        decades_in_order_dict = TMDBMyGUI.create_decades_in_order( movie_data_rows )
+        self.decadesComboBox.addItems(
+            list(map(lambda decade: decades_in_order_dict[ decade ],
+                     sorted( decades_in_order_dict ) ) ) )
+        self.decadesComboBox.addItem( 'ALL' )
+        self.decadesComboBox.setCurrentIndex( 1 + len( decades_in_order_dict ) ) # last one
+        #
         self.myTableView.tm.filloutMyMovieData( movie_data_rows )
-        self.myTableView.tm.setFilterStatus( str( self.genreComboBox.currentText( ) ) )
+        self.myTableView.tm.setFilterGenre( 'ALL' )
+        self.myTableView.tm.setFilterDecade( 'ALL' )
 
-    def setGenreStatus( self, genre, num ):
-        if genre == 'ALL':
-            self.genreLabel.setText('%d MOVIES TOTAL' % num )
-        else:
-            self.genreLabel.setText('%d MOVIES IN %s GENRE' % ( num, str( genre ).upper( ) ) )
+    def checkMinPopularity( self ):
+        try:
+            popu = float( self.minPopuLineEdit.text( ) )
+            assert( popu >= 0.0 )
+            assert( popu <= 10.0 )
+            self.minPopularity = popu # everything works out            
+        except: pass
+        #
+        self.minPopuLineEdit.setText( '%0.1f' % self.minPopularity )
+        self.emitMinPopularity.emit( self.minPopularity )
+        
+    def setStatus( self, num ):
+        self.numMoviesLabel.setText('%d MOVIES HERE' % num )
 
     def changeGenre( self ):
         genre = str( self.genreComboBox.currentText( ) )
-        self.myTableView.tm.setFilterStatus( genre )
+        self.myTableView.tm.setFilterGenre( genre )
+
+    def changeDecade( self ):
+        decade_string = str( self.decadesComboBox.currentText( ) )
+        self.myTableView.tm.setFilterDecade( decade_string )
 
     def setNewToken( self, newToken ):
         self.token = newToken
@@ -162,32 +233,47 @@ class MyMovieQSortFilterProxyModel( QSortFilterProxyModel ):
         return self.sourceModel( ).filterRow( rowNumber )
 
 class MyMovieTableModel( QAbstractTableModel ):
-    emitGenreNumMovies = pyqtSignal( str, int )
+    emitNumMovies = pyqtSignal( int )
     emitFilterChanged = pyqtSignal( )
     
     def __init__( self, parent = None ):
         super(MyMovieTableModel, self).__init__( parent )
         self.parent = parent
         self.myMovieData = [ ]
-        self.filterStatus = 'ALL'
+        self.rev_order_dict = { }
+        self.filterGenre = 'ALL'
+        self.filterDecade = -2
         self.filterRegexp = QRegExp( '.', Qt.CaseInsensitive,
                                      QRegExp.RegExp )
+        self.filterMinPopu = 0.0
+        self.emitFilterChanged.connect( self.returnNumMovies )
+
+    def returnNumMovies( self ):
+        numRows = len(list( filter(lambda rowNumber: self.filterRow( rowNumber ),
+                                   range(len( self.myMovieData ) ) ) ) )
+        self.emitNumMovies.emit( numRows )
 
     def filterRow( self, rowNumber ):
         data = self.myMovieData[ rowNumber ]
+        #
+        ## now check for decade
+        if self.filterDecade != -2: # not ALL
+            if self.filterDecade == -1: # before 1900
+                if data[ 'releasedate' ].year >= 1900: return False
+            else:
+                if 10 * int( 0.1 * data[ 'releasedate' ].year ) != self.filterDecade:
+                    return False
+        #
+        ## now check for popularity
+        if data[ 'rating' ] < self.filterMinPopu: return False
+        #
+        ## now do the rest
         if self.filterRegexp.indexIn( data[ 'title' ] ) == -1:
             return False
-        elif self.filterStatus == 'ALL':
+        elif self.filterGenre == 'ALL':
             return True
         else:
-            return data['genre'] == self.filterStatus
-            
-    def setFilterStatus( self, filterStatus ):
-        self.filterStatus = str( filterStatus )
-        self.sort( -1, Qt.AscendingOrder )
-        numRows = len(list( filter(lambda rowNumber: self.filterRow( rowNumber ),
-                                   range(len( self.myMovieData ) ) ) ) )
-        self.emitGenreNumMovies.emit( self.filterStatus, numRows )
+            return data['genre'] == self.filterGenre
         
     def rowCount( self, parent ):
         return len( self.myMovieData )
@@ -212,6 +298,22 @@ class MyMovieTableModel( QAbstractTableModel ):
         self.myMovieData = myMovieData
         self.endInsertRows( )
         self.sort( 1, Qt.AscendingOrder )
+        #
+        ## now create the set of movie data by decade fount here
+        decades_in_order_dict = TMDBMyGUI.create_decades_in_order( myMovieData )
+        self.rev_order_dict = dict(map(lambda decade: ( decades_in_order_dict[ decade ], decade ),
+                                       decades_in_order_dict ) )
+        self.rev_order_dict[ 'ALL' ] = -2
+        
+    def setFilterGenre( self, genre ):
+        self.filterGenre = genre
+        self.sort( -1, Qt.AscendingOrder )
+        self.emitFilterChanged.emit( )
+
+    def setFilterDecade( self, decade_string ):
+        assert( decade_string in self.rev_order_dict )
+        self.filterDecade = self.rev_order_dict[ decade_string ]
+        self.emitFilterChanged.emit( )
 
     def setFilterString( self, text ):
         mytext = str( text ).strip( )
@@ -219,6 +321,10 @@ class MyMovieTableModel( QAbstractTableModel ):
         self.filterRegexp = QRegExp(
             mytext, Qt.CaseInsensitive,
             QRegExp.RegExp )
+        self.emitFilterChanged.emit( )
+
+    def setFilterMinPopularity( self, minPopularity ):
+        self.filterMinPopu = minPopularity
         self.emitFilterChanged.emit( )
 
     def sort( self, ncol, order ):

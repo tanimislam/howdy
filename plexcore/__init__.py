@@ -21,7 +21,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
 from fuzzywuzzy.fuzz import partial_ratio
 from PyQt5.QtWidgets import QAction, QApplication, QDialog, QFileDialog, QLabel, QMenu, QTextEdit, QVBoxLayout
-from PyQt5.QtGui import QColor, QPixmap, QFontDatabase
+from PyQt5.QtGui import QColor, QPixmap, QFontDatabase, QCursor
 from PyQt5.QtCore import pyqtSignal, QTimer, QThread
 
 # resource file and stuff

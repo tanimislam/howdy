@@ -1403,32 +1403,32 @@ def get_remaining_episodes(
     ## guard-code #2 for now -- as of 25-11-2019, THETVDB API is sick and broken
     ## sometimes bad episodes appear through the API that don't appear in IMDB or TMDB
     ## here use TMDB only for those shows that cannot be found
-    toGet_copy = { }
-    for tvshow in toGet:
-        info = toGet[ tvshow ]
-        epdicts_tmdb = plextvdb_attic.get_tot_epdict_tmdb( tvshow )
-        #
-        ## just copy if cannot find TV show through TMDB API
-        if epdicts_tmdb is None:
-            toGet_copy[ tvshow ] = info
-            continue
-        #
-        ## now look for the season and episode numbers
-        episodes_to_include = [ ]
-        for episode_info in info[ 'episodes']:
-            seasno, epno, title = episode_info
-            if seasno == 0: # always include specials to download
-                episodes_to_include.append( episode_info )
-            if seasno not in epdicts_tmdb: continue
-            if epno not in epdicts_tmdb[ seasno ]: continue
-            episodes_to_include.append( episode_info )
+    # toGet_copy = { }
+    # for tvshow in toGet:
+    #     info = toGet[ tvshow ]
+    #     epdicts_tmdb = plextvdb_attic.get_tot_epdict_tmdb( tvshow )
+    #     #
+    #     ## just copy if cannot find TV show through TMDB API
+    #     if epdicts_tmdb is None:
+    #         toGet_copy[ tvshow ] = info
+    #         continue
+    #     #
+    #     ## now look for the season and episode numbers
+    #     episodes_to_include = [ ]
+    #     for episode_info in info[ 'episodes']:
+    #         seasno, epno, title = episode_info
+    #         if seasno == 0: # always include specials to download
+    #             episodes_to_include.append( episode_info )
+    #         if seasno not in epdicts_tmdb: continue
+    #         if epno not in epdicts_tmdb[ seasno ]: continue
+    #         episodes_to_include.append( episode_info )
 
-        if len( episodes_to_include ) == 0: continue
+    #     if len( episodes_to_include ) == 0: continue
         
-        info[ 'episodes' ] = episodes_to_include
-        toGet_copy[ tvshow ] = info
+    #     info[ 'episodes' ] = episodes_to_include
+    #     toGet_copy[ tvshow ] = info
         
-    return toGet_copy
+    return toGet
 
 def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token = None,
                            fromDate = None, num_threads = 2 * multiprocessing.cpu_count( ) ):

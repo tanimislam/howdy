@@ -245,12 +245,18 @@ The help output, when running ``plex_tvdb_epinfo.py -h``, produces the following
 			   Name of the JSON file into which to store the episode
                            information. Default is eps.json.
      --debug               If chosen, then run DEBUG logging.
+     --showspecials        If chosen, then also find all the specials.
+     --noverify            If chosen, do not verify the SSL connection.
 
 * ``-s`` or ``--show`` specifies the show whose information, as a JSON file, is uploaded to the remote SSH server.
 
 * ``-j`` or ``--jsonfile`` specifies the name of the JSON file. The file's name must end in ``.json``.
 
 * ``--debug`` prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
+
+* ``--showspecials`` means to also record this TV show's specials, as a dictionary under season ``0``.
+
+* ``--noverify`` does not verify SSL connections.
 
 For example, to upload information about `The Simpsons <the_simpsons_>`_ into a file, ``the_simpsons.json``, in the remote SSH server and the remote home directory (``REMOTE_HOME_DIR``).
 

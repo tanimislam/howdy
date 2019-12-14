@@ -20,6 +20,8 @@ def main( ):
                       help = 'Name of the TV Show to push into remote server.')
     parser.add_option('-j', '--jsonfile', type=str, action='store', dest='jsonfile', default = 'eps.json',
                       help = 'Name of the JSON file into which to store the episode information. Default is eps.json.' )
+    parser.add_option('--showspecials', dest='do_showspecials', action='store_true', default = False,
+                      help = 'If chosen, then also find all the specials.' )
     parser.add_option('--debug', dest='do_debug', action='store_true', default = False,
                       help = 'If chosen, then run DEBUG logging.' )
     parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
@@ -39,7 +41,8 @@ def main( ):
     #
     ## now get episode information
     try:
-        epdicts = plextvdb.get_tot_epdict_tvdb( opts.show.strip( ), verify = opts.do_verify )
+        epdicts = plextvdb.get_tot_epdict_tvdb(
+            opts.show.strip( ), showSpecials = opts.do_showspecials, verify = opts.do_verify )
         logging.debug( 'name of show: %s. Number of eps: %d.' % (
             opts.show.strip( ), sum(list(map(lambda seasno: len( epdicts[ seasno ] ), epdicts)))))
     except Exception as e:

@@ -157,8 +157,8 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
         self.setStyleSheet("""
         QWidget {
         font-family: Consolas;
-        font-size: %d;
-        }""" % ( int( 11 * self.resolution ) ) )
+        font-size: %dpx;
+        }""" % ( int( 13 * self.resolution ) ) )
         dat = plexcore.checkServerCredentials(
             doLocal = doLocal, verify = self.verify )
         if dat is None:
@@ -237,10 +237,11 @@ class PlexEmailMyGUI( QDialogWithPrinting ):
             if name is not None:
                 data_dict[ 'name' ] = name
             return data_dict
+        print( self.emails_array )
         emailMapping = list(
-            map( email_name_dict,
-                 sorted( self.emails_array,
-                         key = lambda tup: tup[0].split( )[-1] ) ) )
+            map( email_name_dict, self.emails_array ) )
+        #sorted( self.emails_array,
+        #                 key = lambda tup: tup[0].split( )[-1] ) ) )
         pgetv = PlexGuestEmailTV(
             qdl, emailMapping, self.resolution )
         myLayout.addWidget( pgetv )

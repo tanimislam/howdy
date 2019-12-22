@@ -13,13 +13,13 @@ sys.path.append( mainDir )
 from optparse import OptionParser
 from plexcore import plexcore
 from plextmdb import plextmdb_totgui
-from PyQt4.QtGui import QApplication
+from PyQt5.QtWidgets import QApplication
 
 def main(info = False, doLocal = True, doLarge = False,
          verify = True ):
     testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
     app = QApplication([])
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
+    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     movie_data_rows = pickle.load( gzip.open(
         os.path.join( testDir, 'movie_data_rows.pkl.gz' ), 'rb' ) )
     if info: logging.basicConfig( level = logging.INFO )
@@ -40,4 +40,4 @@ if __name__=='__main__':
                       default = True, help = 'Do not verify SSL transactions if chosen.')    
     opts, args = parser.parse_args( )
     main( info = opts.do_info, doLocal = opts.do_local, verify = opts.do_verify,
-          doLarge = True )
+          doLarge = False )

@@ -102,7 +102,9 @@ class TMDBMyGUI( QDialogWithPrinting ):
         myLayout.addWidget( self.myTableView )
         #
         ## set size, make sure not resizable
-        self.setFixedWidth( 680 )
+        #self.setFixedWidth( self.myTableView.sizeHint( ).width( ) )
+        self.setFixedWidth( 780 )
+        #self.setFixedWidth( 1.4 * self.myTableView.candidateWidth )
         #
         ## do this part first
         self.fill_out_movies( movie_data_rows )
@@ -186,6 +188,10 @@ class MyMovieTableView( QTableView ):
         self.setColumnWidth(0, 210 )
         self.setColumnWidth(1, 100 )
         self.setColumnWidth(2, 100 )
+        self.setColumnWidth(3, 100 )
+        self.setColumnWidth(4, 100 )
+        self.setColumnWidth(5, 100 )
+        self.setFixedWidth( 210 + 5 * 100 )
         #self.setColumnWidth(3, 120 )
         #self.setFixedWidth( 1.1 * ( 210 * 2 + 120 * 2 ) )
         #

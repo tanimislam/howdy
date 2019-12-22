@@ -75,10 +75,13 @@ class TMDBTotGUI( QDialogWithPrinting ):
         ##
         qf = QFont( )
         qf.setFamily( 'Consolas' )
-        qf.setPointSize( int( 11 * self.resolution ) )
+        qf.setPointSize( int( 13 * self.resolution ) )
         qfm = QFontMetrics( qf )        
-        #self.setFixedWidth( 150 * qfm.width( 'A' ) )
-        self.setFixedWidth( 700 )
+        #self.setFixedWidth( 130 * qfm.width( 'A' ) )
+        #self.setFixedWidth( 700 )
+        self.setFixedWidth( max(
+            self.tmdb_gui.sizeHint( ).width( ),
+            self.tmdb_mygui.sizeHint( ).width( ) ) )
         self.setFixedHeight( self.sizeHint( ).height( ) )
         self.show( )
         
@@ -96,7 +99,7 @@ class TMDBTotGUI( QDialogWithPrinting ):
         QWidget {
         font-family: Consolas;
         font-size: %dpx;
-        }""" % ( int( 11 * self.resolution ) ) )
+        }""" % ( int( 13 * self.resolution ) ) )
         #
         self.helpDialog = HelpDialog( self )
         self.statusDialog = QLabel( )

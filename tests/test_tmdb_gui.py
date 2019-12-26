@@ -13,12 +13,12 @@ sys.path.append( mainDir )
 from optparse import OptionParser
 from plexcore import plexcore
 from plextmdb import plextmdb_gui
-from PyQt4.QtGui import QApplication
+from PyQt5.QtWidgets import QApplication
 
 def main(info = False, doLocal = True, verify = True ):
     testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
     app = QApplication([])
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
+    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     if info: logging.basicConfig( level = logging.INFO )
     fullurl, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )

@@ -2,9 +2,9 @@ import numpy, os, sys, requests, json, base64, time
 import logging, glob, datetime, textwrap, titlecase
 from pathos.multiprocessing import Pool
 from itertools import chain
-from PyQt5.QtWidgets import QAbstractItemView, QAction, QButtonGroup, QComboBox, QDialog, QFileDialog, QFrame, QGridLayout, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMenu, QPushButton, QRadioButton, QSizePolicy, QSpinBox, QStyledItemDelegate, QTableView, QTextEdit, QVBoxLayout, QWidget
-from PyQt5.QtGui import QBrush, QColor, QCursor, QFont, QFontMetrics, QImage, QPalette, QPixmap
-from PyQt5.QtCore import pyqtSignal, QAbstractTableModel, QEvent, QModelIndex, QRegExp, QSortFilterProxyModel, QThread, Qt
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 from plextmdb import plextmdb, plextmdb_torrents
 from plexcore import plexcore, get_popularity_color, get_formatted_size_MB, plexcore_deluge
@@ -155,6 +155,17 @@ class TMDBMovieInfo( QDialogWithPrinting ):
         if 'tmdb_id' in datum: self.tmdb_id = datum[ 'tmdb_id' ]
         else: self.tmdb_id = None
         #
+        ## get artists, director, producer
+        if self.tmdb_id is not None:
+            self.cast_and_crew = plextmdb.get_cast_and_crew(
+                self.tmdb_id, verify = verify )
+        else: self.cast_and_crew = { }
+        #
+        qf = QFont( )
+        qf.setFamily( 'Consolas' )
+        qf.setPointSize( 11 )
+        qfm = QFontMetrics( qf )
+        #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         if not isFound:
@@ -197,6 +208,14 @@ class TMDBMovieInfo( QDialogWithPrinting ):
             QLabel( 'RELEASE DATE: %s' % release_date.strftime( '%d %b %Y' ) ) )
         myLayout.addWidget( QLabel(
             'POPULARITY: %0.3f' % popularity ) )
+        if len( set([ 'actors', 'producers', 'director' ]) - set( self.cast_and_crew ) ) == 0:
+            actorQTE = QTextEdit(  'ACTORS: %s' % ', '.join( self.cast_and_crew[ 'actors' ] ) )
+            producerQTE = QTextEdit( 'PRODUCERS: %s' % ', '.join( self.cast_and_crew[ 'producers' ] ) )
+            directorQTE = QTextEdit( 'DIRECTOR: %s' % self.cast_and_crew[ 'director' ] )
+            for te in ( actorQTE, producerQTE, directorQTE ):
+                te.setReadOnly( True )
+                te.setFixedHeight( 2 * qfm.lineSpacing( ) )
+                myLayout.addWidget( te )
         qte = QTextEdit( full_info )
         qte.setReadOnly( True )
         qte.setStyleSheet("""

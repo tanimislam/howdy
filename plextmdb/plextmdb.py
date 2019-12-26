@@ -695,3 +695,32 @@ def createProcessedMovieData( results, year = None, verify = True ):
             return None
 
     return list(filter(None, map( processIndividualDatum, results ) ) )
+
+def get_cast_and_crew( tmdb_id, num_actors = 3, verify = True ):
+    """
+    Gets the top ``num_actors``, director, and producer for the movie specified by its TMDB ID.
+
+    :param int tmdb_id: the TMDB ID of the movie.
+    :param int num_actors: optinal argument, the top number of actors to choose. Default is ``3``. must be :math:`\ge 1`.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :returns: a :py:class:`dict` containing the top ``num_actors`` main actors, producers, and director of the movie. For example, the movie `Novocaine (2001)`_ has ``tmdb_id = 20794``. This returns the following information,
+    
+      .. code-block:: python
+
+         { 'actors' : [ 'Steve Martin', 'Laura Dern', 'Helena Bonham Carter' ],
+           'producers' : [ 'Daniel M. Rosenberg', 'Paul Mones' ],
+           'director' : 'David Atkins' }
+
+    :rtype: dict
+
+    .. _`Novocaine (2001)`: https://en.wikipedia.org/wiki/Novocaine_(film)
+    """
+    assert( num_actors > 0 )
+    response = requests.get( 'https://api.themoviedb.org/3/movie/%d/credits' % tmdb_id,
+                             params = { 'api_key' : tmdb_apiKey }, verify = verify )
+    if response.status_code != 200: return { }
+    data = response.json( )
+    actors = list(map(lambda elem: elem['name'], data['cast'][:num_actors] ) )
+    producers = list(map(lambda elem: elem['name'], filter(lambda elem: elem['job'] == 'Producer', data['crew'] ) ) )
+    director = list(map(lambda elem: elem['name'], filter(lambda elem: elem['job'] == 'Director', data['crew'] ) ) )[0]
+    return { 'actors' : actors, 'producers' : producers, 'director' : director }

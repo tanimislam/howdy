@@ -107,7 +107,7 @@ def _process_data_song_dict(
         data_dict, status = pm.get_music_metadata(
             song_name = s_name, artist_name = a_name )
         if status == 'SUCCESS': return data_dict, status
-        if not_process_to_end:
+        if not process_to_end:
             return return_error_raw( status )
         
         #

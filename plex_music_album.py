@@ -73,4 +73,7 @@ def main( ):
         print( '\n%s\n' % ';'.join(map(lambda title_trkno: title_trkno[0], track_listing)) )
 
 if __name__ == '__main__':
-    main( )
+    try:
+        main( )
+    except Exception as e:
+        print( e )

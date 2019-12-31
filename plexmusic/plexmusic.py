@@ -1,5 +1,5 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2, json, logging, oauth2client.client
-import requests, youtube_dl, gmusicapi, datetime, musicbrainzngs, time, io, tabulate
+import requests, youtube_dl, gmusicapi, datetime, musicbrainzngs, time, io, tabulate, validators
 import pathos.multiprocessing as multiprocessing
 from contextlib import contextmanager
 from googleapiclient.discovery import build
@@ -1186,11 +1186,12 @@ class PlexLastFM( object ):
                 album_name, artist_name )
             return return_error_raw( error_message )
         album_url = PlexLastFM.get_album_url( album[ 'image' ] )
-        if album_url is None:
-            error_message = "Could not find album art for album = %s for artist = %s." % (
+        if album_url is None or not validators.url( album_url ):
+            error_message = "Could not find album art for album = %s for artist = %s, because of invalid album URL" % (
                 album_name, artist_name )
             return return_error_raw( error_message )
         filename = '%s.%s.png' % ( artist_name, album_name.replace('/', '-' ) )
+
         img = Image.open( io.BytesIO( requests.get( album_url, verify = self.verify ).content ) )
         img.save( filename, format = 'png' )
         os.chmod( filename, 0o644 )

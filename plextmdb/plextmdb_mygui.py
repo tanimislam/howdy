@@ -1,8 +1,8 @@
-import numpy, os, sys, requests
+import numpy, os, sys, requests, validators
 import logging, glob, datetime, pickle, gzip
-from PyQt5.QtWidgets import QAbstractItemView, QAction, QComboBox, QDialog, QFileDialog, QFrame, QGridLayout, QHeaderView, QLabel, QLineEdit, QMenu, QStyledItemDelegate, QTableView, QTextEdit, QVBoxLayout, QHBoxLayout, QWidget
-from PyQt5.QtGui import QBrush, QCursor, QImage, QPalette, QPixmap
-from PyQt5.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, QRegExp, QSortFilterProxyModel, Qt
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 from plextmdb import plextmdb
 from plexcore import plexcore, QDialogWithPrinting, get_popularity_color
@@ -392,15 +392,16 @@ class MyMovieTableModel( QAbstractTableModel ):
         myLayout.addWidget( qte )
         #
         qlabel = QLabel( )
-        if is_local_pic:
-            cont = plexcore.get_pic_data(
-                movie_full_path, token = self.parent.token )
-        else:
-            cont = requests.get(
-                movie_full_path, verify = self.parent.verify ).content
-        qpm = QPixmap.fromImage( QImage.fromData( cont ) )
-        qpm = qpm.scaledToWidth( 450 )
-        qlabel.setPixmap( qpm )
+        if movie_full_path is not None and validators.url( movie_full_path ):
+            if is_local_pic:
+                cont = plexcore.get_pic_data(
+                    movie_full_path, token = self.parent.token )
+            else:
+                cont = requests.get(
+                    movie_full_path, verify = self.parent.verify ).content
+            qpm = QPixmap.fromImage( QImage.fromData( cont ) )
+            qpm = qpm.scaledToWidth( 450 )
+            qlabel.setPixmap( qpm )
         myLayout.addWidget( qlabel )
         #
         def screenGrab( ):

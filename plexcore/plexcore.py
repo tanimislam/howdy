@@ -1258,15 +1258,16 @@ def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400', verify = T
         for dat in unified_movie_data[ genre ]:
             dat_copy = dat.copy( )
             dat_copy[ 'genre' ] = genre
+            if dat_copy[ 'rating' ] is None: dat_copy[ 'rating' ] = 0.0
             #
             ## possible cannot find the movie situation here
             len_summary = len( dat_copy[ 'summary' ].strip( ) )
-            if dat_copy[ 'releasedate' ] is None or len_summary == 0 or dat_copy[ 'rating' ] is None:
+            if dat_copy[ 'releasedate' ] is None or len_summary == 0:
                 problem_rows.append( dat_copy )
                 continue
             assert( 'localpic' in dat_copy )
             movie_data_rows.append( dat_copy )
-            
+
     with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
         logging.info( 'number of problem rows: %d.' % len( problem_rows ) )
         movie_data_rows += list(

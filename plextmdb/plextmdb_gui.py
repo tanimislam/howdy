@@ -916,6 +916,7 @@ class SelectYearGenreWidget( QWidget ):
         self.refreshDataButton = QPushButton( 'REFRESH MOVIES' )
         self.movieNameLineEdit = QLineEdit( '' )
         self.actorNamesLineEdit = QLineEdit( '' )
+        self.refreshDataButton.setEnabled( True )
         #
         ## radio buttons
         genreRadioButton = QRadioButton( '', self )
@@ -975,12 +976,10 @@ class SelectYearGenreWidget( QWidget ):
         self.actorNamesLineEdit.setEnabled( False )
         self.movieNameLineEdit.setEnabled( False )
         self.pushDataButton.setEnabled( False )
-        self.refreshDataButton.setEnabled( False )
         if state == 0:
             self.yearSpinBox.setEnabled( True )
             self.genreComboBox.setEnabled( True )
             self.pushDataButton.setEnabled( True )
-            self.refreshDataButton.setEnabled( True )
         elif state == 1:
             self.actorNamesLineEdit.setEnabled( True )
         elif state == 2:

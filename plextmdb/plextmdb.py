@@ -637,10 +637,12 @@ def getMovieData( year, genre_id, verify = True ):
             time.sleep( 2.5 )
         if response.status_code != 200: continue
         logging.debug('RESPONSE STATUS FOR %s = %s.' % ( str(params), str(response) ) )
-        results += list( filter(lambda datum: datum['title'] is not None and
-                                datum['release_date'] is not None and
-                                datum['popularity'] is not None,
-                                response.json( )['results'] ) )
+        #
+        ## changed to include guard code, make sure each result has 'title', 'release_date', and 'popularity' keys
+        results += list( filter(
+            lambda datum: len(set([ 'title', 'release_date', 'popularity' ]) - set( datum.keys( ) ) ) == 0 and
+            all(map(lambda tok: datum[tok] is not None,  ( 'title', 'release_date', 'popularity' ) ) ),
+            response.json( )['results'] ) )
         
     # return results
     return createProcessedMovieData( results, year = year, verify = verify )
@@ -720,7 +722,13 @@ def get_cast_and_crew( tmdb_id, num_actors = 3, verify = True ):
                              params = { 'api_key' : tmdb_apiKey }, verify = verify )
     if response.status_code != 200: return { }
     data = response.json( )
-    actors = list(map(lambda elem: elem['name'], data['cast'][:num_actors] ) )
-    producers = list(map(lambda elem: elem['name'], filter(lambda elem: elem['job'] == 'Producer', data['crew'] ) ) )
-    director = list(map(lambda elem: elem['name'], filter(lambda elem: elem['job'] == 'Director', data['crew'] ) ) )[0]
+    try:
+        actors = list(map(lambda elem: elem['name'], data['cast'][:num_actors] ) )
+    except: actors = [ ]
+    try:
+        producers = list(map(lambda elem: elem['name'], filter(lambda elem: elem['job'] == 'Producer', data['crew'] ) ) )
+    except: producers = [ ]
+    try:
+        director = list(map(lambda elem: elem['name'], filter(lambda elem: elem['job'] == 'Director', data['crew'] ) ) )[0]
+    except: director = ''
     return { 'actors' : actors, 'producers' : producers, 'director' : director }

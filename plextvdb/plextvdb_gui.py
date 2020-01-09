@@ -395,8 +395,8 @@ class TVDBGUI( QDialogWithPrinting ):
         self.token = token
         self.tvdb_token = get_token( verify = verify )
         self.verify = verify
-        if not doLarge: fontSize = 11
-        else: fontSize = 22
+        if not doLarge: fontSize = 13
+        else: fontSize = 26
         self.setStyleSheet("""
         QWidget {
         font-family: Consolas;

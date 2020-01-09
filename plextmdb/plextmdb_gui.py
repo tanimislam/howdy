@@ -621,7 +621,7 @@ class TMDBGUI( QDialogWithPrinting ):
             self.setStyleSheet("""
             QWidget {
             font-family: Consolas;
-            font-size: 11;
+            font-size: 13px;
             }""" )
         tmdbEngine = plextmdb.TMDBEngine( verify = verify )
         self.verify = verify

@@ -639,7 +639,7 @@ def did_series_end( series_id, tvdb_token, verify = True, date_now = None ):
         if date_now is None: date_now = datetime.datetime.now( ).date( )
         last_date = max(map(lambda epdata: datetime.datetime.strptime(
             epdata['firstAired'], '%Y-%m-%d' ).date( ),
-                            get_episodes_series( series_id, tvdb_token, verify = verify ) ) )
+                            get_episodes_series( series_id, tvdb_token, verify = verify, showSpecials = False ) ) )
         td = date_now - last_date
         return td.days > 365
     except:

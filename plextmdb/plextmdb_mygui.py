@@ -52,7 +52,7 @@ class TMDBMyGUI( QDialogWithPrinting ):
             self.setStyleSheet("""
             QWidget {
             font-family: Consolas;
-            font-size: 11px;
+            font-size: 13px;
             }""" )
         #
         self.token = token

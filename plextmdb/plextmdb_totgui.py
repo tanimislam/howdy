@@ -1,8 +1,8 @@
 import numpy, os, sys, requests, time
 import logging, glob, datetime, pickle, gzip
-from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMenu, QSizePolicy, QTabWidget, QTextEdit, QVBoxLayout, QWidget
-from PyQt5.QtGui import QCursor, QFont, QFontMetrics, QPalette
-from PyQt5.QtCore import pyqtSignal, QThread
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 from plextmdb import plextmdb, plextmdb_mygui, plextmdb_gui
 from plexcore import plexcore, plexcore_gui, mainDir

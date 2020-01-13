@@ -1,9 +1,11 @@
-import os, sys, datetime, re, isodate, mutagen.mp4
-from dateutil.relativedelta import relativedelta
+import os, sys
 from functools import reduce
 _mainDir = reduce(lambda x,y: os.path.dirname( x ), range( 2 ),
                   os.path.abspath( __file__ ) )
 sys.path.append( _mainDir )
+from plexcore import plexcore
+from dateutil.relativedelta import relativedelta
+import datetime, re, isodate, mutagen.mp4
 
 _dt0 = datetime.datetime.strptime("00", "%S")
 

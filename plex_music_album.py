@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-import codecs, os, sys, signal, tabulate
+import sys, signal
 def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
+import codecs, os, tabulate, logging
 from plexmusic import plexmusic
 from plexemail import emailAddress
 from optparse import OptionParser
@@ -31,10 +32,13 @@ def main( ):
                        help = ' '.join([
                            'If chosen, use Musicbrainz to get the artist metadata.',
                            'Note that this is expensive, and is always applied when the --albums flag is set.' ]))
-    plexmusic.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
     opts, args = parser.parse_args( )
+    plexmusic.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
+    plexmusic.MusicInfo.set_musicbrainz_verify( verify = opts.do_verify )
     assert( opts.artist_name is not None )
     if not opts.do_albums: assert( opts.album_name is not None )
+    logger = logging.getLogger( )
+    if opts.do_debug: logger.setLevel( logging.DEBUG )
     #
     ##    
     plastfm = plexmusic.PlexLastFM( verify = opts.do_verify )

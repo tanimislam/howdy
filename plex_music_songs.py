@@ -367,7 +367,6 @@ def _download_songs_oldformat( opts ):
     return all_songs_downloaded
 
 def main( ):
-    plexmusic.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
     parser = OptionParser( )
     parser.add_option( '-a', '--artist', dest='artist_name', type=str, action='store',
                        help = 'Name of the artist to put into the M4A file.' )
@@ -402,9 +401,10 @@ def main( ):
                        help = 'Do not verify SSL transactions if chosen.' )
     parser.add_option( '--debug', dest='do_debug', action='store_true', default=False,
                        help = 'Run with debug mode turned on.' )
-    opts, args = parser.parse_args( )
+    opts, args = parser.parse_args( )    
+    plexmusic.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
+    plexmusic.MusicInfo.set_musicbrainz_verify( verify = opts.do_verify )
     logger = logging.getLogger( )
-    logger.setLevel( logging.CRITICAL )
     if opts.do_debug: logger.setLevel( logging.DEBUG )
     #
     ## must set TRUE only ONE of --lastfm or --musicbrainz

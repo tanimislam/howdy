@@ -203,11 +203,10 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
         username, password, verify = verify )
     if token is None: return None
     if not doLocal:
-        owned_servers = list(
-            filter(lambda entry: entry['owned'],
-                   list( zip(*get_all_servers( token, verify = verify ).items( ) ) )[1] ) )
-        if len( owned_servers ) == 0: return None
-        fullURL = max( owned_servers )[ 'url' ]
+        dat = get_all_servers( token, verify = verify )
+        if dat is None: return None
+        name = max( filter(lambda name: dat[ name ][ 'owned' ], dat ) )
+        fullURL = dat[ name ][ 'url' ]
     else: fullURL = 'http://localhost:32400'
     if not checkWorkingServer: return fullURL, token # don't store into plexlogin database
     #
@@ -345,7 +344,7 @@ def get_pic_data( plexPICURL, token = None ):
                    ( plexPICURL, len( response.content ) ) )
     return response.content
 
-def get_updated_at( token, fullURL = 'http://localhost:32400' ):
+def get_updated_at( token, fullURL = 'https://localhost:32400' ):
     """Get the date and time at which the Plex_ server was last updated, as a :py:class:`datetime <datetime.datetime>` object.
 
     :param str token: the Plex_ access token.

@@ -203,8 +203,11 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
         username, password, verify = verify )
     if token is None: return None
     if not doLocal:
-        _, fullURL = max( get_owned_servers( token, verify = verify ).items( ) )
-        fullURL = 'https://%s' % fullURL
+        owned_servers = list(
+            filter(lambda entry: entry['owned'],
+                   list( zip(*get_all_servers( token, verify = verify ).items( ) ) )[1] ) )
+        if len( owned_servers ) == 0: return None
+        fullURL = max( owned_servers )[ 'url' ]
     else: fullURL = 'http://localhost:32400'
     if not checkWorkingServer: return fullURL, token # don't store into plexlogin database
     #

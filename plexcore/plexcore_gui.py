@@ -1,8 +1,8 @@
 import os, sys, requests, webbrowser, logging
 from requests_oauthlib import OAuth2Session
-from PyQt5.QtWidgets import QAbstractItemView, QAction, QDialog, QGridLayout, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMenu, QPushButton, QTableView, QVBoxLayout, QWidget, QInputDialog
-from PyQt5.QtGui import QBrush, QCursor, QColor
-from PyQt5.QtCore import pyqtSignal, QAbstractTableModel, QModelIndex, Qt
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 from plexcore import plexcore, QDialogWithPrinting
 from plexcore import plexcore_deluge, plexcore_rsync, get_popularity_color
@@ -1407,8 +1407,13 @@ class UsernamePasswordServerDialog( QDialog ):
             self.server_statusLabel.setText( 'ERROR: wrong credentials.' )
             return
         self.token = token
-        _, fullurl = max( plexcore.get_owned_servers( token ).items( ) )
-        self.fullurl = 'https://%s' % fullurl
+        #
+        ## now look for the server
+        owned_servers = list(
+            filter(lambda entry: entry['owned'],
+                   list( zip(*plexcore.get_all_servers( token ).items( ) ) )[1] ) )
+        if len( owned_servers ) == 0: self.fullurl = ''
+        else: self.fullurl = max( owned_servers )[ 'url' ]
         plexcore.pushCredentials( username, password )
         self.clearCreds( )
         self.accept( )

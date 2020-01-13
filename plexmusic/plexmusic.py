@@ -202,6 +202,15 @@ class MusicInfo( object ):
                                           'version' : version } ) )
         session.commit( )
 
+    @classmethod
+    def set_musicbrainz_verify( cls, verify = True ):
+        """
+        Makes the MusicBrainz_ API to use either HTTPS (if verifying traffic) or HTTP (if not verifying traffic)
+        
+        :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+        """
+        musicbrainzngs.set_hostname( 'musicbrainz.org', use_https = verify )        
+
     #
     ## now get all the albums of this artist.
     ## musicbrainz does a "make functionality so general that easy use cases

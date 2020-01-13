@@ -1409,11 +1409,11 @@ class UsernamePasswordServerDialog( QDialog ):
         self.token = token
         #
         ## now look for the server
-        owned_servers = list(
-            filter(lambda entry: entry['owned'],
-                   list( zip(*plexcore.get_all_servers( token ).items( ) ) )[1] ) )
-        if len( owned_servers ) == 0: self.fullurl = ''
-        else: self.fullurl = max( owned_servers )[ 'url' ]
+        dat = plexcore.get_all_servers( self.token )
+        if dat is None: self.fullURL = ''
+        else:
+            name = max(filter(lambda name: dat[ name ][ 'owned' ], dat ) )
+            self.fullURL = dat[ name ][ 'url' ]
         plexcore.pushCredentials( username, password )
         self.clearCreds( )
         self.accept( )

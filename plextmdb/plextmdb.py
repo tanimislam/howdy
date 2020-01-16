@@ -640,7 +640,8 @@ def getMovieData( year, genre_id, verify = True ):
         #
         ## changed to include guard code, make sure each result has 'title', 'release_date', and 'popularity' keys
         results += list( filter(
-            lambda datum: len(set([ 'title', 'release_date', 'popularity' ]) - set( datum.keys( ) ) ) == 0 and
+            lambda datum: datum is not None and
+            len(set([ 'title', 'release_date', 'popularity' ]) - set( datum.keys( ) ) ) == 0 and
             all(map(lambda tok: datum[tok] is not None,  ( 'title', 'release_date', 'popularity' ) ) ),
             response.json( )['results'] ) )
         

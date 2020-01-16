@@ -1,11 +1,12 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2, json, logging, oauth2client.client
-import requests, youtube_dl, gmusicapi, datetime, musicbrainzngs, time, io, tabulate, validators
+import requests, youtube_dl, gmusicapi, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid
 import pathos.multiprocessing as multiprocessing
 from contextlib import contextmanager
 from googleapiclient.discovery import build
 from itertools import chain
 from PIL import Image
 from urllib.parse import urljoin
+from distutils.spawn import find_executable
 #
 from plexcore import mainDir, plexcore, baseConfDir, session, PlexConfig
 from plexcore import return_error_raw, get_maximum_matchval
@@ -854,11 +855,35 @@ def get_youtube_file( youtube_URL, outputfile ):
     .. _YouTube: https://www.youtube.com
     """
     assert( os.path.basename( outputfile ).lower( ).endswith( '.m4a' ) )
-    ydl_opts = { 'format' : '140',
-                 'outtmpl' : outputfile }
-    with youtube_dl.YoutubeDL( ydl_opts ) as ydl:
-        ydl.download([ youtube_URL ])
-
+    logging.info( 'URL: %s, outputfile: %s.' % (
+        youtube_URL, outputfile ) )
+    try:
+        ydl_opts = { 'format' : '140',
+                     'outtmpl' : outputfile }
+        with youtube_dl.YoutubeDL( ydl_opts ) as ydl:
+            ydl.download([ youtube_URL ])
+    except youtube_dl.DownloadError: # could not download the file to M4A format
+        ffmpeg_exec = find_executable( 'ffmpeg' )
+        if ffmpeg_exec is None:
+            raise ValueError("Error, no FFMPEG executable found." )
+        with youtube_dl.YoutubeDL( ) as ydl:
+            info = ydl.extract_info( youtube_URL, download = False )
+            extension = info[ 'ext' ]
+        ydl_opts = { 'outtmpl' : '%s.%s' % ( str( uuid.uuid4( ) ), extension ) }
+        tmpfile = ydl_opts[ 'outtmpl' ]
+        with youtube_dl.YoutubeDL( ydl_opts ) as ydl:
+            ydl.download( [ youtube_URL ] )
+            proc = subprocess.Popen(
+                [ ffmpeg_exec, '-i', tmpfile, '-vn',
+                  '-strict', 'experimental', '-acodec',
+                  'aac', '-ab', '128k', "file:%s" % outputfile ],
+                stdout = subprocess.PIPE, stderr = subprocess.STDOUT )
+            stdout_val, stderr_val = proc.communicate( )
+            os.chmod( outputfile, 0o644 )
+            os.remove( tmpfile )
+                
+        
+            
 def youtube_search(youtube, query, max_results = 10):
     """
     Performs a string query to search through YouTube_ clips, and returns list of valid YouTube_ URLs.

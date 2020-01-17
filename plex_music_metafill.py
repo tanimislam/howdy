@@ -7,7 +7,7 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 from plexmusic import plexmusic
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 def choose_youtube_item( name, maxnum = 10, verify = True ):
     youtube = plexmusic.get_youtube_service( verify = verify )
@@ -35,29 +35,29 @@ def choose_youtube_item( name, maxnum = 10, verify = True ):
     return youtubeURL
 
 def main( ):
-    parser = OptionParser( )
-    parser.add_option( '-s', '--songs', dest='song_names', type=str, action='store',
-                       help = 'Names of the song to put into M4A files. Separated by ;' )
-    parser.add_option( '-a', '--artist', dest='artist_name', type=str, action='store',
-                       help = 'Name of the artist to put into the M4A file.' )
-    parser.add_option( '--maxnum', dest='maxnum', type=int, action='store',
-                       default = 10, help =' '.join([ 
-                           'Number of YouTube video choices to choose for your song.',
-                           'Default is 10.' ]) )
-    parser.add_option( '-A', '--album', dest='album_name', type=str, action='store',
-                       help = 'If defined, then use ALBUM information to get all the songs in order from the album.' )
-    parser.add_option( '--noverify', dest='do_verify', action='store_false', default = True,
-                       help = 'If chosen, do not verify SSL connections.' )
-    opts, args = parser.parse_args( )
-    assert( opts.artist_name is not None )
-    assert( len(list(filter(lambda tok: tok is not None, ( opts.song_names, opts.album_name ) ) ) ) == 1 ), "error, must choose one of --songs or --album"
+    parser = ArgumentParser( )
+    parser.add_argument( '-s', '--songs', dest='song_names', type=str, action='store',
+                         help = 'Names of the song to put into M4A files. Separated by ;', required = True )
+    parser.add_argument( '-a', '--artist', dest='artist_name', type=str, action='store',
+                         help = 'Name of the artist to put into the M4A file.', required = True )
+    parser.add_argument( '--maxnum', dest='maxnum', type=int, action='store',
+                         default = 10, help =' '.join([ 
+                             'Number of YouTube video choices to choose for your song.',
+                             'Default is 10.' ]) )
+    parser.add_argument( '-A', '--album', dest='album_name', type=str, action='store',
+                         help = 'If defined, then use ALBUM information to get all the songs in order from the album.' )
+    parser.add_argument( '--noverify', dest='do_verify', action='store_false', default = True,
+                         help = 'If chosen, do not verify SSL connections.' )
+    args = parser.parse_args( )
+    assert( args.artist_name is not None )
+    assert( len(list(filter(lambda tok: tok is not None, ( args.song_names, args.album_name ) ) ) ) == 1 ), "error, must choose one of --songs or --album"
     #
     ## first get music metadata
-    pm = plexmusic.PlexMusic( verify = opts.do_verify )
+    pm = plexmusic.PlexMusic( verify = args.do_verify )
 
-    if opts.album_name is not None:
+    if args.album_name is not None:
         album_data_dict, status = pm.get_music_metadatas_album(
-            opts.artist_name, opts.album_name )
+            args.artist_name, args.album_name )
         if status != 'SUCCESS':
             print( status )
             return
@@ -77,7 +77,7 @@ def main( ):
             ## now get the youtube song selections
             youtubeURL = choose_youtube_item(
                 '%s %s' % ( artist_name, song_name ),
-                maxnum = opts.maxnum, verify = opts.do_verify )
+                maxnum = args.maxnum, verify = args.do_verify )
             
             if youtubeURL is None:
                 continue
@@ -92,13 +92,13 @@ def main( ):
             ##
             os.chmod( filename, 0o644 )
     else:
-        assert( opts.song_names is not None )
-        song_names = map(lambda song_name: song_name.strip( ), opts.song_names.split(';'))
+        assert( args.song_names is not None )
+        song_names = map(lambda song_name: song_name.strip( ), args.song_names.split(';'))
         for song_name in song_names:
             try:
                 data_dict, status = pm.get_music_metadata(
                     song_name = song_name,
-                    artist_name = opts.artist_name )
+                    artist_name = args.artist_name )
                 if status != 'SUCCESS':
                     print( status )
                     continue
@@ -114,7 +114,7 @@ def main( ):
             #
             ## now get the youtube song selections
             youtubeURL = choose_youtube_item( '%s %s' % ( artist_name, song_name ),
-                                              maxnum = opts.maxnum )
+                                              maxnum = args.maxnum )
             if youtubeURL is None:
                 continue
             #

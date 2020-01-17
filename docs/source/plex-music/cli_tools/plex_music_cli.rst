@@ -20,26 +20,28 @@ The help output, when running ``plex_music_album.py -h``, produces the following
 
 .. code-block:: bash
 
-     Usage: plex_music_album.py [options]
+   usage: plex_music_album.py [-h] -a ARTIST_NAME [-A ALBUM_NAME] [--songs]
+			      [--formatted] [--albums] [--debug] [--noverify]
+			      [--musicbrainz]
 
-     Options:
-       -h, --help            show this help message and exit
-       -a ARTIST_NAME, --artist=ARTIST_NAME
-			     Name of the artist to get album image for.
-       -A ALBUM_NAME, --album=ALBUM_NAME
-			     Name of the album to get album image for.
-       --songs               If chosen, get the song listing instead of downloading
-			     the album image.
-       --formatted           If chosen, print the song listing in a format
-			     recognized by plex_music_metafill.py for downloading a
-			     collection of songs.
-       --albums              If chosen, then get a list of all the songs in all
-			     studio albums for the artist.
-       --debug               Run with debug mode turned on.
-       --noverify            If chosen, do not verify SSL connections.
-       --musicbrainz         If chosen, use Musicbrainz to get the artist metadata.
-			     Note that this is expensive, and is always applied
-			     when the --albums flag is set.
+   optional arguments:
+     -h, --help            show this help message and exit
+     -a ARTIST_NAME, --artist ARTIST_NAME
+			   Name of the artist to get album image for.
+     -A ALBUM_NAME, --album ALBUM_NAME
+			   Name of the album to get album image for.
+     --songs               If chosen, get the song listing instead of downloading
+			   the album image.
+     --formatted           If chosen, print the song listing in a format
+			   recognized by plex_music_metafill.py for downloading a
+			   collection of songs.
+     --albums              If chosen, then get a list of all the songs in all
+			   studio albums for the artist.
+     --debug               Run with debug mode turned on.
+     --noverify            If chosen, do not verify SSL connections.
+     --musicbrainz         If chosen, use Musicbrainz to get the artist metadata.
+			   Note that this is expensive, and is always applied
+			   when the --albums flag is set.
 
 These are the common operational flags,
 
@@ -125,21 +127,22 @@ The help output, when running ``plex_music_metafill.py -h``, produces the follow
 
 .. code-block:: bash
 
-     Usage: plex_music_metafill.py [options]
+   usage: plex_music_metafill.py [-h] -s SONG_NAMES -a ARTIST_NAME
+				 [--maxnum MAXNUM] [-A ALBUM_NAME] [--noverify]
 
-     Options:
-       -h, --help            show this help message and exit
-       -s SONG_NAMES, --songs=SONG_NAMES
-			     Names of the song to put into M4A files. Separated by
-			     ;
-       -a ARTIST_NAME, --artist=ARTIST_NAME
-			     Name of the artist to put into the M4A file.
-       --maxnum=MAXNUM       Number of YouTube video choices to choose for your
-			     song. Default is 10.
-       -A ALBUM_NAME, --album=ALBUM_NAME
-			     If defined, then use ALBUM information to get all the
-			     songs in order from the album.
-       --noverify            If chosen, do not verify SSL connections.	
+   optional arguments:
+     -h, --help            show this help message and exit
+     -s SONG_NAMES, --songs SONG_NAMES
+			   Names of the song to put into M4A files. Separated by
+			   ;
+     -a ARTIST_NAME, --artist ARTIST_NAME
+			   Name of the artist to put into the M4A file.
+     --maxnum MAXNUM       Number of YouTube video choices to choose for your
+			   song. Default is 10.
+     -A ALBUM_NAME, --album ALBUM_NAME
+			   If defined, then use ALBUM information to get all the
+			   songs in order from the album.
+     --noverify            If chosen, do not verify SSL connections.
 
 Here are the common elements of its operation,
        
@@ -409,11 +412,11 @@ The help output, when running ``upload_to_gmusic.py -h``, produces the following
 
 .. code-block:: bash
 
-   Usage: upload_to_gmusic.py [options]
+   usage: upload_to_gmusic.py [-h] -f FILENAMES [-P] [--noverify]
 
-   Options:
+   optional arguments:
      -h, --help            show this help message and exit
-     -f FILENAMES, --filenames=FILENAMES
+     -f FILENAMES, --filenames FILENAMES
 			   Give the list of filenames to put into the Google
 			   Music Player.
      -P                    If chosen, then push Google Music API Mobileclient

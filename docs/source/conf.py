@@ -60,7 +60,8 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
     'sphinxcontrib.youtube',
-    'sphinx_issues'
+    'sphinx_issues',
+    'sphinxarg.ext'
 ]
 
 #

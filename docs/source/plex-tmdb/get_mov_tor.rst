@@ -10,30 +10,32 @@ The help output, when running ``get_mov_tor.py -h``, produces the following.
 
 .. code-block:: bash
 
-   Usage: get_mov_tor.py [options]
+   usage: get_mov_tor.py [-h] -n NAME [-y YEAR] [--maxnum MAXNUM]
+			 [--timeout TIMEOUT] [-f FILENAME] [--bypass] [--nozooq]
+			 [--info] [--add] [--noverify] [--timing] [--doRaw]
 
-   Options:
+   optional arguments:
      -h, --help            show this help message and exit
-     -n NAME, --name=NAME  Name of the movie file to get.
-     -y YEAR, --year=YEAR  Year to look for the movie file to get.
-     --maxnum=MAXNUM       Maximum number of torrents to look through. Default is
-                           10.
-     --timeout=TIMEOUT     Timeout on when to quit getting torrents (in seconds).
-                           Default is 60 seconds..
-     -f FILENAME, --filename=FILENAME
-                           If defined, put option into filename.
+     -n NAME, --name NAME  Name of the movie file to get.
+     -y YEAR, --year YEAR  Year to look for the movie file to get.
+     --maxnum MAXNUM       Maximum number of torrents to look through. Default is
+			   10.
+     --timeout TIMEOUT     Timeout on when to quit searching for torrents (in
+			   seconds). Default is 60 seconds.
+     -f FILENAME, --filename FILENAME
+			   If defined, put torrent or magnet file into filename.
      --bypass              If chosen, bypass YTS.AG.
      --nozooq              If chosen, bypass ZOOQLE.
      --info                If chosen, run in info mode.
-     --add                 If chosen, push the magnet link into the deluge
-                           server.
+     --add                 If chosen, push the magnet link or torrent file into
+			   the deluge server.
      --noverify            If chosen, do not verify SSL connections.
-     --timing              If chosen, show timing information (how long to get movie
-                           torrents).
+     --timing              If chosen, show timing information (how long to get
+			   movie torrents).
      --doRaw               If chosen, do not use IMDB matching for Jackett
-                           torrents.
+			   torrents.
 
-There are 13 flags or command line settings, so it is useful to split the different possible functionalities into separate sections. This tool can operate in three ways: choose a `torrent file`_; choose a Magnet link (similar to what is done in :ref:`get_tv_tor.py`); and bypass the Jackett_ server to use a cocktail of torrent trackers for which I have developed some functionality (see :numref:`plextmdb.plextmdb_torrents module`). :numref:`Demonstration of Default Operation` demonstrates the default mode of operation for this tool. :numref:`Common Flags and Settings` describe those settings to ``get_mov_tor.py`` that are shared by all operations. Finally, :numref:`Choice of Torrent Search` describes how to change the search for `torrent files <torrent file_>`_.
+There are 13 flags or command line settings, so it is useful to split the different functionalities into separate sections. This tool can operate in three ways: choose a `torrent file`_; choose a Magnet link (similar to what is done in :ref:`get_tv_tor.py`); and bypass the Jackett_ server to use a cocktail of torrent trackers for which I have developed some functionality (see :numref:`plextmdb.plextmdb_torrents module`). :numref:`Demonstration of Default Operation` demonstrates the default mode of operation for this tool. :numref:`Common Flags and Settings` describe those settings to ``get_mov_tor.py`` that are shared by all operations. Finally, :numref:`Choice of Torrent Search` describes how to change the search for `torrent files <torrent file_>`_.
 
 Demonstration of Default Operation
 -----------------------------------

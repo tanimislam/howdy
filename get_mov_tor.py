@@ -10,7 +10,7 @@ import re, codecs, requests, time, logging
 from plexcore import plexcore_deluge
 from itertools import chain
 from pathos.multiprocessing import Pool
-from optparse import OptionParser
+from argparse import ArgumentParser
 from plextmdb import plextmdb_torrents, plextmdb
 from plextvdb import plextvdb_torrents
 from plexcore.plexcore import get_jackett_credentials
@@ -168,90 +168,90 @@ def get_movie_yts( name, verify = True, raiseError = False, to_torrent = False )
             client, filename, resp.content )
 
 def main( ):
-    parser = OptionParser( )
-    parser.add_option('-n', '--name', dest='name', type=str, action='store',
-                      help = 'Name of the movie file to get.')
-    parser.add_option('-y', '--year', dest='year', type=int, action='store',
-                      help = 'Year to look for the movie file to get.')
-    parser.add_option('--maxnum', dest='maxnum', type=int, action='store', default = 10,
-                      help = 'Maximum number of torrents to look through. Default is 10.')
-    parser.add_option('--timeout', dest='timeout', type=int, action='store', default = 60,
-                      help = 'Timeout on when to quit searching for torrents (in seconds). Default is 60 seconds..' )
-    #parser.add_option('--any', dest='do_any', action='store_true', default = False,
+    parser = ArgumentParser( )
+    parser.add_argument('-n', '--name', dest='name', type=str, action='store',
+                        help = 'Name of the movie file to get.', required = True )
+    parser.add_argument('-y', '--year', dest='year', type=int, action='store',
+                        help = 'Year to look for the movie file to get.')
+    parser.add_argument('--maxnum', dest='maxnum', type=int, action='store', default = 10,
+                        help = 'Maximum number of torrents to look through. Default is 10.')
+    parser.add_argument('--timeout', dest='timeout', type=int, action='store', default = 60,
+                        help = 'Timeout on when to quit searching for torrents (in seconds). Default is 60 seconds.' )
+    #parser.add_argument('--any', dest='do_any', action='store_true', default = False,
     #                  help = 'If chosen, make no filter on movie format.')
-    parser.add_option('-f', '--filename', dest='filename', action='store', type=str,
-                      help = 'If defined, put option into filename.')
-    parser.add_option('--bypass', dest='do_bypass', action='store_true', default=False,
-                      help = 'If chosen, bypass YTS.AG.')
-    parser.add_option('--nozooq', dest='do_nozooq', action='store_true', default=False,
-                      help = 'If chosen, bypass ZOOQLE.')
-    #parser.add_option('--torrentz', dest='do_torrentz', action='store_true', default=False,
+    parser.add_argument('-f', '--filename', dest='filename', action='store', type=str,
+                        help = 'If defined, put torrent or magnet file into filename.')
+    parser.add_argument('--bypass', dest='do_bypass', action='store_true', default=False,
+                        help = 'If chosen, bypass YTS.AG.')
+    parser.add_argument('--nozooq', dest='do_nozooq', action='store_true', default=False,
+                        help = 'If chosen, bypass ZOOQLE.')
+    #parser.add_argument('--torrentz', dest='do_torrentz', action='store_true', default=False,
     #                  help = 'If chosen, also look through TORRENTZ to get magnet link.')
-    parser.add_option('--info', dest='do_info', action='store_true', default = False,
-                      help = 'If chosen, run in info mode.' )
-    parser.add_option('--add', dest='do_add', action='store_true', default = False,
-                      help = 'If chosen, push the magnet link or torrent file into the deluge server.' )  
-    parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
-                      help = 'If chosen, do not verify SSL connections.' )
-    parser.add_option('--timing', dest='do_timing', action='store_true', default = False,
-                      help = 'If chosen, show timing information (how long to get movie torrents).')
-    parser.add_option('--doRaw', dest='do_raw', action='store_true', default = False,
-                      help = 'If chosen, do not use IMDB matching for Jackett torrents.')
-    opts, args = parser.parse_args( )
-    assert( opts.timeout >= 10 )
-    assert( opts.name is not None )
-    if opts.do_info: logging.basicConfig( level = logging.INFO )
+    parser.add_argument('--info', dest='do_info', action='store_true', default = False,
+                        help = 'If chosen, run in info mode.' )
+    parser.add_argument('--add', dest='do_add', action='store_true', default = False,
+                        help = 'If chosen, push the magnet link or torrent file into the deluge server.' )  
+    parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
+                        help = 'If chosen, do not verify SSL connections.' )
+    parser.add_argument('--timing', dest='do_timing', action='store_true', default = False,
+                        help = 'If chosen, show timing information (how long to get movie torrents).')
+    parser.add_argument('--doRaw', dest='do_raw', action='store_true', default = False,
+                        help = 'If chosen, do not use IMDB matching for Jackett torrents.')
+    args = parser.parse_args( )
+    assert( args.timeout >= 10 )
+    assert( args.name is not None )
+    if args.do_info: logging.basicConfig( level = logging.INFO )
     #
     num_both = 0
-    if opts.filename is not None: num_both += 1
-    if opts.do_add: num_both += 1
+    if args.filename is not None: num_both += 1
+    if args.do_add: num_both += 1
     assert( num_both != 2 ), "error, at most either one of --f or --add must be set, NOT both."
     #
     time0 = time.time( )
     tmdb_id = None
-    if opts.year is not None:
-        tmdb_id = plextmdb.get_movie_tmdbids( opts.name, year = opts.year )
-    if not opts.do_bypass:
+    if args.year is not None:
+        tmdb_id = plextmdb.get_movie_tmdbids( args.name, year = args.year )
+    if not args.do_bypass:
         try:
-            get_movie_yts( opts.name, verify = opts.do_verify,
-                           raiseError = True, to_torrent = opts.do_add )
+            get_movie_yts( args.name, verify = args.do_verify,
+                           raiseError = True, to_torrent = args.do_add )
             logging.info( 'search for YTS torrents took %0.3f seconds.' %
                           ( time.time( ) - time0 ) )
             return
         except ValueError: pass
 
     pool = Pool( processes = 4 )
-    if not opts.do_nozooq: jobs = [
-            pool.apply_async( get_items_zooqle, args = ( opts.name, opts.maxnum ) ) ]
+    if not args.do_nozooq: jobs = [
+            pool.apply_async( get_items_zooqle, args = ( args.name, args.maxnum ) ) ]
     else: jobs = [ ]
     #
     ## check for jackett
     if get_jackett_credentials( ) is None:
-        jobs += list(map(lambda func: pool.apply_async( func, args = ( opts.name, opts.maxnum ) ),
+        jobs += list(map(lambda func: pool.apply_async( func, args = ( args.name, args.maxnum ) ),
                          ( get_items_rarbg, get_items_tpb ) ) )
-        #if opts.do_torrentz:
-        #    jobs.append( pool.apply_async( get_items_torrentz, args = ( opts.name, opts.maxnum ) ) )
+        #if args.do_torrentz:
+        #    jobs.append( pool.apply_async( get_items_torrentz, args = ( args.name, args.maxnum ) ) )
     else:
         jobs.append( pool.apply_async(
-            get_items_jackett, args = ( opts.name, tmdb_id, opts.maxnum, opts.do_verify, opts.do_raw ) ) )
+            get_items_jackett, args = ( args.name, tmdb_id, args.maxnum, args.do_verify, args.do_raw ) ) )
         jobs.append( pool.apply_async(
-            get_items_eztv_io, args = ( opts.name, tmdb_id, opts.maxnum, opts.do_verify ) ) )
+            get_items_eztv_io, args = ( args.name, tmdb_id, args.maxnum, args.do_verify ) ) )
     items_lists = [ ]
     for job in jobs:
         try:
-            items = job.get( opts.timeout )   # 60 second timeout on process
+            items = job.get( args.timeout )   # 60 second timeout on process
             if items is None: continue
             items_lists.append( items )
         except: pass
     items = list( chain.from_iterable( items_lists ) )
-    if opts.do_timing:
+    if args.do_timing:
         print( 'search for %d torrents took %0.3f seconds.' % (
             len( items ), time.time( ) - time0 ) )    
     if len( items ) != 0:
         #
         ## sort from most seeders + leecher to least
-        items_sorted = sorted( items, key = lambda tup: -tup['seeders'] - tup['leechers'] )[:opts.maxnum]
-        get_movie_torrent_items( items_sorted, filename = opts.filename, to_torrent = opts.do_add )
+        items_sorted = sorted( items, key = lambda tup: -tup['seeders'] - tup['leechers'] )[:args.maxnum]
+        get_movie_torrent_items( items_sorted, filename = args.filename, to_torrent = args.do_add )
 
 if __name__=='__main__':
     main( )

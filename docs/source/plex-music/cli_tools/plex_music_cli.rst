@@ -209,31 +209,33 @@ The help output, when running ``plex_music_songs.py -h``, produces the following
 
 .. code-block:: bash
 
-     Usage: plex_music_songs.py [options]
+   usage: plex_music_songs.py [-h] -a ARTIST_NAME -s SONG_NAMES [--maxnum MAXNUM]
+			      [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES]
+			      [--lastfm] [--musicbrainz] [--noverify] [--debug]
 
-     Options:
-       -h, --help            show this help message and exit
-       -a ARTIST_NAME, --artist=ARTIST_NAME
-			     Name of the artist to put into the M4A file.
-       -s SONG_NAMES, --songs=SONG_NAMES
-			     Names of the song to put into M4A files. Separated by
-			     ;
-       --maxnum=MAXNUM       Number of YouTube video choices to choose for each of
-			     your songs.Default is 10.
-       -A ALBUM_NAME, --album=ALBUM_NAME
-			     If defined, then get all the songs in order from the
-			     album.
-       --new                 If chosen, use the new format for getting the song
-			     list. Instead of -a or --artist, will look for
-			     --artists. Each artist is separated by a ';'.
-       --artists=ARTIST_NAMES
-			     List of artists. Each artist is separated by a ';'.
-       --lastfm              If chosen, then only use the LastFM API to get song
-			     metadata.
-       --musicbrainz         If chosen, use Musicbrainz to get the artist metadata.
-			     Note that this is expensive.
-       --noverify            Do not verify SSL transactions if chosen.
-       --debug               Run with debug mode turned on.
+   optional arguments:
+     -h, --help            show this help message and exit
+     -a ARTIST_NAME, --artist ARTIST_NAME
+			   Name of the artist to put into the M4A file.
+     -s SONG_NAMES, --songs SONG_NAMES
+			   Names of the song to put into M4A files. Separated by
+			   ;
+     --maxnum MAXNUM       Number of YouTube video choices to choose for each of
+			   your songs.Default is 10.
+     -A ALBUM_NAME, --album ALBUM_NAME
+			   If defined, then get all the songs in order from the
+			   album.
+     --new                 If chosen, use the new format for getting the song
+			   list. Instead of -a or --artist, will look for
+			   --artists. Each artist is separated by a ';'.
+     --artists ARTIST_NAMES
+			   List of artists. Each artist is separated by a ';'.
+     --lastfm              If chosen, then only use the LastFM API to get song
+			   metadata.
+     --musicbrainz         If chosen, use Musicbrainz to get the artist metadata.
+			   Note that this is expensive.
+     --noverify            Do not verify SSL transactions if chosen.
+     --debug               Run with debug mode turned on.
 
 In all three operations, here are required arguments or common flags,
 

@@ -10,7 +10,7 @@ import os, datetime, io, zipfile, logging, requests
 from plexmusic import plexmusic
 from plexcore import plexcore, return_error_raw
 from plexemail import plexemail, emailAddress, emailName
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 def _get_final_song_name( song_name, dur ):
     assert( dur >= 0 )
@@ -367,52 +367,52 @@ def _download_songs_oldformat( opts ):
     return all_songs_downloaded
 
 def main( ):
-    parser = OptionParser( )
-    parser.add_option( '-a', '--artist', dest='artist_name', type=str, action='store',
-                       help = 'Name of the artist to put into the M4A file.' )
-    parser.add_option( '-s', '--songs', dest='song_names', type=str, action='store',
-                       help = 'Names of the song to put into M4A files. Separated by ;' )
-    parser.add_option( '--maxnum', dest='maxnum', type=int, action='store',
-                       default = 10, help = ' '.join([ 
-                           'Number of YouTube video choices to choose for each of your songs.'
-                           'Default is 10.' ]))
-    parser.add_option( '-A', '--album', dest='album_name', type=str, action='store',
-                       help = 'If defined, then get all the songs in order from the album.' )
-    #parser.add_option( '--albums', dest='do_albums', action='store_true', default = False,
+    parser = ArgumentParser( )
+    parser.add_argument( '-a', '--artist', dest='artist_name', type=str, action='store',
+                         help = 'Name of the artist to put into the M4A file.', required = True )
+    parser.add_argument( '-s', '--songs', dest='song_names', type=str, action='store',
+                         help = 'Names of the song to put into M4A files. Separated by ;', required = True )
+    parser.add_argument( '--maxnum', dest='maxnum', type=int, action='store',
+                         default = 10, help = ' '.join([ 
+                             'Number of YouTube video choices to choose for each of your songs.'
+                             'Default is 10.' ]))
+    parser.add_argument( '-A', '--album', dest='album_name', type=str, action='store',
+                         help = 'If defined, then get all the songs in order from the album.' )
+    #parser.add_argument( '--albums', dest='do_albums', action='store_true', default = False,
     #                   help = 'If chosen, then print out all the studio albums this artist has put out.' )
-    #parser.add_option( '-e', '--email', dest='email', type=str, action='store',
+    #parser.add_argument( '-e', '--email', dest='email', type=str, action='store',
     #                   help = 'If defined with an email address, will email these songs to the recipient with that email address.')
-    #parser.add_option( '-n', '--ename', dest='email_name', type=str, action='store',
+    #parser.add_argument( '-n', '--ename', dest='email_name', type=str, action='store',
     #                   help = 'Only works if --email is defined. Optional argument to include the name of the recipient.' )
-    parser.add_option( '--new', dest='do_new', action='store_true', default = False,
-                       help = ' '.join([
-                           "If chosen, use the new format for getting the song list.",
-                           "Instead of -a or --artist, will look for --artists.",
-                           "Each artist is separated by a ';'." ]))
-    parser.add_option( '--artists', dest='artist_names', type=str, action='store',
-                       help = "List of artists. Each artist is separated by a ';'.")
-    parser.add_option( '--lastfm', dest='do_lastfm', action='store_true', default = False,
-                       help = 'If chosen, then only use the LastFM API to get song metadata.' )
-    parser.add_option( '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
-                       help = ' '.join( [
-                           'If chosen, use Musicbrainz to get the artist metadata.',
-                           'Note that this is expensive.' ] ) )
-    parser.add_option( '--noverify', dest='do_verify', action='store_false', default=True,
-                       help = 'Do not verify SSL transactions if chosen.' )
-    parser.add_option( '--debug', dest='do_debug', action='store_true', default=False,
-                       help = 'Run with debug mode turned on.' )
-    opts, args = parser.parse_args( )    
+    parser.add_argument( '--new', dest='do_new', action='store_true', default = False,
+                         help = ' '.join([
+                             "If chosen, use the new format for getting the song list.",
+                             "Instead of -a or --artist, will look for --artists.",
+                             "Each artist is separated by a ';'." ]))
+    parser.add_argument( '--artists', dest='artist_names', type=str, action='store',
+                         help = "List of artists. Each artist is separated by a ';'.")
+    parser.add_argument( '--lastfm', dest='do_lastfm', action='store_true', default = False,
+                         help = 'If chosen, then only use the LastFM API to get song metadata.' )
+    parser.add_argument( '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
+                         help = ' '.join( [
+                             'If chosen, use Musicbrainz to get the artist metadata.',
+                             'Note that this is expensive.' ] ) )
+    parser.add_argument( '--noverify', dest='do_verify', action='store_false', default=True,
+                         help = 'Do not verify SSL transactions if chosen.' )
+    parser.add_argument( '--debug', dest='do_debug', action='store_true', default=False,
+                         help = 'Run with debug mode turned on.' )
+    args = parser.parse_args( )
     plexmusic.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
-    plexmusic.MusicInfo.set_musicbrainz_verify( verify = opts.do_verify )
+    plexmusic.MusicInfo.set_musicbrainz_verify( verify = args.do_verify )
     logger = logging.getLogger( )
-    if opts.do_debug: logger.setLevel( logging.DEBUG )
+    if args.do_debug: logger.setLevel( logging.DEBUG )
     #
     ## must set TRUE only ONE of --lastfm or --musicbrainz
-    assert( len(list(filter(lambda tok: tok is True, ( opts.do_lastfm, opts.do_musicbrainz ) ) ) ) <= 1 ), "error, can do at most one of --lastfm or --musicbrainz"
+    assert( len(list(filter(lambda tok: tok is True, ( args.do_lastfm, args.do_musicbrainz ) ) ) ) <= 1 ), "error, can do at most one of --lastfm or --musicbrainz"
 
-    if not opts.do_new: all_songs_downloaded = _download_songs_oldformat( opts )
+    if not args.do_new: all_songs_downloaded = _download_songs_oldformat( opts )
     else: all_songs_downloaded = _download_songs_newformat( opts )
-    # if opts.email is not None: _email_songs( opts, all_songs_downloaded )
+    # if args.email is not None: _email_songs( opts, all_songs_downloaded )
         
 if __name__=='__main__':
     main( )

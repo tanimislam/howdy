@@ -8,7 +8,7 @@ def signal_handler( signal, frame ):
 signal.signal( signal.SIGINT, signal_handler )
 import os, glob, gmusicapi, httplib2
 from oauth2client.client import OAuth2WebServerFlow
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 from plexmusic import plexmusic
 
@@ -31,22 +31,22 @@ def _get_oauth_credentials( ):
     
 
 def main( ):
-    parser = OptionParser()
-    parser.add_option('-f', '--filenames', dest='filenames', action='store', type=str,
-                      help = 'Give the list of filenames to put into the Google Music Player.')
-    parser.add_option('-P', dest='do_push', action='store_true', default = False,
-                      help = 'If chosen, then push Google Music API Mobileclient credentials into the configuration database.' )
-    parser.add_option( '--noverify', dest='do_verify', action='store_false', default = True,
-                       help = 'If chosen, do not verify SSL connections.' )
-    opts, args = parser.parse_args()
-    if not opts.do_push:
-        if opts.filenames is None:
+    parser = ArgumentParser( )
+    parser.add_argument('-f', '--filenames', dest='filenames', action='store', type=str,
+                        help = 'Give the list of filenames to put into the Google Music Player.', required = True)
+    parser.add_argument('-P', dest='do_push', action='store_true', default = False,
+                        help = 'If chosen, then push Google Music API Mobileclient credentials into the configuration database.' )
+    parser.add_argument( '--noverify', dest='do_verify', action='store_false', default = True,
+                         help = 'If chosen, do not verify SSL connections.' )
+    args = parser.parse_args()
+    if not args.do_push:
+        if args.filenames is None:
             raise ValueError("Error, must give a list of file names.")
-        if '*' in opts.filenames:
-            fnames = _files_from_glob(opts.filenames)
+        if '*' in args.filenames:
+            fnames = _files_from_glob(args.filenames)
         else:
-            fnames = _files_from_commas(opts.filenames)
-        plexmusic.upload_to_gmusic( fnames, verify = opts.do_verify )
+            fnames = _files_from_commas(args.filenames)
+        plexmusic.upload_to_gmusic( fnames, verify = args.do_verify )
     else:
         flow, url = _get_oauth_credentials( )
         print( 'Please go to this URL in a browser window: %s' % url )
@@ -54,7 +54,7 @@ def main( ):
                          'type in the access code:' ] )
         access_code = input( bs )
         try:
-            if opts.do_verify: http = httplib2.Http( )
+            if args.do_verify: http = httplib2.Http( )
             else: http = httplib2.Http( disable_ssl_certificate_validation = True )
             credentials = flow.step2_exchange( access_code, http = http )
             credentials.refresh( http )
@@ -64,9 +64,9 @@ def main( ):
             print( "What is error: %s." % str( e ) )
             print( "Error: invallid authorization  code." )
             return
-        #if any( map(lambda tok: tok is not None, ( opts.email, opts.password ) ) ):
+        #if any( map(lambda tok: tok is not None, ( args.email, args.password ) ) ):
         #    raise ValueError( "Error, must define both Google Music email and password." )
-        #plexmusic.save_gmusic_creds( opts.email.strip( ), opts.password.strip( ) )
+        #plexmusic.save_gmusic_creds( args.email.strip( ), args.password.strip( ) )
 
 if __name__=='__main__':
     main( )

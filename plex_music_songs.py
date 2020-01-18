@@ -237,65 +237,65 @@ def _email_songs( opts, all_songs_downloaded ):
         attachDatas = list(map(lambda attachName: open(attachName, 'rb').read( ), attachNames)),
         attachNames = attachNames )
 
-def _download_songs_newformat( opts ):
-    assert( opts.song_names is not None )
-    assert( opts.artist_names is not None )
+def _download_songs_newformat( args ):
+    assert( args.song_names is not None )
+    assert( args.artist_names is not None )
     assert( len(list(filter(lambda tok: tok is True,
-                            ( opts.do_lastfm, opts.do_musicbrainz ) ) ) ) <= 1 )
+                            ( args.do_lastfm, args.do_musicbrainz ) ) ) ) <= 1 )
     #
     ## first get the music metadata
-    pm = plexmusic.PlexMusic( verify = opts.do_verify )
-    lastfm = plexmusic.PlexLastFM( verify = opts.do_verify )
+    pm = plexmusic.PlexMusic( verify = args.do_verify )
+    lastfm = plexmusic.PlexLastFM( verify = args.do_verify )
     do_whichone = 'GRACENOTE'
-    if opts.do_lastfm: do_whichone = 'LASTFM'
-    if opts.do_musicbrainz: do_whichone = 'MUSICBRAINZ'
+    if args.do_lastfm: do_whichone = 'LASTFM'
+    if args.do_musicbrainz: do_whichone = 'MUSICBRAINZ'
     song_names = list(
-        map(lambda song_name: song_name.strip( ), opts.song_names.split(';')))
+        map(lambda song_name: song_name.strip( ), args.song_names.split(';')))
     artist_names = list(
-        map(lambda artist_name: artist_name.strip( ), opts.artist_names.split(';')))
+        map(lambda artist_name: artist_name.strip( ), args.artist_names.split(';')))
     artist_names_dict = dict(map(lambda artist_name: ( artist_name, None ), set( artist_names ) ) )
-    if opts.do_musicbrainz:
+    if args.do_musicbrainz:
         artist_names_dict = dict(map(lambda artist_name: (
             artist_name, plexmusic.MusicInfo( artist_name ) ), set( artist_names ) ) )
     all_songs_downloaded = list(
         filter(None, map(lambda tup: _download_actual_song(
-            pm, lastfm, tup[0], tup[1], opts.maxnum, do_whichone = do_whichone,
+            pm, lastfm, tup[0], tup[1], args.maxnum, do_whichone = do_whichone,
             mi = artist_names_dict[ tup[ 1 ] ], process_to_end = True ),
                          filter(None, zip( song_names, artist_names ) ) ) ) )
     return all_songs_downloaded
 
-def _download_songs_oldformat( opts ):
-    assert( opts.artist_name is not None )
+def _download_songs_oldformat( args ):
+    assert( args.artist_name is not None )
     #
     ## first get music metadata
-    pm = plexmusic.PlexMusic( verify = opts.do_verify )
-    lastfm = plexmusic.PlexLastFM( verify = opts.do_verify )
+    pm = plexmusic.PlexMusic( verify = args.do_verify )
+    lastfm = plexmusic.PlexLastFM( verify = args.do_verify )
     
     #
     ## scenario #1: just get the list of albums
-    # if opts.do_albums: # use the --artist=<arg> --albums
+    # if args.do_albums: # use the --artist=<arg> --albums
     #     try:
-    #         mi = plexmusic.MusicInfo( opts.artist_name.strip( ) )
+    #         mi = plexmusic.MusicInfo( args.artist_name.strip( ) )
     #         mi.print_format_album_names( )
     #         return
     #     except Exception as e:
     #         logging.error( e, exc_info = True )
     #         print( 'Could not get find artist = %s with Musicbrainz.' % (
-    #             opts.artist_name.strip( ) ) )
+    #             args.artist_name.strip( ) ) )
     #         return   
-    if opts.album_name is not None: # use the --artist= --album=
+    if args.album_name is not None: # use the --artist= --album=
         all_songs_downloaded = [ ]
         #
         ## figure out order of music metadata services to get
         mi = None
-        if opts.do_lastfm:
+        if args.do_lastfm:
             do_whichone = 'LASTFM'
-        elif opts.do_musicbrainz:
+        elif args.do_musicbrainz:
             do_whichone = 'MUSICBRAINZ'
-            mi = plexmusic.MusicInfo( opts.artist_name )
+            mi = plexmusic.MusicInfo( args.artist_name )
         else: do_whichone = 'GRACENOTE'
         album_data_dict, status = _process_data_album_dict(
-            pm, lastfm, opts.album_name.strip( ), opts.artist_name,
+            pm, lastfm, args.album_name.strip( ), args.artist_name,
             do_whichone, mi = mi )
         if status != 'SUCCESS':
             print( status )
@@ -310,7 +310,7 @@ def _download_songs_oldformat( opts ):
         image_data = None
         if album_url != '':
             image_data = io.BytesIO(
-                requests.get( album_url, verify = opts.do_verify ).content )
+                requests.get( album_url, verify = args.do_verify ).content )
         print( 'ACTUAL ARTIST: %s' % artist_name )
         print( 'ACTUAL ALBUM: %s' % album_name )
         if 'year' in data_dict:
@@ -327,7 +327,7 @@ def _download_songs_oldformat( opts ):
             #
             ## now get the youtube song selections
             youtubeURL = _choose_youtube_item( '%s %s' % ( artist_name, song_name ),
-                                               maxnum = opts.maxnum, verify = pm.verify )
+                                               maxnum = args.maxnum, verify = pm.verify )
             if youtubeURL is None:
                 continue
             #
@@ -343,25 +343,25 @@ def _download_songs_oldformat( opts ):
             os.chmod( filename, 0o644 )
             all_songs_downloaded.append( ( artist_name, song_name, filename ) )
     else: # use --artist= --songs=
-        assert( opts.song_names is not None )
+        assert( args.song_names is not None )
         #
         ## order of the music metadata to get
         mi = None
-        if opts.do_lastfm:
+        if args.do_lastfm:
             do_whichone = 'LASTFM'
-        elif opts.do_musicbrainz:
+        elif args.do_musicbrainz:
             do_whichone = 'MUSICBRAINZ'
-            mi = plexmusic.MusicInfo( opts.artist_name )
+            mi = plexmusic.MusicInfo( args.artist_name )
         else: do_whichone = 'GRACENOTE'
         #
         ## now do the processing
         song_names = list(
-            map(lambda song_name: song_name.strip( ), opts.song_names.split(';')))
+            map(lambda song_name: song_name.strip( ), args.song_names.split(';')))
         all_songs_downloaded = list(filter(
             None,
             map(lambda song_name:
                 _download_actual_song(
-                    pm, lastfm, song_name, opts.artist_name, opts.maxnum,
+                    pm, lastfm, song_name, args.artist_name, args.maxnum,
                     do_whichone, mi = mi, process_to_end = False ),
                 song_names ) ) )
     return all_songs_downloaded
@@ -410,9 +410,9 @@ def main( ):
     ## must set TRUE only ONE of --lastfm or --musicbrainz
     assert( len(list(filter(lambda tok: tok is True, ( args.do_lastfm, args.do_musicbrainz ) ) ) ) <= 1 ), "error, can do at most one of --lastfm or --musicbrainz"
 
-    if not args.do_new: all_songs_downloaded = _download_songs_oldformat( opts )
-    else: all_songs_downloaded = _download_songs_newformat( opts )
-    # if args.email is not None: _email_songs( opts, all_songs_downloaded )
+    if not args.do_new: all_songs_downloaded = _download_songs_oldformat( args )
+    else: all_songs_downloaded = _download_songs_newformat( args )
+    # if args.email is not None: _email_songs( args, all_songs_downloaded )
         
 if __name__=='__main__':
     main( )

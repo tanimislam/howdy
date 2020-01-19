@@ -371,7 +371,7 @@ def main( ):
     parser.add_argument( '-a', '--artist', dest='artist_name', type=str, action='store',
                          help = 'Name of the artist to put into the M4A file.', required = True )
     parser.add_argument( '-s', '--songs', dest='song_names', type=str, action='store',
-                         help = 'Names of the song to put into M4A files. Separated by ;', required = True )
+                         help = 'Names of the song to put into M4A files. Separated by ;' )
     parser.add_argument( '--maxnum', dest='maxnum', type=int, action='store',
                          default = 10, help = ' '.join([ 
                              'Number of YouTube video choices to choose for each of your songs.'

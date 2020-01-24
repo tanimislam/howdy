@@ -297,7 +297,7 @@ def get_series_tmdb_id( series_name, firstAiredYear = None ):
 
 #
 ##Ignore specials (season 0) for now...
-def get_episodes_series_tmdb( tmdbID, fromDate = None ):
+def get_episodes_series_tmdb( tmdbID, fromDate = None, showSpecials = False ):
     """
     Returns a :py:class:`list` of episodes returned by the TMDB_ API. Each element is a dictionary: ``name`` is the episode name, ``airedDate`` is the :py:class:`date <datetime.date>` the episode aired, ``season`` is the season it aired, and ``episode`` is the episode number in that season. For example, for for `The Simpsons`_,
     
@@ -322,6 +322,7 @@ def get_episodes_series_tmdb( tmdbID, fromDate = None ):
 
     :param int tmdbID: the TMDB_ series ID.
     :param date fromDate: optional argument, of type :py:class:`date <datetime.date>`. If given, then only return episodes aired on or after this date.
+    :param bool showSpecials: if ``True``, then also include TV specials. These specials will appear in a season ``0`` in this dictionary.
     :returns: a :py:class:`list` of episoes returned by the TMDB_ database.
     :rtype: list
 
@@ -335,7 +336,7 @@ def get_episodes_series_tmdb( tmdbID, fromDate = None ):
     currentDate = datetime.datetime.now( ).date( )
     sData = [ ]
     for season_elem in data[ 'seasons' ]:
-        if season_elem['season_number'] == 0: continue
+        if season_elem['season_number'] == 0 and not showSpecials: continue
         season_number = season_elem['season_number']
         response_season = requests.get( 'https://api.themoviedb.org/3/tv/%d/season/%d' % ( tmdbID, season_number ),
                                         params = { 'api_key' : tmdb_apiKey }, verify = False )
@@ -357,7 +358,7 @@ def get_episodes_series_tmdb( tmdbID, fromDate = None ):
                 continue
     return sData
 
-def get_tot_epdict_tmdb( showName, firstAiredYear = None ):
+def get_tot_epdict_tmdb( showName, firstAiredYear = None, showSpecials = False ):
     """
     Returns a :py:class:`dict` of episodes found from the TMDB_ API. The top level dictionary's keys are the season numbers, and each value is the next-level dictionary of season information. The next level, season dictionary's keys are the episode number, and its values are a two-element :tuple: of episode names and aired dates (as a :py:class:`date <datetime.date>` object). This two level dictionary has the same format as the output from :py:meth:`get_tot_epdict_tvdb <plextvdb.plextvdb.get_tot_epdict_tvdb>`. For example, for `The Simpsons`_,
 
@@ -383,6 +384,7 @@ def get_tot_epdict_tmdb( showName, firstAiredYear = None ):
 
     :param str showName: the series name.
     :param int firstAiredYear: optional argument. If provided, filter on TV shows that were first aired that year.
+    :param bool showSpecials: if ``True``, then also include TV specials. These specials will appear in a season ``0`` in this dictionary.
     :returns: a :py:class:`dict` of episode information for that TV show.
     :rtype: dict
 
@@ -394,7 +396,7 @@ def get_tot_epdict_tmdb( showName, firstAiredYear = None ):
     """
     tmdbID = get_series_tmdb_id( showName, firstAiredYear = firstAiredYear )
     if tmdbID is None: return None
-    eps = get_episodes_series_tmdb( tmdbID )
+    eps = get_episodes_series_tmdb( tmdbID, showSpecials = showSpecials )
     tot_epdict = { }
     for episode in eps:
         seasnum = episode[ 'season' ]

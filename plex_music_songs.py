@@ -168,13 +168,16 @@ def _download_actual_song(
     artist_name = data_dict[ 'artist' ]
     song_name = data_dict[ 'song' ]
     album_name = data_dict[ 'album' ]
+    track_number = data_dict[ 'tracknumber' ]
+    total_tracks = data_dict[ 'total tracks' ]
     if 'duration' in data_dict:
         dur = int( data_dict[ 'duration' ] )
         song_name_after = _get_final_song_name( song_name, dur )
     print( 'ACTUAL ARTIST: %s' % artist_name )
     print( 'ACTUAL ALBUM: %s' % album_name )
     if 'duration' not in data_dict: print( 'ACTUAL SONG: %s' % song_name )
-    else: print( 'ACTUAL SONG: %s' % song_name_after )
+    else: print( 'ACTUAL SONG: (%02d/%02d) %s' % (
+        track_number, total_tracks, song_name_after ) )
     #
     ## now get the youtube song selections
     youtubeURL = _choose_youtube_item( '%s %s' % ( artist_name, song_name ),
@@ -319,11 +322,14 @@ def _download_songs_oldformat( args ):
         print( 'ACTUAL NUM TRACKS: %d' % album_tracks )
         for data_dict in album_data_dict:
             song_name = data_dict[ 'song' ]
+            track_number = data_dict[ 'tracknumber' ]
             if 'duration' in data_dict:
                 dur = int( data_dict[ 'duration' ] )
                 song_name_after = _get_final_song_name( song_name, dur )
-                print( 'ACTUAL SONG: %s' % song_name_after )
-            else: print( 'ACTUAL SONG: %s' % song_name )
+                print( 'ACTUAL SONG: (%02d/%02d) %s' % (
+                  track_number, album_tracks, song_name_after ) )
+            else: print( 'ACTUAL SONG: (%02d/%02d) %s' % (
+                track_number, album_tracks, song_name ) )
             #
             ## now get the youtube song selections
             youtubeURL = _choose_youtube_item( '%s %s' % ( artist_name, song_name ),

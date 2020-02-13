@@ -350,7 +350,7 @@ def _download_songs_oldformat( args ):
             all_songs_downloaded.append( ( artist_name, song_name, filename ) )
     else: # use --artist= --songs=
         assert( args.song_names is not None )
-        #
+        #0
         ## order of the music metadata to get
         mi = None
         if args.do_lastfm:

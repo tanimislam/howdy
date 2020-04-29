@@ -18,8 +18,7 @@ from plexcore import mainDir, session
 from plexcore import PlexConfig, LastNewsletterDate, PlexGuestEmailMapping
 from plextmdb import plextmdb
 
-# disable insecure request warnings, because do not recall how to get the name of the certificate for a 
-# given plex server
+# disable insecure request warnings, because do not recall how to get the name of the certificate for a given plex server
 requests.packages.urllib3.disable_warnings( )
 urllib3.disable_warnings( )
 
@@ -848,7 +847,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                 resp3 = session.get( newURL, params = params, verify = False, timeout = timeout )
                 if resp3.status_code != 200: continue
                 h3 = BeautifulSoup( resp3.content, 'lxml' )
-                track_elems = filter(valid_track, h3.find_all( 'track' ) )
+                track_elems = list( filter(valid_track, h3.find_all( 'track' ) ) )
                 album_name = album_elem[ 'title' ]
                 artist_data.setdefault( album_name, [ ] )
                 tracks = [ ]
@@ -865,6 +864,8 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                     bitrate = int( media_elem[ 'bitrate' ] ) * 1e3 / 8.0
                     curdate = datetime.datetime.fromtimestamp( float( track_elem[ 'addedat' ] ) ).date( )
                     track_name = track_elem[ 'title' ]
+                    part_elem = max( track_elem.find_all( 'part' ) )
+                    fname = part_elem[ 'file' ]
                     if 'index' in track_elem.attrs: track = int( track_elem.get('index'))
                     else: track = 0
                     tracks.append(
@@ -872,7 +873,8 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                           'curdate' : curdate,
                           'duration' : duration,
                           'size' : bitrate * duration,
-                          'track' : track } )
+                          'track' : track,
+                          'file' : fname } )
                 if len( tracks ) == 0: continue
                 artist_data[ album_name ] = {
                     'year' : year,

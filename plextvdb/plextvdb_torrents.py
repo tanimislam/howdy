@@ -86,11 +86,15 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
     if imdb_id is None or len( imdb_id.strip( ) ) == 0:
         return return_error_raw(
             'ERROR, COULD NOT FIND IMDB ID FOR SERIES %s. IMDB ID COULD NOT BE FOUND.' % series_name )
-    response = requests.get( 'https://eztv.io/api/get-torrents',
-                             params = {
+    try:
+      response = requests.get( 'https://eztv.io/api/get-torrents',
+                               params = {
                                  'imdb_id' : int( imdb_id.replace('t','')),
                                  'limit' : 100, 'page' : 0 },
-                             verify = verify )
+                               verify = verify )
+    except:
+      return return_error_raw(
+        'ERROR, COULD NOT PROCESS IMDB ID FOR SERIES %s. IMDB ID COULD NOT BE FOUND.' % series_name )
     if response.status_code != 200:
         return return_error_raw(
             'ERROR, COULD NOT FIND ANY TORRENTS FOR %s IN EZTV.IO. Status code = %d' % (

@@ -67,12 +67,12 @@ You can try out `plex_music_songs.py`_ to get individual songs or all the songs 
    :align: middle
 
 .. |plex_music_songs_clip3| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_music_songs_download_by_sep_list_artist_songs.gif
-   :width: 200%
+   :width: 940
    :align: middle
 
 ===========================================  ===========================================  ===============================================
 |plex_music_songs_clip1|                     |plex_music_songs_clip2|                     |plex_music_songs_clip3|
-`Download artists & songs <yt_clip1_>`_      `Download artist & album <yt_clip2_>`_       `Download sep artists &songs <yt_clip3_>`_
+`Download artists & songs <yt_clip1_>`_      `Download artist & album <yt_clip2_>`_       `Download sep artists & songs <yt_clip3_>`_
 ===========================================  ===========================================  ===============================================
 
 .. links to YouTube clips

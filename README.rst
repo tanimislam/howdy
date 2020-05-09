@@ -73,9 +73,16 @@ You can try out `plex_music_songs.py`_ to get individual songs or all the songs 
    :align: middle
    :target: https://www.youtube.com/watch?v=cRvxkGb2q3Y
 
-===========================================  ===========================================  ===========================================
-|plex_music_songs_clip1|                     |plex_music_songs_clip2|                     |plex_music_songs_clip3|                  
-===========================================  ===========================================  ===========================================
+===========================================  ===========================================  ===============================================
+|plex_music_songs_clip1|                     |plex_music_songs_clip2|                     |plex_music_songs_clip3|
+`Downl artists & songs <yt_clip1_>`_         `Download artist & album <yt_clip2_>`_       `Download sep artists & songs <yt_clip3_>`_
+===========================================  ===========================================  ===============================================
+
+.. links to YouTube clips
+
+.. _yt_clip1: https://www.youtube.com/watch?v=W8pmTqFJy68
+.. _yt_clip2: https://www.youtube.com/watch?v=njkhP5VE7Kc
+.. _yt_clip3: https://www.youtube.com/watch?v=cRvxkGb2q3Y
 
 .. links to plexstuff sections
 

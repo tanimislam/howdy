@@ -95,6 +95,12 @@ _table_showconfig_settings = [
       "`4 credential settings <sec_credentials_config_gui_>`_",
       "`4 music settings <sec_music_config_gui_>`_" ) ]
 
+_table_showexample_plexmusicsongs = [
+    ( "|plex_music_songs_clip1|", "|plex_music_songs_clip2|", "|plex_music_songs_clip3|" ),
+    ( "`Example of using the executable, plex_music_songs.py downloading by artist and songs <plex_music_songs_clip1_>`_",
+     "`Example of using the executable, plex_music_songs.py downloading by artist and album <plex_music_songs_clip2_>`_",
+     "`Example of using the executable, plex_music_songs.py downloading by separate list of artists and songs <plex_music_songs_clip3_>`_" ) ]
+
 if __name__ == '__main__':
     
     print( 'WHICH CLIs and GUIs FINISHED\n' )
@@ -114,3 +120,6 @@ if __name__ == '__main__':
     print( 'WHICH CONFIGURATION SETTINGS\n' )
     print( '%s\n' % ''.join( ['-'] * 50 ) )
     print( tabulate.tabulate( _table_showconfig_settings, tablefmt = 'rst' ) )
+    
+
+

@@ -58,15 +58,15 @@ What Are Some Interesting Command Line Executables?
 -----------------------------------------------------------------
 You can try out `plex_music_songs.py`_ to get individual songs or all the songs in an artist's studio album, or `plex_music_album.py <https://plexstuff.readthedocs.io/en/latest/plex-music/cli_tools/plex_music_cli.html#plex-music-album-py>`_ to find all the studio albums an artist released. Here are three YouTube_ clips that show `plex_music_songs.py`_ in action.
 
-.. |plex_music_songs_clip1| image:: https://img.youtube.com/vi/W8pmTqFJy68/0.jpg 
+.. |plex_music_songs_clip1| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_music_songs_download_by_song_and_artist.gif
    :width: 100%
    :align: middle
 
-.. |plex_music_songs_clip2| image:: https://img.youtube.com/vi/njkhP5VE7Kc/0.jpg
+.. |plex_music_songs_clip2| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_music_songs_download_by_artist_and_album.gif
    :width: 100%
    :align: middle
 
-.. |plex_music_songs_clip3| image:: https://img.youtube.com/vi/W8pmTqFJy68/0.jpg
+.. |plex_music_songs_clip3| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_music_songs_download_by_sep_list_artist_songs.gif
    :width: 100%
    :align: middle
 

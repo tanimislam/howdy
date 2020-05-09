@@ -23,7 +23,7 @@ Here are some of the best known lower APIs used to help one manage your Plex_ se
 
 * `PlexAPI <PlexAPI_>`_ is the unofficial bindings to the Plex API. They are based off the older `unofficial Plex API <unofficial_plex_api_>`_. I still use it because it seems to offer more freedom (such as finer grained multithreaded HTTP requests, and access to remote servers) than PlexAPI_.
 
-The command line tools are built using Python's OptionParser_ module, and the GUIs are built with PyQt5_.
+The command line tools are built using Python's OptionParser_ or ArgumentParser_ object, and the GUIs are built with PyQt5_.
 
 The comprehensive documentation lives in HTML created with `Sphinx <http://www.sphinx-doc.org/en/master/>`_, and now in the `Read the Docs <Plexstuff_>`_ page for this project. To generate the documentation, go to the ``docs`` subdirectory. In that directory, run ``make html``. Load ``docs/build/html/index.html`` into a browser to see the documentation.
 
@@ -58,24 +58,21 @@ What Are Some Interesting Command Line Executables?
 -----------------------------------------------------------------
 You can try out `plex_music_songs.py`_ to get individual songs or all the songs in an artist's studio album, or `plex_music_album.py <https://plexstuff.readthedocs.io/en/latest/plex-music/cli_tools/plex_music_cli.html#plex-music-album-py>`_ to find all the studio albums an artist released. Here are three YouTube_ clips that show `plex_music_songs.py`_ in action.
 
-.. |plex_music_songs_clip1| image:: https://img.youtube.com/vi/W8pmTqFJy68/0.jpg
+.. |plex_music_songs_clip1| image:: https://img.youtube.com/vi/W8pmTqFJy68/0.jpg 
    :width: 100%
    :align: middle
-   :target: https://www.youtube.com/watch?v=W8pmTqFJy68
 
 .. |plex_music_songs_clip2| image:: https://img.youtube.com/vi/njkhP5VE7Kc/0.jpg
    :width: 100%
    :align: middle
-   :target: https://www.youtube.com/watch?v=njkhP5VE7Kc
 
 .. |plex_music_songs_clip3| image:: https://img.youtube.com/vi/W8pmTqFJy68/0.jpg
    :width: 100%
    :align: middle
-   :target: https://www.youtube.com/watch?v=cRvxkGb2q3Y
 
 ===========================================  ===========================================  ===============================================
 |plex_music_songs_clip1|                     |plex_music_songs_clip2|                     |plex_music_songs_clip3|
-`Downl artists & songs <yt_clip1_>`_         `Download artist & album <yt_clip2_>`_       `Download sep artists & songs <yt_clip3_>`_
+`Download artists & songs <yt_clip1_>`_      `Download artist & album <yt_clip2_>`_       `Download sep artists & songs <yt_clip3_>`_
 ===========================================  ===========================================  ===============================================
 
 .. links to YouTube clips
@@ -114,6 +111,7 @@ You can try out `plex_music_songs.py`_ to get individual songs or all the songs 
 .. _Plexstuff: https://plexstuff.readthedocs.io
 .. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0
 .. _OptionParser: https://docs.python.org/3/library/optparse.html#optparse.OptionParser
+.. _ArgumentParser: https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser
 .. _`Embed YouTube`: http://embedyoutube.org
 .. _`plex_music_songs.py`: https://plexstuff.readthedocs.io/en/latest/plex-music/cli_tools/plex_music_cli.html#plex-music-songs-py
 .. _Youtube: https://www.youtube.com

@@ -249,7 +249,29 @@ In all three operations, here are required arguments or common flags,
 * ``--noverify`` does not verify SSL connections.
 
 * ``--debug`` prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
-       
+
+Some example animated GIFs can be downloaded from here, and is mirrored in this project's README:
+
+.. |plex_music_cli_clip1| image:: plex-music-cli-figures/plex_music_songs_download_by_song_and_artist.gif
+   :width: 100%
+   :align: middle
+   :target: https://www.youtube.com/watch?v=W8pmTqFJy68
+
+.. |plex_music_cli_clip2| image:: plex-music-cli-figures/plex_music_songs_download_by_artist_and_album.gif
+   :width: 100%
+   :align: middle
+   :target: https://www.youtube.com/watch?v=njkhP5VE7Kc
+
+.. |plex_music_cli_clip3| image:: plex-music-cli-figures/plex_music_songs_download_by_sep_list_artist_songs.gif
+   :width: 100%
+   :align: middle
+   :target: https://www.youtube.com/watch?v=cRvxkGb2q3Y
+
+===========================================  ===========================================  ===============================================
+|plex_music_cli_clip1|                       |plex_music_cli_clip2|                       |plex_music_cli_clip3|
+`Download artists & songs <yt_clip1_>`_      `Download artist & album <yt_clip2_>`_       `Download sep artists & songs <yt_clip3_>`_
+===========================================  ===========================================  ===============================================
+  
 The complicated collection of flags and arguments allows ``plex_music_songs.py`` to download a collection of songs in three ways,
 
 * in :numref:`download_by_artist_songs`, by specifying artist and list of songs.
@@ -448,7 +470,12 @@ Third, paste the code similar to as described in :ref:`Step #7 <google_step07_oa
 
    Success. Stored GMusicAPI Mobileclient credentials.
 
+.. links for the youtube clips in table for plex_music_songs.py section
 
+.. _yt_clip1: https://www.youtube.com/watch?v=W8pmTqFJy68
+.. _yt_clip2: https://www.youtube.com/watch?v=njkhP5VE7Kc
+.. _yt_clip3: https://www.youtube.com/watch?v=cRvxkGb2q3Y
+   
 .. _YouTube: https://www.youtube.com
 .. _Deluge: https://en.wikipedia.org/wiki/Deluge_(software)
 .. _deluge_console: https://whatbox.ca/wiki/Deluge_Console_Documentation

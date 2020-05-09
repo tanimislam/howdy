@@ -37,7 +37,8 @@ tls_verify = is_in_readthedocs
 ## following instructions on https://docs.readthedocs.io/en/latest/faq.html#i-get-import-errors-on-libraries-that-depend-on-c-modules
 ## and instructions on https://stackoverflow.com/questions/28178644/python-readthedocs-how-to-satisfy-the-requirement-sip-or-pyqt/37363830#37363830
 ## because CANNOT install PyQt4 and stuff in readthedocs
-autodoc_mock_imports = [ 'sip', 'PyQt4', 'PyQt4.QtGui', 'PyQt4.QtCore' ]
+#autodoc_mock_imports = [ 'sip', 'PyQt4', 'PyQt4.QtGui', 'PyQt4.QtCore' ]
+autodoc_mock_imports = ['sip', 'PyQt5', 'PyQt5.QtGui', 'PyQt5.QtCore', 'PyQt5.QtWidgets']
 #if os.environ.get( 'READTHEDOCS' ):
 #    MOCK_MODULES = ['sip', 'PyQt4', 'PyQt4.QtGui', 'PyQt4.QtCore' ]
 #    sys.modules.update((mod_name, mock.MagicMock()) for mod_name in MOCK_MODULES)
@@ -73,7 +74,7 @@ intersphinx_mapping = {
     'geoip2' : ( 'https://geoip2.readthedocs.io/en/latest', None),
     'gmusicapi' : ( 'https://unofficial-google-music-api.readthedocs.io/en/latest', None ),
     'imdbpy' : ( 'https://imdbpy.readthedocs.io/en/latest', None),
-    'pyqt5' : ( 'https://www.riverbankcomputing.com/static/Docs/PyQt5', "_intersphinx/pyqt5_objects.inv" ),
+    #'pyqt5' : ( 'https://www.riverbankcomputing.com/static/Docs/PyQt5', "_intersphinx/pyqt5_objects.inv" ),
     'requests_oauthlib' : ( 'https://requests-oauthlib.readthedocs.io/en/latest', None ),
     'oauth2client' : ( 'https://oauth2client.readthedocs.io/en/latest', None ),
     'google-auth' : ( 'https://google-auth.readthedocs.io/en/latest', None ),

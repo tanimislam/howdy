@@ -66,7 +66,7 @@ You can try out `plex_music_songs.py`_ to get individual songs or all the songs 
    :width: 100%
    :align: middle
 
-.. |plex_music_songs_clip3| image:: https://plexstuff.readthedocs.io/en/plex_music_songs_download_by_sep_list_artist_songs.gif
+.. |plex_music_songs_clip3| image:: https://plexstuff.readthedocs.io/_images/plex_music_songs_download_by_sep_list_artist_songs.gif
    :width: 100%
    :align: middle
 

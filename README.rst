@@ -83,10 +83,10 @@ You can try out `plex_music_songs.py`_ to get individual songs or all the songs 
 
 .. links to plexstuff sections
 
-.. _sec_main_config_gui: https://plexstuff.readthedocs.io/en/latest/plex-config/plex_config_gui_usage.html
-.. _sec_login_config_gui: https://plexstuff.readthedocs.io/en/latest/plex-config/plex_config_gui_usage.html#login-services
-.. _sec_credentials_config_gui: https://plexstuff.readthedocs.io/en/latest/plex-config/plex_config_gui_usage.html#credentials-services
-.. _sec_music_config_gui: https://plexstuff.readthedocs.io/en/latest/plex-config/plex_config_gui_usage.html#music-services
+.. _sec_main_config_gui: https://plexstuff.readthedocs.io/plex-config/plex_config_gui_usage.html
+.. _sec_login_config_gui: https://plexstuff.readthedocs.io/plex-config/plex_config_gui_usage.html#login-services
+.. _sec_credentials_config_gui: https://plexstuff.readthedocs.io/plex-config/plex_config_gui_usage.html#credentials-services
+.. _sec_music_config_gui: https://plexstuff.readthedocs.io/plex-config/plex_config_gui_usage.html#music-services
 	   
 
 .. these are the links

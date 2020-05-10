@@ -33,19 +33,19 @@ Although discussed in the `Sphinx documentation <Plexstuff_>`_, to get everythin
 
 To be able to use all the CLIs, GUIs, and API functionality, there are ``12`` sets of configurations that need to work: four for login, four for credentials, and four for music.
 
-.. |main_config_gui| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_config_gui_serviceswidget.png
+.. |main_config_gui| image:: https://plexstuff.readthedocs.io/_images/plex_config_gui_serviceswidget.png
    :width: 100%
    :align: middle
 
-.. |login_config_gui| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_login_mainfigure.png
+.. |login_config_gui| image:: https://plexstuff.readthedocs.io/_images/plex_login_mainfigure.png
    :width: 100%
    :align: middle
 
-.. |credentials_config_gui| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_credentials_mainfigure.png
+.. |credentials_config_gui| image:: https://plexstuff.readthedocs.io/_images/plex_credentials_mainfigure.png
    :width: 100%
    :align: middle
 
-.. |music_config_gui| image:: https://plexstuff.readthedocs.io/en/latest/_images/plexmusic_mainfigure.png
+.. |music_config_gui| image:: https://plexstuff.readthedocs.io/_images/plexmusic_mainfigure.png
    :width: 100%
    :align: middle
 
@@ -58,16 +58,16 @@ What Are Some Interesting Command Line Executables?
 -----------------------------------------------------------------
 You can try out `plex_music_songs.py`_ to get individual songs or all the songs in an artist's studio album, or `plex_music_album.py <https://plexstuff.readthedocs.io/en/latest/plex-music/cli_tools/plex_music_cli.html#plex-music-album-py>`_ to find all the studio albums an artist released. Here are three YouTube_ clips that show `plex_music_songs.py`_ in action.
 
-.. |plex_music_songs_clip1| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_music_songs_download_by_song_and_artist.gif
+.. |plex_music_songs_clip1| image:: https://plexstuff.readthedocs.io/_images/plex_music_songs_download_by_song_and_artist.gif
    :width: 100%
    :align: middle
 
-.. |plex_music_songs_clip2| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_music_songs_download_by_artist_and_album.gif
+.. |plex_music_songs_clip2| image:: https://plexstuff.readthedocs.io/_images/plex_music_songs_download_by_artist_and_album.gif
    :width: 100%
    :align: middle
 
-.. |plex_music_songs_clip3| image:: https://plexstuff.readthedocs.io/en/latest/_images/plex_music_songs_download_by_sep_list_artist_songs.gif
-   :width: 940
+.. |plex_music_songs_clip3| image:: https://plexstuff.readthedocs.io/en/plex_music_songs_download_by_sep_list_artist_songs.gif
+   :width: 100%
    :align: middle
 
 ===========================================  ===========================================  ===============================================

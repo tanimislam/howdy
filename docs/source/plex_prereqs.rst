@@ -135,7 +135,7 @@ Functionality    CLI                                                            
                  - :ref:`plex_resynclibs <plex_resynclibs_label>` |cbox|                - :ref:`plex_create_texts <plex_create_texts_label>`
                  - :ref:`plex_store_credentials <plex_store_credentials_label>` |cbox|
                  - :ref:`rsync_subproc <rsync_subproc_label>` |cbox|
-``plextvdb``     - :ref:`get_plextvdb_batch <get_plextvdb_batch_label>` |cbox|          - :ref:`plex_tvdb_totgui.py <plex_tvdb_totgui.py_label>`
+``plextvdb``     - :ref:`get_plextvdb_batch <get_plextvdb_batch_label>` |cbox|          - :ref:`plex_tvdb_totgui <plex_tvdb_totgui_label>`
                  - :ref:`get_tv_tor <get_tv_tor_label>` |cbox|
                  - :ref:`plex_tvdb_epinfo <plex_tvdb_epinfo_label>` |cbox|
                  - :ref:`plex_tvdb_epname <plex_tvdb_epname_label>` |cbox|

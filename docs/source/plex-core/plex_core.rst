@@ -17,7 +17,7 @@ This documentation is organized into sections on :ref:`command line tools <Core 
 Plex Core TODO
 ------------------
 
-* Enhance :ref:`plex_create_texts.py` to allow for the more versatile reStructuredText_ to be converted into HTML documents.
+* Enhance :ref:`plex_create_texts` to allow for the more versatile reStructuredText_ to be converted into HTML documents.
 
 * Implement a PyQt5_ GUI to manipulate torrents on the remote Deluge_ server -- something much reduced from the full functionality of the `Deluge WebUI`_.
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import sys, signal
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
@@ -18,7 +16,7 @@ from plexstuff.plexemail.plexemail_gui import PlexEmailGUI
 from plexstuff.plexemail.plexemail_mygui import PlexEmailMyGUI
 from plexstuff.plexcore.plexcore_gui import returnToken, returnGoogleAuthentication
 
-def main( info = False, doLocal = True, doLarge = False, verify = True, onlyEmail = False ):
+def mainSub( info = False, doLocal = True, doLarge = False, verify = True, onlyEmail = False ):
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     icn = QIcon( os.path.join(
@@ -33,7 +31,7 @@ def main( info = False, doLocal = True, doLarge = False, verify = True, onlyEmai
         pegui = PlexEmailMyGUI( doLocal = doLocal, doLarge = doLarge, verify = verify )
     result = app.exec_( )
 
-if __name__=='__main__':
+def main( ):
     parser = ArgumentParser( )
     parser.add_argument('--info', dest='do_info', action='store_true',
                       default = False, help = 'Run info mode if chosen.')
@@ -50,5 +48,5 @@ if __name__=='__main__':
     parser.add_argument('--extranames', dest = 'extranames', type=str, action='store',
                       help = 'If defined, the list of extra names to send.' )
     args = parser.parse_args( )
-    main( info = args.do_info, doLocal = args.do_local, verify = args.do_verify,
-          onlyEmail = args.do_onlyemail )
+    mainSub( info = args.do_info, doLocal = args.do_local, verify = args.do_verify,
+            onlyEmail = args.do_onlyemail )

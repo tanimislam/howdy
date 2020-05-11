@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os, datetime, logging, time
 from argparse import ArgumentParser
 #
@@ -65,6 +63,3 @@ def main( ):
         arrs = list( map( _send_email_perproc, name_emails +
                           [ ( emailName, emailAddress ) ] ) )
         print( 'processed %d emails in %0.3f seconds.' % ( len(arrs), time.time( ) - time0 ) )
-        
-if __name__=='__main__':
-    main( )

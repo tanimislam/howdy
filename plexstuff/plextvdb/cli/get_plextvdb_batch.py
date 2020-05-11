@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import sys, signal
 def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
@@ -134,6 +132,3 @@ def main( ):
         num_iters = args.num_iters )
     print( '\n'.join([ '%d, everything done in %0.3f seconds.' % ( step, time.time( ) - time0 ),
                        finish_statement( step ) ]))
-    
-if __name__=='__main__':
-    main( )

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from httplib2 import Http
 from argparse import ArgumentParser
 #
@@ -24,6 +22,3 @@ def main( ):
     except:
         print( 'Error: invalid authorization code.' )
         return
-    
-if __name__=='__main__':
-    main( )

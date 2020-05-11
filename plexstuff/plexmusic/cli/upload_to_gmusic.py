@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import signal, sys
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
@@ -67,6 +65,3 @@ def main( ):
         #if any( map(lambda tok: tok is not None, ( args.email, args.password ) ) ):
         #    raise ValueError( "Error, must define both Google Music email and password." )
         #plexmusic.save_gmusic_creds( args.email.strip( ), args.password.strip( ) )
-
-if __name__=='__main__':
-    main( )

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import sys, signal
  # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
@@ -14,7 +12,7 @@ from PyQt5.QtGui import QIcon
 from plexstuff import resourceDir
 from plexstuff.plexcore import plexcore_gui
 
-if __name__=='__main__':
+def main( ):
     parser = ArgumentParser( )
     parser.add_argument('--info', dest='do_info', action='store_true',
                       default = False, help = 'Run info mode if chosen.')

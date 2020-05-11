@@ -2,7 +2,7 @@
 PlexTMDB API
 ================================================
 
-This document describes the lower level Plexstuff TMDB API, upon which :ref:`get_mov_tor.py` and :ref:`plex_tmdb_totgui.py` are built. It lives in ``plexstuff.plextmdb``.
+This document describes the lower level Plexstuff TMDB API, upon which :ref:`get_mov_tor` and :ref:`plex_tmdb_totgui` are built. It lives in ``plexstuff.plextmdb``.
 
 plexstuff.plexmdb module
 --------------------------
@@ -21,7 +21,7 @@ This module implements the lower-level functionality that does the following:
 plexstuff.plextmdb.plextmdb module
 -------------------------------------
 
-This module contains the main back-end functionality used by the :ref:`get_mov_tor.py` and :ref:`plex_tmdb_totgui.py`, and other functionalities that are used by methods in :ref:`plextvdb <PlexTVDB API>`. Here are the main features of this module.
+This module contains the main back-end functionality used by the :ref:`get_mov_tor` and :ref:`plex_tmdb_totgui`, and other functionalities that are used by methods in :ref:`plextvdb <PlexTVDB API>`. Here are the main features of this module.
 
    * Retrieving TV show information using the TMDB_ database.
 

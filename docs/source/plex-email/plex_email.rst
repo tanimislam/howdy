@@ -4,7 +4,7 @@ Plex Email Functionality
 
 These command line executables, graphical user interfaces, and APIs are used to send one-off announcement, or newsletter style emails. Tautulli_ is a much better tool for sending out newsletter style emails, although this functionality still exists.
 
-This documentation is organized into sections on :ref:`plex_email_notif.py`, the Plexstuff one-off emailing command line interface; :ref:`plex_email_gui.py`, the Plexstuff one-off emailing and newslettering GUI; the :ref:`low level API <Plex Email API>`; and finally the :ref:`TODO <Plex Email TODO>`.
+This documentation is organized into sections on :ref:`plex_email_notif`, the Plexstuff one-off emailing command line interface; :ref:`plex_email_gui`, the Plexstuff one-off emailing and newslettering GUI; the :ref:`low level API <Plex Email API>`; and finally the :ref:`TODO <Plex Email TODO>`.
 
 .. toctree::
    :maxdepth: 2

@@ -4,27 +4,27 @@ TVDB Command Line Utilities
 
 This section describes the six Plexstuff TVDB command line utilities.
 
-* :ref:`get_plextvdb_batch.py` does...
+* :ref:`get_plextvdb_batch` does...
 
-* :ref:`get_tv_tor.py` finds `Magnet links <Magnet URI_>`_ of television shows, and by default prints out the chosen magnet link. This executable uses the Jackett_ server to search for TV shows, and can optionally upload these links to the specified Deluge_ server (see :numref:`Plexstuff Settings Configuration`).
+* :ref:`get_tv_tor` finds `Magnet links <Magnet URI_>`_ of television shows, and by default prints out the chosen magnet link. This executable uses the Jackett_ server to search for TV shows, and can optionally upload these links to the specified Deluge_ server (see :numref:`Plexstuff Settings Configuration`).
 
-* :ref:`plex_tvdb_epinfo.py` creates a JSON file of the :py:class:`dict` of episodes associated with a TV show, and uploads this JSON episodes file to the SSH server, and remote subdirectory (see :numref:`Plexstuff Settings Configuration`). This JSON file can be used to rename episodes in a season or TV show that has been downloaded by the Deluge_ server.
+* :ref:`plex_tvdb_epinfo` creates a JSON file of the :py:class:`dict` of episodes associated with a TV show, and uploads this JSON episodes file to the SSH server, and remote subdirectory (see :numref:`Plexstuff Settings Configuration`). This JSON file can be used to rename episodes in a season or TV show that has been downloaded by the Deluge_ server.
 
-* :ref:`plex_tvdb_epname.py` prints out information by season or by episode for a TV show.
+* :ref:`plex_tvdb_epname` prints out information by season or by episode for a TV show.
 
-* :ref:`plex_tvdb_futureshows.py` summarizes information on those TV shows, that exist in the Plex_ server, that will air new seasons.
+* :ref:`plex_tvdb_futureshows` summarizes information on those TV shows, that exist in the Plex_ server, that will air new seasons.
 
-* :ref:`plex_tvdb_plots.py` creates eye chart summary plots, by calendar year, of TV shows that have aired in a given year. These plots are in `SVGZ <https://en.wikipedia.org/wiki/Scalable_Vector_Graphics#Compression>`_ format.
+* :ref:`plex_tvdb_plots` creates eye chart summary plots, by calendar year, of TV shows that have aired in a given year. These plots are in `SVGZ <https://en.wikipedia.org/wiki/Scalable_Vector_Graphics#Compression>`_ format.
 
-.. _get_plextvdb_batch.py_label:
+.. _get_plextvdb_batch_label:
 
-get_plextvdb_batch.py
+get_plextvdb_batch
 ^^^^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``get_plextvdb_batch.py -h``, produces the following. Here, ``$(num_cores)`` is *TWICE* the number of CPUs on the Plex_ server. This code is currently designed to be run *ONLY* on the Plex_ server.
+The help output, when running ``get_plextvdb_batch -h``, produces the following. Here, ``$(num_cores)`` is *TWICE* the number of CPUs on the Plex_ server. This code is currently designed to be run *ONLY* on the Plex_ server.
 
 .. code-block:: bash
 
-   Usage: get_plextvdb_batch.py [options]
+   Usage: get_plextvdb_batch [options]
 
    Options:
      -h, --help            show this help message and exit
@@ -50,17 +50,17 @@ The help output, when running ``get_plextvdb_batch.py -h``, produces the followi
 
 To better understand the command line switches (flags and inputs), we describe how the this executable, which searches for new episodes of TV shows on the Plex_ server on a given day, works.
 
-.. _get_plextvdb_batch.py_point1label:
+.. _get_plextvdb_batch_point1label:
 
 1. by default, this does a Magnet link search for an episode using its IMDb_ info, and looks for those episodes whose download sizes are 80% to 120% of the average size of episodes that already exist for that TV show on the Plex_ server.
 
-.. _get_plextvdb_batch.py_point2label:
+.. _get_plextvdb_batch_point2label:
 
 2. by default, the number of threads this executable uses for its work is *TWICE* the number of CPUs on the Plex_ server.
 
-.. _get_plextvdb_batch.py_point3label:
+.. _get_plextvdb_batch_point3label:
 
-3. in order to quit a search for episode, for a given episode that has been aired but is missing from the Plex_ server, this will wait for ``MAXTIME_IN_SECS`` seconds to fully download an episode from its Magnet link, and will only search through the ``NUM_ITERS`` top choices of Magnet links found for each episode. The choices for Magnet links for an episode are ordered by the sum of its number of seeders and leechers (see :ref:`get_tv_tor.py`).
+3. in order to quit a search for episode, for a given episode that has been aired but is missing from the Plex_ server, this will wait for ``MAXTIME_IN_SECS`` seconds to fully download an episode from its Magnet link, and will only search through the ``NUM_ITERS`` top choices of Magnet links found for each episode. The choices for Magnet links for an episode are ordered by the sum of its number of seeders and leechers (see :ref:`get_tv_tor`).
 
 Here are the common flags and command line inputs.
 
@@ -72,23 +72,23 @@ Here are the common flags and command line inputs.
 
 Here are the command line inputs that change the operation of this execution.
 
-* ``--maxtime_in_secs`` sets the maximum number of seconds that a given thread will wait for an episode Magnet link to download (see :ref:`point #3 <get_plextvdb_batch.py_point3label>`). This must be positive.
+* ``--maxtime_in_secs`` sets the maximum number of seconds that a given thread will wait for an episode Magnet link to download (see :ref:`point #3 <get_plextvdb_batch_point3label>`). This must be positive.
 
-* ``--nums`` sets the number of top choices of Magnet links through which to search (see :ref:`point #3 <get_plextvdb_batch.py_point3label>`). This must be positive.
+* ``--nums`` sets the number of top choices of Magnet links through which to search (see :ref:`point #3 <get_plextvdb_batch_point3label>`). This must be positive.
 
-* ``--numthreads`` sets the number of threads used for downloading new episodes onto the Plex_ server (see :ref:`point #2 <get_plextvdb_batch.py_point2label>`).
+* ``--numthreads`` sets the number of threads used for downloading new episodes onto the Plex_ server (see :ref:`point #2 <get_plextvdb_batch_point2label>`).
 
-* The ``--nomin`` flag means that there is no *lower* limit to the size of episode files to be downloaded onto the Plex_ server (see :ref:`point #1 <get_plextvdb_batch.py_point1label>`).
+* The ``--nomin`` flag means that there is no *lower* limit to the size of episode files to be downloaded onto the Plex_ server (see :ref:`point #1 <get_plextvdb_batch_point1label>`).
 
-* The ``--nomax`` flag means that there is no *upper* limit to the size of episode files to be downloaded onto the Plex_ server (see :ref:`point #1 <get_plextvdb_batch.py_point1label>`).
+* The ``--nomax`` flag means that there is no *upper* limit to the size of episode files to be downloaded onto the Plex_ server (see :ref:`point #1 <get_plextvdb_batch_point1label>`).
 
-* The ``--raw`` flag does not use the default IMDB_ information to search for the torrent. Instead it uses the full string to search for the episode (see :ref:`point #1 <get_plextvdb_batch.py_point1label>`).
+* The ``--raw`` flag does not use the default IMDB_ information to search for the torrent. Instead it uses the full string to search for the episode (see :ref:`point #1 <get_plextvdb_batch_point1label>`).
 
 Here is a demonstration of its operation, searching for new episodes to download on the Plex_ server on ``Sunday, 20 October 2019``. `The Great British Bake-Off <https://en.wikipedia.org/wiki/The_Great_British_Bake_Off>`_ is going to be ignored because this show has been excluded for identification and searches. The output format during evaluation is descriptive because the process can take more than a few seconds.
 
 .. code-block:: bash
 
-   tanim-desktop $ get_plextvdb_batch.py
+   tanim-desktop $ get_plextvdb_batch
 
    0, started on October 20, 2019 @ 05:34:46 PM
    1, found TV library: TV Shows.
@@ -102,25 +102,25 @@ Here is a demonstration of its operation, searching for new episodes to download
    5, everything done in 92.156 seconds.
    6, finished on October 20, 2019 @ 05:36:19 PM.
 
-Here, there were four new episodes to download: `Bob's Burgers S10E04 <https://www.imdb.com/title/tt10750120>`_, `Family Guy S18E04 <https://www.imdb.com/title/tt10680780>`_, `Mr. Robot S04E03 <https://www.imdb.com/title/tt8084160>`_, and `The Simpsons S31E04 <https://www.imdb.com/title/tt10750104>`_. One can find it very useful to run this executable through an automated process. Here is an example systemd user unit file (:download:`get_plextvdb_batch.service </_static/get_plextvdb_batch.service>`) and timer file (:download:`get_plextvdb_batch.timer </_static/get_plextvdb_batch.timer>`) to run ``get_plextvdb_batch.py`` every day at 130 AM, 630 PM, and 930 PM. One can follow `instructions on how to set up and run systemd user units <https://wiki.archlinux.org/index.php/systemd/User>`_.
+Here, there were four new episodes to download: `Bob's Burgers S10E04 <https://www.imdb.com/title/tt10750120>`_, `Family Guy S18E04 <https://www.imdb.com/title/tt10680780>`_, `Mr. Robot S04E03 <https://www.imdb.com/title/tt8084160>`_, and `The Simpsons S31E04 <https://www.imdb.com/title/tt10750104>`_. One can find it very useful to run this executable through an automated process. Here is an example systemd user unit file (:download:`get_plextvdb_batch.service </_static/get_plextvdb_batch.service>`) and timer file (:download:`get_plextvdb_batch.timer </_static/get_plextvdb_batch.timer>`) to run ``get_plextvdb_batch`` every day at 130 AM, 630 PM, and 930 PM. One can follow `instructions on how to set up and run systemd user units <https://wiki.archlinux.org/index.php/systemd/User>`_.
 
 * copy :download:`get_plextvdb_batch.service </_static/get_plextvdb_batch.service>` and :download:`get_plextvdb_batch.timer </_static/get_plextvdb_batch.timer>` to the ``~/.config/systemd/user`` directory.
 
-* replace ``$PLEXSTUFF_DIR`` with the path to ``get_plextvdb_batch.py``.
+* replace ``$PLEXSTUFF_DIR`` with the path to ``get_plextvdb_batch``.
 
 * register the unit and timer with systemd by running ``systemctl --user enable get_plextvdb_batch.service`` and ``systemctl --user enable get_plextvdb_batch.timer``.
 
 * start the unit with timer by running ``systemctl --user start get_plextvdb_batch.service``.
 
-.. _get_tv_tor.py_label:
+.. _get_tv_tor_label:
 
-get_tv_tor.py
+get_tv_tor
 ^^^^^^^^^^^^^^^
-The help output, when running ``get_tv_tor.py -h``, produces the following.
+The help output, when running ``get_tv_tor -h``, produces the following.
 
 .. code-block:: bash
 
-   Usage: get_tv_tor.py [options]
+   Usage: get_tv_tor [options]
 
    Options:
      -h, --help            show this help message and exit
@@ -152,7 +152,7 @@ Here is how to get an episode, `The Simpsons S30E10 <simpsons_s30e10_>`_. We cho
 
 .. code-block:: bash
 
-   tanim-desktop $ get_tv_tor.py -n "The Simpsons S30E10"
+   tanim-desktop $ get_tv_tor -n "The Simpsons S30E10"
    Choose TV episode or series:
    1: The Simpsons s30e10 720p WEB x264-300M (1 SE, 17 LE)
    2: The Simpsons S30E10 720p WEB x264-TBS[TGx] (5 SE, 12 LE)
@@ -174,7 +174,7 @@ We can modify this command with the following.
 
   .. code-block:: bash
 
-     tanim-desktop $ get_tv_tor.py -n "The Simpsons S30E10" -f simpsons_s30e10.magnet
+     tanim-desktop $ get_tv_tor -n "The Simpsons S30E10" -f simpsons_s30e10.magnet
      
      Choose TV episode or series:
      1: The Simpsons s30e10 720p WEB x264-300M (1 SE, 17 LE)
@@ -190,13 +190,13 @@ We can modify this command with the following.
      1
      Chosen TV show: The Simpsons s30e10 720p WEB x264-300M
 
-* ``--add`` adds the Magnet URI to the Deluge_ server. The operation of ``plex_deluge_console.py`` is described in :numref:`plex_deluge_console.py`.
+* ``--add`` adds the Magnet URI to the Deluge_ server. The operation of ``plex_deluge_console`` is described in :numref:`plex_deluge_console`.
 
   .. code-block:: bash
 
-     tanim-desktop $ get_tv_tor.py -n "The Simpsons S30E10" --add
+     tanim-desktop $ get_tv_tor -n "The Simpsons S30E10" --add
      ...
-     tanim-desktop $ plex_deluge_console.py info
+     tanim-desktop $ plex_deluge_console info
      Name: The Simpsons s30e10 720p WEB x264-300M
      ID: 17f7373e9e7e0343370191a3173e0f69ce02dbc1
      State: Downloading
@@ -211,7 +211,7 @@ We can modify this command with the following.
 
   .. code-block:: bash
 
-     tanim-desktop $ get_tv_tor.py -n "The Simpsons S30E10" --raw
+     tanim-desktop $ get_tv_tor -n "The Simpsons S30E10" --raw
      
      Choose TV episode or series:
      1: The.Simpsons.S30E10.WEB.x264-TBS[ettv] (159.1 MiB) (1130 SE, 1336 LE)
@@ -228,15 +228,15 @@ We can modify this command with the following.
 
   Notice the differences in these links from the ones before (using the IMDb_ information).
 
-.. _plex_tvdb_epinfo.py_label:
+.. _plex_tvdb_epinfo_label:
 
-plex_tvdb_epinfo.py
+plex_tvdb_epinfo
 ^^^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``plex_tvdb_epinfo.py -h``, produces the following.
+The help output, when running ``plex_tvdb_epinfo -h``, produces the following.
 
 .. code-block:: bash
 
-   Usage: plex_tvdb_epinfo.py [options]
+   Usage: plex_tvdb_epinfo [options]
    
    Options:
      -h, --help            show this help message and exit
@@ -262,7 +262,7 @@ For example, to upload information about `The Simpsons <the_simpsons_>`_ into a 
 
 .. code-block:: bash
 
-   tanim-desktop $ plex_tvdb_epinfo.py -s "The Simpsons" -j the_simpsons.json
+   tanim-desktop $ plex_tvdb_epinfo -s "The Simpsons" -j the_simpsons.json
    put episode info for "The Simpsons" into REMOTE_HOME_DIR/the_simpsons.json in 7.341 seconds.
 
 This JSON file contains dictionary data. Each key is the season number. Each value is another dictionary -- keys are the episode number, and values are the episode names.
@@ -288,15 +288,15 @@ This JSON file contains dictionary data. Each key is the season number. Each val
    ...
    }
 
-.. _plex_tvdb_epname.py_label:
+.. _plex_tvdb_epname_label:
 
-plex_tvdb_epname.py
+plex_tvdb_epname
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``plex_tvdb_epname.py -h``, produces the following.
+The help output, when running ``plex_tvdb_epname -h``, produces the following.
 
 .. code-block:: bash
 
-   Usage: plex_tvdb_epname.py [options]
+   Usage: plex_tvdb_epname [options]
 
    Options:
      -h, --help            show this help message and exit
@@ -315,7 +315,7 @@ The ``--noverify`` flag says to not verify SSL connections.
 
 Here are the three ways to get information on episodes for a specified TV show. For the purposes of this demonstration, we will use `The Simpsons <the_simpsons_>`_.
 
-* To get a summary of all episodes of a TV show (`The Simpsons <the_simpsons_>`_), run ``plex_tvdb_epname.py -s "The Simpsons" --summary``,
+* To get a summary of all episodes of a TV show (`The Simpsons <the_simpsons_>`_), run ``plex_tvdb_epname -s "The Simpsons" --summary``,
 
   .. code-block:: bash
 
@@ -352,7 +352,7 @@ Here are the three ways to get information on episodes for a specified TV show. 
      SEASON 30: 23 episodes
      SEASON 31: 6 episodes
 
-* To get a summary of episodes aired (so far) for a given season and a TV show, for example run ``plex_tvdb_epname.py -s "The Simpsons" -S 10``.
+* To get a summary of episodes aired (so far) for a given season and a TV show, for example run ``plex_tvdb_epname -s "The Simpsons" -S 10``.
 
   .. code-block:: bash
        
@@ -381,22 +381,22 @@ Here are the three ways to get information on episodes for a specified TV show. 
      Episode 22/23: They Saved Lisa's Brain (Sunday, 09 May 1999)
      Episode 23/23: Thirty Minutes Over Tokyo (Sunday, 16 May 1999)
 
-* To get summary information on a specific episode, for example run ``plex_tvdb_epname.py -s "The Simpsons" -e s30e10`` (season 30, episode 10).
+* To get summary information on a specific episode, for example run ``plex_tvdb_epname -s "The Simpsons" -e s30e10`` (season 30, episode 10).
   
   .. code-block:: bash
      
-     tanim-desktop $ plex_tvdb_epname.py -s "The Simpsons" -e s30e10
+     tanim-desktop $ plex_tvdb_epname -s "The Simpsons" -e s30e10
      'Tis the 30th Season (Sunday, 09 December 2018)     
 
-.. _plex_tvdb_futureshows.py_label:
+.. _plex_tvdb_futureshows_label:
 
-plex_tvdb_futureshows.py
+plex_tvdb_futureshows
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``plex_tvdb_futureshows.py -h``, produces the following.
+The help output, when running ``plex_tvdb_futureshows -h``, produces the following.
 
 .. code-block:: bash
 
-   Usage: plex_tvdb_futureshows.py [options]
+   Usage: plex_tvdb_futureshows [options]
    
    Options:
      -h, --help  show this help message and exit
@@ -414,7 +414,7 @@ This executable prints out summary information on TV shows, that exist on the Pl
 
 .. code-block:: bash
 
-   tanim-desktop $ plex_tvdb_futureshows.py
+   tanim-desktop $ plex_tvdb_futureshows
    0, started on October 20, 2019 @ 04:30:33 PM
    1, found TV library: TV Shows.
    2, excluding these TV shows: The Great British Bake Off.
@@ -437,15 +437,15 @@ This executable prints out summary information on TV shows, that exist on the Pl
    4, processed everything in 23.106 seconds.
    5, finished everything on October 20, 2019 @ 04:30:56 PM.
 
-.. _plex_tvdb_plots.py_label:
+.. _plex_tvdb_plots_label:
 
-plex_tvdb_plots.py
+plex_tvdb_plots
 ^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``plex_tvdb_plots.py -h``, produces the following. ``$(cwd)`` refers to the current working directory in which this CLI is run.
+The help output, when running ``plex_tvdb_plots -h``, produces the following. ``$(cwd)`` refers to the current working directory in which this CLI is run.
 
 .. code-block:: bash
 
-   Usage: plex_tvdb_plots.py [options]
+   Usage: plex_tvdb_plots [options]
 
    Options:
      -h, --help         show this help message and exit
@@ -460,7 +460,7 @@ You can choose the calendar year or years for which you want to return eye chart
 
 .. code-block:: bash
 
-   tanim-desktop $ plex_tvdb_plots.py --years 2000,2005,2010,2015
+   tanim-desktop $ plex_tvdb_plots --years 2000,2005,2010,2015
    0, started on October 20, 2019 @ 04:38:19 PM
    1, found TV library: TV Shows.
    2, excluding these TV shows: The Great British Bake Off.

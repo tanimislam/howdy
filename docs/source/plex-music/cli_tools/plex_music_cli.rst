@@ -4,23 +4,23 @@ Music Command Line Utilities
 
 This section describes the four Plexstuff music command line utilities.
 
-* :ref:`plex_music_album.py` can do three possible things: download an album image given an artist name and album name; pretty-print out all the studio albums released by an artist; and print out all the songs released on an album by an artist. It uses either the LastFM_ or MusicBrainz_ APIs.
+* :ref:`plex_music_album` can do three possible things: download an album image given an artist name and album name; pretty-print out all the studio albums released by an artist; and print out all the songs released on an album by an artist. It uses either the LastFM_ or MusicBrainz_ APIs.
 
-* :ref:`plex_music_metafill.py` is an older Plex_ Music executable. It gets choices and song clips from YouTube_ and music metadata using the Gracenote_ API. This was an earlier trial to improve the functionality of :ref:`plex_music_songs.py`.
+* :ref:`plex_music_metafill` is an older Plex_ Music executable. It gets choices and song clips from YouTube_ and music metadata using the Gracenote_ API. This was an earlier trial to improve the functionality of :ref:`plex_music_songs`.
 
-* :ref:`plex_music_songs.py` is a work-horse CLI that can do three things (:ref:`download songs with artist and song list <download_by_artist_songs>`, :ref:`download songs with artist and album <download_by_artist_album>`, or :ref:`download a list of songs with a list of corresponding artists <download_by_artists_songs_list>`) using the three music metadata services (Gracenote_, LastFM_, or MusicBrainz_).
+* :ref:`plex_music_songs` is a work-horse CLI that can do three things (:ref:`download songs with artist and song list <download_by_artist_songs>`, :ref:`download songs with artist and album <download_by_artist_album>`, or :ref:`download a list of songs with a list of corresponding artists <download_by_artists_songs_list>`) using the three music metadata services (Gracenote_, LastFM_, or MusicBrainz_).
 
-* :ref:`upload_to_gmusic.py` uploads MP3_ or M4A_ music files to one's `Google Play Music`_ account, or pushes the appropriate :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` credentials into the SQLite3_ configuration database.
+* :ref:`upload_to_gmusic` uploads MP3_ or M4A_ music files to one's `Google Play Music`_ account, or pushes the appropriate :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` credentials into the SQLite3_ configuration database.
 
-.. _plex_music_album.py_label:
+.. _plex_music_album_label:
 
-plex_music_album.py
+plex_music_album
 ^^^^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``plex_music_album.py -h``, produces the following.
+The help output, when running ``plex_music_album -h``, produces the following.
 
 .. code-block:: bash
 
-   usage: plex_music_album.py [-h] -a ARTIST_NAME [-A ALBUM_NAME] [--songs]
+   usage: plex_music_album [-h] -a ARTIST_NAME [-A ALBUM_NAME] [--songs]
 			      [--formatted] [--albums] [--debug] [--noverify]
 			      [--musicbrainz]
 
@@ -33,7 +33,7 @@ The help output, when running ``plex_music_album.py -h``, produces the following
      --songs               If chosen, get the song listing instead of downloading
 			   the album image.
      --formatted           If chosen, print the song listing in a format
-			   recognized by plex_music_metafill.py for downloading a
+			   recognized by plex_music_metafill for downloading a
 			   collection of songs.
      --albums              If chosen, then get a list of all the songs in all
 			   studio albums for the artist.
@@ -57,7 +57,7 @@ Here are the three operations,
 
   .. code-block:: bash
 
-     tanim-desktop $ plex_music_album.py -a Air -A "Moon Safari"
+     tanim-desktop $ plex_music_album -a Air -A "Moon Safari"
      tanim-desktop $ Air.Moon Safari.png
 
   Here is the image,
@@ -94,7 +94,7 @@ Here are the three operations,
   
     .. code-block:: bash
 
-       tanim-desktop $ plex_music_album.py -a Air -A "Moon Safari" --songs		  
+       tanim-desktop $ plex_music_album -a Air -A "Moon Safari" --songs		  
 
        Song                                        Track #
        ----------------------------------------  ---------
@@ -111,23 +111,23 @@ Here are the three operations,
 
   .. _plex_music_abum_songs_formatted:
 
-  * If we run with the ``--formatted`` flag, then the output is a semi-colon-delimited collection of songs in this album. This is an input format that can then be processed by :ref:`plex_music_metafill.py`. For songs in the `Moon Safari`_ album released by Air_,
+  * If we run with the ``--formatted`` flag, then the output is a semi-colon-delimited collection of songs in this album. This is an input format that can then be processed by :ref:`plex_music_metafill`. For songs in the `Moon Safari`_ album released by Air_,
 
     .. code-block:: bash
 
-       tanim-desktop $ plex_music_album.py -a Air -A "Moon Safari" --songs --formatted	    
+       tanim-desktop $ plex_music_album -a Air -A "Moon Safari" --songs --formatted	    
 
        La Femme d'Argent;Sexy Boy;All I Need;Kelly Watch the Stars;Talisman;Remember;You Make It Easy;Ce Matin-Là;New Star in the Sky (Chanson Pour Solal);Le Voyage De Pénélope
 
-.. _plex_music_metafill.py_label:
+.. _plex_music_metafill_label:
 
-plex_music_metafill.py
+plex_music_metafill
 ^^^^^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``plex_music_metafill.py -h``, produces the following.
+The help output, when running ``plex_music_metafill -h``, produces the following.
 
 .. code-block:: bash
 
-   usage: plex_music_metafill.py [-h] -s SONG_NAMES -a ARTIST_NAME
+   usage: plex_music_metafill [-h] -s SONG_NAMES -a ARTIST_NAME
 				 [--maxnum MAXNUM] [-A ALBUM_NAME] [--noverify]
 
    optional arguments:
@@ -195,7 +195,7 @@ This executable has two modes of operation. In each mode, for each song in the c
 
   The list of songs came from the LastFM_ service, and Gracenote_ cannot find Air_ songs in `Moon Safari`_ with the names ``Ce Matin-Là`` and ``Le Voyage De Pénélope`` due (probably) to diacritical accents.
 
-* In the second mode of operation, give it the album name with ``-A`` or ``--album``. For example ``plex_music_metafill.py -a Air -A "Moon Safari"`` to get all ten songs in this album,
+* In the second mode of operation, give it the album name with ``-A`` or ``--album``. For example ``plex_music_metafill -a Air -A "Moon Safari"`` to get all ten songs in this album,
 
   .. _plex_music_metafill_album:
   
@@ -204,15 +204,15 @@ This executable has two modes of operation. In each mode, for each song in the c
 
   Here Gracenote_ is able to find all songs, including ``Ce Matin La`` (instead of ``Ce Matin-Là``) and ``Le Voyage De Penelope`` (instead of ``Le Voyage De Pénélope``).
   
-.. _plex_music_songs.py_label:
+.. _plex_music_songs_label:
 
-plex_music_songs.py
+plex_music_songs
 ^^^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``plex_music_songs.py -h``, produces the following.
+The help output, when running ``plex_music_songs -h``, produces the following.
 
 .. code-block:: bash
 
-   usage: plex_music_songs.py [-h] -a ARTIST_NAME -s SONG_NAMES [--maxnum MAXNUM]
+   usage: plex_music_songs [-h] -a ARTIST_NAME -s SONG_NAMES [--maxnum MAXNUM]
 			      [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES]
 			      [--lastfm] [--musicbrainz] [--noverify] [--debug]
 
@@ -272,7 +272,7 @@ Some example animated GIFs can be downloaded from here, and is mirrored in this 
 `Download artists & songs <yt_clip1_>`_      `Download artist & album <yt_clip2_>`_       `Download sep artists & songs <yt_clip3_>`_
 ===========================================  ===========================================  ===============================================
   
-The complicated collection of flags and arguments allows ``plex_music_songs.py`` to download a collection of songs in three ways,
+The complicated collection of flags and arguments allows ``plex_music_songs`` to download a collection of songs in three ways,
 
 * in :numref:`download_by_artist_songs`, by specifying artist and list of songs.
 
@@ -322,7 +322,7 @@ Once the metadata service finds the metadata for those songs, the CLI provides a
 
 .. _example_song_youtube_clip:
 
-Here ``plex_music_songs.py`` looks for a song, Remember_ by Air_, using the music service MusicBrainz_,
+Here ``plex_music_songs`` looks for a song, Remember_ by Air_, using the music service MusicBrainz_,
 
 1. The service finds the match and prints out the artist, album, and song.
        	       	     	 
@@ -426,15 +426,15 @@ whose video is shown below,
 .. youtube:: cRvxkGb2q3Y
    :width: 100%
 
-.. _upload_to_gmusic.py_label:
+.. _upload_to_gmusic_label:
 
-upload_to_gmusic.py
+upload_to_gmusic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``upload_to_gmusic.py -h``, produces the following.
+The help output, when running ``upload_to_gmusic -h``, produces the following.
 
 .. code-block:: bash
 
-   usage: upload_to_gmusic.py [-h] -f FILENAMES [-P] [--noverify]
+   usage: upload_to_gmusic [-h] -f FILENAMES [-P] [--noverify]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -449,15 +449,15 @@ The ``--noverify`` flag disables verification of SSL HTTP connections. The stand
 
 .. code-block:: bash
 
-   upload_to_gmusic.py -f "Air.*m4a"
+   upload_to_gmusic -f "Air.*m4a"
 
 attempts to upload all filenames that match ``Air.*m4a``.
 
-The other mode of operation, running with the ``-P`` flag without specifying files to upload, attempts to refresh the :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` OAuth2 credentials. Its operation is similar to that of :ref:`plex_store_credentials.py`. These dialogs in the shell appear,
+The other mode of operation, running with the ``-P`` flag without specifying files to upload, attempts to refresh the :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` OAuth2 credentials. Its operation is similar to that of :ref:`plex_store_credentials`. These dialogs in the shell appear,
 
 .. code-block:: bash
 
-   tanim-desktop $ upload_to_gmusic.py -P
+   tanim-desktop $ upload_to_gmusic -P
    Please go to this URL in a browser window:https://accounts.google.com/o/oauth2/auth...
    After giving permission for Google services on your behalf,
    type in the access code:
@@ -470,7 +470,7 @@ Third, paste the code similar to as described in :ref:`Step #7 <google_step07_oa
 
    Success. Stored GMusicAPI Mobileclient credentials.
 
-.. links for the youtube clips in table for plex_music_songs.py section
+.. links for the youtube clips in table for plex_music_songs section
 
 .. _yt_clip1: https://www.youtube.com/watch?v=W8pmTqFJy68
 .. _yt_clip2: https://www.youtube.com/watch?v=njkhP5VE7Kc

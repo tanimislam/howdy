@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import sys, signal 
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
@@ -58,7 +56,3 @@ def main( ):
         r = conn.put( io_obj, os.path.basename( args.jsonfile ) )
         print( 'put episode info for "%s" into %s in %0.3f seconds.' % (
             args.show.strip( ), r.remote, time.time( ) - time0 ) )
-
-if __name__=='__main__':
-    main( )
-    

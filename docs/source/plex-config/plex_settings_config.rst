@@ -4,7 +4,7 @@ Plexstuff Settings Configuration
 
 This document contains all the needed information to get started on getting set up with all the **Plex server settings** one needs to get up and running with Plexstuff. This setup developed here uses the `Seedhost <https://www.seedhost.eu>`_ `seedbox <https://en.wikipedia.org/wiki/Seedbox>`_ service to downloaded files, using the `Deluge torrent server <https://deluge-torrent.org>`_, to download to one's home machine.
 
-This configuration is handled through the ``plex_config_gui.py``, and consists of the following elements. The *Plex Settings Configuration* document describes the Jackett server settings, where one may use either the Jackett server provided by Seedbox or one's own server.
+This configuration is handled through the ``plex_config_gui``, and consists of the following elements. The *Plex Settings Configuration* document describes the Jackett server settings, where one may use either the Jackett server provided by Seedbox or one's own server.
 
 1. Plex user settings.
    
@@ -25,7 +25,7 @@ This configuration is handled through the ``plex_config_gui.py``, and consists o
   * The sub directory, below the main directory of the SSH user directory on the Seedhost account, to look for downloaded files.
   * The password on the Seedhost account.
 
-To begin, launch ``plex_config_gui.py``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex login credentials*. Click on *Plex login credentials*. Here is a screen shot.
+To begin, launch ``plex_config_gui``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex login credentials*. Click on *Plex login credentials*. Here is a screen shot.
 
 .. _login_step01_login:
 
@@ -119,4 +119,4 @@ You have already set up your SSH account by registering a Seedhost account. Pres
 
 * The remote directory on the Seedhost account, where torrent files are downloaded, is typically ``downloads``. Put that into the *SUB DIR* text box.
 
-* Choose the local directory where the torrent files from the remote Seedhost SSH server download. This is used by the Plexstuff tools :ref:`rsync_subproc.py` and :ref:`get_plextvdb_batch.py`. Put this local directory into the *LOCAL DIR* text box.
+* Choose the local directory where the torrent files from the remote Seedhost SSH server download. This is used by the Plexstuff tools :ref:`rsync_subproc` and :ref:`get_plextvdb_batch`. Put this local directory into the *LOCAL DIR* text box.

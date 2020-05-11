@@ -86,7 +86,7 @@ Incomplete information on setting up Imgur API access can be found on `this webs
 Generate Imgur Credentials Using ``Plexstuff``
 ------------------------------------------------
 
-Here are the steps used to get working Imgur API access using the ``plex_config_gui.py``. First register for an `Imgur account <https://imgur.com/register?redirect=https%3A%2F%2Fimgur.com%2F>`_, if you have not already done so.
+Here are the steps used to get working Imgur API access using the ``plex_config_gui``. First register for an `Imgur account <https://imgur.com/register?redirect=https%3A%2F%2Fimgur.com%2F>`_, if you have not already done so.
 
 1. Once you have an account, `register an Imgur application <https://api.imgur.com/oauth2/addclient>`_. Specify an application name, choose the "OAuth2 authorization without a callback URL" option, provide an email address, and provide a basic description of the application. Here is a screen shot.
 
@@ -104,14 +104,14 @@ Here are the steps used to get working Imgur API access using the ``plex_config_
    :width: 100%
    :align: center
 
-3. Then record the client ID and client secret, which will be used in ``plex_config_gui.py``. Here is a screen shot.
+3. Then record the client ID and client secret, which will be used in ``plex_config_gui``. Here is a screen shot.
 
 .. _imgur_step03_clientsecret:
 .. figure:: plex-config-services-figures/imgur_step03_clientsecret.png
    :width: 100%
    :align: center
 
-4. Launch ``plex_config_gui.py``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. Here is a screen shot.
+4. Launch ``plex_config_gui``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. Here is a screen shot.
 
 .. _imgur_step04_credentials:
 
@@ -250,9 +250,9 @@ Summary of Setting Up Google Credentials
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 We set up `Google <https://www.google.com>`_ services that use `YouTube <https://www.youtube.com>`_, GMail, Google Contacts, Google Spreadsheets, and the `unofficial Google Music API <https://unofficial-google-music-api.readthedocs.io/en/latest/>`_.
 
-Since these are all Google services, a single tool sets all of them up given a single Google account using Google's OAuth2_ authentication mechanism. The easiest way to do this is through the ``plex_config_gui.py`` executable, which is part of Plexstuff.
+Since these are all Google services, a single tool sets all of them up given a single Google account using Google's OAuth2_ authentication mechanism. The easiest way to do this is through the ``plex_config_gui`` executable, which is part of Plexstuff.
 
-1. Launch ``plex_config_gui.py``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. These instructions are the same as in step 4 in :numref:`The Imgur API` and in :numref:`imgur_step04_credentials`, which we reproduce here.
+1. Launch ``plex_config_gui``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. These instructions are the same as in step 4 in :numref:`The Imgur API` and in :numref:`imgur_step04_credentials`, which we reproduce here.
 
 .. figure:: plex-config-services-figures/google_step01_credentials.png
   :width: 100%

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import sys, signal
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
@@ -253,6 +251,3 @@ def main( ):
         ## sort from most seeders + leecher to least
         items_sorted = sorted( items, key = lambda tup: -tup['seeders'] - tup['leechers'] )[:args.maxnum]
         get_movie_torrent_items( items_sorted, filename = args.filename, to_torrent = args.do_add )
-
-if __name__=='__main__':
-    main( )

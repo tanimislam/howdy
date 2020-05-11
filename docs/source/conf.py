@@ -16,7 +16,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os, sys, date
+import os, sys, datetime
 from functools import reduce
 from sphinx.util import logging
 _mainDir = reduce(lambda x,y: os.path.dirname( x ),
@@ -27,7 +27,7 @@ is_in_readthedocs = ( os.environ.get( 'READTHEDOCS' ) is not None )
 
 logger = logging.getLogger( __name__ )
 logger.info( "mainDir = %s" % _mainDir)
-logger.info( os.environ.get('READTHEDOCS') )
+logger.info( 'READTHEDOCS: %s.' % os.environ.get('READTHEDOCS') )
 
 #
 ## now don't verify the TLS if not in READTHEDOCS
@@ -38,7 +38,7 @@ tls_verify = is_in_readthedocs
 ## and instructions on https://stackoverflow.com/questions/28178644/python-readthedocs-how-to-satisfy-the-requirement-sip-or-pyqt/37363830#37363830
 ## because CANNOT install PyQt4 and stuff in readthedocs
 #autodoc_mock_imports = [ 'sip', 'PyQt4', 'PyQt4.QtGui', 'PyQt4.QtCore' ]
-autodoc_mock_imports = ['sip', 'PyQt5', 'PyQt5.QtGui', 'PyQt5.QtCore', 'PyQt5.QtWidgets']
+#autodoc_mock_imports = ['sip', 'PyQt5', 'PyQt5.QtGui', 'PyQt5.QtCore', 'PyQt5.QtWidgets' ]
 #if os.environ.get( 'READTHEDOCS' ):
 #    MOCK_MODULES = ['sip', 'PyQt4', 'PyQt4.QtGui', 'PyQt4.QtCore' ]
 #    sys.modules.update((mod_name, mock.MagicMock()) for mod_name in MOCK_MODULES)
@@ -74,7 +74,7 @@ intersphinx_mapping = {
     'geoip2' : ( 'https://geoip2.readthedocs.io/en/latest', None),
     'gmusicapi' : ( 'https://unofficial-google-music-api.readthedocs.io/en/latest', None ),
     'imdbpy' : ( 'https://imdbpy.readthedocs.io/en/latest', None),
-    #'pyqt5' : ( 'https://www.riverbankcomputing.com/static/Docs/PyQt5', "_intersphinx/pyqt5_objects.inv" ),
+    'pyqt5' : ( 'https://www.riverbankcomputing.com/static/Docs/PyQt5', "_intersphinx/pyqt5_objects.inv" ),
     'requests_oauthlib' : ( 'https://requests-oauthlib.readthedocs.io/en/latest', None ),
     'oauth2client' : ( 'https://oauth2client.readthedocs.io/en/latest', None ),
     'google-auth' : ( 'https://google-auth.readthedocs.io/en/latest', None ),

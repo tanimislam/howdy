@@ -4,8 +4,8 @@ PlexTMDB API
 
 This document describes the lower level Plexstuff TMDB API, upon which :ref:`get_mov_tor.py` and :ref:`plex_tmdb_totgui.py` are built. It lives in ``plexstuff.plextmdb``.
 
-plexmdb module
-----------------------
+plexstuff.plexmdb module
+--------------------------
 
 This module implements the lower-level functionality that does the following:
 
@@ -13,13 +13,13 @@ This module implements the lower-level functionality that does the following:
    
    * Creates two configuration singletons, :py:class:`TMDBEngine <plexstuff.plextmdb.TMDBEngine>` and :py:class:`TMDBEngineSimple <plexstuff.plextmdb.TMDBEngineSimple>`, that contain movie genre information from the TMDB_ database.
 
-.. automodule:: plextmdb
+.. automodule:: plexstuff.plextmdb
    :members:
    :private-members:
    :inherited-members:
 
-plextmdb.plextmdb module
----------------------------
+plexstuff.plextmdb.plextmdb module
+-------------------------------------
 
 This module contains the main back-end functionality used by the :ref:`get_mov_tor.py` and :ref:`plex_tmdb_totgui.py`, and other functionalities that are used by methods in :ref:`plextvdb <PlexTVDB API>`. Here are the main features of this module.
 
@@ -27,11 +27,11 @@ This module contains the main back-end functionality used by the :ref:`get_mov_t
 
    * Getting comprehensive movie information.
 
-.. automodule:: plextmdb.plextmdb
+.. automodule:: plexstuff.plextmdb.plextmdb
    :members:
 
-plextmdb.plextmdb_torrents module
---------------------------------------
+plexstuff.plextmdb.plextmdb_torrents module
+------------------------------------------------
 
 This module implements higher level interfaces to the Jackett_ torrent searching server, and functionality that allows for the automatic download of episodes missing from the Plex_ Movie library. It is very similar to the :ref:`plextvdb.plextvdb_torrents <plexstuff.plextvdb.plextvdb_torrents module>`, except for the following differences.
 
@@ -69,19 +69,19 @@ As of |date|, here are three movie torrent finding methods that work and don't w
 
 .. _table_working_movietorrents:
 
-=======================  ===========================================================================================  ===============
-Torrent Service          Search Method                                                                                Does It Work?
-=======================  ===========================================================================================  ===============
+=======================  =====================================================================================================  ===============
+Torrent Service          Search Method                                                                                          Does It Work?
+=======================  =====================================================================================================  ===============
 `EZTV.IO`_               :py:meth:`get_movie_torrent_eztv_io <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_eztv_io>`  False
 Zooqle_                  :py:meth:`get_movie_torrent_zooqle <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_zooqle>`    True
 RARBG_                   :py:meth:`get_movie_torrent_rarbg <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_rarbg>`      False
 KickAssTorrents_         :py:meth:`get_movie_torrent_kickass <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_kickass>`  False
 `The Pirate Bay`_        :py:meth:`get_movie_torrent_tpb <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_tpb>`          False
 Jackett_ torrent search  :py:meth:`get_movie_torrent_jackett <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_jackett>`  True
-`YTS API`_                :py:meth:`get_movie_torrent <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent>`                 True
-=======================  ===========================================================================================  ===============
+`YTS API`_               :py:meth:`get_movie_torrent <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent>`                  True
+=======================  =====================================================================================================  ===============
 
-.. automodule:: plextmdb.plextmdb_torrents
+.. automodule:: plexstuff.plextmdb.plextmdb_torrents
    :members:
 
 .. _TMDB: https://www.themoviedb.org/documentation/api?language=en-US

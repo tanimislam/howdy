@@ -4,8 +4,8 @@ PlexTVDB API
 
 This document describes the lower level Plexstuff TVDB API, upon which the :ref:`command line tools <TVDB Command Line Utilities>` and  the :ref:`GUI tool <plex_tvdb_totgui.py>` are built. It lives in ``plexstuff.plextvdb``.
 
-plextvdb module
-------------------------
+plexstuff.plextvdb module
+---------------------------
 
 This module implements the lower-level functionalty that does the following:
 
@@ -15,11 +15,11 @@ This module implements the lower-level functionalty that does the following:
 
      * Retrieve and refresh the TVDB_ API access token.
 
-.. automodule:: plextvdb
+.. automodule:: plexstuff.plextvdb
    :members:
 
-plextvdb.plextvdb module
------------------------------
+plexstuff.plextvdb.plextvdb module
+------------------------------------
 
 This module contains the main back-end functionality used by the Plex TVDB GUIs and CLIs. Here are the main features of this module.
 
@@ -29,13 +29,13 @@ This module contains the main back-end functionality used by the Plex TVDB GUIs 
 
      * Extracts useful information on episodes and TV shows that are used by Plex TVDB GUIs and CLIs.
 
-     * Robust functionality that, with the :ref:`plextvdb.plextvdb_torrents module`, allows for the automatic download of episodes missing from the Plex_ TV library.
+     * Robust functionality that, with the :ref:`plexstuff.plextvdb.plextvdb_torrents module`, allows for the automatic download of episodes missing from the Plex_ TV library.
 
-.. automodule:: plextvdb.plextvdb
+.. automodule:: plexstuff.plextvdb.plextvdb
    :members:
 
-plextvdb.plextvdb_torrents module
------------------------------------
+plexstuff.plextvdb.plextvdb_torrents module
+----------------------------------------------
 
 This module implements higher level interfaces to the Jackett_ torrent searching server, and functionality that allows for the automatic download of episodes missing from the Plex_ TV library.
 
@@ -66,9 +66,9 @@ As of |date|, here are the magnet link methods that work and don't work when sea
 
 .. _table_working_tvtorrents:
 
-=======================  =======================================================================================  ===============
-Torrent Service          Search Method                                                                            Does It Work?
-=======================  =======================================================================================  ===============
+=======================  =================================================================================================  ===============
+Torrent Service          Search Method                                                                                      Does It Work?
+=======================  =================================================================================================  ===============
 `EZTV.IO`_               :py:meth:`get_tv_torrent_eztv_io <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_eztv_io>`    False
 Zooqle_                  :py:meth:`get_tv_torrent_zooqle <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_zooqle>`      True
 RARBG_                   :py:meth:`get_tv_torrent_rarbg <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_rarbg>`        False
@@ -76,17 +76,17 @@ Torrentz_                :py:meth:`get_tv_torrent_torrentz <plexstuff.plextvdb.p
 KickAssTorrents_         :py:meth:`get_tv_torrent_kickass <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_kickass>`    False
 `The Pirate Bay`_        :py:meth:`get_tv_torrent_tpb <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_tpb>`            False
 Jackett_ torrent search  :py:meth:`get_tv_torrent_jackett <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_jackett>`    True
-=======================  =======================================================================================  ===============
+=======================  =================================================================================================  ===============
 
-.. automodule:: plextvdb.plextvdb_torrents
+.. automodule:: plexstuff.plextvdb.plextvdb_torrents
    :members:
 
-plextvdb.plextvdb_attic module
--------------------------------
+plexstuff.plextvdb.plextvdb_attic module
+-----------------------------------------
 
 This contains broken, stale, and long-untested and unused Plex TVDB functionality. Some methods may live here until they are actively used in Plex TVDB GUIs and CLIs.
 
-.. automodule:: plextvdb.plextvdb_attic
+.. automodule:: plexstuff.plextvdb.plextvdb_attic
    :members:
 
 .. _SQLAlchemy: https://www.sqlalchemy.org

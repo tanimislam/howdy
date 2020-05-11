@@ -117,7 +117,7 @@ Common Design Philosophies and Features for Command Line and GUIs
 
 Since I am forced to use the tools I developed to manage my Plex server, my command line interfaces (CLIs) and GUIs share common features that I hope make these tools *discoverable* and more easily *debuggable*.
 
-The CLIs are programmed with :py:class:`optparse's OptionParser( ) <optparse.OptionParser>` and have a comprehensive help that can be accessed via ``<cli_tool> -h``, where ``<cli_tool>`` refers to the the specific Python CLI.
+The CLIs are programmed with :py:class:`argparse's ArgumentParser( ) <argparse.ArgumentParser>` and have a comprehensive help that can be accessed via ``<cli_tool> -h``, where ``<cli_tool>`` refers to the the specific Python CLI.
 
 The GUI tools all share common features. One can take a PNG screenshot of each widget and sub-widget with the ``Shift+Ctrl+P`` (or ``Shift+Command+P`` on Mac OS X computers) key combination. This helps to debug issues that may appear in the GUI, and helps to create useful documentation. I always try to put help screens into my GUIs, although not all the GUIs have working help dialogs.
 
@@ -135,7 +135,7 @@ Functionality    CLI                                                            
                  - :ref:`plex_resynclibs <plex_resynclibs_label>` |cbox|                - :ref:`plex_create_texts <plex_create_texts_label>`
                  - :ref:`plex_store_credentials <plex_store_credentials_label>` |cbox|
                  - :ref:`rsync_subproc <rsync_subproc_label>` |cbox|
-``plextvdb``     - :ref:`get_plextvdb_batch <get_plextvdb_batch_label>` |cbox|          - :ref:`plex_tvdb_totgui <plex_tvdb_totgui_label>`
+``plextvdb``     - :ref:`get_plextvdb_batch <get_plextvdb_batch_label>` |cbox|          - :ref:`plex_tvdb_gui <plex_tvdb_gui_label>`
                  - :ref:`get_tv_tor <get_tv_tor_label>` |cbox|
                  - :ref:`plex_tvdb_epinfo <plex_tvdb_epinfo_label>` |cbox|
                  - :ref:`plex_tvdb_epname <plex_tvdb_epname_label>` |cbox|

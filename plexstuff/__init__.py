@@ -7,8 +7,8 @@ _mainDir = os.path.dirname( os.path.abspath( __file__ ) )
 resourceDir = os.path.join( _mainDir, 'resources' )
 assert( os.path.isdir( resourceDir ) )
 #
-from plexstuff import plexinitialization
-_ = plexinitialization.PlexInitialization( )
+# from plexstuff import plexinitialization
+# _ = plexinitialization.PlexInitialization( )
 # resource file and stuff
 baseConfDir = os.path.abspath( os.path.expanduser( '~/.config/plexstuff' ) )
 """

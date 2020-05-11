@@ -4,15 +4,15 @@ Plex Music API
 
 This document describes the lower level Plexstuff Music API, upon which the :ref:`command line tools <Music Command Line Utilities>`  are built. It lives in ``plexstuff.plexmusic``.
 
-plexmusic module
-------------------
+plexstuff.plexmusic module
+----------------------------
 This contains only three methods: two format durations strings for YouTube_ clips, and a third is used to search for M4A_ music files that are missing artist or album information.
 
-.. automodule:: plexmusic
+.. automodule:: plexstuff.plexmusic
    :members:
 
-plexmusic.plexmusic module
------------------------------
+plexstuff.plexmusic.plexmusic module
+---------------------------------------
 
 This contains the low-level functionality that does three things.
 
@@ -22,15 +22,15 @@ This contains the low-level functionality that does three things.
 
 * Uploads music to one's own `Google Play Music`_ account using GMusicAPI_, and sets its credentials.
 
-.. automodule:: plexmusic.plexmusic
+.. automodule:: plexstuff.plexmusic.plexmusic
    :members:
 
-plexmusic.pygn module
-------------------------
+plexstuff.plexmusic.pygn module
+----------------------------------
 
 This contains functionality used by the :py:class:`PlexMusic <plexstuff.plexmusic.plexmusic.PlexMusic>` higher level object interface to the Gracenote_ API.
 
-.. automodule:: plexmusic.pygn
+.. automodule:: plexstuff.plexmusic.pygn
    :members:
 
 .. URLs here

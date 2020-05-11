@@ -4,8 +4,8 @@ Core API
 
 This document describes the lower level Plex emailing API, upon which all the command line and GUI tools are based. It lives in ``plexstuff.plexcore``.
 
-plexcore module
-----------------------
+plexstuff.plexcore module
+--------------------------
 
 This module implements the lower-level functionality that does or has the following:
 
@@ -24,16 +24,16 @@ This module implements the lower-level functionality that does or has the follow
      * initialization, in order to check for necessary prerequisites (see :ref:`Prerequisites`) and to install missing Python modules and packages (see :ref:`Installation`). This initialization is handled via a :py:class:`PlexInitialization <plexstuff.plexcore.plexinitialization.PlexInitialization>` singleton object.
 
 
-.. automodule:: plexcore
+.. automodule:: plexstuff.plexcore
    :members:
 
-plexcore.plexinitialization module
------------------------------------------
+plexstuff.plexinitialization module
+----------------------------------------------
 
-.. automodule:: plexcore.plexinitialization
+.. automodule:: plexstuff.plexinitialization
    :members:
 
-plexcore.plexcore module
+plexstuff.plexcore.plexcore module
 -----------------------------------------
 
 This module implements the functionality to do the following:
@@ -44,23 +44,23 @@ This module implements the functionality to do the following:
 
      * miscellaneous functionalities, such as the following: getting formatted date strings from a :py:class:`date <datetime.date>` object.
 
-.. automodule:: plexcore.plexcore
+.. automodule:: plexstuff.plexcore.plexcore
    :members:
 
-plexcore.plexcore_deluge module
------------------------------------------
+plexstuff.plexcore.plexcore_deluge module
+--------------------------------------------
 
 This module implements the functionality to interact with a Seedhost_ seedbox_ `Deluge torrent server`_, by copying a minimal set of the functionality of a `Deluge torrent client`_. The data formatting in this module is largely or wholly copied from the `Deluge SDK <https://deluge.readthedocs.io/en/latest>`_. The much reduced Deluge torrent client, :ref:`plex_deluge_console.py`, is a CLI front-end to this module.
 
-.. automodule:: plexcore.plexcore_deluge
+.. automodule:: plexstuff.plexcore.plexcore_deluge
    :members:
 
-plexcore.plexcore_rsync module
------------------------------------------
+plexstuff.plexcore.plexcore_rsync module
+--------------------------------------------
 
 This module implements the functionality to interact with a Seedhost_ seedbox_ SSH server to download or upload files and directories using the rsync_ protocol tunneled through SSH. :ref:`rsync_subproc.py` is a CLI front-end to this module.
 
-.. automodule:: plexcore.plexcore_rsync
+.. automodule:: plexstuff.plexcore.plexcore_rsync
    :members:
 
 .. these are some URLs

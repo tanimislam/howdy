@@ -7,8 +7,9 @@ from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
 from fuzzywuzzy.fuzz import partial_ratio
 #
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QColor, QPixmap, QFontDatabase, QCursor
-from PyQt5.QtCore import pyqtSignal, QTimer, QThread
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+import PyQt5.QtWidgets, PyQt5.QtCore
 #
 from plexstuff import resourceDir, baseConfDir
 #
@@ -68,7 +69,7 @@ def get_popularity_color( hpop, alpha = 1.0 ):
 
 #
 ## a QLabel with save option of the pixmap
-class QLabelWithSave( QLabel ):
+class QLabelWithSave( PyQt5.QtWidgets.QLabel ):
     """
     A convenient PyQt5_ widget that inherits from :py:class:`QLabel <PyQt5.QtWidgets.QLabel>`, but allows screen shots.
 
@@ -107,7 +108,7 @@ class QLabelWithSave( QLabel ):
         menu.addAction( savePixmapAction )
         menu.popup( QCursor.pos( ) )
 
-class QDialogWithPrinting( QDialog ):
+class QDialogWithPrinting( PyQt5.QtWidgets.QDialog ):
     """
     A convenient PyQt5_ widget, inheriting from :py:class:`QDialog <PyQt5.QtWidgets.QDialog>`, that allows for screen grabs and keyboard shortcuts to either hide this dialog window or quit the underlying program. This PyQt5_ widget is also resizable, in relative increments of 5% larger or smaller, to a maximum of :math:`1.05^5` times the initial size, and to a minimum of :math:`1.05^{-5}` times the initial size.
     
@@ -124,7 +125,7 @@ class QDialogWithPrinting( QDialog ):
     :var int initHeight: the initial heigth of the GUI in pixels.    
     """
     
-    indexScalingSignal = pyqtSignal( int )
+    indexScalingSignal = PyQt5.QtCore.pyqtSignal( int )
     
     def screenGrab( self ):
         """
@@ -239,7 +240,7 @@ class QDialogWithPrinting( QDialog ):
                 quitAction.triggered.connect( sys.exit )
             self.addAction( quitAction )
 
-class ProgressDialogThread( QThread ):
+class ProgressDialogThread( PyQt5.QtCore.QThread ):
     """
     This subclassing of :py:class:`QThread <PyQt5.QtCore.QThread>` provides a convenient scaffolding to run, in a non-blocking fashion, some long-running processes with an asssociated :py:class:`ProgressDialog <plexstuff.plexcore.ProgressDialog>` widget.
 
@@ -285,9 +286,9 @@ class ProgressDialogThread( QThread ):
     
     .. seealso:: :py:class:`ProgressDialog <plexstuff.plexcore.ProgressDialog>`
     """
-    emitString = pyqtSignal( str )
-    stopDialog = pyqtSignal( )
-    startDialog= pyqtSignal( str )
+    emitString = PyQt5.QtCore.pyqtSignal( str )
+    stopDialog = PyQt5.QtCore.pyqtSignal( ) 
+    startDialog= PyQt5.QtCore.pyqtSignal( str )
     
     def __init__( self, parent, title ):
         super( ProgressDialogThread, self ).__init__( )

@@ -9,7 +9,7 @@ These command line executables, graphical user interfaces, and APIs are used to 
    :caption: Table of Contents
 
    cli_tools/plex_tvdb_cli
-   plex_tvdb_totgui
+   plex_tvdb_gui
    plex_tvdb_api
 
 

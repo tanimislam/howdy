@@ -21,9 +21,9 @@ Here are some of the best known lower APIs used to help one manage your Plex_ se
 * `Tautulli <https://tautulli.com>`_ to monitor your Plex_ server.
 * `Jackett <https://github.com/Jackett/Jackett>`_ is a relatively successful proxy server that consolidates the torrent search from a large number of public, private, and semi-private torrent trackers and services into a single search user interface and API.
 
-* `PlexAPI <PlexAPI_>`_ is the unofficial bindings to the Plex API. They are based off the older `unofficial Plex API <unofficial_plex_api_>`_. I still use it because it seems to offer more freedom (such as finer grained multithreaded HTTP requests, and access to remote servers) than PlexAPI_.
+* `PlexAPI <PlexAPI_>`_ is the unofficial bindings to the Plex API. They are based off the older `unofficial Plex API <unofficial_plex_api_>`_. I still use the `unofficial Plex API <unofficial_plex_api_>`_ because it seems to offer more freedom (such as finer grained multithreaded HTTP requests, and access to remote servers) than PlexAPI_.
 
-The command line tools are built using Python's OptionParser_ or ArgumentParser_ object, and the GUIs are built with PyQt5_.
+The command line tools are built using Python's ArgumentParser_ object, and the GUIs are built with PyQt5_.
 
 The comprehensive documentation lives in HTML created with `Sphinx <http://www.sphinx-doc.org/en/master/>`_, and now in the `Read the Docs <Plexstuff_>`_ page for this project. To generate the documentation, go to the ``docs`` subdirectory. In that directory, run ``make html``. Load ``docs/build/html/index.html`` into a browser to see the documentation.
 
@@ -110,7 +110,6 @@ You can try out `plex_music_songs`_ to get individual songs or all the songs in 
 .. _fbs: https://www.learnpyqt.com/courses/packaging-and-distribution/packaging-pyqt5-apps-fbs
 .. _Plexstuff: https://plexstuff.readthedocs.io
 .. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0
-.. _OptionParser: https://docs.python.org/3/library/optparse.html#optparse.OptionParser
 .. _ArgumentParser: https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser
 .. _`Embed YouTube`: http://embedyoutube.org
 .. _`plex_music_songs`: https://plexstuff.readthedocs.io/plex-music/cli_tools/plex_music_cli.html#plex-music-songs

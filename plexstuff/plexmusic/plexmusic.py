@@ -411,7 +411,7 @@ class MusicInfo( object ):
     def get_music_metadata( self, song_name, min_criterion_score = 85 ):
         """
         :param str song_name: name of the song.
-        :param int min_criterion_score: the minimum score to accept for a string similarity comparison between ``song_name`` and any track created by this artist. ``70`` :math:`le` ``min_criterion_score`` :math:`le` ``100``, and the default is ``85``. The :py:meth:`get_maximum_matchval <plexstuff.plexcore.get_maximum_matchval>` performs the string comparison. If no track matches ``song_name``, then track data for a track that is the closest match (while having a similarity score :math:`ge` ``min_criterion_score``) to ``song_name`` is returned.
+        :param int min_criterion_score: the minimum score to accept for a string similarity comparison between ``song_name`` and any track created by this artist. ``70`` :math:`\le` ``min_criterion_score`` :math:`\le` ``100``, and the default is ``85``. The :py:meth:`get_maximum_matchval <plexstuff.plexcore.get_maximum_matchval>` performs the string comparison. If no track matches ``song_name``, then track data for a track that is the closest match (while having a similarity score :math:`\ge` ``min_criterion_score``) to ``song_name`` is returned.
         :returns: if successful, a two element :py:class:`tuple`. First element is a :py:class:`dict` of information on the song, and the second element is the string ``"SUCCESS"``. For example, for the Air_ song `Kelly Watch the Stars`_ in `Moon Safari`_, the closest match is ``Kelly, Watch the Stars!``.
 
           .. code-block:: python
@@ -423,7 +423,7 @@ class MusicInfo( object ):
                 'total tracks': 10,
                 'song': 'Kelly, Watch the Stars!',
                 'duration': 225.746,
-                'album url': 'http://coverartarchive.org/release/66c2ceb8-d369-4d8c-b702-490838855977/21141679576.jpg'}
+                'album url': 'http://...2-490838855977/21141679576.jpg'}
 
           If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <plexstuff.plexcore.return_error_raw>`.
         
@@ -485,19 +485,19 @@ class MusicInfo( object ):
         :param str album_name: album_name.
         :returns: If successful, returns a two-element :py:class:`tuple`, whose first element is the list of songs ordered by track number, and whose second element is the string ``"SUCCESS"``. Each element in this list is a :py:class:`tuple` of song number and track number. For example, for `Moon Safari`_ by Air_,
 
-        .. code-block:: python
+          .. code-block:: python
 
-            [("La Femme d'Argent", 1),
-             ('Sexy Boy', 2),
-             ('All I Need', 3),
-             ('Kelly Watch the Stars', 4),
-             ('Talisman', 5),
-             ('Remember', 6),
-             ('You Make It Easy', 7),
-             ('Ce Matin-Là', 8),
-             ('New Star in the Sky (Chanson Pour Solal)', 9),
-             ('Le Voyage De Pénélope', 10)]
-        
+              [("La Femme d'Argent", 1),
+               ('Sexy Boy', 2),
+               ('All I Need', 3),
+               ('Kelly Watch the Stars', 4),
+               ('Talisman', 5),
+               ('Remember', 6),
+               ('You Make It Easy', 7),
+               ('Ce Matin-Là', 8),
+               ('New Star in the Sky (Chanson Pour Solal)', 9),
+               ('Le Voyage De Pénélope', 10)]
+
         If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <plexstuff.plexcore.return_error_raw>`.
         
         :rtype: tuple
@@ -517,17 +517,17 @@ class MusicInfo( object ):
 
         .. code-block:: bash
 
-            Air has 7 studio albums.
+             Air has 7 studio albums.
 
-            Studio Album                         Year    # Tracks
-            ---------------------------------  ------  ----------
-            Moon Safari                          1998          10
-            10 000 Hz Legend                     2001          12
-            City Reading (Tre Storie Western)    2003          19
-            Talkie Walkie                        2004          11
-            Pocket Symphony                      2006          12
-            Love 2                               2009          12
-            Music for Museum                     2014           9
+             Studio Album                         Year    # Tracks
+             ---------------------------------  ------  ----------
+             Moon Safari                          1998          10
+             10 000 Hz Legend                     2001          12
+             City Reading (Tre Storie Western)    2003          19
+             Talkie Walkie                        2004          11
+             Pocket Symphony                      2006          12
+             Love 2                               2009          12
+             Music for Museum                     2014           9
 
         """
         all_album_data = sorted(
@@ -1424,19 +1424,19 @@ class PlexLastFM( object ):
         :param str artist_name: the artist name.
         :param str album_name: the album name.
         :returns: a two-element :py:class:`tuple`, whose first element is a :py:class:`list` of summary information on tracks for this album, and whose second element is the string ``"SUCCESS"``. The elements in this list are ordered by first song track to last song track. An example first song for the `Moon Safari`_ album released by Air_ is,
+        
+           .. code-block:: python
 
-        .. code-block:: python
+               {'song': 'La Femme D’argent',
+                'artist': 'Air',
+                'tracknumber': 1,
+                'total tracks': 10,
+                'duration': 429.56,
+                'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png',
+                'album': 'Moon Safari',
+                'year': 1998}
 
-            {'song': 'La Femme D’argent',
-             'artist': 'Air',
-             'tracknumber': 1,
-             'total tracks': 10,
-             'duration': 429.56,
-             'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png',
-             'album': 'Moon Safari',
-             'year': 1998}
-
-        If the album name has not been published by this artist, return a :py:class:`tuple` of format :py:meth:`return_error_raw <plexstuff.plexcore.return_error_raw>`.
+           If the album name has not been published by this artist, return a :py:class:`tuple` of format :py:meth:`return_error_raw <plexstuff.plexcore.return_error_raw>`.
 
         :rtype: tuple
         """

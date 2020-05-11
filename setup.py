@@ -46,6 +46,38 @@ setup(
     python_requires = '>=3',
     #
     ## the executables I am creating
+    entry_points = {
+        'console_scripts' : [
+            # plextmdb stuff
+            'get_mov_tor = plexstuff.plextmdb.cli.get_mov_tor:main',
+            'plex_tmdb_totgui = plexstuff.plextmdb.gui.plex_tmdb_totgui:main',
+            # plexcore stuff
+            'plex_core_cli = plexstuff.plexcore.cli.plex_core_cli:main',
+            'plex_deluge_console = plexstuff.plexcore.cli.plex_deluge_console:main',
+            'plex_resynclibs = plexstuff.plexcore.cli.plex_resynclibs:main',
+            'plex_store_credentials = plexstuff.plexcore.cli.plex_store_credentials:main',
+            'rsync_subproc = plexstuff.plexcore.cli.rsync_subproc:main',
+            'plex_config_gui = plexstuff.plexcore.gui.plex_config_gui:main',
+            'plex_core_gui = plexstuff.plexcore.gui.plex_core_gui:main',
+            'plex_create_texts = plexstuff.plexcore.gui.plex_create_texts:main',
+            # plexemail stuff
+            'plex_email_notif = plexstuff.plexemail.cli.plex_email_notif:main',
+            'plex_email_gui = plexstuff.plexemail.gui.plex_email_gui:main',
+            # plexmusic stuff
+            'plex_music_album = plexstuff.plexmusic.cli.plex_music_album:main',
+            'plex_music_metafill = plexstuff.plexmusic.cli.plex_music_metafill:main',
+            'plex_music_songs = plexstuff.plexmusic.cli.plex_music_songs:main',
+            'upload_to_gmusic = plexstuff.plexmusic.cli.upload_to_gmusic:main',
+            # plextvdb stuff
+            'get_plextvdb_batch = plexstuff.plextvdb.cli.get_plextvdb_batch:main',
+            'get_tv_tor = plexstuff.plextvdb.cli.get_tv_tor:main',
+            'plex_tvdb_epinfo = plexstuff.plextvdb.cli.plex_tvdb_epinfo:main',
+            'plex_tvdb_epname = plexstuff.plextvdb.cli.plex_tvdb_epname:main',
+            'plex_tvdb_futureshows = plexstuff.plextvdb.cli.plex_tvdb_futureshows:main',
+            'plex_tvdb_plots = plexstuff.plextvdb.cli.plex_tvdb_plots:main',
+            'plex_tvdb_gui = plexstuff.plextvdb.gui.plex_tvdb_gui:main',
+            ]
+    },
     #entry_points = {
     #     'console_scripts' : [
     #         "music_to_m4a = nprstuff.cli.music_to_m4a:_main",

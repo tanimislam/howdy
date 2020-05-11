@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import sys, os, signal
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
@@ -128,7 +126,3 @@ def main( ):
             #
             ##
             os.chmod( filename, 0o644 )
-    
-if __name__=='__main__':
-    main( )
-        

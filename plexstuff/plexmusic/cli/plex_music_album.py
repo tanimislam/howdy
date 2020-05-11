@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import sys, signal
 def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
@@ -76,9 +74,3 @@ def main( ):
                tabulate.tabulate( track_listing, headers = [ 'Song', 'Track #' ] ) )
     else:
         print( '\n%s\n' % ';'.join(map(lambda title_trkno: title_trkno[0], track_listing)) )
-
-if __name__ == '__main__':
-    try:
-        main( )
-    except Exception as e:
-        print( e )

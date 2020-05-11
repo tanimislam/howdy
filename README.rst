@@ -56,7 +56,7 @@ To be able to use all the CLIs, GUIs, and API functionality, there are ``12`` se
 
 What Are Some Interesting Command Line Executables?
 -----------------------------------------------------------------
-You can try out `plex_music_songs.py`_ to get individual songs or all the songs in an artist's studio album, or `plex_music_album.py <https://plexstuff.readthedocs.io/en/latest/plex-music/cli_tools/plex_music_cli.html#plex-music-album-py>`_ to find all the studio albums an artist released. Here are three YouTube_ clips that show `plex_music_songs.py`_ in action.
+You can try out `plex_music_songs`_ to get individual songs or all the songs in an artist's studio album, or `plex_music_album <https://plexstuff.readthedocs.io/plex-music/cli_tools/plex_music_cli.html#plex-music-album>`_ to find all the studio albums an artist released. Here are three YouTube_ clips that show `plex_music_songs`_ in action.
 
 .. |plex_music_songs_clip1| image:: https://plexstuff.readthedocs.io/_images/plex_music_songs_download_by_song_and_artist.gif
    :width: 100%
@@ -113,5 +113,5 @@ You can try out `plex_music_songs.py`_ to get individual songs or all the songs 
 .. _OptionParser: https://docs.python.org/3/library/optparse.html#optparse.OptionParser
 .. _ArgumentParser: https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser
 .. _`Embed YouTube`: http://embedyoutube.org
-.. _`plex_music_songs.py`: https://plexstuff.readthedocs.io/en/latest/plex-music/cli_tools/plex_music_cli.html#plex-music-songs-py
+.. _`plex_music_songs`: https://plexstuff.readthedocs.io/plex-music/cli_tools/plex_music_cli.html#plex-music-songs
 .. _Youtube: https://www.youtube.com

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from argparse import ArgumentParser
 import requests, tabulate
 #
@@ -90,6 +88,3 @@ def main( ):
         assert( len( set( new_emails ) & set( plex_emails ) ) == 0 )
         plexcore.add_mapping( args.guest_email, plex_emails, new_emails,
                               args.do_replace_existing )
-        
-if __name__=='__main__':
-    main( )

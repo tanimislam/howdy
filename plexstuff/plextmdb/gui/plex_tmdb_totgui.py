@@ -1,46 +1,42 @@
-#!/usr/bin/env python3
-
 import sys, signal
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import qdarkstyle, logging, os, warnings
-from PyQt5.QtWidgets import QApplication
+import logging, os, qdarkstyle, time, numpy
 from PyQt5.QtGui import QIcon
 from argparse import ArgumentParser
 #
 from plexstuff import resourceDir
-from plexstuff.plextvdb.plextvdb_gui import TVDBGUI
-from plexstuff.plexcore import plexcore
+from plexstuff.plexcore import plexcore, returnQAppWithFonts
+from plexstuff.plextmdb import plextmdb_totgui
 
-warnings.simplefilter("ignore")
-
-def main( info = False, doLocal = True, doLarge = False, verify = True ):
-    app = QApplication([])
+def mainSub(info = False, doLocal = True, doLarge = False, verify = True):
+    app = returnQAppWithFonts( )
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
-    icn = QIcon( os.path.join( resourceDir, 'icons', 'plex_tvdb_gui.png' ) )
+    icn = QIcon( os.path.join(
+        resourceDir, 'icons', 'plex_tmdb_totgui.png' ) )
     app.setWindowIcon( icn )
-    if info: logging.basicConfig( level = logging.INFO )
-    fullURL, token = plexcore.checkServerCredentials(
+    logger = logging.getLogger( )
+    if info: logger.setLevel( logging.INFO )
+    fullurl, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
-    tvdb_gui = TVDBGUI( token, fullURL, verify = verify, doLarge = doLarge )
+    tmdb_mygui = plextmdb_totgui.TMDBTotGUI(
+        fullurl, token, doLarge = doLarge, verify = verify )
     result = app.exec_( )
-    return tvdb_gui
+    return tmdb_mygui
 
-#
-## start the application here
-if __name__=='__main__':
+def main( ):
     parser = ArgumentParser( )
     parser.add_argument('--large', dest='do_large', action='store_true',
                         default = False, help = 'Run with large fonts to help with readability.' )
     parser.add_argument('--local', dest='do_local', action='store_true',
                         default = False, help = 'Check for locally running plex server.')
     parser.add_argument('--info', dest='do_info', action='store_true',
-                        default = False, help = 'Run logging at INFO level if chosen.')
+                        default = False, help = 'Run info mode if chosen.')
     parser.add_argument('--noverify', dest='do_verify', action='store_false',
                         default = True, help = 'Do not verify SSL transactions if chosen.')    
     args = parser.parse_args( )
-    main( info = args.do_info, doLocal = args.do_local, doLarge = args.do_large, verify = args.do_verify )
+    mainSub( info = args.do_info, doLocal = args.do_local, doLarge = args.do_large, verify = args.do_verify )
     

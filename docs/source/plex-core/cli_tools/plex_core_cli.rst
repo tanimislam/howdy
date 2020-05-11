@@ -4,25 +4,25 @@ Core Command Line Utilities
 
 This section describes the five Plexstuff core command line utilities.
 
-* :ref:`plex_core_cli.py` shows the list of email addresses, and names, of Plex account holders who have access to your Plex server. It can also show emails and names of all people who can receive email notifications about your Plex server. One can also change the list of email addresses that are notified by email of the Plex server.
+* :ref:`plex_core_cli` shows the list of email addresses, and names, of Plex account holders who have access to your Plex server. It can also show emails and names of all people who can receive email notifications about your Plex server. One can also change the list of email addresses that are notified by email of the Plex server.
 
-* :ref:`plex_deluge_console.py` is a mocked up Deluge_ client, whose operation is very similar to the `deluge-console <deluge_console_>`_ command line interface. It is designed for the most common operations of `deluge-console <deluge_console_>`_, using Deluge_ server settings that are described in :numref:`Plexstuff Settings Configuration` and :numref:`Login Services`.
+* :ref:`plex_deluge_console` is a mocked up Deluge_ client, whose operation is very similar to the `deluge-console <deluge_console_>`_ command line interface. It is designed for the most common operations of `deluge-console <deluge_console_>`_, using Deluge_ server settings that are described in :numref:`Plexstuff Settings Configuration` and :numref:`Login Services`.
 
-* :ref:`plex_resynclibs.py` summarizes information about the Plex_ servers to which you have access, summarizes the Plex_ library information for those Plex_ servers which you own, and can also refresh those libraries in your owned servers.
+* :ref:`plex_resynclibs` summarizes information about the Plex_ servers to which you have access, summarizes the Plex_ library information for those Plex_ servers which you own, and can also refresh those libraries in your owned servers.
 
-* :ref:`plex_store_credentials.py` sets up the Google OAuth2 services authentication from the command line, similarly to what ``plex_config_gui.py`` does as described in :numref:`Summary of Setting Up Google Credentials` and in :numref:`Music Services` when setting up the `unofficial Google Music API <https://unofficial-google-music-api.readthedocs.io/en/latest>`_.
+* :ref:`plex_store_credentials` sets up the Google OAuth2 services authentication from the command line, similarly to what ``plex_config_gui`` does as described in :numref:`Summary of Setting Up Google Credentials` and in :numref:`Music Services` when setting up the `unofficial Google Music API <https://unofficial-google-music-api.readthedocs.io/en/latest>`_.
 
-* :ref:`rsync_subproc.py` rsync_ copies (and removes) files from the remote server and optional remote subdirectory, to the local server and local directory, or vice-versa. This tool also allows one to update the location of the remote server, the remote subdirectory, and the local subdirectory. The update of the remote path, and local and remote subdirectories, can also be changed through the ``plex_config_gui.py`` GUI, as described in :numref:`Local and Remote (Seedhost) SSH Setup` and :numref:`Login Services` (see the screen shot in :numref:`login_step02_settings`).
+* :ref:`rsync_subproc` rsync_ copies (and removes) files from the remote server and optional remote subdirectory, to the local server and local directory, or vice-versa. This tool also allows one to update the location of the remote server, the remote subdirectory, and the local subdirectory. The update of the remote path, and local and remote subdirectories, can also be changed through the ``plex_config_gui`` GUI, as described in :numref:`Local and Remote (Seedhost) SSH Setup` and :numref:`Login Services` (see the screen shot in :numref:`login_step02_settings`).
 
-.. _plex_core_cli.py_label:
+.. _plex_core_cli_label:
 
-plex_core_cli.py
+plex_core_cli
 ^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``plex_core_cli.py -h``, produces the following.
+The help output, when running ``plex_core_cli -h``, produces the following.
 
 .. code:: bash
 
-   Usage: plex_core_cli.py [options]
+   Usage: plex_core_cli [options]
 
    Options:
 	-h, --help            show this help message and exit
@@ -48,11 +48,11 @@ As described in the above section, this CLI can do the following *operations*.
 
 * change those people who can have access to your Plex_ server.
 
-There are two parts to this tool: *authentication* and *operation*. Each *operation* with ``plex_core_cli.py`` must be run with a given *authorization*. For example, to get a list of friends of the Plex_ server by giving the Plex_ username and password for your Plex_ server, you would run.
+There are two parts to this tool: *authentication* and *operation*. Each *operation* with ``plex_core_cli`` must be run with a given *authorization*. For example, to get a list of friends of the Plex_ server by giving the Plex_ username and password for your Plex_ server, you would run.
 
 .. code:: bash
 
-   plex_core_cli.py --username=XXXX --password=YYYY --friends
+   plex_core_cli --username=XXXX --password=YYYY --friends
 
 Authentication happens in two ways.
 
@@ -60,7 +60,7 @@ Authentication happens in two ways.
 
   .. code:: bash
 
-     plex_core_cli.py --username=XXXX --password=YYYY ...
+     plex_core_cli --username=XXXX --password=YYYY ...
 
   here, ``...`` refers to subsequent commands. One must give a valid *username* and *password*, otherwise the program exits.
 
@@ -72,7 +72,7 @@ Here is how to do each of the three *operations*.
 
   .. code:: bash
 
-     plex_core_cli.py --friends
+     plex_core_cli --friends
 
   this will produce this type of output.
 
@@ -98,7 +98,7 @@ Here is how to do each of the three *operations*.
 
   .. code:: bash
 
-     plex_core_cli.py --mappedfriends
+     plex_core_cli --mappedfriends
 
   this will produce this type of output.
 
@@ -126,22 +126,22 @@ Here is how to do each of the three *operations*.
 
      .. code:: bash
 
-     	plex_core_cli.py --addmapping --guestemail=A@AA.com --newemails=A@XXX.com,A@YYY.com
+     	plex_core_cli --addmapping --guestemail=A@AA.com --newemails=A@XXX.com,A@YYY.com
 
   2. to add these new emails while no longer getting emails at ``A@AA.com``, run the following command but with ``--replace_existing``,
 
      .. code:: bash
 
-     	plex_core_cli.py --addmapping --guestemail=A@AA.com --newemails=A@XXX.com,A@YYY.com --replace_existing
+     	plex_core_cli --addmapping --guestemail=A@AA.com --newemails=A@XXX.com,A@YYY.com --replace_existing
   
 
   Note that ``A@AA.com`` must be a friend email of the Plex_ server, otherwise this operation will not work.
 
-.. _plex_deluge_console.py_label:
+.. _plex_deluge_console_label:
 
-plex_deluge_console.py
+plex_deluge_console
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-This is a much reduced Deluge command line console client. It does the following operations: :ref:`torrent info (info)`, :ref:`removing torrents (rm or del)`, :ref:`adding torrents (add)`, :ref:`pausing and resuming torrents (pause or resume)`, and :ref:`pushing credentials (push)`. Running ``plex_deluge_console.py -h`` gives the following output.
+This is a much reduced Deluge command line console client. It does the following operations: :ref:`torrent info (info)`, :ref:`removing torrents (rm or del)`, :ref:`adding torrents (add)`, :ref:`pausing and resuming torrents (pause or resume)`, and :ref:`pushing credentials (push)`. Running ``plex_deluge_console -h`` gives the following output.
 
 .. code-block:: bash
 
@@ -149,25 +149,25 @@ This is a much reduced Deluge command line console client. It does the following
 
 By convention, the variable ``md5_trunc`` refers to a truncated initial substring of the full torrent's MD5 hash. For example, given an MD5 hash of a torrent, such as ``ed53ba61555cab24946ebf2f346752805601a7fb``, a possible ``md5_trunc`` is ``ed5``. One can specify a collection of multiple ``md5_trunc`` as long as they are valid and unique (such as ``md5_trunc_1, md5_trunc_2, ...``).
 
-It may be convenient to have some useful BASH shortcuts for ``plex_deluge_console.py``, which you can store in ``~/.bashrc``. Here is a snippet of self-explanatory aliases I find useful.
+It may be convenient to have some useful BASH shortcuts for ``plex_deluge_console``, which you can store in ``~/.bashrc``. Here is a snippet of self-explanatory aliases I find useful.
 
 .. code-block:: bash
 
-   alias pdci='plex_deluge_console.py info'
-   alias pdcr='plex_deluge_console.py rm'
-   alias pdca='plex_deluge_console.py add'
-   alias pdcp='plex_deluge_console.py pause'
-   alias pdcres='plex_deluge_console.py resume'
+   alias pdci='plex_deluge_console info'
+   alias pdcr='plex_deluge_console rm'
+   alias pdca='plex_deluge_console add'
+   alias pdcp='plex_deluge_console pause'
+   alias pdcres='plex_deluge_console resume'
 
 
 
 torrent info (info)
 --------------------
-You can get nicely formatted information on a collection of torrents, or all torrents, through running ``plex_deluge_console.py info ...``. ``plex_deluge_console.py info`` will show nicely formatted information on ALL torrents.
+You can get nicely formatted information on a collection of torrents, or all torrents, through running ``plex_deluge_console info ...``. ``plex_deluge_console info`` will show nicely formatted information on ALL torrents.
 
 .. code-block:: bash
    
-   plex_deluge_console.py info
+   plex_deluge_console info
    Name: ubuntu-19.10-beta-desktop-amd64.iso	
    ID: ed53ba61555cab24946ebf2f346752805601a7fb
    State: Seeding
@@ -191,7 +191,7 @@ You can give it a list of truncated MD5 hashes to get status information on sele
 
 .. code-block:: bash
 
-   plex_deluge_console.py info ed5
+   plex_deluge_console info ed5
    Name: ubuntu-19.10-beta-desktop-amd64.iso
    ID: ed53ba61555cab24946ebf2f346752805601a7fb
    State: Seeding
@@ -204,63 +204,63 @@ You can give it a list of truncated MD5 hashes to get status information on sele
 
 removing torrents (rm or del)
 -------------------------------
-You can remove some or all torrents by running ``plex_deluge_console.py rm`` or ``plex_deluge_console.py del``. You can access the help for this operation by running ``plex_deluge_console.py rm -h``.
+You can remove some or all torrents by running ``plex_deluge_console rm`` or ``plex_deluge_console del``. You can access the help for this operation by running ``plex_deluge_console rm -h``.
 
 .. code-block:: bash
    
-   Usage: plex_deluge_console.py [options]
+   Usage: plex_deluge_console [options]
    
    Options:
      -h, --help         show this help message and exit
      -R, --remove_data  remove the torrent's data
 
-* ``plex_deluge_console.py rm md5trunc_1 md5_trunc_2 ...`` removes specified torrents but keeps whatever data has been downloaded on the Deluge server. You would run this once the torrent's state was ``Seeding`` or ``Paused`` (see :ref:`torrent info (info)`).
+* ``plex_deluge_console rm md5trunc_1 md5_trunc_2 ...`` removes specified torrents but keeps whatever data has been downloaded on the Deluge server. You would run this once the torrent's state was ``Seeding`` or ``Paused`` (see :ref:`torrent info (info)`).
 
-* ``plex_deluge_console.py rm -R ...`` does the same, but also removes whatever data has been downloaded from the Deluge server.
+* ``plex_deluge_console rm -R ...`` does the same, but also removes whatever data has been downloaded from the Deluge server.
 
-* ``plex_deluge_console.py rm`` without specific torrents removes (or removes with deletion) ALL torrents from the Deluge server.
+* ``plex_deluge_console rm`` without specific torrents removes (or removes with deletion) ALL torrents from the Deluge server.
 
 adding torrents (add)
 -----------------------
-You can add torrents to the Deluge server by running ``plex_deluge_console.py add``. You can add a torrent file as URL, a torrent file on disk, and a `Magnet URI`_.
+You can add torrents to the Deluge server by running ``plex_deluge_console add``. You can add a torrent file as URL, a torrent file on disk, and a `Magnet URI`_.
 
 * torrent file as remote URL:
 
 .. code-block:: bash
 
-   plex_deluge_console.py add http://releases.ubuntu.com/19.10/ubuntu-19.10-beta-live-server-amd64.iso.torrent
+   plex_deluge_console add http://releases.ubuntu.com/19.10/ubuntu-19.10-beta-live-server-amd64.iso.torrent
 
 * torrent file on disk:
 
 .. code-block:: bash
 
-   plex_deluge_console.py add ubuntu-19.10-beta-desktop-amd64.iso.torrent
+   plex_deluge_console add ubuntu-19.10-beta-desktop-amd64.iso.torrent
 
 * `Magnet URI`_:
 
 .. code-block:: bash
 
-   plex_deluge_console.py add "magnet:?xt=urn:btih:49efb5fdd274abb26c5ea6361d1d9be28e4db2d3&dn=archlinux-2019.09.01-x86_64.iso&tr=udp://tracker.archlinux.org:6969&tr=http://tracker.archlinux.org:6969/announce"
+   plex_deluge_console add "magnet:?xt=urn:btih:49efb5fdd274abb26c5ea6361d1d9be28e4db2d3&dn=archlinux-2019.09.01-x86_64.iso&tr=udp://tracker.archlinux.org:6969&tr=http://tracker.archlinux.org:6969/announce"
 
 
 pausing and resuming torrents (pause or resume)
 -------------------------------------------------
-You can pause torrents on the Deluge server by running ``plex_deluge_console.py pause``, and you can resume them by running ``plex_deluge_console.py resume``.
+You can pause torrents on the Deluge server by running ``plex_deluge_console pause``, and you can resume them by running ``plex_deluge_console resume``.
 
 
-* You can pause/resume specific torrents by running ``plex_deluge_console.py pause md5trunc_1 md5_trunc_2 ...`` or ``plex_deluge_console.py resume md5trunc_1 md5_trunc_2 ...``.
+* You can pause/resume specific torrents by running ``plex_deluge_console pause md5trunc_1 md5_trunc_2 ...`` or ``plex_deluge_console resume md5trunc_1 md5_trunc_2 ...``.
 
-* You can pause/resume ALL torrents on the Deluge server by not specifying any truncated MD5 hashes, ``plex_deluge_console.py pause`` or ``plex_deluge_console.py resume``.  
+* You can pause/resume ALL torrents on the Deluge server by not specifying any truncated MD5 hashes, ``plex_deluge_console pause`` or ``plex_deluge_console resume``.  
 
 .. 28-09-2019: Pause and resume don't seem to be working right now when connecting to the Seedhost seedbox Deluge server.
 
 pushing credentials (push)
 ----------------------------------
-You can push new Deluge server credentials (URL, port, username, and password) to the SQLite3_ configuration database. Running ``plex_deluge_console.py push -h`` gives its help syntax,
+You can push new Deluge server credentials (URL, port, username, and password) to the SQLite3_ configuration database. Running ``plex_deluge_console push -h`` gives its help syntax,
 
 .. code-block:: bash
 
-   Usage: plex_deluge_console.py [options]
+   Usage: plex_deluge_console [options]
 
    Options:
      -h, --help           show this help message and exit
@@ -275,19 +275,19 @@ Push new Deluge server settings into the configuration database by running,
 
 .. code-block:: bash
 
-   plex_deluge_console.py push --host=HOST --port=PORT --username=USERNAME --password=PASSWORD
+   plex_deluge_console push --host=HOST --port=PORT --username=USERNAME --password=PASSWORD
 
 If those are valid settings, nothing more happens. If these are invalid settings, then specific error messages will print to the screen.
 
-.. _plex_resynclibs.py_label:
+.. _plex_resynclibs_label:
 
-plex_resynclibs.py
+plex_resynclibs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``plex_resynclibs.py -h``, produces the following.
+The help output, when running ``plex_resynclibs -h``, produces the following.
 
 .. code-block:: bash
 
-   Usage: plex_resynclibs.py [options]
+   Usage: plex_resynclibs [options]
 
    Options:
       -h, --help            show this help message and exit
@@ -323,7 +323,7 @@ Here I find it useful to show how this tool works by example.
 
    .. code-block:: bash
    
-      plex_resynclibs.py --servernames
+      plex_resynclibs --servernames
 
    This will print out a nicely formatted table. Each row is a Plex_ server. The columns are the server's name, whether we own it, and its remote URL with port (which is of the form ``https://IP-ADDRESS:PORT``).
 
@@ -339,7 +339,7 @@ Here I find it useful to show how this tool works by example.
 
    .. code-block:: bash
 
-      plex_resynclibs.py --servername=tanim-desktop --libraries
+      plex_resynclibs --servername=tanim-desktop --libraries
 
    This will print out a nicely formatted table. Each row is a library. There is a column of the library's name and its type. I have only shown three of the six Plex_ libraries on my server.
 
@@ -364,7 +364,7 @@ Here I find it useful to show how this tool works by example.
 
      .. code-block:: bash
 
-        tanim-desktop $ plex_resynclibs.py --servername=tanim-desktop --library=Movies --summary
+        tanim-desktop $ plex_resynclibs --servername=tanim-desktop --library=Movies --summary
 	
 	"Movies" is a movie library. There are 1886 movies here. The total size of movie media is 1.632 TB.
 	The total duration of movie media is 4 months, 20 days, 19 hours, 50 minutes, and 22.054 seconds.
@@ -373,7 +373,7 @@ Here I find it useful to show how this tool works by example.
 
      .. code-block:: bash
 
-        tanim-desktop $ plex_resynclibs.py --servername=tanim-desktop --library="TV Shows" --summary
+        tanim-desktop $ plex_resynclibs --servername=tanim-desktop --library="TV Shows" --summary
 
 	"TV Shows" is a TV library. There are 21167 TV files in 236 TV shows. The total size of TV media is
 	5.301 TB. The total duration of TV shows is 1 year, 2 months, 15 days, 11 hours, 42 minutes, and
@@ -383,7 +383,7 @@ Here I find it useful to show how this tool works by example.
 
      .. code-block:: bash
 
-        tanim-desktop $ plex_resynclibs.py --servername=tanim-desktop --library=Music --summary
+        tanim-desktop $ plex_resynclibs --servername=tanim-desktop --library=Music --summary
 
 	"Music" is a music library. There are 9911 songs made by 814 artists in 1549 albums. The total size
 	of music media is 54.785 GB. The total duration of music media is 26 days, 18 hours, 59 minutes, and
@@ -393,30 +393,30 @@ Here I find it useful to show how this tool works by example.
 
    .. code-block:: bash
 
-      plex_resynclibs.py --servername=tanim-desktop --library=Movies --refresh
-      plex_resynclibs.py --servername=tanim-desktop --library="TV Shows" --refresh
-      plex_resynclibs.py --servername=tanim-desktop --library=Music --refresh
+      plex_resynclibs --servername=tanim-desktop --library=Movies --refresh
+      plex_resynclibs --servername=tanim-desktop --library="TV Shows" --refresh
+      plex_resynclibs --servername=tanim-desktop --library=Music --refresh
 
 
-.. _plex_store_credentials.py_label:
+.. _plex_store_credentials_label:
 
-plex_store_credentials.py
+plex_store_credentials
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
-:numref:`Core Command Line Utilities` describes this executable's functionality very well. Its help screen can be displayed by running ``plex_store_credentials.py -h``,
+:numref:`Core Command Line Utilities` describes this executable's functionality very well. Its help screen can be displayed by running ``plex_store_credentials -h``,
 
 .. code-block:: bash
 
-   Usage: plex_store_credentials.py [options]
+   Usage: plex_store_credentials [options]
 
    Options:
      -h, --help  show this help message and exit
      --noverify  If chosen, do not verify SSL connections.
 
-The ``--noverify`` flag disables the verification of SSL connections. First, run this executable, ``plex_store_credentials.py``, which will return this interactive text dialog in the shell.
+The ``--noverify`` flag disables the verification of SSL connections. First, run this executable, ``plex_store_credentials``, which will return this interactive text dialog in the shell.
 
 .. code-block:: bash
 
-   tanim-desktop $ plex_store_credentials.py
+   tanim-desktop $ plex_store_credentials
    Please go to this URL in a browser window:https://accounts.google.com/o/oauth2/auth...
    After giving permission for Google services on your behalf,
    type in the access code:
@@ -429,15 +429,15 @@ Third, paste the code as described in :ref:`Step #7 <google_step07_oauthtokencop
 
    Success. Stored GOOGLE credentials.
 
-.. _rsync_subproc.py_label:
+.. _rsync_subproc_label:
 
-rsync_subproc.py
+rsync_subproc
 ^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``rsync_subproc.py -h``, produces the following.
+The help output, when running ``rsync_subproc -h``, produces the following.
 
 .. code-block:: bash
 
-   Usage: rsync_subproc.py [options]
+   Usage: rsync_subproc [options]
 
    Options:
      -h, --help            show this help message and exit
@@ -481,7 +481,7 @@ To download a remote directory (``SUBDIR/Ubuntu_18.04``) until success into ``LO
 
 .. code-block:: bash
 
-   tanim-desktop $ rsync_subproc.py -D -S "Ubuntu_*"
+   tanim-desktop $ rsync_subproc -D -S "Ubuntu_*"
    STARTING THIS RSYNC CMD: rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass XXXX ssh" -e ssh YYYY@ZZZZ:SUBDIR/Ubuntu_* LOCAL_DIR
    TRYING UP TO 10 TIMES.
    
@@ -493,7 +493,7 @@ To upload the local directory (``LOCAL_DIR/Ubuntu_18.04``) until success into ``
 
 .. code-block:: bash
 
-   tanim-desktop $ rsync_subproc.py -D -R -S Ubuntu*
+   tanim-desktop $ rsync_subproc -D -R -S Ubuntu*
    STARTING THIS RSYNC CMD: rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass XXXX ssh" -e ssh LOCAL_DIR/Ubuntu_18.04 YYYY@ZZZZ:SUBDIR/
    TRYING UP TO 10 TIMES.
    
@@ -501,7 +501,7 @@ To upload the local directory (``LOCAL_DIR/Ubuntu_18.04``) until success into ``
 
 rsync_subproc settings with --push
 ------------------------------------
-Running ``rsync_subproc.py -P`` or ``rsync_subproc.py --push`` will update or set the SSH settings for the remote server, and the local and remote subdirectories. :numref:`Local and Remote (Seedhost) SSH Setup` and :numref:`Login Services` (see the screen shot in :numref:`login_step02_settings`) describe the form that these settings take.
+Running ``rsync_subproc -P`` or ``rsync_subproc --push`` will update or set the SSH settings for the remote server, and the local and remote subdirectories. :numref:`Local and Remote (Seedhost) SSH Setup` and :numref:`Login Services` (see the screen shot in :numref:`login_step02_settings`) describe the form that these settings take.
 
 * the format of the SSH setting is ``username@ssh_server``.
 
@@ -509,13 +509,13 @@ Running ``rsync_subproc.py -P`` or ``rsync_subproc.py --push`` will update or se
 
 * the ``LOCAL_DIR`` local directory is described with an absolute path.
 
-Thus, to set settings for ``rsync_subproc.py``, one would run,
+Thus, to set settings for ``rsync_subproc``, one would run,
 
 .. code-block:: bash
 
-   rsync_subproc.py -P -L LOCAL_DIR --ssh=username@ssh_server --subdir=SUBDIR
+   rsync_subproc -P -L LOCAL_DIR --ssh=username@ssh_server --subdir=SUBDIR
 
-Note that here, the SSH password is the same as the remote Deluge_ server's password. See, e.g., :numref:`plex_deluge_console.py` or :numref:`Local and Remote (Seedhost) SSH Setup` and figures therein.
+Note that here, the SSH password is the same as the remote Deluge_ server's password. See, e.g., :numref:`plex_deluge_console` or :numref:`Local and Remote (Seedhost) SSH Setup` and figures therein.
 
 .. _Deluge: https://en.wikipedia.org/wiki/Deluge_(software)
 .. _deluge_console: https://whatbox.ca/wiki/Deluge_Console_Documentation

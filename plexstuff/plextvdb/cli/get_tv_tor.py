@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import sys, signal
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
@@ -143,7 +141,7 @@ def process_magnet_items( name, raw = False, verify = True, maxnum = 10 ):
     if len( items_all ) != 0: return items_all
     return None
             
-if __name__=='__main__':
+def main( ):
     parser = ArgumentParser( )
     parser.add_argument('-n', '--name', dest='name', type=str, action='store', required = True,
                       help = 'Name of the TV show to get.')

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os, sys, time, logging, signal, subprocess, shlex
 # code to handle Ctrl+C, convenience method for command line tools
 def _signal_handler( signal, frame ):
@@ -51,6 +49,3 @@ def main( ):
     plexcore_rsync.download_upload_files(
         args.string.strip( ), args.numtries, debug_string = args.do_debug,
         do_reverse = args.do_reverse )
-        
-if __name__=='__main__':
-    main( )

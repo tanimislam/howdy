@@ -14,7 +14,7 @@ from argparse import ArgumentParser
 from plexstuff.plexcore import geoip_reader
 from plexstuff.plexcore.plexcore_gui import returnToken, returnGoogleAuthentication
 
-if __name__=='__main__':
+def main( ):
     parser = ArgumentParser( )
     parser.add_argument( '--info', dest='do_info', action = 'store_true', default = False,
                         help = 'If chosen, run in INFO logging mode.')

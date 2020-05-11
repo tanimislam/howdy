@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import signal, sys
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
@@ -420,6 +418,3 @@ def main( ):
     if not args.do_new: all_songs_downloaded = _download_songs_oldformat( args )
     else: all_songs_downloaded = _download_songs_newformat( args )
     # if args.email is not None: _email_songs( args, all_songs_downloaded )
-        
-if __name__=='__main__':
-    main( )

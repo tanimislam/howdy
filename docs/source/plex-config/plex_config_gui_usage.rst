@@ -1,14 +1,14 @@
-.. _plex_config_gui.py_label:
+.. _plex_config_gui_label:
 
 =================================================================
-Consolidating Plexstuff Configuration With ``plex_config_gui.py``
+Consolidating Plexstuff Configuration With ``plex_config_gui``
 =================================================================
 
-Although ``plex_config_gui.py`` is part of ``plexcore``, and naturally lives in :numref:`Plex Core Functionality`, I suggest you use this configuration tool to naturally consolidate the Plexstuff services and settings. The final configuration data will live in an `sqlite version 3 <https://en.wikipedia.org/wiki/SQLite>`_ database that is located in ``~/.local/plexstuff/app.db`` and is readable only by the user (and root).
+Although ``plex_config_gui`` is part of ``plexcore``, and naturally lives in :numref:`Plex Core Functionality`, I suggest you use this configuration tool to naturally consolidate the Plexstuff services and settings. The final configuration data will live in an `sqlite version 3 <https://en.wikipedia.org/wiki/SQLite>`_ database that is located in ``~/.local/plexstuff/app.db`` and is readable only by the user (and root).
 
-Some of the ``plex_config_gui.py`` screenshots are found in :numref:`Summary of Setting Up Google Credentials` (specifically :numref:`imgur_step04_credentials`, :numref:`google_step02_refreshcredentials`, and :numref:`google_step04_oauthtokenstring`) and in :numref:`Plexstuff Settings Configuration` (specifically :numref:`login_step01_login` and :numref:`login_step02_settings`).
+Some of the ``plex_config_gui`` screenshots are found in :numref:`Summary of Setting Up Google Credentials` (specifically :numref:`imgur_step04_credentials`, :numref:`google_step02_refreshcredentials`, and :numref:`google_step04_oauthtokenstring`) and in :numref:`Plexstuff Settings Configuration` (specifically :numref:`login_step01_login` and :numref:`login_step02_settings`).
 
-As described in :numref:`Plexstuff Services Configuration` and :numref:`Plexstuff Settings Configuration`, ``plex_config_gui.py`` start with the initial dialog widget of three sets of services and settings organized into three rows: *LOGIN*, *CREDENTIALS*, and *MUSIC*. The second column shows the number of services for each service set. The third column shows that number of services that are *working*. A screen shot illuminates this.
+As described in :numref:`Plexstuff Services Configuration` and :numref:`Plexstuff Settings Configuration`, ``plex_config_gui`` start with the initial dialog widget of three sets of services and settings organized into three rows: *LOGIN*, *CREDENTIALS*, and *MUSIC*. The second column shows the number of services for each service set. The third column shows that number of services that are *working*. A screen shot illuminates this.
 
 .. _plex_config_gui_serviceswidget:
 
@@ -19,7 +19,7 @@ As described in :numref:`Plexstuff Services Configuration` and :numref:`Plexstuf
 The document is organized into these three sections.
 
 * :ref:`Login Services` describes the dialog window that sets the login services.
-* :ref:`Credentials Services` describes the dialog window that sets the credentials. :numref:`Choosing Main Imgur_ Album` describes how to select one's main Imgur_ album used for the storage and retrieval of images when writing newsletter emails (see :numref:`plex_email_gui.py`).
+* :ref:`Credentials Services` describes the dialog window that sets the credentials. :numref:`Choosing Main Imgur_ Album` describes how to select one's main Imgur_ album used for the storage and retrieval of images when writing newsletter emails (see :numref:`plex_email_gui`).
 * :ref:`Music Services` describes the dialog window that applies the settings for music services.
 
 Login Services
@@ -67,7 +67,7 @@ Apply the TMDB service settings according to :numref:`The Movie Database (TMDB) 
 
 Choosing Main Imgur_ Album
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The *IMGUR* panel in the *PLEX CREDENTIALS CONFIGURATION* widget has a row that shows the main Imgur_ album -- that contains the PNG images that can accessed, added, and removed -- used by :ref:`plex_email_gui.py` to insert images. The middle :py:class:`QLabel <PyQt5.QtWidgets.QLabel>` says the name of the main Imgur_ album that is being used; in :numref:`plex_credentials_mainfigure` this is ``MAIN IMGUR ALBUM``. The button labeled ``MAIN ALBUMS`` launches a GUI that allows us to choose, among other things, the main Imgur_ album to use for choosing images. In this GUI, the album names are shown alphabetically.
+The *IMGUR* panel in the *PLEX CREDENTIALS CONFIGURATION* widget has a row that shows the main Imgur_ album -- that contains the PNG images that can accessed, added, and removed -- used by :ref:`plex_email_gui` to insert images. The middle :py:class:`QLabel <PyQt5.QtWidgets.QLabel>` says the name of the main Imgur_ album that is being used; in :numref:`plex_credentials_mainfigure` this is ``MAIN IMGUR ALBUM``. The button labeled ``MAIN ALBUMS`` launches a GUI that allows us to choose, among other things, the main Imgur_ album to use for choosing images. In this GUI, the album names are shown alphabetically.
 
 .. figure:: plex-config-gui-figures/plex_imgurlchoosealbum_main.png
    :width: 100%
@@ -101,7 +101,7 @@ This GUI can do four things: :ref:`add a new album (and make it the main Imgur a
 
   * If the album we delete is *NOT* the main Imgur_ album, then only that album's entry in this table is removed.
   * If the album we delete is the main Imgur_ album, then the main Imgur_ album's entry is removed, *AND* the new main Imgur_ album is alphabetically the first of the remaining albums.
-  * If there was previously only *one* album, then the table is empty and there are no main Imgur_ albums with this account. Images can be used only after :ref:`creating an Imgur album <add_album>` and then adding new images to it as shown in :ref:`plex_email_gui.py`.
+  * If there was previously only *one* album, then the table is empty and there are no main Imgur_ albums with this account. Images can be used only after :ref:`creating an Imgur album <add_album>` and then adding new images to it as shown in :ref:`plex_email_gui`.
 
   :numref:`plex_imgurlchoosealbum_delete` demonstrates what happens when we delete a non-main album.
 

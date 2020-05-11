@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import sys, os, signal
 # code to handle Ctrl+C, convenience method for command line tools
 def _signal_handler( signal, frame ):
@@ -79,7 +77,3 @@ def main( ):
             plexcore_deluge.deluge_add_torrent_file( client, candidate_add )
     else:
         print("Error, invalid command. Must be one of -h, --help, rm (del), add, pause, info, resume, push.")
-
-        
-if __name__=='__main__':
-    main( )

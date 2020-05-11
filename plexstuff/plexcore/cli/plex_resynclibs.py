@@ -1,12 +1,9 @@
-#!/usr/bin/env python3
-
 import sys, textwrap
 from os import get_terminal_size
 from tabulate import tabulate
 from argparse import ArgumentParser
 #
 from plexstuff.plexcore import plexcore, get_formatted_duration, get_formatted_size
-
 
 def _print_summary( library_key, library_dict, token, fullURL ):
     data = plexcore.get_library_stats( library_key, token, fullURL = fullURL )
@@ -138,6 +135,3 @@ def main( ):
         plexcore.refresh_library( library_key, library_dict, fullURL = fullURL, token = token )
         print( 'refreshed library %s.' % args.library )
         return
-        
-if __name__=='__main__':
-    main( )

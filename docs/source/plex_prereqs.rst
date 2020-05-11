@@ -2,7 +2,7 @@
 Prerequisites and Overall Design Philosophy
 ================================================
 
-To get started, I assume you have your own Plex server. In order to get started with Plex, start at the `Plex website <Plex_>`_ and put your media into it. Next, follow the :ref:`Installation` instructions. Join or identify the music, television, and movie based services described in :numref:`Plexstuff Services Configuration`, and server settings described in :numref:`Plexstuff Settings Configuration`. Use ``plex_config_gui.py`` to save your services and settings information, and then you will be good to go in using the ~25 or so command line and GUI tools to manage your Plex server.
+To get started, I assume you have your own Plex server. In order to get started with Plex, start at the `Plex website <Plex_>`_ and put your media into it. Next, follow the :ref:`Installation` instructions. Join or identify the music, television, and movie based services described in :numref:`Plexstuff Services Configuration`, and server settings described in :numref:`Plexstuff Settings Configuration`. Use ``plex_config_gui`` to save your services and settings information, and then you will be good to go in using the ~25 or so command line and GUI tools to manage your Plex server.
 
 Prerequisites
 -------------
@@ -93,11 +93,11 @@ In a common scenario, you may need to use Plexstuff on a Linux machine you do no
 Installation
 ------------
 
-Currently, parts of the installation are straightforward. Just copy out ``plexstuff`` into a directory you own on a Linux machine. To automatically get all the Python dependencies (and there are a lot of them!) installed onto your machine (specifically, your user account), just run a single CLI executable from the top level directory, such as ``get_tv_tor.py``, the following way.
+Currently, parts of the installation are straightforward. Just copy out ``plexstuff`` into a directory you own on a Linux machine. To automatically get all the Python dependencies (and there are a lot of them!) installed onto your machine (specifically, your user account), just run a single CLI executable from the top level directory, such as ``get_tv_tor``, the following way.
 
 .. code:: bash
 
-  get_tv_tor.py -h
+  get_tv_tor -h
 
 If you are missing any packages, and almost certainly you are if you are using this ``plexstuff`` in the beginning, you will get a command line warning dialog like this,
 
@@ -127,27 +127,27 @@ In fact, here is a summary of the 23 CLI's and GUI's currently in Plexstuff_.
 
 .. |cbox| unicode:: U+2611 .. BALLOT BOX WITH CHECK
 
-===============  ===========================================================================  =============================================================
-Functionality    CLI                                                                          GUI
-===============  ===========================================================================  =============================================================
-``plexcore``     - :ref:`plex_core_cli.py <plex_core_cli.py_label>` |cbox|                    - :ref:`plex_config_gui.py <plex_config_gui.py_label>` |cbox|
-                 - :ref:`plex_deluge_console.py <plex_deluge_console.py_label>` |cbox|        - :ref:`plex_core_gui.py <plex_core_gui.py_label>`
-                 - :ref:`plex_resynclibs.py <plex_resynclibs.py_label>` |cbox|                - :ref:`plex_create_texts.py <plex_create_texts.py_label>`
-                 - :ref:`plex_store_credentials.py <plex_store_credentials.py_label>` |cbox|
-                 - :ref:`rsync_subproc.py <rsync_subproc.py_label>` |cbox|
-``plextvdb``     - :ref:`get_plextvdb_batch.py <get_plextvdb_batch.py_label>` |cbox|          - :ref:`plex_tvdb_totgui.py <plex_tvdb_totgui.py_label>`
-                 - :ref:`get_tv_tor.py <get_tv_tor.py_label>` |cbox|
-                 - :ref:`plex_tvdb_epinfo.py <plex_tvdb_epinfo.py_label>` |cbox|
-                 - :ref:`plex_tvdb_epname.py <plex_tvdb_epname.py_label>` |cbox|
-                 - :ref:`plex_tvdb_futureshows.py <plex_tvdb_futureshows.py_label>` |cbox|
-                 - :ref:`plex_tvdb_plots.py <plex_tvdb_plots.py_label>` |cbox|
-``plextmdb``     - :ref:`get_mov_tor.py <get_mov_tor.py_label>` |cbox|                        - :ref:`plex_tmdb_totgui.py <plex_tmdb_totgui.py_label>`
-``plexmusic``    - :ref:`plex_music_album.py <plex_music_album.py_label>` |cbox|
-                 - :ref:`plex_music_metafill.py <plex_music_metafill.py_label>` |cbox|
-                 - :ref:`plex_music_songs.py <plex_music_songs.py_label>` |cbox|
-                 - :ref:`upload_to_gmusic.py <upload_to_gmusic.py_label>` |cbox|
-``plexemail``    - :ref:`plex_email_notif.py <plex_email_notif.py_label>` |cbox|              - :ref:`plex_email_gui.py <plex_email_gui.py_label>`
-===============  ===========================================================================  =============================================================
+===============  =====================================================================  =============================================================
+Functionality    CLI                                                                    GUI
+===============  =====================================================================  =============================================================
+``plexcore``     - :ref:`plex_core_cli <plex_core_cli_label>` |cbox|                    - :ref:`plex_config_gui <plex_config_gui_label>` |cbox|
+                 - :ref:`plex_deluge_console <plex_deluge_console_label>` |cbox|        - :ref:`plex_core_gui <plex_core_gui_label>`
+                 - :ref:`plex_resynclibs <plex_resynclibs_label>` |cbox|                - :ref:`plex_create_texts <plex_create_texts_label>`
+                 - :ref:`plex_store_credentials <plex_store_credentials_label>` |cbox|
+                 - :ref:`rsync_subproc <rsync_subproc_label>` |cbox|
+``plextvdb``     - :ref:`get_plextvdb_batch <get_plextvdb_batch_label>` |cbox|          - :ref:`plex_tvdb_totgui.py <plex_tvdb_totgui.py_label>`
+                 - :ref:`get_tv_tor <get_tv_tor_label>` |cbox|
+                 - :ref:`plex_tvdb_epinfo <plex_tvdb_epinfo_label>` |cbox|
+                 - :ref:`plex_tvdb_epname <plex_tvdb_epname_label>` |cbox|
+                 - :ref:`plex_tvdb_futureshows <plex_tvdb_futureshows_label>` |cbox|
+                 - :ref:`plex_tvdb_plots <plex_tvdb_plots_label>` |cbox|
+``plextmdb``     - :ref:`get_mov_tor <get_mov_tor_label>` |cbox|                        - :ref:`plex_tmdb_totgui <plex_tmdb_totgui_label>`
+``plexmusic``    - :ref:`plex_music_album <plex_music_album_label>` |cbox|
+                 - :ref:`plex_music_metafill <plex_music_metafill_label>` |cbox|
+                 - :ref:`plex_music_songs <plex_music_songs_label>` |cbox|
+                 - :ref:`upload_to_gmusic <upload_to_gmusic_label>` |cbox|
+``plexemail``    - :ref:`plex_email_notif <plex_email_notif_label>` |cbox|              - :ref:`plex_email_gui <plex_email_gui_label>`
+===============  =====================================================================  =============================================================
 
 .. these are the links
 .. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki

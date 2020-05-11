@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import signal, sys
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
@@ -94,8 +92,3 @@ def main( ):
         # not yet implemented
         #if do_add:
         #    plextvdb.download_single_episode_to_folder( series_id, seasno, epno data )
-            
-if __name__=='__main__':
-    main( )
-        
-        

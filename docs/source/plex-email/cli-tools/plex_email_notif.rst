@@ -1,14 +1,14 @@
-.. _plex_email_notif.py_label:
+.. _plex_email_notif_label:
 
 ================================================
-plex_email_notif.py
+plex_email_notif
 ================================================
 
-This is documentation for the Plexstuff one-off email announcement commnand line interface, ``plex_email_notif.py``. You specify a simple email, with a simple text subject line a simple plaintext body, to email either to yourself at your Plex_ account or also to friends of your Plex_ server. The list of your Plex_ server friends can be accessed using :ref:`plex_core_cli.py`, and specifically this command,
+This is documentation for the Plexstuff one-off email announcement commnand line interface, ``plex_email_notif``. You specify a simple email, with a simple text subject line a simple plaintext body, to email either to yourself at your Plex_ account or also to friends of your Plex_ server. The list of your Plex_ server friends can be accessed using :ref:`plex_core_cli`, and specifically this command,
 
 .. code-block:: bash
 
-   plex_core_cli.py --friends
+   plex_core_cli --friends
 
 that produces a list of friends with and without associated names in your Google Contacts.
 
@@ -18,11 +18,11 @@ that produces a list of friends with and without associated names in your Google
    :width: 100%
    :align: center
 
-The help output, when running ``plex_email_notif.py -h``, produces the following.
+The help output, when running ``plex_email_notif -h``, produces the following.
 
 .. code-block:: bash
 
-   Usage: plex_email_notif.py [options]
+   Usage: plex_email_notif [options]
 
    Options:
      -h, --help         show this help message and exit

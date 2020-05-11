@@ -11,7 +11,7 @@ This module implements the lower-level functionality that does the following:
 
    * Stores and retrieves the TMDB_ API key.
    
-   * Creates two configuration singletons, :py:class:`TMDBEngine <plextmdb.TMDBEngine>` and :py:class:`TMDBEngineSimple <plextmdb.TMDBEngineSimple>`, that contain movie genre information from the TMDB_ database.
+   * Creates two configuration singletons, :py:class:`TMDBEngine <plexstuff.plextmdb.TMDBEngine>` and :py:class:`TMDBEngineSimple <plexstuff.plextmdb.TMDBEngineSimple>`, that contain movie genre information from the TMDB_ database.
 
 .. automodule:: plextmdb
    :members:
@@ -33,15 +33,15 @@ This module contains the main back-end functionality used by the :ref:`get_mov_t
 plextmdb.plextmdb_torrents module
 --------------------------------------
 
-This module implements higher level interfaces to the Jackett_ torrent searching server, and functionality that allows for the automatic download of episodes missing from the Plex_ Movie library. It is very similar to the :ref:`plextvdb.plextvdb_torrents <plextvdb.plextvdb_torrents module>`, except for the following differences.
+This module implements higher level interfaces to the Jackett_ torrent searching server, and functionality that allows for the automatic download of episodes missing from the Plex_ Movie library. It is very similar to the :ref:`plextvdb.plextvdb_torrents <plexstuff.plextvdb.plextvdb_torrents module>`, except for the following differences.
 
    * methods here are called with ``plex_movie_torrent_`` instead of ``plex_tv_torrent_``.
 
    * no method that searches on the Torrentz_ torrent tracker.
 
-   * an extra method, :py:meth:`get_movie_torrent <plextmdb.plextmdb_torrents.get_movie_torrent>` uses the `YTS API`_ to retrieve movie `torrent files <torrent file_>`_ instead of Magnet links.
+   * an extra method, :py:meth:`get_movie_torrent <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent>` uses the `YTS API`_ to retrieve movie `torrent files <torrent file_>`_ instead of Magnet links.
 
-Here are the six methods that return the movie magnet links found by different torrent services -- :py:meth:`get_movie_torrent_eztv_io <plextmdb.plextmdb_torrents.get_movie_torrent_eztv_io>` (`EZTV.IO`_), :py:meth:`get_movie_torrent_zooqle <plextmdb.plextmdb_torrents.get_movie_torrent_zooqle>` (Zooqle_), :py:meth:`get_movie_torrent_rarbg <plextmdb.plextmdb_torrents.get_movie_torrent_rarbg>` (RARBG_), :py:meth:`get_movie_torrent_kickass <plextmdb.plextmdb_torrents.get_movie_torrent_kickass>` (KickassTorrents_), :py:meth:`get_movie_torrent_tpb <plextmdb.plextmdb_torrents.get_movie_torrent_tpb>` (`The Pirate Bay`_), and the unified torrent searcher :py:meth:`get_movie_torrent_jackett <plextmdb.plextmdb_torrents.get_movie_torrent_jackett>` (Jackett_ torrent search) -- produce a common two element :py:class:`tuple` output format.
+Here are the six methods that return the movie magnet links found by different torrent services -- :py:meth:`get_movie_torrent_eztv_io <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_eztv_io>` (`EZTV.IO`_), :py:meth:`get_movie_torrent_zooqle <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_zooqle>` (Zooqle_), :py:meth:`get_movie_torrent_rarbg <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_rarbg>` (RARBG_), :py:meth:`get_movie_torrent_kickass <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_kickass>` (KickassTorrents_), :py:meth:`get_movie_torrent_tpb <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_tpb>` (`The Pirate Bay`_), and the unified torrent searcher :py:meth:`get_movie_torrent_jackett <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_jackett>` (Jackett_ torrent search) -- produce a common two element :py:class:`tuple` output format.
 
 * If successful, then the first element is a :py:class:`list` of elements that match the searched episode. Each element is a :py:class:`dict`, ordered by the total number of seeds and leechs. The second element is the string ``"SUCCESS"``. The **common** keys in each element are,
   
@@ -63,7 +63,7 @@ Here are the six methods that return the movie magnet links found by different t
 
   The extra keys here are ``torrent_size`` (the size of the candidate in bytes), and ``raw_title`` (the name of the candidate to download). Here ``title`` is the name of the candidate, and in parentheses is the size of the download in MB or GB.
 
-An extra method, :py:meth:`get_movie_torrent <plextmdb.plextmdb_torrents.get_movie_torrent>` uses the `YTS API`_ to retrieve movie `torrent files <torrent file_>`_.
+An extra method, :py:meth:`get_movie_torrent <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent>` uses the `YTS API`_ to retrieve movie `torrent files <torrent file_>`_.
 
 As of |date|, here are three movie torrent finding methods that work and don't work when searching for `Star Trek Beyond`_.
 
@@ -72,13 +72,13 @@ As of |date|, here are three movie torrent finding methods that work and don't w
 =======================  ===========================================================================================  ===============
 Torrent Service          Search Method                                                                                Does It Work?
 =======================  ===========================================================================================  ===============
-`EZTV.IO`_               :py:meth:`get_movie_torrent_eztv_io <plextmdb.plextmdb_torrents.get_movie_torrent_eztv_io>`  False
-Zooqle_                  :py:meth:`get_movie_torrent_zooqle <plextmdb.plextmdb_torrents.get_movie_torrent_zooqle>`    True
-RARBG_                   :py:meth:`get_movie_torrent_rarbg <plextmdb.plextmdb_torrents.get_movie_torrent_rarbg>`      False
-KickAssTorrents_         :py:meth:`get_movie_torrent_kickass <plextmdb.plextmdb_torrents.get_movie_torrent_kickass>`  False
-`The Pirate Bay`_        :py:meth:`get_movie_torrent_tpb <plextmdb.plextmdb_torrents.get_movie_torrent_tpb>`          False
-Jackett_ torrent search  :py:meth:`get_movie_torrent_jackett <plextmdb.plextmdb_torrents.get_movie_torrent_jackett>`  True
-`YTS API`_                :py:meth:`get_movie_torrent <plextmdb.plextmdb_torrents.get_movie_torrent>`                 True
+`EZTV.IO`_               :py:meth:`get_movie_torrent_eztv_io <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_eztv_io>`  False
+Zooqle_                  :py:meth:`get_movie_torrent_zooqle <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_zooqle>`    True
+RARBG_                   :py:meth:`get_movie_torrent_rarbg <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_rarbg>`      False
+KickAssTorrents_         :py:meth:`get_movie_torrent_kickass <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_kickass>`  False
+`The Pirate Bay`_        :py:meth:`get_movie_torrent_tpb <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_tpb>`          False
+Jackett_ torrent search  :py:meth:`get_movie_torrent_jackett <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent_jackett>`  True
+`YTS API`_                :py:meth:`get_movie_torrent <plexstuff.plextmdb.plextmdb_torrents.get_movie_torrent>`                 True
 =======================  ===========================================================================================  ===============
 
 .. automodule:: plextmdb.plextmdb_torrents

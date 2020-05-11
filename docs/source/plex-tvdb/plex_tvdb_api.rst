@@ -9,7 +9,7 @@ plextvdb module
 
 This module implements the lower-level functionalty that does the following:
 
-     * Provides the SQLAlchemy_ ORM class on TV shows to exclude from analysis or update on the Plex_ server. This is the ``showstoexclude`` table and is in the :py:class:`ShowsToExclude <plextvdb.ShowsToExclude>` class.
+     * Provides the SQLAlchemy_ ORM class on TV shows to exclude from analysis or update on the Plex_ server. This is the ``showstoexclude`` table and is in the :py:class:`ShowsToExclude <plexstuff.plextvdb.ShowsToExclude>` class.
 
      * Save and retrieve the TVDB_ API configuration data from the ``plexconfig`` table.
 
@@ -39,7 +39,7 @@ plextvdb.plextvdb_torrents module
 
 This module implements higher level interfaces to the Jackett_ torrent searching server, and functionality that allows for the automatic download of episodes missing from the Plex_ TV library.
 
-The seven methods that return the episode magnet links found by different torrent services -- :py:meth:`get_tv_torrent_eztv_io <plextvdb.plextvdb_torrents.get_tv_torrent_eztv_io>` (`EZTV.IO`_), :py:meth:`get_tv_torrent_zooqle <plextvdb.plextvdb_torrents.get_tv_torrent_zooqle>` (Zooqle_), :py:meth:`get_tv_torrent_rarbg <plextvdb.plextvdb_torrents.get_tv_torrent_rarbg>` (RARBG_), :py:meth:`get_tv_torrent_torrentz <plextvdb.plextvdb_torrents.get_tv_torrent_torrentz>` (Torrentz_), :py:meth:`get_tv_torrent_kickass <plextvdb.plextvdb_torrents.get_tv_torrent_kickass>` (KickassTorrents_), :py:meth:`get_tv_torrent_tpb <plextvdb.plextvdb_torrents.get_tv_torrent_tpb>` (`The Pirate Bay`_), and the unified torrent searcher :py:meth:`get_tv_torrent_jackett <plextvdb.plextvdb_torrents.get_tv_torrent_jackett>` (Jackett_ torrent search) -- produce a common two element :py:class:`tuple` output format.
+The seven methods that return the episode magnet links found by different torrent services -- :py:meth:`get_tv_torrent_eztv_io <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_eztv_io>` (`EZTV.IO`_), :py:meth:`get_tv_torrent_zooqle <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_zooqle>` (Zooqle_), :py:meth:`get_tv_torrent_rarbg <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_rarbg>` (RARBG_), :py:meth:`get_tv_torrent_torrentz <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_torrentz>` (Torrentz_), :py:meth:`get_tv_torrent_kickass <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_kickass>` (KickassTorrents_), :py:meth:`get_tv_torrent_tpb <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_tpb>` (`The Pirate Bay`_), and the unified torrent searcher :py:meth:`get_tv_torrent_jackett <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_jackett>` (Jackett_ torrent search) -- produce a common two element :py:class:`tuple` output format.
 
 * If successful, then the first element is a :py:class:`list` of elements that match the searched episode. Each element is a :py:class:`dict`, ordered by the total number of seeds and leechs. The second element is the string ``"SUCCESS"``. The **common** keys in each element are,
   
@@ -60,7 +60,7 @@ The seven methods that return the episode magnet links found by different torren
 
   The extra key is ``torrent_size``, the size of the candidate in bytes.
 
-* If unsuccesful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexcore.return_error_raw>`.
+* If unsuccesful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <plexstuff.plexcore.return_error_raw>`.
 
 As of |date|, here are the magnet link methods that work and don't work when searching for ``"The Simpsons S31E01"``.
 
@@ -69,13 +69,13 @@ As of |date|, here are the magnet link methods that work and don't work when sea
 =======================  =======================================================================================  ===============
 Torrent Service          Search Method                                                                            Does It Work?
 =======================  =======================================================================================  ===============
-`EZTV.IO`_               :py:meth:`get_tv_torrent_eztv_io <plextvdb.plextvdb_torrents.get_tv_torrent_eztv_io>`    False
-Zooqle_                  :py:meth:`get_tv_torrent_zooqle <plextvdb.plextvdb_torrents.get_tv_torrent_zooqle>`      True
-RARBG_                   :py:meth:`get_tv_torrent_rarbg <plextvdb.plextvdb_torrents.get_tv_torrent_rarbg>`        False
-Torrentz_                :py:meth:`get_tv_torrent_torrentz <plextvdb.plextvdb_torrents.get_tv_torrent_torrentz>`  False
-KickAssTorrents_         :py:meth:`get_tv_torrent_kickass <plextvdb.plextvdb_torrents.get_tv_torrent_kickass>`    False
-`The Pirate Bay`_        :py:meth:`get_tv_torrent_tpb <plextvdb.plextvdb_torrents.get_tv_torrent_tpb>`            False
-Jackett_ torrent search  :py:meth:`get_tv_torrent_jackett <plextvdb.plextvdb_torrents.get_tv_torrent_jackett>`    True
+`EZTV.IO`_               :py:meth:`get_tv_torrent_eztv_io <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_eztv_io>`    False
+Zooqle_                  :py:meth:`get_tv_torrent_zooqle <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_zooqle>`      True
+RARBG_                   :py:meth:`get_tv_torrent_rarbg <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_rarbg>`        False
+Torrentz_                :py:meth:`get_tv_torrent_torrentz <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_torrentz>`  False
+KickAssTorrents_         :py:meth:`get_tv_torrent_kickass <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_kickass>`    False
+`The Pirate Bay`_        :py:meth:`get_tv_torrent_tpb <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_tpb>`            False
+Jackett_ torrent search  :py:meth:`get_tv_torrent_jackett <plexstuff.plextvdb.plextvdb_torrents.get_tv_torrent_jackett>`    True
 =======================  =======================================================================================  ===============
 
 .. automodule:: plextvdb.plextvdb_torrents

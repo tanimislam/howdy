@@ -9,8 +9,8 @@ signal.signal( signal.SIGINT, signal_handler )
 import os, glob, gmusicapi, httplib2
 from oauth2client.client import OAuth2WebServerFlow
 from argparse import ArgumentParser
-
-from plexmusic import plexmusic
+#
+from plexstuff.plexmusic import plexmusic
 
 def _files_from_commas(fnames_string):
     return set(filter(lambda fname: os.path.isfile(fname),
@@ -37,7 +37,7 @@ def main( ):
     parser.add_argument('-P', dest='do_push', action='store_true', default = False,
                         help = 'If chosen, then push Google Music API Mobileclient credentials into the configuration database.' )
     parser.add_argument( '--noverify', dest='do_verify', action='store_false', default = True,
-                         help = 'If chosen, do not verify SSL connections.' )
+                        help = 'If chosen, do not verify SSL connections.' )
     args = parser.parse_args()
     if not args.do_push:
         if args.filenames is None:

@@ -6,8 +6,9 @@ def _signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, _signal_handler )
-from plexcore import plexcore_deluge
 from optparse import OptionParser
+#
+from plexstuff.plexcore import plexcore_deluge
 
 def main( ):
     act_args = sys.argv[1:]

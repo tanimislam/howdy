@@ -7,10 +7,11 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 import os, datetime, io, zipfile, logging, requests
-from plexmusic import plexmusic
-from plexcore import plexcore, return_error_raw
-from plexemail import plexemail, emailAddress, emailName
 from argparse import ArgumentParser
+#
+from plexstuff.plexmusic import plexmusic
+from plexstuff.plexcore import plexcore, return_error_raw
+from plexstuff.plexemail import plexemail, emailAddress, emailName
 
 def _get_final_song_name( song_name, dur ):
     assert( dur >= 0 )

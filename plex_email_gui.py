@@ -6,23 +6,23 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-
+#
 import os, logging, warnings, qdarkstyle
 from PyQt5.QtWidgets import QApplication, QStyleFactory
 from PyQt5.QtGui import QIcon
-from optparse import OptionParser
+from argparse import ArgumentParser
 warnings.simplefilter( 'ignore' )
-
-from plexcore import mainDir
-from plexemail.plexemail_gui import PlexEmailGUI
-from plexemail.plexemail_mygui import PlexEmailMyGUI
-from plexcore.plexcore_gui import returnToken, returnGoogleAuthentication
+#
+from plexstuff import resourceDir
+from plexstuff.plexemail.plexemail_gui import PlexEmailGUI
+from plexstuff.plexemail.plexemail_mygui import PlexEmailMyGUI
+from plexstuff.plexcore.plexcore_gui import returnToken, returnGoogleAuthentication
 
 def main( info = False, doLocal = True, doLarge = False, verify = True, onlyEmail = False ):
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     icn = QIcon( os.path.join(
-        mainDir, 'resources', 'icons', 'plex_email_gui.png' ) )
+        resourceDir, 'icons', 'plex_email_gui.png' ) )
     app.setWindowIcon( icn )
     logger = logging.getLogger( )
     if info: logger.setLevel( logging.INFO )
@@ -34,21 +34,21 @@ def main( info = False, doLocal = True, doLarge = False, verify = True, onlyEmai
     result = app.exec_( )
 
 if __name__=='__main__':
-    parser = OptionParser( )
-    parser.add_option('--info', dest='do_info', action='store_true',
+    parser = ArgumentParser( )
+    parser.add_argument('--info', dest='do_info', action='store_true',
                       default = False, help = 'Run info mode if chosen.')
-    parser.add_option('--onlyemail', dest = 'do_onlyemail', action = 'store_true',
+    parser.add_argument('--onlyemail', dest = 'do_onlyemail', action = 'store_true',
                       default = False, help = 'If chosen, only send bare email.')
-    parser.add_option('--local', dest='do_local', action = 'store_true', default = False,
+    parser.add_argument('--local', dest='do_local', action = 'store_true', default = False,
                       help = 'Check for locally running plex server.' )
-    parser.add_option('--large', dest='do_large', action='store_true', default = False,
+    parser.add_argument('--large', dest='do_large', action='store_true', default = False,
                       help = 'If chosen, make the GUI (widgets and fonts) LARGER to help with readability.')
-    parser.add_option('--noverify', dest='do_verify', action='store_false',
+    parser.add_argument('--noverify', dest='do_verify', action='store_false',
                       default = True, help = 'Do not verify SSL transactions if chosen.')
-    parser.add_option('--extraemails', dest='extraemails', type=str, action='store',
+    parser.add_argument('--extraemails', dest='extraemails', type=str, action='store',
                       help = 'If defined, the list of extra emails to send.' )
-    parser.add_option('--extranames', dest = 'extranames', type=str, action='store',
+    parser.add_argument('--extranames', dest = 'extranames', type=str, action='store',
                       help = 'If defined, the list of extra names to send.' )
-    opts, args = parser.parse_args( )
-    main( info = opts.do_info, doLocal = opts.do_local, verify = opts.do_verify,
-          onlyEmail = opts.do_onlyemail )
+    args = parser.parse_args( )
+    main( info = args.do_info, doLocal = args.do_local, verify = args.do_verify,
+          onlyEmail = args.do_onlyemail )

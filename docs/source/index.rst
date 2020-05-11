@@ -22,6 +22,7 @@ Here are some things I would like to finish.
 
 * Fill out documentation for all the CLIs (|cbox|) and GUIs.
 * Fill out documentation for the lower level APIs (|cbox|) and the GUI APIs.
+* Setup-ify this repository as a ``plexstuff`` Python module.
 * Fill out help dialogs for the GUIs.
 * Complete the testing suite.
 * Streamline the OAuth2_ authentication process, and provide more logical authorization and verification work flows.

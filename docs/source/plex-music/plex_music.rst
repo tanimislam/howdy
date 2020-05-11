@@ -14,7 +14,7 @@ These command line executables, graphical user interfaces, and APIs are used to 
 Plex Music TODO
 -----------------
 
-* Create a comprehensive GUI for the Plex_ music library similar to what I have made for the TV library (:ref:`plex_tvdb_totgui.py`) and movie library (:ref:`plex_tmdb_totgui`).
+* Create a comprehensive GUI for the Plex_ music library similar to what I have made for the TV library (:ref:`plex_tvdb_totgui`) and movie library (:ref:`plex_tmdb_totgui`).
 
 * Fix the manner in which songs can be emailed to the recipient. Currently :ref:`plex_music_songs` emails a collection of downloaded songs with the ``--email`` flag. I am turning off this functionality until such time as I can develop a way to do this for :ref:`plex_music_songs` and :ref:`plex_music_album`. There is a blog post, `Getting plex_music_songs to upload multiple songs <https://tanimislamblog.wordpress.com/2018/12/20/getting-plex_music_songs-to-upload-multiple-songs>`_, that describes this older and currently untested functionality.
 

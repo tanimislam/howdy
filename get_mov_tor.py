@@ -7,13 +7,14 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 import re, codecs, requests, time, logging
-from plexcore import plexcore_deluge
 from itertools import chain
 from pathos.multiprocessing import Pool
 from argparse import ArgumentParser
-from plextmdb import plextmdb_torrents, plextmdb
-from plextvdb import plextvdb_torrents
-from plexcore.plexcore import get_jackett_credentials
+#
+from plexstuff.plexcore import plexcore_deluge
+from plexstuff.plextmdb import plextmdb_torrents, plextmdb
+from plexstuff.plextvdb import plextvdb_torrents
+from plexstuff.plexcore.plexcore import get_jackett_credentials
 
 def get_items_jackett( name, tmdb_id = None, maxnum = 1000, verify = True, doRaw = False ):
     assert( maxnum >= 5 )

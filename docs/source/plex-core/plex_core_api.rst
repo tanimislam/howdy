@@ -11,17 +11,17 @@ This module implements the lower-level functionality that does or has the follow
 
      * access and retrieve configuration and other data from an SQLite3_ database using SQLAlchemy_ object relational mapping (ORM) classes. The SQLite3_ database is stored in ``~/.config/plexstuff/app.db``.
 
-     * :py:class:`PlexConfig <plexcore.PlexConfig>` is an ORM class that stores configuration information.
+     * :py:class:`PlexConfig <plexstuff.plexcore.PlexConfig>` is an ORM class that stores configuration information.
 
-     * :py:class:`PlexGuestEmailMapping <plexcore.PlexGuestEmailMapping>` is an ORM class that stores all the email addresses that will receive Plexstuff email notifications.
+     * :py:class:`PlexGuestEmailMapping <plexstuff.plexcore.PlexGuestEmailMapping>` is an ORM class that stores all the email addresses that will receive Plexstuff email notifications.
 
-     * :py:class:`LastNewsletterDate <plexcore.LastNewsletterDate>` is an ORM class that store one member (or row) -- the :py:class:`datetime <datetime.datetime>` of when the Plexstuff newsletter was last updated.
+     * :py:class:`LastNewsletterDate <plexstuff.plexcore.LastNewsletterDate>` is an ORM class that store one member (or row) -- the :py:class:`datetime <datetime.datetime>` of when the Plexstuff newsletter was last updated.
 
-     * :py:meth:`create_all <plexcore.create_all>` instantiates necessary SQLite3_ tables in the configuration table if they don't already exist.
+     * :py:meth:`create_all <plexstuff.plexcore.create_all>` instantiates necessary SQLite3_ tables in the configuration table if they don't already exist.
 
-     * low level PyQt5_ derived widgets used for the other GUIs in Plexstuff: :py:class:`ProgressDialog <plexcore.ProgressDialog>`, :py:class:`QDialogWithPrinting <plexcore.QDialogWithPrinting>`, and :py:class:`QLabelWithSave <plexcore.QLabelWithSave>`.
+     * low level PyQt5_ derived widgets used for the other GUIs in Plexstuff: :py:class:`ProgressDialog <plexstuff.plexcore.ProgressDialog>`, :py:class:`QDialogWithPrinting <plexstuff.plexcore.QDialogWithPrinting>`, and :py:class:`QLabelWithSave <plexstuff.plexcore.QLabelWithSave>`.
 
-     * initialization, in order to check for necessary prerequisites (see :ref:`Prerequisites`) and to install missing Python modules and packages (see :ref:`Installation`). This initialization is handled via a :py:class:`PlexInitialization <plexcore.plexinitialization.PlexInitialization>` singleton object.
+     * initialization, in order to check for necessary prerequisites (see :ref:`Prerequisites`) and to install missing Python modules and packages (see :ref:`Installation`). This initialization is handled via a :py:class:`PlexInitialization <plexstuff.plexcore.plexinitialization.PlexInitialization>` singleton object.
 
 
 .. automodule:: plexcore

@@ -6,8 +6,9 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-from plexmusic import plexmusic
 from argparse import ArgumentParser
+#
+from plexstuff.plexmusic import plexmusic
 
 def choose_youtube_item( name, maxnum = 10, verify = True ):
     youtube = plexmusic.get_youtube_service( verify = verify )

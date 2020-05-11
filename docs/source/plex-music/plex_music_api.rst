@@ -28,7 +28,7 @@ This contains the low-level functionality that does three things.
 plexmusic.pygn module
 ------------------------
 
-This contains functionality used by the :py:class:`PlexMusic <plexmusic.plexmusic.PlexMusic>` higher level object interface to the Gracenote_ API.
+This contains functionality used by the :py:class:`PlexMusic <plexstuff.plexmusic.plexmusic.PlexMusic>` higher level object interface to the Gracenote_ API.
 
 .. automodule:: plexmusic.pygn
    :members:

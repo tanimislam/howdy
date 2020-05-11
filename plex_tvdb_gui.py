@@ -6,19 +6,21 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-from optparse import OptionParser
-from plextvdb.plextvdb_gui import TVDBGUI
-from plexcore import plexcore, mainDir
+import qdarkstyle, logging, os, warnings
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
-import qdarkstyle, logging, os, warnings
+from argparse import ArgumentParser
+#
+from plexstuff import resourceDir
+from plexstuff.plextvdb.plextvdb_gui import TVDBGUI
+from plexstuff.plexcore import plexcore
 
 warnings.simplefilter("ignore")
 
 def main( info = False, doLocal = True, doLarge = False, verify = True ):
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
-    icn = QIcon( os.path.join( mainDir, 'resources', 'icons', 'plex_tvdb_gui.png' ) )
+    icn = QIcon( os.path.join( resourceDir, 'icons', 'plex_tvdb_gui.png' ) )
     app.setWindowIcon( icn )
     if info: logging.basicConfig( level = logging.INFO )
     fullURL, token = plexcore.checkServerCredentials(
@@ -30,15 +32,15 @@ def main( info = False, doLocal = True, doLarge = False, verify = True ):
 #
 ## start the application here
 if __name__=='__main__':
-    parser = OptionParser( )
-    parser.add_option('--large', dest='do_large', action='store_true',
-                      default = False, help = 'Run with large fonts to help with readability.' )
-    parser.add_option('--local', dest='do_local', action='store_true',
-                      default = False, help = 'Check for locally running plex server.')
-    parser.add_option('--info', dest='do_info', action='store_true',
-                      default = False, help = 'Run logging at INFO level if chosen.')
-    parser.add_option('--noverify', dest='do_verify', action='store_false',
-                      default = True, help = 'Do not verify SSL transactions if chosen.')    
-    opts, args = parser.parse_args( )
-    main( info = opts.do_info, doLocal = opts.do_local, doLarge = opts.do_large, verify = opts.do_verify )
+    parser = ArgumentParser( )
+    parser.add_argument('--large', dest='do_large', action='store_true',
+                        default = False, help = 'Run with large fonts to help with readability.' )
+    parser.add_argument('--local', dest='do_local', action='store_true',
+                        default = False, help = 'Check for locally running plex server.')
+    parser.add_argument('--info', dest='do_info', action='store_true',
+                        default = False, help = 'Run logging at INFO level if chosen.')
+    parser.add_argument('--noverify', dest='do_verify', action='store_false',
+                        default = True, help = 'Do not verify SSL transactions if chosen.')    
+    args = parser.parse_args( )
+    main( info = args.do_info, doLocal = args.do_local, doLarge = args.do_large, verify = args.do_verify )
     

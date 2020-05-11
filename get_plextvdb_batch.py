@@ -7,9 +7,10 @@ def signal_handler( signal, frame ):
 signal.signal( signal.SIGINT, signal_handler )
 import os, numpy, glob, time, datetime
 import multiprocessing, logging
-from plexcore import plexcore
-from plextvdb import plextvdb, get_token
-from optparse import OptionParser
+from argparse import ArgumentParser
+#
+from plexstuff.plexcore import plexcore
+from plexstuff.plextvdb import plextvdb, get_token
 
 def finish_statement( step ):
     return '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
@@ -21,39 +22,39 @@ def main( ):
     default_iters = 2
     default_num_threads = 2 * multiprocessing.cpu_count( )
     #
-    parser = OptionParser( )
-    parser.add_option('--maxtime', dest='maxtime_in_secs', type=int, action='store', default = default_time,
+    parser = ArgumentParser( )
+    parser.add_argument('--maxtime', dest='maxtime_in_secs', type=int, action='store', default = default_time,
                       help = ' '.join([
                           'The maximum amount of time to spend (in seconds),',
                           'per candidate magnet link,',
                           'trying to download a TV show.',
                           'Default is %d seconds.' % default_time ] ) )
-    parser.add_option('--num', dest='num_iters', type=int, action='store', default = default_iters,
+    parser.add_argument('--num', dest='num_iters', type=int, action='store', default = default_iters,
                       help = ' '.join([ 
                           'The maximum number of different magnet links to try',
                           'before giving up. Default is %d.' % default_iters ]) )
-    parser.add_option('--token', dest='token', type=str, action='store',
+    parser.add_argument('--token', dest='token', type=str, action='store',
                       help = 'Optional argument. If chosen, user provided Plex access token.')
-    parser.add_option('--info', dest='do_info', action='store_true', default=False,
+    parser.add_argument('--info', dest='do_info', action='store_true', default=False,
                       help = 'If chosen, then run in info mode.' )
-    parser.add_option('--debug', dest='do_debug', action='store_true', default=False,
+    parser.add_argument('--debug', dest='do_debug', action='store_true', default=False,
                       help = 'If chosen, then run in debug mode.' )
-    parser.add_option('--numthreads', dest='numthreads', type=int, action='store', default = default_num_threads,
+    parser.add_argument('--numthreads', dest='numthreads', type=int, action='store', default = default_num_threads,
                       help = 'Number of threads over which to search for TV shows in my library. Default is %d.' %
                       default_num_threads )
-    parser.add_option('--nomax', dest='do_restrict_maxsize', action='store_false', default=True,
+    parser.add_argument('--nomax', dest='do_restrict_maxsize', action='store_false', default=True,
                       help = 'If chosen, do not restrict maximum size of downloaded file.' )
-    parser.add_option('--nomin', dest='do_restrict_minsize', action='store_false', default=True,
+    parser.add_argument('--nomin', dest='do_restrict_minsize', action='store_false', default=True,
                       help = 'If chosen, do not restrict minimum size of downloaded file.' )
-    parser.add_option('--raw', dest='do_raw', action='store_true', default = False,
+    parser.add_argument('--raw', dest='do_raw', action='store_true', default = False,
                       help = 'If chosen, then use the raw string to download the torrent.' )    
-    opts, args = parser.parse_args( )
+    args = parser.parse_args( )
     #
     logger = logging.getLogger( )
-    if opts.do_info: logger.setLevel( logging.INFO )
-    if opts.do_debug: logger.setLevel( logging.DEBUG )
-    assert( opts.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
-    assert( opts.num_iters >= 1 ), 'error, must have a positive number of maximum iterations.'
+    if args.do_info: logger.setLevel( logging.INFO )
+    if args.do_debug: logger.setLevel( logging.DEBUG )
+    assert( args.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
+    assert( args.num_iters >= 1 ), 'error, must have a positive number of maximum iterations.'
     step = 0
     print( '%d, started on %s' % ( step, datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ) )
     step += 1
@@ -67,7 +68,7 @@ def main( ):
             finish_statement( step )  ] ) )
         return
     fullURL, token = dat
-    if opts.token is not None: token = opts.token
+    if args.token is not None: token = args.token
     #
     ## first find out which libraries are the TV show ones
     library_dict = plexcore.get_libraries( token,
@@ -92,7 +93,7 @@ def main( ):
     ## now get the TV shows
     time0 = time.time( )
     tvdata = plexcore.get_library_data(
-        tvlib_title, token = token, num_threads = opts.numthreads )
+        tvlib_title, token = token, num_threads = args.numthreads )
     print( '%d, found %d shows in the TV library, in %0.3f seconds.' % (
         step, len( tvdata ), time.time( ) - time0 ) )
     step += 1
@@ -110,7 +111,7 @@ def main( ):
     toGet = plextvdb.get_remaining_episodes(
         tvdata, showSpecials = False,
         showsToExclude = showsToExclude,
-        num_threads = opts.numthreads )
+        num_threads = args.numthreads )
     if len( toGet ) == 0:
         print('\n'.join([
             '%d, no episodes to download in %0.3f seconds. Exiting...' % (
@@ -123,14 +124,14 @@ def main( ):
     #
     ## now download these episodes
     tvTorUnits, newdirs = plextvdb.create_tvTorUnits(
-        toGet, restrictMaxSize = opts.do_restrict_maxsize,
-        restrictMinSize = opts.do_restrict_minsize, do_raw = opts.do_raw )
+        toGet, restrictMaxSize = args.do_restrict_maxsize,
+        restrictMinSize = args.do_restrict_minsize, do_raw = args.do_raw )
     print('%d, here are the %d episodes to get: %s.' % ( step,
         len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname' ], tvTorUnits))))
     step += 1
     plextvdb.download_batched_tvtorrent_shows(
-        tvTorUnits, newdirs = newdirs, maxtime_in_secs = opts.maxtime_in_secs,
-        num_iters = opts.num_iters )
+        tvTorUnits, newdirs = newdirs, maxtime_in_secs = args.maxtime_in_secs,
+        num_iters = args.num_iters )
     print( '\n'.join([ '%d, everything done in %0.3f seconds.' % ( step, time.time( ) - time0 ),
                        finish_statement( step ) ]))
     

@@ -6,9 +6,10 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 import codecs, os, tabulate, logging
-from plexmusic import plexmusic
-from plexemail import emailAddress
 from argparse import ArgumentParser
+#
+from plexstuff.plexmusic import plexmusic
+from plexstuff.plexemail import emailAddress
 
 def main( ):
     parser = ArgumentParser( )

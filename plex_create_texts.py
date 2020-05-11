@@ -2,7 +2,8 @@
 
 import os, sys, qdarkstyle
 from PyQt5.QtWidgets import QApplication
-from plexcore import plexcore_texts_gui, returnQAppWithFonts
+#
+from plexstuff.plexcore import plexcore_texts_gui, returnQAppWithFonts
 
 if __name__=='__main__':
     app = returnQAppWithFonts( )

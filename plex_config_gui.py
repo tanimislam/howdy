@@ -7,18 +7,29 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 import qdarkstyle, logging, glob, os
-from optparse import OptionParser
+from argparse import ArgumentParser
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
-from plexcore import plexcore_gui, mainDir
+#
+from plexstuff import resourceDir
+from plexstuff.plexcore import plexcore_gui
 
-def main( info = False, doLocal = True, verify = True ):
+if __name__=='__main__':
+    parser = ArgumentParser( )
+    parser.add_argument('--info', dest='do_info', action='store_true',
+                      default = False, help = 'Run info mode if chosen.')
+    parser.add_argument('--noverify', dest='do_verify', action='store_false',
+                      default = True, help = 'Do not verify SSL transactions if chosen.')
+    args = parser.parse_args( )
+    logger = logging.getLogger( )
+    if args.do_info: logger.setLevel( logging.INFO )
+    #
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     icn = QIcon( os.path.join(
-        mainDir, 'resources', 'icons', 'plex_config_gui.png' ) )
+        resourceDir, 'icons', 'plex_config_gui.png' ) )
     app.setWindowIcon( icn )
-    pcgui = plexcore_gui.PlexConfigGUI( verify = verify )
+    pcgui = plexcore_gui.PlexConfigGUI( verify = args.do_verify )
     pcgui.setStyleSheet("""
     QWidget {
     font-family: Consolas;
@@ -26,14 +37,3 @@ def main( info = False, doLocal = True, verify = True ):
     }""" )
     pcgui.show( )
     result = pcgui.exec_( )
-
-if __name__=='__main__':
-    parser = OptionParser( )
-    parser.add_option('--local', dest='do_local', action='store_true',
-                      default = False, help = 'Check for locally running plex server.')
-    parser.add_option('--info', dest='do_info', action='store_true',
-                      default = False, help = 'Run info mode if chosen.')
-    parser.add_option('--noverify', dest='do_verify', action='store_false',
-                      default = True, help = 'Do not verify SSL transactions if chosen.')
-    opts, args = parser.parse_args( )
-    main( info = opts.do_info, doLocal = opts.do_local, verify = opts.do_verify )

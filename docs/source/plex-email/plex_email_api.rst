@@ -6,7 +6,7 @@ This document describes the lower level Plex emailing API, upon which the :ref:`
 
 plexemail module
 ------------------
-This contains the lowest level methods to send email using either the `Google Contacts API`_ or through Python's :py:class:`SMTP <smtplib.SMTP>` functionality, and to find the Google contact names of friend emails on the Plex_ server. :py:class:`PlexIMGClient <plexemail.PlexIMGClient>` and :py:class:`PNGPicObject <plexemail.PNGPicObject>` allow one to add or remove images from one's Imgur_ acount.
+This contains the lowest level methods to send email using either the `Google Contacts API`_ or through Python's :py:class:`SMTP <smtplib.SMTP>` functionality, and to find the Google contact names of friend emails on the Plex_ server. :py:class:`PlexIMGClient <plexstuff.plexemail.PlexIMGClient>` and :py:class:`PNGPicObject <plexstuff.plexemail.PNGPicObject>` allow one to add or remove images from one's Imgur_ acount.
 
 .. automodule:: plexemail
    :members:

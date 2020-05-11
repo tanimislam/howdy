@@ -9,9 +9,10 @@ signal.signal( signal.SIGINT, signal_handler )
 import datetime, time, logging, os
 from multiprocessing import Manager
 from pathos.multiprocessing import Pool, cpu_count
-from plexcore import plexcore
-from plextvdb import plextvdb
-from optparse import OptionParser
+from argparse import ArgumentParser
+#
+from plexstuff.plexcore import plexcore
+from plexstuff.plextvdb import plextvdb
 
 def _print_years( len_years ):
     if len_years == 1:
@@ -20,26 +21,25 @@ def _print_years( len_years ):
 
 def main( ):
     time0 = time.time( )
-    parser = OptionParser( )
-    parser.add_option( '--years', dest='s_years', action='store', type=str,
-                       help = 'Give a list of years as a string, such as "1980,1981". Optional.' )
-    parser.add_option('--local', dest='do_local', action='store_true',
-                      default = False, help = 'Check for locally running plex server.')
-    parser.add_option('--dirname', dest='dirname', action='store', type=str, default = os.getcwd( ),
-                      help = 'Directory into which to store those plots. Default is %s.' %
+    parser = ArgumentParser( )
+    parser.add_argument( '--years', dest='s_years', action='store', type=str,
+                        help = 'Give a list of years as a string, such as "1980,1981". Optional.' )
+    parser.add_argument('--local', dest='do_local', action='store_true',
+                        default = False, help = 'Check for locally running plex server.')
+    parser.add_argument('--dirname', dest='dirname', action='store', type=str, default = os.getcwd( ),
+                        help = 'Directory into which to store those plots. Default is %s.' %
                       os.getcwd( ) )
-    parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
-                      help = 'If chosen, do not verify SSL connections.' )
-    opts, args = parser.parse_args( )
-
+    parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
+                        help = 'If chosen, do not verify SSL connections.' )
+    args = parser.parse_args( )
     #
     ## function to do the processing    
     step = 0
     print( '%d, started on %s' % ( step, datetime.datetime.now( ).strftime(
         '%B %d, %Y @ %I:%M:%S %p' ) ) )
-    if opts.s_years is not None:
+    if args.s_years is not None:
         try:
-            years = sorted(set(map(lambda tok: int( tok ), opts.s_years.split(','))))
+            years = sorted(set(map(lambda tok: int( tok ), args.s_years.split(','))))
         except:
             step += 1
             print( '%d, did not give a valid set of years.' % step )
@@ -49,7 +49,7 @@ def main( ):
     #
     ## get plex server token
     dat = plexcore.checkServerCredentials(
-        doLocal = opts.do_local, verify = opts.do_verify  )
+        doLocal = args.do_local, verify = args.do_verify  )
     if dat is None:
         step += 1
         print('\n'.join([
@@ -139,7 +139,7 @@ def main( ):
     def _process_year( year ):
         plextvdb.create_plot_year_tvdata(
             tvdata_date_dict, year, shouldPlot = True,
-            dirname = opts.dirname )
+            dirname = args.dirname )
         lock.acquire( )
         shared_step.value += 1
         num_procced.value += 1

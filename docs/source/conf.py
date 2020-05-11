@@ -16,7 +16,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os, sys
+import os, sys, date
 from functools import reduce
 from sphinx.util import logging
 _mainDir = reduce(lambda x,y: os.path.dirname( x ),
@@ -96,7 +96,7 @@ verify = False
 numfig = True
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = [ '_templates' ]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -109,7 +109,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'plexstuff'
-copyright = u'2019'
+copyright = u'%d' % datetime.datetime.now( ).year
 author = u'Tanim Islam'
 
 # The version info for the project you're documenting, acts as replacement for

@@ -9,10 +9,10 @@ signal.signal( signal.SIGINT, signal_handler )
 import logging, os, re, time
 from itertools import chain
 from multiprocessing import Pool
-from optparse import OptionParser
-from plexcore import plexcore_deluge
-from plextvdb import plextvdb_torrents
-from plexcore.plexcore import get_jackett_credentials
+from argparse import ArgumentParser
+#
+from plexstuff.plexcore import plexcore_deluge, plexcore
+from plexstuff.plextvdb import plextvdb_torrents, plextvdb
 
 def get_items_eztv_io( name, maxnum = 10, verify = True ):
     assert( maxnum >= 5 )
@@ -118,24 +118,24 @@ def get_tv_torrent_items(
         with open(filename, 'w') as openfile:
             openfile.write('%s\n' % magnet_link )
 
-def process_magnet_items( name, raw = False, verify = True ):
+def process_magnet_items( name, raw = False, verify = True, maxnum = 10 ):
     time0 = time.time( )
     #
     ## check for jackett
-    if get_jackett_credentials( ) is None:
+    if plexcore.get_jackett_credentials( ) is None:
         pool = Pool( processes = 5 )
         jobs = list(map(
-            lambda func: pool.apply_async( func, args = ( name, opts.maxnum ) ),
+            lambda func: pool.apply_async( func, args = ( name, maxnum ) ),
             ( get_items_zooqle, get_items_rarbg, #get_items_kickass,
               get_items_torrentz, get_items_eztv_io ) ) )
         jobs.append( pool.apply_async( get_items_tpb, args = (
-            name, opts.maxnum, False, False ) ) ) # opts.do_any = False
+            name, maxnum, False, False ) ) ) # args.do_any = False
     else:
         pool = Pool( processes = 3 )
         jobs = list(map(
-            lambda func: pool.apply_async( func, args = ( name, opts.maxnum, verify ) ),
+            lambda func: pool.apply_async( func, args = ( name, maxnum, verify ) ),
             ( get_items_zooqle, get_items_eztv_io ) ) )
-        jobs.append( pool.apply_async( get_items_jackett, args = ( name, opts.maxnum, raw, verify ) ) )
+        jobs.append( pool.apply_async( get_items_jackett, args = ( name, maxnum, raw, verify ) ) )
     items_all = list( chain.from_iterable( filter( None, map(lambda job: job.get( ), jobs ) ) ) )
     logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )
     pool.close( )
@@ -144,36 +144,37 @@ def process_magnet_items( name, raw = False, verify = True ):
     return None
             
 if __name__=='__main__':
-    parser = OptionParser( )
-    parser.add_option('-n', '--name', dest='name', type=str, action='store',
+    parser = ArgumentParser( )
+    parser.add_argument('-n', '--name', dest='name', type=str, action='store', required = True,
                       help = 'Name of the TV show to get.')
-    parser.add_option('--maxnum', dest='maxnum', type=int, action='store', default = 10,
+    parser.add_argument('--maxnum', dest='maxnum', type=int, action='store', default = 10,
                       help = 'Maximum number of torrents to look through. Default is 10.')
-    parser.add_option('--raw', dest='do_raw', action='store_true', default = False,
+    parser.add_argument('--raw', dest='do_raw', action='store_true', default = False,
                       help = 'If chosen, then use the raw string (for jackett) to download the torrent.' )
-    parser.add_option('-f', '--filename', dest='filename', action='store', type=str,
+    parser.add_argument('-f', '--filename', dest='filename', action='store', type=str,
                       help = 'If defined, put torrent or magnet link into filename.')
-    parser.add_option('--add', dest='do_add', action='store_true', default = False,
+    parser.add_argument('--add', dest='do_add', action='store_true', default = False,
                       help = 'If chosen, push the magnet link into the deluge server.' )
-    parser.add_option('--info', dest='do_info', action='store_true', default = False,
+    parser.add_argument('--info', dest='do_info', action='store_true', default = False,
                       help = 'If chosen, run in info mode.' )
-    parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
+    parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
                       help = 'If chosen, do not verify SSL connections.' )
-    parser.add_option('--timing', dest='do_timing', action='store_true', default = False,
+    parser.add_argument('--timing', dest='do_timing', action='store_true', default = False,
                       help = 'If chosen, show timing information (how long to get TV torrents).')
-    opts, args = parser.parse_args( )
-    assert( opts.name is not None )
+    args = parser.parse_args( )
     logger = logging.getLogger( )
-    if opts.do_info: logger.setLevel( logging.INFO )
+    if args.do_info: logger.setLevel( logging.INFO )
     #
     time0 = time.time( )
-    items = process_magnet_items( opts.name, raw = opts.do_raw, verify = opts.do_verify )
-    if opts.do_timing:
+    items = process_magnet_items(
+        args.name, maxnum = args.maxnum,
+        raw = args.do_raw, verify = args.do_verify )
+    if args.do_timing:
         print( 'took %0.3f seconds to get TV torrents for %s.' % (
-            time.time( ) - time0, opts.name ) )
+            time.time( ) - time0, args.name ) )
     if items is not None:
         #
         ## sort from most seeders + leecher to least
         items_sorted = sorted( items, key = lambda tup: (
-            -tup['seeders'] - tup['leechers'], tup['title'] ) )[:opts.maxnum]
-        get_tv_torrent_items( items_sorted, filename = opts.filename, to_torrent_server = opts.do_add )
+            -tup['seeders'] - tup['leechers'], tup['title'] ) )[:args.maxnum]
+        get_tv_torrent_items( items_sorted, filename = args.filename, to_torrent_server = args.do_add )

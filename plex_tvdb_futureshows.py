@@ -7,22 +7,23 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 import datetime, time, logging, os, tabulate
-from plexcore import plexcore
-from plextvdb import plextvdb
-from optparse import OptionParser
+from argparse import ArgumentParser
+#
+from plexstuff.plexcore import plexcore
+from plexstuff.plextvdb import plextvdb
 
 def main( ):
     time0 = time.time( )
-    parser = OptionParser( )
-    parser.add_option('--noverify', dest='do_verify', action='store_false', default = True,
-                      help = 'If chosen, do not verify the SSL connection.')
-    parser.add_option('--local', dest='do_local', action='store_true',
-                      default = False, help = 'Check for locally running plex server.')
-    parser.add_option('--info', dest='do_info', action='store_true',
-                      default = False, help = 'If chosen, run with INFO logging mode.' )
-    opts, args = parser.parse_args( )
+    parser = ArgumentParser( )
+    parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
+                        help = 'If chosen, do not verify the SSL connection.')
+    parser.add_argument('--local', dest='do_local', action='store_true',
+                        default = False, help = 'Check for locally running plex server.')
+    parser.add_argument('--info', dest='do_info', action='store_true',
+                        default = False, help = 'If chosen, run with INFO logging mode.' )
+    args = parser.parse_args( )
     logger = logging.getLogger( )
-    if opts.do_info: logger.setLevel( logging.INFO )
+    if args.do_info: logger.setLevel( logging.INFO )
 
     #
     ## function to do the processing
@@ -33,7 +34,7 @@ def main( ):
 
     #
     ## get plex server token
-    dat = plexcore.checkServerCredentials( doLocal = opts.do_local, verify = opts.do_verify )
+    dat = plexcore.checkServerCredentials( doLocal = args.do_local, verify = args.do_verify )
     if dat is None:
         step += 1
         print('\n'.join([
@@ -81,7 +82,7 @@ def main( ):
             step, '; '.join( showsToExclude ) ) )
 
     future_shows_dict = plextvdb.get_future_info_shows(
-        tvdata, verify = opts.do_verify, showsToExclude = showsToExclude,
+        tvdata, verify = args.do_verify, showsToExclude = showsToExclude,
         fromDate = nowdate )
     for show in future_shows_dict:
         tdelta = future_shows_dict[ show ][ 'start_date' ] - nowdate

@@ -5,6 +5,8 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 import qdarkstyle, logging, os, warnings
+import qtmodern.styles
+import qtmodern.windows
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
 from argparse import ArgumentParser
@@ -17,13 +19,19 @@ warnings.simplefilter("ignore")
 
 def mainSub( info = False, doLocal = True, doLarge = False, verify = True ):
     app = QApplication([])
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
+    # app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     icn = QIcon( os.path.join( resourceDir, 'icons', 'plex_tvdb_gui.png' ) )
     app.setWindowIcon( icn )
-    if info: logging.basicConfig( level = logging.INFO )
+    qtmodern.styles.dark( app )
+    logger = logging.getLogger( )
+    if info: logger.setLevel( level = logging.INFO )
+    logging.info( 'TRYING TO GET CREDENTIALS. LOCAL? %s. VERIFY? %s.'
+                 % ( doLocal, verify ) )
     fullURL, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
     tvdb_gui = TVDBGUI( token, fullURL, verify = verify, doLarge = doLarge )
+    mw = qtmodern.windows.ModernWindow( tvdb_gui )
+    mw.show( )
     result = app.exec_( )
     return tvdb_gui
 
@@ -38,7 +46,7 @@ def main( ):
     parser.add_argument('--info', dest='do_info', action='store_true',
                         default = False, help = 'Run logging at INFO level if chosen.')
     parser.add_argument('--noverify', dest='do_verify', action='store_false',
-                        default = True, help = 'Do not verify SSL transactions if chosen.')    
+                        default = True, help = 'Do not verify SSL transactions if chosen.')
     args = parser.parse_args( )
     mainSub( info = args.do_info, doLocal = args.do_local,
             doLarge = args.do_large, verify = args.do_verify )

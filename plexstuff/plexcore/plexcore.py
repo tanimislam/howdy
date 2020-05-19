@@ -146,7 +146,7 @@ def getTokenForUsernamePassword( username, password, verify = True ):
         return None
     return response.json()['user']['authentication_token']
     
-def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer = True ):
+def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer = False ):
     """Returns get a local or remote URL and Plex_ access token to allow for API access to the server. If there is already a VALID token in the SQLite3_ configuration database, then uses that. Otherwise, tries to acquire a Plex_ access token.
 
     :param bool doLocal: optional argument, whether to get a local (``http://localhost:32400``) or remote URL. Default is ``False`` (look for the remote URL).
@@ -171,6 +171,7 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
             PlexConfig.service == 'plexlogin' ).first( )
         if val is None: return None
         
+        logging.info( 'IN checkServerCredentials( _get_stored_plexlogin): plexlogin data: %s.' % val.data )
         data = val.data
         token = data[ 'token' ]
         if doLocal: fullURL = 'http://localhost:32400'
@@ -189,6 +190,10 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
         return fullURL, token
 
     dat = _get_stored_plexlogin( doLocal, verify )
+    logging.info( 'IN checkServerCredentials: doLOCAL? %s; verify? %s.' % (
+        doLocal, verify ) )
+    logging.info( 'IN checkServerCredentials: dat: %s; type of dat? %s.' % ( dat, type( dat ) ) )
+    
     if dat is not None: return dat
 
     #
@@ -196,6 +201,8 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
     val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'login' ).first( )
     if val is None: return None
+    
+    logging.info( 'IN checkServerCredentials: refresh tokens using password. val = %s.' % ( val.data ) )
     data = val.data
     username = data['username'].strip( )
     password = data['password'].strip( )
@@ -279,6 +286,16 @@ def pushCredentials( username, password ):
     data = { 'username' : username.strip( ),
              'password' : password.strip( ) }
     newval = PlexConfig( service = 'login', data = data )
+    session.add( newval )
+    session.commit( )
+    #
+    ## now do same for token, store it into plexlogin
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'plexlogin' ).first( )
+    if val is not None:
+        session.delete( val )
+        session.commit( )
+    newval = PlexConfig( service = 'plexlogin', data = { 'token' : token } )
     session.add( newval )
     session.commit( )
     return "SUCCESS"

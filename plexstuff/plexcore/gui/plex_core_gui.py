@@ -6,7 +6,7 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import qdarkstyle, logging
+import logging, warnings, qtmodern.styles, qtmodern.windows
 from PyQt5.QtWidgets import QApplication
 from urllib.parse import urlparse
 from argparse import ArgumentParser
@@ -23,9 +23,10 @@ def main( ):
     parser.add_argument( '--googleauth', dest='do_googleauth', action='store_true', default = False,
                         help = 'If chosen, set up google oauth2 authentication.' )
     args = parser.parse_args( )
-    if args.do_info: logging.basicConfig( level = logging.INFO )
+    logger = logging.getLogger( )
+    if args.do_info: logger.setConfig( level = logging.INFO )
     app = QApplication([])
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
+    qtmodern.styles.dark( app )
     if not args.do_googleauth:
         fullurl, token = returnToken(
             doLocal = args.do_local, verify = False )

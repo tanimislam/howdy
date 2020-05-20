@@ -4,7 +4,7 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import logging, os, qdarkstyle, time, numpy
+import logging, os, time, numpy, qtmodern.styles, qtmodern.windows
 from PyQt5.QtGui import QIcon
 from argparse import ArgumentParser
 #
@@ -14,16 +14,18 @@ from plexstuff.plextmdb import plextmdb_totgui
 
 def mainSub(info = False, doLocal = True, doLarge = False, verify = True):
     app = returnQAppWithFonts( )
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     icn = QIcon( os.path.join(
         resourceDir, 'icons', 'plex_tmdb_totgui.png' ) )
     app.setWindowIcon( icn )
+    qtmodern.styles.dark( app )
     logger = logging.getLogger( )
     if info: logger.setLevel( logging.INFO )
     fullurl, token = plexcore.checkServerCredentials(
         doLocal = doLocal, verify = verify )
     tmdb_mygui = plextmdb_totgui.TMDBTotGUI(
         fullurl, token, doLarge = doLarge, verify = verify )
+    mw = qtmodern.windows.ModernWindow( tmdb_mygui )
+    mw.show( )
     result = app.exec_( )
     return tmdb_mygui
 

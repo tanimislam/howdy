@@ -4,9 +4,7 @@ def signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
-import qdarkstyle, logging, os, warnings
-import qtmodern.styles
-import qtmodern.windows
+import logging, os, warnings, qtmodern.styles, qtmodern.windows
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
 from argparse import ArgumentParser
@@ -19,7 +17,6 @@ warnings.simplefilter("ignore")
 
 def mainSub( info = False, doLocal = True, doLarge = False, verify = True ):
     app = QApplication([])
-    # app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     icn = QIcon( os.path.join( resourceDir, 'icons', 'plex_tvdb_gui.png' ) )
     app.setWindowIcon( icn )
     qtmodern.styles.dark( app )

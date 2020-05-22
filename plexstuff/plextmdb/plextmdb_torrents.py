@@ -1,4 +1,4 @@
-import threading, requests, fuzzywuzzy, os, sys
+import threading, requests, rapidfuzz, os, sys
 import re, time, logging, validators
 from tpb import CATEGORIES, ORDERS
 from bs4 import BeautifulSoup

@@ -1,4 +1,4 @@
-import logging, glob, os, requests, datetime, fuzzywuzzy.fuzz, time, sys
+import logging, glob, os, requests, datetime, rapidfuzz.fuzz, time, sys
 import pathos.multiprocessing as multiprocessing
 from itertools import chain
 #
@@ -404,9 +404,9 @@ def get_movies_by_title( title, verify = True, apiKey = None ):
     if response.status_code != 200: return [ ]
     data = response.json( )
     total_pages = data['total_pages']
-    results = list( filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 10.0,
+    results = list( filter(lambda result: rapidfuzz.fuzz.ratio( result['title'], title) >= 10.0,
                            data['results'] ) )
-    results = sorted( results, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
+    results = sorted( results, key = lambda result: -rapidfuzz.fuzz.ratio( result['title'], title ) )
     if total_pages >= 2:
         for pageno in range( 2, max( 5, total_pages + 1 ) ):
             for idx in range( 50 ):
@@ -425,10 +425,10 @@ def get_movies_by_title( title, verify = True, apiKey = None ):
                 continue
             data = response.json( )
             newresults = list(
-                filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 10.0,
+                filter(lambda result: rapidfuzz.fuzz.ratio( result['title'], title ) >= 10.0,
                        data['results'] ) )
             if len( newresults ) > 0:
-                results += sorted( newresults, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
+                results += sorted( newresults, key = lambda result: -rapidfuzz.fuzz.ratio( result['title'], title ) )
     # return results
     return createProcessedMovieData( results, verify = verify )
 
@@ -474,9 +474,9 @@ def get_movie( title, year = None, checkMultiple = True,
     if 'total_pages' in data:
         total_pages = data['total_pages']
         results = list(
-            filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 90.0,
+            filter(lambda result: rapidfuzz.fuzz.ratio( result['title'], title ) >= 90.0,
                    data['results'] ) )
-        results = sorted( results, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
+        results = sorted( results, key = lambda result: -rapidfuzz.fuzz.ratio( result['title'], title ) )
     else: return None
     if len(results) == 0:
         if checkMultiple:
@@ -538,9 +538,9 @@ def get_genre_movie( title, year = None, checkMultiple = True, verify = True ):
     data = response.json( )
     if 'total_pages' in data:
         total_pages = data['total_pages']
-        results = list( filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 90.0,
+        results = list( filter(lambda result: rapidfuzz.fuzz.ratio( result['title'], title ) >= 90.0,
                                data['results'] ) )
-        results = sorted( results, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
+        results = sorted( results, key = lambda result: -rapidfuzz.fuzz.ratio( result['title'], title ) )
     else: results = [ ]
     if len(results) == 0:
         if checkMultiple:

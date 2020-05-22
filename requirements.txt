@@ -3,7 +3,6 @@ beautifulsoup4
 cfscrape
 deluge_client
 fabric
-fuzzywuzzy
 gdata
 geoip2
 gmusicapi
@@ -31,9 +30,9 @@ pypandoc
 pyqt5
 PyQtWebEngine
 python-geoip-geolite2
-python-Levenshtein
 python-magic
 pytz
+rapidfuzz
 requests
 requests_oauthlib
 rsa

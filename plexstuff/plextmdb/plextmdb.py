@@ -239,7 +239,7 @@ def get_actor_ids_dict( actor_names, verify = True ):
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :returns: a :py:class:`dict`, where the key is the actor name and its value is the TMDB_ actor ID. For example, if we want to get the ids for `Steve Martin`_ and `Richard Pryor`_,
     
-      .. code-block:: bash
+      .. code-block:: console
 
          {'Richard Pryor': 9309, 'Steve Martin': 67773}
 

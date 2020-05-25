@@ -22,7 +22,7 @@ get_plextvdb_batch
 ^^^^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``get_plextvdb_batch -h``, produces the following. Here, ``$(num_cores)`` is *TWICE* the number of CPUs on the Plex_ server. This code is currently designed to be run *ONLY* on the Plex_ server.
 
-.. code-block:: bash
+.. code-block:: console
 
    Usage: get_plextvdb_batch [options]
 
@@ -86,7 +86,7 @@ Here are the command line inputs that change the operation of this execution.
 
 Here is a demonstration of its operation, searching for new episodes to download on the Plex_ server on ``Sunday, 20 October 2019``. `The Great British Bake-Off <https://en.wikipedia.org/wiki/The_Great_British_Bake_Off>`_ is going to be ignored because this show has been excluded for identification and searches. The output format during evaluation is descriptive because the process can take more than a few seconds.
 
-.. code-block:: bash
+.. code-block:: console
 
    tanim-desktop $ get_plextvdb_batch
 
@@ -118,7 +118,7 @@ get_tv_tor
 ^^^^^^^^^^^^^^^
 The help output, when running ``get_tv_tor -h``, produces the following.
 
-.. code-block:: bash
+.. code-block:: console
 
    Usage: get_tv_tor [options]
 
@@ -150,7 +150,7 @@ The ``-n`` or ``--name`` flag is used to specify the TV show and episode, for ex
 
 Here is how to get an episode, `The Simpsons S30E10 <simpsons_s30e10_>`_. We choose a given Magnet link by number, and the Magnet URI is printed out. The choices are sorted by the total number of seeds (SE) and leechers (LE) found for that link. By default, the IMDb_ information for this episode (TV show and season) is used to look for Magnet links.
 
-.. code-block:: bash
+.. code-block:: console
 
    tanim-desktop $ get_tv_tor -n "The Simpsons S30E10"
    Choose TV episode or series:
@@ -172,7 +172,7 @@ We can modify this command with the following.
 
 * ``-f`` or ``--filename`` is used to output the Magnet URI into a file,
 
-  .. code-block:: bash
+  .. code-block:: console
 
      tanim-desktop $ get_tv_tor -n "The Simpsons S30E10" -f simpsons_s30e10.magnet
      
@@ -192,7 +192,7 @@ We can modify this command with the following.
 
 * ``--add`` adds the Magnet URI to the Deluge_ server. The operation of ``plex_deluge_console`` is described in :numref:`plex_deluge_console`.
 
-  .. code-block:: bash
+  .. code-block:: console
 
      tanim-desktop $ get_tv_tor -n "The Simpsons S30E10" --add
      ...
@@ -209,7 +209,7 @@ We can modify this command with the following.
 
 * The ``--raw`` flag does not use the default IMDB_ information to search for the torrent. Instead it uses the full string (here ``"The Simpsons S30E10"``) to search for the episode. Here is an example,
 
-  .. code-block:: bash
+  .. code-block:: console
 
      tanim-desktop $ get_tv_tor -n "The Simpsons S30E10" --raw
      
@@ -234,7 +234,7 @@ plex_tvdb_epinfo
 ^^^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``plex_tvdb_epinfo -h``, produces the following.
 
-.. code-block:: bash
+.. code-block:: console
 
    Usage: plex_tvdb_epinfo [options]
    
@@ -260,7 +260,7 @@ The help output, when running ``plex_tvdb_epinfo -h``, produces the following.
 
 For example, to upload information about `The Simpsons <the_simpsons_>`_ into a file, ``the_simpsons.json``, in the remote SSH server and the remote home directory (``REMOTE_HOME_DIR``).
 
-.. code-block:: bash
+.. code-block:: console
 
    tanim-desktop $ plex_tvdb_epinfo -s "The Simpsons" -j the_simpsons.json
    put episode info for "The Simpsons" into REMOTE_HOME_DIR/the_simpsons.json in 7.341 seconds.
@@ -294,7 +294,7 @@ plex_tvdb_epname
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``plex_tvdb_epname -h``, produces the following.
 
-.. code-block:: bash
+.. code-block:: console
 
    Usage: plex_tvdb_epname [options]
 
@@ -317,7 +317,7 @@ Here are the three ways to get information on episodes for a specified TV show. 
 
 * To get a summary of all episodes of a TV show (`The Simpsons <the_simpsons_>`_), run ``plex_tvdb_epname -s "The Simpsons" --summary``,
 
-  .. code-block:: bash
+  .. code-block:: console
 
      668 episodes for The Simpsons
      SEASON 01: 13 episodes
@@ -354,7 +354,7 @@ Here are the three ways to get information on episodes for a specified TV show. 
 
 * To get a summary of episodes aired (so far) for a given season and a TV show, for example run ``plex_tvdb_epname -s "The Simpsons" -S 10``.
 
-  .. code-block:: bash
+  .. code-block:: console
        
      23 episodes in SEASON 10 of The Simpsons.
      Episode 01/23: Lard of the Dance (Sunday, 23 August 1998)
@@ -383,7 +383,7 @@ Here are the three ways to get information on episodes for a specified TV show. 
 
 * To get summary information on a specific episode, for example run ``plex_tvdb_epname -s "The Simpsons" -e s30e10`` (season 30, episode 10).
   
-  .. code-block:: bash
+  .. code-block:: console
      
      tanim-desktop $ plex_tvdb_epname -s "The Simpsons" -e s30e10
      'Tis the 30th Season (Sunday, 09 December 2018)     
@@ -394,7 +394,7 @@ plex_tvdb_futureshows
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``plex_tvdb_futureshows -h``, produces the following.
 
-.. code-block:: bash
+.. code-block:: console
 
    Usage: plex_tvdb_futureshows [options]
    
@@ -412,7 +412,7 @@ The help output, when running ``plex_tvdb_futureshows -h``, produces the followi
 
 This executable prints out summary information on TV shows, that exist on the Plex_ server, excluding those shows that will not be searched. In this example, `The Great British Bake-Off <https://en.wikipedia.org/wiki/The_Great_British_Bake_Off>`_ is going to be ignored. The output format during evaluation is descriptive because the process can take more than a few seconds.
 
-.. code-block:: bash
+.. code-block:: console
 
    tanim-desktop $ plex_tvdb_futureshows
    0, started on October 20, 2019 @ 04:30:33 PM
@@ -443,7 +443,7 @@ plex_tvdb_plots
 ^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``plex_tvdb_plots -h``, produces the following. ``$(cwd)`` refers to the current working directory in which this CLI is run.
 
-.. code-block:: bash
+.. code-block:: console
 
    Usage: plex_tvdb_plots [options]
 
@@ -458,7 +458,7 @@ The help output, when running ``plex_tvdb_plots -h``, produces the following. ``
 
 You can choose the calendar year or years for which you want to return eye chart plots of episodes that exist on the Plex_ server, excluding those shows that will not be searched. In this example, `The Great British Bake-Off <https://en.wikipedia.org/wiki/The_Great_British_Bake_Off>`_ is going to be ignored. In this example, we look for all episodes in the Plex_ server that have aired in 2000, 2005, 2010, and 2015. The output format during evaluation is descriptive because the process can take more than a few seconds.
 
-.. code-block:: bash
+.. code-block:: console
 
    tanim-desktop $ plex_tvdb_plots --years 2000,2005,2010,2015
    0, started on October 20, 2019 @ 04:38:19 PM

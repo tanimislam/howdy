@@ -18,7 +18,7 @@ plex_music_album
 ^^^^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``plex_music_album -h``, produces the following.
 
-.. code-block:: bash
+.. code-block:: console
 
    usage: plex_music_album [-h] -a ARTIST_NAME [-A ALBUM_NAME] [--songs]
 			      [--formatted] [--albums] [--debug] [--noverify]
@@ -55,7 +55,7 @@ Here are the three operations,
 
 * Download an album's image to a PNG_ file in the current working directory. Here, the ``-a`` or ``--artist`` (artist) and ``-A`` or ``--album`` (album) need to be specified. To download the album image for the `Moon Safari`_ album released by Air_,
 
-  .. code-block:: bash
+  .. code-block:: console
 
      tanim-desktop $ plex_music_album -a Air -A "Moon Safari"
      tanim-desktop $ Air.Moon Safari.png
@@ -72,7 +72,7 @@ Here are the three operations,
 	
 * The ``--albums`` flag gets a formatted, pretty-printed list of albums released by an artist.  Here, the ``-a`` or ``--artist`` (artist) need to be specified. For example, for Air_,
 
-   .. code-block:: bash
+   .. code-block:: console
 
       tanim-desktop $ plex_music_albums.py -a Air --albums
 
@@ -92,7 +92,7 @@ Here are the three operations,
 
   * By default, the standard pretty-printed formatting if we do not use the ``--formatted`` flag. To get all the songs in track order for `Moon Safari`_ album released by Air_,
   
-    .. code-block:: bash
+    .. code-block:: console
 
        tanim-desktop $ plex_music_album -a Air -A "Moon Safari" --songs		  
 
@@ -113,7 +113,7 @@ Here are the three operations,
 
   * If we run with the ``--formatted`` flag, then the output is a semi-colon-delimited collection of songs in this album. This is an input format that can then be processed by :ref:`plex_music_metafill`. For songs in the `Moon Safari`_ album released by Air_,
 
-    .. code-block:: bash
+    .. code-block:: console
 
        tanim-desktop $ plex_music_album -a Air -A "Moon Safari" --songs --formatted	    
 
@@ -125,7 +125,7 @@ plex_music_metafill
 ^^^^^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``plex_music_metafill -h``, produces the following.
 
-.. code-block:: bash
+.. code-block:: console
 
    usage: plex_music_metafill [-h] -s SONG_NAMES -a ARTIST_NAME
 				 [--maxnum MAXNUM] [-A ALBUM_NAME] [--noverify]
@@ -154,7 +154,7 @@ Here are the common elements of its operation,
 
 This executable has two modes of operation. In each mode, for each song in the collection, this tool finds that song, finds that clip, and asks the user to select a clip with a number from ``1`` to at most ``maxnum``. For convenience, each YouTube_ clip also shows its duration in MM:SS format. For example, here I choose YouTube_ clip #1 for the first track in the `Moon Safari`_ album released by Air_,
 
-.. code-block:: bash
+.. code-block:: console
 
      ACTUAL ARTIST: Air
      ACTUAL ALBUM: Moon Safari
@@ -182,7 +182,7 @@ This executable has two modes of operation. In each mode, for each song in the c
 
 * In the first mode of operation, give it a list of songs separated by semicolons. The format of songs is described in :ref:`this bullet point <plex_music_abum_songs_formatted>`, e.g.,
 
-  .. code-block:: bash
+  .. code-block:: console
 
      La Femme d'Argent;Sexy Boy;All I Need;Kelly Watch the Stars;Talisman;Remember;You Make It Easy;Ce Matin-Là;New Star in the Sky (Chanson Pour Solal);Le Voyage De Pénélope
 
@@ -210,7 +210,7 @@ plex_music_songs
 ^^^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``plex_music_songs -h``, produces the following.
 
-.. code-block:: bash
+.. code-block:: console
 
    usage: plex_music_songs [-h] -a ARTIST_NAME -s SONG_NAMES [--maxnum MAXNUM]
 			      [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES]
@@ -326,7 +326,7 @@ Here ``plex_music_songs`` looks for a song, Remember_ by Air_, using the music s
 
 1. The service finds the match and prints out the artist, album, and song.
        	       	     	 
-   .. code-block:: bash
+   .. code-block:: console
    
       ACTUAL ARTIST: Air
       ACTUAL ALBUM: Moon Safari
@@ -336,7 +336,7 @@ Here ``plex_music_songs`` looks for a song, Remember_ by Air_, using the music s
    
 2. A selection of candidate YouTube_ clips are given, each with duration. I find it best to choose a clip that is as highly ranked as possible and whose duration matches the actual song's duration (if provided).
 
-   .. code-block:: bash
+   .. code-block:: console
 
       ACTUAL ARTIST: Air
       ACTUAL ALBUM: Moon Safari
@@ -355,7 +355,7 @@ Here ``plex_music_songs`` looks for a song, Remember_ by Air_, using the music s
 
 3. Make a selection from the command line, such as ``2`` (because the high ranking clip's duration matches the song's duration very closely). The song then downloads into the file, ``Air.Remember.m4a``, in the current working directory.
 
-   .. code-block:: bash
+   .. code-block:: console
 
       ACTUAL ARTIST: Air
       ACTUAL ALBUM: Moon Safari
@@ -415,7 +415,7 @@ Here, one uses the `--new`` flag and specifies, IN ORDER, the artists (using the
 
 We run this command,
 
-.. code-block:: bash
+.. code-block:: console
 
    plex_music_service.py --new --artists="Ximena Sariñana;Natalia Lafourcade" -s "Different;Piensa en Mí" --musicbrainz
 
@@ -432,7 +432,7 @@ upload_to_gmusic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``upload_to_gmusic -h``, produces the following.
 
-.. code-block:: bash
+.. code-block:: console
 
    usage: upload_to_gmusic [-h] -f FILENAMES [-P] [--noverify]
 
@@ -447,7 +447,7 @@ The help output, when running ``upload_to_gmusic -h``, produces the following.
 
 The ``--noverify`` flag disables verification of SSL HTTP connections. The standard operation of this tool is to *upload* songs to your `Google Play Music`_ account. The ``-f`` or ``--filenames`` argument can take semicolon-delimited filenames, or standard POSIX globs, for example,
 
-.. code-block:: bash
+.. code-block:: console
 
    upload_to_gmusic -f "Air.*m4a"
 
@@ -455,7 +455,7 @@ attempts to upload all filenames that match ``Air.*m4a``.
 
 The other mode of operation, running with the ``-P`` flag without specifying files to upload, attempts to refresh the :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` OAuth2 credentials. Its operation is similar to that of :ref:`plex_store_credentials`. These dialogs in the shell appear,
 
-.. code-block:: bash
+.. code-block:: console
 
    tanim-desktop $ upload_to_gmusic -P
    Please go to this URL in a browser window:https://accounts.google.com/o/oauth2/auth...
@@ -466,7 +466,7 @@ Second, go to the URL to which you are instructed. Once you copy that URL into y
 
 Third, paste the code similar to as described in :ref:`Step #7 <google_step07_oauthtokencopy>` into the interactive text dialog, ``...type in the access code:``. Once successful, you will receive this message in the shell,
 
-.. code-block:: bash
+.. code-block:: console
 
    Success. Stored GMusicAPI Mobileclient credentials.
 

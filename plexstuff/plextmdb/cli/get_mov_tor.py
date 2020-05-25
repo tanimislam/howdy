@@ -1,8 +1,5 @@
 import sys, signal
-# code to handle Ctrl+C, convenience method for command line tools
-def signal_handler( signal, frame ):
-    print( "You pressed Ctrl+C. Exiting...")
-    sys.exit( 0 )
+from plexstuff import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
 import re, codecs, requests, time, logging
 from itertools import chain
@@ -80,9 +77,10 @@ def get_movie_torrent_items( items, filename = None, to_torrent = False ):
     if len( items ) != 1:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate(items) }
         bs = 'Choose movie:\n%s\n' % '\n'.join(
-            map(lambda idx: '%d: %s (%d SE, %d LE)' % ( idx, sortdict[ idx ][ 'title' ],
-                                                        sortdict[ idx ][ 'seeders' ],
-                                                        sortdict[ idx ][ 'leechers' ]),
+            map(lambda idx: '%d: %s (%d SE, %d LE)' % (
+                idx, sortdict[ idx ][ 'title' ],
+                sortdict[ idx ][ 'seeders' ],
+                sortdict[ idx ][ 'leechers' ]),
                 sorted( sortdict ) ) )
         iidx = input( bs )
         try:
@@ -108,6 +106,7 @@ def get_movie_torrent_items( items, filename = None, to_torrent = False ):
         plexcore_deluge.deluge_add_magnet_file( client, magnet_link )
     elif filename is None:
         print('magnet link: %s' % magnet_link )
+        return
     else:
         with open(filename, mode='w', encoding='utf-8') as openfile:
             openfile.write('%s\n' % magnet_link )
@@ -169,9 +168,9 @@ def get_movie_yts( name, verify = True, raiseError = False, to_torrent = False )
 def main( ):
     parser = ArgumentParser( )
     parser.add_argument('-n', '--name', dest='name', type=str, action='store',
-                        help = 'Name of the movie file to get.', required = True )
+                        help = 'Name of the movie to get.', required = True )
     parser.add_argument('-y', '--year', dest='year', type=int, action='store',
-                        help = 'Year to look for the movie file to get.')
+                        help = 'Year to look for the movie to get.')
     parser.add_argument('--maxnum', dest='maxnum', type=int, action='store', default = 10,
                         help = 'Maximum number of torrents to look through. Default is 10.')
     parser.add_argument('--timeout', dest='timeout', type=int, action='store', default = 60,
@@ -181,7 +180,7 @@ def main( ):
     parser.add_argument('-f', '--filename', dest='filename', action='store', type=str,
                         help = 'If defined, put torrent or magnet file into filename.')
     parser.add_argument('--bypass', dest='do_bypass', action='store_true', default=False,
-                        help = 'If chosen, bypass YTS.AG.')
+                        help = 'If chosen, bypass YTS.')
     parser.add_argument('--nozooq', dest='do_nozooq', action='store_true', default=False,
                         help = 'If chosen, bypass ZOOQLE.')
     #parser.add_argument('--torrentz', dest='do_torrentz', action='store_true', default=False,
@@ -192,13 +191,10 @@ def main( ):
                         help = 'If chosen, push the magnet link or torrent file into the deluge server.' )  
     parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
                         help = 'If chosen, do not verify SSL connections.' )
-    parser.add_argument('--timing', dest='do_timing', action='store_true', default = False,
-                        help = 'If chosen, show timing information (how long to get movie torrents).')
-    parser.add_argument('--doRaw', dest='do_raw', action='store_true', default = False,
+    parser.add_argument('--raw', dest='do_raw', action='store_true', default = False,
                         help = 'If chosen, do not use IMDB matching for Jackett torrents.')
     args = parser.parse_args( )
     assert( args.timeout >= 10 )
-    assert( args.name is not None )
     if args.do_info: logging.basicConfig( level = logging.INFO )
     #
     num_both = 0
@@ -208,7 +204,7 @@ def main( ):
     #
     time0 = time.time( )
     tmdb_id = None
-    if args.year is not None:
+    if args.year is not None and not args.do_raw:
         tmdb_id = plextmdb.get_movie_tmdbids( args.name, year = args.year )
     if not args.do_bypass:
         try:
@@ -243,9 +239,8 @@ def main( ):
             items_lists.append( items )
         except: pass
     items = list( chain.from_iterable( items_lists ) )
-    if args.do_timing:
-        print( 'search for %d torrents took %0.3f seconds.' % (
-            len( items ), time.time( ) - time0 ) )    
+    logging.info( 'search for %d torrents took %0.3f seconds.' % (
+        len( items ), time.time( ) - time0 ) )    
     if len( items ) != 0:
         #
         ## sort from most seeders + leecher to least

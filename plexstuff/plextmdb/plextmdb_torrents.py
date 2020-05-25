@@ -71,7 +71,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
 
     params = _return_params( name, popName, tmdb_id )
     if popName and 'q' in params: params.pop( 'q' )
-    logging.debug( 'params: %s, mainURL = %s' % (
+    logging.info( 'params: %s, mainURL = %s' % (
         params, urljoin( url, endpoint ) ) )                                                 
     response = requests.get(
         urljoin( url, endpoint ), verify = verify,
@@ -81,7 +81,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
             ' '.join([ 'failure, problem with jackett server accessible at %s.' % url,
                        'Error code = %d. Error data = %s.' % (
                            response.status_code, response.content ) ] ) )
-    logging.debug( 'processed jackett torrents for %s in %0.3f seconds.' % (
+    logging.info( 'processed jackett torrents for %s in %0.3f seconds.' % (
         name, time.time( ) - time0 ) )
     html = BeautifulSoup( response.content, 'lxml' )
     if len( html.find_all('item') ) == 0:

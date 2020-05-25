@@ -2,7 +2,7 @@
 Core API
 ================================================
 
-This document describes the lower level Plex emailing API, upon which all the command line and GUI tools are based. It lives in ``plexstuff.plexcore``.
+This document describes the lower level Plex core API, upon which all the command line and GUI tools are based. It lives in ``plexstuff.plexcore``.
 
 plexstuff.plexcore module
 --------------------------
@@ -27,11 +27,10 @@ This module implements the lower-level functionality that does or has the follow
 .. automodule:: plexstuff.plexcore
    :members:
 
-plexstuff.plexinitialization module
-----------------------------------------------
-
-.. automodule:: plexstuff.plexinitialization
-   :members:
+.. 
+   plexstuff.plexinitialization module
+   ----------------------------------------------
+   automodule:: plexstuff.plexinitialization; <newline> :members:
 
 plexstuff.plexcore.plexcore module
 -----------------------------------------

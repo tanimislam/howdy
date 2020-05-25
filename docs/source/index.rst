@@ -9,6 +9,7 @@ Table of Contents
 
   plex_prereqs
   plex-config/plex_config
+  plex_api
   plex-core/plex_core
   plex-tvdb/plex_tvdb
   plex-tmdb/plex_tmdb

@@ -6,7 +6,7 @@ plex_email_notif
 
 This is documentation for the Plexstuff one-off email announcement commnand line interface, ``plex_email_notif``. You specify a simple email, with a simple text subject line a simple plaintext body, to email either to yourself at your Plex_ account or also to friends of your Plex_ server. The list of your Plex_ server friends can be accessed using :ref:`plex_core_cli`, and specifically this command,
 
-.. code-block:: bash
+.. code-block:: console
 
    plex_core_cli --friends
 
@@ -20,7 +20,7 @@ that produces a list of friends with and without associated names in your Google
 
 The help output, when running ``plex_email_notif -h``, produces the following.
 
-.. code-block:: bash
+.. code-block:: console
 
    Usage: plex_email_notif [options]
 

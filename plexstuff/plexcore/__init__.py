@@ -30,7 +30,7 @@ def get_lastupdated_string( dt = datetime.datetime.now( ) ):
     """
     Returns a string representation of a :py:class:`datetime <datetime.datetime>` object.
 
-    :param :py:class:`datetime <datetime.datetime>` dt: the date and time.
+    :param dt: the date and time, of type :py:class:`datetime <datetime.datetime>`.
     
     :returns: a :py:class:`str` with this format, ``Saturday, 28 September 2019, at 3:41 AM``.
     :rtype: str

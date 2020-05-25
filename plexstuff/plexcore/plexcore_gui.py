@@ -643,13 +643,13 @@ class PlexConfigLoginWidget( PlexConfigWidget ):
                 username, password, verify = self.verify )
             if token is None:
                 raise ValueError( "Error, incorrect username/password" )
-            plexcore.pushCredentials( username, password,
-                                      verify = self.verify )
+            plexcore.pushCredentials( username, password )
             self.server_usernameBox.setText( username )
             self.server_passwordBox.setText( password )
             self.server_statusLabel.setText( 'WORKING' )
             self._emitWorkingStatusDict[ 'PLEXLOGIN' ] = True
-        except:
+        except Exception as e:
+            logging.info('plexstuff.plexcore.plexcore_gui.PlexConfigLoginWidget.pushPlexLoginConfig: Exception raised, %s.' % str( e ) )
             self.server_usernameBox.setText( '' )
             self.server_passwordBox.setText( '' )
             self.server_statusLabel.setText( 'NOT WORKING' )

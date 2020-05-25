@@ -1,7 +1,5 @@
 import sys, signal
-def signal_handler( signal, frame ):
-    print( "You pressed Ctrl+C. Exiting...")
-    sys.exit( 0 )
+from plexstuff import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
 import os, numpy, glob, time, datetime
 import multiprocessing, logging
@@ -33,10 +31,8 @@ def main( ):
                           'before giving up. Default is %d.' % default_iters ]) )
     parser.add_argument('--token', dest='token', type=str, action='store',
                       help = 'Optional argument. If chosen, user provided Plex access token.')
-    parser.add_argument('--info', dest='do_info', action='store_true', default=False,
-                      help = 'If chosen, then run in info mode.' )
-    parser.add_argument('--debug', dest='do_debug', action='store_true', default=False,
-                      help = 'If chosen, then run in debug mode.' )
+    parser.add_argument('--debuglevel', dest='debug_level', action='store', type=str, default = 'None',
+                    choices = [ 'None', 'info', 'debug' ], help = 'Choose the debug level for the system logger. Default is None (no logging). Can be one of None (no logging), info, or debug.' )
     parser.add_argument('--numthreads', dest='numthreads', type=int, action='store', default = default_num_threads,
                       help = 'Number of threads over which to search for TV shows in my library. Default is %d.' %
                       default_num_threads )
@@ -45,12 +41,12 @@ def main( ):
     parser.add_argument('--nomin', dest='do_restrict_minsize', action='store_false', default=True,
                       help = 'If chosen, do not restrict minimum size of downloaded file.' )
     parser.add_argument('--raw', dest='do_raw', action='store_true', default = False,
-                      help = 'If chosen, then use the raw string to download the torrent.' )    
+                      help = 'If chosen, then use the raw string to specify TV show torrents.' )    
     args = parser.parse_args( )
     #
     logger = logging.getLogger( )
-    if args.do_info: logger.setLevel( logging.INFO )
-    if args.do_debug: logger.setLevel( logging.DEBUG )
+    if args.debug_level == 'info':  logger.setLevel( logging.INFO )
+    if args.debug_level == 'debug': logger.setLevel( logging.DEBUG )
     assert( args.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
     assert( args.num_iters >= 1 ), 'error, must have a positive number of maximum iterations.'
     step = 0

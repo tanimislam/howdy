@@ -1,32 +1,32 @@
 import sys, signal
-# code to handle Ctrl+C, convenience method for command line tools
-def signal_handler( signal, frame ):
-    print( "You pressed Ctrl+C. Exiting...")
-    sys.exit( 0 )
+from plexstuff import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
 #
 import os, logging, warnings, qtmodern.styles, qtmodern.windows
-from PyQt5.QtWidgets import QApplication, QStyleFactory
+from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
 from argparse import ArgumentParser
 #
 from plexstuff import resourceDir
-from plexstuff.plexemail.plexemail_gui import PlexEmailGUI
-from plexstuff.plexemail.plexemail_mygui import PlexEmailMyGUI
 from plexstuff.plexcore.plexcore_gui import returnToken, returnGoogleAuthentication
+try:
+    from plexstuff.plexemail.plexemail_gui import PlexEmailGUI
+    from plexstuff.plexemail.plexemail_mygui import PlexEmailMyGUI
+except ValueError as e:
+    print( e.args[0] )
+    sys.exit( 0 )
 
 warnings.simplefilter( 'ignore' )
 
 def mainSub( info = False, doLocal = True, doLarge = False, verify = True, onlyEmail = False ):
     app = QApplication([])
-    icn = QIcon( os.path.join(
-        resourceDir, 'icons', 'plex_email_gui.png' ) )
+    icn = QIcon( os.path.join( resourceDir, 'icons', 'plex_email_gui.png' ) )
     app.setWindowIcon( icn )
     qtmodern.styles.dark( app )
     logger = logging.getLogger( )
     if info: logger.setLevel( logging.INFO )
     val = returnGoogleAuthentication( )
-    if not opts.do_onlyemail:
+    if not onlyEmail:
         pegui = PlexEmailGUI( doLocal = doLocal, doLarge = doLarge, verify = verify )
     else:
         pegui = PlexEmailMyGUI( doLocal = doLocal, doLarge = doLarge, verify = verify )

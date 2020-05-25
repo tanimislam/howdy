@@ -7,10 +7,16 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 #
 from plexstuff import resourceDir
-from plexstuff.plexcore import plexcore, QDialogWithPrinting, plexcore_texts_gui
+from plexstuff.plexcore import plexcore, QDialogWithPrinting
 from plexstuff.plexemail import plexemail, plexemail_basegui, emailAddress, emailName
 from plexstuff.plexemail import get_email_contacts_dict
-
+#
+## throw an exception if cannot
+try:
+    from plexstuff.plexcore import plexcore_texts_gui
+except ImportError as e:
+    raise ValueError("Error, we need to be able to import PyQt5.QtWebEngineWidgets, which we cannot do. On Ubuntu Linux machines you can try 'apt install python3-pyqt5.qtwebengine'." )
+    
 class QLineCustom( QLineEdit ):
     def __init__( self ):
         super( QLineCustom, self ).__init__( )

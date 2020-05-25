@@ -157,8 +157,6 @@ def main( ):
                       help = 'If chosen, run in info mode.' )
     parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
                       help = 'If chosen, do not verify SSL connections.' )
-    parser.add_argument('--timing', dest='do_timing', action='store_true', default = False,
-                      help = 'If chosen, show timing information (how long to get TV torrents).')
     args = parser.parse_args( )
     logger = logging.getLogger( )
     if args.do_info: logger.setLevel( logging.INFO )
@@ -167,9 +165,9 @@ def main( ):
     items = process_magnet_items(
         args.name, maxnum = args.maxnum,
         raw = args.do_raw, verify = args.do_verify )
-    if args.do_timing:
-        print( 'took %0.3f seconds to get TV torrents for %s.' % (
-            time.time( ) - time0, args.name ) )
+
+    logging.info( 'took %0.3f seconds to get TV torrents for %s.' % (
+        time.time( ) - time0, args.name ) )
     if items is not None:
         #
         ## sort from most seeders + leecher to least

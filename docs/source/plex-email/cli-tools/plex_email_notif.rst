@@ -22,15 +22,14 @@ The help output, when running ``plex_email_notif -h``, produces the following.
 
 .. code-block:: console
 
-   Usage: plex_email_notif [options]
+   usage: plex_email_notif [-h] [--debug] [--test] [--subject SUBJECT] [--body BODY]
 
-   Options:
+   optional arguments:
      -h, --help         show this help message and exit
      --debug            Run debug mode if chosen.
      --test             Send a test notification email if chosen.
-     --subject=SUBJECT  Subject of notification email. Default is "Plex
-                        notification for November 03, 2019.".
-     --body=BODY        Body of the email to be sent. Default is "This is a test."
+     --subject SUBJECT  Subject of notification email. Default is "Plex notification for May 24, 2020.".
+     --body BODY        Body of the email to be sent. Default is "This is a test."
 
 * The ``--debug`` flag prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging <logging>` output.
 

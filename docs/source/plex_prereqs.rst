@@ -6,25 +6,29 @@ To get started, I assume you have your own Plex server. In order to get started 
 
 Prerequisites
 -------------
-You will need to have PyQt5_, sshpass_, and pandoc_ on your machine. `Pandoc <pandoc_>`_ is needed by Plexstuff tools that convert emails written in LaTeX_ into HTML. On Debian based systems (such as Ubuntu_. Mint_, or Debian_), you can install PyQt5_, sshpass_, and pandoc_ with the following command (as sudo_ or root).
+You will need to have PyQt5_, PyQtWebEngine_, sshpass_, and pandoc_ on your machine. `Pandoc <pandoc_>`_ is needed by Plexstuff tools that convert emails written in LaTeX_ into HTML. On Debian based systems (such as Ubuntu_. Mint_, or Debian_), you can install PyQt5_, sshpass_, and pandoc_ with the following command (as sudo_ or root).
 
-.. code:: bash
+.. code-block:: console
 
-   sudo apt install python3-pyqt5 sshpass pandoc
+   sudo apt install python3-pyqt5 python3-pyqt5.qtwebengine sshpass pandoc
 
 Equivalent commands to install PyQt5_ and sshpass_ exist on `Red Hat`_ based systems, such as Fedora_ or CentOS_. *An even easier way to install the latest version of PyQt5 on your user account is with this command*,
 
-.. code:: bash
+.. code-block:: console
 
    pip3 install --user pyqt5
 
+.. note::
+
+   The installation of PyQtWebEngine_ is relatively difficult. On my Ubuntu 20.04 machine, I had to run ``sudo apt install python3-pyqt5.qtwebengine`` to get this to work. More portable and universal commands, such as ``pip3 install --user pyqtwebengine``, will *install* PyQtWebEngine_, but imports *may not work*.
+   
 In a common scenario, you may need to use Plexstuff on a Linux machine you do not administer or own. Typically PyQt5_ and sshpass_ are installed, but pandoc_ is a more niche tool that must be installed by hand into your home directory if it has not been installed by default. By my convention the executables and other resources (such as includes and libraries) will be installed under ``~/.local``. Sources of necessary tools will be decompressed and live in ``~/.local/src``. Here are the eight steps I used in order to get pandoc_ installed.
 
 1. Ensure that ``~/.local/bin`` and ``~/.cabal/bin`` are in your PATH.
 
 2. Download the ``Linux x86-64`` pre-built version of the `Haskell Stack build tool <stack_>`_ and decompress into ``~/.local/src``. Here is a link, `https://get.haskellstack.org/stable/linux-x86_64-static.tar.gz <https://get.haskellstack.org/stable/linux-x86_64-static.tar.gz>`_. Decompress with the following command,
 
-  .. code:: bash
+  .. code-block:: console
 
     tar stack-2.1.1-linux-x86_64-static.tar.gz && rm stack-2.1.1-linux-x86_64-static.tar.gz
 
@@ -32,7 +36,7 @@ In a common scenario, you may need to use Plexstuff on a Linux machine you do no
 
 3. cd into ``~/.local/src/stack-2.1.1-linux-x86_64-static`` and install a *bootstrapped* Glasgow Haskell Compiler (ghc_) for Linux with the following command,
 
-  .. code:: bash
+  .. code-block:: console
 
     ./stack ghc
 
@@ -40,7 +44,7 @@ In a common scenario, you may need to use Plexstuff on a Linux machine you do no
 
 4. Download the latest version of the Glasgow Haskell Compiler, as of 8 July 2019, it is `ghc-8.6.5-src.tar.xz <https://downloads.haskell.org/~ghc/8.6.5/ghc-8.6.5-src.tar.xz>`_. Once it has downloaded into ``~/.local/src``, decompress and untar this way. Note that you need `xz <https://en.wikipedia.org/wiki/Xz>`_ to be installed on your machine.
 
-  .. code:: bash
+  .. code-block:: console
 
     xz -cd ghc-8.6.5-src.tar.xz | tar xvf -
     rm ghc-8.6.5-src.tar
@@ -49,28 +53,28 @@ In a common scenario, you may need to use Plexstuff on a Linux machine you do no
 
 5. cd into ``~/.local/src/ghc-8.6.5``. Configure, ``make``, and ``make install`` ghc_ with the following three commands in order.
 
-  .. code:: bash
+  .. code-block:: console
 
     ./configure --prefix=$HOME/.local --with-ghc=$HOME/.stack/programs/x86_64-linux/ghc-8.6.5/bin/ghc_
     make && make install
 
 6. At this point, remove the stack_ source and distribution directories,
 
-  .. code:: bash
+  .. code-block:: console
 
     rm -rf ~/.local/src/stack-2.1.1-linux-x86_64-static
     rm -rf ~/.stack
 
 7. Download and install cabal_, a command line tool to manage Haskell packages. First, download the cabal_ x86-64 binary, `cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz <https://downloads.haskell.org/~cabal/cabal-install-latest/cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz>`_, into ``~/.local/src``.
 
-  .. code:: bash
+  .. code-block:: console
 
     xz -cd cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz | tar xvf -
     rm cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz
 
   Second, move ``cabal`` into ``~/.local/bin``,
 
-  .. code:: bash
+  .. code-block:: console
 
     mv ~/.local/src/cabal ~/.local/bin
     rm -f ~/.local/src/cabal.sig
@@ -79,13 +83,13 @@ In a common scenario, you may need to use Plexstuff on a Linux machine you do no
 
 8. FINALLY,  install ``pandoc`` into ``~/.local/bin`` in these steps. First run,
 
-  .. code:: bash
+  .. code-block:: console
 
     cabal install pandoc
 
   This will install ``pandoc`` into ``~/.cabal/bin/pandoc``. Move ``pandoc`` from ``~/.cabal/bin/pandoc`` into ``~/.local/bin``.
 
-  .. code:: bash
+  .. code-block:: console
 
     mv ~/.cabal/bin/pandoc ~/.local/bin
 
@@ -93,24 +97,24 @@ In a common scenario, you may need to use Plexstuff on a Linux machine you do no
 Installation
 ------------
 
-Currently, parts of the installation are straightforward. Just copy out ``plexstuff`` into a directory you own on a Linux machine. To automatically get all the Python dependencies (and there are a lot of them!) installed onto your machine (specifically, your user account), just run a single CLI executable from the top level directory, such as ``get_tv_tor``, the following way.
+Since this package has been setup-ified, installation is very easy. Just ``cd`` into the ``plexstuff`` directory, and run,
 
-.. code:: bash
+.. code-block:: console
 
-  get_tv_tor -h
+   python3 setup.py install --user
 
-If you are missing any packages, and almost certainly you are if you are using this ``plexstuff`` in the beginning, you will get a command line warning dialog like this,
+Or you can run pip from that directory. This installation process is especially suited for active development; you make changes to your code, and interactive tests of the API or of the executables are *immediately* reflected.
 
-.. code:: bash
+.. code-block:: console
 
-  YOU NEED TO INSTALL THESE PACKAGES: cfscrape.
-  I WILL INSTALL THEM INTO YOUR USER DIRECTORY.
-  DO YOU ACCEPT?
-  MAKE OPTION:
-  1: YES, INSTALL THESE PACKAGES.
-  2: NO, DO NOT INSTALL THESE PACKAGES.
+   pip3 install --user -e .
 
-Choose ``1`` and the missing packages (in this case `cfscrape <https://github.com/Anorov/cloudflare-scrape>`_) will be installed.
+Or, if you feel ridiculously brave, you can install from the GitHub_ URL.
+
+.. code-block:: console
+
+   pip3 install --user git+https://github.com/tanimislam/plexstuff.git#egg=plexstuff
+
 
 Common Design Philosophies and Features for Command Line and GUIs
 ----------------------------------------------------------------------------------------------------------
@@ -141,6 +145,7 @@ Functionality    CLI                                                            
                  - :ref:`plex_tvdb_epname <plex_tvdb_epname_label>` |cbox|
                  - :ref:`plex_tvdb_futureshows <plex_tvdb_futureshows_label>` |cbox|
                  - :ref:`plex_tvdb_plots <plex_tvdb_plots_label>` |cbox|
+		 - :ref:`plex_tvdb_excludes <plex_tvdb_excludes_label>` |cbox|
 ``plextmdb``     - :ref:`get_mov_tor <get_mov_tor_label>` |cbox|                        - :ref:`plex_tmdb_totgui <plex_tmdb_totgui_label>`
 ``plexmusic``    - :ref:`plex_music_album <plex_music_album_label>` |cbox|
                  - :ref:`plex_music_metafill <plex_music_metafill_label>` |cbox|
@@ -150,10 +155,12 @@ Functionality    CLI                                                            
 ===============  =====================================================================  =============================================================
 
 .. these are the links
+.. _GitHub: https://github.com
 .. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki
 .. _Plex: https://plex.tv
 .. _PlexAPI: https://python-plexapi.readthedocs.io/en/latest/introduction.html
 .. _PyQt5: https://www.riverbankcomputing.com/static/Docs/PyQt5/index.html
+.. _PyQtWebEngine: https://www.riverbankcomputing.com/software/pyqtwebengine
 .. _sshpass: https://linux.die.net/man/1/sshpass
 .. _pandoc: https://pandoc.org
 .. _sudo: https://en.wikipedia.org/wiki/Sudo

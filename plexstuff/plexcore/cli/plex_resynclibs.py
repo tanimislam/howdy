@@ -1,4 +1,6 @@
-import sys, textwrap
+import os, sys, signal, textwrap
+from plexstuff import signal_handler
+signal.signal( signal.SIGINT, signal_handler )
 from os import get_terminal_size
 from tabulate import tabulate
 from argparse import ArgumentParser

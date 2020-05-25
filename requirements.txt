@@ -34,6 +34,7 @@ python-geoip-geolite2
 python-Levenshtein
 python-magic
 pytz
+qtmodern
 requests
 requests_oauthlib
 rsa

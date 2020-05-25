@@ -350,14 +350,14 @@ def get_tvdata_ordered_by_date( tvdata ):
 def create_plot_year_tvdata( tvdata_date_dict, year = 2010,
                              shouldPlot = True, dirname = None ):
     """
-    Creates a calendar eye chart of episodes aired during a given calendar year. This either creates an SVGZ_ file, or shows the chart on the screen. An example chart is shown in :numref:`plex_tvdb_cli_figures_plots_tvdata_2000`.
+    Creates a calendar eye chart of episodes aired during a given calendar year. This either creates an SVG_ file, or shows the chart on the screen. An example chart is shown in :numref:`plex_tvdb_cli_figures_plots_tvdata_2000`.
     
     :param dict tvdata_date_dict: the :py:class:`dictionary <dict>` of Plex_ TV library episodes, organized by date aired.
     :param int year: the calendar year for which to create an eye chart of episodes aired.
-    :param bool shouldPlot: if ``True``, then crate an SVGZ_ file named ``tvdata.YEAR.svgz``. Otherwise plot this eye chart on the screen.
+    :param bool shouldPlot: if ``True``, then create an SVG_ file named ``tvdata.YEAR.svg``. Otherwise plot this eye chart on the screen.
     :parm str dirname: the directory into which a file should be created (only applicable when ``shouldPlot = True``). If ``None``, then defaults to current working directory. If not ``None``, then must be a valid directory.
 
-    .. _SVGZ: https://en.wikipedia.org/wiki/Scalable_Vector_Graphics#Compression
+    .. _SVG: https://en.wikipedia.org/wiki/Scalable_Vector_Graphics
     """
     calendar.setfirstweekday( 6 )
     def suncal( mon, year = 2010, current_date = None ):
@@ -515,8 +515,9 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010,
         else: dirname = os.getcwd( )
         canvas = FigureCanvasAgg(fig)
         canvas.print_figure(
-            os.path.join( dirname, 'tvdata.%d.svgz' % year ),
+            os.path.join( dirname, 'tvdata.%d.svg' % year ),
             bbox_inches = 'tight' )
+        os.chmod( os.path.join( dirname, 'tvdata.%d.svg' % year ), 0o644 )
     return fig
     
 def get_series_id( series_name, token, verify = True ):

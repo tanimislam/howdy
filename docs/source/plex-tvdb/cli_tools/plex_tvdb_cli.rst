@@ -4,7 +4,7 @@ TVDB Command Line Utilities
 
 This section describes the six Plexstuff TVDB command line utilities.
 
-* :ref:`get_plextvdb_batch` does...
+* :ref:`get_plextvdb_batch` finds new episodes of TV shows that already exist on the Plex_ server.
 
 * :ref:`get_tv_tor` finds `Magnet links <Magnet URI_>`_ of television shows, and by default prints out the chosen magnet link. This executable uses the Jackett_ server to search for TV shows, and can optionally upload these links to the specified Deluge_ server (see :numref:`Plexstuff Settings Configuration`).
 
@@ -16,6 +16,8 @@ This section describes the six Plexstuff TVDB command line utilities.
 
 * :ref:`plex_tvdb_plots` creates eye chart summary plots, by calendar year, of TV shows that have aired in a given year. These plots are in `SVGZ <https://en.wikipedia.org/wiki/Scalable_Vector_Graphics#Compression>`_ format.
 
+* :ref:`plex_tvdb_excludes` administers selects those TV shows, that exist on the Plex_ server, that we want to exclude from automatic update.
+
 .. _get_plextvdb_batch_label:
 
 get_plextvdb_batch
@@ -24,29 +26,21 @@ The help output, when running ``get_plextvdb_batch -h``, produces the following.
 
 .. code-block:: console
 
-   Usage: get_plextvdb_batch [options]
+   usage: get_plextvdb_batch [-h] [--maxtime MAXTIME_IN_SECS] [--num NUM_ITERS] [--token TOKEN] [--debuglevel {None,info,debug}] [--numthreads NUMTHREADS] [--nomax] [--nomin] [--raw]
 
-   Options:
+   optional arguments:
      -h, --help            show this help message and exit
-     --maxtime=MAXTIME_IN_SECS
-                           The maximum amount of time to spend (in seconds), per
-                           candidate magnet link, trying to download a TV show.
-                           Default is 1000 seconds.
-     --num=NUM_ITERS       The maximum number of different magnet links to try
-                           before giving up. Default is 2.
-     --token=TOKEN         Optional argument. If chosen, user provided Plex
-                           access token.
-     --info                If chosen, then run in info mode.
-     --debug               If chosen, then run in debug mode.
-     --numthreads=NUMTHREADS
-                           Number of threads over which to search for TV shows in
-                           my library. Default is $(num_cores).
-     --nomax               If chosen, do not restrict maximum size of downloaded
-                           file.
-     --nomin               If chosen, do not restrict minimum size of downloaded
-                           file.
-     --raw                 If chosen, then use the raw string to download the
-                           torrent.
+     --maxtime MAXTIME_IN_SECS
+			   The maximum amount of time to spend (in seconds), per candidate magnet link, trying to download a TV show. Default is 1000 seconds.
+     --num NUM_ITERS       The maximum number of different magnet links to try before giving up. Default is 2.
+     --token TOKEN         Optional argument. If chosen, user provided Plex access token.
+     --debuglevel {None,info,debug}
+			   Choose the debug level for the system logger. Default is None (no logging). Can be one of None (no logging), info, or debug.
+     --numthreads NUMTHREADS
+			   Number of threads over which to search for TV shows in my library. Default is 16.
+     --nomax               If chosen, do not restrict maximum size of downloaded file.
+     --nomin               If chosen, do not restrict minimum size of downloaded file.
+     --raw                 If chosen, then use the raw string to specify TV show torrents.
 
 To better understand the command line switches (flags and inputs), we describe how the this executable, which searches for new episodes of TV shows on the Plex_ server on a given day, works.
 
@@ -60,15 +54,13 @@ To better understand the command line switches (flags and inputs), we describe h
 
 .. _get_plextvdb_batch_point3label:
 
-3. in order to quit a search for episode, for a given episode that has been aired but is missing from the Plex_ server, this will wait for ``MAXTIME_IN_SECS`` seconds to fully download an episode from its Magnet link, and will only search through the ``NUM_ITERS`` top choices of Magnet links found for each episode. The choices for Magnet links for an episode are ordered by the sum of its number of seeders and leechers (see :ref:`get_tv_tor`).
+3. For a given episode that has been aired but is missing from the Plex_ server, this will wait for ``MAXTIME_IN_SECS`` seconds to fully download an episode from its Magnet link, and will only search through the ``NUM_ITERS`` top choices of Magnet links found for each episode. The choices for Magnet links for an episode are ordered by the sum of its number of seeders and leechers (see :ref:`get_tv_tor`).
 
 Here are the common flags and command line inputs.
 
 * ``--token`` allows you to explicitly set the Plex_ access token for the server.
 
-* ``--info`` prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
-
-* ``--debug`` prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
+* ``--debuglevel`` specifies the amount of system logging into STDOUT that you want to show. The default choice is ``None`` (no logging). If ``info``, then it prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output. If ``debug``, then it prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
 
 Here are the command line inputs that change the operation of this execution.
 
@@ -120,31 +112,24 @@ The help output, when running ``get_tv_tor -h``, produces the following.
 
 .. code-block:: console
 
-   Usage: get_tv_tor [options]
+   usage: get_tv_tor [-h] -n NAME [--maxnum MAXNUM] [--raw] [-f FILENAME] [--add] [--info] [--noverify] [--timing]
 
-   Options:
+   optional arguments:
      -h, --help            show this help message and exit
-     -n NAME, --name=NAME  Name of the TV show to get.
-     --maxnum=MAXNUM       Maximum number of torrents to look through. Default is
-                           10.
-     --raw                 If chosen, then use the raw string (for jackett) to
-                           download the torrent.
-     -f FILENAME, --filename=FILENAME
-                           If defined, put torrent or magnet link into filename.
-     --add                 If chosen, push the magnet link into the deluge
-                           server.
+     -n NAME, --name NAME  Name of the TV show to get.
+     --maxnum MAXNUM       Maximum number of torrents to look through. Default is 10.
+     --raw                 If chosen, then use the raw string (for jackett) to download the torrent.
+     -f FILENAME, --filename FILENAME
+			   If defined, put torrent or magnet link into filename.
+     --add                 If chosen, push the magnet link into the deluge server.
      --info                If chosen, run in info mode.
      --noverify            If chosen, do not verify SSL connections.
-     --timing              If chosen, show timing information (how long to get TV
-                           torrents).
 
 These are common flags used by all standard operations of this CLI.
 
 * ``--info`` prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
 
 * ``--noverify`` does not verify SSL connections.
-
-* ``--timing`` prints out how long, in seconds, any given operation (for instance, getting and choosing TV show `Magnet links`_) takes.
 
 The ``-n`` or ``--name`` flag is used to specify the TV show and episode, for example `The Simpsons S30E10 <simpsons_s30e10_>`_ (`The Simpsons <the_simpsons_>`_, season 30 and episode 10)
 
@@ -236,16 +221,15 @@ The help output, when running ``plex_tvdb_epinfo -h``, produces the following.
 
 .. code-block:: console
 
-   Usage: plex_tvdb_epinfo [options]
-   
-   Options:
+   usage: plex_tvdb_epinfo [-h] [-s SHOW] [-j JSONFILE] [--showspecials] [--debug] [--noverify]
+
+   optional arguments:
      -h, --help            show this help message and exit
-     -s SHOW, --show=SHOW  Names of the TV Show to push into remote server.
-     -j JSONFILE, --jsonfile=JSONFILE
-			   Name of the JSON file into which to store the episode
-                           information. Default is eps.json.
-     --debug               If chosen, then run DEBUG logging.
+     -s SHOW, --show SHOW  Name of the TV Show to push into remote server.
+     -j JSONFILE, --jsonfile JSONFILE
+			   Name of the JSON file into which to store the episode information. Default is eps.json.
      --showspecials        If chosen, then also find all the specials.
+     --debug               If chosen, then run DEBUG logging.
      --noverify            If chosen, do not verify the SSL connection.
 
 * ``-s`` or ``--show`` specifies the show whose information, as a JSON file, is uploaded to the remote SSH server.
@@ -296,19 +280,17 @@ The help output, when running ``plex_tvdb_epname -h``, produces the following.
 
 .. code-block:: console
 
-   Usage: plex_tvdb_epname [options]
+   usage: plex_tvdb_epname [-h] -s SERIES [-e EPSTRING] [--summary] [-S SEASON] [--noverify]
 
-   Options:
+   optional arguments:
      -h, --help            show this help message and exit
-     -s SERIES, --series=SERIES
-                           The name of the series
-     -e EPSTRING, --epstring=EPSTRING
-     	                   The episode string, in the form S%02dE%02d.
-     --summary             If chosen, get a summary of all the seasons and
-                           episodes for the SERIES.
-     -S SEASON, --season=SEASON
-      	                  If chosen, get a list of all episode titles for this
-                          season of the SERIES.
+     -s SERIES, --series SERIES
+			   The name of the series
+     -e EPSTRING, --epstring EPSTRING
+			   The episode string, in the form S%02dE%02d.
+     --summary             If chosen, get a summary of all the seasons and episodes for the SERIES.
+     -S SEASON, --season SEASON
+			   If chosen, get a list of all episode titles for this season of the SERIES.
      --noverify            If chosen, do not verify the SSL connection.
 
 The ``--noverify`` flag says to not verify SSL connections.
@@ -396,9 +378,9 @@ The help output, when running ``plex_tvdb_futureshows -h``, produces the followi
 
 .. code-block:: console
 
-   Usage: plex_tvdb_futureshows [options]
-   
-   Options:
+   usage: plex_tvdb_futureshows [-h] [--noverify] [--local] [--info]
+
+   optional arguments:
      -h, --help  show this help message and exit
      --noverify  If chosen, do not verify the SSL connection.
      --local     Check for locally running plex server.
@@ -445,33 +427,31 @@ The help output, when running ``plex_tvdb_plots -h``, produces the following. ``
 
 .. code-block:: console
 
-   Usage: plex_tvdb_plots [options]
+   usage: plex_tvdb_plots [-h] [--years S_YEARS] [--local] [--dirname DIRNAME] [--noverify]
 
-   Options:
+   optional arguments:
      -h, --help         show this help message and exit
-     --years=S_YEARS    Give a list of years as a string, such as "1980,1981".
-                     	Optional.
-     --noverify         If chosen, do not verify the SSL connection.
+     --years S_YEARS    Give a list of years as a string, such as "1980,1981". Optional.
      --local            Check for locally running plex server.
-     --dirname=DIRNAME  Directory into which to store those plots. Default is
-                     	$(cwd).
+     --dirname DIRNAME  Directory into which to store those plots. Default is $(cwd).
+     --noverify         If chosen, do not verify SSL connections.
 
 You can choose the calendar year or years for which you want to return eye chart plots of episodes that exist on the Plex_ server, excluding those shows that will not be searched. In this example, `The Great British Bake-Off <https://en.wikipedia.org/wiki/The_Great_British_Bake_Off>`_ is going to be ignored. In this example, we look for all episodes in the Plex_ server that have aired in 2000, 2005, 2010, and 2015. The output format during evaluation is descriptive because the process can take more than a few seconds.
 
 .. code-block:: console
 
-   tanim-desktop $ plex_tvdb_plots --years 2000,2005,2010,2015
-   0, started on October 20, 2019 @ 04:38:19 PM
+   tanim-desktop: docs $ plex_tvdb_plots --years 2000,2005,2010,2015
+   0, started on May 24, 2020 @ 09:23:44 PM
    1, found TV library: TV Shows.
-   2, excluding these TV shows: The Great British Bake Off.
+   2, excluding these TV shows: Lip Sync Battle; Reno 911!; SpongeBob SquarePants.
    3, we found 4 years to use: 2000, 2005, 2010, 2015.
-   4, started processing 4 years of TV shows after 6.055 seconds.
-   5, finished processing year = 2000 (01 / 04) in 9.295 seconds.
-   6, finished processing year = 2005 (02 / 04) in 9.714 seconds.
-   7, finished processing year = 2010 (03 / 04) in 10.167 seconds.
-   8, finished processing year = 2015 (04 / 04) in 10.569 seconds.
-   9, processed all 4 years in 10.570 seconds.
-   10, finished everything on October 20, 2019 @ 04:38:30 PM.
+   4, started processing 4 years of TV shows after 8.152 seconds.
+   5, finished processing year = 2000 (01 / 04) in 11.539 seconds.
+   6, finished processing year = 2005 (02 / 04) in 11.862 seconds.
+   7, finished processing year = 2010 (03 / 04) in 12.710 seconds.
+   8, finished processing year = 2015 (04 / 04) in 13.196 seconds.
+   9, processed all 4 years in 13.197 seconds.
+   10, finished everything on May 24, 2020 @ 09:23:57 PM.
 
 This produces the episode eye charts for 2000, 2005, 2010, and 2015.
 
@@ -499,7 +479,73 @@ Here is an example eye chart, for episodes aired in 2000. Each day is colored an
 
 .. figure:: plex-tvdb-cli-figures/tvdata.2000.svg
    :width: 100%
-   :align: center	
+   :align: center
+
+
+.. _plex_tvdb_excludes_label:
+
+plex_tvdb_excludes
+^^^^^^^^^^^^^^^^^^^^
+This CLI can determine, and change, the set of TV shows to exclude from regular update (using the CLI, :ref:`get_plextvdb_batch`). This can only include TV shows that exist on the Plex_ server. The help output, when running ``plex_tvdb_excludes -h``, produces the top level help. It has two operations: ``show`` (which shows the TV shows to be excluded), and ``exclude`` (where the user specifies which shows to exclude).
+
+.. code-block:: bash
+
+   usage: plex_tvdb_excludes [-h] [--remote] [--noverify] [-L LIBRARY] {show,exclude} ...
+
+   positional arguments:
+     {show,exclude}        Either show or exclude shows.
+       show                Show those TV shows that have been excluded.
+       exclude             Exclude a new list of TV shows.
+
+   optional arguments:
+     -h, --help            show this help message and exit
+     --remote              If chosen, do not check localhost for running plex server.
+     --noverify            If chosen, do not verify SSL connections.
+     -L LIBRARY, --library LIBRARY
+			   If named, then choose this as the TV library through which to look. Otherwise, look for first TV library found on Plex server.
+
+Default flags are the following:
+
+* ``--remote`` says to look for a *remote* Plex server rather than ``localhost``.
+
+* ``--noverify`` means to not verify SSL connections.
+
+* ``-L`` or ``--library`` is used to explicitly specify the TV library. If not chosen, then first available TV library is chosen in the Plex_ server. If a TV library cannot be found, then **exit**.
+
+In ``show`` mode, for example, this is how it looks. Here, we use the default TV library.
+
+.. code-block:: bash
+
+   tanim-desktop: torrents $ plex_config_excludes show
+   found 256 TV shows in Plex server.
+   found 2 / 256 TV shows that are excluded from update.
+
+   SHOW
+   ---------------------
+   Lip Sync Battle
+   SpongeBob SquarePants
+
+In ``exclude`` mode, for example, this is how it looks when we choose to exclude `Lip Sync Battle`_, `SpongeBob SquarePants`_, and `Reno 911!`_ from update. Here, we use the default TV library.
+
+.. code-block:: bash
+
+   tanim-desktop: torrents $ plex_config_excludes exclude "Lip Sync Battle" "SpongeBob SquarePants" "Reno 911!"
+   found 256 TV shows in Plex server.
+   Originally 2 shows to exclude. Now 3 shows to exclude.
+
+   ORIGINAL               NEW
+   ---------------------  ---------------------
+   Lip Sync Battle        Lip Sync Battle
+   SpongeBob SquarePants  Reno 911!
+			  SpongeBob SquarePants
+
+   PERFORM OPERATION (must choose one) [y/n]:y
+   found 3 shows to exclude from TV database.
+   had to remove 2 excluded shows from DB that were not in TV library.
+   adding 3 extra shows to exclusion database.
+   NEW EXCLUDED SHOWS ADDED
+
+Running ``plex_config_excludes show`` will display, in this instance, those three shows instead of the original two.
 
 .. _Jackett: https://github.com/Jackett/Jackett
 .. _Deluge: https://en.wikipedia.org/wiki/Deluge_(software)
@@ -511,3 +557,6 @@ Here is an example eye chart, for episodes aired in 2000. Each day is colored an
 .. _simpsons_s30e10: https://en.wikipedia.org/wiki/'Tis_the_30th_Season
 .. _the_simpsons: https://en.wikipedia.org/wiki/The_Simpsons
 .. _IMDb: https://en.wikipedia.org/wiki/IMDb 
+.. _`Lip Sync Battle`: https://www.imdb.com/title/tt4335742
+.. _`SpongeBob SquarePants`: https://www.imdb.com/title/tt0206512
+.. _`Reno 911!`: https://www.imdb.com/title/tt0370194

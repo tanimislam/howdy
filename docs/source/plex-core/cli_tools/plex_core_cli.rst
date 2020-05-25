@@ -20,25 +20,22 @@ plex_core_cli
 ^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``plex_core_cli -h``, produces the following.
 
-.. code:: bash
+.. code-block:: console
 
-   Usage: plex_core_cli [options]
+   usage: plex_core_cli [-h] [--username USERNAME] [--password PASSWORD] [--friends] [--mappedfriends] [--addmapping] [--guestemail GUEST_EMAIL] [--newemails NEW_EMAILS] [--replace_existing]
 
-   Options:
-	-h, --help            show this help message and exit
-  	--username=USERNAME   Your plex username.
-  	--password=PASSWORD   Your plex password.
-  	--friends             Get list of guests of your Plex server.
-  	--mappedfriends       Get list of guests with mapping, of your Plex server.
-  	--addmapping          If chosen, then add extra friends from Plex friends.
-  	--guestemail=GUEST_EMAIL
-		              Name of the Plex guest email.
-        --newemails=NEW_EMAILS
-			      Name of the new emails associated with the Plex guest
-                              email.
-        --replace_existing    If chosen, replace existing email to send newsletter
-                              to.
-
+   optional arguments:
+     -h, --help            show this help message and exit
+     --username USERNAME   Your plex username.
+     --password PASSWORD   Your plex password.
+     --friends             Get list of guests of your Plex server.
+     --mappedfriends       Get list of guests with mapping, of your Plex server.
+     --addmapping          If chosen, then add extra friends from Plex friends.
+     --guestemail GUEST_EMAIL
+			   Name of the Plex guest email.
+     --newemails NEW_EMAILS
+			   Name of the new emails associated with the Plex guest email.
+     --replace_existing    If chosen, replace existing email to send newsletter to.
 
 As described in the above section, this CLI can do the following *operations*.
 
@@ -50,7 +47,7 @@ As described in the above section, this CLI can do the following *operations*.
 
 There are two parts to this tool: *authentication* and *operation*. Each *operation* with ``plex_core_cli`` must be run with a given *authorization*. For example, to get a list of friends of the Plex_ server by giving the Plex_ username and password for your Plex_ server, you would run.
 
-.. code:: bash
+.. code-block:: console
 
    plex_core_cli --username=XXXX --password=YYYY --friends
 
@@ -58,7 +55,7 @@ Authentication happens in two ways.
 
 * by providing the *username* and *password* for the Plex_ account that runs your Plex_ server. Here, provide it with,
 
-  .. code:: bash
+  .. code-block:: console
 
      plex_core_cli --username=XXXX --password=YYYY ...
 
@@ -70,13 +67,13 @@ Here is how to do each of the three *operations*.
 
 * to list the email addresses and names of the Plex_ friends, run this way using implicit authorization, for example.
 
-  .. code:: bash
+  .. code-block:: console
 
      plex_core_cli --friends
 
   this will produce this type of output.
 
-  .. code:: bash
+  .. code-block:: console
 
      XX HAVE FOUND NAMES, 0 DO NOT HAVE FOUND NAMES
 
@@ -96,13 +93,13 @@ Here is how to do each of the three *operations*.
 
 * to list the email addresses and names of the people who can receive Plex_ newsletter and notification emails, run this way using implicit authorization, for example.
 
-  .. code:: bash
+  .. code-block:: console
 
      plex_core_cli --mappedfriends
 
   this will produce this type of output.
 
-  .. code:: bash
+  .. code-block:: console
 
      XX HAVE FOUND NAMES, 0 DO NOT HAVE FOUND NAMES
 
@@ -124,13 +121,13 @@ Here is how to do each of the three *operations*.
 
   1. to add these new emails while also getting emails at ``A@AA.com``, run the following command,
 
-     .. code:: bash
+     .. code-block:: console
 
      	plex_core_cli --addmapping --guestemail=A@AA.com --newemails=A@XXX.com,A@YYY.com
 
   2. to add these new emails while no longer getting emails at ``A@AA.com``, run the following command but with ``--replace_existing``,
 
-     .. code:: bash
+     .. code-block:: console
 
      	plex_core_cli --addmapping --guestemail=A@AA.com --newemails=A@XXX.com,A@YYY.com --replace_existing
   
@@ -145,7 +142,20 @@ This is a much reduced Deluge command line console client. It does the following
 
 .. code-block:: console
 
-   Possible commands: info, rm (del), add, pause, resume, push
+   usage: plex_deluge_console [-h] {info,resume,pause,rm,del,add,push} ...
+
+   positional arguments:
+     {info,resume,pause,rm,del,add,push}
+			   Choose one of these three modes of operation: rm, add, pause, resume, or push.
+       info                Print summary info on a specific torrent, or all torrents.
+       resume              Resume selected torrents, or all torrents.
+       pause               Pause selected torrents, or all torrents.
+       rm (del)            Remove selected torrents, or all torrents.
+       add                 Add a single torrent, as a magnet link or a file.
+       push                Push settings for a new deluge server to configuration.
+
+   optional arguments:
+     -h, --help            show this help message and exit
 
 By convention, the variable ``md5_trunc`` refers to a truncated initial substring of the full torrent's MD5 hash. For example, given an MD5 hash of a torrent, such as ``ed53ba61555cab24946ebf2f346752805601a7fb``, a possible ``md5_trunc`` is ``ed5``. One can specify a collection of multiple ``md5_trunc`` as long as they are valid and unique (such as ``md5_trunc_1, md5_trunc_2, ...``).
 
@@ -159,11 +169,21 @@ It may be convenient to have some useful BASH shortcuts for ``plex_deluge_consol
    alias pdcp='plex_deluge_console pause'
    alias pdcres='plex_deluge_console resume'
 
-
-
 torrent info (info)
 --------------------
-You can get nicely formatted information on a collection of torrents, or all torrents, through running ``plex_deluge_console info ...``. ``plex_deluge_console info`` will show nicely formatted information on ALL torrents.
+You can get nicely formatted information on a collection of torrents, or all torrents, through running ``plex_deluge_console info``. Running ``plex_deluge_console info -h`` gives the following output.
+
+.. code-block:: console
+
+   usage: plex_deluge_console info [-h] [torrent [torrent ...]]
+
+   positional arguments:
+     torrent     The hash ID, or identifying initial substring, of torrents for which to get information. Example usage is "plex_deluge_console info ab1 bc2", where "ab1" and "bc2" are the first three digits of the MD5 hashes of torrents to examine.
+
+   optional arguments:
+     -h, --help  show this help message and exit
+
+``plex_deluge_console info`` will show nicely formatted information on ALL torrents.
 
 .. code-block:: console
    
@@ -204,15 +224,18 @@ You can give it a list of truncated MD5 hashes to get status information on sele
 
 removing torrents (rm or del)
 -------------------------------
-You can remove some or all torrents by running ``plex_deluge_console rm`` or ``plex_deluge_console del``. You can access the help for this operation by running ``plex_deluge_console rm -h``.
+You can remove some or all torrents by running ``plex_deluge_console rm`` or ``plex_deluge_console del``. Running ``plex_deluge_console rm -h`` gives the following output.
 
 .. code-block:: console
-   
-   Usage: plex_deluge_console [options]
-   
-   Options:
+
+   usage: plex_deluge_console rm [-h] [-R] torrent [torrent ...]
+
+   positional arguments:
+     torrent            The hash ID, or identifying initial substring, of torrents to remove.
+
+   optional arguments:
      -h, --help         show this help message and exit
-     -R, --remove_data  remove the torrent's data
+     -R, --remove_data  Remove the torrent's data.
 
 * ``plex_deluge_console rm md5trunc_1 md5_trunc_2 ...`` removes specified torrents but keeps whatever data has been downloaded on the Deluge server. You would run this once the torrent's state was ``Seeding`` or ``Paused`` (see :ref:`torrent info (info)`).
 
@@ -222,7 +245,17 @@ You can remove some or all torrents by running ``plex_deluge_console rm`` or ``p
 
 adding torrents (add)
 -----------------------
-You can add torrents to the Deluge server by running ``plex_deluge_console add``. You can add a torrent file as URL, a torrent file on disk, and a `Magnet URI`_.
+You can add torrents to the Deluge server by running ``plex_deluge_console add``. You can add a torrent file as URL, a torrent file on disk, and a `Magnet URI`_. Running ``plex_deluge_console add -h`` gives the following output.
+
+.. code-block:: console
+
+   usage: plex_deluge_console add [-h] torrent
+
+   positional arguments:
+     torrent     The fully realized magnet link, or file, to add to the torrent server.
+
+   optional arguments:
+     -h, --help  show this help message and exit
 
 * torrent file as remote URL:
 
@@ -260,16 +293,56 @@ You can push new Deluge server credentials (URL, port, username, and password) t
 
 .. code-block:: console
 
-   Usage: plex_deluge_console [options]
+   usage: plex_deluge_console add [-h] torrent
 
-   Options:
+   positional arguments:
+     torrent     The fully realized magnet link, or file, to add to the torrent server.
+
+   optional arguments:
+     -h, --help  show this help message and exit
+
+* torrent file as remote URL:
+
+.. code-block:: console
+
+   plex_deluge_console add http://releases.ubuntu.com/19.10/ubuntu-19.10-beta-live-server-amd64.iso.torrent
+
+* torrent file on disk:
+
+.. code-block:: console
+
+   plex_deluge_console add ubuntu-19.10-beta-desktop-amd64.iso.torrent
+
+* `Magnet URI`_:
+
+.. code-block:: console
+
+   plex_deluge_console add "magnet:?xt=urn:btih:49efb5fdd274abb26c5ea6361d1d9be28e4db2d3&dn=archlinux-2019.09.01-x86_64.iso&tr=udp://tracker.archlinux.org:6969&tr=http://tracker.archlinux.org:6969/announce"
+
+pausing and resuming torrents (pause or resume)
+-------------------------------------------------
+You can pause torrents on the Deluge server by running ``plex_deluge_console pause``, and you can resume them by running ``plex_deluge_console resume``.
+
+* You can pause/resume specific torrents by running ``plex_deluge_console pause md5trunc_1 md5_trunc_2 ...`` or ``plex_deluge_console resume md5trunc_1 md5_trunc_2 ...``.
+
+* You can pause/resume ALL torrents on the Deluge server by not specifying any truncated MD5 hashes, ``plex_deluge_console pause`` or ``plex_deluge_console resume``.  
+
+.. 28-09-2019: Pause and resume don't seem to be working right now when connecting to the Seedhost seedbox Deluge server.
+
+pushing credentials (push)
+----------------------------------
+You can push new Deluge server credentials (URL, port, username, and password) to the SQLite3_ configuration database. Running ``plex_deluge_console push -h`` gives its help syntax,
+
+.. code-block:: console
+
+   usage: plex_deluge_console push [-h] [--host url] [--port port] [--username username] [--password password]
+
+   optional arguments:
      -h, --help           show this help message and exit
-     --host=URL           URL of the deluge server. Default is localhost.
-     --port=PORT          Port for the deluge server. Default is 12345.
-     --username=USERNAME  Username to login to the deluge server. Default is
-                       	  admin.
-     --password=PASSWORD  Password to login to the deluge server. Default is
-                       	  admin.
+     --host url           URL of the deluge server. Default is localhost.
+     --port port          Port for the deluge server. Default is 12345.
+     --username username  Username to login to the deluge server. Default is admin.
+     --password password  Password to login to the deluge server. Default is admin.
 
 Push new Deluge server settings into the configuration database by running,
 
@@ -287,23 +360,18 @@ The help output, when running ``plex_resynclibs -h``, produces the following.
 
 .. code-block:: console
 
-   Usage: plex_resynclibs [options]
+   usage: plex_resynclibs [-h] [--libraries] [--refresh] [--summary] [--library LIBRARY] [--servername SERVERNAME] [--servernames] [--noverify]
 
-   Options:
-      -h, --help            show this help message and exit
-      --libraries           If chosen, just give the sorted names of all libraries
-                            in the Plex server.
-      --refresh             If chosen, refresh a chosen library in the Plex
-                            server. Must give a valid name for the library.
-      --summary             If chosen, perform a summary of the chosen library in
-                            the Plex server. Must give a valid name for the
-                            library.
-      --library=LIBRARY     Name of a (valid) library in the Plex server.
-      --servername=SERVERNAME
-                            Optional name of the server to check for.
-      --servernames         If chosen, print out all the servers owned by the
-                            user.
-      --noverify            Do not verify SSL transactions if chosen.
+   optional arguments:
+     -h, --help            show this help message and exit
+     --libraries           If chosen, just give the sorted names of all libraries in the Plex server.
+     --refresh             If chosen, refresh a chosen library in the Plex server. Must give a valid name for the library.
+     --summary             If chosen, perform a summary of the chosen library in the Plex server. Must give a valid name for the library.
+     --library LIBRARY     Name of a (valid) library in the Plex server.
+     --servername SERVERNAME
+			   Optional name of the server to check for.
+     --servernames         If chosen, print out all the servers owned by the user.
+     --noverify            Do not verify SSL transactions if chosen.
 
 ``--noverify`` is a standard option in many of the Plexstuff CLI and GUIs to ignore verification of SSL transactions. It is optional and will default to ``False``.
 
@@ -406,9 +474,9 @@ plex_store_credentials
 
 .. code-block:: console
 
-   Usage: plex_store_credentials [options]
+   usage: plex_store_credentials [-h] [--noverify]
 
-   Options:
+   optional arguments:
      -h, --help  show this help message and exit
      --noverify  If chosen, do not verify SSL connections.
 
@@ -437,31 +505,24 @@ The help output, when running ``rsync_subproc -h``, produces the following.
 
 .. code-block:: console
 
-   Usage: rsync_subproc [options]
+   usage: rsync_subproc [-h] [-S STRING] [-N NUMTRIES] [-D] [-R] {-P} ...
 
-   Options:
+   positional arguments:
+     {push}
+       push                push RSYNC credentials into configuration file.
+
+   optional arguments:
      -h, --help            show this help message and exit
-     -S STRING, --string=STRING
-                           the globbed string to rsync from on the remote
-                           account. Default is "*.mkv".
-     -N NUMTRIES, --numtries=NUMTRIES
-                           number of attempts to go through an rsync process.
-                           Default is 10.
+     -S STRING, --string STRING
+			   the globbed string to rsync from on the remote account. Default is "*.mkv".
+     -N NUMTRIES, --numtries NUMTRIES
+			   number of attempts to go through an rsync process. Default is 10.
      -D, --debug           if chosen, then write debug output.
-     -R, --reverse         If chosen, push files from local server to remote.
-                           Since files are deleted from source once done, you
-                           should probably make a copy of the source files if you
-                           want to still keep them afterwards.
-     -P, --push            push RSYNC credentials into configuration file.
-     -L LOCAL_DIR          Name of the local directory into which we download
-                           files and directory. Default is XXXX.
-     --ssh=SSHPATH         SSH path from which to get files.
-     --subdir=SUBDIR       name of the remote sub directory from which to get
-                           files. Optional.
+     -R, --reverse         If chosen, push files from local server to remote. Since files are deleted from source once done, you should probably make a copy of the source files if you want to still keep them afterwards.
 
 This executable provides a convenient higher-level command-line interface to rsync_ uploading and downloading that resumes on transfer failure, and deletes the origin files once the transfer is complete. One also does not need to execute this command in ``LOCAL_DIR``.
 
-The main rsync_ based uploading and downloading is described in :ref:`rsync_ based functionality`, and setting the SSH credentials, and local and remote locations, is described in :ref:`rsync_subproc settings with --push`.
+The main rsync_ based uploading and downloading is described in :ref:`rsync_ based functionality`. Setting the SSH credentials, and local and remote locations, is described in :ref:`rsync_subproc settings with push`.
 
 rsync_ based functionality
 ---------------------------
@@ -499,9 +560,20 @@ To upload the local directory (``LOCAL_DIR/Ubuntu_18.04``) until success into ``
    
    SUCCESSFUL ATTEMPT 1 / 10 IN 264.802 SECONDS.
 
-rsync_subproc settings with --push
+rsync_subproc settings with push
 ------------------------------------
-Running ``rsync_subproc -P`` or ``rsync_subproc --push`` will update or set the SSH settings for the remote server, and the local and remote subdirectories. :numref:`Local and Remote (Seedhost) SSH Setup` and :numref:`Login Services` (see the screen shot in :numref:`login_step02_settings`) describe the form that these settings take.
+Running ``rsync_subproc push`` will update or set the SSH settings for the remote server, and the local and remote subdirectories. :numref:`Local and Remote (Seedhost) SSH Setup` and :numref:`Login Services` (see the screen shot in :numref:`login_step02_settings`) describe the form that these settings take. The help output, when running ``rsync_subproc push -h``, produces the following.
+
+.. code-block:: console
+
+   usage: rsync_subproc push [-h] [-L LOCAL_DIR] [--ssh SSHPATH] [--subdir SUBDIR]
+
+   optional arguments:
+     -h, --help       show this help message and exit
+     -L LOCAL_DIR     Name of the local directory into which we download files and directory. Default is XXXX.
+     --ssh SSHPATH    SSH path from which to get files.
+     --subdir SUBDIR  name of the remote sub directory from which to get files. Optional.
+
 
 * the format of the SSH setting is ``username@ssh_server``.
 
@@ -513,7 +585,7 @@ Thus, to set settings for ``rsync_subproc``, one would run,
 
 .. code-block:: console
 
-   rsync_subproc -P -L LOCAL_DIR --ssh=username@ssh_server --subdir=SUBDIR
+   rsync_subproc push -L LOCAL_DIR --ssh=username@ssh_server --subdir=SUBDIR
 
 Note that here, the SSH password is the same as the remote Deluge_ server's password. See, e.g., :numref:`plex_deluge_console` or :numref:`Local and Remote (Seedhost) SSH Setup` and figures therein.
 

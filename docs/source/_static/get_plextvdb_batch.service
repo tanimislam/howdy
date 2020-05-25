@@ -4,7 +4,7 @@ Wants=get_plextvdb_batch.timer
 
 [Service]
 Type=oneshot
-ExecStart=$PLEXSTUFF_DIR/get_plextvdb_batch.py --maxtime=1200 --num=2
+ExecStart=$PLEXSTUFF_DIR/get_plextvdb_batch --maxtime=1200 --num=2
 
 [Install]
 WantedBy=default.target

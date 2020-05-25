@@ -1,9 +1,6 @@
 import os, sys, time, logging, signal, subprocess, shlex
-# code to handle Ctrl+C, convenience method for command line tools
-def _signal_handler( signal, frame ):
-    print( "You pressed Ctrl+C. Exiting...")
-    sys.exit( 0 )
-signal.signal( signal.SIGINT, _signal_handler )
+from plexstuff import signal_handler
+signal.signal( signal.SIGINT, signal_handler )
 from argparse import ArgumentParser
 #
 from plexstuff.plexcore import plexcore_rsync
@@ -23,25 +20,24 @@ def main( ):
                                          'you want to still keep them afterwards.' ]))
     #
     ## now pushing credentials
-    parser.add_argument('-P', '--push', dest='do_push', action='store_true', default = False,
-                        help = 'push RSYNC credentials into configuration file.' )
-    parser.add_argument('-L', dest='local_dir', action='store', type=str, default = os.path.abspath( os.getcwd( ) ),
-                        help = 'Name of the local directory into which we download files and directory. Default is %s.' %
-                        ( os.path.abspath( os.getcwd( ) ) ) )
-    parser.add_argument('--ssh', dest='sshpath', action='store', type=str,
-                        help = 'SSH path from which to get files.' )
-    parser.add_argument('--subdir', dest='subdir', action='store', type=str,
-                        help = 'name of the remote sub directory from which to get files. Optional.' )
+    subparser = parser.add_subparsers( dest = 'choose_option' )
+    parser_push = subparser.add_parser( 'push', help =  'push RSYNC credentials into configuration file.' )
+    parser_push.add_argument('-L', dest='local_dir', action='store', type=str, default = os.path.abspath( os.getcwd( ) ),
+                            help = 'Name of the local directory into which we download files and directory. Default is %s.' %
+                            ( os.path.abspath( os.getcwd( ) ) ) )
+    parser_push.add_argument('--ssh', dest='sshpath', action='store', type=str,
+                            help = 'SSH path from which to get files.' )
+    parser_push.add_argument('--subdir', dest='subdir', action='store', type=str,
+                             help = 'name of the remote sub directory from which to get files. Optional.' )
     #
     ##
     args = parser.parse_args( )
     if args.do_debug: logging.basicConfig( level = logging.DEBUG )
-    if args.do_push:
+    if parser.choose_option == '-P':
         assert( all(map(lambda tok: tok is not None, ( args.local_dir, args.sshpath ) ) ) )
         assert( os.path.isdir( os.path.abspath( args.local_dir ) ) )
         plexcore_rsync.push_credentials( args.local_dir, args.sshpath, subdir = args.subdir )
         return
-    
     #
     ## otherwise run
     assert( args.numtries > 0 )

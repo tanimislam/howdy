@@ -1,4 +1,6 @@
+import os, sys
 from setuptools import setup, find_packages
+from distutils.spawn import find_executable
 #
 ## requirements are in "requirements.txt"
 
@@ -13,6 +15,17 @@ reqs = sorted(set(map(lambda line: line.strip(),
 dependency_links = sorted(set(map(lambda line: line.strip( ),
                                   filter(lambda line: line.strip( ).startswith('git+'),
                                          open( 'requirements.txt', 'r' ).readlines( ) ) ) ) )
+#
+## need pandoc
+if find_executable( 'pandoc' ) is None:
+    print( "Error, cannot find pandoc executable. Exiting..." )
+    sys.exit( 0 )
+
+#
+## need sshpass
+if find_executable( 'sshpass' ) is None:
+    print( "Error, cannot find sshpass executable. Exiting..." )
+    sys.exit( 0 )
 
 setup(
     name = 'plexstuff',
@@ -81,6 +94,7 @@ setup(
             'plex_tvdb_epname = plexstuff.plextvdb.cli.plex_tvdb_epname:main',
             'plex_tvdb_futureshows = plexstuff.plextvdb.cli.plex_tvdb_futureshows:main',
             'plex_tvdb_plots = plexstuff.plextvdb.cli.plex_tvdb_plots:main',
+            'plex_tvdb_excludes = plexstuff.plextvdb.cli.plex_tvdb_excludes:main',
             'plex_tvdb_gui = plexstuff.plextvdb.gui.plex_tvdb_gui:main',
             ]
     },

@@ -5,23 +5,24 @@ def signal_handler( signal, frame ):
     sys.exit( 0 )
 signal.signal( signal.SIGINT, signal_handler )
 #
-import os, logging, warnings, qdarkstyle
+import os, logging, warnings, qtmodern.styles, qtmodern.windows
 from PyQt5.QtWidgets import QApplication, QStyleFactory
 from PyQt5.QtGui import QIcon
 from argparse import ArgumentParser
-warnings.simplefilter( 'ignore' )
 #
 from plexstuff import resourceDir
 from plexstuff.plexemail.plexemail_gui import PlexEmailGUI
 from plexstuff.plexemail.plexemail_mygui import PlexEmailMyGUI
 from plexstuff.plexcore.plexcore_gui import returnToken, returnGoogleAuthentication
 
+warnings.simplefilter( 'ignore' )
+
 def mainSub( info = False, doLocal = True, doLarge = False, verify = True, onlyEmail = False ):
     app = QApplication([])
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     icn = QIcon( os.path.join(
         resourceDir, 'icons', 'plex_email_gui.png' ) )
     app.setWindowIcon( icn )
+    qtmodern.styles.dark( app )
     logger = logging.getLogger( )
     if info: logger.setLevel( logging.INFO )
     val = returnGoogleAuthentication( )
@@ -29,6 +30,8 @@ def mainSub( info = False, doLocal = True, doLarge = False, verify = True, onlyE
         pegui = PlexEmailGUI( doLocal = doLocal, doLarge = doLarge, verify = verify )
     else:
         pegui = PlexEmailMyGUI( doLocal = doLocal, doLarge = doLarge, verify = verify )
+    mw = qtmodern.windows.ModernWindow( pegui )
+    mw.show( )
     result = app.exec_( )
 
 def main( ):

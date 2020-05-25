@@ -1,10 +1,12 @@
-import os, sys, qdarkstyle
+import os, sys, qtmodern.styles, qtmodern.windows
 from PyQt5.QtWidgets import QApplication
 #
 from plexstuff.plexcore import plexcore_texts_gui, returnQAppWithFonts
 
 def main( ):
     app = returnQAppWithFonts( )
-    app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )                       
+    qtmodern.styles.dark( app )
     mg = plexcore_texts_gui.MainGUI( )
+    mw = qtmodern.windows.ModernWindow( mw )
+    mw.show( )
     result = app.exec_( )

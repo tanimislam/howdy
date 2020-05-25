@@ -959,7 +959,7 @@ def worker_process_download_tvtorrent(
         tvTorUnit, client = None, maxtime_in_secs = 14400, 
         num_iters = 1, kill_if_fail = False ):
     """
-    Used by, e.g., :ref:`get_plextvdb_batch.py`, to download missing episodes on the Plex_ TV library. Attempts to use the Deluge_ server, specified in :numref:`Seedhost Services Setup`, to download an episode. If successful then uploads the finished episode from the remote SSH server to the Plex_ server and local directory, specified in :numref:`Local and Remote (Seedhost) SSH Setup`.
+    Used by, e.g., :ref:`get_plextvdb_batch`, to download missing episodes on the Plex_ TV library. Attempts to use the Deluge_ server, specified in :numref:`Seedhost Services Setup`, to download an episode. If successful then uploads the finished episode from the remote SSH server to the Plex_ server and local directory, specified in :numref:`Local and Remote (Seedhost) SSH Setup`.
 
     :param dict tvTorUnit: a :py:class:`dict` representing a summarized magnet link searching operation on an episode. The format and meaning of this data structure is described in :py:meth:`create_tvTorUnits <plexstuff.plextvdb.plextvdb.create_tvTorUnits>`.
     :param DelugeRPC client: optional argument, the `DelugeRPCClient <Deluge RPC client_>`_ object that at a low level uses the Deluge_ server to download the Magnet link at the remote SSH server. If ``None``, then this client is created using :py:meth:`get_deluge_client <plexstuff.plexcore.plexcore_deluge.get_deluge_client>`.
@@ -983,7 +983,7 @@ def worker_process_download_tvtorrent(
     
     .. seealso::
        
-        * :ref:`get_plextvdb_batch.py`.
+        * :ref:`get_plextvdb_batch`.
         * :py:meth:`get_remaining_episodes <plexstuff.plextvdb.plextvdb.get_remaining_episodes>`.
         * :py:meth:`create_tvTorUnits <plexstuff.plextvdb.plextvdb.create_tvTorUnits>`.
         * :py:meth:`download_batched_tvtorrent_shows <plexstuff.plextvdb.plextvdb.download_batched_tvtorrent_shows>`.

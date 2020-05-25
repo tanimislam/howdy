@@ -515,7 +515,7 @@ class MusicInfo( object ):
         """
         Pretty-prints summary table of studio albums released by the artist, ordered by album release date. For example, for Air_,
 
-        .. code-block:: bash
+        .. code-block:: console
 
              Air has 7 studio albums.
 

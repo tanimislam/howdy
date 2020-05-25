@@ -1341,8 +1341,11 @@ def refresh_library( key, library_dict, token, fullURL = 'http://localhost:32400
     
     :param int key: the library number on the Plex_ server.
     
-    :param :py:class:`dict` library_dict: the dictionary of libraries. The key is Plex_ server library number, and the value is the library name.
+    :param dict library_dict: the dictionary of libraries. The key is Plex_ server library number, and the value is the library name.
+
+    :param str token: the Plex_ access token.
     
+    :param str fullURL: the Plex_ server URL.
     """
     assert( key in library_dict )
     params = { 'X-Plex-Token' : token }
@@ -1407,6 +1410,8 @@ def oauthCheckGoogleCredentials( ):
 def oauthGetGoogleCredentials( verify = True ):
     """
     Gets the `Google Oauth2`_ credentials, stored in the SQLite3_ configuration database, in the form of a refreshed :py:class:`Credentials <google.oauth2.credentials.Credentials>` object. The OAuth2 authentication with this method has not been implemented for services yet.
+
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
     :returns: a :py:class:`Credentials <google.oauth2.credentials.Credentials>` form of the `Google Oauth2`_ credentials for various Oauth2 services.
     :rtype: :py:class:`Credentials <google.oauth2.credentials.Credentials>`

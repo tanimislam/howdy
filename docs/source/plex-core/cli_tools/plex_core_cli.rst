@@ -143,7 +143,7 @@ plex_deluge_console
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 This is a much reduced Deluge command line console client. It does the following operations: :ref:`torrent info (info)`, :ref:`removing torrents (rm or del)`, :ref:`adding torrents (add)`, :ref:`pausing and resuming torrents (pause or resume)`, and :ref:`pushing credentials (push)`. Running ``plex_deluge_console -h`` gives the following output.
 
-.. code-block:: bash
+.. code-block:: console
 
    Possible commands: info, rm (del), add, pause, resume, push
 
@@ -151,7 +151,7 @@ By convention, the variable ``md5_trunc`` refers to a truncated initial substrin
 
 It may be convenient to have some useful BASH shortcuts for ``plex_deluge_console``, which you can store in ``~/.bashrc``. Here is a snippet of self-explanatory aliases I find useful.
 
-.. code-block:: bash
+.. code-block:: console
 
    alias pdci='plex_deluge_console info'
    alias pdcr='plex_deluge_console rm'
@@ -165,7 +165,7 @@ torrent info (info)
 --------------------
 You can get nicely formatted information on a collection of torrents, or all torrents, through running ``plex_deluge_console info ...``. ``plex_deluge_console info`` will show nicely formatted information on ALL torrents.
 
-.. code-block:: bash
+.. code-block:: console
    
    plex_deluge_console info
    Name: ubuntu-19.10-beta-desktop-amd64.iso	
@@ -189,7 +189,7 @@ You can get nicely formatted information on a collection of torrents, or all tor
 
 You can give it a list of truncated MD5 hashes to get status information on selected torrents,
 
-.. code-block:: bash
+.. code-block:: console
 
    plex_deluge_console info ed5
    Name: ubuntu-19.10-beta-desktop-amd64.iso
@@ -206,7 +206,7 @@ removing torrents (rm or del)
 -------------------------------
 You can remove some or all torrents by running ``plex_deluge_console rm`` or ``plex_deluge_console del``. You can access the help for this operation by running ``plex_deluge_console rm -h``.
 
-.. code-block:: bash
+.. code-block:: console
    
    Usage: plex_deluge_console [options]
    
@@ -226,19 +226,19 @@ You can add torrents to the Deluge server by running ``plex_deluge_console add``
 
 * torrent file as remote URL:
 
-.. code-block:: bash
+.. code-block:: console
 
    plex_deluge_console add http://releases.ubuntu.com/19.10/ubuntu-19.10-beta-live-server-amd64.iso.torrent
 
 * torrent file on disk:
 
-.. code-block:: bash
+.. code-block:: console
 
    plex_deluge_console add ubuntu-19.10-beta-desktop-amd64.iso.torrent
 
 * `Magnet URI`_:
 
-.. code-block:: bash
+.. code-block:: console
 
    plex_deluge_console add "magnet:?xt=urn:btih:49efb5fdd274abb26c5ea6361d1d9be28e4db2d3&dn=archlinux-2019.09.01-x86_64.iso&tr=udp://tracker.archlinux.org:6969&tr=http://tracker.archlinux.org:6969/announce"
 
@@ -258,7 +258,7 @@ pushing credentials (push)
 ----------------------------------
 You can push new Deluge server credentials (URL, port, username, and password) to the SQLite3_ configuration database. Running ``plex_deluge_console push -h`` gives its help syntax,
 
-.. code-block:: bash
+.. code-block:: console
 
    Usage: plex_deluge_console [options]
 
@@ -273,7 +273,7 @@ You can push new Deluge server credentials (URL, port, username, and password) t
 
 Push new Deluge server settings into the configuration database by running,
 
-.. code-block:: bash
+.. code-block:: console
 
    plex_deluge_console push --host=HOST --port=PORT --username=USERNAME --password=PASSWORD
 
@@ -285,7 +285,7 @@ plex_resynclibs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``plex_resynclibs -h``, produces the following.
 
-.. code-block:: bash
+.. code-block:: console
 
    Usage: plex_resynclibs [options]
 
@@ -321,13 +321,13 @@ Here I find it useful to show how this tool works by example.
 
 1. First, we can determine those Plex_ servers to which we have access
 
-   .. code-block:: bash
+   .. code-block:: console
    
       plex_resynclibs --servernames
 
    This will print out a nicely formatted table. Each row is a Plex_ server. The columns are the server's name, whether we own it, and its remote URL with port (which is of the form ``https://IP-ADDRESS:PORT``).
 
-   .. code-block:: bash
+   .. code-block:: console
 
       Name           Is Owned    URL
       -------------  ----------  ---------------------------
@@ -337,13 +337,13 @@ Here I find it useful to show how this tool works by example.
 
 2. Now we can look for the Plex_ libraries in the Plex_ server *which we own*. If we don't choose a Plex_ server with ``--servername=SERVERNAME``, then the first one in the row which we own will be chosen by default. The syntax is,
 
-   .. code-block:: bash
+   .. code-block:: console
 
       plex_resynclibs --servername=tanim-desktop --libraries
 
    This will print out a nicely formatted table. Each row is a library. There is a column of the library's name and its type. I have only shown three of the six Plex_ libraries on my server.
 
-   .. code-block:: bash
+   .. code-block:: console
 
       Here are the 6 libraries in this Plex server: tanim-desktop.
 
@@ -362,7 +362,7 @@ Here I find it useful to show how this tool works by example.
 
    * On a movie library.
 
-     .. code-block:: bash
+     .. code-block:: console
 
         tanim-desktop $ plex_resynclibs --servername=tanim-desktop --library=Movies --summary
 	
@@ -371,7 +371,7 @@ Here I find it useful to show how this tool works by example.
 
    * On a TV show library.
 
-     .. code-block:: bash
+     .. code-block:: console
 
         tanim-desktop $ plex_resynclibs --servername=tanim-desktop --library="TV Shows" --summary
 
@@ -381,7 +381,7 @@ Here I find it useful to show how this tool works by example.
 
    * On a music library.
 
-     .. code-block:: bash
+     .. code-block:: console
 
         tanim-desktop $ plex_resynclibs --servername=tanim-desktop --library=Music --summary
 
@@ -391,7 +391,7 @@ Here I find it useful to show how this tool works by example.
 
 4. Finally, we can refresh a library that we specify with the ``--refresh`` flag and ``--library=LIBRARY``. Here are three examples on how to refresh the movie, TV show, and music library.
 
-   .. code-block:: bash
+   .. code-block:: console
 
       plex_resynclibs --servername=tanim-desktop --library=Movies --refresh
       plex_resynclibs --servername=tanim-desktop --library="TV Shows" --refresh
@@ -404,7 +404,7 @@ plex_store_credentials
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
 :numref:`Core Command Line Utilities` describes this executable's functionality very well. Its help screen can be displayed by running ``plex_store_credentials -h``,
 
-.. code-block:: bash
+.. code-block:: console
 
    Usage: plex_store_credentials [options]
 
@@ -414,7 +414,7 @@ plex_store_credentials
 
 The ``--noverify`` flag disables the verification of SSL connections. First, run this executable, ``plex_store_credentials``, which will return this interactive text dialog in the shell.
 
-.. code-block:: bash
+.. code-block:: console
 
    tanim-desktop $ plex_store_credentials
    Please go to this URL in a browser window:https://accounts.google.com/o/oauth2/auth...
@@ -425,7 +425,7 @@ Second, go to the URL to which you are instructed. Once you copy that URL into y
 
 Third, paste the code as described in :ref:`Step #7 <google_step07_oauthtokencopy>` into the interactive text dialog, ``...type in the access code:``. Once successful, you will receive this message in the shell,
 
-.. code-block:: bash
+.. code-block:: console
 
    Success. Stored GOOGLE credentials.
 
@@ -435,7 +435,7 @@ rsync_subproc
 ^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``rsync_subproc -h``, produces the following.
 
-.. code-block:: bash
+.. code-block:: console
 
    Usage: rsync_subproc [options]
 
@@ -479,7 +479,7 @@ The ``-N`` or ``--numtries`` flag sets the number of tries that the rsync_ proce
 
 To download a remote directory (``SUBDIR/Ubuntu_18.04``) until success into ``LOCAL_DIR``, and delete all files inside the remote directory, you can run this command with debug.
 
-.. code-block:: bash
+.. code-block:: console
 
    tanim-desktop $ rsync_subproc -D -S "Ubuntu_*"
    STARTING THIS RSYNC CMD: rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass XXXX ssh" -e ssh YYYY@ZZZZ:SUBDIR/Ubuntu_* LOCAL_DIR
@@ -491,7 +491,7 @@ Note that after a period of time (here, 25.875 seconds), the process will termin
 
 To upload the local directory (``LOCAL_DIR/Ubuntu_18.04``) until success into ``SUBDIR``, and delete all files inside the local directory, you can run this command with debug and the ``-R`` or ``--reverse`` flag.
 
-.. code-block:: bash
+.. code-block:: console
 
    tanim-desktop $ rsync_subproc -D -R -S Ubuntu*
    STARTING THIS RSYNC CMD: rsync --remove-source-files -P -avz --rsh="/usr/bin/sshpass XXXX ssh" -e ssh LOCAL_DIR/Ubuntu_18.04 YYYY@ZZZZ:SUBDIR/
@@ -511,7 +511,7 @@ Running ``rsync_subproc -P`` or ``rsync_subproc --push`` will update or set the 
 
 Thus, to set settings for ``rsync_subproc``, one would run,
 
-.. code-block:: bash
+.. code-block:: console
 
    rsync_subproc -P -L LOCAL_DIR --ssh=username@ssh_server --subdir=SUBDIR
 

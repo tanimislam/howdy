@@ -454,19 +454,19 @@ def deluge_format_info( status, torrent_id ):
     """
     Returns a nicely formatted representation of the status of a torrent.
 
-    **Usage**
-    
-    >>> print( '%s\' % deluge_format_info( status, 'ed53ba61555cab24946ebf2f346752805601a7fb' ) )
-    
-    Name: ubuntu-19.10-beta-desktop-amd64.iso
-    ID: ed53ba61555cab24946ebf2f346752805601a7fb
-    State: Downloading
-    Down Speed: 73.4 MiB/s Up Speed: 0.0 KiB/s ETA: 0 days 00:00:23
-    Seeds: 24 (67) Peers: 1 (4) Availability: 24.22
-    Size: 474.5 MiB/2.1 GiB Ratio: 0.000
-    Seed time: 0 days 00:00:00 Active: 0 days 00:00:05
-    Tracker status: ubuntu.com: Announce OK
-    Progress: 21.64% [##################################~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+    .. code-block:: console
+
+       >>> print( '%s\' % deluge_format_info( status, 'ed53ba61555cab24946ebf2f346752805601a7fb' ) )
+
+       Name: ubuntu-19.10-beta-desktop-amd64.iso
+       ID: ed53ba61555cab24946ebf2f346752805601a7fb
+       State: Downloading
+       Down Speed: 73.4 MiB/s Up Speed: 0.0 KiB/s ETA: 0 days 00:00:23
+       Seeds: 24 (67) Peers: 1 (4) Availability: 24.22
+       Size: 474.5 MiB/2.1 GiB Ratio: 0.000
+       Seed time: 0 days 00:00:00 Active: 0 days 00:00:05
+       Tracker status: ubuntu.com: Announce OK
+       Progress: 21.64% [##################################~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
     
     :param dict status: the status :py:class:`dict` for a given torrent, generated from :py:meth:`deluge_get_torrents_info <plexstuff.plexcore.plexcore_deluge.deluge_get_torrents_info>`.
     :param str torrent_id: the MD5 hash of that torrent.

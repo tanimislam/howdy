@@ -8,34 +8,26 @@ This executable finds either Magnet links or `torrent files <torrent file_>`_ of
 
 The help output, when running ``get_mov_tor -h``, produces the following.
 
-.. code-block:: bash
+.. code-block:: console
 
-   usage: get_mov_tor [-h] -n NAME [-y YEAR] [--maxnum MAXNUM]
-			 [--timeout TIMEOUT] [-f FILENAME] [--bypass] [--nozooq]
-			 [--info] [--add] [--noverify] [--timing] [--doRaw]
+   usage: get_mov_tor [-h] -n NAME [-y YEAR] [--maxnum MAXNUM] [--timeout TIMEOUT] [-f FILENAME] [--bypass] [--nozooq] [--info] [--add] [--noverify] [--raw]
 
    optional arguments:
      -h, --help            show this help message and exit
-     -n NAME, --name NAME  Name of the movie file to get.
-     -y YEAR, --year YEAR  Year to look for the movie file to get.
-     --maxnum MAXNUM       Maximum number of torrents to look through. Default is
-			   10.
-     --timeout TIMEOUT     Timeout on when to quit searching for torrents (in
-			   seconds). Default is 60 seconds.
+     -n NAME, --name NAME  Name of the movie to get.
+     -y YEAR, --year YEAR  Year to look for the movie to get.
+     --maxnum MAXNUM       Maximum number of torrents to look through. Default is 10.
+     --timeout TIMEOUT     Timeout on when to quit searching for torrents (in seconds). Default is 60 seconds.
      -f FILENAME, --filename FILENAME
 			   If defined, put torrent or magnet file into filename.
-     --bypass              If chosen, bypass YTS.AG.
+     --bypass              If chosen, bypass YTS.
      --nozooq              If chosen, bypass ZOOQLE.
      --info                If chosen, run in info mode.
-     --add                 If chosen, push the magnet link or torrent file into
-			   the deluge server.
+     --add                 If chosen, push the magnet link or torrent file into the deluge server.
      --noverify            If chosen, do not verify SSL connections.
-     --timing              If chosen, show timing information (how long to get
-			   movie torrents).
-     --doRaw               If chosen, do not use IMDB matching for Jackett
-			   torrents.
+     --raw                 If chosen, do not use IMDB matching for Jackett torrents.
 
-There are 13 flags or command line settings, so it is useful to split the different functionalities into separate sections. This tool can operate in three ways: choose a `torrent file`_; choose a Magnet link (similar to what is done in :ref:`get_tv_tor`); and bypass the Jackett_ server to use a cocktail of torrent trackers for which I have developed some functionality (see :numref:`plextmdb.plextmdb_torrents module`). :numref:`Demonstration of Default Operation` demonstrates the default mode of operation for this tool. :numref:`Common Flags and Settings` describe those settings to ``get_mov_tor`` that are shared by all operations. Finally, :numref:`Choice of Torrent Search` describes how to change the search for `torrent files <torrent file_>`_.
+There are 13 flags or command line settings, so it is useful to split the different functionalities into separate sections. This tool can operate in three ways: choose a `torrent file`_; choose a Magnet link (similar to what is done in :ref:`get_tv_tor`); and bypass the Jackett_ server to use a cocktail of torrent trackers for which I have developed some functionality (see :numref:`plexstuff.plextmdb.plextmdb_torrents module`). :numref:`Demonstration of Default Operation` demonstrates the default mode of operation for this tool. :numref:`Common Flags and Settings` describe those settings to ``get_mov_tor`` that are shared by all operations. Finally, :numref:`Choice of Torrent Search` describes how to change the search for `torrent files <torrent file_>`_.
 
 Demonstration of Default Operation
 -----------------------------------
@@ -44,14 +36,14 @@ The only required argument is ``-n`` or ``--name``, which specifies which movie 
 
 * When ``get_mov_tor`` is able to find `torrent files <torrent file_>`_, here looking for `Star Trek Beyond`_. Here, there is only a single choice, and a single `torrent file`_, ``Star_Trek_Beyond.torrent``, is created in the current working directory
 
-  .. code-block:: bash
+  .. code-block:: console
 
      tanim-desktop $ get_mov_tor -n "Star Trek Beyond"
      Chosen movie Star Trek Beyond
 
   If there were several choices, such as searching for ``"Star Trek"``, then we would choose the number of the `torrent file`_ corresponding to `Star Trek IV`_ (choice ``6``), and its `torrent file`_, ``Star_Trek_IV:_The_Voyage_Home.torrent``, is created in the current working directory.
 
-  .. code-block:: bash
+  .. code-block:: console
 
      tanim-desktop $ get_mov_tor -n "Star Trek"
      choose movie: 1: Star Trek
@@ -72,7 +64,7 @@ The only required argument is ``-n`` or ``--name``, which specifies which movie 
 
 * In default operation, if we choose a more obscure movie for which a `torrent file`_ cannot be found, we get a selection of Magnet links. For example, here we search for the more obscure Michael Moore documentary, _`Slacker Uprising`.
 
-  .. code-block:: bash
+  .. code-block:: console
 
      tanim-desktop $ get_mov_tor -n "Slacker Uprising"
      Choose movie:
@@ -83,7 +75,7 @@ The only required argument is ``-n`` or ``--name``, which specifies which movie 
 
 * Finally, if you do not like any of the choices, *and if there is more than one choice*, you can type in ``q`` or other non-numeric character to exit.
 
-  .. code-block:: bash
+  .. code-block:: console
 
      tanim-desktop $ get_mov_tor -n "Slacker Uprising"
      Choose movie:
@@ -108,9 +100,7 @@ Separate from whether or not a `torrent file`_ or Magnet link is downloaded, or 
 
 * ``--noverify`` says to not verify SSL connections.
 
-* ``--timing`` can be an useful flag, to tell us how many seconds it took from starting a torrent search, to making a choice of which `torrent file`_ or Magnet link to use.
-
-* ``--doRaw`` says to only use the search string in ``-n`` or ``--name`` to search for Magnet links. If a collection of `torrent files <torrent file_>`_ are found, then this flag is ignored.
+* ``--raw`` says to only use the search string in ``-n`` or ``--name`` to search for Magnet links. If a collection of `torrent files <torrent file_>`_ are found, then this flag is ignored.
 
 These two flags change what happens to the magnet link or `torrent file`_.
 

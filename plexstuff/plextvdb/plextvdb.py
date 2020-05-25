@@ -551,7 +551,7 @@ def get_possible_ids( series_name, tvdb_token, verify = True ):
 
     The form of the candidate TV shows is a list of dictionaries. Each dictionary is a candidate TV show: the ``'id'`` key is the :py:class:`int` TVDB_ series ID, and the ``'seriesName'`` key is the :py:class:`str` series name. For example, for `The Simpsons`_
 
-    .. code-block:: bash
+    .. code-block:: console
 
        >> candidate_series, _ = get_possible_ids( 'The Simpsons', tvdb_token )
        >> [{'id': 71663, 'seriesName': 'The Simpsons'}, {'id': 76580, 'seriesName': "Paul Merton in Galton & Simpson's..."}, {'id': 153221, 'seriesName': "Jessica Simpson's The Price of Beauty"}]
@@ -982,7 +982,7 @@ def get_episodes_series( series_id, tvdb_token, showSpecials = True, fromDate = 
 
 def get_path_data_on_tvshow( tvdata, tvshow ):
     """
-    This method is used by the :ref:`get_plextvdb_batch.py` tool that can automatically download new episodes. This returns a summary :py:class:`dict` of information on a TV show stored in the Plex_ server (see documentation in :py:meth:`get_library_data <plexstuff.plexcore.plexcore.get_library_data>` that focuses on the format of the dictionary for TV libraries). For example, here is the summary information on `The Simpsons`_ given in the ``tvdata``, the dictionary representation of TV library data. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server.
+    This method is used by the :ref:`get_plextvdb_batch` tool that can automatically download new episodes. This returns a summary :py:class:`dict` of information on a TV show stored in the Plex_ server (see documentation in :py:meth:`get_library_data <plexstuff.plexcore.plexcore.get_library_data>` that focuses on the format of the dictionary for TV libraries). For example, here is the summary information on `The Simpsons`_ given in the ``tvdata``, the dictionary representation of TV library data. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server.
 
     .. code-block:: python
         
@@ -1314,7 +1314,7 @@ def get_remaining_episodes(
     :param bool showFuture: if ``True``, then also include missing episodes that have not aired yet. Default is ``False``.
     :param int num_threads: the number of threads over which to parallelize this calculation. The default is *twice* the number of cores on the CPU.
     :param str token: optional TVDB_ API access token. If ``None``, then gets the TVDB_ API access token with :py:meth:`get_token <plexstuff.plextvdb.get_token>`.
-    :param bool mustHaveTitle: sometimes new episodes are registered in TVDB_ but without titles. Functionality to download missing episodes to the Plex_ server (see, e.g., :ref:`get_plextvdb_batch.py`) fails if the episode does not have a name. If ``True``, then ignore new episodes that do not have titles. Default is ``True``.
+    :param bool mustHaveTitle: sometimes new episodes are registered in TVDB_ but without titles. Functionality to download missing episodes to the Plex_ server (see, e.g., :ref:`get_plextvdb_batch`) fails if the episode does not have a name. If ``True``, then ignore new episodes that do not have titles. Default is ``True``.
     
     :returns: a :py:class:`dict` of missing episodes by TV show on the Plex_ server.
     :rtype: dict
@@ -1322,7 +1322,7 @@ def get_remaining_episodes(
     .. seealso::
 
        * :py:meth:`get_path_data_on_tvshow <plexstuff.plextvdb.plextvdb.get_path_data_on_tvshow>`.
-       * :ref:`get_plextvdb_batch.py`.
+       * :ref:`get_plextvdb_batch`.
 
     .. _`The Great British Bake Off`: https://en.wikipedia.org/wiki/The_Great_British_Bake_Off
     """
@@ -1461,7 +1461,7 @@ def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token =
     :returns: a :py:class:`dict` of TV shows that will start airing new episodes.
     :rtype: dict
 
-    .. seealso:: :ref:`plex_tvdb_futureshows.py`
+    .. seealso:: :ref:`plex_tvdb_futureshows`
     """
     #
     ## first get all candidate tv shows
@@ -1565,7 +1565,7 @@ def get_shows_to_exclude( tvdata = None ):
 def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
                        do_raw = False ):
     """
-    Used by, e.g., :ref:`get_plextvdb_batch.py`, to download missing episodes on the Plex_ TV library. This returns a :py:class:`tuple` of a :py:class:`list` of missing episodes to (torrent) download from the remote Deluge_ torrent server, and a :py:class:`list` of new directories to create, given a set of missing episode information, ``toGet``, as produced by :py:meth:`get_remaining_episodes <plexstuff.plextvdb.plextvdb.get_remaining_episodes>`. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server.
+    Used by, e.g., :ref:`get_plextvdb_batch`, to download missing episodes on the Plex_ TV library. This returns a :py:class:`tuple` of a :py:class:`list` of missing episodes to (torrent) download from the remote Deluge_ torrent server, and a :py:class:`list` of new directories to create, given a set of missing episode information, ``toGet``, as produced by :py:meth:`get_remaining_episodes <plexstuff.plextvdb.plextvdb.get_remaining_episodes>`. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server.
 
     * The first element of the tuple is a list of missing episodes to download using the remote Deluge_ server (see :numref:`Seedhost Services Setup` on the server's setup). Each element in the list consists of summary information, as a dictionary, that describes those TV Magnet links to download. Here are the keys.
       
@@ -1609,7 +1609,7 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
     
     .. seealso::
     
-       * :ref:`get_plextvdb_batch.py`.
+       * :ref:`get_plextvdb_batch`.
        * :py:meth:`get_remaining_episodes <plexstuff.plextvdb.plextvdb.get_remaining_episodes>`.
        * :py:meth:`download_batched_tvtorrent_shows <plexstuff.plextvdb.plextvdb.download_batched_tvtorrent_shows>`.
        * :py:meth:`worker_process_download_tvtorrent <plexstuff.plextvdb.plextvdb_torrents.worker_process_download_tvtorrent>`.
@@ -1680,7 +1680,7 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
 def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs = 240, num_iters = 10,
                                       do_raw = False ):
     """
-    Engine backend code, used by :ref:`get_plextvdb_batch.py`, that  searches for Magnet links for missing episodes on the Jackett_ server, downloads the Magnet links using the Deluge_ server, and finally copies the downloaded missing episodes to the appropriate locations in the Plex_ TV library. This expects the :py:class:`tuple` input returned by :py:meth:`create_tvTorUnits <plexstuff.plextvdb.plextvdb.create_tvTorUnits>` to run.
+    Engine backend code, used by :ref:`get_plextvdb_batch`, that  searches for Magnet links for missing episodes on the Jackett_ server, downloads the Magnet links using the Deluge_ server, and finally copies the downloaded missing episodes to the appropriate locations in the Plex_ TV library. This expects the :py:class:`tuple` input returned by :py:meth:`create_tvTorUnits <plexstuff.plextvdb.plextvdb.create_tvTorUnits>` to run.
 
     :param list tvTorUnits: the :py:class:`list` of missing episodes to search on the Jackett_ server. This is the first element of the :py:class:`tuple` returned by :py:meth:`create_tvTorUnits <plexstuff.plextvdb.plextvdb.create_tvTorUnits>`.
     :param list newdirs: the :py:class:`list` of new directories to create for the TV library. This is the second element of the :py:class:`tuple` returned by :py:meth:`create_tvTorUnits <plexstuff.plextvdb.plextvdb.create_tvTorUnits>`.
@@ -1690,7 +1690,7 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
 
     .. seealso::
     
-       * :ref:`get_plextvdb_batch.py`.
+       * :ref:`get_plextvdb_batch`.
        * :py:meth:`get_remaining_episodes <plexstuff.plextvdb.plextvdb.get_remaining_episodes>`.
        * :py:meth:`create_tvTorUnits <plexstuff.plextvdb.plextvdb.create_tvTorUnits>`.
        * :py:meth:`worker_process_download_tvtorrent <plexstuff.plextvdb.plextvdb_torrents.worker_process_download_tvtorrent>`.

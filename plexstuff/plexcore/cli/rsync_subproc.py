@@ -33,7 +33,7 @@ def main( ):
     ##
     args = parser.parse_args( )
     if args.do_debug: logging.basicConfig( level = logging.DEBUG )
-    if parser.choose_option == '-P':
+    if args.choose_option == 'push':
         assert( all(map(lambda tok: tok is not None, ( args.local_dir, args.sshpath ) ) ) )
         assert( os.path.isdir( os.path.abspath( args.local_dir ) ) )
         plexcore_rsync.push_credentials( args.local_dir, args.sshpath, subdir = args.subdir )

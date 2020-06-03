@@ -127,7 +127,7 @@ The GUI tools all share common features. One can take a PNG screenshot of each w
 
 Many of the GUIs and CLIs can be run with  a ``--noverify`` option to access SSL protected URLs and services without verification, which is needed when running in more restricted environments.
 
-In fact, here is a summary of the 23 CLI's and GUI's currently in Plexstuff_.
+In fact, here is a summary of the 25 CLI's and GUI's currently in Plexstuff_.
 
 .. |cbox| unicode:: U+2611 .. BALLOT BOX WITH CHECK
 

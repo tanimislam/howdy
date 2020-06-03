@@ -1490,13 +1490,15 @@ def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token =
 
     def get_new_season_start( input_tuple ):
         show, max_last_season, min_next_season, verify = input_tuple
-        epdicts = get_tot_epdict_tvdb(
-            show, verify = verify, token = token, showFuture = True )
-        def _get_min_date_season( epdicts, seasno ):
-            return min(map(lambda epno: epdicts[ seasno ][ epno ][ -1 ], epdicts[seasno] ) )
-        date_min = min(map(lambda seasno: _get_min_date_season( epdicts, seasno ),
-                           filter(lambda sn: sn >= min_next_season, epdicts ) ) )
-        return show, max_last_season, min_next_season, date_min
+        try:
+            epdicts = get_tot_epdict_tvdb(
+                show, verify = verify, token = token, showFuture = True )
+            def _get_min_date_season( epdicts, seasno ):
+                return min(map(lambda epno: epdicts[ seasno ][ epno ][ -1 ], epdicts[seasno] ) )
+            date_min = min(map(lambda seasno: _get_min_date_season( epdicts, seasno ),
+                            filter(lambda sn: sn >= min_next_season, epdicts ) ) )
+            return show, max_last_season, min_next_season, date_min
+        except: return None
 
     with multiprocessing.Pool( processes = num_threads ) as pool:
         future_shows_dict = dict(
@@ -1504,9 +1506,10 @@ def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token =
                 ( tup[0], { 'max_last_season' : tup[1],
                             'min_next_season' : tup[2],
                             'start_date' : tup[3] } ),
-                  pool.map(
-                      get_new_season_start, map(lambda show_max_min: (
-                          show_max_min[0], show_max_min[1], show_max_min[2], verify ), shows_to_include ) ) ) )
+                filter(None,
+                       pool.map(
+                        get_new_season_start, map(lambda show_max_min: (
+                            show_max_min[0], show_max_min[1], show_max_min[2], verify ), shows_to_include ) ) ) ) )
         logging.info( 'found detailed info on %d shows with a new season: %s.' % (
             len( future_shows_dict ), sorted( future_shows_dict ) ) )
         return future_shows_dict

@@ -1,4 +1,4 @@
-import os, sys, numpy, glob, datetime, inspect
+           import os, sys, numpy, glob, datetime, inspect
 import logging, requests, time, io, PIL.Image
 import pickle, gzip
 from multiprocessing import Process, Manager
@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 #
-from plexstuff.plextvdb import plextvdb, get_token
+from pl                  exstuff.plextvdb import plextvdb, get_token
 from plexstuff.plextvdb.plextvdb_season_gui import TVDBSeasonGUI
 from plexstuff.plexcore import plexcore, geoip_reader, QLabelWithSave
 from plexstuff.plexcore import get_formatted_size, get_formatted_duration

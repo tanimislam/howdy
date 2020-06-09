@@ -16,13 +16,13 @@ from plexstuff.plextmdb import plextmdb
 class TVShow( object ):
     """
     A convenience object that stores TV show information for a TV show. This provides a higher level object oriented implementation of the lower level pure method implementation of manipulating TV show data.
-
+    
     :param str seriesName: the series name.
     :param dict seriesInfo: the subdictionary of the Plex_ TV library information returned by :py:meth:`get_library_data <plexstuff.plexcore.plexcore.get_library_data>` associated with ``seriesName``. If ``tvdata`` is the Plex_ TV library information, then ``seriesInfo = tvdata[ seriesName ]``.
     :param str token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :Param bool showSpecials: optional argument. If ``True``, then also collect information on TV specials associated with this TV show. Default is ``False``.
-
+    
     :var int seriesId:  the TVDB_ series ID.
     :var str seriesName: the series name,
     :var bool statusEnded: whether the series has ended.
@@ -200,7 +200,7 @@ class TVShow( object ):
             tot_epdict.setdefault( seasno, {} )
             for epno in sorted(self.seasonDict[ seasno ].episodes):
                 epStruct = self.seasonDict[ seasno ].episodes[ epno ]
-                title = epStruct[ 'title' ]
+                title = epStruct[ 'title' ].replace('/', ', ') # replace / in title with ', '
                 airedDate = epStruct[ 'airedDate' ]
                 tot_epdict[ seasno ][ epno ] = ( title, airedDate )
         return tot_epdict
@@ -1784,17 +1784,17 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
     print( 'processed from start to finish in %0.3f seconds.' % ( time.time( ) - time0 ) )
     
 def get_tot_epdict_tvdb(
-        showName, verify = True, showSpecials = False,
-        showFuture = False, token = None ):
+    showName, verify = True, showSpecials = False,
+    showFuture = False, token = None ):
     """
     Returns a summary nested :py:class:`dict` of episode information for a given TV show.
-
+    
     * The top level dictionary has keys that are the TV show's seasons. Each value is a second level dictionary of information about each season.
-
+    
     * The second level dictionary has keys (for each season) that are the season's episodes. Each value is a :py:class:`tuple` of episode name and air date, as a :py:class:`date <datetime.date>`.
-
+    
     An example for `The Simpsons`_ is shown below,
-
+    
     .. code-block:: python
 
         {1 : {1: ('Simpsons Roasting on an Open Fire', datetime.date(1989, 12, 17)),
@@ -1852,7 +1852,7 @@ def get_tot_epdict_tvdb(
         seasnum = int( episode[ 'airedSeason' ] )
         if not showSpecials and seasnum == 0: continue
         epno = episode[ 'airedEpisodeNumber' ]
-        title = episode[ 'episodeName' ]
+        title = episode[ 'episodeName' ].replace( '/', ', ' ) # replace / with ', '
         try:
             firstAired_s = episode[ 'firstAired' ]
             firstAired = datetime.datetime.strptime(

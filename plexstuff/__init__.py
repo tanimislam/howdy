@@ -19,6 +19,9 @@ baseConfDir = os.path.abspath( os.path.expanduser( '~/.config/plexstuff' ) )
 the directory where Plexstuff user data is stored -- ``~/.config/plexstuff``.
 """
 
+if not os.path.isdir( baseConfDir ):
+    os.mkdir( baseConfDir )
+
 # code to handle Ctrl+C, convenience method for command line tools
 def signal_handler( signal, frame ):
     """

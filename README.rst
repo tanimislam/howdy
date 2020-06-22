@@ -76,13 +76,11 @@ You can try out `plex_music_songs`_ to get individual songs or all the songs in 
 ===========================================  ===========================================  ===============================================
 
 .. links to YouTube clips
-
 .. _yt_clip1: https://www.youtube.com/watch?v=W8pmTqFJy68
 .. _yt_clip2: https://www.youtube.com/watch?v=njkhP5VE7Kc
 .. _yt_clip3: https://www.youtube.com/watch?v=cRvxkGb2q3Y
 
 .. links to plexstuff sections
-
 .. _sec_main_config_gui: https://plexstuff.readthedocs.io/plex-config/plex_config_gui_usage.html
 .. _sec_login_config_gui: https://plexstuff.readthedocs.io/plex-config/plex_config_gui_usage.html#login-services
 .. _sec_credentials_config_gui: https://plexstuff.readthedocs.io/plex-config/plex_config_gui_usage.html#credentials-services

@@ -1017,12 +1017,20 @@ def worker_process_download_tvtorrent(
         logging.info( 'jackett start: %s, %s, %s' % (
             torFileName, mustHaveString, series_name ) )
         #
-        data, status = get_tv_torrent_jackett(
-            torFileName, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
-            minsizes = [ minSize, minSize_x265 ],
-            maxsizes = [ maxSize, maxSize_x265 ],
-            keywords_exc = [ 'xvid' ], raw = do_raw,
-            must_have = [ mustHaveString ] )
+        ## try this twice if it can
+        torFileNameAlt = re.sub('\(([0-9]+)\)', '', torFileName ).strip( )
+        torFileNames = [ torFileName, ]
+        if torFileNameAlt != torFileName: torFileNames.append( torFileNameAlt )
+        for tfn in torFileNames:
+            logging.info( 'processing jackett from "%s", using "%s" now, at %0.3f seconds after start.' % (
+                torFileName, tfn, time.time( ) - time0 ) )
+            data, status = get_tv_torrent_jackett(
+                tfn, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
+                minsizes = [ minSize, minSize_x265 ],
+                maxsizes = [ maxSize, maxSize_x265 ],
+                keywords_exc = [ 'xvid' ], raw = do_raw,
+                must_have = [ mustHaveString ] )
+            if status == 'SUCCESS': break
         if status != 'SUCCESS':
             shared_list.append( ( 'jackett', _create_status_dict( 'FAILURE', status, t0 ), 'FAILURE' ) )
             return

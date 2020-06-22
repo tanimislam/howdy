@@ -1,4 +1,4 @@
-           import os, sys, numpy, glob, datetime, inspect
+import os, sys, numpy, glob, datetime, inspect
 import logging, requests, time, io, PIL.Image
 import pickle, gzip
 from multiprocessing import Process, Manager
@@ -10,7 +10,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 #
-from pl                  exstuff.plextvdb import plextvdb, get_token
+from plexstuff import baseConfDir
+from plexstuff.plextvdb import plextvdb, get_token
 from plexstuff.plextvdb.plextvdb_season_gui import TVDBSeasonGUI
 from plexstuff.plexcore import plexcore, geoip_reader, QLabelWithSave
 from plexstuff.plexcore import get_formatted_size, get_formatted_duration
@@ -254,7 +255,8 @@ class TVDBGUI( QDialogWithPrinting ):
             qpm = QPixmap.fromImage( QImage.fromData( showImg ) )
             qpm = qpm.scaledToWidth( self.size( ).width( ) * 0.95 )
             self.summaryShowImage.setPixmap( qpm )
-        else: self.summaryShowImage.setPixmap( )
+        #else: self.summaryShowImage.setPixmap( )
+        else: pass
         self.summaryShowInfoAreaLeft.setHtml( showSummary )
         self.summaryShowInfoAreaRight.setHtml( showSummaryOverview )
 
@@ -455,7 +457,7 @@ class TVDBGUI( QDialogWithPrinting ):
 
     def contextMenuEvent( self, event ):
         menu = QMenu( self )
-        testDir = os.path.join( mainDir, 'tests' )
+        testDir = os.path.join( baseConfDir, 'tests' )
         if not os.path.isdir( testDir ): return
         if all([ self.tvdata_on_plex is None,
                  self.missing_eps is None ]):

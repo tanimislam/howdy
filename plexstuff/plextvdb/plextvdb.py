@@ -1684,7 +1684,7 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
 def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs = 240, num_iters = 10,
                                       do_raw = False ):
     """
-    Engine backend code, used by :ref:`get_plextvdb_batch`, that  searches for Magnet links for missing episodes on the Jackett_ server, downloads the Magnet links using the Deluge_ server, and finally copies the downloaded missing episodes to the appropriate locations in the Plex_ TV library. This expects the :py:class:`tuple` input returned by :py:meth:`create_tvTorUnits <plexstuff.plextvdb.plextvdb.create_tvTorUnits>` to run.
+    Engine backend code, used by :ref:`get_plextvdb_batch`, that searches for Magnet links for missing episodes on the Jackett_ server, downloads the Magnet links using the Deluge_ server, and finally copies the downloaded missing episodes to the appropriate locations in the Plex_ TV library. This expects the :py:class:`tuple` input returned by :py:meth:`create_tvTorUnits <plexstuff.plextvdb.plextvdb.create_tvTorUnits>` to run.
 
     :param list tvTorUnits: the :py:class:`list` of missing episodes to search on the Jackett_ server. This is the first element of the :py:class:`tuple` returned by :py:meth:`create_tvTorUnits <plexstuff.plextvdb.plextvdb.create_tvTorUnits>`.
     :param list newdirs: the :py:class:`list` of new directories to create for the TV library. This is the second element of the :py:class:`tuple` returned by :py:meth:`create_tvTorUnits <plexstuff.plextvdb.plextvdb.create_tvTorUnits>`.

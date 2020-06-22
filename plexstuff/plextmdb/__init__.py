@@ -26,7 +26,7 @@ def save_tmdb_api( apikey ):
     session.commit( )
 
 def get_tmdb_api( ):
-    """
+    """b
     Returns the TMDB_ API key found in the SQLite3_ configuration database (specifically the ``tmdb`` service column in the ``plexconfig`` table). Otherwise returns ``None`` if not found.
     
     :returns: the TMDB_ API key.
@@ -39,7 +39,11 @@ def get_tmdb_api( ):
         raise ValueError("ERROR, NO TMDB API CREDENTIALS FOUND")
     return val.data['apikey']
 
-if not os.environ.get( 'READTHEDOCS' ): tmdb_apiKey = get_tmdb_api( )
+if not os.environ.get( 'READTHEDOCS' ):
+    try: tmdb_apiKey = get_tmdb_api( )
+    except ValueError as e:
+        print( str( e ) )
+        sys.exit( 0 )
 else: tmdb_apiKey = ''
 
 #

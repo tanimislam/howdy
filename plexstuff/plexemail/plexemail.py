@@ -28,7 +28,7 @@ def send_email_movie_torrent( movieName, data, isJackett = False, verify = True 
     
     .. _`GMail API`: https://developers.google.com/gmail/api
     """
-    Assert( emailAddress is not None ), "Error, email address must not be None"
+    assert( emailAddress is not None ), "Error, email address must not be None"
     if emailName is None:
         emailString = emailAddress
         name = 'Friend'

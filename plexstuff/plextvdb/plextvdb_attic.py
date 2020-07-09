@@ -1,5 +1,5 @@
 import requests, os, sys, time, json, titlecase
-import logging, datetime, fuzzywuzzy.fuzz
+import logging, datetime, rapidfuzz.fuzz
 from dateutil.relativedelta import relativedelta
 from imdb import IMDb
 #
@@ -251,9 +251,9 @@ def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
         return None
     data = response.json( )
     total_pages = data[ 'total_pages' ]
-    results = filter(lambda result: fuzzywuzzy.fuzz.ratio( result['name'], series_name ) >= 10.0,
+    results = filter(lambda result: rapidfuzz.fuzz.ratio( result['name'], series_name ) >= 10.0,
                      data['results'] )
-    results = sorted( results, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['name'], series_name ) )
+    results = sorted( results, key = lambda result: -rapidfuzz.fuzz.ratio( result['name'], series_name ) )
     if total_pages >= 2:
         for pageno in xrange(2, max( 5, total_pages + 1 ) ):
             params = { 'api_key' : tmdb_apiKey,
@@ -267,10 +267,10 @@ def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
                 continue
             data = response.json( )
             newresults = list(
-                filter(lambda result: fuzzywuzzy.fuzz.ratio( result['title'], title ) >= 10.0,
+                filter(lambda result: rapidfuzz.fuzz.ratio( result['title'], title ) >= 10.0,
                        data['results'] ) )
             if len( newresults ) > 0:
-                results += sorted( newresults, key = lambda result: -fuzzywuzzy.fuzz.ratio( result['title'], title ) )
+                results += sorted( newresults, key = lambda result: -rapidfuzz.fuzz.ratio( result['title'], title ) )
     if len( results ) == 0: return None
     def get_candidate_show( result ):
         try:

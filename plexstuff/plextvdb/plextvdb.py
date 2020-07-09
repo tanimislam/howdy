@@ -7,7 +7,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 from itertools import chain
 from functools import reduce
 from dateutil.relativedelta import relativedelta
-from fuzzywuzzy.fuzz import ratio
+from rapidfuzz.fuzz import ratio
 #
 from plexstuff.plextvdb import get_token, plextvdb_torrents, ShowsToExclude, plextvdb_attic
 from plexstuff.plexcore import plexcore_rsync, splitall, session, return_error_raw

@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
-from fuzzywuzzy.fuzz import partial_ratio
+from rapidfuzz.fuzz import partial_ratio
 #
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -548,7 +548,7 @@ def get_formatted_size_MB( totsizeMB ):
     else: return ""
 
 #
-## string match with fuzzywuzzy
+## string match with rapidfuzz
 def get_maximum_matchval( check_string, input_string ):
     """
     Returns the `Levenshtein`_ distance of two strings, implemented using  A perfect match is a score of ``100.0``.

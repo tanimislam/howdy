@@ -1,4 +1,4 @@
-import sys, os, signal
+import sys, os, signal, tabulate, datetime
 # code to handle Ctrl+C, convenience method for command line tools
 def _signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
@@ -26,6 +26,8 @@ def main( ):
                              help = ' '.join([
                                  'The hash ID, or identifying initial substring, of torrents for which to get information.',
                                  'Example usage is "plex_deluge_console info ab1 bc2", where "ab1" and "bc2" are the first three digits of the MD5 hashes of torrents to examine.' ]))
+    parser_info.add_argument( '-f', '--file', dest='info_do_filename', action='store_true', default = False,
+                             help = 'If chosen, then spit out the torrent selections into a debug output file. Name of the file is given by plex_deluge_console.YYYYMMDD-HHMMSS.txt' )
     #
     ## resume
     parser_resume = subparser.add_parser( 'resume', help = 'Resume selected torrents, or all torrents.' )
@@ -79,8 +81,14 @@ def main( ):
         torrentInfo = plexcore_deluge.deluge_get_torrents_info( client )
         infos = list(map(lambda torrentId: plexcore_deluge.deluge_format_info(
             torrentInfo[ torrentId ], torrentId ), torrentIds ) )
-        if len( infos ) != 0:
-            print( '%s\n' % '\n'.join(map(lambda info: '%s\n' % info, infos)))
+        if len( infos ) == 0: return
+        mystr = '\n'.join(map(lambda info: '%s\n' % info, infos))
+        if args.info_do_filename:
+            fname = 'plex_deluge_console.%s.txt' % (
+                datetime.datetime.now( ).strftime( '%Y%M%d-%H%M%s' ) )
+            with open( fname, 'w' ) as openfile:
+                openfile.write( '%s\n' % mystr )
+        else: print( '%s\n' % mystr )
         return
     if args.choose_option == 'resume':
         resume_torrents = args.resume_torrent

@@ -241,8 +241,8 @@ def main( ):
     items = list( chain.from_iterable( items_lists ) )
     logging.info( 'search for %d torrents took %0.3f seconds.' % (
         len( items ), time.time( ) - time0 ) )    
-    if len( items ) != 0:
-        #
-        ## sort from most seeders + leecher to least
-        items_sorted = sorted( items, key = lambda tup: -tup['seeders'] - tup['leechers'] )[:args.maxnum]
-        get_movie_torrent_items( items_sorted, filename = args.filename, to_torrent = args.do_add )
+    if len( items ) == 0: return
+    #
+    ## sort from most seeders + leecher to least
+    items_sorted = sorted( items, key = lambda tup: -tup['seeders'] - tup['leechers'] )[:args.maxnum]
+    get_movie_torrent_items( items_sorted, filename = args.filename, to_torrent = args.do_add )

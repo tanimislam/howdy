@@ -175,13 +175,15 @@ You can get nicely formatted information on a collection of torrents, or all tor
 
 .. code-block:: console
 
-   usage: plex_deluge_console info [-h] [torrent [torrent ...]]
+   usage: plex_deluge_console info [-h] [-f] [torrent [torrent ...]]
 
    positional arguments:
-     torrent     The hash ID, or identifying initial substring, of torrents for which to get information. Example usage is "plex_deluge_console info ab1 bc2", where "ab1" and "bc2" are the first three digits of the MD5 hashes of torrents to examine.
+     torrent     The hash ID, or identifying initial substring, of torrents for which to get information. Example usage is "plex_deluge_console info ab1 bc2", where "ab1" and "bc2" are the first three digits of
+		 the MD5 hashes of torrents to examine.
 
    optional arguments:
      -h, --help  show this help message and exit
+     -f, --file  If chosen, then spit out the torrent selections into a debug output file. Name of the file is given by plex_deluge_console.YYYYMMDD-HHMMSS.txt
 
 ``plex_deluge_console info`` will show nicely formatted information on ALL torrents.
 
@@ -221,6 +223,7 @@ You can give it a list of truncated MD5 hashes to get status information on sele
    Seed time: 0 days 00:03:44 Active: 0 days 00:03:57
    Tracker status: ubuntu.com: Announce OK
 
+Furthermore, since this CLI does not have UNIX piping and redirect functionalities, running with the ``-f`` or ``--file`` flag will spit out a debug text output of torrent statuses, the same as spit out into the command line. The name of the debug output file is ``plex_deluge_console.YYYYMMDD-HHMMSS.txt``: the middle text is the 4-digit year, 2-digit month, 2-digit-day, followed by hour-min-second, at the time when the info command was requested.
 
 removing torrents (rm or del)
 -------------------------------

@@ -18,8 +18,9 @@ baseConfDir = os.path.abspath( os.path.expanduser( '~/.config/plexstuff' ) )
 """
 the directory where Plexstuff user data is stored -- ``~/.config/plexstuff``.
 """
-
-if not os.path.isdir( baseConfDir ):
+#
+## don't do anything if in READTHEDOCS
+if not os.path.isdir( baseConfDir ) and not os.environ.get('READTHEDOCS'):
     os.mkdir( baseConfDir )
 
 # code to handle Ctrl+C, convenience method for command line tools

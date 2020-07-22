@@ -80,7 +80,7 @@ intersphinx_mapping = {
     'google-auth' : ( 'https://google-auth.readthedocs.io/en/latest', None ),
     'deluge' : ( 'https://deluge.readthedocs.io/en/latest', None ),
     'plexapi' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
-    'sqlalchemy' : ( 'https://www.sqlalchemy.org/docs', None ),
+    'sqlalchemy' : ( 'https://docs.sqlalchemy.org', None ),
     'subliminal' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
     'musicbrainzngs' : ( 'https://python-musicbrainzngs.readthedocs.io/en/latest', None ),
     'pillow' : ( 'https://pillow.readthedocs.io/en/stable', None ),

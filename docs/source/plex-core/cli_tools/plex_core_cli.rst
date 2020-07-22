@@ -278,50 +278,6 @@ You can add torrents to the Deluge server by running ``plex_deluge_console add``
 
    plex_deluge_console add "magnet:?xt=urn:btih:49efb5fdd274abb26c5ea6361d1d9be28e4db2d3&dn=archlinux-2019.09.01-x86_64.iso&tr=udp://tracker.archlinux.org:6969&tr=http://tracker.archlinux.org:6969/announce"
 
-
-pausing and resuming torrents (pause or resume)
--------------------------------------------------
-You can pause torrents on the Deluge server by running ``plex_deluge_console pause``, and you can resume them by running ``plex_deluge_console resume``.
-
-
-* You can pause/resume specific torrents by running ``plex_deluge_console pause md5trunc_1 md5_trunc_2 ...`` or ``plex_deluge_console resume md5trunc_1 md5_trunc_2 ...``.
-
-* You can pause/resume ALL torrents on the Deluge server by not specifying any truncated MD5 hashes, ``plex_deluge_console pause`` or ``plex_deluge_console resume``.  
-
-.. 28-09-2019: Pause and resume don't seem to be working right now when connecting to the Seedhost seedbox Deluge server.
-
-pushing credentials (push)
-----------------------------------
-You can push new Deluge server credentials (URL, port, username, and password) to the SQLite3_ configuration database. Running ``plex_deluge_console push -h`` gives its help syntax,
-
-.. code-block:: console
-
-   usage: plex_deluge_console add [-h] torrent
-
-   positional arguments:
-     torrent     The fully realized magnet link, or file, to add to the torrent server.
-
-   optional arguments:
-     -h, --help  show this help message and exit
-
-* torrent file as remote URL:
-
-.. code-block:: console
-
-   plex_deluge_console add http://releases.ubuntu.com/19.10/ubuntu-19.10-beta-live-server-amd64.iso.torrent
-
-* torrent file on disk:
-
-.. code-block:: console
-
-   plex_deluge_console add ubuntu-19.10-beta-desktop-amd64.iso.torrent
-
-* `Magnet URI`_:
-
-.. code-block:: console
-
-   plex_deluge_console add "magnet:?xt=urn:btih:49efb5fdd274abb26c5ea6361d1d9be28e4db2d3&dn=archlinux-2019.09.01-x86_64.iso&tr=udp://tracker.archlinux.org:6969&tr=http://tracker.archlinux.org:6969/announce"
-
 pausing and resuming torrents (pause or resume)
 -------------------------------------------------
 You can pause torrents on the Deluge server by running ``plex_deluge_console pause``, and you can resume them by running ``plex_deluge_console resume``.

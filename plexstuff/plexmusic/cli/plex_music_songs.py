@@ -184,7 +184,8 @@ def _download_actual_song(
     if youtubeURL is None: return None
     #
     ## now download the song into the given filename
-    filename = '%s.%s.m4a' % ( artist_name, song_name )
+    ## replace '/' in artist and song name with '-'
+    filename = '%s.%s.m4a' % ( artist_name.replace( '/', '-' ), song_name.replace('/', '-' ) )
     plexmusic.get_youtube_file( youtubeURL, filename )
     #
     ## now fill out the metadata

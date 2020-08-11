@@ -1,10 +1,7 @@
-import signal, sys
-# code to handle Ctrl+C, convenience method for command line tools
-def signal_handler( signal, frame ):
-    print( "You pressed Ctrl+C. Exiting...")
-    sys.exit( 0 )
+import signal
+from plexstuff import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
-import os, datetime, io, zipfile, logging, requests
+import os, sys, datetime, io, zipfile, logging, requests
 from argparse import ArgumentParser
 #
 from plexstuff.plexmusic import plexmusic

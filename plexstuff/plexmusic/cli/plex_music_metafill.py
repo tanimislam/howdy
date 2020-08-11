@@ -1,8 +1,5 @@
-import sys, os, signal
-# code to handle Ctrl+C, convenience method for command line tools
-def signal_handler( signal, frame ):
-    print( "You pressed Ctrl+C. Exiting...")
-    sys.exit( 0 )
+import signal, os
+from plexstuff import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
 from argparse import ArgumentParser
 #

@@ -25,7 +25,7 @@ Here are some of the best known lower APIs used to help one manage your Plex_ se
 
 The command line tools are built using Python's ArgumentParser_ object, and the GUIs are built with PyQt5_.
 
-The comprehensive documentation lives in HTML created with `Sphinx <http://www.sphinx-doc.org/en/master/>`_, and now in the `Read the Docs <Plexstuff_>`_ page for this project. To generate the documentation, go to the ``docs`` subdirectory. In that directory, run ``make html``. Load ``docs/build/html/index.html`` into a browser to see the documentation.
+The comprehensive documentation lives in HTML created with `Sphinx <https://www.sphinx-doc.org/en/master/>`_, and now in the `Read the Docs <Plexstuff_>`_ page for this project. To generate the documentation, go to the ``docs`` subdirectory. In that directory, run ``make html``. Load ``docs/build/html/index.html`` into a browser to see the documentation.
 
 Quick and Dirty -- How Do I Get It Working?
 --------------------------------------------

@@ -1,9 +1,6 @@
-import sys, signal
-def signal_handler( signal, frame ):
-    print( "You pressed Ctrl+C. Exiting...")
-    sys.exit( 0 )
+from plexstuff import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
-import codecs, os, tabulate, logging
+import codecs, os, sys, tabulate, logging
 from argparse import ArgumentParser
 #
 from plexstuff.plexmusic import plexmusic

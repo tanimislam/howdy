@@ -137,7 +137,7 @@ The *PLEX MUSIC CONFIGURATION* widget is organized into four services, each orga
 
 :numref:`Summary of Setting Up Google Credentials` describes how to set up *GMUSIC*, since the unofficial Google Play API uses Google's services infrastructure. Copy the relevant information for *LASTFM* and *GRACENOTE* according to :numref:`The Gracenote and LastFM APIs`.
 
-Public access to the MusicBrainz service requires a `valid user agent <https://musicbrainz.org/doc/XML_Web_Service/Rate_Limiting#Provide_meaningful_User-Agent_strings>`_. Plexstuff uses the `musicbrainzngs <https://python-musicbrainzngs.readthedocs.io/en/v0.6>`_ Python module to access the MusicBrainz web service. This module requires an user agent with three elements:
+Public access to the MusicBrainz service requires a `valid user agent <https://musicbrainz.org/doc/XML_Web_Service/Rate_Limiting#Provide_meaningful_User-Agent_strings>`_. Plexstuff uses the `musicbrainzngs <https://python-musicbrainzngs.readthedocs.io>`_ Python module to access the MusicBrainz web service. This module requires an user agent with three elements:
 
 * email address.
 * version number.

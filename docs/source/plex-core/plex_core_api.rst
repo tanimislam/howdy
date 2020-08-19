@@ -62,6 +62,14 @@ This module implements the functionality to interact with a Seedhost_ seedbox_ S
 .. automodule:: plexstuff.plexcore.plexcore_rsync
    :members:
 
+plexstuff.plexcore.plexcore_torrents module
+----------------------------------------------
+
+This is a newer module. It implements higher level interfaces to the Jackett_ torrent searching server to search for ebooks. :ref:`get_book_tor` is its only CLI front-end.
+
+.. automodule:: plexstuff.plexcore.plexcore_torrents
+   :members:
+
 .. these are some URLs
 
 .. _SQLite3: https://www.sqlite.org/index.html

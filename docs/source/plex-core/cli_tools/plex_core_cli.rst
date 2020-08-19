@@ -14,6 +14,8 @@ This section describes the five Plexstuff core command line utilities.
 
 * :ref:`rsync_subproc` rsync_ copies (and removes) files from the remote server and optional remote subdirectory, to the local server and local directory, or vice-versa. This tool also allows one to update the location of the remote server, the remote subdirectory, and the local subdirectory. The update of the remote path, and local and remote subdirectories, can also be changed through the ``plex_config_gui`` GUI, as described in :numref:`Local and Remote (Seedhost) SSH Setup` and :numref:`Login Services` (see the screen shot in :numref:`login_step02_settings`).
 
+* :ref:`get_book_tor` finds `Magnet links <Magnet URI_>`_ of ebooks, and by default prints out the chosen magnet link. This executable uses the Jackett_ server to search for ebooks, and can optionally upload these links to the specified Deluge_ server (see :numref:`Plexstuff Settings Configuration`). It borrows much of its workflow from :ref:`get_tv_tor` and :ref:`get_mov_tor`.
+
 .. _plex_core_cli_label:
 
 plex_core_cli
@@ -548,9 +550,76 @@ Thus, to set settings for ``rsync_subproc``, one would run,
 
 Note that here, the SSH password is the same as the remote Deluge_ server's password. See, e.g., :numref:`plex_deluge_console` or :numref:`Local and Remote (Seedhost) SSH Setup` and figures therein.
 
+.. _get_book_tor_label:
+
+get_book_tor
+^^^^^^^^^^^^^
+The help output, when running ``get_book_tor -h``, produces the following.
+
+.. code-block:: console
+
+   usage: get_book_tor [-h] -n NAME [--maxnum MAXNUM] [-f FILENAME] [--add] [--info] [--noverify]
+
+   optional arguments:
+     -h, --help            show this help message and exit
+     -n NAME, --name NAME  Name of the book to get.
+     --maxnum MAXNUM       Maximum number of torrents to look through. Default is 10.
+     -f FILENAME, --filename FILENAME
+			   If defined, put magnet link into filename.
+     --add                 If chosen, push the magnet link into the deluge server.
+     --info                If chosen, run in info mode.
+     --noverify            If chosen, do not verify SSL connections.
+
+These are common flags used by all standard operations of this CLI.
+
+* ``--info`` prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
+
+* ``--noverify`` does not verify SSL connections.
+
+The ``-n`` or ``--name`` flag is used to specify the ebook, for example `Plagues and Peoples <plagues_and_peoples_>`_ by `William McNeill`_.
+
+Here is how to get this ebook,  `Plagues and Peoples <plagues_and_peoples_>`_. The selection of ebook torrents are much smaller than TV shows and movies, so we often get *one* choice rather than multiple choices. If we had multiple choices, we could choose a given Magnet link by number, and the choices are sorted by the total number of seeds (SE) and leechers (LE) found for that link. The Magnet link is printed out here.
+
+.. code-block:: console
+
+   tanim-desktop $ get_book_tor -n "Plagues and Peoples"
+   Chosen book: Plagues and Peoples (2.1 MiB)
+   magnet link: magnet:?xt=urn:btih:85C37477333AD716864B3D25F5DFF1B9AFF1ADE6&dn=Plagues+and+Peoples&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2920%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.pirateparty.gr%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.cyberia.is%3A6969%2Fannounce
+
+We can modify this command with the following.
+
+* ``-f`` or ``--filename`` is used to output the Magnet URI into a file,
+
+  .. code-block:: console
+
+     tanim-desktop $ get_book_tor -n "Plagues and Peoples" -f plagues_and_peoples.txt
+     Chosen book: Plagues and Peoples (2.1 MiB)
+
+* ``--add`` adds the Magnet URI to the Deluge_ server. The operation of ``plex_deluge_console`` is described in :numref:`plex_deluge_console`.
+
+  .. code-block:: console
+
+     tanim-desktop: torrents $ get_book_tor -n "Plagues and Peoples" --add
+     Chosen book: Plagues and Peoples (2.1 MiB)
+     ...
+     tanim-desktop: torrents $ plex_deluge_console info
+     Name: Plagues and Peoples
+     ID: 85c37477333ad716864b3d25f5dff1b9aff1ade6
+     State: Downloading
+     Down Speed: 0.0 KiB/s Up Speed: 0.0 KiB/s
+     Seeds: 0 (1) Peers: 0 (1) Availability: 0.00
+     Size: 0.0 KiB/0.0 KiB Ratio: -1.000
+     Seed time: 0 days 00:00:00 Active: 0 days 00:00:35
+     Tracker status: coppersurfer.tk: Announce OK
+     Progress: 0.00% [~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+
+  
 .. _Deluge: https://en.wikipedia.org/wiki/Deluge_(software)
 .. _deluge_console: https://whatbox.ca/wiki/Deluge_Console_Documentation
 .. _rsync: https://en.wikipedia.org/wiki/Rsync
 .. _Plex: https://plex.tv
 .. _`Magnet URI`: https://en.wikipedia.org/wiki/Magnet_URI_scheme
 .. _SQLite3: https://www.sqlite.org/index.html
+.. _Jackett: https://github.com/Jackett/Jackett
+.. _plagues_and_peoples: https://en.wikipedia.org/wiki/Plagues_and_Peoples
+.. _`William McNeill`: https://en.wikipedia.org/wiki/William_H._McNeill_(historian)

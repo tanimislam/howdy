@@ -119,7 +119,7 @@ author = u'Tanim Islam'
 
 # The full version, including alpha/beta/rc tags.
 # follow insructions from https://protips.readthedocs.io/git-tag-version.html#inferring-release-number-from-git-tags
-release = re.sub('^v', '', os.popen('git describe').read().strip())
+release = re.sub('^v', '', os.popen('git describe --tags').read().strip())
 # The short X.Y version.
 version = release.split('-')[0].strip( )
 

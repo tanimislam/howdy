@@ -14,8 +14,7 @@ def main( ):
                      'type in the access code:' ] )
     access_code = input( bs )
     try:
-        if args.do_verify: http = Http( )
-        else: http = Http( disable_ssl_certificate_validation = True )
+        http = Http( disable_ssl_certificate_validation = not args.do_verify )
         credentials = flow.step2_exchange( access_code, http = http )
         plexcore.oauth_store_google_credentials( credentials )
         print( 'Success. Stored GOOGLE credentials.' )

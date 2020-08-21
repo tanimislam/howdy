@@ -1432,7 +1432,7 @@ def oauthGetGoogleCredentials( verify = True ):
 
     :returns: a :py:class:`Credentials <google.oauth2.credentials.Credentials>` form of the `Google Oauth2`_ credentials for various Oauth2 services.
     :rtype: :py:class:`Credentials <google.oauth2.credentials.Credentials>`
-
+    
     .. seealso::
 
       * :py:meth:`oauthGetGoogleCredentials <plexstuff.plexcore.plexcore.oauthGetGoogleCredentials>`.

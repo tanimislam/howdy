@@ -1,19 +1,37 @@
 import os, sys, base64, httplib2, numpy, glob
 import hashlib, requests, io, datetime
 import pathos.multiprocessing as multiprocessing
-from apiclient.discovery import build
+from googleapiclient.discovery import build
 from PIL import Image
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 #
 from plexstuff.plexcore import plexcore
 
-def send_email_lowlevel( msg, verify = True ):
+def get_email_service( verify = True ):
+    """
+    This returns a working :py:class:`Resource <googleapiclient.discovery.Resource>` representing the Google email service used to send and receive emails.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :returns: the :py:class:`Resource <googleapiclient.discovery.Resource>` representing the Google email service used to send and receive emails. If ``None``, then generated here.
+    :rtype: :py:class:`Resource <googleapiclient.discovery.Resource>`
+    """
+    credentials = plexcore.oauthGetOauth2ClientGoogleCredentials( )
+    assert( credentials is not None )
+    http_auth = credentials.authorize( httplib2.Http(
+        disable_ssl_certificate_validation = not verify ) )
+    email_service = build('gmail', 'v1', http = http_auth,
+                          cache_discovery = False )
+    return email_service
+    
+def send_email_lowlevel( msg, email_service = None, verify = True ):
     """
     Sends out an email using the `Google Contacts API`_. If process is unsuccessfull, prints out an error message, ``"problem with <TO-EMAIL>"``, where ``<TO-EMAIL>`` is the recipient's email address.
 
     :param MIMEMultiPart msg: the :py:class:`MIMEMultiPart <email.mime.multipart.MIMEMultiPart>` email message to send. At a high level, this is an email with body, sender, recipients, and optional attachments.
+    :param email_service: optional argument, the :py:class:`Resource <googleapiclient.discovery.Resource>` representing the Google email service used to send and receive emails. If ``None``, then generated here.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+
+    .. seealso:: :py:meth:`get_email_service <plexstuff.plexemail.get_email_service>`.
 
     .. _`Google Contacts API`: https://developers.google.com/contacts/v3
     .. _Ubuntu: https://www.ubuntu.com
@@ -26,14 +44,8 @@ def send_email_lowlevel( msg, verify = True ):
     #    verify = verify )
     #email_service = build('gmail', 'v1', credentials = credentials,
     #                      cache_discovery = False )
-    credentials = plexcore.oauthGetOauth2ClientGoogleCredentials( )
-    assert( credentials is not None )
-    http_auth = credentials.authorize( httplib2.Http(
-        disable_ssl_certificate_validation = not verify ) )
-    email_service = build('gmail', 'v1', http = http_auth,
-                          cache_discovery = False )
-    try: message = email_service.users( ).messages( ).send(
-            userId='me', body = data ).execute( )
+    if email_service is None: email_service = get_email_service( verify = verify )
+    try: message = email_service.users( ).messages( ).send( userId='me', body = data ).execute( )
     except: print('problem with %s' % msg['To'] )
     
 def send_email_localsmtp( msg ):

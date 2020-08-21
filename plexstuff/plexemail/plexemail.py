@@ -10,7 +10,7 @@ from email.mime.image import MIMEImage
 from plexstuff import resourceDir
 from plexstuff.plexcore import session, plexcore, get_lastupdated_string
 from plexstuff.plexcore import get_formatted_size, get_formatted_duration
-from plexstuff.plexemail import send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
+from plexstuff.plexemail import get_email_service, send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
 #
 def send_email_movie_torrent( movieName, data, isJackett = False, verify = True ):
     """
@@ -192,8 +192,9 @@ def test_email( subject = None, htmlstring = None, verify = True ):
     msg.attach( body )
     send_email_lowlevel( msg, verify = verify )
 
-def send_individual_email_full( mainHTML, subject, email, name = None, attach = None,
-                               attachName = None, attachType = 'txt', verify = True ):
+def send_individual_email_full(
+    mainHTML, subject, email, name = None, attach = None,
+    attachName = None, attachType = 'txt', verify = True, email_service = None ):
     """
     Sends the HTML email, with optional *single* attachment, to a single recipient email address, using the `GMail API`_. Unlike :py:meth:`send_individual_email_full_withsingleattach <plexstuff.plexemail.plexemail.send_individual_email_full_withsingleattach>`, the attachment type is *also* set.
 
@@ -206,6 +207,7 @@ def send_individual_email_full( mainHTML, subject, email, name = None, attach = 
     :param str attachName: optional argument. The :py:class:`list` of attachment names, if there is an attachment. If defined, then ``attachData`` must also be defined.
     :param str attachType: the attachment type. Default is ``txt``.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param email_service: optional argument, the :py:class:`Resource <googleapiclient.discovery.Resource>` representing the Google email service used to send and receive emails. If ``None``, then generated here.
 
     :raise AssertionError: if the current Plex_ account user's email address does not exist.
     """
@@ -229,12 +231,12 @@ def send_individual_email_full( mainHTML, subject, email, name = None, attach = 
         att = MIMEApplication( attach, _subtype = 'text' )
         att.add_header( 'content-disposition', 'attachment', filename = attachName )
         msg.attach( att )
-    send_email_lowlevel( msg, verify = verify )
+    send_email_lowlevel( msg, email_service = email_service, verify = verify )
 
 def send_individual_email_full_withsingleattach(
         mainHTML, subject, email, name = None,
         attachData = None, attachName = None,
-        verify = True ):
+        verify = True, email_service = None ):
     """
     Sends the HTML email, with optional *single* attachment, to a single recipient email address, using the `GMail API`_.
 
@@ -246,6 +248,7 @@ def send_individual_email_full_withsingleattach(
     :param str attachData: optional argument. If defined, the Base64_ encoded attachment.
     :param str attachName: optional argument. The :py:class:`list` of attachment names, if there is an attachment. If defined, then ``attachData`` must also be defined.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param email_service: optional argument, the :py:class:`Resource <googleapiclient.discovery.Resource>` representing the Google email service used to send and receive emails. If ``None``, then generated here.
 
     :raise AssertionError: if the current Plex_ account user's email address does not exist.
     """
@@ -275,7 +278,7 @@ def send_individual_email_full_withsingleattach(
         att = MIMEApplication( attachData, _subtype = sub_type )
         att.add_header( 'content-disposition', 'attachment', filename = attachName )
         msg.attach( att )
-    send_email_lowlevel( msg, verify = verify )
+    send_email_lowlevel( msg, email_service = email_service, verify = verify )
         
 def send_individual_email_full_withattachs(
         mainHTML, subject, email, name = None,
@@ -334,7 +337,7 @@ def send_individual_email_full_withattachs(
 def send_individual_email(
         mainHTML, email, name = None,
         mydate = datetime.datetime.now().date( ),
-        verify = True ):
+        verify = True, email_service = None ):
     """
     sends the HTML email to a single recipient email address using the `GMail API`_. The subject is ``"Plex Email Newsletter for <MONTH> <YEAR>"``.
 
@@ -343,6 +346,7 @@ def send_individual_email(
     :param str name: optional argument. If given, the recipient's name.
     :param date mydate: optional argument. The :py:class:`date <datetime.date>` at which the email is sent. Default is :py:meth:`now( ) <datetime.datetime.now>`.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param email_service: optional argument, the :py:class:`Resource <googleapiclient.discovery.Resource>` representing the Google email service used to send and receive emails. If ``None``, then generated here.
 
     :raise AssertionError: if the current Plex_ account user's email address does not exist.
     """
@@ -363,7 +367,7 @@ def send_individual_email(
     #
     body = MIMEText( htmlstring, 'html', 'utf-8' )
     msg.attach( body )
-    send_email_lowlevel( msg, verify = verify )
+    send_email_lowlevel( msg, email_service = email_service, verify = verify )
 
 def get_summary_html( token, fullURL = 'http://localhost:32400',
                       preambleText = '', postambleText = '', pngDataDict = { },
@@ -451,8 +455,8 @@ def get_summary_data_music_remote( token, fullURL = 'http://localhost:32400' ):
     """
     This returns summary information on songs from all music libraries on the Plex_ server, for use as part of the Plex_ newsletter sent out to one's Plex_ server friends. The email first summarizes ALL the music data, and then summarizes the music data uploaded and processed since the last newsletter's date. For example,
 
-       There are 15008 songs made by 821 artists in 1593 albums. The total size of music media is 259.680 GB. The total duration of music media is 6 months, 4 days, 11 hours, 5 minutes, and 30.837 seconds. Since June 11, 2017, I have added 3336 songs made by 275 artists in 442 albums. The total size of music media I added is 47.744 GB. The total duration of music media I added is 1 month, 6 days, 53 minutes, and 47.884 seconds.
-
+       There are 17379 songs made by 862 artists in 1715 albums. The total size of music media is 300.467 GB. The total duration of music media is 7 months, 13 days, 16 hours, 22 minutes, and 57.155 seconds. Since June 11, 2017, I have added 9692 songs made by 742 artists in 1314 albums. The total size of music media I added is 107.845 GB. The total duration of music media I added is 2 months, 28 days, 21 hours, 48 minutes, and 51.117 seconds.
+ 
     :param str token: the Plex_ access token.
     :param str fullURL: the Plex_ server URL.
     

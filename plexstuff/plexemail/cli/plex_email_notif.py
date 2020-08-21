@@ -2,7 +2,7 @@ import os, datetime, logging, time
 from argparse import ArgumentParser
 #
 from plexstuff.plexcore import plexcore
-from plexstuff.plexemail import plexemail, get_email_contacts_dict, emailAddress, emailName
+from plexstuff.plexemail import plexemail, get_email_contacts_dict, emailAddress, emailName, get_email_service
 
 def main( ):
     time0 = time.time( )
@@ -55,11 +55,14 @@ def main( ):
             htmlString, args.subject, emailAddress, name = emailName )
         print( 'processed test email in %0.3f seconds.' % ( time.time( ) - time0 ) )
     else:
+        email_service = get_email_service( )
         def _send_email_perproc( input_tuple ):
             name, email = input_tuple
             plexemail.send_individual_email_full(
-                htmlString, args.subject, email, name = name )
+                htmlString, args.subject, email, name = name,
+                email_service = email_service )
             return True
-        arrs = list( map( _send_email_perproc, name_emails +
-                          [ ( emailName, emailAddress ) ] ) )
+        arrs = list( map(
+            _send_email_perproc, name_emails +
+            [ ( emailName, emailAddress ) ] ) )
         print( 'processed %d emails in %0.3f seconds.' % ( len(arrs), time.time( ) - time0 ) )

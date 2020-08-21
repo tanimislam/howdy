@@ -10,7 +10,7 @@ import logging, warnings, qtmodern.styles, qtmodern.windows
 from PyQt5.QtWidgets import QApplication
 from urllib.parse import urlparse
 from argparse import ArgumentParser
-#
+
 from plexstuff.plexcore import geoip_reader
 from plexstuff.plexcore.plexcore_gui import returnToken, returnGoogleAuthentication
 
@@ -33,8 +33,9 @@ def main( ):
         print( 'token = %s' % token )
         print( 'url = %s' % fullurl )
         ipaddr = urlparse( fullurl ).netloc.split(':')[0]
-        myloc = geoip_reader.city( ipaddr )
-        print( 'location is in %s, %s, %s.' % (
-            myloc.city.name, myloc.subdivisions.most_specific.iso_code, myloc.country.name ) )
+        if ipaddr != 'localhost':
+            myloc = geoip_reader.city( ipaddr )
+            print( 'location is in %s, %s, %s.' % (
+                myloc.city.name, myloc.subdivisions.most_specific.iso_code, myloc.country.name ) )
         
     else: val = returnGoogleAuthentication( )

@@ -5,9 +5,9 @@
    :target: https://plexstuff.readthedocs.io/en/latest
 
 ###################################################################
-Plexstuff - Yet Another Way to Manage Your Plex_ Server's Content
+Howdy! - Yet Another Way to Manage Your Plex_ Server's Content
 ###################################################################
-Plexstuff is a (hopefully) useful SDK that I have developed to manage the movies, television shows, and music in which I am interested. I hope that it is, or becomes, a worthy member of the rich community of services used to manage one's media.
+Howdy! (previous Plexstuff) is a (hopefully) useful SDK that I have developed to manage the movies, television shows, and music in which I am interested. I hope that it is, or becomes, a worthy member of the rich community of services used to manage one's media.
 
 Here are a few of the best known high level media management services:
 

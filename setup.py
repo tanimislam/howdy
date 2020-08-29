@@ -84,7 +84,7 @@ setup(
             'plex_create_texts = plexstuff.plexcore.gui.plex_create_texts:main',
             # plexemail stuff
             'plex_email_notif = plexstuff.plexemail.cli.plex_email_notif:main',
-            'plex_email_gui = plexstuff.plexemail.gui.plex_email_gui:main',
+            'howdy_email_gui = plexstuff.email.gui.howdy_email_gui:main',
             # plexmusic stuff
             'plex_music_album = plexstuff.plexmusic.cli.plex_music_album:main',
             'plex_music_metafill = plexstuff.plexmusic.cli.plex_music_metafill:main',

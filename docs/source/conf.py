@@ -95,6 +95,15 @@ verify = False
 # numfig stuff
 numfig = True
 
+
+#
+## change favicon to CADUCEUS logo
+html_logo = '_static/howdy_icon.svg'
+html_favicon = '_static/howdy_icon.svg'
+html_theme_options = {
+    'logo_only': False,
+}
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = [ '_templates' ]
 
@@ -108,7 +117,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'plexstuff'
+project = u'howdy!'
 copyright = u'%d' % datetime.datetime.now( ).year
 author = u'Tanim Islam'
 
@@ -140,7 +149,6 @@ pygments_style = 'sphinx'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
-
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -177,60 +185,3 @@ html_sidebars = {
         'donate.html',
     ]
 }
-
-
-# -- Options for HTMLHelp output ------------------------------------------
-
-# Output file base name for HTML help builder.
-htmlhelp_basename = 'plexstuffdoc'
-
-
-# -- Options for LaTeX output ---------------------------------------------
-
-latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #
-    # 'papersize': 'letterpaper',
-
-    # The font size ('10pt', '11pt' or '12pt').
-    #
-    # 'pointsize': '10pt',
-
-    # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
-
-    # Latex figure (float) alignment
-    #
-    # 'figure_align': 'htbp',
-}
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, 'plexstuff.tex', u'Plexstuff Documentation',
-     u'Plex Utility Functionality', 'manual'),
-]
-
-
-# -- Options for manual page output ---------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'plexstuff', u'Plexstuff Documentation',
-     [author], 1)
-]
-
-
-# -- Options for Texinfo output -------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (master_doc, 'plexstuff', u'plexstuff Documentation',
-     author, 'plexstuff', 'One line description of project.',
-     'Miscellaneous'),
-]

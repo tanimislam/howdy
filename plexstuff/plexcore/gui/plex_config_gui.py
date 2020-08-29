@@ -8,6 +8,7 @@ import logging, glob, os, warnings, qtmodern.styles, qtmodern.windows
 from argparse import ArgumentParser
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
 #
 from plexstuff import resourceDir
 from plexstuff.plexcore import plexcore_gui
@@ -25,8 +26,9 @@ def main( ):
     if args.do_info: logger.setLevel( logging.INFO )
     #
     app = QApplication([])
+    app.setAttribute(Qt.AA_UseHighDpiPixmaps)
     icn = QIcon( os.path.join(
-        resourceDir, 'icons', 'plex_config_gui.png' ) )
+        resourceDir, 'icons', 'howdy_config_gui.svg' ) )
     app.setWindowIcon( icn )
     qtmodern.styles.dark( app )
     pcgui = plexcore_gui.PlexConfigGUI( verify = args.do_verify )

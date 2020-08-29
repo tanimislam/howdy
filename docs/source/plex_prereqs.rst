@@ -147,11 +147,11 @@ Functionality    CLI                                                            
                  - :ref:`plex_tvdb_plots <plex_tvdb_plots_label>` |cbox|
 		 - :ref:`plex_tvdb_excludes <plex_tvdb_excludes_label>` |cbox|
 ``plextmdb``     - :ref:`get_mov_tor <get_mov_tor_label>` |cbox|                        - :ref:`plex_tmdb_totgui <plex_tmdb_totgui_label>`
-``plexmusic``    - :ref:`plex_music_album <plex_music_album_label>` |cbox|
-                 - :ref:`plex_music_metafill <plex_music_metafill_label>` |cbox|
-                 - :ref:`plex_music_songs <plex_music_songs_label>` |cbox|
+``music``        - :ref:`howdy_music_album <howdy_music_album_label>` |cbox|
+                 - :ref:`howdy_music_metafill <howdy_music_metafill_label>` |cbox|
+                 - :ref:`howdy_music_songs <howdy_music_songs_label>` |cbox|
                  - :ref:`upload_to_gmusic <upload_to_gmusic_label>` |cbox|
-``plexemail``    - :ref:`plex_email_notif <plex_email_notif_label>` |cbox|              - :ref:`plex_email_gui <plex_email_gui_label>`
+``plexemail``    - :ref:`howdy_email_notif <howdy_email_notif_label>` |cbox|            - :ref:`howdy_email_gui <howdy_email_gui_label>`
 ===============  =====================================================================  =============================================================
 
 .. these are the links

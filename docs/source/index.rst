@@ -13,8 +13,8 @@ Table of Contents
   plex-core/plex_core
   plex-tvdb/plex_tvdb
   plex-tmdb/plex_tmdb
-  plex-music/plex_music
-  plex-email/plex_email
+  howdy-music/howdy_music
+  howdy-email/howdy_email
 
 TODO
 -------

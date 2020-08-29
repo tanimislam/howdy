@@ -67,7 +67,7 @@ setup(
     ## the executables I am creating
     entry_points = {
         'console_scripts' : [
-            # plextmdb stuff
+            # movie stuff
             'get_mov_tor = plexstuff.plextmdb.cli.get_mov_tor:main',
             'plex_tmdb_totgui = plexstuff.plextmdb.gui.plex_tmdb_totgui:main',
             # plexcore stuff
@@ -82,14 +82,14 @@ setup(
             'plex_config_gui = plexstuff.plexcore.gui.plex_config_gui:main',
             'plex_core_gui = plexstuff.plexcore.gui.plex_core_gui:main',
             'plex_create_texts = plexstuff.plexcore.gui.plex_create_texts:main',
-            # plexemail stuff
-            'plex_email_notif = plexstuff.plexemail.cli.plex_email_notif:main',
+            # email stuff
+            'howdy_email_notif = plexstuff.email.cli.howdy_email_notif:main',
             'howdy_email_gui = plexstuff.email.gui.howdy_email_gui:main',
-            # plexmusic stuff
-            'plex_music_album = plexstuff.plexmusic.cli.plex_music_album:main',
-            'plex_music_metafill = plexstuff.plexmusic.cli.plex_music_metafill:main',
-            'plex_music_songs = plexstuff.plexmusic.cli.plex_music_songs:main',
-            'upload_to_gmusic = plexstuff.plexmusic.cli.upload_to_gmusic:main',
+            # music stuff
+            'howdy_music_album = plexstuff.music.cli.howdy_music_album:main',
+            'howdy_music_metafill = plexstuff.music.cli.howdy_music_metafill:main',
+            'howdy_music_songs = plexstuff.music.cli.howdy_music_songs:main',
+            'upload_to_gmusic = plexstuff.music.cli.upload_to_gmusic:main',
             # plextvdb stuff
             ## cli
             'get_plextvdb_batch = plexstuff.plextvdb.cli.get_plextvdb_batch:main',

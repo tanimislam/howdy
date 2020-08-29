@@ -11,7 +11,7 @@ This contains the lowest level methods to send email using either the `Google Co
 .. automodule:: plexstuff.email
    :members:
 
-plexstuff.email.email module
+howdy.email.email module
 ----------------------------------------
 This implements the following functionality: sending emails of torrent files and magnet links; sending :py:class:`MIMEMultiPart <email.mime.multipart.MIMEMultiPart>` newsletter or more general style emails to friends of the Plex_ server; and sending general emails with attachments.
 

@@ -1,6 +1,7 @@
+import sys, signal
 from plexstuff import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
-import codecs, os, sys, tabulate, logging
+import codecs, os, tabulate, logging
 from argparse import ArgumentParser
 #
 from plexstuff.music import music

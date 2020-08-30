@@ -7,6 +7,6 @@ def main( ):
     app = returnQAppWithFonts( )
     qtmodern.styles.dark( app )
     mg = core_texts_gui.MainGUI( )
-    mw = qtmodern.windows.ModernWindow( mw )
+    mw = qtmodern.windows.ModernWindow( mg )
     mw.show( )
     result = app.exec_( )

@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 #
 from howdy.core import core, QDialogWithPrinting
-from howdy.email import PlexIMGClient, PNGPicObject
+from howdy.email import HowdyIMGClient, PNGPicObject
 
 """
 Because Pandoc does not recognize image size at all, I will
@@ -21,7 +21,7 @@ class PNGWidget( QDialogWithPrinting ):
         self.setModal( True )
         self.parent = parent
         self.setWindowTitle( 'PNG IMAGES' )
-        self.pIMGClient = PlexIMGClient( verify = False )
+        self.pIMGClient = HowdyIMGClient( verify = False )
         #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
@@ -73,7 +73,7 @@ class PNGPicTableView( QTableView ):
 
         #
         ## now check to see if this image already in pIMGClient
-        imgMD5 = PlexIMGClient.get_image_md5(
+        imgMD5 = HowdyIMGClient.get_image_md5(
             Image.open( pngFileName.strip( ) ) )
         if imgMD5 in self.parent.pIMGClient.imghashes: return
         

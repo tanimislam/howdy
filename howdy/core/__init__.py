@@ -584,7 +584,7 @@ else: session = sessionmaker( )
 
 #
 ## this will be used to replace all the existing credentials stored in separate tables
-class HowdyConfig( Base ):
+class PlexConfig( Base ):
     """
     This SQLAlchemy_ ORM class contains the configuration data used for running all the howdy tools. Stored into the ``plexconfig`` table in the SQLite3_ configuration database.
 
@@ -626,7 +626,7 @@ class LastNewsletterDate( Base ):
     date = Column( Date, onupdate = datetime.datetime.now,
                    index = True, primary_key = True )
     
-class HowdyGuestEmailMapping( Base ):
+class PlexGuestEmailMapping( Base ):
     """
     This SQLAlchemy_ ORM class contains mapping of emails of Plex_ server users, to other email addresses. This is used to determine other email addresses to which Howdy one-off or newsletter emails are delivered. Stored in the ``plexguestemailmapping`` table in the SQLite3_ configuration database. The structure of each row in this table is straightforward. Each column in the table is a member of the object in this ORM class. 
     
@@ -642,7 +642,7 @@ class HowdyGuestEmailMapping( Base ):
     ## create the table using Base.metadata.create_all( _engine )
     __tablename__ = 'plexguestemailmapping'
     __table_args__ = { 'extend_existing' : True }
-    email = Column( String( 256 ), index = True, unique = True, primary_key = True )
+    plexemail = Column( String( 256 ), index = True, unique = True, primary_key = True )
     plexmapping = Column( String( 65536 ) )
     plexreplaceexisting = Column( Boolean )
     

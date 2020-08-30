@@ -15,7 +15,7 @@ from itertools import chain
 from multiprocessing import Manager
 #
 from howdy import resourceDir
-from howdy.core import session, HowdyConfig, LastNewsletterDate, HowdyGuestEmailMapping
+from howdy.core import session, PlexConfig, LastNewsletterDate, PlexGuestEmailMapping
 from howdy.movie import movie
 
 # disable insecure request warnings, because do not recall how to get the name of the certificate for a given plex server
@@ -34,12 +34,12 @@ def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
     """
     assert( plex_email in plex_emails )
     assert( len( set( new_emails ) & set( plex_emails ) ) == 0 )
-    query = session.query( HowdyGuestEmailMapping )
-    val = query.filter( HowdyGuestEmailMapping.email == plex_email ).first( )
+    query = session.query( PlexGuestEmailMapping )
+    val = query.filter( PlexGuestEmailMapping.email == plex_email ).first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = HowdyGuestEmailMapping(
+    newval = PlexGuestEmailMapping(
         email = plex_email,
         plexmapping = ','.join( sorted( set( new_emails ) ) ),
         plexreplaceexisting = replace_existing )
@@ -166,8 +166,8 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
     #
     ## first see if there are a set of valid login tokens
     def _get_stored_plexlogin( doLocal, verify ):
-        val = session.query( HowdyConfig ).filter(
-            HowdyConfig.service == 'plexlogin' ).first( )
+        val = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'plexlogin' ).first( )
         if val is None: return None
         
         logging.info( 'IN checkServerCredentials( _get_stored_plexlogin): plexlogin data: %s.' % val.data )
@@ -197,8 +197,8 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
 
     #
     ## instead, must get a new set of tokens
-    val = session.query( HowdyConfig ).filter(
-        HowdyConfig.service == 'login' ).first( )
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'login' ).first( )
     if val is None: return None
     
     logging.info( 'IN checkServerCredentials: refresh tokens using password. val = %s.' % ( val.data ) )
@@ -224,13 +224,13 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
 
     #
     ## now put into the 'plexlogin' service in the 'plexconfig' database
-    val = session.query( HowdyConfig ).filter(
-        HowdyConfig.service == 'plexlogin' ).first( )
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'plexlogin' ).first( )
     if val is not None:
         session.delete( val )
         session.commit( )
 
-    newval = HowdyConfig( service = 'plexlogin',
+    newval = PlexConfig( service = 'plexlogin',
                          data = { 'token' : token } )
     session.add( newval )
     session.commit( )
@@ -248,8 +248,8 @@ def getCredentials( verify = True, checkWorkingServer = True ):
     .. seealso:: :py:meth:`pushCredentials <howdy.core.core.pushCredentials>`
 
     """
-    val = session.query( HowdyConfig ).filter(
-        HowdyConfig.service == 'login' ).first( )
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'login' ).first( )
     if val is None: return None
     data = val.data
     username = data['username'].strip( )
@@ -276,25 +276,25 @@ def pushCredentials( username, password ):
     token = getTokenForUsernamePassword( username, password )
     if token is None:
         return "error, username and password do not work."
-    val = session.query( HowdyConfig ).filter(
-        HowdyConfig.service == 'login' ).first( )
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'login' ).first( )
     if val is not None:
         data = val.data
         session.delete( val )
         session.commit( )
     data = { 'username' : username.strip( ),
              'password' : password.strip( ) }
-    newval = HowdyConfig( service = 'login', data = data )
+    newval = PlexConfig( service = 'login', data = data )
     session.add( newval )
     session.commit( )
     #
     ## now do same for token, store it into plexlogin
-    val = session.query( HowdyConfig ).filter(
-        HowdyConfig.service == 'plexlogin' ).first( )
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'plexlogin' ).first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = HowdyConfig( service = 'plexlogin', data = { 'token' : token } )
+    newval = PlexConfig( service = 'plexlogin', data = { 'token' : token } )
     session.add( newval )
     session.commit( )
     return "SUCCESS"
@@ -413,12 +413,12 @@ def get_mapped_email_contacts( token, verify = True ):
 
     """
     emails = get_email_contacts( token, verify = verify )
-    query = session.query( HowdyGuestEmailMapping )
+    query = session.query( PlexGuestEmailMapping )
     subtracts = [ ]
     extraemails = [ ]
     for mapping in query.all( ):
         replace_existing = mapping.plexreplaceexisting
-        plex_email = mapping.email
+        plex_email = mapping.plexemail
         if replace_existing: subtracts.append( plex_email )
         extraemails += map(lambda tok: tok.strip(), mapping.plexmapping.strip().split(','))
     extraemails = sorted(set(extraemails))    
@@ -1418,7 +1418,7 @@ def oauthCheckGoogleCredentials( ):
     .. _`Google OAuth2` : https://developers.google.com/identity/protocols/OAuth2
     
     """
-    val = session.query( HowdyConfig ).filter( HowdyConfig.service == 'google' ).first( )
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is None:
         return False, 'GOOGLE AUTHENTICATION CREDENTIALS DO NOT EXIST.'
     return True, 'SUCCESS'
@@ -1439,7 +1439,7 @@ def oauthGetGoogleCredentials( verify = True ):
       * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
       * :py:meth:`oauth_store_google_credentials <howdy.core.core.oauth_store_google_credentials>`.
     """
-    val = session.query( HowdyConfig ).filter( HowdyConfig.service == 'google' ).first( )
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is None: return None
     cred_data = val.data
     credentials = Credentials.from_authorized_user_info( cred_data )
@@ -1464,7 +1464,7 @@ def oauthGetOauth2ClientGoogleCredentials( ):
 
     .. _Plexstuff: https://howdy.readthedocs.io
     """
-    val = session.query( HowdyConfig ).filter( HowdyConfig.service == 'google' ).first( )
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is None: return None
     cred_data = val.data
     credentials = oauth2client.client.OAuth2Credentials.from_json(
@@ -1536,11 +1536,11 @@ def oauth_store_google_credentials( credentials ):
       * :py:meth:`oauthGetOauth2ClientGoogleCredentials <howdy.core.core.oauthGetOauth2ClientGoogleCredentials>`.
       * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
     """
-    val = session.query( HowdyConfig ).filter( HowdyConfig.service == 'google' ).first( )
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = HowdyConfig(
+    newval = PlexConfig(
         service = 'google',
         data = json.loads( credentials.to_json( ) ) )
     session.add( newval )
@@ -1571,12 +1571,12 @@ def store_jackett_credentials( url, apikey, verify = True ):
     
     #
     ## now put the stuff inside
-    query = session.query( HowdyConfig ).filter( HowdyConfig.service == 'jackett' )
+    query = session.query( PlexConfig ).filter( PlexConfig.service == 'jackett' )
     val = query.first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = HowdyConfig(
+    newval = PlexConfig(
         service = 'jackett',
         data = { 'url' : actURL.strip( ),
                  'apikey' : apikey.strip( ) } )
@@ -1600,7 +1600,7 @@ def get_jackett_credentials( ):
     .. _Jackett: https://github.com/Jackett/Jackett
     """
     
-    query = session.query( HowdyConfig ).filter( HowdyConfig.service == 'jackett' )
+    query = session.query( PlexConfig ).filter( PlexConfig.service == 'jackett' )
     val = query.first( )
     if val is None: return None
     data = val.data
@@ -1677,7 +1677,7 @@ def get_imgurl_credentials( ):
     
     .. _Imgur: https://imgur.com/
     """
-    val = session.query( HowdyConfig ).filter( HowdyConfig.service == 'imgurl' ).first( )
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'imgurl' ).first( )
     if val is None:
         raise ValueError( "ERROR, COULD NOT FIND IMGUR CREDENTIALS." )
     data_imgurl = val.data
@@ -1749,11 +1749,11 @@ def store_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify
     if mainALBUMNAME is not None:
         datum[ 'mainALBUMNAME' ] = mainALBUMNAME
     
-    val = session.query( HowdyConfig ).filter( HowdyConfig.service == 'imgurl' ).first( )
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'imgurl' ).first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = HowdyConfig( service = 'imgurl', data = datum )
+    newval = PlexConfig( service = 'imgurl', data = datum )
     session.add( newval )
     session.commit( )
     return 'SUCCESS'

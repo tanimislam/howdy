@@ -3,8 +3,8 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = python3.7 -msphinx
-SPHINXPROJ    = plexstuff
+SPHINXBUILD   = sphinx-build
+SPHINXPROJ    = howdy
 SOURCEDIR     = source
 BUILDDIR      = build
 

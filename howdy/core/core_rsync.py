@@ -3,7 +3,7 @@ from distutils.spawn import find_executable
 from fabric import Connection
 from patchwork.files import exists, directory
 #
-from howdy.core import session, HowdyConfig
+from howdy.core import session, PlexConfig
 
 ## see if the data is valid
 def check_credentials( local_dir, sshpath, password, subdir = None ):
@@ -79,12 +79,12 @@ def push_credentials( local_dir, sshpath, password, subdir = None ):
 
     #
     ## success
-    val = session.query( HowdyConfig ).filter(
-        HowdyConfig.service == 'rsync' ).first( )
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'rsync' ).first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = HowdyConfig(
+    newval = PlexConfig(
         service = 'rsync',
         data = {
             'localdir' : os.path.abspath( local_dir.strip( ) ),
@@ -123,8 +123,8 @@ def get_credentials( ):
       * :py:meth:`check_credentials <howdy.core.core_rsync.check_credentials>`.
       * :py:meth:`push_credentials <howdy.core.core_rsync.push_credentials>`.
     """
-    val = session.query( HowdyConfig ).filter(
-        HowdyConfig.service == 'rsync' ).first( )
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'rsync' ).first( )
     if val is None:
         logging.debug('ERROR, RSYNC configuration does not exist.' )
         return None

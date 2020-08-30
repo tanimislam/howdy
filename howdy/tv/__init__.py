@@ -1,7 +1,7 @@
 import os, requests, json, sys, logging
 from sqlalchemy import Column, String
 #
-from howdy.core import session, create_all, HowdyConfig, Base
+from howdy.core import session, create_all, PlexConfig, Base
 
 class ShowsToExclude( Base ): # these are shows you want to exclude
     """
@@ -44,12 +44,12 @@ def save_tvdb_api( username, apikey, userkey, verify = True ):
     ## first check if works
     isValid = check_tvdb_api( username, apikey, userkey, verify = verify )
     if not isValid: return 'FAILURE, COULD NOT SAVE TVDB API STUFF'
-    query = session.query( HowdyConfig ).filter( HowdyConfig.service == 'tvdb' )
+    query = session.query( PlexConfig ).filter( PlexConfig.service == 'tvdb' )
     val = query.first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = HowdyConfig( service = 'tvdb',
+    newval = PlexConfig( service = 'tvdb',
                          data = {
                              'apikey' : apikey,
                              'username' : username,
@@ -83,7 +83,7 @@ def get_tvdb_api( ):
     :raises: ValuerError: if the TVDB_ API credentials are not found in the ``plexconfig`` table.
     
     """
-    query = session.query( HowdyConfig ).filter( HowdyConfig.service == 'tvdb' )
+    query = session.query( PlexConfig ).filter( PlexConfig.service == 'tvdb' )
     val = query.first( )
     if val is None:
         raise ValueError("ERROR, NO TVDB API CREDENTIALS FOUND")

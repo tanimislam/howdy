@@ -51,14 +51,14 @@ def main( ):
     print( 'processed all checks in %0.3f seconds.' % ( time.time( ) - time0 ) )
     time0 = time.time( )
     if args.do_test:
-        plexemail.send_individual_email_full(
+        email.send_individual_email_full(
             htmlString, args.subject, emailAddress, name = emailName )
         print( 'processed test email in %0.3f seconds.' % ( time.time( ) - time0 ) )
     else:
         email_service = get_email_service( )
         def _send_email_perproc( input_tuple ):
             name, email = input_tuple
-            plexemail.send_individual_email_full(
+            email.send_individual_email_full(
                 htmlString, args.subject, email, name = name,
                 email_service = email_service )
             return True

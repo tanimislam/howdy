@@ -4,7 +4,7 @@ import os, sys, requests, glob
 #tmdbrequests.register_realm( 'TheMovieDB', max_requests = 40, timespan = 10 )
 #
 from howdy import resourceDir
-from howdy.core import session, HowdyConfig
+from howdy.core import session, PlexConfig
 
 def save_tmdb_api( apikey ):
     """
@@ -15,12 +15,12 @@ def save_tmdb_api( apikey ):
     .. _TMDB: https://www.themoviedb.org/documentation/api?language=en-US
     .. _SQLite3: https://www.themoviedb.org/documentation/api?language=en-US
     """
-    query = session.query( HowdyConfig ).filter( HowdyConfig.service == 'tmdb' )
+    query = session.query( PlexConfig ).filter( PlexConfig.service == 'tmdb' )
     val = query.first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = HowdyConfig( service = 'tmdb',
+    newval = PlexConfig( service = 'tmdb',
                          data = { 'apikey' : apikey.strip( ) } )
     session.add( newval )
     session.commit( )
@@ -32,8 +32,8 @@ def get_tmdb_api( ):
     :returns: the TMDB_ API key.
     :rtype: str
     """
-    query = session.query( HowdyConfig ).filter(
-        HowdyConfig.service == 'tmdb' )
+    query = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'tmdb' )
     val = query.first( )
     if val is None:
         raise ValueError("ERROR, NO TMDB API CREDENTIALS FOUND")

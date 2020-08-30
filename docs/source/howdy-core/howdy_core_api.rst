@@ -9,9 +9,9 @@ This module implements the lower-level functionality that does or has the follow
 
 * access and retrieve configuration and other data from an SQLite3_ database using SQLAlchemy_ object relational mapping (ORM) classes. The SQLite3_ database is stored in ``~/.config/howdy/app.db``.
 
-* :py:class:`HowdyConfig <howdy.core.HowdyConfig>` is an ORM class that stores configuration information.
+* :py:class:`PlexConfig <howdy.core.PlexConfig>` is an ORM class that stores configuration information.
 
-* :py:class:`HowdyGuestEmailMapping <howdy.core.HowdyGuestEmailMapping>` is an ORM class that stores all the email addresses that will receive Howdy email notifications.
+* :py:class:`PlexGuestEmailMapping <howdy.core.PlexGuestEmailMapping>` is an ORM class that stores all the email addresses that will receive Howdy email notifications.
 
 * :py:class:`LastNewsletterDate <howdy.core.LastNewsletterDate>` is an ORM class that store one member (or row) -- the :py:class:`datetime <datetime.datetime>` of when the Howdy newsletter was last updated.
 

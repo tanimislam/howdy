@@ -194,7 +194,7 @@ class HowdyEmailMyGUI( QDialogWithPrinting ):
                 self.token, verify = self.verify ), verify = self.verify )
         self.emails_array.append(( emailName, emailAddress ) )
         #
-        self.pngWidget = plexemail_basegui.PNGWidget( self )
+        self.pngWidget = email_basegui.PNGWidget( self )
         self.pngWidget.hide( )
         #
         myLayout = QVBoxLayout( )
@@ -321,7 +321,7 @@ class HowdyEmailMyGUI( QDialogWithPrinting ):
         if len(subject) == 0:
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
         for name, email in self.emails_array:
-            plexemail.send_individual_email_full( html, subject, email, name = name, )
+            email.send_individual_email_full( html, subject, email, name = name, )
         self.statusLabel.setText( 'EMAILS SENT' )
 
     def testEmail( self ):
@@ -335,6 +335,6 @@ class HowdyEmailMyGUI( QDialogWithPrinting ):
         if len( subject ) == 0:
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
         #
-        plexemail.send_individual_email_full(
+        email.send_individual_email_full(
             html, subject, emailAddress, name = emailName )
         self.statusLabel.setText( 'EMAILS SENT TO %s.' % emailAddress.upper( ) )

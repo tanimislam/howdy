@@ -9,7 +9,7 @@ from urllib.parse import urljoin
 from distutils.spawn import find_executable
 #
 from howdy import resourceDir
-from howdy.core import core, baseConfDir, session, HowdyConfig
+from howdy.core import core, baseConfDir, session, PlexConfig
 from howdy.core import return_error_raw, get_maximum_matchval
 from howdy.music import pygn, parse_youtube_date, format_youtube_date
 
@@ -23,12 +23,12 @@ def oauth_store_google_credentials( credentials ):
 
     .. _`Google OAuth2` : https://developers.google.com/identity/protocols/OAuth2
     """
-    val = session.query( HowdyConfig ).filter( HowdyConfig.service == 'gmusic_mobileclient' ).first( )
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'gmusic_mobileclient' ).first( )
     if val is not None:
         session.delete( val )
         session.commit( )
 
-    newval = HowdyConfig(
+    newval = PlexConfig(
         service = 'gmusic_mobileclient',
         data = json.loads( credentials.to_json( ) ) )
     session.add( newval )
@@ -43,7 +43,7 @@ def oauth_get_google_credentials( ):
 
     .. seealso:: :py:meth:`oauth_store_google_credentials <howdy.music.music.oauth_store_google_credentials>`
     """
-    val = session.query( HowdyConfig ).filter( HowdyConfig.service == 'gmusic_mobileclient' ).first( )
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'gmusic_mobileclient' ).first( )
     if val is None: return None
     cred_data = val.data
     credentials = oauth2client.client.OAuth2Credentials.from_json(
@@ -176,8 +176,8 @@ class MusicInfo( object ):
         
         :raise ValueError: if the MusicBrainz_ API configuration information cannot be found.
         """
-        val = session.query( HowdyConfig ).filter(
-            HowdyConfig.service == 'musicbrainz' ).first( )
+        val = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'musicbrainz' ).first( )
         if val is None:
             raise ValueError( "ERROR, MUSICBRAINZ USERAGENT DATA NOT FOUND OR SET" )
         data = val.data
@@ -194,12 +194,12 @@ class MusicInfo( object ):
         :param str appname: the application name registered with the MusicBrainz_ API.
         :param str version: the application version.
         """
-        val = session.query( HowdyConfig ).filter(
-            HowdyConfig.service == 'musicbrainz' ).first( )
+        val = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'musicbrainz' ).first( )
         if val is not None:
             session.delete( val )
             session.commit( )
-        session.add( HowdyConfig( service = 'musicbrainz',
+        session.add( PlexConfig( service = 'musicbrainz',
                                  data = { 'appname' : appname,
                                           'version' : version } ) )
         session.commit( )
@@ -658,12 +658,12 @@ def save_gmusic_creds( email, password ):
     :param str email: Google account email address.
     :param str password: Google account password.
     """
-    query = session.query( HowdyConfig ).filter( HowdyConfig.service == 'gmusic' )
+    query = session.query( PlexConfig ).filter( PlexConfig.service == 'gmusic' )
     val = query.first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = HowdyConfig(
+    newval = PlexConfig(
         service = 'gmusic',
         data = { 'email' : email.strip( ),
                  'password' : password.strip( ) } )
@@ -976,14 +976,14 @@ class HowdyLastFM( object ):
         """
         assert( len(set(api_data) - set([ 'api_key', 'api_secret', 'application_name',
                                           'username' ]) ) == 0 )
-        query = session.query( HowdyConfig ).filter(
-            HowdyConfig.service == 'lastfm' )
+        query = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'lastfm' )
         val = query.first( )
         if val is not None:
             session.delete( val )
             session.commit( )
         session.add(
-            HowdyConfig( service = 'lastfm',
+            PlexConfig( service = 'lastfm',
                         data = { key : api_data[key] for key in
                                  ( 'api_key', 'api_secret', 'application_name', 'username' ) } ) )
         session.commit( )
@@ -996,8 +996,8 @@ class HowdyLastFM( object ):
         
         :raise ValueError: if LastFM_ API credentials could not be found.
         """
-        query = session.query( HowdyConfig ).filter(
-            HowdyConfig.service == 'lastfm' )
+        query = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'lastfm' )
         val = query.first( )
         if val is None:
             raise ValueError("ERROR, LASTFM CREDENTIALS NOT FOUND" )
@@ -1521,14 +1521,14 @@ class HowdyMusic( object ):
         """
         try:
             userID = pygn.register( client_ID, verify = verify )
-            query = session.query( HowdyConfig ).filter(
-                HowdyConfig.service == 'gracenote' )
+            query = session.query( PlexConfig ).filter(
+                PlexConfig.service == 'gracenote' )
             val = query.first( )
             if val is not None:
                 session.delete( val )
                 session.commit( )
             session.add(
-                HowdyConfig( service = 'gracenote',
+                PlexConfig( service = 'gracenote',
                             data = { 'clientID' : client_ID,
                                      'userID' : userID } ) )
             session.commit( )
@@ -1542,8 +1542,8 @@ class HowdyMusic( object ):
 
         :raise ValueError: if cannot find the Gracenote_API configuration information in the database.
         """
-        query = session.query( HowdyConfig ).filter(
-            HowdyConfig.service == 'gracenote' )
+        query = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'gracenote' )
         val = query.first( )
         if val is None:
             raise ValueError("ERROR, GRACENOTE CREDENTIALS NOT FOUND" )
@@ -1553,7 +1553,7 @@ class HowdyMusic( object ):
         return clientID, userID
     
     def __init__( self, verify = True ):
-        self.clientID, self.userID = PlexMusic.get_gracenote_credentials( )
+        self.clientID, self.userID = HowdyMusic.get_gracenote_credentials( )
         self.verify = verify
 
     def get_album_image( self, artist_name, album_name ):

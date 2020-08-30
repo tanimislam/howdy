@@ -93,7 +93,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             time0 = time.time( )
             self.statusLabel.setText( 'STARTING TO SEND EMAILS...')
             with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
-                list( pool.map( plexemail.send_individual_email_perproc, input_tuples ) )
+                list( pool.map( email.send_individual_email_perproc, input_tuples ) )
                 self.statusLabel.setText( 'SENT %d EMAILS IN %0.3f SECONDS.' %
                                           ( len( input_tuples ), time.time() - time0 ) )
                 #
@@ -125,7 +125,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             radioButtonsLayout.addWidget( self.NoButton )
             self.NoButton.toggle( )
             #
-            self.pngWidget = plexemail_basegui.PNGWidget( self )
+            self.pngWidget = email_basegui.PNGWidget( self )
             self.pngWidget.hide( )
             #
             myLayout = QVBoxLayout( )
@@ -314,7 +314,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             print( 'COMMON PNG FILES: %s.' % sorted( set( pngDataPRE.keys( ) ) &
                                                      set( pngDataPOST.keys( ) ) ) )
             print( "I HOPE YOU KNOW WHAT YOU'RE DOING." )
-        htmlString = plexemail.get_summary_html(
+        htmlString = email.get_summary_html(
             self.token, fullURL = self.fullURL,
             preambleText = preambleText, postambleText = postambleText,
             pngDataDict = pngData )

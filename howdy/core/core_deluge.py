@@ -2,7 +2,7 @@ import os, sys, numpy, logging, magic, base64, subprocess
 from urllib.parse import parse_qs
 from distutils.spawn import find_executable
 #
-from howdy.core import session, HowdyConfig, get_formatted_size
+from howdy.core import session, PlexConfig, get_formatted_size
 _deluge_exec = find_executable( 'deluge' )
 
 #
@@ -177,8 +177,8 @@ def get_deluge_client( ):
       * :py:meth:`get_deluge_credentials <howdy.core.core_deluge.get_deluge_credentials>`
       * :py:meth:`push_deluge_credentials <howdy.core.core_deluge.push_deluge_credentials>`
     """
-    query = session.query( HowdyConfig ).filter(
-        HowdyConfig.service == 'deluge' )
+    query = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'deluge' )
     val = query.first( )
     if val is None:
         error_message = "ERROR, DELUGE CLIENT SETTINGS NOT DEFINED."
@@ -217,8 +217,8 @@ def get_deluge_credentials( ):
       * :py:meth:`get_deluge_client <howdy.core.core_deluge.get_deluge_client>`
       * :py:meth:`push_deluge_credentials <howdy.core.core_deluge.push_deluge_credentials>`
     """
-    val = session.query( HowdyConfig ).filter(
-        HowdyConfig.service == 'deluge' ).first( )
+    val = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'deluge' ).first( )
     if val is None: return None
     return val.data
 
@@ -250,13 +250,13 @@ def push_deluge_credentials( url, port, username, password ):
         return error_message
     #
     ## now put into the database
-    query = session.query( HowdyConfig ).filter(
-        HowdyConfig.service == 'deluge' )
+    query = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'deluge' )
     val = query.first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = HowdyConfig(
+    newval = PlexConfig(
         service = 'deluge',
         data = { 'url' : url,
                  'port' : port,

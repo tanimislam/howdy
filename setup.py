@@ -70,18 +70,18 @@ setup(
             # movie stuff
             'get_mov_tor = howdy.movie.cli.get_mov_tor:main',
             'howdy_movie_totgui = howdy.movie.gui.howdy_tmdb_totgui:main',
-            # plexcore stuff
+            # core stuff
             ## cli
-            'howdy_core_cli = howdy.plexcore.cli.howdy_core_cli:main',
-            'howdy_deluge_console = howdy.plexcore.cli.howdy_deluge_console:main',
-            'howdy_resynclibs = howdy.plexcore.cli.howdy_resynclibs:main',
-            'howdy_store_credentials = howdy.plexcore.cli.howdy_store_credentials:main',
-            'rsync_subproc = howdy.plexcore.cli.rsync_subproc:main',
-            'get_book_tor = howdy.plexcore.cli.get_book_tor:main',
+            'howdy_core_cli = howdy.core.cli.howdy_core_cli:main',
+            'howdy_deluge_console = howdy.core.cli.howdy_deluge_console:main',
+            'howdy_resynclibs = howdy.core.cli.howdy_resynclibs:main',
+            'howdy_store_credentials = howdy.core.cli.howdy_store_credentials:main',
+            'rsync_subproc = howdy.core.cli.rsync_subproc:main',
+            'get_book_tor = howdy.core.cli.get_book_tor:main',
             ## gui
-            'howdy_config_gui = howdy.plexcore.gui.howdy_config_gui:main',
-            'howdy_core_gui = howdy.plexcore.gui.howdy_core_gui:main',
-            'howdy_create_texts = howdy.plexcore.gui.howdy_create_texts:main',
+            'howdy_config_gui = howdy.core.gui.howdy_config_gui:main',
+            'howdy_core_gui = howdy.core.gui.howdy_core_gui:main',
+            'howdy_create_texts = howdy.core.gui.howdy_create_texts:main',
             # email stuff
             'howdy_email_notif = howdy.email.cli.howdy_email_notif:main',
             'howdy_email_gui = howdy.email.gui.howdy_email_gui:main',

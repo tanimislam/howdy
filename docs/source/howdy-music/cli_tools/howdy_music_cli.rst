@@ -73,7 +73,7 @@ Here are the three operations,
 
    .. code-block:: console
 
-      tanim-desktop $ howdy_music_albums.py -a Air --albums
+      tanim-desktop $ howdy_music_albums -a Air --albums
 
       Air has 7 studio albums.
 
@@ -400,7 +400,7 @@ Here, one specifies the collection of songs to download by giving the artist and
 
 download songs using ``--artist`` and ``--album`` flag
 -------------------------------------------------------
-One specifies the collection of songs to download by giving the artist and album through ``--album``. The metadata service to use is :ref:`progressive <progressive_selection>`. You can get the list of albums produced by the artist by running :ref:`howdy_music_albums.py --artist="artist" --albums <howdy_music_album_get_albums>`. The clip below demonstrates how to get the album `Moon Safari`_ by Air_ using the MusicBrainz_ service,
+One specifies the collection of songs to download by giving the artist and album through ``--album``. The metadata service to use is :ref:`progressive <progressive_selection>`. You can get the list of albums produced by the artist by running :ref:`howdy_music_albums --artist="artist" --albums <howdy_music_album_get_albums>`. The clip below demonstrates how to get the album `Moon Safari`_ by Air_ using the MusicBrainz_ service,
 
 .. _howdy_music_songs_download_artist_album:
 
@@ -421,7 +421,7 @@ We run this command,
 
 .. code-block:: console
 
-   howdy_music_service.py --new --artists="Ximena Sariñana;Natalia Lafourcade" -s "Different;Piensa en Mí" --musicbrainz
+   howdy_music_songs --new --artists="Ximena Sariñana;Natalia Lafourcade" -s "Different;Piensa en Mí" --musicbrainz
 
 whose video is shown below,
 

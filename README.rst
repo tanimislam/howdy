@@ -1,7 +1,7 @@
 .. image:: https://badges.gitter.im/plexstuff/community.svg
    :target: https://gitter.im/plexstuff/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
    
-.. image:: https://readthedocs.org/projects/plexstuff/badge/?version=latest
+.. image:: https://readthedocs.org/projects/howdy/badge/?version=latest
    :target: https://plexstuff.readthedocs.io/en/latest
 
 ###################################################################
@@ -25,55 +25,67 @@ Here are some of the best known lower APIs used to help one manage your Plex_ se
 
 The command line tools are built using Python's ArgumentParser_ object, and the GUIs are built with PyQt5_.
 
-The comprehensive documentation lives in HTML created with `Sphinx <https://www.sphinx-doc.org/en/master/>`_, and now in the `Read the Docs <Plexstuff_>`_ page for this project. To generate the documentation, go to the ``docs`` subdirectory. In that directory, run ``make html``. Load ``docs/build/html/index.html`` into a browser to see the documentation.
+The comprehensive documentation lives in HTML created with `Sphinx <https://www.sphinx-doc.org/en/master/>`_, and now in the `Read the Docs <Howdy_>`_ page for this project. To generate the documentation, go to the ``docs`` subdirectory. In that directory, run ``make html``. Load ``docs/build/html/index.html`` into a browser to see the documentation.
 
 Quick and Dirty -- How Do I Get It Working?
 --------------------------------------------
-Although discussed in the `Sphinx documentation <Plexstuff_>`_, to get everything working you need pandoc_, sshpass_, and PyQt5_. Getting all this on Linux machines is probably more straightforward than on Macs and Windows machines.
+Although discussed in the `Sphinx documentation <Howdy_>`_, to get everything working you need pandoc_, sshpass_, and PyQt5_. Getting all this on Linux machines is probably more straightforward than on Macs and Windows machines.
 
 To be able to use all the CLIs, GUIs, and API functionality, there are ``12`` sets of configurations that need to work: four for login, four for credentials, and four for music.
 
-.. |main_config_gui| image:: https://plexstuff.readthedocs.io/_images/plex_config_gui_serviceswidget.png
+.. |main_config_gui| image:: https://plexstuff.readthedocs.io/_images/howdy_config_gui_serviceswidget.png
    :width: 100%
    :align: middle
 
-.. |login_config_gui| image:: https://plexstuff.readthedocs.io/_images/plex_login_mainfigure.png
+.. |login_config_gui| image:: https://plexstuff.readthedocs.io/_images/howdy_login_mainfigure.png
    :width: 100%
    :align: middle
 
-.. |credentials_config_gui| image:: https://plexstuff.readthedocs.io/_images/plex_credentials_mainfigure.png
+.. |credentials_config_gui| image:: https://plexstuff.readthedocs.io/_images/howdy_credentials_mainfigure.png
    :width: 100%
    :align: middle
 
-.. |music_config_gui| image:: https://plexstuff.readthedocs.io/_images/plexmusic_mainfigure.png
+.. |music_config_gui| image:: https://plexstuff.readthedocs.io/_images/howdymusic_mainfigure.png
    :width: 100%
    :align: middle
 
-===========================================  ===========================================  ======================================================  ===========================================
-|main_config_gui|                            |login_config_gui|                           |credentials_config_gui|                                |music_config_gui|
-`12 total settings <sec_main_config_gui_>`_  `4 login settings <sec_login_config_gui_>`_  `4 credential settings <sec_credentials_config_gui_>`_  `4 music settings <sec_music_config_gui_>`_
-===========================================  ===========================================  ======================================================  ===========================================
+.. list-table::
+   :widths: auto
+
+   * - |main_config_gui|
+     - |login_config_gui|
+     - |credentials_config_gui|
+     - |music_config_gui|
+   * - `12 total settings <sec_main_config_gui_>`_
+     - `4 login settings <sec_login_config_gui_>`_
+     - `4 credential settings <sec_credentials_config_gui_>`_
+     - `4 music settings <sec_music_config_gui_>`_
 
 What Are Some Interesting Command Line Executables?
 -----------------------------------------------------------------
 You can try out `plex_music_songs`_ to get individual songs or all the songs in an artist's studio album, or `plex_music_album <https://plexstuff.readthedocs.io/plex-music/cli_tools/plex_music_cli.html#plex-music-album>`_ to find all the studio albums an artist released. Here are three YouTube_ clips that show `plex_music_songs`_ in action.
 
-.. |plex_music_songs_clip1| image:: https://plexstuff.readthedocs.io/_images/plex_music_songs_download_by_song_and_artist.gif
+.. |plex_music_songs_clip1| image:: https://plexstuff.readthedocs.io/_images/howdy_music_songs_download_by_song_and_artist.gif
    :width: 100%
    :align: middle
 
-.. |plex_music_songs_clip2| image:: https://plexstuff.readthedocs.io/_images/plex_music_songs_download_by_artist_and_album.gif
+.. |plex_music_songs_clip2| image:: https://plexstuff.readthedocs.io/_images/howdy_music_songs_download_by_artist_and_album.gif
    :width: 100%
    :align: middle
 
-.. |plex_music_songs_clip3| image:: https://plexstuff.readthedocs.io/_images/plex_music_songs_download_by_sep_list_artist_songs.gif
+.. |plex_music_songs_clip3| image:: https://plexstuff.readthedocs.io/_images/howdy_music_songs_download_by_sep_list_artist_songs.gif
    :width: 100%
    :align: middle
 
-===========================================  ===========================================  ===============================================
-|plex_music_songs_clip1|                     |plex_music_songs_clip2|                     |plex_music_songs_clip3|
-`Download artists & songs <yt_clip1_>`_      `Download artist & album <yt_clip2_>`_       `Download sep artists & songs <yt_clip3_>`_
-===========================================  ===========================================  ===============================================
+.. list-table::
+   :widths: auto
+   
+   * - |plex_music_songs_clip1|
+     - |plex_music_songs_clip2|
+     - |plex_music_songs_clip3|
+   * - `Download artists & songs <yt_clip1_>`_
+     - `Download artist & album <yt_clip2_>`_
+     - `Download sep artists & songs <yt_clip3_>`_
 
 .. links to YouTube clips
 .. _yt_clip1: https://www.youtube.com/watch?v=W8pmTqFJy68
@@ -112,3 +124,4 @@ You can try out `plex_music_songs`_ to get individual songs or all the songs in 
 .. _`Embed YouTube`: http://embedyoutube.org
 .. _`plex_music_songs`: https://plexstuff.readthedocs.io/plex-music/cli_tools/plex_music_cli.html#plex-music-songs
 .. _Youtube: https://www.youtube.com
+.. _Howdy: https://howdy.readthedocs.io

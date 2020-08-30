@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 #
 # howdy documentation build configuration file, created by
@@ -98,11 +99,11 @@ numfig = True
 
 #
 ## change favicon to CADUCEUS logo
-html_logo = '_static/howdy_icon.svg'
+#html_logo = '_static/howdy_icon.svg'
 html_favicon = '_static/howdy_icon.svg'
-html_theme_options = {
-    'logo_only': False,
-}
+#html_theme_options = {
+#    'logo_only': False,
+#}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = [ '_templates' ]

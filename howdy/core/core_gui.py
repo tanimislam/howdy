@@ -203,7 +203,7 @@ class HowdyConfigWidget( QDialogWithPrinting ):
         self.setModal( True )
         self.service = service
         self.verify = verify
-        self.setWindowTitle( 'PLEX %s CONFIGURATION' % service.upper( ) )
+        self.setWindowTitle( 'HOWDY %s CONFIGURATION' % service.upper( ) )
 
 class HowdyConfigCredWidget( HowdyConfigWidget ):
     _emitWorkingStatusDict = {
@@ -918,7 +918,7 @@ class HowdyConfigMusicWidget( HowdyConfigWidget ):
         #
         ## look for lastfm credentials
         try:
-            lastFMCreds = music.PlexLastFM.get_lastfm_credentials( )
+            lastFMCreds = music.HowdyLastFM.get_lastfm_credentials( )
             self.lastfmAPIKey.setText( lastFMCreds[ 'api_key' ] )
             self.lastfmAPISecret.setText( lastFMCreds[ 'api_secret' ] )
             self.lastfmAppName.setText( lastFMCreds[ 'application_name' ] )
@@ -936,7 +936,7 @@ class HowdyConfigMusicWidget( HowdyConfigWidget ):
         #
         ## now look for gracenote credentials
         try:
-            clientID, userID = music.Music.get_gracenote_credentials( )
+            clientID, userID = music.HowdyMusic.get_gracenote_credentials( )
             self.gracenoteToken.setText( userID )
             self.gracenoteStatusLabel.setText( 'WORKING' )
             self._emitWorkingStatusDict[ 'GRACENOTE' ] = True
@@ -992,7 +992,7 @@ class HowdyConfigMusicWidget( HowdyConfigWidget ):
         client_ID = self.gracenoteToken.text( ).strip( )
         self.gracenoteToken.setText( client_ID )
         try:
-            music.Music.push_gracenote_credentials( client_ID )
+            music.HowdyMusic.push_gracenote_credentials( client_ID )
             self.gracenoteStatusLabel.setText( 'WORKING' )
             self._emitWorkingStatusDict[ 'GRACENOTE' ] = True
         except:
@@ -1006,7 +1006,7 @@ class HowdyConfigMusicWidget( HowdyConfigWidget ):
             'api_secret' : self.lastfmAPISecret.text( ).strip( ),
             'application_name' : self.lastfmAppName.text( ).strip( ),
             'username' : self.lastfmUserName.text( ).strip( ) }
-        plexlastFM = music.PlexLastFM( api_data )
+        plexlastFM = music.HowdyLastFM( api_data )
         data, status = plexlastFM.get_album_info(
             'Air', 'Moon Safari' ) # this should always work
         if status != 'SUCCESS':
@@ -1021,7 +1021,7 @@ class HowdyConfigMusicWidget( HowdyConfigWidget ):
             self.lastfmAPISecret.setText( api_data[ 'api_secret' ] )
             self.lastfmAppName.setText( api_data[ 'application_name' ] )
             self.lastfmUserName.setText( api_data[ 'username' ] )
-            music.PlexLastFM.push_lastfm_credentials(
+            music.HowdyLastFM.push_lastfm_credentials(
                 api_data )
             self.lastfmStatusLabel.setText( 'WORKING' )
             self._emitWorkingStatusDict[ 'LASTFM' ] = True
@@ -1301,7 +1301,7 @@ class HowdyConfigGUI( QDialogWithPrinting ):
         #
         ## initialization of this data
         super(QDialogWithPrinting, self ).__init__( None )
-        self.setWindowTitle( 'PLEX CONFIGURATION WIDGET' )
+        self.setWindowTitle( 'HOWDY CONFIGURATION WIDGET' )
         self.credWidget = HowdyConfigCredWidget( self, verify = verify )
         self.loginWidget= HowdyConfigLoginWidget( self, verify = verify )
         self.musicWidget= HowdyConfigMusicWidget( self, verify = verify )

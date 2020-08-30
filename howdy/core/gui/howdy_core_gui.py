@@ -24,7 +24,7 @@ def main( ):
                         help = 'If chosen, set up google oauth2 authentication.' )
     args = parser.parse_args( )
     logger = logging.getLogger( )
-    if args.do_info: logger.setConfig( level = logging.INFO )
+    if args.do_info: logger.setLevel( level = logging.INFO )
     app = QApplication([])
     qtmodern.styles.dark( app )
     if not args.do_googleauth:

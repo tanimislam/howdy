@@ -69,7 +69,7 @@ setup(
         'console_scripts' : [
             # movie stuff
             'get_mov_tor = howdy.movie.cli.get_mov_tor:main',
-            'howdy_movie_totgui = howdy.movie.gui.howdy_tmdb_totgui:main',
+            'howdy_movie_totgui = howdy.movie.gui.howdy_movie_totgui:main',
             # core stuff
             ## cli
             'howdy_core_cli = howdy.core.cli.howdy_core_cli:main',

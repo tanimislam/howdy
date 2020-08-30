@@ -10,14 +10,14 @@ from PyQt5.QtGui import QIcon
 from argparse import ArgumentParser
 #
 from howdy import resourceDir
-from howdy.tv.tv_gui import TVDBGUI
+from howdy.tv.tv_gui import HowdyTVGUI
 from howdy.core import core
 
 warnings.simplefilter("ignore")
 
 def mainSub( info = False, doLocal = True, doLarge = False, verify = True ):
     app = QApplication([])
-    icn = QIcon( os.path.join( resourceDir, 'icons', 'plex_tvdb_gui.png' ) )
+    icn = QIcon( os.path.join( resourceDir, 'icons', 'howdy_tv_gui.svg' ) )
     app.setWindowIcon( icn )
     qtmodern.styles.dark( app )
     logger = logging.getLogger( )
@@ -26,7 +26,7 @@ def mainSub( info = False, doLocal = True, doLarge = False, verify = True ):
                  % ( doLocal, verify ) )
     fullURL, token = core.checkServerCredentials(
         doLocal = doLocal, verify = verify )
-    tvdb_gui = TVDBGUI( token, fullURL, verify = verify, doLarge = doLarge )
+    tvdb_gui = HowdyTVGUI( token, fullURL, verify = verify, doLarge = doLarge )
     mw = qtmodern.windows.ModernWindow( tvdb_gui )
     mw.show( )
     result = app.exec_( )

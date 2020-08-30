@@ -462,7 +462,7 @@ whose video is shown below,
 
 .. _howdy_music_songs_download_artists_songs_list:
 
-.. youtube:: cRvxkGb2q3Y
+.. youtube:: 11rOnEDfMos
    :width: 100%
 
 .. _upload_to_gmusic_label:

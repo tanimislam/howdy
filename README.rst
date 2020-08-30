@@ -90,7 +90,7 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
 .. links to YouTube clips
 .. _yt_clip1: https://youtu.be/W5AYAFYI9QA
 .. _yt_clip2: https://youtu.be/2IxzTvWN0K8
-.. _yt_clip3: https://www.youtube.com/watch?v=cRvxkGb2q3Y
+.. _yt_clip3: https://youtu.be/11rOnEDfMos
 
 .. links to plexstuff sections
 .. _sec_main_config_gui: https://plexstuff.readthedocs.io/plex-config/plex_config_gui_usage.html

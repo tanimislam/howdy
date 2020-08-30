@@ -20,7 +20,7 @@ warnings.simplefilter( 'ignore' )
 
 def mainSub( info = False, doLocal = True, doLarge = False, verify = True, onlyEmail = False ):
     app = QApplication([])
-    icn = QIcon( os.path.join( resourceDir, 'icons', 'plex_email_gui.png' ) )
+    icn = QIcon( os.path.join( resourceDir, 'icons', 'howdy_email_gui_SQUARE.png' ) )
     app.setWindowIcon( icn )
     qtmodern.styles.dark( app )
     logger = logging.getLogger( )

@@ -28,7 +28,7 @@ def main( ):
     app = QApplication([])
     app.setAttribute(Qt.AA_UseHighDpiPixmaps)
     icn = QIcon( os.path.join(
-        resourceDir, 'icons', 'howdy_config_gui.svg' ) )
+        resourceDir, 'icons', 'howdy_config_gui_SQUARE.png' ) )
     app.setWindowIcon( icn )
     qtmodern.styles.dark( app )
     pcgui = core_gui.HowdyConfigGUI( verify = args.do_verify )

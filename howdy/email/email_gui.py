@@ -1,9 +1,11 @@
+
 import os, sys, titlecase, datetime, json, re, urllib, time, glob
 import pathos.multiprocessing as multiprocessing
 from itertools import chain
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 #
+from howdy import resourceDir
 from howdy.email import email, email_basegui, emailAddress, emailName, get_email_contacts_dict
 from howdy.core import core, QDialogWithPrinting
 
@@ -11,7 +13,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
     class EmailSendDialog( QDialogWithPrinting ):
         
         def __init__( self, parent ):
-            super( PlexEmailGUI.EmailSendDialog, self ).__init__( parent, isIsolated = False )
+            super( HowdyEmailGUI.EmailSendDialog, self ).__init__( parent, isIsolated = False )
             self.setModal( True )
             self.setWindowTitle( 'SEND EMAILS' )
             self.selectTestButton = QPushButton( 'TEST ADDRESS', self )
@@ -104,7 +106,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
     class PrePostAmbleDialog( QDialogWithPrinting ):
         
         def __init__( self, parent, title = 'Preamble' ):
-            super( PlexEmailGUI.PrePostAmbleDialog, self ).__init__(
+            super( HowdyEmailGUI.PrePostAmbleDialog, self ).__init__(
                 parent, isIsolated = False )
             self.parent = parent
             self.sectionNameWidget = QLineEdit( titlecase.titlecase( title ) )
@@ -240,7 +242,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             return myString, self.pngWidget.getAllDataAsDict( )
             
     def __init__( self, doLocal = True, doLarge = False, verify = True ):
-        super( PlexEmailGUI, self ).__init__( None )
+        super( HowdyEmailGUI, self ).__init__( None )
         self.resolution = 1.0
         self.verify = verify
         if doLarge:
@@ -268,8 +270,8 @@ class HowdyEmailGUI( QDialogWithPrinting ):
         self.testEmailButton.setEnabled( False )
         self.emailComboBox = QComboBox( )
         self.setWindowTitle( 'PLEX EMAIL NEWSLETTER' )
-        self.preambleDialog = PlexEmailGUI.PrePostAmbleDialog( self, title = 'PREAMBLE' )
-        self.postambleDialog = PlexEmailGUI.PrePostAmbleDialog( self, title = 'POSTAMBLE' )
+        self.preambleDialog = HowdyEmailGUI.PrePostAmbleDialog( self, title = 'PREAMBLE' )
+        self.postambleDialog = HowdyEmailGUI.PrePostAmbleDialog( self, title = 'POSTAMBLE' )
         self.preamble = ''
         self.postamble = ''
         self.getContacts( self.token )
@@ -323,7 +325,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             self.sendEmailButton.setEnabled( True )
 
     def sendEmail( self ):
-        qd = PlexEmailGUI.EmailSendDialog( self )
+        qd = HowdyEmailGUI.EmailSendDialog( self )
         result = qd.exec_( )            
         
     def getContacts( self, token ):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# plexstuff documentation build configuration file, created by
+# howdy documentation build configuration file, created by
 # sphinx-quickstart on Sun Jun 23 11:03:17 2019.
 #
 # This file is execfile()d with the current directory set to its

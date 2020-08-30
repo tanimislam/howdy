@@ -17,7 +17,7 @@ from plextmdb import plextmdb_mygui
 from optparse import OptionParser
 
 def main(debug = False, doLocal = True, verify = True ):
-    testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
+    testDir = os.path.expanduser( '~/.config/howdy/tests' )
     app = returnQAppWithFonts( )
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     if debug: logging.basicConfig( level = logging.DEBUG )

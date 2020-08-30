@@ -1,8 +1,7 @@
 ================================================
-Music Command Line Utilities
+Howdy Music Command Line Utilities
 ================================================
-
-This section describes the four Plexstuff music command line utilities.
+This section describes the four Howdy music command line utilities.
 
 * :ref:`howdy_music_album` can do three possible things: download an album image given an artist name and album name; pretty-print out all the studio albums released by an artist; and print out all the songs released on an album by an artist. It uses either the LastFM_ or MusicBrainz_ APIs.
 
@@ -458,7 +457,7 @@ The ``--noverify`` flag disables verification of SSL HTTP connections. The stand
 
 attempts to upload all filenames that match ``Air.*m4a``.
 
-The other mode of operation, running with the ``-P`` flag without specifying files to upload, attempts to refresh the :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` OAuth2 credentials. Its operation is similar to that of :ref:`plex_store_credentials`. These dialogs in the shell appear,
+The other mode of operation, running with the ``-P`` flag without specifying files to upload, attempts to refresh the :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` OAuth2 credentials. Its operation is similar to that of :ref:`howdy_store_credentials`. These dialogs in the shell appear,
 
 .. code-block:: console
 

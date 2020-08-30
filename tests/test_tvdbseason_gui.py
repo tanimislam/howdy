@@ -14,7 +14,7 @@ from plextvdb import plextvdb_season_gui, get_token
 from plexcore import plexcore
 from optparse import OptionParser
 
-testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
+testDir = os.path.expanduser( '~/.config/howdy/tests' )
 
 #
 ## start the application here

@@ -4,7 +4,7 @@ from PyQt4.QtGui import QApplication
 from plextmdb import plextmdb_gui, plextmdb_mygui, plextmdb_totgui
 from .test_plexcore import get_token_fullURL
 
-testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
+testDir = os.path.expanduser( '~/.config/howdy/tests' )
 
 @pytest.fixture( scope="module" )
 def get_movie_data_rows( request, get_token_fullURL ):

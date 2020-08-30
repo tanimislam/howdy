@@ -28,19 +28,19 @@ if find_executable( 'sshpass' ) is None:
     sys.exit( 0 )
 
 setup(
-    name = 'plexstuff',
+    name = 'howdy',
     version = '1.0',
     #
     ## following advice on find_packages excluding tests from https://setuptools.readthedocs.io/en/latest/setuptools.html#using-find-packages
     packages = find_packages( exclude = ["*.tests", "*.tests.*", "tests" ] ),
     # package_dir = { "": "nprstuff" },
-    url = 'https://github.com/tanimislam/plexstuff',
+    url = 'https://github.com/tanimislam/howdy',
     license = 'BSD-2-Clause',
     author = 'Tanim Islam',
     author_email = 'tanim.islam@gmail.com',
     description = 'This is a collection of a bunch of tools, and APIs, to access media within my Plex server.',
     #
-    ## classification: where in package space does "plexstuff live"?
+    ## classification: where in package space does "howdy live"?
     ## follow (poorly) advice I infer from https://blog.ionelmc.ro/2014/05/25/python-packaging/#the-setup-script
     classifiers=[
     # complete classifier list: http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -68,39 +68,39 @@ setup(
     entry_points = {
         'console_scripts' : [
             # movie stuff
-            'get_mov_tor = plexstuff.plextmdb.cli.get_mov_tor:main',
-            'plex_tmdb_totgui = plexstuff.plextmdb.gui.plex_tmdb_totgui:main',
+            'get_mov_tor = howdy.movie.cli.get_mov_tor:main',
+            'howdy_movie_totgui = howdy.movie.gui.howdy_tmdb_totgui:main',
             # plexcore stuff
             ## cli
-            'plex_core_cli = plexstuff.plexcore.cli.plex_core_cli:main',
-            'plex_deluge_console = plexstuff.plexcore.cli.plex_deluge_console:main',
-            'plex_resynclibs = plexstuff.plexcore.cli.plex_resynclibs:main',
-            'plex_store_credentials = plexstuff.plexcore.cli.plex_store_credentials:main',
-            'rsync_subproc = plexstuff.plexcore.cli.rsync_subproc:main',
-            'get_book_tor = plexstuff.plexcore.cli.get_book_tor:main',
+            'howdy_core_cli = howdy.plexcore.cli.howdy_core_cli:main',
+            'howdy_deluge_console = howdy.plexcore.cli.howdy_deluge_console:main',
+            'howdy_resynclibs = howdy.plexcore.cli.howdy_resynclibs:main',
+            'howdy_store_credentials = howdy.plexcore.cli.howdy_store_credentials:main',
+            'rsync_subproc = howdy.plexcore.cli.rsync_subproc:main',
+            'get_book_tor = howdy.plexcore.cli.get_book_tor:main',
             ## gui
-            'plex_config_gui = plexstuff.plexcore.gui.plex_config_gui:main',
-            'plex_core_gui = plexstuff.plexcore.gui.plex_core_gui:main',
-            'plex_create_texts = plexstuff.plexcore.gui.plex_create_texts:main',
+            'howdy_config_gui = howdy.plexcore.gui.howdy_config_gui:main',
+            'howdy_core_gui = howdy.plexcore.gui.howdy_core_gui:main',
+            'howdy_create_texts = howdy.plexcore.gui.howdy_create_texts:main',
             # email stuff
-            'howdy_email_notif = plexstuff.email.cli.howdy_email_notif:main',
-            'howdy_email_gui = plexstuff.email.gui.howdy_email_gui:main',
+            'howdy_email_notif = howdy.email.cli.howdy_email_notif:main',
+            'howdy_email_gui = howdy.email.gui.howdy_email_gui:main',
             # music stuff
-            'howdy_music_album = plexstuff.music.cli.howdy_music_album:main',
-            'howdy_music_metafill = plexstuff.music.cli.howdy_music_metafill:main',
-            'howdy_music_songs = plexstuff.music.cli.howdy_music_songs:main',
-            'upload_to_gmusic = plexstuff.music.cli.upload_to_gmusic:main',
-            # plextvdb stuff
+            'howdy_music_album = howdy.music.cli.howdy_music_album:main',
+            'howdy_music_metafill = howdy.music.cli.howdy_music_metafill:main',
+            'howdy_music_songs = howdy.music.cli.howdy_music_songs:main',
+            'upload_to_gmusic = howdy.music.cli.upload_to_gmusic:main',
+            # tv stuff
             ## cli
-            'get_plextvdb_batch = plexstuff.plextvdb.cli.get_plextvdb_batch:main',
-            'get_tv_tor = plexstuff.plextvdb.cli.get_tv_tor:main',
-            'plex_tvdb_epinfo = plexstuff.plextvdb.cli.plex_tvdb_epinfo:main',
-            'plex_tvdb_epname = plexstuff.plextvdb.cli.plex_tvdb_epname:main',
-            'plex_tvdb_futureshows = plexstuff.plextvdb.cli.plex_tvdb_futureshows:main',
-            'plex_tvdb_plots = plexstuff.plextvdb.cli.plex_tvdb_plots:main',
-            'plex_tvdb_excludes = plexstuff.plextvdb.cli.plex_tvdb_excludes:main',
+            'get_tv_batch = howdy.tv.cli.get_tv_batch:main',
+            'get_tv_tor = howdy.tv.cli.get_tv_tor:main',
+            'howdy_tv_epinfo = howdy.tv.cli.howdy_tv_epinfo:main',
+            'howdy_tv_epname = howdy.tv.cli.howdy_tv_epname:main',
+            'howdy_tv_futureshows = howdy.tv.cli.howdy_tv_futureshows:main',
+            'howdy_tv_plots = howdy.tv.cli.howdy_tv_plots:main',
+            'howdy_tv_excludes = howdy.tv.cli.howdy_tv_excludes:main',
             ## gui
-            'plex_tvdb_gui = plexstuff.plextvdb.gui.plex_tvdb_gui:main',
+            'howdy_tv_gui = howdy.tv.gui.howdy_tv_gui:main',
             ]
     },
     #
@@ -108,7 +108,7 @@ setup(
     ## other resources
     ## here is the link to the terrible undocumented documentation: https://setuptools.readthedocs.io/en/latest/setuptools.html#including-data-files
     package_data = {
-        "plexstuff" : [
+        "howdy" : [
             "resources/*.ttf",
             "resources/*.tex",
             "resources/*.qss",

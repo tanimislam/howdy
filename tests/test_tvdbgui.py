@@ -7,7 +7,7 @@ from .test_plexcore import get_token_fullURL, get_libraries_dict
 
 @pytest.fixture( scope="module" )
 def get_tvdata_toGet_didend( request, get_token_fullURL, get_libraries_dict ):
-    testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
+    testDir = os.path.expanduser( '~/.config/howdy/tests' )
     time0 = time.time( )
     rebuild = request.config.option.do_rebuild
     doLocal = request.config.option.do_local

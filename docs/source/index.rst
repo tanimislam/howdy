@@ -7,23 +7,22 @@ Table of Contents
   :maxdepth: 2
   :numbered:
 
-  plex_prereqs
-  plex-config/plex_config
-  plex_api
-  plex-core/plex_core
-  plex-tvdb/plex_tvdb
-  plex-tmdb/plex_tmdb
+  howdy_prereqs
+  howdy-config/howdy_config
+  howdy_api
+  howdy-core/howdy_core
+  howdy-tv/howdy_tv
+  howdy-movie/howdy_movie
   howdy-music/howdy_music
   howdy-email/howdy_email
 
 TODO
 -------
-
 Here are some things I would like to finish.
 
 * Fill out documentation for all the CLIs (|cbox|) and GUIs.
 * Fill out documentation for the lower level APIs (|cbox|) and the GUI APIs.
-* Setup-ify this repository as a ``plexstuff`` Python module (|cbox|).
+* Setup-ify this repository as a ``howdy`` Python module (|cbox|).
 * Fill out help dialogs for the GUIs.
 * Complete the testing suite.
 * Streamline the OAuth2_ authentication process, and provide more logical authorization and verification work flows.

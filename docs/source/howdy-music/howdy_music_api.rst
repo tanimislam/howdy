@@ -1,17 +1,16 @@
 ================================================
 Howdy Music API
 ================================================
+This document describes the lower level Howdy Music API, upon which the :ref:`command line tools <Howdy Music Command Line Utilities>`  are built. It lives in ``howdy.music``.
 
-This document describes the lower level Plexstuff Music API, upon which the :ref:`command line tools <Music Command Line Utilities>`  are built. It lives in ``plexstuff.plexmusic``.
-
-plexstuff.music module
+howdy.music module
 ----------------------------
 This contains only three methods: two format durations strings for YouTube_ clips, and a third is used to search for M4A_ music files that are missing artist or album information.
 
-.. automodule:: plexstuff.music
+.. automodule:: howdy.music
    :members:
 
-plexstuff.music.music module
+howdy.music.music module
 ---------------------------------------
 
 This contains the low-level functionality that does three things.
@@ -22,15 +21,15 @@ This contains the low-level functionality that does three things.
 
 * Uploads music to one's own `Google Play Music`_ account using GMusicAPI_, and sets its credentials.
 
-.. automodule:: plexstuff.music.music
+.. automodule:: howdy.music.music
    :members:
 
-plexstuff.music.pygn module
+howdy.music.pygn module
 ----------------------------------
 
-This contains functionality used by the :py:class:`HowdyMusic <plexstuff.music.music.HowdyMusic>` higher level object interface to the Gracenote_ API.
+This contains functionality used by the :py:class:`HowdyMusic <howdy.music.music.HowdyMusic>` higher level object interface to the Gracenote_ API.
 
-.. automodule:: plexstuff.music.pygn
+.. automodule:: howdy.music.pygn
    :members:
 
 .. URLs here

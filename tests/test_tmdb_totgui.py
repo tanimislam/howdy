@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import QApplication
 
 def main(info = False, doLocal = True, doLarge = False,
          verify = True ):
-    testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
+    testDir = os.path.expanduser( '~/.config/howdy/tests' )
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt5( ) )
     movie_data_rows = pickle.load( gzip.open(

@@ -17,7 +17,7 @@ from plextvdb import plextvdb_gui
 from plexcore import plexcore
 
 def main( info = False, doLocal = True, verify = True ):
-    testDir = os.path.expanduser( '~/.config/plexstuff/tests' )
+    testDir = os.path.expanduser( '~/.config/howdy/tests' )
     app = QApplication([])
     app.setStyleSheet( qdarkstyle.load_stylesheet_pyqt( ) )
     if info: logging.basicConfig( level = logging.INFO )

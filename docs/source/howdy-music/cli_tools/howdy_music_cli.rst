@@ -254,17 +254,14 @@ Some example animated GIFs can be downloaded from here, and is mirrored in this 
 .. |howdy_music_cli_clip1| image:: howdy-music-cli-figures/howdy_music_songs_download_by_song_and_artist.gif
    :width: 100%
    :align: middle
-   :target: https://www.youtube.com/watch?v=W8pmTqFJy68
 
 .. |howdy_music_cli_clip2| image:: howdy-music-cli-figures/howdy_music_songs_download_by_artist_and_album.gif
    :width: 100%
    :align: middle
-   :target: https://www.youtube.com/watch?v=njkhP5VE7Kc
 
 .. |howdy_music_cli_clip3| image:: howdy-music-cli-figures/howdy_music_songs_download_by_sep_list_artist_songs.gif
    :width: 100%
    :align: middle
-   :target: https://www.youtube.com/watch?v=cRvxkGb2q3Y
 
 .. list-table::
    :widths: auto
@@ -300,13 +297,25 @@ Each of the three operations can be either *progressive* or *exclusive*.
 
    .. _order_progress_music_service:
 
-   =================  ============  =========  ==============
-   metadata flag        Gracenote_  LastFM_    MusicBrainz_
-   =================  ============  =========  ==============
-   default (no flag)             1  2          3
-   ``--lastfm``                     1          2
-   ``--musicbrainz``                           1
-   =================  ============  =========  ==============
+   .. list-table::
+      :widths: auto
+
+      * - metadata flag
+	- Gracenote_
+	- LastFM_
+	- MusicBrainz_
+      * - default (no flag)
+	- 1
+	- 2
+        - 3
+      * - ``--lastfm``
+        -
+	- 1
+        - 2
+      * - ``--musicbrainz``
+	-
+	-
+	- 1
 
 .. _exclusive_selection:
    
@@ -314,13 +323,25 @@ Each of the three operations can be either *progressive* or *exclusive*.
 
   .. _order_exclusive_music_service:
 
-  =================  ============  =========  ==============
-  metadata flag      Gracenote_    LastFM_    MusicBrainz_
-  =================  ============  =========  ==============
-  default (no flag)  1
-  ``--lastfm``                     1
-  ``--musicbrainz``                           1
-  =================  ============  =========  ==============
+  .. list-table::
+     :widths: auto
+
+     * - metadata flag
+       - Gracenote_
+       - LastFM_
+       - MusicBrainz_
+     * - default (no flag)
+       - 1
+       -
+       -
+     * - ``--lastfm``
+       -
+       - 1
+       -
+     * - ``--musicbrainz``
+       -
+       -
+       - 1
 
 Once the metadata service finds the metadata for those songs, the CLI provides a selection of YouTube_ clips corresponding to a given song *AND* what the music metadata service thinks is the best match to the selected song. Each clip also shows the length (in MM:SS format) to let you choose one that is high ranking and whose length best matches the song's length.
 
@@ -393,8 +414,15 @@ Here, one specifies the collection of songs to download by giving the artist and
 
 .. _howdy_music_songs_download_artist_songs:
 
-.. youtube:: W8pmTqFJy68
+.. youtube:: W5AYAFYI9QA
    :width: 100%
+
+We generate this video by running this command,
+
+.. code-block:: console
+
+   howdy_music_songs -a Air -A "Don't Be Light;Mer du Japon" --musicbrainz
+	   
 
 .. _download_by_artist_album:
 
@@ -404,8 +432,15 @@ One specifies the collection of songs to download by giving the artist and album
 
 .. _howdy_music_songs_download_artist_album:
 
-.. youtube:: njkhP5VE7Kc
+.. youtube:: 2IxzTvWN0K8
    :width: 100%
+
+We generate this video by running this command,
+
+.. code-block:: console
+
+   howdy_music_songs -a Air -A "Moon Safari" --musicbrainz
+	   
 
 .. _download_by_artists_songs_list:
 
@@ -476,8 +511,8 @@ Third, paste the code similar to as described in :ref:`Step #7 <google_step07_oa
 
 .. links for the youtube clips in table for howdy_music_songs section
 
-.. _yt_clip1: https://www.youtube.com/watch?v=W8pmTqFJy68
-.. _yt_clip2: https://www.youtube.com/watch?v=njkhP5VE7Kc
+.. _yt_clip1: https://youtu.be/W5AYAFYI9QA
+.. _yt_clip2: https://youtu.be/2IxzTvWN0K8
 .. _yt_clip3: https://www.youtube.com/watch?v=cRvxkGb2q3Y
    
 .. _YouTube: https://www.youtube.com

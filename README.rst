@@ -63,33 +63,33 @@ To be able to use all the CLIs, GUIs, and API functionality, there are ``12`` se
 
 What Are Some Interesting Command Line Executables?
 -----------------------------------------------------------------
-You can try out `plex_music_songs`_ to get individual songs or all the songs in an artist's studio album, or `plex_music_album <https://plexstuff.readthedocs.io/plex-music/cli_tools/plex_music_cli.html#plex-music-album>`_ to find all the studio albums an artist released. Here are three YouTube_ clips that show `plex_music_songs`_ in action.
+You can try out `howdy_music_songs`_ to get individual songs or all the songs in an artist's studio album, or `howdy_music_album`_ to find all the studio albums an artist released. Here are three YouTube_ clips that show `howdy_music_songs`_ in action.
 
-.. |plex_music_songs_clip1| image:: https://plexstuff.readthedocs.io/_images/howdy_music_songs_download_by_song_and_artist.gif
+.. |howdy_music_songs_clip1| image:: https://plexstuff.readthedocs.io/_images/howdy_music_songs_download_by_song_and_artist.gif
    :width: 100%
    :align: middle
 
-.. |plex_music_songs_clip2| image:: https://plexstuff.readthedocs.io/_images/howdy_music_songs_download_by_artist_and_album.gif
+.. |howdy_music_songs_clip2| image:: https://plexstuff.readthedocs.io/_images/howdy_music_songs_download_by_artist_and_album.gif
    :width: 100%
    :align: middle
 
-.. |plex_music_songs_clip3| image:: https://plexstuff.readthedocs.io/_images/howdy_music_songs_download_by_sep_list_artist_songs.gif
+.. |howdy_music_songs_clip3| image:: https://plexstuff.readthedocs.io/_images/howdy_music_songs_download_by_sep_list_artist_songs.gif
    :width: 100%
    :align: middle
 
 .. list-table::
    :widths: auto
    
-   * - |plex_music_songs_clip1|
-     - |plex_music_songs_clip2|
-     - |plex_music_songs_clip3|
+   * - |howdy_music_songs_clip1|
+     - |howdy_music_songs_clip2|
+     - |howdy_music_songs_clip3|
    * - `Download artists & songs <yt_clip1_>`_
      - `Download artist & album <yt_clip2_>`_
      - `Download sep artists & songs <yt_clip3_>`_
 
 .. links to YouTube clips
-.. _yt_clip1: https://www.youtube.com/watch?v=W8pmTqFJy68
-.. _yt_clip2: https://www.youtube.com/watch?v=njkhP5VE7Kc
+.. _yt_clip1: https://youtu.be/W5AYAFYI9QA
+.. _yt_clip2: https://youtu.be/2IxzTvWN0K8
 .. _yt_clip3: https://www.youtube.com/watch?v=cRvxkGb2q3Y
 
 .. links to plexstuff sections
@@ -122,6 +122,7 @@ You can try out `plex_music_songs`_ to get individual songs or all the songs in 
 .. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0
 .. _ArgumentParser: https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser
 .. _`Embed YouTube`: http://embedyoutube.org
-.. _`plex_music_songs`: https://plexstuff.readthedocs.io/plex-music/cli_tools/plex_music_cli.html#plex-music-songs
+.. _`howdy_music_songs`: https://plexstuff.readthedocs.io/howdy-music/cli_tools/howdy_music_cli.html#howdy-music-songs
+.. _`howdy_music_album`: https://plexstuff.readthedocs.io/howdy-music/cli_tools/howdy_music_cli.html#howdy-music-album
 .. _Youtube: https://www.youtube.com
 .. _Howdy: https://howdy.readthedocs.io

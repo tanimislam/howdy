@@ -53,7 +53,7 @@ class HowdyMovieTotGUI( QDialogWithPrinting ):
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         #
-        self.tmdb_gui = movie_gui.TMDBGUI(
+        self.tmdb_gui = movie_gui.HowdyMovieGUI(
             self.token, self.fullurl, movie_data_rows, isIsolated = False,
             verify = self.verify )
         self.tmdb_mygui = movie_mygui.HowdyMovieMyGUI(

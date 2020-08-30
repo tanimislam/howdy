@@ -367,13 +367,13 @@ class HowdyTVSeasonTableModel( QAbstractTableModel ):
         self.parent.currentEpisode = self.actualTVSeasonData[ actualRow ]
         
     def filterRow( self, rowNumber ):
-        episodeData = self.actualTVSeasonData[ rowNumber ]
+        episode = self.actualTVSeasonData[ rowNumber ]
         filterStatus = self.parent.filterStatusComboBox.currentText( ).strip( )
         if filterStatus == 'ALL':
-            return self.filterRegexp.indexIn( episodeData[ 'title' ] ) != -1
-        elif filterStatus == 'NOT MINE':
-            if not episodeData[ 'missing' ]: return False
-            return self.filterRegexp.indexIn( episodeData[ 'title' ] ) != -1
+            return self.filterRegexp.indexIn( episode[ 'title' ] ) != -1
+        elif filterStatus == 'NOT IN PLEX':
+            if episode[ 'have_episode' ]: return False
+            return self.filterRegexp.indexIn( episode[ 'title' ] ) != -1
         else: return False
         
     def setFilterStatus( self, index ):

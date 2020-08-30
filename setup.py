@@ -7,14 +7,8 @@ from distutils.spawn import find_executable
 #
 ## ones that live on PyPI
 reqs = sorted(set(map(lambda line: line.strip(),
-                      filter(lambda line: len( line.strip( ) ) != 0 and not line.strip( ).startswith('git+'),
+                      filter(lambda line: len( line.strip( ) ) != 0,
                              open( 'requirements.txt', 'r').readlines()))))
-
-#
-## git+https modules
-dependency_links = sorted(set(map(lambda line: line.strip( ),
-                                  filter(lambda line: line.strip( ).startswith('git+'),
-                                         open( 'requirements.txt', 'r' ).readlines( ) ) ) ) )
 #
 ## need pandoc
 if find_executable( 'pandoc' ) is None:
@@ -27,9 +21,21 @@ if find_executable( 'sshpass' ) is None:
     print( "Error, cannot find sshpass executable. Exiting..." )
     sys.exit( 0 )
 
+#
+## now check the version number
+def get_version_number( ):
+    try:
+        release = re.sub('^v', '', os.popen('git describe --tags').read().strip())
+        version = release.split('-')[0].strip( )
+        print( 'HERE IS THE VERSION NUMBER: %s.' % version )
+        return version
+    except Exception as e:
+        print( "what happened here?" )
+        return '1.2'
+
 setup(
     name = 'howdy',
-    version = '1.0',
+    version = get_version_number( ),
     #
     ## following advice on find_packages excluding tests from https://setuptools.readthedocs.io/en/latest/setuptools.html#using-find-packages
     packages = find_packages( exclude = ["*.tests", "*.tests.*", "tests" ] ),
@@ -61,8 +67,7 @@ setup(
     #
     ## requirements
     install_requires = reqs,
-    dependency_links = dependency_links,
-    python_requires = '>=3',
+    python_requires = '>=3.5',
     #
     ## the executables I am creating
     entry_points = {
@@ -115,6 +120,7 @@ setup(
             "resources/*.json",
             "resources/*.tex",
             "resources/*.html",
+            "resources/icons/*.svg",
             "resources/icons/*.png",
             "resources/icons/*.key" ]
     }

@@ -646,7 +646,7 @@ class HowdyMovieGUI( QDialogWithPrinting ):
         self.setFixedWidth( 680 )
         #
         ## connect signals to slots globally
-        self._connectTMDBGUIActions( )
+        self._connectHowdyMovieGUIActions( )
         self._connectStatusDialogWidget( )
         self._connectHowdyMovieTableView( )
         self._connectSelectYearGenreWidget( )
@@ -654,14 +654,14 @@ class HowdyMovieGUI( QDialogWithPrinting ):
         ##
         self.show( )
 
-    def _connectTMDBGUIActions( self ):
+    def _connectHowdyMovieGUIActions( self ):
         self.movieSendList.connect( self.tmdbtv.tm.emitMoviesHere )
         self.emitRating.connect( self.tmdbtv.tm.setFilterRating )
 
     # def _processPushDataButton( self ):
     #     progress_dialog = ProgressDialog(
     #         self, 'GETTING MOVIES' )
-    #     initThread = TMDBGUIThread(
+    #     initThread = HowdyMovieGUIThread(
     #         { 'get movies' : self.tmdbtv.tm.fillOutCalculation } )
     #           #'enable matching movies' : self.sdWidget.enableMatching,
     #           #'enable minimum rating' : self.sdWidget.enableMinimumRating,

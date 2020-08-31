@@ -4,10 +4,10 @@
 .. image:: https://readthedocs.org/projects/howdy/badge/?version=latest
    :target: https://howdy.readthedocs.io/en/latest
 
-###################################################################
-Howdy! - Yet Another Way to Manage Your Plex_ Server's Content
-###################################################################
-Howdy! (previous Plexstuff) is a (hopefully) useful SDK that I have developed to manage the movies, television shows, and music in which I am interested. I hope that it is, or becomes, a worthy member of the rich community of services used to manage one's media.
+#############################################################################
+|howdy_icon| Howdy! - Yet Another Way to Manage Your Plex_ Server's Content
+#############################################################################
+Howdy! (previous Plexstuff) is a (hopefully) useful SDK_ that I have developed to manage the movies, television shows, and music in which I am interested. I hope that it is, or becomes, a worthy member of the rich community of services used to manage one's media.
 
 Here are a few of the best known high level media management services:
 
@@ -92,6 +92,7 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
      - `Download sep artists & songs <yt_clip3_>`_
 
 .. top level links
+.. _SDK: https://en.wikipedia.org/wiki/Software_development_kit
 .. _Radarr: https://radarr.video
 .. _Couchpotato: https://couchpota.to
 .. _Sonarr: https://sonarr.tv
@@ -102,6 +103,10 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
 .. _Jackett: https://github.com/Jackett/Jackett
 .. _Sphinx: https://www.sphinx-doc.org/en/master
 
+.. howdy icon
+.. |howdy_icon| image:: https://howdy.readthedocs.io/en/latest/_static/howdy_icon.svg
+   :width: 100
+   :align: middle
        
 .. links to YouTube clips
 .. _yt_clip1: https://youtu.be/W5AYAFYI9QA
@@ -114,7 +119,7 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
 .. _sec_credentials_config_gui: https://howdy.readthedocs.io/en/latest/howdy-config/howdy_config_gui_usage.html#credentials-services
 .. _sec_music_config_gui: https://howdy.readthedocs.io/en/latest/howdy-config/howdy_config_gui_usage.html#music-services
 
-.. these are the links
+.. these are other links
 .. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki
 .. _Plex: https://plex.tv
 .. _PlexAPI: https://python-plexapi.readthedocs.io/en/latest/introduction.html

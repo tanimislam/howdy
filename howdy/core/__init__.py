@@ -630,11 +630,11 @@ class PlexGuestEmailMapping( Base ):
     """
     This SQLAlchemy_ ORM class contains mapping of emails of Plex_ server users, to other email addresses. This is used to determine other email addresses to which Howdy one-off or newsletter emails are delivered. Stored in the ``plexguestemailmapping`` table in the SQLite3_ configuration database. The structure of each row in this table is straightforward. Each column in the table is a member of the object in this ORM class. 
     
-    :var Column email: this is the main column, which must be the email of a Plex_ user who has access to the Plex_ server. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>`.
+    :var email: this is the main column, which must be the email of a Plex_ user who has access to the Plex_ server. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>`.
     
-    :var Column plexmapping: this is a collection of **different** email addresses, to which the Howdy emails are sent. For example, if a Plex_ user with email address ``A@email.com`` would like to send email to ``B@mail.com`` and ``C@mail.com``, the *plexmapping* column would be ``B@mail.com,C@mail.com``. NONE of the mapped emails will match *email*. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>` of size 65536.
+    :var plexmapping: this is a collection of **different** email addresses, to which the emails are sent. For example, if a Plex_ user with email address ``A@email.com`` would like to send email to ``B@mail.com`` and ``C@mail.com``, the *plexmapping* column would be ``B@mail.com,C@mail.com``. NONE of the mapped emails will match *email*. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>` of size 65536.
     
-    :var Column plexreplaceexisting: this is a boolean that determines whether Howdy email also goes to the Plex_ user's email address. From the example above, if ``True`` then a Plex_ user at ``A@mail.com`` will have email delivered ONLY to ``B@mail.com`` and ``C@mail.com``. If ``False``, then that same Plex_ user will have email delivered to all three email addresses (``A@mail.com``, ``B@mail.com``, and ``C@mail.com``).  This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`Boolean <sqlalchemy.Boolean>`.
+    :var plexreplaceexisting: this is a boolean that determines whether email also goes to the Plex_ user's email address. From the example above, if ``True`` then a Plex_ user at ``A@mail.com`` will have email delivered ONLY to ``B@mail.com`` and ``C@mail.com``. If ``False``, then that same Plex_ user will have email delivered to all three email addresses (``A@mail.com``, ``B@mail.com``, and ``C@mail.com``).  This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`Boolean <sqlalchemy.Boolean>`.
     
     .. _Plex: https://plex.tv
     """

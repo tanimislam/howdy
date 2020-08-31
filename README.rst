@@ -120,7 +120,7 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
 .. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0
 .. _ArgumentParser: https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser
 .. _`Embed YouTube`: http://embedyoutube.org
-.. _`howdy_music_songs`: https://howdy.readthedocs.io/howdy-music/cli_tools/howdy_music_cli.html#howdy-music-songs
-.. _`howdy_music_album`: https://howdy.readthedocs.io/howdy-music/cli_tools/howdy_music_cli.html#howdy-music-album
+.. _`howdy_music_songs`: https://howdy.readthedocs.io/en/latest/howdy-music/cli_tools/howdy_music_cli.html#howdy-music-songs
+.. _`howdy_music_album`: https://howdy.readthedocs.io/en/latest/howdy-music/cli_tools/howdy_music_cli.html#howdy-music-album
 .. _Youtube: https://www.youtube.com
 .. _Howdy: https://howdy.readthedocs.io

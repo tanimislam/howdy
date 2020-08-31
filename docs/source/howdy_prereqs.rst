@@ -139,7 +139,7 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_.
 	    
    * - ``core``
      - :ref:`howdy_core_cli <howdy_core_cli_label>` |cbox|
-     - :ref:`howdy_config_gui <howdy_config_gui_label>`
+     - :ref:`howdy_config_gui <howdy_config_gui_label>` |cbox|
    * -
      - :ref:`howdy_deluge_console <howdy_deluge_console_label>` |cbox|
      - :ref:`howdy_core_gui <howdy_core_gui_label>`

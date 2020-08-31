@@ -1,8 +1,8 @@
-.. image:: https://badges.gitter.im/plexstuff/community.svg
-   :target: https://gitter.im/plexstuff/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
+.. image:: https://badges.gitter.im/howdy/community.svg
+   :target: https://gitter.im/howdy/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
    
 .. image:: https://readthedocs.org/projects/howdy/badge/?version=latest
-   :target: https://plexstuff.readthedocs.io/en/latest
+   :target: https://howdy.readthedocs.io/en/latest
 
 ###################################################################
 Howdy! - Yet Another Way to Manage Your Plex_ Server's Content
@@ -33,19 +33,19 @@ Although discussed in the `Sphinx documentation <Howdy_>`_, to get everything wo
 
 To be able to use all the CLIs, GUIs, and API functionality, there are ``12`` sets of configurations that need to work: four for login, four for credentials, and four for music.
 
-.. |main_config_gui| image:: https://plexstuff.readthedocs.io/_images/howdy_config_gui_serviceswidget.png
+.. |main_config_gui| image:: https://howdy.readthedocs.io/_images/howdy_config_gui_serviceswidget.png
    :width: 100%
    :align: middle
 
-.. |login_config_gui| image:: https://plexstuff.readthedocs.io/_images/howdy_login_mainfigure.png
+.. |login_config_gui| image:: https://howdy.readthedocs.io/_images/howdy_login_mainfigure.png
    :width: 100%
    :align: middle
 
-.. |credentials_config_gui| image:: https://plexstuff.readthedocs.io/_images/howdy_credentials_mainfigure.png
+.. |credentials_config_gui| image:: https://howdy.readthedocs.io/_images/howdy_credentials_mainfigure.png
    :width: 100%
    :align: middle
 
-.. |music_config_gui| image:: https://plexstuff.readthedocs.io/_images/howdymusic_mainfigure.png
+.. |music_config_gui| image:: https://howdy.readthedocs.io/_images/howdymusic_mainfigure.png
    :width: 100%
    :align: middle
 
@@ -65,15 +65,15 @@ What Are Some Interesting Command Line Executables?
 -----------------------------------------------------------------
 You can try out `howdy_music_songs`_ to get individual songs or all the songs in an artist's studio album, or `howdy_music_album`_ to find all the studio albums an artist released. Here are three YouTube_ clips that show `howdy_music_songs`_ in action.
 
-.. |howdy_music_songs_clip1| image:: https://plexstuff.readthedocs.io/_images/howdy_music_songs_download_by_song_and_artist.gif
+.. |howdy_music_songs_clip1| image:: https://howdy.readthedocs.io/_images/howdy_music_songs_download_by_song_and_artist.gif
    :width: 100%
    :align: middle
 
-.. |howdy_music_songs_clip2| image:: https://plexstuff.readthedocs.io/_images/howdy_music_songs_download_by_artist_and_album.gif
+.. |howdy_music_songs_clip2| image:: https://howdy.readthedocs.io/_images/howdy_music_songs_download_by_artist_and_album.gif
    :width: 100%
    :align: middle
 
-.. |howdy_music_songs_clip3| image:: https://plexstuff.readthedocs.io/_images/howdy_music_songs_download_by_sep_list_artist_songs.gif
+.. |howdy_music_songs_clip3| image:: https://howdy.readthedocs.io/_images/howdy_music_songs_download_by_sep_list_artist_songs.gif
    :width: 100%
    :align: middle
 
@@ -92,12 +92,11 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
 .. _yt_clip2: https://youtu.be/2IxzTvWN0K8
 .. _yt_clip3: https://youtu.be/11rOnEDfMos
 
-.. links to plexstuff sections
-.. _sec_main_config_gui: https://plexstuff.readthedocs.io/howdy-config/howdy_config_gui_usage.html
-.. _sec_login_config_gui: https://plexstuff.readthedocs.io/howdy-config/howdy_config_gui_usage.html#login-services
-.. _sec_credentials_config_gui: https://plexstuff.readthedocs.io/howdy-config/howdy_config_gui_usage.html#credentials-services
-.. _sec_music_config_gui: https://plexstuff.readthedocs.io/howdy-config/howdy_config_gui_usage.html#music-services
-	   
+.. links to howdy sections
+.. _sec_main_config_gui: https://howdy.readthedocs.io/howdy-config/howdy_config_gui_usage.html
+.. _sec_login_config_gui: https://howdy.readthedocs.io/howdy-config/howdy_config_gui_usage.html#login-services
+.. _sec_credentials_config_gui: https://howdy.readthedocs.io/howdy-config/howdy_config_gui_usage.html#credentials-services
+.. _sec_music_config_gui: https://howdy.readthedocs.io/howdy-config/howdy_config_gui_usage.html#music-services
 
 .. these are the links
 .. _unofficial_plex_api: https://github.com/Arcanemagus/plex-api/wiki
@@ -118,11 +117,11 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
 .. _Fedora: https://getfedora.org
 .. _CentOS: https://www.centos.org
 .. _fbs: https://www.learnpyqt.com/courses/packaging-and-distribution/packaging-pyqt5-apps-fbs
-.. _Plexstuff: https://plexstuff.readthedocs.io
+.. _Howdy: https://howdy.readthedocs.io
 .. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0
 .. _ArgumentParser: https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser
 .. _`Embed YouTube`: http://embedyoutube.org
-.. _`howdy_music_songs`: https://plexstuff.readthedocs.io/howdy-music/cli_tools/howdy_music_cli.html#howdy-music-songs
-.. _`howdy_music_album`: https://plexstuff.readthedocs.io/howdy-music/cli_tools/howdy_music_cli.html#howdy-music-album
+.. _`howdy_music_songs`: https://howdy.readthedocs.io/howdy-music/cli_tools/howdy_music_cli.html#howdy-music-songs
+.. _`howdy_music_album`: https://howdy.readthedocs.io/howdy-music/cli_tools/howdy_music_cli.html#howdy-music-album
 .. _Youtube: https://www.youtube.com
 .. _Howdy: https://howdy.readthedocs.io

@@ -11,21 +11,25 @@ Howdy! (previous Plexstuff) is a (hopefully) useful SDK that I have developed to
 
 Here are a few of the best known high level media management services:
 
-* `Radarr <https://radarr.video/>`_ or `Couchpotato <https://couchpota.to/>`_ to manage your movies.
-* `Sonarr <https://sonarr.tv/>`_ or `Sickrage <https://www.sickrage.ca/>`_ to manage your television shows.
-* `Lidarr <https://lidarr.audio/>`_ to manage your music.
-* `Subliminal <https://subliminal.readthedocs.io/en/latest/>`_ to download subtitles of movies and TV shows.
+* Radarr_ or Couchpotato_ to manage your movies.
+* Sonarr_ or Sickrage_ to manage your television shows.
+* Lidarr_ to manage your music.
+* Subliminal_ to download subtitles of movies and TV shows.
 
 Here are some of the best known lower APIs used to help one manage your Plex_ server.
 
-* `Tautulli <https://tautulli.com>`_ to monitor your Plex_ server.
-* `Jackett <https://github.com/Jackett/Jackett>`_ is a relatively successful proxy server that consolidates the torrent search from a large number of public, private, and semi-private torrent trackers and services into a single search user interface and API.
+* Tautulli_ to monitor your Plex_ server.
+* Jackett_ is a relatively successful proxy server that consolidates the torrent search from a large number of public, private, and semi-private torrent trackers and services into a single search user interface and API.
 
 * `PlexAPI <PlexAPI_>`_ is the unofficial bindings to the Plex API. They are based off the older `unofficial Plex API <unofficial_plex_api_>`_. I still use the `unofficial Plex API <unofficial_plex_api_>`_ because it seems to offer more freedom (such as finer grained multithreaded HTTP requests, and access to remote servers) than PlexAPI_.
 
 The command line tools are built using Python's ArgumentParser_ object, and the GUIs are built with PyQt5_.
 
-The comprehensive documentation lives in HTML created with `Sphinx <https://www.sphinx-doc.org/en/master/>`_, and now in the `Read the Docs <Howdy_>`_ page for this project. To generate the documentation, go to the ``docs`` subdirectory. In that directory, run ``make html``. Load ``docs/build/html/index.html`` into a browser to see the documentation.
+The comprehensive documentation lives in HTML created with Sphinx_, and now in the `Read the Docs <Howdy_>`_ page for this project. To generate the documentation,
+
+1. go to the ``docs`` subdirectory.
+2. In that directory, run ``make html``.
+3. Load ``docs/build/html/index.html`` into a browser to see the documentation.
 
 Quick and Dirty -- How Do I Get It Working?
 --------------------------------------------
@@ -87,6 +91,18 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
      - `Download artist & album <yt_clip2_>`_
      - `Download sep artists & songs <yt_clip3_>`_
 
+.. top level links
+.. _Radarr: https://radarr.video
+.. _Couchpotato: https://couchpota.to
+.. _Sonarr: https://sonarr.tv
+.. _Sickrage: https://www.sickrage.ca
+.. _Lidarr: https://lidarr.audio
+.. _Subliminal: https://subliminal.readthedocs.io/en/latest
+.. _Tautulli: https://tautulli.com
+.. _Jackett: https://github.com/Jackett/Jackett
+.. _Sphinx: https://www.sphinx-doc.org/en/master
+
+       
 .. links to YouTube clips
 .. _yt_clip1: https://youtu.be/W5AYAFYI9QA
 .. _yt_clip2: https://youtu.be/2IxzTvWN0K8

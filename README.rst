@@ -74,7 +74,6 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
    :align: middle
 
 .. |howdy_music_songs_clip3| image:: https://howdy.readthedocs.io/en/latest/_images/howdy_music_songs_download_by_sep_list_artist_songs.gif
-
    :width: 100%
    :align: middle
 

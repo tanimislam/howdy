@@ -255,7 +255,7 @@ Some example animated GIFs can be downloaded from here, and is mirrored in this 
    :width: 100%
    :align: middle
 
-.. |howdy_music_cli_clip2| image:: howdy-music-cli-figures/howdy_music_songs_download_by_artist_and_album.gif
+.. |howdy_music_cli_clip2| image:: howdy-music-cli-figures/howdy_music_songs_download_by_artist_and_album_SHRINK.gif
    :width: 100%
    :align: middle
 

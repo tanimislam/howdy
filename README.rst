@@ -1,6 +1,6 @@
 .. image:: https://badges.gitter.im/howdy/community.svg
-   :target: https://gitter.im/howdy/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
-   
+   :target: https://https://gitter.im/tanimislam/howdy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
+
 .. image:: https://readthedocs.org/projects/howdy/badge/?version=latest
    :target: https://howdy.readthedocs.io/en/latest
 
@@ -69,11 +69,12 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
    :width: 100%
    :align: middle
 
-.. |howdy_music_songs_clip2| image:: https://howdy.readthedocs.io/en/latest/_images/howdy_music_songs_download_by_artist_and_album.gif
+.. |howdy_music_songs_clip2| image:: https://howdy.readthedocs.io/en/latest/_images/howdy_music_songs_download_by_artist_and_album_SHRINK.gif
    :width: 100%
    :align: middle
 
 .. |howdy_music_songs_clip3| image:: https://howdy.readthedocs.io/en/latest/_images/howdy_music_songs_download_by_sep_list_artist_songs.gif
+
    :width: 100%
    :align: middle
 
@@ -117,7 +118,6 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
 .. _Fedora: https://getfedora.org
 .. _CentOS: https://www.centos.org
 .. _fbs: https://www.learnpyqt.com/courses/packaging-and-distribution/packaging-pyqt5-apps-fbs
-.. _Howdy: https://howdy.readthedocs.io
 .. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0
 .. _ArgumentParser: https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser
 .. _`Embed YouTube`: http://embedyoutube.org

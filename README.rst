@@ -1,5 +1,5 @@
 .. image:: https://badges.gitter.im/howdy/community.svg
-   :target: https://https://gitter.im/tanimislam/howdy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
+   :target: https://gitter.im/tanimislam/howdy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 
 .. image:: https://readthedocs.org/projects/howdy/badge/?version=latest
    :target: https://howdy.readthedocs.io/en/latest

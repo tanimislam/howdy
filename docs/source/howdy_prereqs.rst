@@ -217,4 +217,4 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_.
 .. _Fedora: https://getfedora.org
 .. _CentOS: https://www.centos.org
 .. _fbs: https://www.learnpyqt.com/courses/packaging-and-distribution/packaging-pyqt5-apps-fbs
-.. _Howdy: https://plexstuff.readthedocs.io
+.. _Howdy: https://howdy.readthedocs.io

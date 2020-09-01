@@ -1,5 +1,5 @@
 import os, glob, datetime, gspread, logging, sys, numpy, urllib3
-import uuid, requests, pytz, pypandoc, time, json, validators
+import uuid, requests, pytz, time, json, validators
 import pathos.multiprocessing as multiprocessing
 # oauth2 stuff
 import oauth2client.client

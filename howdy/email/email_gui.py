@@ -164,7 +164,6 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             myLayout.addWidget( self.textEdit )
             myLayout.addWidget( self.statusLabel )
             #
-            #self.testTextButton.clicked.connect( self.checkValidLaTeX )
             self.testTextButton.clicked.connect( self.checkRST )
             self.pngAddButton.clicked.connect( self.addPNGs )
             #
@@ -180,12 +179,12 @@ class HowdyEmailGUI( QDialogWithPrinting ):
                 return
             sectionTitle = self.sectionNameWidget.text( ).strip( )
             mainText = '\n'.join([ sectionTitle, ''.join([ '=' ] * len( sectionTitle )), '', myStr ])
-            if not core_texts_gui.checkValidConversion( mainText, form = 'rst' ):
+            if not core_texts_gui.checkValidConversion( mainText )
                 self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
                 self.isValidRST = False
                 return
             self.isValidRST = True
-            html = core_texts_gui.convertString( mainText, form = 'rst' )
+            html = core_texts_gui.convertString( mainText )
             self.statusLabel.setText( 'VALID RESTRUCTUREDTEXT' )
             #
             qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
@@ -219,7 +218,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             sectionTitle = self.sectionNameWidget.text( ).strip( )
             if not showSection or len( sectionTitle ) == 0: mainText = myStr
             else: mainText = '\n'.join([ sectionTitle, ''.join([ '=' ] * len( sectionTitle )), '', myStr ])
-            if not core_texts_gui.checkValidConversion( mainText, form = 'rst' ):
+            if not core_texts_gui.checkValidConversion( mainText ):
                 return ""
             return mainText
 
@@ -236,7 +235,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
                 '\n'.join([ '=' ] * len( sectionTitle )  ), '',
                 self.textEdit.toPlainText( ).strip( ) ])
             try:
-                html = core_texts_gui.convertString( mainText, form = 'rst' )
+                html = core_texts_gui.convertString( mainText )
                 return True, html
             except Exception as e:
                 return False, None

@@ -56,7 +56,6 @@ def get_date_from_datestring( dstring ):
     :returns: its :py:class:`date <datetime.date>` object representation.
     
     :rtype: :py:class:`date <datetime.date>`
-
     """
     try: return datetime.datetime.strptime( dstring, '%B %d, %Y' ).date( )
     except Exception:
@@ -71,7 +70,7 @@ def rstToHTML( rstString ):
     :rtype: str
     
     .. _BeautifulSoup: https://www.crummy.com/software/BeautifulSoup/bs4/doc
-    
+    .. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
     """
     try:
         html_body = html_parts( rstString )[ 'whole' ]

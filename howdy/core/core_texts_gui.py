@@ -8,8 +8,7 @@ from PyQt5.QtNetwork import QNetworkAccessManager
 #
 from howdy.core import returnQAppWithFonts, QDialogWithPrinting
 
-def checkValidConversion( myString, form = 'rst' ):
-    assert( form.lower( ) in ( 'rst' ) )
+def checkValidConversion( myString ):
     try:
         html_body = html_parts( myString )[ 'whole' ]
         html = BeautifulSoup( html_body, 'lxml' )
@@ -18,8 +17,7 @@ def checkValidConversion( myString, form = 'rst' ):
     except RuntimeError as e:
         return False
 
-def convertString( myString, form = 'rst' ):
-    assert( form.lower( ) in ( 'rst' ) )
+def convertString( myString ):
     try:
         html_body = html_parts( myString )[ 'whole' ]
         html = BeautifulSoup( html_body, 'lxml' )
@@ -98,7 +96,7 @@ class ConvertWidget( QDialogWithPrinting ):
     def printHTML( self ):
         myString = r"%s" % self.textOutput.toPlainText( ).strip( )
         self.statusDialog.setText( '' )
-        if not checkValidConversion( myString, form = self.form.lower( ) ):
+        if not checkValidConversion( myString ):
             self.statusDialog.setText(
                 'COULD NOT CONVERT FROM %s TO HTML' % form.upper( ) )
             return
@@ -120,8 +118,7 @@ class ConvertWidget( QDialogWithPrinting ):
         qdl.setFixedWidth( 85 * qfm.width( 'A' ) )
         qdl.setFixedHeight( 550 )
         #
-        qte.setHtml( convertString(
-            myString, form = self.form.lower( ) ) )
+        qte.setHtml( convertString( myString ) )
         #
         def saveFileName( ):
             fname, _ = QFileDialog.getSaveFileName(

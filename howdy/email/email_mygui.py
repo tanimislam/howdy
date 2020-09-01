@@ -263,12 +263,12 @@ class HowdyEmailMyGUI( QDialogWithPrinting ):
             self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
             return
         mainText = '\n'.join([ 'Hello Friend,', '', myStr ])
-        if not core_texts_gui.checkValidConversion( mainText, form = 'rst' ):
+        if not core_texts_gui.checkValidConversion( mainText ):
             self.emailSendButton.setEnabled( False )
             self.emailTestButton.setEnabled( False )
             self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
             return
-        html = core_texts_gui.convertString( mainText, form = 'rst' )
+        html = core_texts_gui.convertString( mainText )
         self.emailSendButton.setEnabled( True )
         self.emailTestButton.setEnabled( True )
         self.statusLabel.setText( 'VALID RESTRUCTUREDTEXT' )
@@ -300,7 +300,7 @@ class HowdyEmailMyGUI( QDialogWithPrinting ):
     def getHTML( self ):
         mainText = '\n'.join([ 'Hello Friend', '', self.mainEmailCanvas.toPlainText( ).strip( ) ])
         try:
-            html = core_texts_gui.convertString( mainText, form = 'rst' )
+            html = core_texts_gui.convertString( mainText )
             # html = core.processValidHTMLWithPNG( html, self.pngWidget.getAllDataAsDict( ) )
             return True, html
         except Exception as e:

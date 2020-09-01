@@ -46,7 +46,9 @@ def send_email_lowlevel( msg, email_service = None, verify = True ):
     #                      cache_discovery = False )
     if email_service is None: email_service = get_email_service( verify = verify )
     try: message = email_service.users( ).messages( ).send( userId='me', body = data ).execute( )
-    except: print('problem with %s' % msg['To'] )
+    except Exception as e:
+        print('here is exception: %s' % str( e ) )
+        print('problem with %s' % msg['To'] )
     
 def send_email_localsmtp( msg ):
     """

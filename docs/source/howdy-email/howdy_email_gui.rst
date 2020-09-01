@@ -37,7 +37,7 @@ The ``(n)`` choice means do a :ref:`newsletter <Newsletter Mode>`, while the ``(
 
 Only Email Mode
 ^^^^^^^^^^^^^^^^
-When running with the ``(o)`` choice, this GUI only sends a non-newsletter email to either yourself or to all the friends of your Plex_ server. This GUI is launched when running ``howdy_email_gui o``.
+When running with the ``(o)`` choice, this GUI only sends a non-newsletter email to either yourself or to all the friends of your Plex_ server. This GUI is launched when running ``howdy_email_gui --noverify --local o``.
 
 .. _onlyemail_mainwindow_ANNOTATED:
 

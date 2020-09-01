@@ -57,9 +57,9 @@ def main( ):
     else:
         email_service = get_email_service( )
         def _send_email_perproc( input_tuple ):
-            name, email = input_tuple
+            name, fullEmail = input_tuple
             email.send_individual_email_full(
-                htmlString, args.subject, email, name = name,
+                htmlString, args.subject, fullEmail, name = name,
                 email_service = email_service )
             return True
         arrs = list( map(

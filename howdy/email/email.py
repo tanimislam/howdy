@@ -155,14 +155,16 @@ def get_summary_body( token, nameSection = False, fullURL = 'http://localhost:32
 
 def send_individual_email_perproc( input_tuple ):
     """
-    A tuple-ized version used by the :py:mod:`multiprocessing` module to send out individual emails.
+    A tuple-ized version of :py:meth:`send_individual_email <howdy.email.email.send_individual_email>` used by the :py:mod:`multiprocessing` module to send out emails.
 
-    :param tuple input_tuple: an expected four-element :py:class:`tuple`: the HTML email body, the access token, the recipient's email, and the recipient's name.
+    :param tuple input_tuple: an expected four-element :py:class:`tuple`: the HTML email body, the recipient's email, the recipient's name, and the :py:class:`email service resource <googleapiclient.discovery.Resource>`.
+
+    .. seealso:: :py:meth:`send_individual_email <howdy.email.email.send_individual_email>`
     """
-    mainHTML, access_token, email, name = input_tuple
+    mainHTML, email, name, email_service = input_tuple
     while True:
         try:
-            send_individual_email( mainHTML, access_token, email, name = name )
+            send_individual_email( mainHTML, email, name = name, email_service = email_service )
             return
         except Exception as e:
             if name is None:
@@ -382,7 +384,7 @@ def get_summary_html(
     :param str postambleText: optional argument. The LaTeX_ formatted text, in a section *after* the summary. if non-empty. Default is ``""``.
     :param str name: optional argument. If given, the recipient's name.
 
-    :returns: an HTML :py:class:`string <str>` document of the Plex_ newletter email.
+    :returns: a two-element :py:class:`tuple`. The first element is an HTML :py:class:`string <str>` document of the Plex_ newletter email. The second element is the full reStructuredText_ :py:class:`string <str>`.
     :rtype: str
     
     .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`
@@ -401,7 +403,7 @@ def get_summary_html(
     wholestr = wholestr % tup_formatting
     htmlString = html_parts( wholestr )[ 'whole' ]
     html = BeautifulSoup( htmlString, 'lxml' )
-    return html.prettify( )
+    return html.prettify( ), wholestr
 
 def _get_itemized_string( stringtup ):
     mainstring, maindict = stringtup

@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 #
 from howdy import resourceDir
-from howdy.email import email, email_basegui, emailAddress, emailName, get_email_contacts_dict
+from howdy.email import email, email_basegui, emailAddress, emailName, get_email_contacts_dict, get_email_service
 from howdy.email.email_mygui import HowdyGuestEmailTV
 from howdy.core import core, QDialogWithPrinting
 #
@@ -24,6 +24,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
         def __init__( self, parent ):
             super( HowdyEmailGUI.EmailSendDialog, self ).__init__( parent, isIsolated = False )
             self.setModal( True )
+            self.verify = parent.verify
             self.setWindowTitle( 'SEND EMAILS' )
             self.selectTestButton = QPushButton( 'TEST ADDRESS', self )
             self.selectAllButton = QPushButton( 'ALL ADDRESSES', self )
@@ -36,7 +37,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
                      [ emailString, ] +
                      sorted(map( lambda idx: parent.emailComboBox.itemText( idx ),
                                  range( parent.emailComboBox.count() ) ) ) ) )
-            self.mainHtml = parent.mainEmailCanvas.toHtml( ).strip( )
+            self.mainHtml = parent.htmlString.strip( )
             for button in self.allRadioButtons:
                 self.myButtonGroup.addButton( button )
             self.myButtonGroup.setExclusive( False )
@@ -69,7 +70,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             self.sendEmailButton.clicked.connect( self.sendEmail )
             #
             self.setFixedWidth( self.sizeHint( ).width( ) )
-            self.setFixedHeight( self.sizeHint( ).height( ) )
+            self.setFixedHeight( int( 0.5 * self.sizeHint( ).height( ) ) )
             self.show( )
 
         def selectTest( self ):
@@ -88,29 +89,37 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             if len(validLists) == 0:
                 return
             input_tuples = []
-            #
-            ## access token
-            access_token = core.oauth_get_access_token( )
             for fullName in validLists:
                 if fullName.endswith('>'):
                     name = fullName.split('<')[0].strip( )
-                    email = fullName.split('<')[1].strip().replace('>', '').strip()
+                    fullEmail = fullName.split('<')[1].strip().replace('>', '').strip()
                 else:
                     name = None
-                    email = fullName.strip( )
-                input_tuples.append(( self.mainHtml, email, name ))
+                    fullEmail = fullName.strip( )
+                input_tuples.append(( fullEmail, name ))
             #
             ## now send the emails
             time0 = time.time( )
             self.statusLabel.setText( 'STARTING TO SEND EMAILS...')
-            with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
-                list( pool.map( email.send_individual_email_perproc, input_tuples ) )
-                self.statusLabel.setText( 'SENT %d EMAILS IN %0.3f SECONDS.' %
-                                          ( len( input_tuples ), time.time() - time0 ) )
-                #
-                ## if I have sent out ALL EMAILS, then I mean to update the newsletter
-                if len(validLists) == len( self.allRadioButtons ):
-                    core.set_date_newsletter( )
+            email_service = get_email_service( verify = self.verify )
+            mydate = datetime.datetime.now( ).date( )
+            def _send_email_perproc( input_tuple ):
+                name, fullEmail = input_tuple
+                subject = titlecase.titlecase(
+                    'Plex Email Newsletter For %s' % mydate.strftime( '%B %Y' ) )
+                email.send_individual_email_full(
+                    self.mainHtml, subject, fullEmail, name = name,
+                    email_service = email_service )
+                return True
+            with multiprocessing.Pool( processes = min(
+                multiprocessing.cpu_count( ), len( input_tuples ) ) ) as pool:
+                arrs = list( map( _send_email_perproc, input_tuples ) )
+            self.statusLabel.setText( 'SENT %d EMAILS IN %0.3f SECONDS.' %
+                                     ( len( input_tuples ), time.time() - time0 ) )
+            #
+            ## if I have sent out ALL EMAILS, then I mean to update the newsletter
+            if len(validLists) == len( self.allRadioButtons ):
+                core.set_date_newsletter( )
             
     class PrePostAmbleDialog( QDialogWithPrinting ):
         
@@ -204,15 +213,17 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             result = qdl.exec_( )
 
         def sendValidRST( self, showSection = False ):
+            if self.NoButton.isChecked( ): return ""
+            #
             myStr = self.textEdit.toPlainText( ).strip( )
-            if not showSection: mainText = myStr
+            sectionTitle = self.sectionNameWidget.text( ).strip( )
+            if not showSection or len( sectionTitle ) == 0: mainText = myStr
             else: mainText = '\n'.join([ sectionTitle, ''.join([ '=' ] * len( sectionTitle )), '', myStr ])
             if not core_texts_gui.checkValidConversion( mainText, form = 'rst' ):
                 return ""
             return mainText
 
         def closeEvent( self, evt ):
-            self.NoButton.toggle( )
             self.hide( )
 
         def addPNGs( self ):
@@ -222,7 +233,8 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             sectionTitle = self.sectionNameWidget.text( ).strip( )
             mainText = '\n'.join([
                 sectionTitle,
-                '\n'.join([ '=' ] * len( sectionTitle )  ), '', self.textEdit.toPlainText( ).strip( ) ])
+                '\n'.join([ '=' ] * len( sectionTitle )  ), '',
+                self.textEdit.toPlainText( ).strip( ) ])
             try:
                 html = core_texts_gui.convertString( mainText, form = 'rst' )
                 return True, html
@@ -233,6 +245,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
         super( HowdyEmailGUI, self ).__init__( None )
         self.resolution = 1.0
         self.verify = verify
+        self.htmlString = ''
         if doLarge:
             self.resolution = 2.0
         for fontFile in glob.glob( os.path.join( resourceDir, '*.ttf' ) ):
@@ -248,18 +261,24 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             raise ValueError( "Error, cannot access the Plex media server." )
         self.fullURL, self.token = dat
         #
-        self.testEmailButton = QPushButton( 'TEST EMAIL', self )
+        self.checkEmailButton = QPushButton( 'CHECK EMAIL', self )
+        self.emailListButton = QPushButton( 'PLEX GUESTS', self )
+        #
         self.preambleButton = QPushButton( 'PREAMBLE', self )
         self.postambleButton = QPushButton( 'POSTAMBLE', self )
-        self.sendEmailButton = QPushButton( 'SEND EMAIL', self )
-        self.sendEmailButton.setEnabled( False )
-        self.testEmailButton.setEnabled( True )
-        self.emailListButton = QPushButton( 'PLEX GUESTS' )
-        self.setWindowTitle( 'PLEX EMAIL NEWSLETTER' )
+        #
+        self.emailDialogButton = QPushButton( 'EMAIL DIALOG', self )
+        #
+        self.emailDialogButton.setEnabled( False )
+        self.checkEmailButton.setEnabled( True )
+        self.emailComboBox = QComboBox( )
+        #
+        self.setWindowTitle( 'HOWDY EMAIL NEWSLETTER' )
         self.preambleDialog = HowdyEmailGUI.PrePostAmbleDialog( self, title = 'PREAMBLE' )
         self.postambleDialog = HowdyEmailGUI.PrePostAmbleDialog( self, title = 'POSTAMBLE' )
         self.preamble = ''
         self.postamble = ''
+        self.getContacts( self.token )
         myLayout = QGridLayout( )
         self.setLayout( myLayout )
         #
@@ -268,16 +287,17 @@ class HowdyEmailGUI( QDialogWithPrinting ):
                 self.token, verify = self.verify ), verify = self.verify )
         self.emails_array.append(( emailName, emailAddress ) )
         #
-        myLayout.addWidget( self.testEmailButton, 0, 0, 1, 1 )
-        myLayout.addWidget( self.sendEmailButton, 0, 1, 1, 1 )
+        myLayout.addWidget( self.checkEmailButton, 0, 0, 1, 1 )
+        myLayout.addWidget( self.emailDialogButton, 0, 1, 1, 1 )
         myLayout.addWidget( self.preambleButton, 1, 0, 1, 1 )
         myLayout.addWidget( self.postambleButton, 1, 1, 1, 1 )
         myLayout.addWidget( self.emailListButton, 2, 0, 1, 2 )
         #
-        self.testEmailButton.clicked.connect( self.createSummaryEmail )
+        self.checkEmailButton.clicked.connect( self.createSummaryEmail )
         self.preambleButton.clicked.connect( self.preambleDialog.show )
         self.postambleButton.clicked.connect( self.postambleDialog.show )
-        self.sendEmailButton.clicked.connect( self.sendEmail )
+        self.emailDialogButton.clicked.connect( self.emailDialog )
+        # self.emailTestButton.clicked.connect( self.testEmail )
         self.emailListButton.clicked.connect( self.showEmails )
         #
         #qf = QFont( )
@@ -311,25 +331,29 @@ class HowdyEmailGUI( QDialogWithPrinting ):
         result = qdl.exec_( )
 
     def createSummaryEmail( self ):
-        self.sendEmailButton.setEnabled( False )
-        preambleText = self.preambleDialog.sendValidRST( False )
-        postambleText = self.postambleDialog.sendValidRST( )
-        htmlString = email.get_summary_html(
+        self.emailDialogButton.setEnabled( False )
+        preambleText = self.preambleDialog.sendValidRST( True )
+        postambleText = self.postambleDialog.sendValidRST( True )
+        self.htmlString, self.restructuredTextString = email.get_summary_html(
             self.token, fullURL = self.fullURL,
             preambleText = preambleText, postambleText = postambleText )
-        if len( htmlString ) == 0: return
+        if len( self.htmlString ) == 0: return
         #
         qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
         qdl.setWindowTitle( 'HTML EMAIL BODY' )
         qte = core_texts_gui.HtmlView( qdl )
         qter = QTextEdit( self )
         qter.setReadOnly( True )
-        qter.setPlainText( '%s\n' % htmlString )
+        qter.setPlainText( '%s\n' % self.htmlString )
+        qterst = QTextEdit( self )
+        qterst.setReadOnly( True )
+        qterst.setPlainText( '%s\n' % self.restructuredTextString )
         qdlLayout = QVBoxLayout( )
         qdl.setLayout( qdlLayout )
         tw = QTabWidget( self )
         tw.addTab( qte, 'RENDERED HTML' )
         tw.addTab( qter, 'RAW HTML' )
+        tw.addTab( qterst, 'RESTRUCTURED TEXT' )
         qdlLayout.addWidget( tw )
         qf = QFont( )
         qf.setFamily( 'Consolas' )
@@ -337,14 +361,34 @@ class HowdyEmailGUI( QDialogWithPrinting ):
         qfm = QFontMetrics( qf )
         qdl.setFixedWidth( 85 * qfm.width( 'A' ) )
         qdl.setFixedHeight( 550 )
-        qte.setHtml( htmlString )
+        qte.setHtml( self.htmlString )
         qdl.show( )
         #
         ##
         result = qdl.exec_( )
-        # self.mainEmailCanvas.setHtml( htmlString )
-        self.sendEmailButton.setEnabled( True )
+        self.emailDialogButton.setEnabled( True )
+        # self.testEmailButton.setEnabled( True )
 
-    def sendEmail( self ):
+    def emailDialog( self ):
         qd = HowdyEmailGUI.EmailSendDialog( self )
         result = qd.exec_( )
+
+    def getContacts( self, token ):
+        emails = core.get_mapped_email_contacts(
+            token, verify = self.verify )
+        if len(emails) == 0: return
+        self.checkEmailButton.setEnabled( True )
+        #
+        ## now do some google client magic to get the names
+        name_emails = get_email_contacts_dict(
+            emails, verify = self.verify )
+        self.emailComboBox.clear( )
+        def get_email( input_tuple ):
+            name, email = input_tuple
+            if name is not None:
+                return '%s <%s>' % ( name, email )
+            return email
+        self.emailComboBox.addItems(
+            sorted( map( get_email, name_emails ) ) )
+        self.emailComboBox.setEditable( False )
+        self.emailComboBox.setCurrentIndex( 0 )

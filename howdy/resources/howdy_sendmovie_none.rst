@@ -1,0 +1,3 @@
+Hello %s,
+
+A friend wanted you to see if you can find the following movie: %s. The movie was requested on %s.

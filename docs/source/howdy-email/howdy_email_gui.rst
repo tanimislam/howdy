@@ -318,7 +318,6 @@ Once your email body is valid (it generated HTML), and you are satisfied, that y
 The email dialog window starts with yourself on the top row. Subsequent rows are your Plex_ friends.
 
 Once you have made your selection, click on ``SEND EMAIL`` to send the Plex_ newsletter emails to your group of selected friends and/or yourself. Just as in :numref:`Send Email`, I alway verify that the email is valid, by first clicking ``TEST EMAIL`` and then clicking ``SEND EMAIL``, before sending the newsletter email to everyone.
-..
   
 .. |howdy_email_gui_icon| image:: howdy-email-gui-figs/howdy_email_gui_SQUARE.png
    :width: 50

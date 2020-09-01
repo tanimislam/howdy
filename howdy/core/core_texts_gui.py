@@ -1,4 +1,4 @@
-import pypandoc, glob, os, sys, textwrap, logging
+import glob, os, sys, textwrap, logging
 from docutils.examples import html_parts
 from bs4 import BeautifulSoup
 from PyQt5.QtWidgets import *
@@ -8,26 +8,22 @@ from PyQt5.QtNetwork import QNetworkAccessManager
 #
 from howdy.core import returnQAppWithFonts, QDialogWithPrinting
 
-def checkValidConversion( myString, form = 'latex' ):
-    assert( form.lower( ) in ( 'latex', 'markdown', 'rst' ) ), "error, format = %s not one of 'latex', 'markdown', or 'rst'" % form.lower( )
+def checkValidConversion( myString, form = 'rst' ):
+    assert( form.lower( ) in ( 'rst' ) )
     try:
-        mainHTML = pypandoc.convert_text(
-            myString, 'html', format = form.lower( ),
-            extra_args = [ '-s', '--mathjax' ] )
+        html_body = html_parts( myString )[ 'whole' ]
+        html = BeautifulSoup( html_body, 'lxml' )
+        return html.prettify( )
         return True
-    except RuntimeError:
+    except RuntimeError as e:
         return False
 
-def convertString( myString, form = 'latex' ):
-    assert( form.lower( ) in ( 'latex', 'markdown', 'rst' ) ), "error, format = %s not one of 'latex', 'markdown', or 'rst'" % form.lower( )
+def convertString( myString, form = 'rst' ):
+    assert( form.lower( ) in ( 'rst' ) )
     try:
-        if form.lower( ) == 'rst': # use docutils instead
-            html_body = html_parts( myString )[ 'whole' ]
-            html = BeautifulSoup( html_body, 'lxml' )
-            return html.prettify( )
-        return pypandoc.convert_text(
-            myString, 'html', format = form.lower( ),
-            extra_args = [ '-s', '--mathjax' ] )
+        html_body = html_parts( myString )[ 'whole' ]
+        html = BeautifulSoup( html_body, 'lxml' )
+        return html.prettify( )
     except RuntimeError as e:
         print( "Error, could not convert %s of format %s. Error = %s." % (
             myString, form.lower( ), str( e ) ) )
@@ -67,12 +63,17 @@ class HtmlView( QWebEngineView ):
             loop.exec_( )
 
 class ConvertWidget( QDialogWithPrinting ):
-    def __init__( self, parent, name = 'LaTeX', form = 'latex', suffix = 'tex' ):
-        super( ConvertWidget, self ).__init__( parent, doQuit = False, isIsolated = False )
-        assert( form.lower( ) in ( 'latex', 'markdown', 'rst' ) )
-        self.name = name
-        self.form = form.lower( )
-        self.suffix = suffix.lower( )
+    def __init__( self ):
+        super( ConvertWidget, self ).__init__( None, doQuit = True, isIsolated = True )
+        self.setWindowTitle( 'RESTRUCTURED TEXT CONVERTER' )
+        self.name = 'RESTRUCTURED TEXT'
+        self.form = 'rst'
+        self.suffix = 'rst' 
+        self.setStyleSheet("""
+        QWidget {
+        font-family: Consolas;
+        font-size: 11;
+        }""" )
         #
         qf = QFont( )
         qf.setFamily( 'Consolas' )
@@ -92,7 +93,7 @@ class ConvertWidget( QDialogWithPrinting ):
         self.convertButton.clicked.connect( self.printHTML )
         #
         self.setFixedHeight( 650 )
-        self.setFixedWidth( self.sizeHint( ).width( ) )
+        self.setFixedWidth( 600 )
 
     def printHTML( self ):
         myString = r"%s" % self.textOutput.toPlainText( ).strip( )
@@ -131,8 +132,7 @@ class ConvertWidget( QDialogWithPrinting ):
             if len( os.path.basename( fname ) ) == 0: return
             if fname.lower( ).endswith( '.%s' % self.suffix.lower( ) ):
                 with open( fname, 'w' ) as openfile:
-                    openfile.write( '%s\n' % textwrap.fill(
-                        qte.toPlainText( ).strip( ) ) )
+                    openfile.write( '%s\n' % myString )
         qsb.clicked.connect( saveFileName )
         saveAction = QAction( qdl )
         saveAction.setShortcut( 'Ctrl+S' )
@@ -140,52 +140,3 @@ class ConvertWidget( QDialogWithPrinting ):
         qdl.addAction( saveAction )
         qdl.show( )
         qdl.exec_( )
-    
-class MainGUI( QDialogWithPrinting ):
-    def __init__( self ):
-        super( MainGUI, self ).__init__( None, doQuit = True, isIsolated = True )
-        self.setWindowTitle( 'FORMAT CONVERTER 3 CHOICES' )
-        self.setStyleSheet("""
-        QWidget {
-        font-family: Consolas;
-        font-size: 11;
-        }""" )
-        #
-        ## myLayout
-        myLayout = QVBoxLayout( )
-        self.setLayout( myLayout )
-        #
-        tabWidget = QTabWidget( self )
-        tabWidget.addTab(
-            ConvertWidget( self, name = 'LaTeX', form = 'latex', suffix = 'tex' ), 'LaTeX' )
-        tabWidget.addTab(
-            ConvertWidget( self, name = 'Markdown', form = 'markdown', suffix = 'md' ), 'Markdown' )
-        tabWidget.addTab(
-            ConvertWidget( self, name = 'ReStructuredText', form = 'rst', suffix = 'rst' ),
-            'ReStructuredText' )
-        tabWidget.setCurrentIndex( 0 )
-        myLayout.addWidget( tabWidget )
-        ctw = tabWidget.currentWidget( )
-        tabWidget.setStyleSheet( 'QTabBar::tab { width: %dpx; }' %int( 1.05 * ctw.size( ).width( ) ) )
-        self._setupActions( tabWidget )
-        #
-        self.setFixedHeight( 750 )
-        self.setFixedWidth( self.sizeHint( ).width( ) )
-        self.show( )
-
-    def _setupActions( self, tabWidget ):
-        def leftTab( ): tabWidget.setCurrentIndex( 0 )
-        def midTab( ): tabWidget.setCurrentIndex( 1 )
-        def rightTab( ): tabWidget.setCurrentIndex( 2 )
-        leftTabAction = QAction( self )
-        leftTabAction.setShortcut( 'Shift+Ctrl+1' )
-        leftTabAction.triggered.connect( leftTab )
-        self.addAction( leftTabAction )
-        midTabAction = QAction( self )
-        midTabAction.setShortcut( 'Shift+Ctrl+2' )
-        midTabAction.triggered.connect( midTab )
-        self.addAction( midTabAction )
-        rightTabAction = QAction( self )
-        rightTabAction.setShortcut( 'Shift+Ctrl+3' )
-        rightTabAction.triggered.connect( rightTab )
-        self.addAction( rightTabAction )

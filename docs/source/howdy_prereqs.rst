@@ -67,13 +67,13 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_.
 	    
    * - ``core``
      - :ref:`howdy_core_cli <howdy_core_cli_label>` |cbox|
-     - :ref:`howdy_config_gui <howdy_config_gui_label>` |cbox|
+     - |howdy_config_gui_icon| :ref:`howdy_config_gui <howdy_config_gui_label>` |cbox|
    * -
      - :ref:`howdy_deluge_console <howdy_deluge_console_label>` |cbox|
-     - :ref:`howdy_core_gui <howdy_core_gui_label>`
+     - |howdy_core_gui_icon| :ref:`howdy_core_gui <howdy_core_gui_label>`
    * -
      - :ref:`howdy_resynclibs <howdy_resynclibs_label>` |cbox|
-     - :ref:`howdy_create_texts <howdy_create_texts_label>` |cbox|
+     - |howdy_create_texts_icon| :ref:`howdy_create_texts <howdy_create_texts_label>` |cbox|
    * -
      - :ref:`howdy_store_credentials <howdy_store_credentials_label>` |cbox|
      -
@@ -83,7 +83,7 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_.
 
    * - ``tv``
      - :ref:`get_tv_batch <get_tv_batch_label>` |cbox|
-     - :ref:`howdy_tv_gui <howdy_tv_gui_label>`
+     - |howdy_tv_gui_icon| :ref:`howdy_tv_gui <howdy_tv_gui_label>`
    * -
      - :ref:`get_tv_tor <get_tv_tor_label>` |cbox|
      -
@@ -105,7 +105,7 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_.
    
    * - ``movie``
      - :ref:`get_mov_tor <get_mov_tor_label>` |cbox|
-     - :ref:`howdy_movie_totgui <howdy_movie_totgui_label>`
+     - |howdy_movie_totgui_icon| :ref:`howdy_movie_totgui <howdy_movie_totgui_label>`
    
    * - ``music``
      - :ref:`howdy_music_album <howdy_music_album_label>` |cbox|
@@ -121,7 +121,7 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_.
      -
    * - ``email``
      - :ref:`howdy_email_notif <howdy_email_notif_label>` |cbox|
-     - :ref:`howdy_email_gui <howdy_email_gui_label>` |cbox| 
+     - |howdy_email_gui_icon| :ref:`howdy_email_gui <howdy_email_gui_label>` |cbox| 
 
 
 .. these are the links
@@ -146,3 +146,27 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_.
 .. _CentOS: https://www.centos.org
 .. _fbs: https://www.learnpyqt.com/courses/packaging-and-distribution/packaging-pyqt5-apps-fbs
 .. _Howdy: https://howdy.readthedocs.io
+
+.. |howdy_config_gui_icon| image:: howdy-config/howdy-config-gui-figures/howdy_config_gui_SQUARE.png
+   :width: 50
+   :align: middle
+
+.. |howdy_core_gui_icon| image:: howdy-core/gui_tools/gui-tools-figures/howdy_core_gui_SQUARE.png
+   :width: 50
+   :align: middle
+
+.. |howdy_create_texts_icon| image:: howdy-core/gui_tools/gui-tools-figures/howdy_create_texts_SQUARE.png
+   :width: 50
+   :align: middle
+
+.. |howdy_tv_gui_icon| image:: howdy-tv/howdy-tv-gui-figs/howdy_tv_gui_SQUARE.png
+   :width: 50
+   :align: middle
+
+.. |howdy_movie_totgui_icon| image:: howdy-movie/howdy-movie-totgui-figs/howdy_movie_gui_SQUARE.png
+   :width: 50
+   :align: middle
+	   
+.. |howdy_email_gui_icon| image:: howdy-email/howdy-email-gui-figs/howdy_email_gui_SQUARE.png
+   :width: 50
+   :align: middle

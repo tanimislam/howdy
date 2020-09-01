@@ -15,7 +15,7 @@ that produces a list of friends with and without associated names in your Google
 
 .. figure:: howdy-email-cli-figures/howdy_core_cli_example.png
    :width: 100%
-   :align: center
+   :align: left
 
    For privacy reasons, I choose to blank out the names, emails, and total number of friends who have access to my Plex_ server.
 

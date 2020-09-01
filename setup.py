@@ -10,12 +10,6 @@ reqs = sorted(set(map(lambda line: line.strip(),
                       filter(lambda line: len( line.strip( ) ) != 0,
                              open( 'requirements.txt', 'r').readlines()))))
 #
-## need pandoc
-if find_executable( 'pandoc' ) is None:
-    print( "Error, cannot find pandoc executable. Exiting..." )
-    sys.exit( 0 )
-
-#
 ## need sshpass
 if find_executable( 'sshpass' ) is None:
     print( "Error, cannot find sshpass executable. Exiting..." )

@@ -5,11 +5,11 @@ To get started, I assume you have your own Plex_ server. In order to get started
 
 Prerequisites
 -------------
-You will need to have PyQt5_, PyQtWebEngine_, sshpass_, and pandoc_ on your machine. `Pandoc <pandoc_>`_ is needed by Howdy tools that convert emails written in LaTeX_ into HTML. On Debian based systems (such as Ubuntu_. Mint_, or Debian_), you can install PyQt5_, sshpass_, and pandoc_ with the following command (as sudo_ or root).
+You will need to have PyQt5_, PyQtWebEngine_, and sshpass_. `Pandoc <pandoc_>`_ is needed by Howdy tools that convert emails written in LaTeX_ into HTML. On Debian based systems (such as Ubuntu_. Mint_, or Debian_), you can install PyQt5_ and sshpass_ with the following command (as sudo_ or root).
 
 .. code-block:: console
 
-   sudo apt install python3-pyqt5 python3-pyqt5.qtwebengine sshpass pandoc
+   sudo apt install python3-pyqt5 python3-pyqt5.qtwebengine sshpass
 
 Equivalent commands to install PyQt5_ and sshpass_ exist on `Red Hat`_ based systems, such as Fedora_ or CentOS_. *An even easier way to install the latest version of PyQt5 on your user account is with this command*,
 
@@ -20,78 +20,6 @@ Equivalent commands to install PyQt5_ and sshpass_ exist on `Red Hat`_ based sys
 .. note::
 
    The installation of PyQtWebEngine_ is relatively difficult. On my Ubuntu 20.04 machine, I had to run ``sudo apt install python3-pyqt5.qtwebengine`` to get this to work. More portable and universal commands, such as ``pip3 install --user pyqtwebengine``, will *install* PyQtWebEngine_, but imports *may not work*.
-   
-In a common scenario, you may need to use Howdy on a Linux machine you do not administer or own. Typically PyQt5_ and sshpass_ are installed, but pandoc_ is a more niche tool that must be installed by hand into your home directory if it has not been installed by default. By my convention the executables and other resources (such as includes and libraries) will be installed under ``~/.local``. Sources of necessary tools will be decompressed and live in ``~/.local/src``. Here are the eight steps I used in order to get pandoc_ installed.
-
-1. Ensure that ``~/.local/bin`` and ``~/.cabal/bin`` are in your PATH.
-
-2. Download the ``Linux x86-64`` pre-built version of the `Haskell Stack build tool <stack_>`_ and decompress into ``~/.local/src``. Here is a link, `https://get.haskellstack.org/stable/linux-x86_64-static.tar.gz <https://get.haskellstack.org/stable/linux-x86_64-static.tar.gz>`_. Decompress with the following command,
-
-  .. code-block:: console
-
-    tar stack-2.1.1-linux-x86_64-static.tar.gz && rm stack-2.1.1-linux-x86_64-static.tar.gz
-
-  This will create a directory, ``~/.local/src/stack-2.1.1-linux-x86_64-static``.
-
-3. cd into ``~/.local/src/stack-2.1.1-linux-x86_64-static`` and install a *bootstrapped* Glasgow Haskell Compiler (ghc_) for Linux with the following command,
-
-  .. code-block:: console
-
-    ./stack ghc
-
-  This will install ghc_ into ``~/.stack/programs/x86_64-linux/ghc-8.6.5/bin/ghc``. We need to install a bootstrapped Haskell compiler, because one needs (a version of) ghc_ in order to build ghc_ from source!
-
-4. Download the latest version of the Glasgow Haskell Compiler, as of 8 July 2019, it is `ghc-8.6.5-src.tar.xz <https://downloads.haskell.org/~ghc/8.6.5/ghc-8.6.5-src.tar.xz>`_. Once it has downloaded into ``~/.local/src``, decompress and untar this way. Note that you need `xz <https://en.wikipedia.org/wiki/Xz>`_ to be installed on your machine.
-
-  .. code-block:: console
-
-    xz -cd ghc-8.6.5-src.tar.xz | tar xvf -
-    rm ghc-8.6.5-src.tar
-
-  This will create the source directory, ``~/.local/src/ghc-8.6.5``.
-
-5. cd into ``~/.local/src/ghc-8.6.5``. Configure, ``make``, and ``make install`` ghc_ with the following three commands in order.
-
-  .. code-block:: console
-
-    ./configure --prefix=$HOME/.local --with-ghc=$HOME/.stack/programs/x86_64-linux/ghc-8.6.5/bin/ghc_
-    make && make install
-
-6. At this point, remove the stack_ source and distribution directories,
-
-  .. code-block:: console
-
-    rm -rf ~/.local/src/stack-2.1.1-linux-x86_64-static
-    rm -rf ~/.stack
-
-7. Download and install cabal_, a command line tool to manage Haskell packages. First, download the cabal_ x86-64 binary, `cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz <https://downloads.haskell.org/~cabal/cabal-install-latest/cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz>`_, into ``~/.local/src``.
-
-  .. code-block:: console
-
-    xz -cd cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz | tar xvf -
-    rm cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz
-
-  Second, move ``cabal`` into ``~/.local/bin``,
-
-  .. code-block:: console
-
-    mv ~/.local/src/cabal ~/.local/bin
-    rm -f ~/.local/src/cabal.sig
-
-  Third, run ``cabal update`` to make cabal_ operational.
-
-8. FINALLY,  install ``pandoc`` into ``~/.local/bin`` in these steps. First run,
-
-  .. code-block:: console
-
-    cabal install pandoc
-
-  This will install ``pandoc`` into ``~/.cabal/bin/pandoc``. Move ``pandoc`` from ``~/.cabal/bin/pandoc`` into ``~/.local/bin``.
-
-  .. code-block:: console
-
-    mv ~/.cabal/bin/pandoc ~/.local/bin
-
 
 Installation
 ------------

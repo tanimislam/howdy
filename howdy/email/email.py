@@ -1,6 +1,8 @@
 import os, sys, titlecase, datetime, re, time, requests, mimetypes, logging
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing, re, httplib2
+from docutils.examples import html_parts
 from itertools import chain
+from bs4 import BeautifulSoup
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
@@ -146,10 +148,9 @@ def get_summary_body( token, nameSection = False, fullURL = 'http://localhost:32
             fullURL = fullURL, token = token ) ), #2
         get_summary_data_television_remote( fullURL = fullURL, token = token ), #3
     )
-    wholestr = open( os.path.join( resourceDir, 'howdy_body_template.tex' ), 'r' ).read( )
+    wholestr = open( os.path.join( resourceDir, 'howdy_body_template.rst' ), 'r' ).read( )
     wholestr = wholestr % tup_formatting
-    if nameSection:
-        wholestr = '\n'.join([ '\section{Summary}', wholestr ])
+    if nameSection: wholestr = '\n'.join([ 'SUMMARY', '==========', wholestr ])
     return wholestr
 
 def send_individual_email_perproc( input_tuple ):
@@ -369,9 +370,9 @@ def send_individual_email(
     msg.attach( body )
     send_email_lowlevel( msg, email_service = email_service, verify = verify )
 
-def get_summary_html( token, fullURL = 'http://localhost:32400',
-                      preambleText = '', postambleText = '', pngDataDict = { },
-                      name = None ):
+def get_summary_html(
+    token, fullURL = 'http://localhost:32400',
+    preambleText = '', postambleText = '', name = None ):
     """
     Creates a Plex_ newsletter summary HTML email of the media on the Plex_ server. Used by the email GUI to send out summary emails.
     
@@ -379,7 +380,6 @@ def get_summary_html( token, fullURL = 'http://localhost:32400',
     :param str fullURL: the Plex_ server URL.
     :param str preambleText: optional argument. The LaTeX_ formatted preamble text (text section *before* summary), if non-empty. Default is ``""``.
     :param str postambleText: optional argument. The LaTeX_ formatted text, in a section *after* the summary. if non-empty. Default is ``""``.
-    :param dict pngDataDict: optional argument. A :py:class:`dict` of PNG images stored in the Imgur_ main album. The structure of this dictionary is described in :py:meth:`processValidHTMLWithPNG <howdy.core.core.processValidHTMLWithPNG>`. Default is ``{}``.
     :param str name: optional argument. If given, the recipient's name.
 
     :returns: an HTML :py:class:`string <str>` document of the Plex_ newletter email.
@@ -397,23 +397,18 @@ def get_summary_html( token, fullURL = 'http://localhost:32400',
         get_summary_body( token, nameSection = nameSection, fullURL = fullURL ),
         postambleText,
     )
-    wholestr = open( os.path.join( resourceDir, 'howdy_template.tex' ), 'r' ).read( )
+    wholestr = open( os.path.join( resourceDir, 'howdy_template.rst' ), 'r' ).read( )
     wholestr = wholestr % tup_formatting
-    wholestr = wholestr.replace('textbf|', 'textbf{')
-    wholestr = wholestr.replace('ZZX|', '}')
-    htmlString = core.latexToHTML( wholestr )
-    htmlString = htmlString.replace('strong>', 'B>')
-    #
-    ## now process PNG IMG data
-    htmlString = core.processValidHTMLWithPNG( htmlString, pngDataDict )
-    return htmlString
+    htmlString = html_parts( wholestr )[ 'whole' ]
+    html = BeautifulSoup( htmlString, 'lxml' )
+    return html.prettify( )
 
 def _get_itemized_string( stringtup ):
     mainstring, maindict = stringtup
-    stringelems = [ mainstring, '\\begin{itemize}' ]
+    stringelems = [ mainstring, '' ]
     for itm in sorted( maindict ):
-        stringelems.append( '\item \\textbf|%sZZX|: %s' % ( itm, maindict[itm] ) )
-    stringelems.append('\\end{itemize}')
+        stringelems.append( '* **%s**: %s' % ( itm, maindict[itm] ) )
+    stringelems.append('')
     return '\n'.join( stringelems )
 
 def _get_artistalbum( filename ):
@@ -630,22 +625,24 @@ def get_summary_data_movies_remote( token, fullURL = 'http://localhost:32400' ):
     lastN_movies = core.get_lastN_movies( 7, token, fullURL = fullURL )
     lastNstrings = [ '', '',
                      'Here are the last %d movies I have added.' % len( lastN_movies ),
-                     '\\begin{itemize}' ]
+                     '' ]
     for title, year, date, url in lastN_movies:
         if url is None:
-            lastNstrings.append( '\item %s (%d), added on %s.' %
+            lastNstrings.append( '* %s (%d), added on %s.' %
                                  ( title, year, date.strftime( '%d %B %Y' ) ) )
         else:
-            lastNstrings.append( '\item \href{%s}{%s (%d)}, added on %s.' %
-                                 ( url, title, year, date.strftime( '%d %B %Y' ) ) )
-    lastNstrings.append( '\end{itemize}' )
+            lastNstrings.append( '* `%s (%d) <%s>`_, added on %s.' %
+                                 ( title, year, url, date.strftime( '%d %B %Y' ) ) )
+    lastNstrings.append( '' )
+    lastNstrings.append( '' )
     lastNstring = '\n'.join( lastNstrings )
-    finalstring = 'Here is a summary by category.'
     if sinceDate is not None and num_movies_since > 0:
         movstring = ' '.join([ mainstring, sizestring, durstring, mainstring_since,
-                               lastNstring, finalstring ])
+                               lastNstring, ])
     else:
-        movstring = ' '.join([ mainstring, sizestring, durstring, lastNstring, finalstring ])
+        movstring = ' '.join([ mainstring, sizestring, durstring, lastNstring, ])
+    finalstring = 'Here is a summary by category.'
+    movstring = '\n'.join([ movstring, finalstring ] )
     movstrings = [ movstring, ]
     catmovstrings = {}
     for cat in sorted( categories ):

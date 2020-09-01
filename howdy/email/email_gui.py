@@ -1,13 +1,22 @@
 
 import os, sys, titlecase, datetime, json, re, urllib, time, glob
 import pathos.multiprocessing as multiprocessing
+from docutils.examples import html_parts
+from bs4 import BeautifulSoup
 from itertools import chain
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 #
 from howdy import resourceDir
 from howdy.email import email, email_basegui, emailAddress, emailName, get_email_contacts_dict
+from howdy.email.email_mygui import HowdyGuestEmailTV
 from howdy.core import core, QDialogWithPrinting
+#
+## throw an exception if cannot
+try:
+    from howdy.core import core_texts_gui
+except ImportError as e:
+    raise ValueError("Error, we need to be able to import PyQt5.QtWebEngineWidgets, which we cannot do. On Ubuntu Linux machines you can try 'apt install python3-pyqt5.qtwebengine'." )
 
 class HowdyEmailGUI( QDialogWithPrinting ):
     class EmailSendDialog( QDialogWithPrinting ):
@@ -116,7 +125,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             self.statusLabel = QLabel( )
             self.setWindowTitle( title )
             self.setModal( True )
-            self.isValidLaTeX = True
+            self.isValidRST = False
             #
             self.YesButton = QRadioButton( 'YES', self )
             self.NoButton = QRadioButton( 'NO', self )
@@ -146,16 +155,61 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             myLayout.addWidget( self.textEdit )
             myLayout.addWidget( self.statusLabel )
             #
-            self.testTextButton.clicked.connect( self.checkValidLaTeX )
+            #self.testTextButton.clicked.connect( self.checkValidLaTeX )
+            self.testTextButton.clicked.connect( self.checkRST )
             self.pngAddButton.clicked.connect( self.addPNGs )
-            #
-            openAction = QAction( self )
-            openAction.setShortcut( 'Ctrl+O' )
-            openAction.triggered.connect( self.openLatex )
-            self.addAction( openAction )
             #
             self.setFixedHeight( 650 )
             self.setFixedWidth( self.sizeHint( ).width( ) )
+
+        def checkRST( self ):
+            self.statusLabel.setText( '' )
+            myStr = self.textEdit.toPlainText( ).strip( )
+            if len( myStr ) == 0:
+                self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
+                self.isValidRST = False
+                return
+            sectionTitle = self.sectionNameWidget.text( ).strip( )
+            mainText = '\n'.join([ sectionTitle, ''.join([ '=' ] * len( sectionTitle )), '', myStr ])
+            if not core_texts_gui.checkValidConversion( mainText, form = 'rst' ):
+                self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
+                self.isValidRST = False
+                return
+            self.isValidRST = True
+            html = core_texts_gui.convertString( mainText, form = 'rst' )
+            self.statusLabel.setText( 'VALID RESTRUCTUREDTEXT' )
+            #
+            qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
+            qdl.setWindowTitle( 'HTML EMAIL BODY' )
+            qte = core_texts_gui.HtmlView( qdl )
+            qter = QTextEdit( self )
+            qter.setReadOnly( True )
+            qter.setPlainText( '%s\n' % html )
+            qdlLayout = QVBoxLayout( )
+            qdl.setLayout( qdlLayout )
+            tw = QTabWidget( self )
+            tw.addTab( qte, 'RENDERED HTML' )
+            tw.addTab( qter, 'RAW HTML' )
+            qdlLayout.addWidget( tw )
+            qf = QFont( )
+            qf.setFamily( 'Consolas' )
+            qf.setPointSize( int( 11 ) )
+            qfm = QFontMetrics( qf )
+            qdl.setFixedWidth( 85 * qfm.width( 'A' ) )
+            qdl.setFixedHeight( 550 )
+            qte.setHtml( html )
+            qdl.show( )
+            #
+            ##
+            result = qdl.exec_( )
+
+        def sendValidRST( self, showSection = False ):
+            myStr = self.textEdit.toPlainText( ).strip( )
+            if not showSection: mainText = myStr
+            else: mainText = '\n'.join([ sectionTitle, ''.join([ '=' ] * len( sectionTitle )), '', myStr ])
+            if not core_texts_gui.checkValidConversion( mainText, form = 'rst' ):
+                return ""
+            return mainText
 
         def closeEvent( self, evt ):
             self.NoButton.toggle( )
@@ -164,82 +218,16 @@ class HowdyEmailGUI( QDialogWithPrinting ):
         def addPNGs( self ):
             self.pngWidget.show( )
 
-        def openLatex( self ):
-            while( True ):
-                fname = str( QFileDialog.getOpenFileName( self, 'Open LaTeX File',
-                                                          os.getcwd( ),
-                                                          filter = "*.tex" ) )
-                if fname.lower( ).endswith( '.tex' ) or len( os.path.basename( fname ) ) == 0:
-                    break
-            if fname.lower( ).endswith( '.tex' ):
-                lines = map(lambda line: line.replace('\n', ''),
-                            open( fname, 'r').readlines() )
-                lineBegin, _ = min(filter(lambda tup: tup[1] == '\\begin{document}',
-                                          enumerate(lines)))
-                if lineBegin is None:
-                    return
-                lineEnd, _ = max(filter(lambda tup: tup[1] == '\\end{document}',
-                                        enumerate(lines)))
-                if lineEnd is None:
-                    return
-                if lineBegin >= lineEnd:
-                    return
-                self.textEdit.setText( '\n'.join( lines[ lineBegin+1:lineEnd ] ) )
-            
-        def checkValidLaTeX( self ):
-            myStr = self.textEdit.toPlainText( ).strip( )
-            mainText = r"""
-            \documentclass{article}
-            \usepackage{amsmath, amsfonts, graphicx, hyperref}
-
-            \begin{document}
-            
-            \section{%s}
-
-            %s
-
-            \end{document}
-            """ % ( self.sectionNameWidget.text( ).strip( ), myStr )
-            htmlString = core.latexToHTML( mainText )
-            if htmlString is None:
-                self.isValidLaTeX = False
-                self.statusLabel.setText( "ERROR: INVALID TEXT" )
-                return
-            self.isValidLaTeX = True
-            self.statusLabel.setText( "VALID TEXT" )
-            if not self.YesButton.isChecked( ): return
-            htmlString = core.processValidHTMLWithPNG(
-                htmlString, self.pngWidget.getAllDataAsDict( ),
-                doEmbed = True )
-            qdl = QDialog( self )
-            qdl.setModal( True )
-            qdlLayout = QVBoxLayout( )
-            qte = QTextEdit( )
-            qdl.setLayout( qdlLayout )
-            qdlLayout.addWidget( qte )
-            qte.setReadOnly( True )
-            qte.setHtml( htmlString )
-            qdl.setFixedWidth( 350 )
-            qdl.setFixedHeight( 550 )
-            qdl.setWindowTitle(
-                'EXAMPLE WORKING HTML FOR %s' % self.windowTitle( ) )
-            qdl.show( )
-            result = qdl.exec_( )
-
-        def sendValidLaTeX( self, showSection = True ):
-            self.NoButton.toggle( )
-            self.checkValidLaTeX( )
-            myStr = self.textEdit.toPlainText( ).strip( )
-            if not self.isValidLaTeX: return "", { }
-            #
-            if showSection:
-                myString = """
-                \section{%s}
-                
-                %s
-                """ % ( self.sectionNameWidget.text( ).strip( ), myStr )
-            else: myString = myStr
-            return myString, self.pngWidget.getAllDataAsDict( )
+        def getHTML( self ):
+            sectionTitle = self.sectionNameWidget.text( ).strip( )
+            mainText = '\n'.join([
+                sectionTitle,
+                '\n'.join([ '=' ] * len( sectionTitle )  ), '', self.textEdit.toPlainText( ).strip( ) ])
+            try:
+                html = core_texts_gui.convertString( mainText, form = 'rst' )
+                return True, html
+            except Exception as e:
+                return False, None
             
     def __init__( self, doLocal = True, doLarge = False, verify = True ):
         super( HowdyEmailGUI, self ).__init__( None )
@@ -259,91 +247,104 @@ class HowdyEmailGUI( QDialogWithPrinting ):
         if dat is None:
             raise ValueError( "Error, cannot access the Plex media server." )
         self.fullURL, self.token = dat
-            
-        self.mainEmailCanvas = QTextEdit( self )
-        self.mainEmailCanvas.setReadOnly( True )
+        #
         self.testEmailButton = QPushButton( 'TEST EMAIL', self )
         self.preambleButton = QPushButton( 'PREAMBLE', self )
         self.postambleButton = QPushButton( 'POSTAMBLE', self )
         self.sendEmailButton = QPushButton( 'SEND EMAIL', self )
         self.sendEmailButton.setEnabled( False )
-        self.testEmailButton.setEnabled( False )
-        self.emailComboBox = QComboBox( )
+        self.testEmailButton.setEnabled( True )
+        self.emailListButton = QPushButton( 'PLEX GUESTS' )
         self.setWindowTitle( 'PLEX EMAIL NEWSLETTER' )
         self.preambleDialog = HowdyEmailGUI.PrePostAmbleDialog( self, title = 'PREAMBLE' )
         self.postambleDialog = HowdyEmailGUI.PrePostAmbleDialog( self, title = 'POSTAMBLE' )
         self.preamble = ''
         self.postamble = ''
-        self.getContacts( self.token )
-        myLayout = QVBoxLayout( )
+        myLayout = QGridLayout( )
         self.setLayout( myLayout )
         #
-        topLayout = QGridLayout( )
-        topWidget = QWidget( )
-        topWidget.setLayout( topLayout )
-        myLayout.addWidget( topWidget )
-        topLayout.addWidget( self.testEmailButton, 0, 0, 1, 1 )
-        topLayout.addWidget( self.preambleButton, 0, 1, 1, 1 )
-        topLayout.addWidget( self.postambleButton, 0, 2, 1, 1 )
-        topLayout.addWidget( self.sendEmailButton, 0, 3, 1, 1 )
-        topLayout.addWidget( QLabel( 'CONTACTS BUTTON' ), 1, 0, 1, 1 )
-        topLayout.addWidget( self.emailComboBox, 1, 1, 1, 3 )
+        self.emails_array = get_email_contacts_dict(
+            core.get_mapped_email_contacts(
+                self.token, verify = self.verify ), verify = self.verify )
+        self.emails_array.append(( emailName, emailAddress ) )
         #
-        myLayout.addWidget( self.mainEmailCanvas )
+        myLayout.addWidget( self.testEmailButton, 0, 0, 1, 1 )
+        myLayout.addWidget( self.sendEmailButton, 0, 1, 1, 1 )
+        myLayout.addWidget( self.preambleButton, 1, 0, 1, 1 )
+        myLayout.addWidget( self.postambleButton, 1, 1, 1, 1 )
+        myLayout.addWidget( self.emailListButton, 2, 0, 1, 2 )
         #
         self.testEmailButton.clicked.connect( self.createSummaryEmail )
-        # self.getContactsButton.clicked.connect( self.getContacts )
         self.preambleButton.clicked.connect( self.preambleDialog.show )
         self.postambleButton.clicked.connect( self.postambleDialog.show )
         self.sendEmailButton.clicked.connect( self.sendEmail )
+        self.emailListButton.clicked.connect( self.showEmails )
         #
-        qf = QFont( )
-        qf.setFamily( 'Consolas' )
-        qf.setPointSize( int( 11 * self.resolution ) )
-        qfm = QFontMetrics( qf )
-        self.setFixedWidth( 55 * qfm.width( 'A' ) )
-        self.setFixedHeight( 33 * qfm.height( ) )
+        #qf = QFont( )
+        #qf.setFamily( 'Consolas' )
+        #qf.setPointSize( int( 11 * self.resolution ) )
+        #qfm = QFontMetrics( qf )
+        #self.setFixedWidth( 55 * qfm.width( 'A' ) )
+        #self.setFixedHeight( 33 * qfm.height( ) )
         self.show( )
 
+    def showEmails( self ):
+        qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
+        qdl.setModal( True )
+        qdl.setWindowTitle( 'PLEX MAPPED GUEST EMAILS' )
+        myLayout = QVBoxLayout( )
+        qdl.setLayout( myLayout )
+        def email_name_dict( tup ):
+            name, email = tup
+            data_dict = { 'email' : email }
+            if name is not None:
+                data_dict[ 'name' ] = name
+            return data_dict
+        emailMapping = list(
+            map( email_name_dict, self.emails_array ) )
+        pgetv = HowdyGuestEmailTV(
+            qdl, emailMapping, self.resolution )
+        myLayout.addWidget( pgetv )
+        qdl.setFixedWidth( pgetv.totalWidth )
+        qdl.setFixedHeight( pgetv.totalHeight )
+        qdl.show( )
+        result = qdl.exec_( )
+
     def createSummaryEmail( self ):
-        self.mainEmailCanvas.setPlainText( '' )
         self.sendEmailButton.setEnabled( False )
-        preambleText, pngDataPRE = self.preambleDialog.sendValidLaTeX( False )
-        postambleText, pngDataPOST = self.postambleDialog.sendValidLaTeX( )
-        pngData = dict( chain.from_iterable([ pngDataPRE.items( ), pngDataPOST.items( ) ]) )
-        if len(pngData) != len(pngDataPRE) + len( pngDataPOST ) and len(pngData) != 0:
-            print( 'ERROR, MUST HAVE SOME INTERSECTIONS IN PNG FILE NAMES.' )
-            print( 'COMMON PNG FILES: %s.' % sorted( set( pngDataPRE.keys( ) ) &
-                                                     set( pngDataPOST.keys( ) ) ) )
-            print( "I HOPE YOU KNOW WHAT YOU'RE DOING." )
+        preambleText = self.preambleDialog.sendValidRST( False )
+        postambleText = self.postambleDialog.sendValidRST( )
         htmlString = email.get_summary_html(
             self.token, fullURL = self.fullURL,
-            preambleText = preambleText, postambleText = postambleText,
-            pngDataDict = pngData )
-        if len(htmlString) != 0:
-            self.mainEmailCanvas.setHtml( htmlString )
-            self.sendEmailButton.setEnabled( True )
+            preambleText = preambleText, postambleText = postambleText )
+        if len( htmlString ) == 0: return
+        #
+        qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
+        qdl.setWindowTitle( 'HTML EMAIL BODY' )
+        qte = core_texts_gui.HtmlView( qdl )
+        qter = QTextEdit( self )
+        qter.setReadOnly( True )
+        qter.setPlainText( '%s\n' % htmlString )
+        qdlLayout = QVBoxLayout( )
+        qdl.setLayout( qdlLayout )
+        tw = QTabWidget( self )
+        tw.addTab( qte, 'RENDERED HTML' )
+        tw.addTab( qter, 'RAW HTML' )
+        qdlLayout.addWidget( tw )
+        qf = QFont( )
+        qf.setFamily( 'Consolas' )
+        qf.setPointSize( int( 11 ) )
+        qfm = QFontMetrics( qf )
+        qdl.setFixedWidth( 85 * qfm.width( 'A' ) )
+        qdl.setFixedHeight( 550 )
+        qte.setHtml( htmlString )
+        qdl.show( )
+        #
+        ##
+        result = qdl.exec_( )
+        # self.mainEmailCanvas.setHtml( htmlString )
+        self.sendEmailButton.setEnabled( True )
 
     def sendEmail( self ):
         qd = HowdyEmailGUI.EmailSendDialog( self )
-        result = qd.exec_( )            
-        
-    def getContacts( self, token ):
-        emails = core.get_mapped_email_contacts(
-            token, verify = self.verify )
-        if len(emails) == 0: return
-        self.testEmailButton.setEnabled( True )
-        #
-        ## now do some google client magic to get the names
-        name_emails = get_email_contacts_dict(
-            emails, verify = self.verify )
-        self.emailComboBox.clear( )
-        def get_email( input_tuple ):
-            name, email = input_tuple
-            if name is not None:
-                return '%s <%s>' % ( name, email )
-            return email
-        self.emailComboBox.addItems(
-            sorted( map( get_email, name_emails ) ) )
-        self.emailComboBox.setEditable( False )
-        self.emailComboBox.setCurrentIndex( 0 )
+        result = qd.exec_( )

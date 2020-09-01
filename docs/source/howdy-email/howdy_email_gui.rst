@@ -99,6 +99,8 @@ Here, we write an email that consists of some stylized text, some LaTeX_ math, a
 
 One can find some good tutorials on how to write valid reStructuredText_ online or on the Sphinx_ website. The biggest, undocumented subtlety here comes from adding images from our Imgur_ library -- how do we know that the URL of the image is ``https://i.imgur.com/raP42Rz.png``? We are looking for the ``HOWDY! EMAIL GUI`` icon, which has a cowboy hat inside it.
 
+.. _adding_PNG_to_text:
+
 * First click on ``SHOW PNGS`` to pop up a table that shows the available PNG_ images in our Imgur_ library.
 
   .. figure:: howdy-email-gui-figs/onlyemail_show_pngs_information_ANNOTATED.png
@@ -140,6 +142,8 @@ The movie below demonstrates the step-by-step workflow in :ref:`writing and test
 .. youtube:: K2EKQUldBD8
    :width: 100%
 
+.. _check_email_to_see_text:
+	   
 After we have our URL copied and pasted, we click on ``CHECK EMAIL`` to pop up the rich HTML representation of the email body.
 
 .. figure:: howdy-email-gui-figs/onlyemail_write_test_email_showHTML_ANNOTATED.png
@@ -173,10 +177,149 @@ Once your email body text is valid, and you are satisfied that you may want to s
 
 I always verify that the email is valid, by clicking ``SEND TEST EMAIL`` first, before sending the email to everyone.
 
-	     
+
 Newsletter Mode
 ^^^^^^^^^^^^^^^^
+When running with the ``(n)`` choice, this GUI only sends a non-newsletter email to either yourself or to all the friends of your Plex_ server. The Plex_ newsletter email has this format,
 
+.. code-block:: console
+
+   Hello <name>,
+
+   <PREAMBLE PART>
+
+   <SUMMARY OF MEDIA ON PLEX SERVER>
+
+   <POSTAMBLE PART>
+
+Here, ``<name>`` is the person receiving the email, ``<PREAMBLE PART>`` is an optional introductory section, ``<SUMMARY OF MEDIA ON PLEX SERVER>`` summarizes the current media on the Plex_ server, and ``<POSTAMBLE PART>`` is an optional final section.
+
+This GUI is launched when running ``howdy_email_gui --noverify --local n``.
+
+.. _newsletter_mainwindow:
+
+.. figure:: howdy-email-gui-figs/howdy_email_gui_newsletter_mainwindow.png
+   :width: 100%
+   :align: left
+
+   The main window launched when running ``howdy_email_gui n``. This beginning window has only five buttons, and no text fields such as the ``only email functionality`` described in :numref:`onlyemail_mainwindow_ANNOTATED`.
+
+The :ref:`main window <newsletter_mainwindow>` has the following buttons.
+
+* The ``CHECK EMAIL`` button displays the *full* rich HTML output of the email body, if there are no errors.
+
+* The ``PREAMBLE`` and ``POSTAMBLE`` buttons set up the ``<PREAMBLE PART>`` and ``<POSTAMBLE PART>``, respectively. It is described in more detail in :ref:`Setting up the PREAMBLE and POSTAMBLE parts`.
+  
+* ``PLEX GUESTS`` displays the list of friends of your Plex_ server. It has the same functionality described in :numref:`Verify Plex_ Friends`.
+
+* ``EMAIL DIALOG`` launches the email dialog window, where you select whether to send a test email or an email to all your Plex_ friends.
+
+Just as in :numref:`Only Email Mode`, here we describe the work flow to send a *newsletter* email.
+
+1. :ref:`Set up the PREAMBLE and POSTAMBLE parts <Setting up the PREAMBLE and POSTAMBLE parts>`.
+
+2. :ref:`Check that the newsletter email looks good <Checking Newsletter Email>`.
+
+3. :ref:`Send email <Send Newsletter Email>`.
+
+Setting up the PREAMBLE and POSTAMBLE parts
+--------------------------------------------
+Click on the ``PREAMBLE`` button to write up an introductory section in the newsletter, and the ``POSTAMBLE`` button to write up a concluding section. The ``PREAMBLE`` and ``POSTAMBLE`` dialog windows are nearly identical, and differ *only* in where the text is placed in the newsletter. :numref:`newsletter_preamble_postamble_window` shows both together, but subsequent instructions focus only on describing the ``PREAMBLE``.
+
+.. _newsletter_preamble_postamble_window:
+
+.. figure:: howdy-email-gui-figs/newsletter_preamble_postamble_window.png
+   :width: 100%
+   :align: left
+
+   The ``PREAMBLE`` and ``POSTAMBLE`` windows launched when clicking on either the ``PREAMBLE`` or ``POSTAMBLE`` main window buttons in :numref:`newsletter_mainwindow`.
+
+The ``PREAMBLE`` window has a similar functionality as the :ref:`main email window <onlyemail_mainwindow_ANNOTATED>` when running in :ref:`Only Email Mode`.
+
+.. _newsletter_preamble_ANNOTATED:
+
+.. figure:: howdy-email-gui-figs/newsletter_preamble_ANNOTATED.png
+   :width: 100%
+   :align: left
+
+   A cropped and annotated screenshot of the ``PREAMBLE`` dialog showing functionality similar to :numref:`onlyemail_mainwindow_ANNOTATED`.
+
+Here, the reStructuredText_ of the introduction goes into the text box. The title of the introduction goes into the text label after ``SECTION``. Toggle between the ``YES`` and ``NO`` radio buttons. If you want the introduction title in the newsletter email, choose ``YES``; otherwise, choose ``NO``.
+
+To add PNG_ images from your Imgur_ library, just click on ``ADD PNGS`` and follow instructions just like in :ref:`adding PNG to text <adding_PNG_to_text>`. in :numref:`Write and Test Email`.
+
+Finally, test your introductory text by clicking on the ``TEST TEXT`` button. Its functionality is the same as described in :ref:`checking email to see text <check_email_to_see_text>` in :numref:`Write and Test Email`.
+
+:numref:`newsletter_preamble_showtext` and :numref:`newsletter_postamble_showtext` show the rich HTML for the introductory and final sections, respectively. If the text is valid, then ``VALID RESTRUCTUREDTEXT`` appears on the bottom left corner of the ``PREAMBLE`` and ``POSTAMBLE`` dialog windows.
+
+.. _newsletter_preamble_showtext:
+	
+.. figure:: howdy-email-gui-figs/newsletter_preamble_showtext.png
+   :width: 100%
+   :align: left
+
+   The fancy-looking introductory text that will go into the Plex_ newsletter. Here we chosen ``YES`` to show the introductory section title, which is ``Introduction``.
+
+.. _newsletter_postamble_showtext:
+
+.. figure:: howdy-email-gui-figs/newsletter_postamble_showtext.png
+   :width: 100%
+   :align: left
+
+   An even-more fancy-looking final text that will go into the Plex_ newsletter. Here we chosen ``YES`` to show the final section title, which is ``Final Thoughts``.
+
+Checking Newsletter Email
+--------------------------
+After choosing the form of the introductory (:numref:`newsletter_preamble_showtext`) and final (:numref:`newsletter_postamble_showtext`) sections, click on ``CHECK EMAIL`` to (**wait a long time and**)  show the rich HTML email of the Plex_ newsletter.
+
+.. _newsletter_checkemail_ANNOTATED:
+
+.. figure:: howdy-email-gui-figs/newsletter_checkemail_ANNOTATED.png
+   :width: 100%
+   :align: left
+
+   The full HTML Plex_ newsletter email that will go out, as shown in the ``HTML EMAIL BODY`` window.
+
+Although the email is too long to fit into the ``HTML EMAIL BODY`` window and the ``RENDERED HTML`` tab, we first identify the ``Introduction`` section name for the ``PREAMBLE`` and the ``Final Thoughts`` section name for the ``POSTAMBLE``. The Plex_ server summary part, in the middle is structured as follows.
+
+* ``SUMMARY`` is its title.
+
+* There are subsections on the Plex_ server's music, movies, and television libraries collectively. For example, information on multiple music libraries are joined together.
+
+* Each section shows the current status of media on that type of library, in total and those media added *after* the date of the previous newsletter.
+
+Furthermore, to aid in debugging, you can click on the ``RESTRUCTURED TEXT`` tab in the ``HTML EMAIL BODY`` window to show the reStructuredText_ used to create this email. I have also included this :download:`example restructuredText newsletter </_static/howdy_email_gui_newsletter_restructuredtext.rst>` to inspect, and independently verify, that it creates proper HTML.
+
+.. _newsletter_checkemail_restructuredtext_ANNOTATED:
+
+.. figure:: howdy-email-gui-figs/newsletter_checkemail_restructuredtext_ANNOTATED.png
+   :width: 100%
+   :align: left
+
+   To those who know it, the reStructuredText_ can be very helpful in figuring out why the HTML does not look as intended.
+
+The movie below demonstrates the usually long process in in :ref:`checking that the newsletter email looks good <Checking Newsletter Email>`.
+
+.. youtube:: AgTGYA-bfI0
+   :width: 100%
+
+Send Newsletter Email
+----------------------
+Once your email body is valid (it generated HTML), and you are satisfied, that you may want to send this email out to people who have access to your Plex_ server, then you click on the ``EMAIL DIALOG`` button to launch an email dialog. This dialog allows you to send the email only to yourself, to specific Plex_ friends, or to all your Plex_ friends and yourself.
+
+.. _newsletter_sendemail_ANNOTATED:
+
+.. figure:: howdy-email-gui-figs/newsletter_sendemail_ANNOTATED.png
+   :width: 100%
+   :align: left
+
+   Clicking on ``EMAIL DIALOG`` launches the sending email dialog window. You can click on specific friends to toggle whether to send them a newsletter email. Clicking on the ``TEST EMAIL`` button selects only yourself (top row). Clicking on the ``ALL ADDRESSES`` button selects all your friends and yourself.
+
+The email dialog window starts with yourself on the top row. Subsequent rows are your Plex_ friends.
+
+Once you have made your selection, click on ``SEND EMAIL`` to send the Plex_ newsletter emails to your group of selected friends and/or yourself. Just as in :numref:`Send Email`, I alway verify that the email is valid, by first clicking ``TEST EMAIL`` and then clicking ``SEND EMAIL``, before sending the newsletter email to everyone.
+..
+  
 .. |howdy_email_gui_icon| image:: howdy-email-gui-figs/howdy_email_gui_SQUARE.png
    :width: 50
    :align: middle

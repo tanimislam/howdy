@@ -388,6 +388,8 @@ def get_summary_html(
     :rtype: str
     
     .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`
+
+    .. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
     """
     nameSection = False
     if len(preambleText.strip( ) ) != 0: nameSection = True

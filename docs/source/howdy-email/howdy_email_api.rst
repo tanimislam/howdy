@@ -2,7 +2,7 @@
 Howdy Email API
 ================================================
 
-This document describes the lower level Plex emailing API, upon which the :ref:`command line tol <howdy_email_notif>` and  the :ref:`GUI tool <howdy_email_gui>` are built. It lives in ``howdy.email``.
+This document describes the lower level Plex emailing API, upon which the :ref:`command line tol <howdy_email_notif_label>` and  the :ref:`GUI tool <howdy_email_gui_label>` are built. It lives in ``howdy.email``.
 
 howdy.email module
 ----------------------------

@@ -1,7 +1,7 @@
 ================================================
 Howdy TV API
 ================================================
-This document describes the lower level Howdy TV API, upon which the :ref:`command line tools <Howdy TV Command Line Utilities>` and  the :ref:`GUI tool <howdy_tv_gui>` are built. It lives in ``howdy.tv``.
+This document describes the lower level Howdy TV API, upon which the :ref:`command line tools <Howdy TV Command Line Utilities>` and  the :ref:`GUI tool <howdy_tv_gui_label>` are built. It lives in ``howdy.tv``.
 
 howdy.tv module
 ---------------------------

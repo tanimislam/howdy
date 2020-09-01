@@ -13,7 +13,7 @@ These command line executables, graphical user interfaces, and APIs are used to 
 Howdy Music TODO
 -----------------
 
-* Create a comprehensive GUI for the Plex_ music library similar to what I have made for the TV library (:ref:`howdy_tv_gui`) and movie library (:ref:`howdy_movie_totgui`).
+* Create a comprehensive GUI for the Plex_ music library similar to what I have made for the TV library (:ref:`howdy_tv_gui_label`) and movie library (:ref:`howdy_movie_totgui_label`).
 
 * Fix the manner in which songs can be emailed to the recipient. Currently :ref:`howdy_music_songs` emails a collection of downloaded songs with the ``--email`` flag. I am turning off this functionality until such time as I can develop a way to do this for :ref:`howdy_music_songs` and :ref:`howdy_music_album`. There is a blog post, `Getting plex_music_songs to upload multiple songs <https://tanimislamblog.wordpress.com/2018/12/20/getting-plex_music_songs-to-upload-multiple-songs>`_, that describes this older and currently untested functionality.
 

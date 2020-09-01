@@ -1,7 +1,7 @@
 ================================================
 Howdy Movie API
 ================================================
-This document describes the lower level Howdy TMDB API, upon which :ref:`get_mov_tor` and :ref:`howdy_movie_totgui` are built. It lives in ``howdy.movie``.
+This document describes the lower level Howdy TMDB API, upon which :ref:`get_mov_tor` and :ref:`howdy_movie_totgui_label` are built. It lives in ``howdy.movie``.
 
 howdy.movie module
 --------------------------
@@ -19,7 +19,7 @@ This module implements the lower-level functionality that does the following:
 
 howdy.movie.movie module
 -------------------------------------
-This module contains the main back-end functionality used by the :ref:`get_mov_tor` and :ref:`howdy_movie_totgui`, and other functionalities that are used by methods in the :ref:`Howdy TV API`. Here are the main features of this module.
+This module contains the main back-end functionality used by the :ref:`get_mov_tor` and :ref:`howdy_movie_totgui_label`, and other functionalities that are used by methods in the :ref:`Howdy TV API`. Here are the main features of this module.
 
    * Retrieving TV show information using the TMDB_ database.
 

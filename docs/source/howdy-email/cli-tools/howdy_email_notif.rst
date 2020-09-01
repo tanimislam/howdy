@@ -1,7 +1,7 @@
 .. _howdy_email_notif_label:
 
 ================================================
-howdy_email_notif
+|howdy_email_notif|
 ================================================
 This is documentation for the Howdy! one-off email announcement commnand line interface, ``howdy_email_notif``. You specify a simple email, with a simple text subject line a simple plaintext body, to email either to yourself at your Plex_ account or also to friends of your Plex_ server. The list of your Plex_ server friends can be accessed using :ref:`howdy_core_cli`, and specifically this command,
 
@@ -16,6 +16,8 @@ that produces a list of friends with and without associated names in your Google
 .. figure:: howdy-email-cli-figures/howdy_core_cli_example.png
    :width: 100%
    :align: center
+
+   For privacy reasons, I choose to blank out the names, emails, and total number of friends who have access to my Plex_ server.
 
 The help output, when running ``howdy_email_notif -h``, produces the following.
 
@@ -38,4 +40,7 @@ The help output, when running ``howdy_email_notif -h``, produces the following.
 
 * ``--test`` just sends the email to your Plex_ email account. I find it useful to run with ``--test`` first, until the subject and the body of the email is correct. Without the ``--test`` flag, this email is sent to all the friends of youe Plex_ server (see :numref:`howdy_core_cli_example`).
 
+.. |howdy_email_notif| replace:: ``howdy_email_notif``
+  
 .. _Plex: https://plex.tv
+

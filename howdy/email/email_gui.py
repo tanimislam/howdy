@@ -1,4 +1,3 @@
-
 import os, sys, titlecase, datetime, json, re, urllib, time, glob
 import pathos.multiprocessing as multiprocessing
 from docutils.examples import html_parts
@@ -179,7 +178,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
                 return
             sectionTitle = self.sectionNameWidget.text( ).strip( )
             mainText = '\n'.join([ sectionTitle, ''.join([ '=' ] * len( sectionTitle )), '', myStr ])
-            if not core_texts_gui.checkValidConversion( mainText )
+            if not core_texts_gui.checkValidConversion( mainText ):
                 self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
                 self.isValidRST = False
                 return

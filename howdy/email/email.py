@@ -49,14 +49,13 @@ def send_email_movie_torrent( movieName, data, isJackett = False, verify = True 
             movieName, dtstring )
     if not isJackett:
         torfile = '%s.torrent' % '_'.join( movieName.split( ) ) # change to get to work
-        torfile_mystr = '%s.torrent' % '\_'.join( movieName.split( ) ) # change to get to work
+        torfile_mystr = '%s.torrent' % '_'.join( movieName.split( ) ) # change to get to work
         #
         tup_formatting = ( name, '%s.' % torfile_mystr, '%s.' % dtstring )
         wholestr = open( os.path.join(
-            resourceDir, 'plextmdb_sendmovie_torrent.tex' ), 'r' ).read( )
+            resourceDir, 'howdy_sendmovie_torrent.rst' ), 'r' ).read( )
         wholestr = wholestr % tup_formatting
-        htmlString = core.latexToHTML( wholestr )
-        htmlString = htmlString.replace('strong>', 'B>')
+        htmlString = core.rstToHTML( wholestr )
         body = MIMEText( htmlString, 'html', 'utf-8' )
         att = MIMEApplication( data, _subtype = 'torrent' )
         att.add_header(
@@ -67,11 +66,10 @@ def send_email_movie_torrent( movieName, data, isJackett = False, verify = True 
     else:
         mag_link = data
         wholestr = open( os.path.join(
-            resourceDir, 'plextmdb_sendmovie_magnet.tex' ), 'r' ).read( )
+            resourceDir, 'howdy_sendmovie_magnet.rst' ), 'r' ).read( )
         tup_formatting = (
             name, mag_link, movieName, dtstring )
-        htmlString = core.latexToHTML( wholestr )
-        htmlString = htmlString.replace('strong>', 'B>')
+        htmlString = core.rstToHTML( wholestr )
         body = MIMEText( htmlString, 'html', 'utf-8' )
         msg.attach( body )
     #
@@ -109,11 +107,10 @@ def send_email_movie_none( movieName, verify = True ):
         msg['Subject'] = 'Can you download this movie, %s, requested on %s?' % (
             movieName, dtstring )
     #
-    wholestr = open( os.path.join( resourceDir, 'plextmdb_sendmovie_none.tex' ), 'r' ).read( )
+    wholestr = open( os.path.join( resourceDir, 'howdy_sendmovie_none.rst' ), 'r' ).read( )
     tup_formatting = ( name, movieName, dtstring )
     wholestr = wholestr % tup_formatting
-    htmlString = core.latexToHTML( wholestr )
-    htmlString = htmlString.replace('strong>', 'B>')
+    htmlString = core.rstToHTML( wholestr )
     body = MIMEText( htmlString, 'html', 'utf-8' )
     msg.attach( body )
     #

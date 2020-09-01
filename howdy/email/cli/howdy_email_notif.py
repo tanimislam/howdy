@@ -41,7 +41,7 @@ def main( ):
     items = sorted(list(map(lambda name_email: return_nameemail_string( name_email[0], name_email[1] ),
                             name_emails)))
     finalString = '\n'.join([ 'Hello Friend,', '', args.body ])
-    htmlString = core.latexToHTML( finalString )
+    htmlString = core.rstToHTML( finalString )
     if htmlString is None:
         print( 'Error, %s could not be converted into email.' % args.body )
         return

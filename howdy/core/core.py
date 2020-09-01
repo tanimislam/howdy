@@ -7,6 +7,7 @@ from google_auth_oauthlib.flow import Flow # does not yet work
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 #
+from docutils.examples import html_parts
 from html import unescape
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
@@ -62,25 +63,19 @@ def get_date_from_datestring( dstring ):
         logging.error("Error, could not parse %s into a date." % dstring )
         return None
 
-def latexToHTML( latexString ):
-    """Converts a LaTeX_ string into HTML using Pandoc_, then prettifies the
-    intermediate HTML using BeautifulSoup_.
+def rstToHTML( rstString ):
+    """Converts a reStructuredText_ string into HTML, then prettifies the intermediate HTML using BeautifulSoup_.
 
-    :param str latexString: the initial LaTeX_ string.
-    
-    :returns: the final prettified, formatted HTML string.
-    
+    :param str rstString: the initial restructuredText_ string.
+    :returns: the final prettified, formatted HTML :py:class:`string <str>`.
     :rtype: str
     
-    .. _LaTeX: https://www.latex-project.org
-    .. _Pandoc: https://pandoc.org
     .. _BeautifulSoup: https://www.crummy.com/software/BeautifulSoup/bs4/doc
     
     """
     try:
-        htmlstring = pypandoc.convert( latexString, 'html', format = 'latex',
-                                       extra_args = [ '-s' ] )
-        return BeautifulSoup( htmlstring, 'lxml' ).prettify( )
+        html_body = html_parts( rstString )[ 'whole' ]
+        return BeautifulSoup( html_body, 'lxml' ).prettify( )
     except RuntimeError as e:
         logging.debug( '%s' % e )
         return None

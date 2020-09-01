@@ -205,7 +205,7 @@ def _email_songs( opts, all_songs_downloaded ):
     #     print( "Error, do not have correct Google credentials." )
     #    return
     songs_by_list = '\n'.join( map(
-        lambda tup: '\item %s - %s.' % ( tup[0], tup[1] ),
+        lambda tup: '* %s - %s.' % ( tup[0], tup[1] ),
         all_songs_downloaded ) )
     num_songs = len( all_songs_downloaded )
     num_artists = len( set( map(lambda tup: tup[0], all_songs_downloaded ) ) )
@@ -217,16 +217,14 @@ def _email_songs( opts, all_songs_downloaded ):
     else: name = 'Your friendly Howdy admin'
     #
     body = """I have emailed you %s from %s:
-    \\begin{enumerate}
     %s
-    \end{enumerate}
     Have a good day!
     
     %s
     """ % ( num_songs_string, num_artists_string,
             songs_by_list, name )
     finalString = '\n'.join([ 'Hello Friend,', '', body ])
-    htmlString = core.latexToHTML( finalString )
+    htmlString = core.rstToHTML( finalString )
     subject = 'The %s with %s you requested.' % (
         num_songs_string, num_artists_string )
     # attachData, attachName = _create_archive_songs( all_songs_downloaded )

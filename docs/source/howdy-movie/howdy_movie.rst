@@ -1,7 +1,7 @@
 ================================================
 Howdy Movie Functionality
 ================================================
-These command line executables, graphical user interfaces, and APIs are used to download new movies, and search and manage your Plex_ movie library. This documentation is organized into sections on :ref:`get_mov_tor`, CLI used to search and download movies; :ref:`howdy_movie_totgui`, the GUI used to manage and search through your Plex movie library, and to search and download new movies; the :ref:`low level API <Howdy Movie API>`; and finally the :ref:`TODO <Howdy Movie TODO>`.
+These command line executables, graphical user interfaces, and APIs are used to download new movies, and search and manage your Plex_ movie library. This documentation is organized into sections on :ref:`get_mov_tor`, CLI used to search and download movies; :ref:`howdy_movie_totgui_label`, the GUI used to manage and search through your Plex movie library, and to search and download new movies; the :ref:`low level API <Howdy Movie API>`; and finally the :ref:`TODO <Howdy Movie TODO>`.
 
 .. toctree::
    :maxdepth: 2

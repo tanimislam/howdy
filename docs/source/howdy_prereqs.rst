@@ -193,7 +193,7 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_.
      -
    * - ``email``
      - :ref:`howdy_email_notif <howdy_email_notif_label>` |cbox|
-     - :ref:`howdy_email_gui <howdy_email_gui_label>`
+     - :ref:`howdy_email_gui <howdy_email_gui_label>` half-|cbox| 
 
 
 .. these are the links

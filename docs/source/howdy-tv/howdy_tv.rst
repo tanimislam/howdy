@@ -1,7 +1,7 @@
 ================================================
 Howdy TV Functionality
 ================================================
-These command line executables, graphical user interfaces, and APIs are used to download and manage your television shows. This documentation is organized into sections on  :ref:`command line tools <Howdy TV Command Line Utilities>`, the GUI to visualize our TV collection (:ref:`howdy_tv_gui`), the :ref:`low level API <Howdy TV API>`, and the :ref:`TODO <Howdy TV TODO>`.
+These command line executables, graphical user interfaces, and APIs are used to download and manage your television shows. This documentation is organized into sections on  :ref:`command line tools <Howdy TV Command Line Utilities>`, the GUI to visualize our TV collection (:ref:`howdy_tv_gui_label`), the :ref:`low level API <Howdy TV API>`, and the :ref:`TODO <Howdy TV TODO>`.
 
 .. toctree::
    :maxdepth: 2

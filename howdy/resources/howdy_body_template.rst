@@ -6,10 +6,8 @@ Music
 
 Movies
 -------
-* %s
+%s
     
 Television
 -----------
 %s
-
-.. _Plex:: https://plex.tv

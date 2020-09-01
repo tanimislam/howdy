@@ -104,7 +104,7 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
 .. _Sphinx: https://www.sphinx-doc.org/en/master
 
 .. howdy icon
-.. |howdy_icon| image:: https://howdy.readthedocs.io/en/latest/_static/howdy_icon.png
+.. |howdy_icon| image:: https://howdy.readthedocs.io/en/latest/_static/howdy_icon.svg
    :width: 100
    :align: middle
        

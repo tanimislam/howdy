@@ -163,7 +163,7 @@ def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True, tmdb_id = None 
     
     :rtype: tuple
 
-    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
+    .. warning:: As of |date|, cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
     
     .. _`EZTV.IO`: https://eztv.io
     .. _`Star Trek Beyond`: https://en.wikipedia.org/wiki/Star_Trek_Beyond
@@ -327,7 +327,7 @@ def get_movie_torrent_rarbg( name, maxnum = 10, verify = True ):
     
     :rtype: tuple
     
-    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
+    .. warning:: As of |date|, cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
     
     .. _RARBG: https://en.wikipedia.org/wiki/RARBG    
     """
@@ -401,7 +401,7 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
     
     :rtype: tuple
 
-    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
+    .. warning:: As of |date|, cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
     
     .. _`The Pirate Bay`: https://en.wikipedia.org/wiki/The_Pirate_Bay
     """
@@ -560,7 +560,7 @@ def get_movie_torrent_kickass( name, maxnum = 10, verify = True ):
     
     :rtype: tuple
     
-    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
+    .. warning:: As of |date|, cannot get it to work when giving it valid movie searches, such as ``"Star Trek Beyond"``. See :numref:`table_working_movietorrents`.
     
     .. _KickassTorrents: https://en.wikipedia.org/wiki/KickassTorrents
     """

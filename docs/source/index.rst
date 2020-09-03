@@ -21,13 +21,18 @@ TODO
 -------
 Here are some things I would like to finish.
 
-* Fill out documentation for all the CLIs (|cbox|) and GUIs (|cbox| *except for* :ref:`howdy_tv_gui_label` and :ref:`howdy_movie_totgui_label`).
-* Fill out documentation for the lower level APIs (|cbox|) and the GUI APIs.
+* Fill out documentation for all the CLIs (|cbox|) and GUIs (finished *except for* :ref:`howdy_tv_gui_label` and :ref:`howdy_movie_totgui_label`).
+* Fill out documentation for the lower level APIs (|cbox|).
 * Setup-ify this repository as a ``howdy`` Python module (|cbox|).
 * Fill out help dialogs for the GUIs.
 * Complete the testing suite.
 * Streamline the OAuth2_ authentication process, and provide more logical authorization and verification work flows.
+
+  .. note:: I don't know how to do this.
+  
 * Transition GUIs to use PyQt5_ (|cbox|), with the eventual use of fbs_.
+
+  .. note:: *Actually*, the fbs_ website says that fbs_ supports *only* Python 3.5 and 3.6. That's a dealbreaker!
 
 .. |cbox| unicode:: U+2611 .. BALLOT BOX WITH CHECK
 

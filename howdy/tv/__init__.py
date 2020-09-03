@@ -28,7 +28,7 @@ create_all( )
     
 def save_tvdb_api( username, apikey, userkey, verify = True ):
     """
-    Saves the information on the TVDB_ API access into the ``tvdb`` configuration service in the ``plexconfig`` table. Details of how to set up the configuration in :ref:`TVDB API configuation <The Television Database (TVDB) API>`, which uses ``plex_config_gui.py``.
+    Saves the information on the TVDB_ API access into the ``tvdb`` configuration service in the ``plexconfig`` table. Details of how to set up the configuration in :ref:`TVDB API configuation <the_television_database_api>`, which uses :ref:`howdy_config_gui <howdy_config_gui_label>`.
 
     :param str username: the TVDB_ API username.
     :param str apikey: the TVDB_ API key.
@@ -68,7 +68,7 @@ def check_tvdb_api( username, apikey, userkey, verify = True ):
 
 def get_tvdb_api( ):
     """
-    Returns the :py:class:`dictionary <dict>` of TVDB_ API credentials (see  :ref:`TVDB API configuation <The Television Database (TVDB) API>`), taken from the ``tvdb`` configuration service in the ``plexconfig`` table. The form of the dictionary is,
+    Returns the :py:class:`dictionary <dict>` of TVDB_ API credentials (see  :ref:`TVDB API configuation <the_television_database_api>`), taken from the ``tvdb`` configuration service in the ``plexconfig`` table. The form of the dictionary is,
 
     .. code-block:: python
 

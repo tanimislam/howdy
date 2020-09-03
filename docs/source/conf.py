@@ -63,7 +63,8 @@ extensions = [
     'sphinx.ext.todo',
     'sphinxcontrib.youtube',
     'sphinx_issues',
-    'sphinxarg.ext'
+    'sphinxarg.ext',
+    'sphinxcontrib.cairosvgconverter',
 ]
 
 #

@@ -48,3 +48,4 @@ titlecase
 validators
 youtube_dl
 sphinxcontrib-youtube @ git+https://github.com/sphinx-contrib/youtube.git@master
+sphinxcontrib-svg2pdfconverter @ git+https://github.com/missinglinkelectronics/sphinxcontrib-svg2pdfconverter.git@master

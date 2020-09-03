@@ -1,11 +1,11 @@
 ================================================
 Prerequisites and Overall Design Philosophy
 ================================================
-To get started, I assume you have your own Plex_ server. In order to get started with Plex, start at the `Plex website <Plex_>`_ and put your media into it. Next, follow the :ref:`Installation` instructions. Join or identify the music, television, and movie based services described in :numref:`Howdy Services Configuration`, and server settings described in :numref:`Howdy Settings Configuration`. Use ``howdy_config_gui`` to save your services and settings information, and then you will be good to go in using the ~25 or so command line and GUI tools to manage your Plex server.
+To get started, I assume you have your own Plex_ server. In order to get started with Plex, start at the `Plex website <Plex_>`_ and put your media into it. Next, follow the :ref:`Installation` instructions. Join or identify the music, television, and movie based services described in :numref:`Howdy Services Configuration`, and server settings described in :numref:`Howdy Settings Configuration`. Use ``howdy_config_gui`` to save your services and settings information, and then you will be good to go in using the ~25 or so command line and graphical user interface (GUI) tools to manage your Plex server.
 
 Prerequisites
 -------------
-You will need to have PyQt5_, PyQtWebEngine_, and sshpass_. `Pandoc <pandoc_>`_ is needed by Howdy tools that convert emails written in LaTeX_ into HTML. On Debian based systems (such as Ubuntu_. Mint_, or Debian_), you can install PyQt5_ and sshpass_ with the following command (as sudo_ or root).
+You will need to have PyQt5_, PyQtWebEngine_, and sshpass_. On Debian based systems (such as Ubuntu_. Mint_, or Debian_), you can install PyQt5_ and sshpass_ with the following command (as sudo_ or root).
 
 .. code-block:: console
 
@@ -52,7 +52,7 @@ The GUI tools all share common features. One can take a PNG screenshot of each w
 
 Many of the GUIs and CLIs can be run with  a ``--noverify`` option to access SSL protected URLs and services without verification, which is needed when running in more restricted environments.
 
-In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_.
+In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_. The |cbox| after the name (or name and icon) means that I have completed the documentation for that CLI or GUI.
 
 .. |cbox| unicode:: U+2611 .. BALLOT BOX WITH CHECK
 
@@ -132,7 +132,6 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_.
 .. _PyQt5: https://www.riverbankcomputing.com/static/Docs/PyQt5/index.html
 .. _PyQtWebEngine: https://www.riverbankcomputing.com/software/pyqtwebengine
 .. _sshpass: https://linux.die.net/man/1/sshpass
-.. _pandoc: https://pandoc.org
 .. _sudo: https://en.wikipedia.org/wiki/Sudo
 .. _LaTeX: https://www.latex-project.org
 .. _ghc: https://www.haskell.org/ghc

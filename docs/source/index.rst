@@ -15,6 +15,7 @@ Table of Contents
   howdy-movie/howdy_movie
   howdy-music/howdy_music
   howdy-email/howdy_email
+  genindex
 
 TODO
 -------
@@ -29,3 +30,6 @@ Here are some things I would like to finish.
 * Transition GUIs to use PyQt5_ (|cbox|), with the eventual use of fbs_.
 
 .. |cbox| unicode:: U+2611 .. BALLOT BOX WITH CHECK
+
+..
+   Followed instructions from https://stackoverflow.com/questions/36235578/how-can-i-include-the-genindex-in-a-sphinx-toc to create a numbered INDEX section that contains an index of all called methods.

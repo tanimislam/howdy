@@ -3,70 +3,74 @@ Howdy Services Configuration
 ================================================
 This document contains all the needed information to get started on getting set up with all the **services** you need to get up and running with Howdy. Here are the following **services** needed to get all the functionality here.
 
-* Identifying movies using `the Movie Database <https://www.themoviedb.org>`_.
-* Identifying television shows and episodes using `the Television Database <https://www.thetvdb.com>`_.
+* Identifying movies using `the Movie Database <TMDB_>`_.
+* Identifying television shows and episodes using `the Television Database <TVDB_>`_.
 * Uploading images for emails using the `Imgur image service <Imgur_>`_.
-* Populating music metadata using either the `Gracenote API <https://developer.gracenote.com/web-api>`_ or the `LastFM API <https://www.last.fm/api>`_.
-* Using the `Jackett proxy server <https://github.com/Jackett/Jackett>`_ to consolidate torrent searches among 20-30 public torrent trackers (such as `Torrentz2 <https://torrentz2.eu>`_, `RARBG <http://rarbg.to/index70.php>`_, `Kickass Torrents <https://en.wikipedia.org/wiki/KickassTorrents>`_, and `The Pirate Bay <https://thepiratebay.org>`_) through a single search API and service without `CAPTCHAs <https://en.wikipedia.org/wiki/CAPTCHA>`_ and other usability restrictions.
+* Populating music metadata using either the `Gracenote API`_ or the `LastFM API`_.
+* Using the `Jackett proxy server`_ to consolidate torrent searches among 20-30 public torrent trackers (such as Torrentz2_, RARBG_, `Kickass Torrents`_, and `The Pirate Bay`_) through a single search API, and service without CAPTCHAs_ or other usability restrictions.
 * A bevy of Google services to do the following.
 
-  1. Sending out emails to your Plex users, using the `GMail API <https://developers.google.com/gmail/api>`_, and identifying them from your Google address book using the `Google Contacts API <https://developers.google.com/contacts/v3>`_.
-  2. Identifying songs on `YouTube <https://www.youtube.com>`_ using the `YouTube API <https://developers.google.com/youtube/v3>`_.
-  3. Access to Google spreadsheets using the `Google Sheets API <https://developers.google.com/sheets/api>`_.
-  4. Upload your music to your `Google Play Music <https://play.google.com/store/music?hl=en>`_ account using the `unofficial Google Music API <unofficial_google_music_api_>`_.
+  1. Sending out emails to your Plex users, using the `GMail API`_, and identifying them from your Google address book using the `Google Contacts API`_.
+  2. Identifying songs on YouTube_ using the `YouTube API`_.
+  3. Access to Google spreadsheets using the `Google Sheets API`_.
+  4. Upload your music to your `Google Play Music`_ account using the `unofficial Google Music API <unofficial_google_music_api_>`_.
 
 The document is organized into the following sections.
 
-* :ref:`The Movie Database (TMDB) API`.
-* :ref:`The Television Database (TVDB) API`.
+* :ref:`The Movie Database (TMDB_) API`.
+* :ref:`The Television Database (TVDB_) API`.
 * :ref:`The Imgur API`.
 * :ref:`The Gracenote and LastFM APIs`.
 * :ref:`The Jackett Server`.
 * :ref:`Summary of Setting Up Google Credentials`.
 
-The Movie Database (TMDB) API
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Instructions on getting an access key for the `TMDB API <https://developers.themoviedb.org/3/getting-started/introduction>`_ start with the `TMDB API link <https://www.themoviedb.org/settings/api>`_.
+The Movie Database (TMDB_) API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Instructions on getting an access key for the `TMDB API`_ start with the `TMDB API link`_.
 
-The Television Database (TVDB) API
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The Television Database (TVDB_) API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The TVDB API registration is more involved and (currently, as of 2 July 2019) not clearly documented. Here is how I got this to work.
 
-1. Log in or register (if you don't have an account) onto the television database `login page <https://www.thetvdb.com/login>`_. Here is a screen shot.
+1. Log in or register (if you don't have an account) onto the television database `login page <tvdb_login_page_>`_, as shown in :numref:`tvdb_step01_login`.
 
-.. _tmdb_step01_login:
+.. _tvdb_step01_login:
 
-.. figure:: howdy-config-services-figures/tmdb_step01_login.png
+.. figure:: howdy-config-services-figures/tvdb_step01_login.png
+  :width: 100%
+  :align: left
+
+  `The Movie Database <TMDB_>`_ login page.
+	  
+2. Select the **API ACCESS** sub menu option in the right most menu option, which is your TVDB_ username, **<USERNAME> → API ACCESS**, as shown in :numref:`tvdb_step02_apiselect`.
+
+.. _tvdb_step02_apiselect:
+
+.. figure:: howdy-config-services-figures/tvdb_step02_apiselect.png
+  :width: 100%
+  :align: left
+
+  How to get TVDB_ API access.
+
+3. This will send you to the API keys web page for your account. On the top, you will see two labels showing your **username**, and an **unique ID** that the TVDB asigns to you. In the middle section is a table showing the API keys you have created, if any. Each row is a project you have created that the TVDB uses to grant you API access. Each project has an *API key*, the *project name*, and *project website*. A hopefully illuminating screen shot is shown in :numref:`tvdb_step03_apikeys_generated`.
+
+.. _tvdb_step03_apikeys_generated:
+
+.. figure:: howdy-config-services-figures/tvdb_step03_apikeys_generated.png
   :width: 100%
   :align: center
 
-2. Select the **API ACCESS** sub menu option in the right most menu option, which is your TVDB username, **<USERNAME> → API ACCESS**. Here is a screen shot.
+4. Generate an API key by defining a *project name*, *project website*, and then click on the *Generate API key* button, as shown in :numref:`tvdb_step04_apikeys_generate`.
 
-.. _tmdb_step02_apiselect:
+.. _tvdb_step04_apikeys_generate:
 
-.. figure:: howdy-config-services-figures/tmdb_step02_apiselect.png
+.. figure:: howdy-config-services-figures/tvdb_step04_apikeys_generate.png
   :width: 100%
   :align: center
 
-3. This will send you to the API keys web page for your account. On the top, you will see two labels showing your **username**, and an **unique ID** that the TVDB asigns to you. In the middle section is a table showing the API keys you have created, if any. Each row is a project you have created that the TVDB uses to grant you API access. Each project has an *API key*, the *project name*, and *project website*. A hopefully illuminating screen shot is shown below.
+Make sure to record the TVDB_ *project name*, *API key*, and *unique ID*.
 
-.. _tmdb_step03_apikeys_generated:
-
-.. figure:: howdy-config-services-figures/tmdb_step03_apikeys_generated.png
-  :width: 100%
-  :align: center
-
-4. Generate an API key by defining a *project name*, *project website*, and then click on the *Generate API key* button. Here is a screen shot.
-
-.. _tmdb_step04_apikeys_generate:
-
-.. figure:: howdy-config-services-figures/tmdb_step04_apikeys_generate.png
-  :width: 100%
-  :align: center
-
-Make sure to record the TVDB *project name*, *API key*, and *unique ID*.
-
-The final information one programmatically sends to the TVDB service, through REST commands, is represented as the following JSON data.
+The final information one programmatically sends to the TVDB service, through REST commands, is represented by the following JSON data.
 
 .. code-block:: python
 
@@ -78,14 +82,15 @@ The final information one programmatically sends to the TVDB service, through RE
 
 The Imgur API
 ^^^^^^^^^^^^^^^
-Incomplete information on setting up Imgur API access can be found on `this website <https://apidocs.imgur.com/?version=latest>`_. High level instructions to generate valid Imgur client credentials are described in :numref:`Generate Imgur Credentials Using ``Howdy```. 
+Incomplete information on setting up Imgur_ API access can be found on `this website`_. High level instructions to generate valid Imgur client credentials are described in :numref:`generate_imgur_credentials_using_howdy`. 
 
+.. _generate_imgur_credentials_using_howdy:
 
 Generate Imgur Credentials Using ``Howdy``
 ------------------------------------------------
-Here are the steps used to get working Imgur API access using the ``howdy_config_gui``. First register for an `Imgur account <https://imgur.com/register?redirect=https%3A%2F%2Fimgur.com%2F>`_, if you have not already done so.
+Here are the steps used to get working Imgur API access using the :ref:`howdy_config_gui <howdy_config_gui_label>`. First register for an `Imgur account`_, if you have not already done so.
 
-1. Once you have an account, `register an Imgur application <https://api.imgur.com/oauth2/addclient>`_. Specify an application name, choose the "OAuth2 authorization without a callback URL" option, provide an email address, and provide a basic description of the application. Here is a screen shot.
+1. Once you have an account, `register an Imgur application`_. Specify an application name, choose the "OAuth2 authorization without a callback URL" option, provide an email address, and provide a basic description of the application. Here is a screen shot.
 
 .. _imgur_step01_registerapp:
 
@@ -93,7 +98,7 @@ Here are the steps used to get working Imgur API access using the ``howdy_config
    :width: 100%
    :align: center
 
-2. Now go to your `Imgur application's webpage <https://imgur.com/account/settings/apps>`_ and click on the *generate new secret* to generate an application Oauth2 secret ID. Here is a screen shot.
+2. Now go to your `Imgur application's webpage`_ and click on the *generate new secret* to generate an application Oauth2 secret ID. Here is a screen shot.
 
 .. _imgur_step02_getclientsecret:
 
@@ -139,6 +144,10 @@ Here are the steps used to get working Imgur API access using the ``howdy_config
    :align: center
 
 7. This **should** work -- the *Plex config credentials* widget should show **WORKING** under the Imgur_ settings panel. If this does not work, then close the Imgur URL dialog in :numref:`imgur_step06b_copyURLdialog` with the ``Esc`` key, and generate a new client secret as shown in :numref:`imgur_step02_getclientsecret`, and repeat until you are able to generate good Imgur_ client credentials.
+
+   .. warning::
+
+      The author of this code has *sucessfully* set up Imgur_ credentials only on Linux machines. He was *unsuccessful* when trying to set up credentials on Mac OS X machines. Success or failure may be tied to subtly broken custom OAuth2_ Python authentication mechanisms, that Imgur_ requires, on the Mac.
 
 Low Level Imgur Credentials
 ---------------------------
@@ -241,9 +250,9 @@ Summary of Setting Up Google Credentials
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 We set up `Google <https://www.google.com>`_ services that use `YouTube <https://www.youtube.com>`_, GMail, Google Contacts, Google Spreadsheets, and the `unofficial Google Music API <https://unofficial-google-music-api.readthedocs.io/en/latest/>`_.
 
-Since these are all Google services, a single tool sets all of them up given a single Google account using Google's OAuth2_ authentication mechanism. The easiest way to do this is through the ``howdy_config_gui`` executable, which is part of Howdy.
+Since these are all Google services, a single tool sets all of them up given a single Google account using Google's OAuth2_ authentication mechanism. The easiest way to do this is through the :ref:`howdy_config_gui executable <howdy_config_gui_label>`, which is part of Howdy.
 
-1. Launch ``howdy_config_gui``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. These instructions are the same as in step 4 in :numref:`The Imgur API` and in :numref:`imgur_step04_credentials`, which we reproduce here.
+1. Launch :ref:`howdy_config_gui <howdy_config_gui_label>`, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC* (see :numref:`howdy_config_gui_serviceswidget`). Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. These instructions are the same as in :ref:`step 4 <imgur_step04_credentials>` in :numref:`The Imgur API` and in :numref:`imgur_step04_credentials`, which we reproduce here.
 
 .. figure:: howdy-config-services-figures/google_step01_credentials.png
   :width: 100%
@@ -273,7 +282,7 @@ Since these are all Google services, a single tool sets all of them up given a s
   :width: 600
   :align: center
 
-5. In step 3, when you choose a Google account, currently you will be redirected to a scary browser page that says "this app isn't verified". It isn't, but the services still work. If you use Google Chrome or derived browser, click on the *Show Advanced* toggling link. Then click on *Go to Project Default Service Account (unsafe)* to go forward. Here is a screen shot.
+5. In :ref:`step 3 <google_step03_authorizeaccount>`, when you choose a Google account, currently you will be redirected to a scary browser page that says "this app isn't verified". It isn't, but the services still work. If you use Google Chrome or derived browser, click on the *Show Advanced* toggling link. Then click on *Go to Project Default Service Account (unsafe)* to go forward. Here is a screen shot.
 
 .. _google_step05_scaryscreen:
 
@@ -289,7 +298,7 @@ Since these are all Google services, a single tool sets all of them up given a s
   :width: 100%
   :align: center
 
-7. The final browser window shows a text box with the OAuth2_ token string. Copy that string into the GUI dialog widget in step 4, and press return on the text box in that widget.
+7. The final browser window shows a text box with the OAuth2_ token string. Copy that string into the GUI dialog widget in :ref:`step 4 <google_step04_oauthtokenstring>`, and press return on the text box in that widget.
 
 .. _google_step07_oauthtokencopy:
 
@@ -302,3 +311,28 @@ If all goes well, then all the Google services needed by Howdy will have been au
 .. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0
 .. _unofficial_google_music_api: https://unofficial-google-music-api.readthedocs.io/en/latest
 .. _Imgur: https://imgur.com
+.. _`register an Imgur application`: https://api.imgur.com/oauth2/addclient
+.. _`Imgur account`: https://imgur.com/register?redirect=https%3A%2F%2Fimgur.com%2F
+.. _`Imgur application's webpage`: https://imgur.com/account/settings/apps
+.. _`this website`: https://apidocs.imgur.com/?version=latest
+.. _tvdb_login_page: https://www.thetvdb.com/login
+.. _`TMDB API`: https://developers.themoviedb.org/3/getting-started/introduction
+.. _`TMDB API link`: https://www.themoviedb.org/settings/api
+.. _TMDB: https://www.themoviedb.org
+.. _TVDB: https://www.thetvdb.com
+..
+.. _`Gracenote API`: https://developer.gracenote.com/web-api
+.. _`LastFM API`: https://www.last.fm/api
+.. _`Jackett proxy server`: https://github.com/Jackett/Jackett
+.. _Torrentz2: https://torrentz2.eu
+.. _RARBG: http://rarbg.to/index70.php
+.. _`Kickass Torrents`: https://en.wikipedia.org/wiki/KickassTorrents
+.. _`The Pirate Bay`: https://thepiratebay.org
+.. _CAPTCHAs: https://en.wikipedia.org/wiki/CAPTCHA
+..
+.. _`GMail API`: https://developers.google.com/gmail/api
+.. _`Google Contacts API`: https://developers.google.com/contacts/v3
+.. _YouTube: https://www.youtube.com
+.. _`YouTube API`: https://developers.google.com/youtube/v3
+.. _`Google Sheets API`: https://developers.google.com/sheets/api
+.. _`Google Play Music`: https://play.google.com/store/music?hl=en

@@ -70,7 +70,7 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_.
      - |howdy_config_gui_icon| :ref:`howdy_config_gui <howdy_config_gui_label>` |cbox|
    * -
      - :ref:`howdy_deluge_console <howdy_deluge_console_label>` |cbox|
-     - |howdy_core_gui_icon| :ref:`howdy_core_gui <howdy_core_gui_label>`
+     - |howdy_core_gui_icon| :ref:`howdy_core_gui <howdy_core_gui_label>` |cbox|
    * -
      - :ref:`howdy_resynclibs <howdy_resynclibs_label>` |cbox|
      - |howdy_create_texts_icon| :ref:`howdy_create_texts <howdy_create_texts_label>` |cbox|

@@ -31,12 +31,7 @@ def main( ):
         resourceDir, 'icons', 'howdy_config_gui_SQUARE.png' ) )
     app.setWindowIcon( icn )
     qtmodern.styles.dark( app )
-    pcgui = core_gui.HowdyConfigGUI( verify = args.do_verify )
-    pcgui.setStyleSheet("""
-    QWidget {
-    font-family: Consolas;
-    font-size: 11;
-    }""" )
-    mw = qtmodern.windows.ModernWindow( pcgui )
+    hcgui = core_gui.HowdyConfigGUI( verify = args.do_verify )
+    mw = qtmodern.windows.ModernWindow( hcgui )
     mw.show( )
     result = app.exec_( )

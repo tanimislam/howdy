@@ -23,6 +23,11 @@ class HowdyImgurChooseAlbumWidget( QDialogWithPrinting ):
         self.hIMGClient = HowdyIMGClient( verify = verify, data_imgurl = data_imgurl )
         self.currentAlbumInfo = self.hIMGClient.get_candidate_albums( )
         self.main_album_name = self.hIMGClient.get_main_album_name( )
+        self.setStyleSheet("""
+        QWidget {
+        font-family: Consolas;
+        font-size: 11;
+        }""" )
         #
         self.setModal( True )
         self.setWindowTitle( 'ALBUMS IN IMGUR ACCOUNT' )
@@ -1351,10 +1356,11 @@ def returnToken( doLocal = True, verify = True, checkWorkingServer = True ):
         sys.exit( 0 )
     return dlg.fullurl, dlg.token
 
-def returnGoogleAuthentication( ):
-    status, message = core.oauthCheckGoogleCredentials( )
+def returnGoogleAuthentication( bypass = False ):
+    status, message = core.oauthCheckGoogleCredentials( bypass = bypass )
+    logging.info("status = %s, message = %s, bypass = %s" % ( status, message, bypass ) )
     if status: return status
-    dlg = GoogleOauth2Dialog( )
+    dlg = GoogleOauth2Dialog( None )
     result = dlg.exec_( )
     if result != QDialog.Accepted:
         sys.exit( 0 )

@@ -1365,7 +1365,7 @@ def refresh_library( key, library_dict, token, fullURL = 'http://localhost:32400
     assert( response.status_code == 200 )
     logging.info( 'refreshing %s Library...' % library_dict[ key ] )
 
-def oauthCheckGoogleCredentials( ):
+def oauthCheckGoogleCredentials( bypass = False ):
     """
     Checks whether the `Google OAuth2`_ authentication settings exist in the SQLite3_ configuration database. The format of the authentication data in the configuration database is,
 
@@ -1398,6 +1398,7 @@ def oauthCheckGoogleCredentials( ):
 
     If ``data`` is this dictionary, note the scopes defined in the ``data['scopes']`` and ``data['token_response']['scope']``.
     
+    :param bool bypass: if ``True``, then ignore what exists in the database under google crdentials.
     :returns: a :py:class:`tuple` of status and message. If the settings are in the database, returns ``( True, 'SUCCESS' )``. If they are not, returns ``( False, 'GOOGLE AUTHENTICATION CREDENTIALS DO NOT EXIST.' )``.
     :rtype: tuple.
 
@@ -1412,6 +1413,8 @@ def oauthCheckGoogleCredentials( ):
     .. _`Google OAuth2` : https://developers.google.com/identity/protocols/OAuth2
     
     """
+    if bypass:
+        return False, 'BYPASSING GOOGLE AUTHENTICATION CREDENTIALS.'
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is None:
         return False, 'GOOGLE AUTHENTICATION CREDENTIALS DO NOT EXIST.'

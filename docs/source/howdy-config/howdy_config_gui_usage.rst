@@ -43,7 +43,7 @@ Here is a screen shot.
    :width: 100%
    :align: center
 
-Use your Plex_ email and password for *PLEXLOGIN*, as described in :numref:`Credentials for Plex Account`. Set up at least your Deluge server according to :numref:`Seedhost Services Setup`. Set up *JACKETT* as described in :numref:`The Jackett Server`, and more conveniently using a Jackett server provided by Seedhost (see :numref:`Seedhost Services Setup` for more details). Finally, apply *RSYNC* settings according to :numref:`Local and Remote (Seedhost) SSH Setup`.
+Use your Plex_ email and password for *PLEXLOGIN*, as described in :numref:`credentials_for_plex_account`. Set up at least your Deluge server according to :numref:`Seedhost Services Setup`. Set up *JACKETT* as described in :numref:`The Jackett Server`, and more conveniently using a Jackett server provided by Seedhost (see :numref:`Seedhost Services Setup` for more details). Finally, apply *RSYNC* settings according to :numref:`Local and Remote (Seedhost) SSH Setup`.
 
 Credentials Services
 ----------------------------
@@ -54,7 +54,7 @@ As described in :numref:`Summary of Setting Up Google Credentials`, right click 
    :width: 100%
    :align: center
 
-The *PLEX CREDENTIALS CONFIGURATION* widget is organized into four services: the `TMDB service <https://www.themoviedb.org>`_, the `TVDB service <https://www.thetvdb.com>`_, the `Imgur image hosting service <https://imgur.com>`_, and Google's services (see :numref:`Howdy Services Configuration` for a list). Here is a screen shot.
+The *PLEX CREDENTIALS CONFIGURATION* widget is organized into four services: the `TMDB service <TMDB_>`_, the `TVDB service <TVDB_>`_, the `Imgur image hosting service <Imgur_>`_, and Google's services (see :numref:`Howdy Services Configuration` for a list). Here is a screen shot.
 
 .. _howdy_credentials_mainfigure:
 
@@ -62,7 +62,7 @@ The *PLEX CREDENTIALS CONFIGURATION* widget is organized into four services: the
    :width: 100%
    :align: center
 
-Apply the TMDB service settings according to :numref:`The Movie Database (TMDB) API`. Apply the TVDB service settings according to :numref:`The Television Database (TVDB) API`. Apply the Imgur settings according to :numref:`The Imgur API`. Finally, follow instructions in :numref:`Summary of Setting Up Google Credentials` to set up all six of the Google and Google-related services that Howdy uses.
+Apply the TMDB_ service settings according to :numref:`the_movie_database_api`. Apply the TVDB_ service settings according to :numref:`the_television_database_api`. Apply the Imgur_ settings according to :numref:`The Imgur API`. Finally, follow instructions in :numref:`Summary of Setting Up Google Credentials` to set up all six of the Google and Google-related services that Howdy uses.
 
 Choosing Main Imgur_ Album
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -151,3 +151,5 @@ The email address is taken from the login email for your Plex_ account. You can 
 .. _Deluge: https://en.wikipedia.org/wiki/Deluge_(software)
 .. _Jackett: https://github.com/Jackett/Jackett
 .. _Imgur: https://imgur.com
+.. _TMDB: https://www.themoviedb.org
+.. _TVDB: https://www.thetvdb.com

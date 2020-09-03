@@ -24,9 +24,13 @@ The document is organized into the following sections.
 * :ref:`The Jackett Server`.
 * :ref:`Summary of Setting Up Google Credentials`.
 
+.. _the_movie_database_api:
+  
 The Movie Database (TMDB_) API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Instructions on getting an access key for the `TMDB API`_ start with the `TMDB API link`_.
+
+.. _the_television_database_api:
 
 The Television Database (TVDB_) API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

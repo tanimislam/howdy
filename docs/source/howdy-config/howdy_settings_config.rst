@@ -48,10 +48,12 @@ I confess that the current organization of this data is duplicated and not fully
 
 The document is organized into the following sections. The second section describes the easiest setup, which uses Seedhost's services.
 
-* :ref:`Credentials for Plex_ Account`.
+* :ref:`credentials_for_plex_account`.
 * :ref:`Seedhost Services Setup`.
 * :ref:`Local and Remote (Seedhost) SSH Setup`.
 
+.. _credentials_for_plex_account:
+  
 Credentials for Plex_ Account
 --------------------------------
 This assumes that you already have a `Plex Account <https://plex.tv>`_ with server already set up. If you don't, and want to get started, a good place to start is a blog entry I have written, `How to share your Plex media <https://tanimislamblog.wordpress.com/2017/09/27/how-to-share-your-plex-media/>`_. Just record your username and password.

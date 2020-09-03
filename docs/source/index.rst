@@ -21,7 +21,7 @@ TODO
 -------
 Here are some things I would like to finish.
 
-* Fill out documentation for all the CLIs (|cbox|) and GUIs.
+* Fill out documentation for all the CLIs (|cbox|) and GUIs (|cbox| *except for* :ref:`howdy_tv_gui_label` and :ref:`howdy_movie_totgui_label`).
 * Fill out documentation for the lower level APIs (|cbox|) and the GUI APIs.
 * Setup-ify this repository as a ``howdy`` Python module (|cbox|).
 * Fill out help dialogs for the GUIs.

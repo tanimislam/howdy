@@ -73,7 +73,7 @@ Here, a browser tab or new window is launched (see :numref:`google_step03_author
 
 2. Click on the *Allow* button for the six Google services that Howdy requires (see :numref:`google_step06_allowbutton`).
 
-3. The final browser window shows a text box with the `Google OAuth2 authentication`_ token string. Copy that string into the GUI dialog widget in :numref:`howdy_core_gui_mainwindow`, and press return on the text box in this dialog window.
+3. The final browser window shows a text box with the `Google OAuth2 authentication`_ token string (see :numref:`google_step07_oauthtokencopy`). Copy that string into the GUI dialog widget in :numref:`howdy_core_gui_mainwindow`, and press return on the text box in this dialog window.
 
 If all goes well, then all the Google services needed by Howdy will have been authorized.
 

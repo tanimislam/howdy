@@ -70,8 +70,8 @@ extensions = [
 ## following instructions here (https://github.com/svenevs/exhale/tree/master/docs/_intersphinx) to fix beautifulsoup doc.
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'requests': ( 'https://requests.kennethreitz.org/en/master/', None),
-    'beautifulsoup' : ( 'https://www.crummy.com/software/BeautifulSoup/bs4/doc/', "_intersphinx/bs4_objects.inv"),
+    'requests': ( 'https://requests.readthedocs.io/en/master', None),
+    'beautifulsoup' : ( 'https://www.crummy.com/software/BeautifulSoup/bs4/doc', "_intersphinx/bs4_objects.inv"),
     'geoip2' : ( 'https://geoip2.readthedocs.io/en/latest', None),
     'gmusicapi' : ( 'https://unofficial-google-music-api.readthedocs.io/en/latest', None ),
     'imdbpy' : ( 'https://imdbpy.readthedocs.io/en/latest', None),

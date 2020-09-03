@@ -188,3 +188,7 @@ html_sidebars = {
         'donate.html',
     ]
 }
+
+#
+## LaTeX engine, from https://www.sphinx-doc.org/en/master/latex.html
+latex_engine = 'xelatex'

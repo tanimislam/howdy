@@ -3,7 +3,7 @@
 =====================================================================================
 |howdy_config_gui_icon| Consolidating Howdy Configuration With ``howdy_config_gui``
 =====================================================================================
-Although ``howdy_config_gui`` is part of ``core``, and naturally lives in :numref:`Howdy Core Functionality`, I suggest you use this configuration tool to naturally consolidate the services and settings. The final configuration data will live in an `sqlite version 3 <https://en.wikipedia.org/wiki/SQLite>`_ database that is located in ``~/.local/plexstuff/app.db`` and is readable only by the user (and root).
+Although ``howdy_config_gui`` is part of ``core``, and naturally lives in :numref:`Howdy Core Functionality`, I suggest you use this configuration tool to naturally consolidate the services and settings. The final configuration data will live in an `sqlite version 3 <https://en.wikipedia.org/wiki/SQLite>`_ database that is located in ``~/.local/howdy/app.db`` and is readable only by the user (and root).
 
 Some of the ``howdy_config_gui`` screenshots are found in :numref:`Summary of Setting Up Google Credentials` (specifically :numref:`imgur_step04_credentials`, :numref:`google_step02_refreshcredentials`, and :numref:`google_step04_oauthtokenstring`) and in :numref:`Howdy Settings Configuration` (specifically :numref:`login_step01_login` and :numref:`login_step02_settings`).
 

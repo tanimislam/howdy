@@ -396,15 +396,14 @@ def get_email_contacts( token, verify = True ):
                                  myxml.find_all( 'user' ) ) ) ) )
 
 def get_mapped_email_contacts( token, verify = True ):
-    """list of all email addresses (including Plex_ server friends and mapped emails) to send Plexstuff related emails.
+    """list of all email addresses (including Plex_ server friends and mapped emails) to send Howdy_ related emails.
 
     :param str token: Plex_ access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
-    :returns: a list of email addresses for Plexstuff emails.
+    :returns: a list of email addresses for Howdy_ emails.
     :rtype: list
 
     .. seealso: :py:method:`get_email_contacts <howdy.core.core.get_email_contacts>`
-
     """
     emails = get_email_contacts( token, verify = verify )
     query = session.query( PlexGuestEmailMapping )
@@ -421,13 +420,12 @@ def get_mapped_email_contacts( token, verify = True ):
     return mapped_emails
     
 def get_current_date_newsletter( ):
-    """the last date and time at which the Plexstuff email newsletter was updated.
+    """the last date and time at which the Howdy_ email newsletter was updated.
 
     :returns: the date and time of the most recent previous email newsletter.
     :rtype: :py:class:`datetime <datetime.datetime>`.
     
     .. seealso:: :py:meth:`set_date_newsletter <howdy.core.core.set_date_newsletter>`
-    
     """
     query = session.query( LastNewsletterDate )
     backthen = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
@@ -1447,7 +1445,7 @@ def oauthGetGoogleCredentials( verify = True ):
 
 def oauthGetOauth2ClientGoogleCredentials( ):
     """
-    Gets the `Google Oauth2`_ credentials, stored in the SQLite3_ configuration database, in the form of a refreshed :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` object. This OAuth2 authentication method IS used for all the services accessed by Plexstuff_.
+    Gets the `Google Oauth2`_ credentials, stored in the SQLite3_ configuration database, in the form of a refreshed :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` object. This OAuth2 authentication method IS used for all the services accessed by Howdy_.
 
     :returns: a :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` form of the `Google Oauth2`_ credentials for various Oauth2 services.
     :rtype: :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>`
@@ -1459,7 +1457,7 @@ def oauthGetOauth2ClientGoogleCredentials( ):
       * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
       * :py:meth:`oauth_store_google_credentials <howdy.core.core.oauth_store_google_credentials>`.
 
-    .. _Plexstuff: https://howdy.readthedocs.io
+    .. _Howdy: https://howdy.readthedocs.io
     """
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is None: return None
@@ -1470,7 +1468,7 @@ def oauthGetOauth2ClientGoogleCredentials( ):
 
 def oauth_generate_google_permission_url( ):
     """
-    Generates a `Google OAuth2`_ web-based flow for all the Google services used in Plexstuff_. Descriptions of OAuth2_ and different flows (web server app, client, etc.)  is almost impossible for me to follow (see `this page on OAuth2 authentication flows <https://auth0.com/docs/api-auth/which-oauth-flow-to-use>`_), I have given up, and I can only understand the specific authentication work flow implemented in Plexstuff_. The authentication process that uses this method is described in :ref:`this subsection <Summary of Setting Up Google Credentials>`. Here are the programmatic steps to finally generate an  :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` object.
+    Generates a `Google OAuth2`_ web-based flow for all the Google services used in Howdy_. Descriptions of OAuth2_ and different flows (web server app, client, etc.)  is almost impossible for me to follow (see `this page on OAuth2 authentication flows <https://auth0.com/docs/api-auth/which-oauth-flow-to-use>`_), I have given up, and I can only understand the specific authentication work flow implemented in Howdy_. The authentication process that uses this method is described in :ref:`this subsection <Summary of Setting Up Google Credentials>`. Here are the programmatic steps to finally generate an  :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` object.
     
       1. Get the  :py:class:`OAuth2WebServerFlow <oauth2client.client.OAuth2WebServerFlow>` and authentication URI.
 

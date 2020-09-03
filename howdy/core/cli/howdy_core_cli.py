@@ -1,3 +1,6 @@
+import signal
+from howdy import signal_handler
+signal.signal( signal.SIGINT, signal_handler )
 from argparse import ArgumentParser
 import requests, tabulate
 #

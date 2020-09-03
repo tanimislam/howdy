@@ -62,7 +62,7 @@ Authentication happens in two ways.
 
   here, ``...`` refers to subsequent commands. One must give a valid *username* and *password*, otherwise the program exits.
 
-* by implicitly using the Plex_ authorizations stored in ``~/.config/plexstuff/app.db``. Here, no extra authorization needs to be provided.
+* by implicitly using the Plex_ authorizations stored in ``~/.config/howdy/app.db``. Here, no extra authorization needs to be provided.
 
 Here is how to do each of the three *operations*.
 

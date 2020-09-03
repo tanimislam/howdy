@@ -111,7 +111,9 @@ Finally, clicking on the ``SAVE`` button opens up a file dialog where you can sa
    :width: 100%
    :align: left
 
-I have included this :download:`example restructuredText file </_static/howdy_create_texts.rst>` that allows one to independently verify how this reStructuredText_ renders.
+   Click on ``SAVE`` to save the reStructuredText_ into an ``.rst`` file.
+
+I have included this :download:`example restructuredText file </_static/howdy_create_texts.rst>` that allows one to independently verify how this reStructuredText_ renders. This is the example file shown in :numref:`howdy_create_texts_convert_ANNOTATED` and :numref:`howdy_create_texts_save_ANNOTATED`.
    
 .. |howdy_create_texts| replace:: ``howdy_create_texts``
 

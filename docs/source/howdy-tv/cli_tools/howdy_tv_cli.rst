@@ -454,16 +454,16 @@ You can choose the calendar year or years for which you want to return eye chart
 
 This produces the episode eye charts for 2000, 2005, 2010, and 2015.
 
-.. |tvdata_2000| image:: howdy-tv-cli-figures/tvdata.2000.svg
+.. |tvdata_2000| image:: howdy-tv-cli-figures/tvdata.2000.*
    :width: 100%
 
-.. |tvdata_2005| image:: howdy-tv-cli-figures/tvdata.2005.svg
+.. |tvdata_2005| image:: howdy-tv-cli-figures/tvdata.2005.*
    :width: 100%
 
-.. |tvdata_2010| image:: howdy-tv-cli-figures/tvdata.2010.svg
+.. |tvdata_2010| image:: howdy-tv-cli-figures/tvdata.2010.*
    :width: 100%
 
-.. |tvdata_2015| image:: howdy-tv-cli-figures/tvdata.2015.svg
+.. |tvdata_2015| image:: howdy-tv-cli-figures/tvdata.2015.*
    :width: 100%
 
 .. list-table::
@@ -478,7 +478,7 @@ Here is an example eye chart, for episodes aired in 2000. Each day is colored an
 
 .. _howdy_tv_cli_figures_plots_tvdata_2000:
 
-.. figure:: howdy-tv-cli-figures/tvdata.2000.svg
+.. figure:: howdy-tv-cli-figures/tvdata.2000.*
    :width: 100%
    :align: center
 

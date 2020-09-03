@@ -12,7 +12,6 @@ __pycache__/
 *.log
 *.lng
 *.out
-*.pdf
 
 # C extensions
 *.so

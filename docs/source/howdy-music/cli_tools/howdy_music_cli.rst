@@ -7,7 +7,7 @@ This section describes the four Howdy music command line utilities.
 
 * :ref:`howdy_music_metafill` is an older Plex_ Music executable. It gets choices and song clips from YouTube_ and music metadata using the Gracenote_ API. This was an earlier trial to improve the functionality of :ref:`howdy_music_songs`.
 
-* :ref:`howdy_music_songs` is a work-horse CLI that can do three things (:ref:`download songs with artist and song list <download_by_artist_songs>`, :ref:`download songs with artist and album <download_by_artist_album>`, or :ref:`download a list of songs with a list of corresponding artists <download_by_artists_songs_list>`) using the three music metadata services (Gracenote_, LastFM_, or MusicBrainz_).
+* :ref:`howdy_music_songs` is a work-horse CLI that can do three things (:ref:`download songs with artist and song list <download_by_artist_songs>`, :ref:`download songs with artist and album <download_by_artist_album>`, or :ref:`download a list of songs with a list of corresponding artists <download_by_artists_songs_list>`) using the three music metadata services: Gracenote_ (|gracenote_image|), LastFM_ (|lastfm_image|), or MusicBrainz_ (|musicbrainz_image|).
 
 * :ref:`upload_to_gmusic` uploads MP3_ or M4A_ music files to one's `Google Play Music`_ account, or pushes the appropriate :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` credentials into the SQLite3_ configuration database.
 
@@ -301,9 +301,9 @@ Each of the three operations can be either *progressive* or *exclusive*.
       :widths: auto
 
       * - metadata flag
-	- Gracenote_
-	- LastFM_
-	- MusicBrainz_
+	- |gracenote_image_big|
+	- |lastfm_image_big|
+	- |musicbrainz_image_big|
       * - default (no flag)
 	- 1
 	- 2
@@ -327,9 +327,9 @@ Each of the three operations can be either *progressive* or *exclusive*.
      :widths: auto
 
      * - metadata flag
-       - Gracenote_
-       - LastFM_
-       - MusicBrainz_
+       - |gracenote_image_big|
+       - |lastfm_image_big|
+       - |musicbrainz_image_big|
      * - default (no flag)
        - 1
        -
@@ -509,6 +509,41 @@ Third, paste the code similar to as described in :ref:`Step #7 <google_step07_oa
 
    Success. Stored GMusicAPI Mobileclient credentials.
 
+.. images
+
+
+.. |gracenote_image| image:: howdy-music-cli-figures/gracenote_logo.svg
+   :height: 25
+   :align: middle
+   :target: Gracenote_
+
+.. |lastfm_image| image:: howdy-music-cli-figures/Lastfm_logo.svg
+   :height: 25
+   :align: middle
+   :target: LastFM_
+
+.. |musicbrainz_image| image:: howdy-music-cli-figures/musicbrainz_logo.svg
+   :height: 25
+   :align: middle
+   :target: MusicBrainz_
+
+
+.. |gracenote_image_big| image:: howdy-music-cli-figures/gracenote_logo.svg
+   :width: 100%
+   :align: middle
+   :target: Gracenote_
+
+.. |lastfm_image_big| image:: howdy-music-cli-figures/Lastfm_logo.svg
+   :width: 100%
+   :align: middle
+   :target: LastFM_
+
+.. |musicbrainz_image_big| image:: howdy-music-cli-figures/musicbrainz_logo.svg
+   :width: 100%
+   :align: middle
+   :target: MusicBrainz_
+   
+	    
 .. links for the youtube clips in table for howdy_music_songs section
 
 .. _yt_clip1: https://youtu.be/W5AYAFYI9QA

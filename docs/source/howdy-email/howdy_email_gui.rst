@@ -71,11 +71,10 @@ Here we construct and send a rudimentary email that demonstrates an interesting 
 
 Write and Test Email
 ----------------------
-Here, we write an email that consists of some stylized text, some LaTeX_ math, and an inset image with caption using our Imgur_ library! The subject of the email is ``test``. The body is reStructuredText_, and is given by,
-
-.. _example_email_body:
+Here, we write an email that consists of some stylized text, some LaTeX_ math, and an inset image with caption using our Imgur_ library. The subject of the email is ``test``. The body is reStructuredText_, and is given by,
 
 .. code-block:: RST
+   :name: example_email_body
 
    I am showing some example code. Here is some *bold* code.
 

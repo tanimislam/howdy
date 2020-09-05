@@ -133,7 +133,6 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_. The |c
 .. _PyQtWebEngine: https://www.riverbankcomputing.com/software/pyqtwebengine
 .. _sshpass: https://linux.die.net/man/1/sshpass
 .. _sudo: https://en.wikipedia.org/wiki/Sudo
-.. _LaTeX: https://www.latex-project.org
 .. _ghc: https://www.haskell.org/ghc
 .. _stack: https://docs.haskellstack.org/en/stable/README
 .. _cabal: http://hackage.haskell.org/package/cabal-install

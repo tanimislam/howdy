@@ -149,10 +149,6 @@ Here are the steps used to get working Imgur API access using the :ref:`howdy_co
 
 7. This **should** work -- the *Plex config credentials* widget should show **WORKING** under the Imgur_ settings panel. If this does not work, then close the Imgur URL dialog in :numref:`imgur_step06b_copyURLdialog` with the ``Esc`` key, and generate a new client secret as shown in :numref:`imgur_step02_getclientsecret`, and repeat until you are able to generate good Imgur_ client credentials.
 
-   .. warning::
-
-      The author of this code has *sucessfully* set up Imgur_ credentials only on Linux machines. He was *unsuccessful* when trying to set up credentials on Mac OS X machines. Success or failure may be tied to subtly broken custom OAuth2_ Python authentication mechanisms, that Imgur_ requires, on the Mac.
-
 Low Level Imgur Credentials
 ---------------------------
 The lower level generation of Imgur credentials use `requests-oauthlib <https://requests-oauthlib.readthedocs.io/en/latest>`_ to generate the Imgur credentials.

@@ -83,7 +83,8 @@ class MusicInfo( object ):
              'disambiguation': 'French band',
              'isni-list': ['0000000123694584'],
              'life-span': {'begin': '1995', 'ended': 'false'},
-             'alias-list': [{'sort-name': 'Air French Band', 'alias': 'Air French Band'},
+             'alias-list': [
+              {'sort-name': 'Air French Band', 'alias': 'Air French Band'},
               {'sort-name': 'Air (French Band)', 'alias': 'Air (French Band)'},
               {'sort-name': 'Aïr', 'alias': 'Aïr'}],
              'tag-list': [{'count': '2', 'name': 'trip-hop'},
@@ -1166,7 +1167,8 @@ class HowdyLastFM( object ):
               'total tracks': 10,
               'song': 'Kelly, Watch the Stars!',
               'duration': 225.746,
-              'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016....png'}
+              'album url': 
+                 'https://lastfm.freetls.fastly.net/i/u/300x300/016....png'}
 
           If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
 
@@ -1313,7 +1315,8 @@ class HowdyLastFM( object ):
                'tracknumber': 1,
                'total tracks': 10,
                'duration': 429.56,
-               'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6....png',
+               'album url': 
+                  'https://lastfm.freetls.fastly.net/i/u/300x300/016b6....png',
                'album': 'Moon Safari',
                'year': 1998}
 
@@ -1540,7 +1543,8 @@ class HowdyMusic( object ):
               'tracknumber': 1,
               'total tracks': 10,
               'duration': 429.56,
-              'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6....png',
+              'album url':
+                 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6....png',
               'album': 'Moon Safari',
               'year': 1998}
 
@@ -1594,7 +1598,8 @@ class HowdyMusic( object ):
               'total tracks': 10,
               'song': 'Kelly, Watch the Stars!',
               'duration': 225.746,
-              'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6b....png'}
+              'album url':
+                 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6b....png'}
 
           If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
 

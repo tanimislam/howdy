@@ -1157,16 +1157,16 @@ class HowdyLastFM( object ):
         :param bool all_data: optional argument. If ``False``, then perform a cursory search for metadata on the selected song. If ``True``, then perform a more careful search. Default is ``False``. Running with ``True`` can work if running with ``False`` does not produce a result.
         :returns: if successful, returns a two element :py:class:`tuple`. First element is a :py:class:`dict` of information on the song, and the second element is the string ``"SUCCESS"``. For example, for the Air_ song `Kelly Watch the Stars`_ in `Moon Safari`_. the closest match is ``Kelly, Watch the Stars!``.
         
-           .. code-block:: python
+          .. code-block:: python
 
-               {'album': 'Moon Safari',
-                'artist': 'Air',
-                'year': 1998,
-                'tracknumber': 4,
-                'total tracks': 10,
-                'song': 'Kelly, Watch the Stars!',
-                'duration': 225.746,
-                'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png'}
+             {'album': 'Moon Safari',
+              'artist': 'Air',
+              'year': 1998,
+              'tracknumber': 4,
+              'total tracks': 10,
+              'song': 'Kelly, Watch the Stars!',
+              'duration': 225.746,
+              'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png'}
 
           If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
 

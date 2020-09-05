@@ -1,0 +1,237 @@
+{
+ "name": "Moon Safari",
+ "artist": "Air",
+ "mbid": "4c55906c-349b-362d-922e-956762912b42",
+ "url": "https://www.last.fm/music/Air/Moon+Safari",
+ "image": [
+  {
+   "#text": "https://lastfm.freetls.fastly.net/i/u/34s/016b6beaff6943ae8930faccca7d44f9.png",
+   "size": "small"
+  },
+  {
+   "#text": "https://lastfm.freetls.fastly.net/i/u/64s/016b6beaff6943ae8930faccca7d44f9.png",
+   "size": "medium"
+  },
+  {
+   "#text": "https://lastfm.freetls.fastly.net/i/u/174s/016b6beaff6943ae8930faccca7d44f9.png",
+   "size": "large"
+  },
+  {
+   "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png",
+   "size": "extralarge"
+  },
+  {
+   "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png",
+   "size": "mega"
+  },
+  {
+   "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png",
+   "size": ""
+  }
+ ],
+ "listeners": "1071243",
+ "playcount": "22018931",
+ "tracks": {
+  "track": [
+   {
+    "name": "La femme d'argent",
+    "url": "https://www.last.fm/music/Air/_/La+femme+d%27argent",
+    "duration": "428",
+    "@attr": {
+     "rank": "1"
+    },
+    "streamable": {
+     "#text": "0",
+     "fulltrack": "0"
+    },
+    "artist": {
+     "name": "Air",
+     "mbid": "ef3f5cea-b32e-4325-b8d4-96ae70a9fc2e",
+     "url": "https://www.last.fm/music/Air"
+    }
+   },
+   {
+    "name": "Sexy Boy",
+    "url": "https://www.last.fm/music/Air/_/Sexy+Boy",
+    "duration": "231",
+    "@attr": {
+     "rank": "2"
+    },
+    "streamable": {
+     "#text": "0",
+     "fulltrack": "0"
+    },
+    "artist": {
+     "name": "Air",
+     "mbid": "ef3f5cea-b32e-4325-b8d4-96ae70a9fc2e",
+     "url": "https://www.last.fm/music/Air"
+    }
+   },
+   {
+    "name": "All I Need",
+    "url": "https://www.last.fm/music/Air/_/All+I+Need",
+    "duration": "269",
+    "@attr": {
+     "rank": "3"
+    },
+    "streamable": {
+     "#text": "0",
+     "fulltrack": "0"
+    },
+    "artist": {
+     "name": "Air",
+     "mbid": "ef3f5cea-b32e-4325-b8d4-96ae70a9fc2e",
+     "url": "https://www.last.fm/music/Air"
+    }
+   },
+   {
+    "name": "Kelly Watch the Stars",
+    "url": "https://www.last.fm/music/Air/_/Kelly+Watch+the+Stars",
+    "duration": "226",
+    "@attr": {
+     "rank": "4"
+    },
+    "streamable": {
+     "#text": "0",
+     "fulltrack": "0"
+    },
+    "artist": {
+     "name": "Air",
+     "mbid": "ef3f5cea-b32e-4325-b8d4-96ae70a9fc2e",
+     "url": "https://www.last.fm/music/Air"
+    }
+   },
+   {
+    "name": "Talisman",
+    "url": "https://www.last.fm/music/Air/_/Talisman",
+    "duration": "256",
+    "@attr": {
+     "rank": "5"
+    },
+    "streamable": {
+     "#text": "0",
+     "fulltrack": "0"
+    },
+    "artist": {
+     "name": "Air",
+     "mbid": "ef3f5cea-b32e-4325-b8d4-96ae70a9fc2e",
+     "url": "https://www.last.fm/music/Air"
+    }
+   },
+   {
+    "name": "Remember",
+    "url": "https://www.last.fm/music/Air/_/Remember",
+    "duration": "154",
+    "@attr": {
+     "rank": "6"
+    },
+    "streamable": {
+     "#text": "0",
+     "fulltrack": "0"
+    },
+    "artist": {
+     "name": "Air",
+     "mbid": "ef3f5cea-b32e-4325-b8d4-96ae70a9fc2e",
+     "url": "https://www.last.fm/music/Air"
+    }
+   },
+   {
+    "name": "You Make It Easy",
+    "url": "https://www.last.fm/music/Air/_/You+Make+It+Easy",
+    "duration": "241",
+    "@attr": {
+     "rank": "7"
+    },
+    "streamable": {
+     "#text": "0",
+     "fulltrack": "0"
+    },
+    "artist": {
+     "name": "Air",
+     "mbid": "ef3f5cea-b32e-4325-b8d4-96ae70a9fc2e",
+     "url": "https://www.last.fm/music/Air"
+    }
+   },
+   {
+    "name": "Ce Matin-l\u00e0",
+    "url": "https://www.last.fm/music/Air/_/Ce+Matin-l%C3%A0",
+    "duration": "218",
+    "@attr": {
+     "rank": "8"
+    },
+    "streamable": {
+     "#text": "0",
+     "fulltrack": "0"
+    },
+    "artist": {
+     "name": "Air",
+     "mbid": "ef3f5cea-b32e-4325-b8d4-96ae70a9fc2e",
+     "url": "https://www.last.fm/music/Air"
+    }
+   },
+   {
+    "name": "New Star in the Sky (Chanson pour Solal)",
+    "url": "https://www.last.fm/music/Air/_/New+Star+in+the+Sky+(Chanson+pour+Solal)",
+    "duration": "338",
+    "@attr": {
+     "rank": "9"
+    },
+    "streamable": {
+     "#text": "0",
+     "fulltrack": "0"
+    },
+    "artist": {
+     "name": "Air",
+     "mbid": "ef3f5cea-b32e-4325-b8d4-96ae70a9fc2e",
+     "url": "https://www.last.fm/music/Air"
+    }
+   },
+   {
+    "name": "Le Voyage de P\u00e9n\u00e9lope",
+    "url": "https://www.last.fm/music/Air/_/Le+Voyage+de+P%C3%A9n%C3%A9lope",
+    "duration": "190",
+    "@attr": {
+     "rank": "10"
+    },
+    "streamable": {
+     "#text": "0",
+     "fulltrack": "0"
+    },
+    "artist": {
+     "name": "Air",
+     "mbid": "ef3f5cea-b32e-4325-b8d4-96ae70a9fc2e",
+     "url": "https://www.last.fm/music/Air"
+    }
+   }
+  ]
+ },
+ "tags": {
+  "tag": [
+   {
+    "name": "electronic",
+    "url": "https://www.last.fm/tag/electronic"
+   },
+   {
+    "name": "chillout",
+    "url": "https://www.last.fm/tag/chillout"
+   },
+   {
+    "name": "electronica",
+    "url": "https://www.last.fm/tag/electronica"
+   },
+   {
+    "name": "albums I own",
+    "url": "https://www.last.fm/tag/albums+I+own"
+   },
+   {
+    "name": "french",
+    "url": "https://www.last.fm/tag/french"
+   }
+  ]
+ },
+ "wiki": {
+  "published": "07 Sep 2008, 11:37",
+  "summary": "Moon Safari is the first full-length studio album by the French band Air, released in 1998. The album is considered a classic of the chillout genre. It scored hits with the tracks \"Sexy Boy\", \"Kelly Watch the Stars\" and \"All I Need\" (which features vocals by Beth Hirsch). Moon Safari debuted at number five in the UK album charts mainly due to almost universally glowing reviews by the British music press and the success of the single \"Sexy Boy\".[citation needed] <a href=\"http://www.last.fm/music/Air/Moon+Safari\">Read more on Last.fm</a>.",
+  "content": "Moon Safari is the first full-length studio album by the French band Air, released in 1998. The album is considered a classic of the chillout genre. It scored hits with the tracks \"Sexy Boy\", \"Kelly Watch the Stars\" and \"All I Need\" (which features vocals by Beth Hirsch). Moon Safari debuted at number five in the UK album charts mainly due to almost universally glowing reviews by the British music press and the success of the single \"Sexy Boy\".[citation needed]. On April 14, 2008 Virgin Records released a reissue of Moon Safari to mark the albums 10-year anniversary. The limited edition album came with a bound book, a DVD documentary about the duo and an extra CD with live performances and remixes. Moon Safari is an eclectic mix of synth-pop, acoustic guitars and faux-string arrangements. The tone ranges from retro tracks, such as \"Kelly Watch the Stars\", \"Sexy Boy\" and \"Remember\" to laid-back ballads, such as \"Ce matin l\u00e0\" and the tracks featuring Beth Hirsch. Much of the album has a detached, hypnotic, retro feel. Also of note is the plethora of instruments used by Godin and Dunckel such as Moog synthesizers and vocoders. The band also used recording equipment to give Dunckel the soprano voice on \"Sexy Boy\". <a href=\"http://www.last.fm/music/Air/Moon+Safari\">Read more on Last.fm</a>. User-contributed text is available under the Creative Commons By-SA License; additional terms may apply."
+ }
+}

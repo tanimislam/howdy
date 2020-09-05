@@ -43,8 +43,8 @@ def get_possible_omdb_ids( series_name, apikey ):
 
     .. code-block:: python
     
-        >> get_possible_omdb_ids( 'The Simpsons', omdb_apikey )
-        >> [ ( 'tt0096697', [ 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 ] ) ]
+       >> get_possible_omdb_ids( 'The Simpsons', omdb_apikey )
+       >> [ ( 'tt0096697', [ 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 ] ) ]
 
     If unsuccessful, then returns ``None``.
 
@@ -99,26 +99,26 @@ def get_episodes_series_omdb( imdbID, apikey, fromDate = None ):
 
     .. code-block:: python
 
-        [{'Title': 'The Call of the Simpsons',
-          'Released': '1990-02-18',
-          'Episode': 7,
-          'imdbRating': '7.9',
-          'imdbID': 'tt0701228',
-          'airedSeason': 1},
-         {'Title': 'The Telltale Head',
-          'Released': '1990-02-25',
-          'Episode': 8,
-          'imdbRating': '7.7',
-          'imdbID': 'tt0756398',
-          'airedSeason': 1},
-         {'Title': 'Life on the Fast Lane',
-          'Released': '1990-03-18',
-          'Episode': 9,
-          'imdbRating': '7.5',
-          'imdbID': 'tt0701152',
-          'airedSeason': 1},
-         ...
-        ]
+       [{'Title': 'The Call of the Simpsons',
+         'Released': '1990-02-18',
+         'Episode': 7,
+         'imdbRating': '7.9',
+         'imdbID': 'tt0701228',
+         'airedSeason': 1},
+        {'Title': 'The Telltale Head',
+         'Released': '1990-02-25',
+         'Episode': 8,
+         'imdbRating': '7.7',
+         'imdbID': 'tt0756398',
+         'airedSeason': 1},
+        {'Title': 'Life on the Fast Lane',
+         'Released': '1990-03-18',
+         'Episode': 9,
+         'imdbRating': '7.5',
+         'imdbID': 'tt0701152',
+         'airedSeason': 1},
+        ...
+       ]
     
     :param str imdbID: the IMDB_ ID of the TV show.
     :param str apiKey: the OMDB_ API key.
@@ -166,32 +166,32 @@ def get_tot_epdict_omdb( showName, apikey, inYear = None ):
     
     .. code-block:: python
         
-        {
-         1: {7: 'The Call of the Simpsons',
-          8: 'The Telltale Head',
-          9: 'Life on the Fast Lane',
-          10: "Homer's Night Out",
-          11: 'The Crepes of Wrath',
-          12: 'Krusty Gets Busted',
-          13: 'Some Enchanted Evening'},
-         2: {1: 'Bart Gets an F',
-          2: 'Simpson and Delilah',
-          3: 'Treehouse of Horror',
-          4: 'Two Cars in Every Garage and Three Eyes on Every Fish',
-          6: 'Dead Putting Society',
-          12: 'The Way We Was',
-          13: 'Homer vs. Lisa and the 8th Commandment',
-          14: 'Principal Charming',
-          15: 'Oh Brother, Where Art Thou?',
-          16: "Bart's Dog Gets an F",
-          17: 'Old Money',
-          18: 'Brush with Greatness',
-          19: "Lisa's Substitute",
-          20: 'The War of the Simpsons',
-          21: 'Three Men and a Comic Book',
-          22: 'Blood Feud'},
-         ...
-        }
+       {
+        1: {7: 'The Call of the Simpsons',
+         8: 'The Telltale Head',
+         9: 'Life on the Fast Lane',
+         10: "Homer's Night Out",
+         11: 'The Crepes of Wrath',
+         12: 'Krusty Gets Busted',
+         13: 'Some Enchanted Evening'},
+        2: {1: 'Bart Gets an F',
+         2: 'Simpson and Delilah',
+         3: 'Treehouse of Horror',
+         4: 'Two Cars in Every Garage and Three Eyes on Every Fish',
+         6: 'Dead Putting Society',
+         12: 'The Way We Was',
+         13: 'Homer vs. Lisa and the 8th Commandment',
+         14: 'Principal Charming',
+         15: 'Oh Brother, Where Art Thou?',
+         16: "Bart's Dog Gets an F",
+         17: 'Old Money',
+         18: 'Brush with Greatness',
+         19: "Lisa's Substitute",
+         20: 'The War of the Simpsons',
+         21: 'Three Men and a Comic Book',
+         22: 'Blood Feud'},
+        ...
+       }
 
     If unsuccessful, then returns ``None``.
 
@@ -234,8 +234,8 @@ def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
 
     .. code-block:: python
 
-        [{'id': 456, 'name': 'The Simpsons', 'airedYear': 1989},
-         {'id': 73980, 'name': 'Da Suisa', 'airedYear': 2013}]
+       [{'id': 456, 'name': 'The Simpsons', 'airedYear': 1989},
+        {'id': 73980, 'name': 'Da Suisa', 'airedYear': 2013}]
 
     :param str series_name: the series name.
     :param int firstAiredYear: optional argument. If provided, filter on TV shows that were first aired that year.
@@ -364,21 +364,21 @@ def get_tot_epdict_tmdb( showName, firstAiredYear = None, showSpecials = False )
 
     .. code-block:: python
 
-          {1: {1: ('Simpsons Roasting on an Open Fire', datetime.date(1989, 12, 17)),
-            2: ('Bart the Genius', datetime.date(1990, 1, 14)),
-            3: ("Homer's Odyssey", datetime.date(1990, 1, 21)),
-            4: ("There's No Disgrace Like Home", datetime.date(1990, 1, 28)),
-            5: ('Bart the General', datetime.date(1990, 2, 4)),
-            6: ('Moaning Lisa', datetime.date(1990, 2, 11)),
-            7: ('The Call of the Simpsons', datetime.date(1990, 2, 18)),
-            8: ('The Telltale Head', datetime.date(1990, 2, 25)),
-            9: ('Life on the Fast Lane', datetime.date(1990, 3, 18)),
-            10: ("Homer's Night Out", datetime.date(1990, 3, 25)),
-            11: ('The Crepes of Wrath', datetime.date(1990, 4, 15)),
-            12: ('Krusty Gets Busted', datetime.date(1990, 4, 29)),
-            13: ('Some Enchanted Evening', datetime.date(1990, 5, 13))},
-            ...
-          }
+       {1: {1: ('Simpsons Roasting on an Open Fire', datetime.date(1989, 12, 17)),
+         2: ('Bart the Genius', datetime.date(1990, 1, 14)),
+         3: ("Homer's Odyssey", datetime.date(1990, 1, 21)),
+         4: ("There's No Disgrace Like Home", datetime.date(1990, 1, 28)),
+         5: ('Bart the General', datetime.date(1990, 2, 4)),
+         6: ('Moaning Lisa', datetime.date(1990, 2, 11)),
+         7: ('The Call of the Simpsons', datetime.date(1990, 2, 18)),
+         8: ('The Telltale Head', datetime.date(1990, 2, 25)),
+         9: ('Life on the Fast Lane', datetime.date(1990, 3, 18)),
+         10: ("Homer's Night Out", datetime.date(1990, 3, 25)),
+         11: ('The Crepes of Wrath', datetime.date(1990, 4, 15)),
+         12: ('Krusty Gets Busted', datetime.date(1990, 4, 29)),
+         13: ('Some Enchanted Evening', datetime.date(1990, 5, 13))},
+         ...
+       }
     
     If unsuccessful, then returns ``None``.
 

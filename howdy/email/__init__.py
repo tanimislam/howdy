@@ -11,7 +11,9 @@ from howdy.core import core
 def get_email_service( verify = True ):
     """
     This returns a working :py:class:`Resource <googleapiclient.discovery.Resource>` representing the Google email service used to send and receive emails.
+    
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    
     :returns: the :py:class:`Resource <googleapiclient.discovery.Resource>` representing the Google email service used to send and receive emails. If ``None``, then generated here.
     :rtype: :py:class:`Resource <googleapiclient.discovery.Resource>`
     """
@@ -153,7 +155,7 @@ class HowdyIMGClient( object ):
 
     :raise ValueError: if images in the new album cannot be accessed.
 
-    .. seealso:: :py:meth:`refreshImages <howdy.email.HowdyIMGClient.refreshImages>`
+    .. seealso:: :py:meth:`refreshImages <howdy.email.HowdyIMGClient.refreshImages>`.
     
     .. _Imgur: https://imgur.com
     .. _SQLite3: https://www.sqlite.org/index.html
@@ -254,7 +256,7 @@ class HowdyIMGClient( object ):
 
         :param str new_album_name: the new name to change the main Imgur_ album.
 
-        .. seealso:: :py:meth:`refreshImages <howdy.email.HowdyIMGClient.refreshImages>`
+        .. seealso:: :py:meth:`refreshImages <howdy.email.HowdyIMGClient.refreshImages>`.
         """
         if new_album_name == self.get_main_album_name( ): return
         response = requests.post( 'https://api.imgur.com/3/album/%s' % self.albumID,
@@ -286,7 +288,7 @@ class HowdyIMGClient( object ):
         :param str new_album_name: the new name of the Imgur_ album to use for images.
         :raise ValueError: if images in the new album cannot be accessed.
 
-        .. seealso:: :py:meth:`refreshImages <howdy.email.HowdyIMGClient.refreshImages>`
+        .. seealso:: :py:meth:`refreshImages <howdy.email.HowdyIMGClient.refreshImages>`.
         """
 
         #
@@ -328,7 +330,7 @@ class HowdyIMGClient( object ):
         """
         :returns: a :py:class:`list` of album names in the Imgur_ account. :py:meth:`set_main_album <howdy.email.PlexIMGClient.set_main_album>` can use this method to determine the valid album name to choose.
 
-        .. seealso:: :py:meth:`get_candidate_albums <howdy.email.PlexIMGClient.get_candidate_albums>`
+        .. seealso:: :py:meth:`get_candidate_albums <howdy.email.PlexIMGClient.get_candidate_albums>`.
         """
         return sorted( self.get_candidate_albums( ) )
 
@@ -357,9 +359,10 @@ class HowdyIMGClient( object ):
     def delete_candidate_album( self, candidate_album_name ):
         """
         This deletes the candidate album from the Imgur_ account. This album with that name must exist in the Imgur_ account.
+        
         :param str candidate_album_name: the name of the album to remove, with its underlying images.
         
-        .. seealso:: :py:meth:`refreshImages <howdy.email.HowdyIMGClient.refreshImages>`
+        .. seealso:: :py:meth:`refreshImages <howdy.email.HowdyIMGClient.refreshImages>`.
         """
         cand_albums = self.get_candidate_albums( )
         if cand_albums is None: return
@@ -448,9 +451,9 @@ class HowdyIMGClient( object ):
 
         .. seealso::
 
-           * :py:meth:`refreshImages <howdy.email.HowdyIMGClient.refreshImages>`
-           * :py:meth:`delete_image <howdy.email.HowdyIMGClient.delete_image>`
-           * :py:meth:`change_name <howdy.email.HowdyIMGClient.change_name>`
+           * :py:meth:`refreshImages <howdy.email.HowdyIMGClient.refreshImages>`.
+           * :py:meth:`delete_image <howdy.email.HowdyIMGClient.delete_image>`.
+           * :py:meth:`change_name <howdy.email.HowdyIMGClient.change_name>`.
         
         .. _Base64: https://en.wikipedia.org/wiki/Base64
         """
@@ -491,8 +494,8 @@ class HowdyIMGClient( object ):
 
         .. seealso::
 
-           * :py:meth:`upload_image <howdy.email.HowdyIMGClient.upload_image>`
-           * :py:meth:`change_name <howdy.email.HowdyIMGClient.change_name>`
+           * :py:meth:`upload_image <howdy.email.HowdyIMGClient.upload_image>`.
+           * :py:meth:`change_name <howdy.email.HowdyIMGClient.change_name>`.
         """
         if imgMD5 is None:
             imgMD5 = hashlib.md5( b64img ).hexdigest( )
@@ -517,8 +520,8 @@ class HowdyIMGClient( object ):
 
         .. seealso::
 
-           * :py:meth:`upload_image <howdy.email.HowdyIMGClient.upload_image>`
-           * :py:meth:`delete_image <howdy.email.HowdyIMGClient.delete_image>`
+           * :py:meth:`upload_image <howdy.email.HowdyIMGClient.upload_image>`.
+           * :py:meth:`delete_image <howdy.email.HowdyIMGClient.delete_image>`.
         """
         assert( os.path.basename( new_name ).endswith('.png') )
         if imgMD5 not in self.imghashes:
@@ -644,11 +647,16 @@ class PNGPicObject( object ):
         """
         Launches a :py:class:`QDialog <PyQt5.QtWidgets.QDialog>` that contains the underlying image and some other labels: ``ACTNAME`` is the actual PNG file name, ``URL`` is the image's Imgur_ link, and ``UPLOADED AT`` is the date and time at which the file was uploaded. An example image is shown below,
 
-        .. image:: /_static/email_pngpicobject_infogui.png
+        .. figure:: /_static/email_pngpicobject_infogui.png
            :width: 100%
+           :align: left
+
+           An example PNG_ image that can be stored in the main Imgur_ library. Note the three rows above the image: the *name* of the PNG_ image; its URL; and the date and time it was uploaded.
         
         :param parent: the parent :py:class:`QWidget <PyQt5.QtWidgets.QWidget>` that acts as the :py:class:`QDialog <PyQt5.QtWidgets.QDialog>` window's parent. Can be ``None``.
         :type parent: :py:class:`QWidget <PyQt5.QtWidgets.QWidget>`
+
+        .. _PNG: https://en.wikipedia.org/wiki/Portable_Network_Graphics
         """
         qdl = QDialog( parent )
         qdl.setModal( True )

@@ -119,23 +119,23 @@ def send_email_movie_none( movieName, verify = True ):
 
 def get_summary_body( token, nameSection = False, fullURL = 'http://localhost:32400', verify = True ):
     """
-    Returns the summary body of the Plex_ newsletter email as a LaTeX_ string document, for the Plex_ server.
+    Returns the summary body of the Plex_ newsletter email as a reStructuredText_ string document, for the Plex_ server.
 
     :param str token: the Plex_ access token.
-    :param bool nameSection: if ``True``, then include this summary in its own section called ``"Summary"``. If not, then return as a stand-alone LaTeX_ document.
+    :param bool nameSection: if ``True``, then include this summary in its own section called ``"Summary"``. If not, then return as a stand-alone reStructuredText_ document.
     :param str fullURL: the Plex_ server URL.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     
-    :returns: the LaTeX_ document representing the summary of the media on the Plex_ server.
+    :returns: the reStructuredText_ document representing the summary of the media on the Plex_ server.
     :rtype: str
 
     .. seealso::
     
-       * :py:meth:`get_summary_data_music_remote <howdy.email.email.get_summary_data_music_remote>`
-       * :py:meth:`get_summary_data_movies_remote <howdy.email.email.get_summary_data_movies_remote>`
-       * :py:meth:`get_summary_data_television_remote <howdy.email.email.get_summary_data_television_remote>`
+       * :py:meth:`get_summary_data_music_remote <howdy.email.email.get_summary_data_music_remote>`.
+       * :py:meth:`get_summary_data_movies_remote <howdy.email.email.get_summary_data_movies_remote>`.
+       * :py:meth:`get_summary_data_television_remote <howdy.email.email.get_summary_data_television_remote>`.
 
-    .. _LaTeX: https://www.latex-project.org
+    .. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
     """
     tup_formatting = (
         get_lastupdated_string( dt = core.get_updated_at(
@@ -156,7 +156,7 @@ def send_individual_email_perproc( input_tuple ):
 
     :param tuple input_tuple: an expected four-element :py:class:`tuple`: the HTML email body, the recipient's email, the recipient's name, and the :py:class:`email service resource <googleapiclient.discovery.Resource>`.
 
-    .. seealso:: :py:meth:`send_individual_email <howdy.email.email.send_individual_email>`
+    .. seealso:: :py:meth:`send_individual_email <howdy.email.email.send_individual_email>`.
     """
     mainHTML, email, name, email_service = input_tuple
     while True:
@@ -199,8 +199,8 @@ def send_individual_email_full(
     Sends the HTML email, with optional *single* attachment, to a single recipient email address, using the `GMail API`_. Unlike :py:meth:`send_individual_email_full_withsingleattach <howdy.email.email.send_individual_email_full_withsingleattach>`, the attachment type is *also* set.
 
     :param str mainHTML: the email body as an HTML :py:class:`str` document.
-    :Param str subject: the email subject.
-    :Param str email: the recipient email address.
+    :param str subject: the email subject.
+    :param str email: the recipient email address.
     :param str name: optional argument. If given, the recipient's name.
     :param date mydate: optional argument. The :py:class:`date <datetime.date>` at which the email is sent. Default is :py:meth:`now( ) <datetime.datetime.now>`.
     :param str attach: optional argument. If defined, the Base64_ encoded attachment.
@@ -242,7 +242,7 @@ def send_individual_email_full_withsingleattach(
 
     :param str mainHTML: the email body as an HTML :py:class:`str` document.
     :param str subject: the email subject.
-    :Param str email: the recipient email address.
+    :param str email: the recipient email address.
     :param str name: optional argument. If given, the recipient's name.
     :param date mydate: optional argument. The :py:class:`date <datetime.date>` at which the email is sent. Default is :py:meth:`now( ) <datetime.datetime.now>`.
     :param str attachData: optional argument. If defined, the Base64_ encoded attachment.
@@ -341,7 +341,7 @@ def send_individual_email(
     """
     sends the HTML email to a single recipient email address using the `GMail API`_. The subject is ``"Plex Email Newsletter for <MONTH> <YEAR>"``.
 
-    :Param str mainHTML: the email body as an HTML :py:class:`str` document.
+    :param str mainHTML: the email body as an HTML :py:class:`str` document.
     :param str email: the recipient email address.
     :param str name: optional argument. If given, the recipient's name.
     :param date mydate: optional argument. The :py:class:`date <datetime.date>` at which the email is sent. Default is :py:meth:`now( ) <datetime.datetime.now>`.
@@ -377,14 +377,14 @@ def get_summary_html(
     
     :param str token: the Plex_ access token.
     :param str fullURL: the Plex_ server URL.
-    :param str preambleText: optional argument. The LaTeX_ formatted preamble text (text section *before* summary), if non-empty. Default is ``""``.
-    :param str postambleText: optional argument. The LaTeX_ formatted text, in a section *after* the summary. if non-empty. Default is ``""``.
+    :param str preambleText: optional argument. The reStructuredText_ formatted preamble text (text section *before* summary), if non-empty. Default is ``""``.
+    :param str postambleText: optional argument. The reStructuredText_ formatted text, in a section *after* the summary. if non-empty. Default is ``""``.
     :param str name: optional argument. If given, the recipient's name.
 
     :returns: a two-element :py:class:`tuple`. The first element is an HTML :py:class:`string <str>` document of the Plex_ newletter email. The second element is the full reStructuredText_ :py:class:`string <str>`.
     :rtype: str
     
-    .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`
+    .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`.
 
     .. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
     """
@@ -450,16 +450,16 @@ def _get_album_prifile( prifile ):
 def get_summary_data_music_remote( token, fullURL = 'http://localhost:32400' ):
     """
     This returns summary information on songs from all music libraries on the Plex_ server, for use as part of the Plex_ newsletter sent out to one's Plex_ server friends. The email first summarizes ALL the music data, and then summarizes the music data uploaded and processed since the last newsletter's date. For example,
-
+    
        There are 17379 songs made by 862 artists in 1715 albums. The total size of music media is 300.467 GB. The total duration of music media is 7 months, 13 days, 16 hours, 22 minutes, and 57.155 seconds. Since June 11, 2017, I have added 9692 songs made by 742 artists in 1314 albums. The total size of music media I added is 107.845 GB. The total duration of music media I added is 2 months, 28 days, 21 hours, 48 minutes, and 51.117 seconds.
  
     :param str token: the Plex_ access token.
     :param str fullURL: the Plex_ server URL.
     
-    :returns: a :py:class:`str` description of music media in all music libraries on the Plex_ server.
+    :returns: a :py:class:`string <str>` description of music media in all music libraries on the Plex_ server.
     :rtype: str
 
-    .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`
+    .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`.
     """
     libraries_dict = core.get_libraries( token, fullURL = fullURL, do_full = True )
     if libraries_dict is None: return None
@@ -504,16 +504,16 @@ def get_summary_data_music_remote( token, fullURL = 'http://localhost:32400' ):
 def get_summary_data_television_remote( token, fullURL = 'http://localhost:32400' ):
     """
     This returns summary information on TV media from all television libraries on the Plex_ server, for use as part of the Plex_ newsletter sent out to one's Plex_ server friends. The email first summarizes ALL the TV data, and then summarizes the TV data uploaded and processed since the last newsletter's date. For example,
-    
+
        There are 21380 TV episodes in 240 TV shows. The total size of TV media is 5.381 TB. The total duration of TV media is 1 year, 2 months, 19 days, 13 hours, 35 minutes, and 10.818 seconds. Since June 11, 2017, I have added 10030 TV files in 240 TV shows. The total size of TV media I added is 2.429 TB. The total duration of TV media I added is 6 months, 19 days, 3 hours, 28 minutes, and 17.170 seconds.
 
     :param str token: the Plex_ access token.
     :param str fullURL: the Plex_ server URL.
     
-    :returns: a :py:class:`str` description of TV media in all TV libraries on the Plex_ server.
+    :returns: a :py:class:`string <str>` description of TV media in all TV libraries on the Plex_ server.
     :rtype: str
 
-    .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`
+    .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`.
     """
     libraries_dict = core.get_libraries( token, fullURL = fullURL, do_full = True )
     if libraries_dict is None: return None
@@ -559,10 +559,10 @@ def get_summary_data_movies_remote( token, fullURL = 'http://localhost:32400' ):
     :param str token: the Plex_ access token.
     :param str fullURL: the Plex_ server URL.
     
-    :returns: a :py:class:`list` containing the itemized summaries of movie media from all movie libraries on the Plex_ server. The format of the individual text is in LaTeX_ format.
+    :returns: a :py:class:`list` containing the itemized summaries of movie media from all movie libraries on the Plex_ server. The format of the individual text is in reStructuredText_ format.
     :rtype: list
 
-    .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`
+    .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`.
     """
     libraries_dict = core.get_libraries( token, fullURL = fullURL, do_full = True )
     if libraries_dict is None: return None

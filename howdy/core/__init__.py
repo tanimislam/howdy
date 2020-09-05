@@ -35,7 +35,7 @@ def get_lastupdated_string( dt = datetime.datetime.now( ) ):
     :returns: a :py:class:`str` with this format, ``Saturday, 28 September 2019, at 3:41 AM``.
     :rtype: str
 
-    .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`
+    .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`.
     """
     return dt.strftime('%A, %d %B %Y, at %-I:%M %p')
 
@@ -80,7 +80,7 @@ class QLabelWithSave( PyQt5.QtWidgets.QLabel ):
         """
         take a screen shot of itself and save to a PNG file through a :py:class:`QFileDialog <PyQt5.QtWidgets.QFileDialog>` widget.
 
-        .. seealso:: :py:meth:`QDialogWithPrinting.screenGrab <howdy.core.QDialogWithPrinting.screenGrab>`
+        .. seealso:: :py:meth:`QDialogWithPrinting.screenGrab <howdy.core.QDialogWithPrinting.screenGrab>`.
         """
         fname, _ = QFileDialog.getSaveFileName(
             self, 'Save Pixmap', os.path.expanduser( '~' ),
@@ -131,7 +131,7 @@ class QDialogWithPrinting( PyQt5.QtWidgets.QDialog ):
         """
         take a screen shot of itself and saver to a PNG file through a :py:class:`QFileDialog <PyQt5.QtGui.QFileDialog>` widget.
         
-        .. seealso:: :py:meth:`QLabelWithSave.screenGrab <howdy.core.QLabelWithSave.screenGrab>`
+        .. seealso:: :py:meth:`QLabelWithSave.screenGrab <howdy.core.QLabelWithSave.screenGrab>`.
         """
         fname, _ = QFileDialog.getSaveFileName(
             self, 'Save Screenshot', os.path.expanduser( '~' ),
@@ -284,7 +284,7 @@ class ProgressDialogThread( PyQt5.QtCore.QThread ):
     :type startDialog: :py:class:`pyqtSignal <PyQt5.QtCore.pyqtSignal>`
     :type progress_dialog: :py:class:`ProgressDialog <howdy.core.ProgressDialog>`
     
-    .. seealso:: :py:class:`ProgressDialog <howdy.core.ProgressDialog>`
+    .. seealso:: :py:class:`ProgressDialog <howdy.core.ProgressDialog>`.
     """
     emitString = PyQt5.QtCore.pyqtSignal( str )
     stopDialog = PyQt5.QtCore.pyqtSignal( ) 
@@ -512,7 +512,7 @@ def get_formatted_size( totsizebytes ):
     Returns:
         str: Formatted representation of that file size.
 
-    .. seealso:: :py:meth:`get_formatted_size_MB <howdy.core.get_formatted_size_MB>`
+    .. seealso:: :py:meth:`get_formatted_size_MB <howdy.core.get_formatted_size_MB>`.
     """
     
     sizestring = ''
@@ -538,8 +538,8 @@ def get_formatted_size_MB( totsizeMB ):
     
     :returns: Formatted representation of that file size.
     :rtype: str
-
-    .. seealso:: :py:meth:`get_formatted_size <howdy.core.get_formatted_size>`
+    
+    .. seealso:: :py:meth:`get_formatted_size <howdy.core.get_formatted_size>`.
     """
     if totsizeMB >= 1024:
         size_in_gb = totsizeMB * 1.0 / 1024
@@ -590,7 +590,7 @@ class PlexConfig( Base ):
 
     :var Column service: the name of the configuration service we store. Index on this unique key. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>` of size 65536.
     :var Column data: the JSON formatted information on the data stored here. For instance, username and password can be stored in the following way
-
+    
     .. code-block:: python
 
        { 'username' : USERNAME,

@@ -21,7 +21,7 @@ def return_error_couldnotfind( name ):
     :returns: a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`, with the error message, ``"Failure, could not find any tv shows with search term <name>"``.
     :rtype: str
     
-    .. seealso:: :py:meth:`return_error_raw <howdy.core.return_error_raw>`
+    .. seealso:: :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
     """
     return return_error_raw(
         'Failure, could not find any tv shows with search term %s.' % name )

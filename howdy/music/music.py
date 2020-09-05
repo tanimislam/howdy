@@ -18,8 +18,8 @@ def oauth_store_google_credentials( credentials ):
     Stores the `Google OAuth2`_ credentials, in the form of a :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` object, into the SQLite3_ configuration database for the :py:class:`MobileClient <gmusicapi.mobileclient.MobileClient>` manager.
     
     :param credentials: the :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` object to store into the database.
-
-    .. seealso:: :py:meth:`oauth_get_google_credentials <howdy.music.music.oauth_get_google_credentials>`
+    
+    .. seealso:: :py:meth:`oauth_get_google_credentials <howdy.music.music.oauth_get_google_credentials>`.
 
     .. _`Google OAuth2` : https://developers.google.com/identity/protocols/OAuth2
     """
@@ -41,7 +41,7 @@ def oauth_get_google_credentials( ):
     :returns: a :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` form of the `Google Oauth2`_ credentials for various Oauth2 services.
     :rtype: :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>`
 
-    .. seealso:: :py:meth:`oauth_store_google_credentials <howdy.music.music.oauth_store_google_credentials>`
+    .. seealso:: :py:meth:`oauth_store_google_credentials <howdy.music.music.oauth_store_google_credentials>`.
     """
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'gmusic_mobileclient' ).first( )
     if val is None: return None
@@ -517,18 +517,17 @@ class MusicInfo( object ):
 
         .. code-block:: console
 
-             Air has 7 studio albums.
+           Air has 7 studio albums.
 
-             Studio Album                         Year    # Tracks
-             ---------------------------------  ------  ----------
-             Moon Safari                          1998          10
-             10 000 Hz Legend                     2001          12
-             City Reading (Tre Storie Western)    2003          19
-             Talkie Walkie                        2004          11
-             Pocket Symphony                      2006          12
-             Love 2                               2009          12
-             Music for Museum                     2014           9
-
+           Studio Album                         Year    # Tracks
+           ---------------------------------  ------  ----------
+           Moon Safari                          1998          10
+           10 000 Hz Legend                     2001          12
+           City Reading (Tre Storie Western)    2003          19
+           Talkie Walkie                        2004          11
+           Pocket Symphony                      2006          12
+           Love 2                               2009          12
+           Music for Museum                     2014           9
         """
         all_album_data = sorted(
             map(lambda album:
@@ -544,11 +543,12 @@ class MusicInfo( object ):
 def gmusicmanager( useMobileclient = False, verify = True, device_id = None ):
     """
     Returns a :py:class:`contextmanager <contextlib.contextmanager>` wrapped GmusicAPI_ manager used to perform operations on one's `Google Play Music`_ account.
+    
     :param bool useMobileClient: optional argument. If ``True``, use the :py:class:`MobileClient <gmusicapi.MobileClient>` manager, otherwise use the :py:class:`Musicmanager <gmusicapi.MusicManager>` manager. Default is ``False``.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :param str device_id: optional argument. If defined, then attempt to use this MAC ID to register the music manager.
-
-    .. seealso:: :py:meth:`get_gmusicmanager <howdy.plexmusic.plexmusic.get_gmusicmanager>`
+    
+    .. seealso:: :py:meth:`get_gmusicmanager <howdy.plexmusic.plexmusic.get_gmusicmanager>`.
 
     .. _`Google Play Music`: https://play.google.com/music/listen
     """
@@ -567,7 +567,7 @@ def gmusicmanager_fixlogin( mmg ):
     :raise ValueError: if the music manager has not errored out.
     :raise ValueError: if the music manager is not a :py:class:`Mobileclient <gmusicapi.Mobileclient>`.
 
-    .. seealso:: :py:meth:`get_gmusicmanager <howdy.plexmusic.plexmusic.get_gmusicmanager>`
+    .. seealso:: :py:meth:`get_gmusicmanager <howdy.plexmusic.plexmusic.get_gmusicmanager>`.
     """
     assert( isinstance( mmg, gmusicapi.Mobileclient ) ), "error, music manager object must be a Mobileclient"
     assert( len( mmg.error_device_ids ) != 0 ), "error, did not find the right device_id previously."
@@ -587,7 +587,7 @@ def get_gmusicmanager( useMobileclient = False, verify = True, device_id = None 
     :raise ValueError: if cannot instantiate the Musicmanager.
     :raise AssertionError: if cannot get machine's MAC id.
 
-    .. seealso:: :py:meth:`gmusicmanager <howdy.plexmusic.plexmusic.gmusicmanager>`
+    .. seealso:: :py:meth:`gmusicmanager <howdy.plexmusic.plexmusic.gmusicmanager>`.
     """
 
     #

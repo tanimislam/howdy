@@ -52,7 +52,7 @@ class TMDBEngine( object ):
     """
     The singleton class that, once called, initializes movie genre information from the TMDB_ database. This object can then be accessed to find TMDB_ database genre IDs from genres or vice-versa. This also loads in all TTF fonts located in the ``resources`` directory.
 
-    .. seealso:: :py:class:`TMDBEngineSimple <howdy.movie.TMDBEngineSimple>`
+    .. seealso:: :py:class:`TMDBEngineSimple <howdy.movie.TMDBEngineSimple>`.
     """
     
     class __TMDBEngine( object ):
@@ -132,7 +132,7 @@ class TMDBEngineSimple( object ):
     """
     The singleton class that, once called, initializes movie genre information from the TMDB_ database. This object can then be accessed to find TMDB_ database genre IDs from genres or vice-versa. Unlike :py:class:`TMDBEngine <howdy.movie.TMDBEngine>`, this also does not contain the TMDB_ API key.
 
-    .. seealso:: :py:class:`TMDBEngine <howdy.movie.TMDBEngine>`
+    .. seealso:: :py:class:`TMDBEngine <howdy.movie.TMDBEngine>`.
     """
     
     class __TMDBEngine( object ):

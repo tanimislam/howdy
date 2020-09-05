@@ -152,10 +152,11 @@ def create_deluge_client( url, port, username, password ):
 
     :returns: a lightweight `Deluge RPC client`_.
 
-    .. seealso:: 
-      * :py:meth:`get_deluge_client <howdy.core.core_deluge.get_deluge_client>`
-      * :py:meth:`get_deluge_credentials <howdy.core.core_deluge.get_deluge_credentials>`
-      * :py:meth:`push_deluge_credentials <howdy.core.core_deluge.push_deluge_credentials>`
+    .. seealso::
+    
+       * :py:meth:`get_deluge_client <howdy.core.core_deluge.get_deluge_client>`.
+       * :py:meth:`get_deluge_credentials <howdy.core.core_deluge.get_deluge_credentials>`.
+       * :py:meth:`push_deluge_credentials <howdy.core.core_deluge.push_deluge_credentials>`.
 
     .. _`Deluge RPC client`: https://github.com/JohnDoee/deluge-client
     """
@@ -173,9 +174,10 @@ def get_deluge_client( ):
     :rtype: tuple
 
     .. seealso::
-      * :py:meth:`create_deluge_client <howdy.core.core_deluge.create_deluge_client>`
-      * :py:meth:`get_deluge_credentials <howdy.core.core_deluge.get_deluge_credentials>`
-      * :py:meth:`push_deluge_credentials <howdy.core.core_deluge.push_deluge_credentials>`
+    
+       * :py:meth:`create_deluge_client <howdy.core.core_deluge.create_deluge_client>`.
+       * :py:meth:`get_deluge_credentials <howdy.core.core_deluge.get_deluge_credentials>`.
+       * :py:meth:`push_deluge_credentials <howdy.core.core_deluge.push_deluge_credentials>`.
     """
     query = session.query( PlexConfig ).filter(
         PlexConfig.service == 'deluge' )
@@ -213,9 +215,10 @@ def get_deluge_credentials( ):
     :rtype: dict
 
     .. seealso::
-      * :py:meth:`create_deluge_client <howdy.core.core_deluge.create_deluge_client>`
-      * :py:meth:`get_deluge_client <howdy.core.core_deluge.get_deluge_client>`
-      * :py:meth:`push_deluge_credentials <howdy.core.core_deluge.push_deluge_credentials>`
+    
+       * :py:meth:`create_deluge_client <howdy.core.core_deluge.create_deluge_client>`.
+       * :py:meth:`get_deluge_client <howdy.core.core_deluge.get_deluge_client>`.
+       * :py:meth:`push_deluge_credentials <howdy.core.core_deluge.push_deluge_credentials>`.
     """
     val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'deluge' ).first( )
@@ -235,9 +238,10 @@ def push_deluge_credentials( url, port, username, password ):
     :rtype: str
 
     .. seealso::
-      * :py:meth:`create_deluge_client <howdy.core.core_deluge.create_deluge_client>`
-      * :py:meth:`get_deluge_client <howdy.core.core_deluge.get_deluge_client>`
-      * :py:meth:`get_deluge_credentials <howdy.core.core_deluge.get_deluge_credentials>`
+    
+       * :py:meth:`create_deluge_client <howdy.core.core_deluge.create_deluge_client>`.
+       * :py:meth:`get_deluge_client <howdy.core.core_deluge.get_deluge_client>`.
+       * :py:meth:`get_deluge_credentials <howdy.core.core_deluge.get_deluge_credentials>`.
     """
     
     #
@@ -300,7 +304,7 @@ def deluge_add_torrent_file( client, torrent_file_name ):
     
     :returns: if successful, returns the MD5 hash of the uploaded torrent as a :py:class:`str`. If unsuccessful, returns ``None``.
 
-    .. seealso:: :py:meth:`deluge_add_torrent_file_as_data <howdy.core.core_deluge.deluge_add_torrent_file_as_data>`
+    .. seealso:: :py:meth:`deluge_add_torrent_file_as_data <howdy.core.core_deluge.deluge_add_torrent_file_as_data>`.
     """
     if not deluge_is_torrent_file( torrent_file_name ): return None
     return deluge_add_torrent_file_as_data(
@@ -318,7 +322,7 @@ def deluge_add_torrent_file_as_data( client, torrent_file_name,
     
     :returns: if successful, returns the MD5 hash of the uploaded torrent as a :py:class:`str`. If unsuccessful, returns ``None``.
 
-    .. seealso:: :py:meth:`deluge_add_torrent_file <howdy.core.core_deluge.deluge_add_torrent_file>`
+    .. seealso:: :py:meth:`deluge_add_torrent_file <howdy.core.core_deluge.deluge_add_torrent_file>`.
     """
     baseName = os.path.basename( torrent_file_name )
     torrentId = client.call(

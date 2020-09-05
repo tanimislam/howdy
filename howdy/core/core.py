@@ -25,12 +25,10 @@ urllib3.disable_warnings( )
 
 def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
     """
-    Changes the mapping of one member of the Plex_ server's emails from an old set of emails to a new set of emails. The command line tool, ``plex_config_cli.py``, is a front end to the lower-level functionality implemented here. That command line's tool functionality is described in some detail in the Sphinx documentation for that tool.
+    Changes the mapping of one member of the Plex_ server's emails from an old set of emails to a new set of emails. The command line tool, :ref:`howdy_core_cli`, is a front end to the lower-level functionality implemented here.
 
     :param str plex_email: the email of a Plex_ server member whose mapping of emails is to be changed.
-    
     :param list plex_emails: the emails of all members of the Plex_ server.
-    
     :param list new_emails: the mapping to be done. None of the emails in ``new_emails`` can be in the Plex_ server.
     """
     assert( plex_email in plex_emails )
@@ -48,13 +46,10 @@ def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
     session.commit( )
 
 def get_date_from_datestring( dstring ):
-    """Returns a :py:class:`date <datetime.date>` object from
-    a date string with the format, "January 1, 2000".
+    """Returns a :py:class:`date <datetime.date>` object from a date string with the format, "January 1, 2000".
     
-    :param str dstring: the initial date string.
-    
+    :param str dstring: the initial date string.    
     :returns: its :py:class:`date <datetime.date>` object representation.
-    
     :rtype: :py:class:`date <datetime.date>`
     """
     try: return datetime.datetime.strptime( dstring, '%B %d, %Y' ).date( )
@@ -64,7 +59,7 @@ def get_date_from_datestring( dstring ):
 
 def rstToHTML( rstString ):
     """Converts a reStructuredText_ string into HTML, then prettifies the intermediate HTML using BeautifulSoup_.
-
+    
     :param str rstString: the initial restructuredText_ string.
     :returns: the final prettified, formatted HTML :py:class:`string <str>`.
     :rtype: str
@@ -80,17 +75,18 @@ def rstToHTML( rstString ):
         return None
 
 def processValidHTMLWithPNG( html, pngDataDict, doEmbed = False ):
-    """Returns a prettified HTML document, using BeautifulSoup_, including all PNG image data (whether URLs or `Base 64 encoded`_ data) in ``<img>`` tags.
+    """Returns a prettified HTML document, using BeautifulSoup_, including all PNG_ image data (whether URLs or `Base 64 encoded`_ data) in ``<img>`` tags.
 
     :param str html: the initial HTML document into which images are to be embedded.
     
-    :param dict pngDataDict: dictionary of PNG data. Key is the name of the PNG file (must end in .png). Value is a tuple of type ``(b64data, widthInCM, url)``. ``b64data`` is the `Base 64 encoded`_ binary representation of the PNG image. ``widthInCm`` is the image width in cm. ``url`` is the URL address of the image.
+    :param dict pngDataDict: dictionary of PNG_ data. Key is the name of the PNG_ file (must end in .png). Value is a tuple of type ``(b64data, widthInCM, url)``. ``b64data`` is the `Base 64 encoded`_ binary representation of the PNG_ image. ``widthInCm`` is the image width in cm. ``url`` is the URL address of the image.
     
     :param bool doEmbed: If ``True``, then the image source tag uses the `Base 64 encoded` data. If ``False``, the image source tag is the URL.
     :returns: prettified HTML document with the images located in it.
     :rtype: str
 
     .. _`Base 64 encoded`: https://en.wikipedia.org/wiki/Base64
+    .. _PNG: https://en.wikipedia.org/wiki/Portable_Network_Graphics
     """
     htmlData = BeautifulSoup( html, 'lxml' )
     pngNames = set(filter(
@@ -120,10 +116,9 @@ def getTokenForUsernamePassword( username, password, verify = True ):
 
     .. seealso::
     
-      * :py:meth:`checkServerCredentials <howdy.core.core.checkServerCredentials>`.
-      * :py:meth:`getCredentials <howdy.core.core.getCredentials>`.
-      * :py:meth:`pushCredentials <howdy.core.core.pushCredentials>`.
-
+       * :py:meth:`checkServerCredentials <howdy.core.core.checkServerCredentials>`.
+       * :py:meth:`getCredentials <howdy.core.core.getCredentials>`.
+       * :py:meth:`pushCredentials <howdy.core.core.pushCredentials>`.
     """
     headers = { 'X-Plex-Client-Identifier' : str( uuid.uuid4( ) ),
                 'X-Plex-Platform' : 'Linux',
@@ -151,7 +146,7 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
     :returns: a tuple of server URL and Plex_ access token.
     :rtype: tuple
 
-    .. seealso:: :py:meth:`getCredentials <howdy.core.core.getCredentials>`
+    .. seealso:: :py:meth:`getCredentials <howdy.core.core.getCredentials>`.
 
     .. _Plex: https://plex.tv
 
@@ -239,7 +234,7 @@ def getCredentials( verify = True, checkWorkingServer = True ):
     :returns: the Plex_ account tuple of ``(username, password)``.
     :rtype: tuple
 
-    .. seealso:: :py:meth:`pushCredentials <howdy.core.core.pushCredentials>`
+    .. seealso:: :py:meth:`pushCredentials <howdy.core.core.pushCredentials>`.
 
     """
     val = session.query( PlexConfig ).filter(
@@ -262,7 +257,7 @@ def pushCredentials( username, password ):
     :returns: if successful, return a string, ``SUCCESS``. If unsuccessful, returns a string reason of why it failed.
     :rtype: str
 
-    .. seealso:: :py:meth:`getCredentials <howdy.core.core.getCredentials>`
+    .. seealso:: :py:meth:`getCredentials <howdy.core.core.getCredentials>`.
 
     """
     #
@@ -310,7 +305,7 @@ def get_all_servers( token, verify = True ):
     
     :rtype: dict
 
-    .. seealso:: :py:meth:`checkServerCredentials <howdy.core.core.checkServerCredentials>`
+    .. seealso:: :py:meth:`checkServerCredentials <howdy.core.core.checkServerCredentials>`.
 
     """
     response = requests.get( 'https://plex.tv/api/resources',
@@ -339,13 +334,12 @@ def get_all_servers( token, verify = True ):
     return server_dict
 
 def get_pic_data( plexPICURL, token = None ):
-    """Get the PNG data as a :py:class:`Response <requests.Response>` object, from a movie picture URL on the Plex_ server.
+    """Get the PNG_ data as a :py:class:`Response <requests.Response>` object, from a movie picture URL on the Plex_ server.
 
     :param str plexPICURL: the movie picture URL.
     :param str token: the Plex_ access token.
-    :returns: the PNG data for the movie image.
+    :returns: the PNG_ data for the movie image.
     :rtype: :py:class:`Response <requests.Response>`
-
     """
     if token is None: params = { }
     else: params = { 'X-Plex-Token' : token }
@@ -382,7 +376,7 @@ def get_email_contacts( token, verify = True ):
     :returns: list of email addresses of Plex_ friends.
     :rtype: list 
 
-    .. seealso: :py:method:`get_mapped_email_contacts <howdy.core.core.get_mapped_email_contacts>`
+    .. seealso: :py:method:`get_mapped_email_contacts <howdy.core.core.get_mapped_email_contacts>`.
 
     """
     
@@ -403,7 +397,7 @@ def get_mapped_email_contacts( token, verify = True ):
     :returns: a list of email addresses for Howdy_ emails.
     :rtype: list
 
-    .. seealso: :py:method:`get_email_contacts <howdy.core.core.get_email_contacts>`
+    .. seealso: :py:method:`get_email_contacts <howdy.core.core.get_email_contacts>`.
     """
     emails = get_email_contacts( token, verify = verify )
     query = session.query( PlexGuestEmailMapping )
@@ -425,7 +419,7 @@ def get_current_date_newsletter( ):
     :returns: the date and time of the most recent previous email newsletter.
     :rtype: :py:class:`datetime <datetime.datetime>`.
     
-    .. seealso:: :py:meth:`set_date_newsletter <howdy.core.core.set_date_newsletter>`
+    .. seealso:: :py:meth:`set_date_newsletter <howdy.core.core.set_date_newsletter>`.
     """
     query = session.query( LastNewsletterDate )
     backthen = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )
@@ -1107,7 +1101,7 @@ def get_library_stats( key, token, fullURL = 'http://localhost:32400', sinceDate
     :returns: a dictionary of summary statistics on the Plex_ library.
     :rtype: dict
 
-    .. seealso:: :py:meth:`get_library_data <howdy.core.core.get_library_data>`
+    .. seealso:: :py:meth:`get_library_data <howdy.core.core.get_library_data>`.
     """
     library_dict = get_libraries( token, fullURL = fullURL, do_full = True )
     if library_dict is None: return None
@@ -1169,13 +1163,12 @@ def get_libraries( token, fullURL = 'http://localhost:32400', do_full = False, t
 
     .. seealso:
     
-        * :py:meth:`fill_out_movies_stuff <howdy.core.core.fill_out_movies_stuff>`.
-        * :py:meth:`get_movie_titles_by_year <howdy.core.core_attic.get_movie_titles_by_year>`.
-        * :py:meth:`get_lastN_movies <howdy.core.core.get_lastN_movies>`.
-        * :py:meth:`get_summary_data_music_remote <howdy.email.email.get_summary_data_music_remote>`.
-        * :py:meth:`get_summary_data_television_remote <howdy.email.email.get_summary_data_television_remote>`.
-        * :py:meth:`get_summary_data_movies_remote <howdy.email.email.get_summary_data_movies_remote>`.
-
+       * :py:meth:`fill_out_movies_stuff <howdy.core.core.fill_out_movies_stuff>`.
+       * :py:meth:`get_movie_titles_by_year <howdy.core.core_attic.get_movie_titles_by_year>`.
+       * :py:meth:`get_lastN_movies <howdy.core.core.get_lastN_movies>`.
+       * :py:meth:`get_summary_data_music_remote <howdy.email.email.get_summary_data_music_remote>`.
+       * :py:meth:`get_summary_data_television_remote <howdy.email.email.get_summary_data_television_remote>`.
+       * :py:meth:`get_summary_data_movies_remote <howdy.email.email.get_summary_data_movies_remote>`.
     """
     params = { 'X-Plex-Token' : token }
     response = requests.get(
@@ -1305,8 +1298,8 @@ def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
 
     .. seealso:
     
-        * :py:meth:`get_summary_data_movies_remote <howdy.email.email.get_summary_data_movies_remote>`.
-        * :py:meth:`get_summary_data_movies <howdy.email.email.get_summary_data_movies>`.
+       * :py:meth:`get_summary_data_movies_remote <howdy.email.email.get_summary_data_movies_remote>`.
+       * :py:meth:`get_summary_data_movies <howdy.email.email.get_summary_data_movies>`.
 
     .. _TMDB: https://www.themoviedb.org
     """
@@ -1402,11 +1395,11 @@ def oauthCheckGoogleCredentials( bypass = False ):
 
     .. seealso::
 
-          * :py:meth:`oauthCheckGoogleCredentials <howdy.core.core.oauthCheckGoogleCredentials>`.
-          * :py:meth:`oauthGetGoogleCredentials <howdy.core.core.oauthGetGoogleCredentials>`.
-          * :py:meth:`oauthGetOauth2ClientGoogleCredentials <howdy.core.core.oauthGetOauth2ClientGoogleCredentials>`.
-          * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
-          * :py:meth:`oauth_store_google_credentials <howdy.core.core.oauth_store_google_credentials>`.
+       * :py:meth:`oauthCheckGoogleCredentials <howdy.core.core.oauthCheckGoogleCredentials>`.
+       * :py:meth:`oauthGetGoogleCredentials <howdy.core.core.oauthGetGoogleCredentials>`.
+       * :py:meth:`oauthGetOauth2ClientGoogleCredentials <howdy.core.core.oauthGetOauth2ClientGoogleCredentials>`.
+       * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
+       * :py:meth:`oauth_store_google_credentials <howdy.core.core.oauth_store_google_credentials>`.
 
     .. _`Google OAuth2` : https://developers.google.com/identity/protocols/OAuth2
     
@@ -1429,10 +1422,10 @@ def oauthGetGoogleCredentials( verify = True ):
     
     .. seealso::
 
-      * :py:meth:`oauthGetGoogleCredentials <howdy.core.core.oauthGetGoogleCredentials>`.
-      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <howdy.core.core.oauthGetOauth2ClientGoogleCredentials>`.
-      * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
-      * :py:meth:`oauth_store_google_credentials <howdy.core.core.oauth_store_google_credentials>`.
+       * :py:meth:`oauthGetGoogleCredentials <howdy.core.core.oauthGetGoogleCredentials>`.
+       * :py:meth:`oauthGetOauth2ClientGoogleCredentials <howdy.core.core.oauthGetOauth2ClientGoogleCredentials>`.
+       * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
+       * :py:meth:`oauth_store_google_credentials <howdy.core.core.oauth_store_google_credentials>`.
     """
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is None: return None
@@ -1452,10 +1445,10 @@ def oauthGetOauth2ClientGoogleCredentials( ):
     
     .. seealso::
 
-      * :py:meth:`oauthCheckGoogleCredentials <howdy.core.core.oauthCheckGoogleCredentials>`.
-      * :py:meth:`oauthGetGoogleCredentials <howdy.core.core.oauthGetGoogleCredentials>`.
-      * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
-      * :py:meth:`oauth_store_google_credentials <howdy.core.core.oauth_store_google_credentials>`.
+       * :py:meth:`oauthCheckGoogleCredentials <howdy.core.core.oauthCheckGoogleCredentials>`.
+       * :py:meth:`oauthGetGoogleCredentials <howdy.core.core.oauthGetGoogleCredentials>`.
+       * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
+       * :py:meth:`oauth_store_google_credentials <howdy.core.core.oauth_store_google_credentials>`.
 
     .. _Howdy: https://howdy.readthedocs.io
     """
@@ -1472,28 +1465,28 @@ def oauth_generate_google_permission_url( ):
     
       1. Get the  :py:class:`OAuth2WebServerFlow <oauth2client.client.OAuth2WebServerFlow>` and authentication URI.
 
-      .. code-block:: python
-      
-        flow, auth_uri = oauth_generate_google_permission_url( )
+         .. code-block:: python
+
+            flow, auth_uri = oauth_generate_google_permission_url( )
 
       2. Go to the URL, ``auth_uri``, in a browser, grant permissions, and copy the authorization code in the browser window. This authorization code is referred to as ``authorization_code``.
 
       3. Create the  :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` using ``authorization_code``.
     
-      .. code-block:: python
+         .. code-block:: python
 
-        credentials = flow.step2_exchange( authorization_code )
+            credentials = flow.step2_exchange( authorization_code )
 
-    :returns: a :py:class:`tuple` of two elements. The first element is an OAuth2_ web server flow object of type :py:class:`OAuth2WebServerFlow <oauth2client.client.OAuth2WebServerFlow>`. The second element is the redirection URI that redirects the user to begin the authorization flow.
+    :returns: a :py:class:`tuple` of two elements. The first element is an :py:class:`OAuth2WebServerFlow <oauth2client.client.OAuth2WebServerFlow>` web server flow object. The second element is the redirection URI :py:class:`string <str>` that redirects the user to begin the authorization flow.
     :rtype: tuple
     
     .. seealso::
 
-      * :py:meth:`oauthCheckGoogleCredentials <howdy.core.core.oauthCheckGoogleCredentials>`.
-      * :py:meth:`oauthGetGoogleCredentials <howdy.core.core.oauthGetGoogleCredentials>`.
-      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <howdy.core.core.oauthGetOauth2ClientGoogleCredentials>`.
-      * :py:meth:`oauth_store_google_credentials <howdy.core.core.oauth_store_google_credentials>`.
-    
+       * :py:meth:`oauthCheckGoogleCredentials <howdy.core.core.oauthCheckGoogleCredentials>`.
+       * :py:meth:`oauthGetGoogleCredentials <howdy.core.core.oauthGetGoogleCredentials>`.
+       * :py:meth:`oauthGetOauth2ClientGoogleCredentials <howdy.core.core.oauthGetOauth2ClientGoogleCredentials>`.
+       * :py:meth:`oauth_store_google_credentials <howdy.core.core.oauth_store_google_credentials>`.
+
     .. _Oauth2: https://oauth.net/2
     """
     
@@ -1526,10 +1519,10 @@ def oauth_store_google_credentials( credentials ):
 
     .. seealso::
 
-      * :py:meth:`oauthCheckGoogleCredentials <howdy.core.core.oauthCheckGoogleCredentials>`.
-      * :py:meth:`oauthGetGoogleCredentials <howdy.core.core.oauthGetGoogleCredentials>`.
-      * :py:meth:`oauthGetOauth2ClientGoogleCredentials <howdy.core.core.oauthGetOauth2ClientGoogleCredentials>`.
-      * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
+       * :py:meth:`oauthCheckGoogleCredentials <howdy.core.core.oauthCheckGoogleCredentials>`.
+       * :py:meth:`oauthGetGoogleCredentials <howdy.core.core.oauthGetGoogleCredentials>`.
+       * :py:meth:`oauthGetOauth2ClientGoogleCredentials <howdy.core.core.oauthGetOauth2ClientGoogleCredentials>`.
+       * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
     """
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'google' ).first( )
     if val is not None:
@@ -1557,8 +1550,8 @@ def store_jackett_credentials( url, apikey, verify = True ):
 
     .. seealso::
 
-      * :py:meth:`get_jackett_credentials <howdy.core.core.get_jackett_credentials>`.
-      * :py:meth:`check_jackett_credentials <howdy.core.core.check_jackett_credentials>`.
+       * :py:meth:`get_jackett_credentials <howdy.core.core.get_jackett_credentials>`.
+       * :py:meth:`check_jackett_credentials <howdy.core.core.check_jackett_credentials>`.
     """
     actURL, status = check_jackett_credentials(
         url, apikey, verify = verify )
@@ -1589,8 +1582,8 @@ def get_jackett_credentials( ):
 
     .. seealso::
 
-      * :py:meth:`check_jackett_credentials <howdy.core.core.check_jackett_credentials>`.
-      * :py:meth:`store_jackett_credentials <howdy.core.core.store_jackett_credentials>`.
+       * :py:meth:`check_jackett_credentials <howdy.core.core.check_jackett_credentials>`.
+       * :py:meth:`store_jackett_credentials <howdy.core.core.store_jackett_credentials>`.
     
     .. _Jackett: https://github.com/Jackett/Jackett
     """
@@ -1617,8 +1610,8 @@ def check_jackett_credentials( url, apikey, verify = True ):
 
     .. seealso::
     
-      * :py:meth:`get_jackett_credentials <howdy.core.core.get_jackett_credentials>`.
-      * :py:meth:`store_jackett_credentials <howdy.core.core.store_jackett_credentials>`.
+       * :py:meth:`get_jackett_credentials <howdy.core.core.get_jackett_credentials>`.
+       * :py:meth:`store_jackett_credentials <howdy.core.core.store_jackett_credentials>`.
     """
     endpoint = 'api/v2.0/indexers/all/results/torznab/api'
     #
@@ -1667,8 +1660,8 @@ def get_imgurl_credentials( ):
 
     .. seealso::
 
-      * :py:meth:`check_imgurl_credentials <howdy.core.core.check_imgurl_credentials>`.
-      * :py:meth:`store_imgurl_credentials <howdy.core.core.store_imgurl_credentials>`.
+       * :py:meth:`check_imgurl_credentials <howdy.core.core.check_imgurl_credentials>`.
+       * :py:meth:`store_imgurl_credentials <howdy.core.core.store_imgurl_credentials>`.
     
     .. _Imgur: https://imgur.com/
     """
@@ -1695,9 +1688,8 @@ def check_imgurl_credentials(
 
     .. seealso::
 
-      * :py:meth:`get_imgurl_credentials <howdy.core.core.get_imgurl_credentials>`.
-      * :py:meth:`store_imgurl_credentials <howdy.core.core.store_imgurl_credentials>`.
-    
+       * :py:meth:`get_imgurl_credentials <howdy.core.core.get_imgurl_credentials>`.
+       * :py:meth:`store_imgurl_credentials <howdy.core.core.store_imgurl_credentials>`.
     """
     response = requests.post(
          'https://api.imgur.com/oauth2/token',
@@ -1728,8 +1720,8 @@ def store_imgurl_credentials( clientID, clientSECRET, clientREFRESHTOKEN, verify
 
     .. seealso::
 
-      * :py:meth:`check_imgurl_credentials <howdy.core.core.check_imgurl_credentials>`.
-      * :py:meth:`get_imgurl_credentials <howdy.core.core.get_imgurl_credentials>`.
+       * :py:meth:`check_imgurl_credentials <howdy.core.core.check_imgurl_credentials>`.
+       * :py:meth:`get_imgurl_credentials <howdy.core.core.get_imgurl_credentials>`.
     """
     isValid =  check_imgurl_credentials(
         clientID, clientSECRET, clientREFRESHTOKEN, verify = verify )
@@ -1757,7 +1749,7 @@ def set_date_newsletter( ):
     """
     sets the date of the Plex_ newsletter to :py:meth:`now() <datetime.datetime.now>`.
 
-    .. seealso:: :py:meth:`get_current_date_newsletter <howdy.core.core.get_current_date_newsletter>`
+    .. seealso:: :py:meth:`get_current_date_newsletter <howdy.core.core.get_current_date_newsletter>`.
     """
     query = session.query( LastNewsletterDate )
     backthen = datetime.datetime.strptime( '1900-01-01', '%Y-%m-%d' ).date( )

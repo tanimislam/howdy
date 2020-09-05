@@ -38,7 +38,7 @@ def save_tvdb_api( username, apikey, userkey, verify = True ):
     :returns: a satus :py:class:`string <str>`. If successful, returns ``"SUCCESS"``. If unsuccessful, returns ``"FAILURE, COULD NOT SAVE TVDB API STUFF"``.
     :rtype: str
 
-    .. seealso:: :py:meth:`check_tvdb_api <howdy.tv.check_tvdb_api>`
+    .. seealso:: :py:meth:`check_tvdb_api <howdy.tv.check_tvdb_api>`.
     """
     #
     ## first check if works
@@ -68,7 +68,7 @@ def check_tvdb_api( username, apikey, userkey, verify = True ):
 
 def get_tvdb_api( ):
     """
-    Returns the :py:class:`dictionary <dict>` of TVDB_ API credentials (see  :ref:`TVDB API configuation <the_television_database_api>`), taken from the ``tvdb`` configuration service in the ``plexconfig`` table. The form of the dictionary is,
+    Returns the :py:class:`dictionary <dict>` of TVDB_ API credentials (see :ref:`TVDB API configuation <the_television_database_api>`), taken from the ``tvdb`` configuration service in the ``plexconfig`` table. The form of the dictionary is,
 
     .. code-block:: python
 
@@ -80,8 +80,7 @@ def get_tvdb_api( ):
 
     :returns: the :py:class:`dictionary <dict>` of TVDB_ API credentials.
     :rtype: dict
-    :raises: ValuerError: if the TVDB_ API credentials are not found in the ``plexconfig`` table.
-    
+    :raises: ValueError: if the TVDB_ API credentials are not found in the ``plexconfig`` table.
     """
     query = session.query( PlexConfig ).filter( PlexConfig.service == 'tvdb' )
     val = query.first( )
@@ -94,23 +93,17 @@ def get_tvdb_api( ):
 
 def get_token( verify = True, data = None ):
     """
-    Returns the TVDB_ API token that allows access to the TVDB_ database. If there are errors, then returns :py:class:`None`.
+    Returns the TVDB_ API token that allows access to the TVDB_ database. If there are errors, then returns ``None``.
 
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
-    :param dict data: optional argument. If provided, must be a dictionary containing the TVDB_ API credentials as described in :py:meth:`get_tvdb_api( ) <howdy.tv.tv.get_tvdb_api>`. Otherwise, returns the dictionary returned by :py:meth:`get_tvdb_api( ) <howdy.tv.tv.get_tvdb_api>`.
-
+    :param dict data: optional argument. If provided, must be a dictionary containing the TVDB_ API credentials as described in :py:meth:`get_tvdb_api <howdy.tv.tv.get_tvdb_api>`.
+    
     :returns: the TVDB_ API :py:class:`string <str>` token, otherwise returns :py:class:`None` if there are errors.
     :rtype: str
     """
     if data is None:
         try: data = get_tvdb_api( )
         except: return None
-    #
-    ## as of 12 NOVEMBER 2019, api.thetvdb.com does not work. Black-hole and /dev/null type
-    ## responses from administrative staff. Here is what works. It is rickety, it is god-awful,
-    ## if you have a problem tweet it. If you raise enough of a stink, you may be banned from
-    ## using api.thetvdb.com.
-    ##
     import shlex, subprocess
     from distutils.spawn import find_executable
 
@@ -154,7 +147,7 @@ def refresh_token( token, verify = True ):
 
     :param str token: a previous valid TVDB_ API access token.
     :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
-    :returns: a new TVDB_ API :py:class:`string <str>` token. If there are others, returns :py:class:`None`.
+    :returns: a new TVDB_ API :py:class:`string <str>` token. If there are others, returns ``None``.
     :rtype: str
     """
     headers = { 'Content-Type' : 'application/json',

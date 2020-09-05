@@ -21,7 +21,7 @@ class TVShow( object ):
     :param dict seriesInfo: the subdictionary of the Plex_ TV library information returned by :py:meth:`get_library_data <howdy.core.core.get_library_data>` associated with ``seriesName``. If ``tvdata`` is the Plex_ TV library information, then ``seriesInfo = tvdata[ seriesName ]``.
     :param str token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
-    :Param bool showSpecials: optional argument. If ``True``, then also collect information on TV specials associated with this TV show. Default is ``False``.
+    :param bool showSpecials: optional argument. If ``True``, then also collect information on TV specials associated with this TV show. Default is ``False``.
     
     :var int seriesId:  the TVDB_ series ID.
     :var str seriesName: the series name,
@@ -192,7 +192,7 @@ class TVShow( object ):
 
         :rtype: dict
 
-        .. seealso:: :py:meth:`get_tot_epdict_tvdb <howdy.tv.tv.get_tot_epdict_tvdb>`
+        .. seealso:: :py:meth:`get_tot_epdict_tvdb <howdy.tv.tv.get_tot_epdict_tvdb>`.
         """
         tot_epdict = { }
         seasons = set( self.seasonDict.keys( ) ) - set([0,])
@@ -311,18 +311,18 @@ def get_tvdata_ordered_by_date( tvdata ):
 
     .. code-block:: python
 
-        >> tvdata_flatten = get_tvdata_ordered_by_date( tvdata )
-        >> last_date = max( tvdata_flatten )
-        >> datetime.date(2019, 10, 21)
-        >> tvdata_flatten[ last_date ]
-        >> [('Robot Chicken', 10, 7, 'Snoopy Camino Lindo in: Quick and Dirty Squirrel Shot'), ('Robot Chicken', 10, 8, "Molly Lucero in: Your Friend's Boob"), ('The Deuce', 3, 7, "That's a Wrap"), ('Travel Man: 48 Hours in...', 10, 1, 'Dubrovnik')]
+       >> tvdata_flatten = get_tvdata_ordered_by_date( tvdata )
+       >> last_date = max( tvdata_flatten )
+       >> datetime.date(2019, 10, 21)
+       >> tvdata_flatten[ last_date ]
+       >> [('Robot Chicken', 10, 7, 'Snoopy Camino Lindo in: Quick and Dirty Squirrel Shot'), ('Robot Chicken', 10, 8, "Molly Lucero in: Your Friend's Boob"), ('The Deuce', 3, 7, "That's a Wrap"), ('Travel Man: 48 Hours in...', 10, 1, 'Dubrovnik')]
 
 
     :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <howdy.core.core.get_library_data>`.
     :returns: a :py:class:`dict` of episodes. Each key is the date a list of episodes aired. The value is the list of episodes.
     :rtype: dict
 
-    .. seealso:: :py:meth:`create_plot_year_tvdata <howdy.tv.tv.create_plot_year_tvdata>`
+    .. seealso:: :py:meth:`create_plot_year_tvdata <howdy.tv.tv.create_plot_year_tvdata>`.
     """
     def _get_tuple_list_season( show, seasno ):
         assert( show in tvdata )
@@ -731,31 +731,31 @@ def get_series_info( series_id, tvdb_token, verify = True ):
     
     .. code-block:: python
     
-        >> series_id = get_series_id( 'The Simpsons', tvdb_token )
-        >> series_info, _ = get_series_info( series_id, tvdb_token )
-        >> {'id': 71663,
-            'seriesName': 'The Simpsons',
-            'aliases': [],
-            'banner': 'graphical/71663-g13.jpg',
-            'seriesId': '146',
-            'status': 'Continuing',
-            'firstAired': '1989-12-17',
-            'network': 'FOX',
-            'networkId': '',
-            'runtime': '25',
-            'genre': ['Animation', 'Comedy'],
-            'overview': 'Set in Springfield, the average American town, the show focuses on the antics and everyday adventures of the Simpson family; Homer, Marge, Bart, Lisa and Maggie, as well as a virtual cast of thousands. Since the beginning, the series has been a pop culture icon, attracting hundreds of celebrities to guest star. The show has also made name for itself in its fearless satirical take on politics, media and American life in general.',
-            'lastUpdated': 1571687688,
-            'airsDayOfWeek': 'Sunday',
-            'airsTime': '8:00 PM',
-            'rating': 'TV-PG',
-            'imdbId': 'tt0096697',
-            'zap2itId': 'EP00018693',
-            'added': '',
-            'addedBy': None,
-            'siteRating': 8.9,
-            'siteRatingCount': 847,
-            'slug': 'the-simpsons'}
+       >> series_id = get_series_id( 'The Simpsons', tvdb_token )
+       >> series_info, _ = get_series_info( series_id, tvdb_token )
+       >> {'id': 71663,
+           'seriesName': 'The Simpsons',
+           'aliases': [],
+           'banner': 'graphical/71663-g13.jpg',
+           'seriesId': '146',
+           'status': 'Continuing',
+           'firstAired': '1989-12-17',
+           'network': 'FOX',
+           'networkId': '',
+           'runtime': '25',
+           'genre': ['Animation', 'Comedy'],
+           'overview': 'Set in Springfield, the average American town, the show focuses on the antics and everyday adventures of the Simpson family; Homer, Marge, Bart, Lisa and Maggie, as well as a virtual cast of thousands. Since the beginning, the series has been a pop culture icon, attracting hundreds of celebrities to guest star. The show has also made name for itself in its fearless satirical take on politics, media and American life in general.',
+           'lastUpdated': 1571687688,
+           'airsDayOfWeek': 'Sunday',
+           'airsTime': '8:00 PM',
+           'rating': 'TV-PG',
+           'imdbId': 'tt0096697',
+           'zap2itId': 'EP00018693',
+           'added': '',
+           'addedBy': None,
+           'siteRating': 8.9,
+           'siteRatingCount': 847,
+           'slug': 'the-simpsons'}
 
     :param int series_id: the TVDB_ database series ID.
     :param str tvdb_token: the TVDB_ API access token.
@@ -778,9 +778,9 @@ def get_series_image( series_id, tvdb_token, verify = True ):
     
     .. code-block:: python
 
-        >> series_id = get_series_id( 'The Simpsons', tvdb_token )
-        >> series_image, _ = get_series_image( series_id, tvdb_token )
-        >> 'https://thetvdb.com/banners/posters/71663-1.jpg'
+       >> series_id = get_series_id( 'The Simpsons', tvdb_token )
+       >> series_image, _ = get_series_image( series_id, tvdb_token )
+       >> 'https://thetvdb.com/banners/posters/71663-1.jpg'
 
     :param int series_id: the TVDB_ database series ID.
     :param str tvdb_token: the TVDB_ API access token.
@@ -789,7 +789,7 @@ def get_series_image( series_id, tvdb_token, verify = True ):
     :returns: a :py:class:`tuple` of TV show poster URL, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
     :rtype: tuple
 
-    .. seealso:: :py:meth:`get_series_season_image <howdy.tv.tv.get_series_season_image>`
+    .. seealso:: :py:meth:`get_series_season_image <howdy.tv.tv.get_series_season_image>`.
     """
     headers = { 'Content-Type' : 'application/json',
                 'Authorization' : 'Bearer %s' % tvdb_token }
@@ -860,9 +860,9 @@ def get_series_season_image( series_id, airedSeason, tvdb_token, verify = True )
     
     .. code-block:: python
 
-        >> series_id = get_series_id( 'The Simpsons', tvdb_token )
-        >> season_image, _ = get_series_image( series_id, 10, tvdb_token )
-        >> 'https://thetvdb.com/banners/seasons/146-10.jpg'
+       >> series_id = get_series_id( 'The Simpsons', tvdb_token )
+       >> season_image, _ = get_series_image( series_id, 10, tvdb_token )
+       >> 'https://thetvdb.com/banners/seasons/146-10.jpg'
 
     :param int series_id: the TVDB_ database series ID.
     :param int airedSeason: the season number of the episode.
@@ -872,7 +872,7 @@ def get_series_season_image( series_id, airedSeason, tvdb_token, verify = True )
     :returns: a :py:class:`tuple` of TV show SEASON poster URL, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
     :rtype: tuple
 
-    .. seealso:: :py:meth:`get_series_image <howdy.tv.tv.get_series_image>`
+    .. seealso:: :py:meth:`get_series_image <howdy.tv.tv.get_series_image>`.
 
     .. _`The Simpsons, season 10`: https://en.wikipedia.org/wiki/The_Simpsons_(season_10)
     """
@@ -986,45 +986,45 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
     This method is used by the :ref:`get_tv_batch` tool that can automatically download new episodes. This returns a summary :py:class:`dict` of information on a TV show stored in the Plex_ server (see documentation in :py:meth:`get_library_data <howdy.core.core.get_library_data>` that focuses on the format of the dictionary for TV libraries). For example, here is the summary information on `The Simpsons`_ given in the ``tvdata``, the dictionary representation of TV library data. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server.
 
     .. code-block:: python
-        
-        >> simpsons_summary = get_path_data_on_tvshow( tvdata, 'The Simpsons' )
-        >> {'prefix': '$LIBRARY_DIR/The Simpsons',
-            'showFileName': 'The Simpsons',
-            'season_prefix_dict': {1: 'Season 01',
-              2: 'Season 02',
-              3: 'Season 03',
-              4: 'Season 04',
-              5: 'Season 05',
-              6: 'Season 06',
-              7: 'Season 07',
-              8: 'Season 08',
-              9: 'Season 09',
-              10: 'Season 10',
-              11: 'Season 11',
-              12: 'Season 12',
-              13: 'Season 13',
-              14: 'Season 14',
-              15: 'Season 15',
-              16: 'Season 16',
-              17: 'Season 17',
-              18: 'Season 18',
-              19: 'Season 19',
-              20: 'Season 20',
-              21: 'Season 21',
-              22: 'Season 22',
-              23: 'Season 23',
-              24: 'Season 24',
-              25: 'Season 25',
-              26: 'Season 26',
-              27: 'Season 27',
-              28: 'Season 28',
-              29: 'Season 29',
-              30: 'Season 30',
-              31: 'Season 31'},
-            'min_inferred_length': 2,
-            'episode_number_length': 2,
-            'avg_length_mins': 22.0}
-    
+       
+       >> simpsons_summary = get_path_data_on_tvshow( tvdata, 'The Simpsons' )
+       >> {'prefix': '$LIBRARY_DIR/The Simpsons',
+           'showFileName': 'The Simpsons',
+           'season_prefix_dict': {1: 'Season 01',
+             2: 'Season 02',
+             3: 'Season 03',
+             4: 'Season 04',
+             5: 'Season 05',
+             6: 'Season 06',
+             7: 'Season 07',
+             8: 'Season 08',
+             9: 'Season 09',
+             10: 'Season 10',
+             11: 'Season 11',
+             12: 'Season 12',
+             13: 'Season 13',
+             14: 'Season 14',
+             15: 'Season 15',
+             16: 'Season 16',
+             17: 'Season 17',
+             18: 'Season 18',
+             19: 'Season 19',
+             20: 'Season 20',
+             21: 'Season 21',
+             22: 'Season 22',
+             23: 'Season 23',
+             24: 'Season 24',
+             25: 'Season 25',
+             26: 'Season 26',
+             27: 'Season 27',
+             28: 'Season 28',
+             29: 'Season 29',
+             30: 'Season 30',
+             31: 'Season 31'},
+           'min_inferred_length': 2,
+           'episode_number_length': 2,
+           'avg_length_mins': 22.0}
+
     Here is a guide to the keys:
     
     * ``prefix`` is the root directory in which the episodes of the TV show live.
@@ -1165,14 +1165,14 @@ def get_all_series_didend(
 
     .. code-block:: python
 
-        {
-          '11.22.63': True,
-          'Fargo': False,
-          'Night Court': True,
-          'Two and a Half Men': True,
-          '24': True,
-          ...
-        }
+       {
+         '11.22.63': True,
+         'Fargo': False,
+         'Night Court': True,
+         'Two and a Half Men': True,
+         '24': True,
+         ...
+       }
 
     :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <howdy.core.core.get_library_data>`.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
@@ -1440,17 +1440,17 @@ def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token =
     
     .. code-block:: python
 
-        {'American Crime Story': {'max_last_season': 2,
-          'min_next_season': 3,
-          'start_date': datetime.date(2020, 9, 27)},
-         'BoJack Horseman': {'max_last_season': 5,
-          'min_next_season': 6,
-          'start_date': datetime.date(2019, 10, 25)},
-         'Homeland': {'max_last_season': 7,
-          'min_next_season': 8,
-          'start_date': datetime.date(2020, 2, 9)},
-          ...
-        }
+       {'American Crime Story': {'max_last_season': 2,
+         'min_next_season': 3,
+         'start_date': datetime.date(2020, 9, 27)},
+        'BoJack Horseman': {'max_last_season': 5,
+         'min_next_season': 6,
+         'start_date': datetime.date(2019, 10, 25)},
+        'Homeland': {'max_last_season': 7,
+         'min_next_season': 8,
+         'start_date': datetime.date(2020, 2, 9)},
+         ...
+       }
     
     :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <howdy.core.core.get_library_data>`.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
@@ -1462,7 +1462,7 @@ def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token =
     :returns: a :py:class:`dict` of TV shows that will start airing new episodes.
     :rtype: dict
 
-    .. seealso:: :ref:`howdy_tv_futureshows`
+    .. seealso:: :ref:`howdy_tv_futureshows`.
     """
     #
     ## first get all candidate tv shows
@@ -1521,7 +1521,7 @@ def push_shows_to_exclude( tvdata, showsToExclude ):
     :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <howdy.core.core.get_library_data>`.
     :param list showsToExclude: the list of TV shows on the Plex_ server to ignore. Default is to not ignore any TV show.
 
-    .. seealso:: :py:meth:`get_shows_to_exclude <howdy.tv.tv.get_shows_to_exclude>`
+    .. seealso:: :py:meth:`get_shows_to_exclude <howdy.tv.tv.get_shows_to_exclude>`.
     """
     if len( tvdata ) == 0: return
     showsActExclude = set(showsToExclude) & set( tvdata.keys( ) ) # first get the union of shows to exclude
@@ -1550,7 +1550,7 @@ def get_shows_to_exclude( tvdata = None ):
     :returns: a :py:class:`list` of TV shows to ignore.
     :rtype: list
 
-    .. seealso:: :py:meth:`push_shows_to_exclude <howdy.tv.tv.push_shows_to_exclude>`
+    .. seealso:: :py:meth:`push_shows_to_exclude <howdy.tv.tv.push_shows_to_exclude>`.
     """
     showsToExcludeInDB = sorted( set( map(lambda val: val.show,
                                           session.query( ShowsToExclude ).all( ) ) ) )
@@ -1586,22 +1586,22 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
 
       .. code-block:: python
 
-           {
-            'totFname': '$LIBRARY_DIR/The Great British Bake Off/Season 5/The Great British Bake Off - s05e12 - Masterclass 2',
-             'torFname': 'The Great British Bake Off S05E12',
-             'minSize': 300,
-             'maxSize': 800,
-             'minSize_x265': 200,
-             'maxSize_x265': 650,
-             'tvshow': 'The Great British Bake Off',
-             'do_raw': False
+         {
+          'totFname': '$LIBRARY_DIR/The Great British Bake Off/Season 5/The Great British Bake Off - s05e12 - Masterclass 2',
+           'torFname': 'The Great British Bake Off S05E12',
+           'minSize': 300,
+           'maxSize': 800,
+           'minSize_x265': 200,
+           'maxSize_x265': 650,
+           'tvshow': 'The Great British Bake Off',
+           'do_raw': False
            }
 
     * The second element is a :py:class:`list` of new directories to create for missing episodes. In this example, there are new episodes for season 10 of `The Great British Bake Off`_, but no season 10 directory.
 
       .. code-block:: python
 
-            [ '$LIBRARY_DIR/The Great British Bake Off/Season 10' ]
+         [ '$LIBRARY_DIR/The Great British Bake Off/Season 10' ]
 
     :param dict toGet: a :py:class:`dict` of missing episodes by TV show on the Plex_ server, of the format returned by :py:meth:`get_remaining_episodes <howdy.tv.tv.get_remaining_episodes>`.
     :param bool restrictMaxSize: if ``True``, then restrict the *maximum* size of H264_ or `H265/HEVC`_ videos to search for on the Jackett_ server. Default is ``True``.
@@ -1797,43 +1797,43 @@ def get_tot_epdict_tvdb(
     
     .. code-block:: python
 
-        {1 : {1: ('Simpsons Roasting on an Open Fire', datetime.date(1989, 12, 17)),
-          2: ('Bart the Genius', datetime.date(1990, 1, 14)),
-          3: ("Homer's Odyssey", datetime.date(1990, 1, 21)),
-          4: ("There's No Disgrace Like Home", datetime.date(1990, 1, 28)),
-          5: ('Bart the General', datetime.date(1990, 2, 4)),
-          6: ('Moaning Lisa', datetime.date(1990, 2, 11)),
-          7: ('The Call of the Simpsons', datetime.date(1990, 2, 18)),
-          8: ('The Telltale Head', datetime.date(1990, 2, 25)),
-          9: ('Life on the Fast Lane', datetime.date(1990, 3, 18)),
-          10: ("Homer's Night Out", datetime.date(1990, 3, 25)),
-          11: ('The Crepes of Wrath', datetime.date(1990, 4, 15)),
-          12: ('Krusty Gets Busted', datetime.date(1990, 4, 29)),
-          13: ('Some Enchanted Evening', datetime.date(1990, 5, 13))},
-        2: {1: ('Bart Gets an F', datetime.date(1990, 10, 11)),
-          2: ('Simpson and Delilah', datetime.date(1990, 10, 18)),
-          3: ('Treehouse of Horror', datetime.date(1990, 10, 24)),
-          4: ('Two Cars in Every Garage and Three Eyes on Every Fish', datetime.date(1990, 11, 1)),
-          5: ("Dancin' Homer", datetime.date(1990, 11, 8)),
-          6: ('Dead Putting Society', datetime.date(1990, 11, 15)),
-          7: ('Bart vs. Thanksgiving', datetime.date(1990, 11, 22)),
-          8: ('Bart the Daredevil', datetime.date(1990, 12, 6)),
-          9: ('Itchy & Scratchy & Marge', datetime.date(1990, 12, 20)),
-          10: ('Bart Gets Hit by a Car', datetime.date(1991, 1, 10)),
-          11: ('One Fish, Two Fish, Blowfish, Blue Fish', datetime.date(1991, 1, 24)),
-          12: ('The Way We Was', datetime.date(1991, 1, 31)),
-          13: ('Homer vs. Lisa and the Eighth Commandment', datetime.date(1991, 2, 7)),
-          14: ('Principal Charming', datetime.date(1991, 2, 14)),
-          15: ('Oh Brother, Where Art Thou?', datetime.date(1991, 2, 21)),
-          16: ("Bart's Dog Gets an F", datetime.date(1991, 3, 7)),
-          17: ('Old Money', datetime.date(1991, 3, 28)),
-          18: ('Brush With Greatness', datetime.date(1991, 4, 11)),
-          19: ("Lisa's Substitute", datetime.date(1991, 4, 25)),
-          20: ('The War of the Simpsons', datetime.date(1991, 5, 2)),
-          21: ('Three Men and a Comic Book', datetime.date(1991, 5, 9)),
-          22: ('Blood Feud', datetime.date(1991, 8, 11))},
-          ...
-        }
+       {1 : {1: ('Simpsons Roasting on an Open Fire', datetime.date(1989, 12, 17)),
+         2: ('Bart the Genius', datetime.date(1990, 1, 14)),
+         3: ("Homer's Odyssey", datetime.date(1990, 1, 21)),
+         4: ("There's No Disgrace Like Home", datetime.date(1990, 1, 28)),
+         5: ('Bart the General', datetime.date(1990, 2, 4)),
+         6: ('Moaning Lisa', datetime.date(1990, 2, 11)),
+         7: ('The Call of the Simpsons', datetime.date(1990, 2, 18)),
+         8: ('The Telltale Head', datetime.date(1990, 2, 25)),
+         9: ('Life on the Fast Lane', datetime.date(1990, 3, 18)),
+         10: ("Homer's Night Out", datetime.date(1990, 3, 25)),
+         11: ('The Crepes of Wrath', datetime.date(1990, 4, 15)),
+         12: ('Krusty Gets Busted', datetime.date(1990, 4, 29)),
+         13: ('Some Enchanted Evening', datetime.date(1990, 5, 13))},
+       2: {1: ('Bart Gets an F', datetime.date(1990, 10, 11)),
+         2: ('Simpson and Delilah', datetime.date(1990, 10, 18)),
+         3: ('Treehouse of Horror', datetime.date(1990, 10, 24)),
+         4: ('Two Cars in Every Garage and Three Eyes on Every Fish', datetime.date(1990, 11, 1)),
+         5: ("Dancin' Homer", datetime.date(1990, 11, 8)),
+         6: ('Dead Putting Society', datetime.date(1990, 11, 15)),
+         7: ('Bart vs. Thanksgiving', datetime.date(1990, 11, 22)),
+         8: ('Bart the Daredevil', datetime.date(1990, 12, 6)),
+         9: ('Itchy & Scratchy & Marge', datetime.date(1990, 12, 20)),
+         10: ('Bart Gets Hit by a Car', datetime.date(1991, 1, 10)),
+         11: ('One Fish, Two Fish, Blowfish, Blue Fish', datetime.date(1991, 1, 24)),
+         12: ('The Way We Was', datetime.date(1991, 1, 31)),
+         13: ('Homer vs. Lisa and the Eighth Commandment', datetime.date(1991, 2, 7)),
+         14: ('Principal Charming', datetime.date(1991, 2, 14)),
+         15: ('Oh Brother, Where Art Thou?', datetime.date(1991, 2, 21)),
+         16: ("Bart's Dog Gets an F", datetime.date(1991, 3, 7)),
+         17: ('Old Money', datetime.date(1991, 3, 28)),
+         18: ('Brush With Greatness', datetime.date(1991, 4, 11)),
+         19: ("Lisa's Substitute", datetime.date(1991, 4, 25)),
+         20: ('The War of the Simpsons', datetime.date(1991, 5, 2)),
+         21: ('Three Men and a Comic Book', datetime.date(1991, 5, 9)),
+         22: ('Blood Feud', datetime.date(1991, 8, 11))},
+         ...
+       }
 
     :param str showName: the TV show's name.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.

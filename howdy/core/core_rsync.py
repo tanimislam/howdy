@@ -19,8 +19,9 @@ def check_credentials( local_dir, sshpath, password, subdir = None ):
     :rtype: str
 
     .. seealso::
-      * :py:meth:`push_credentials <howdy.core.core_rsync.push_credentials>`.
-      * :py:meth:`get_credentials <howdy.core.core_rsync.get_credentials>`.
+    
+       * :py:meth:`push_credentials <howdy.core.core_rsync.push_credentials>`.
+       * :py:meth:`get_credentials <howdy.core.core_rsync.get_credentials>`.
     """
     try:
         #
@@ -61,11 +62,12 @@ def push_credentials( local_dir, sshpath, password, subdir = None ):
     :param str subdir: if not ``None``, the subdirectory on the remote SSH server from which to download files.
     
     :returns: if successful, return ``'SUCCESS'``. If not, return error messages.
+    :rtype: str
     
     .. seealso::
     
-      * :py:meth:`check_credentials <howdy.core.core_rsync.check_credentials>`.
-      * :py:meth:`get_credentials <howdy.core.core_rsync.get_credentials>`.
+       * :py:meth:`check_credentials <howdy.core.core_rsync.check_credentials>`.
+       * :py:meth:`get_credentials <howdy.core.core_rsync.get_credentials>`.
     """
     
     #
@@ -108,20 +110,21 @@ def push_credentials( local_dir, sshpath, password, subdir = None ):
 def get_credentials( ):
     """
     Returns the rsync'ing setup from the SQLite3_ configuration database as a :py:class:`dict` in the following form.
-
+    
     .. code-block:: python
 
-      { 'local_dir' : XXXX,
-        'sshpath' : YYYY@ZZZZ,
-        'password' : AAAA,
-        'subdir' : BBBB }
+       { 'local_dir' : XXXX,
+         'sshpath' : YYYY@ZZZZ,
+         'password' : AAAA,
+         'subdir' : BBBB }
 
     :returns: the :py:class:`dict` of the rsync'ing setup if in the SQLite3_ configuration database, otherwise ``None``.
-
+    :rtype: dict
+    
     .. seealso::
     
-      * :py:meth:`check_credentials <howdy.core.core_rsync.check_credentials>`.
-      * :py:meth:`push_credentials <howdy.core.core_rsync.push_credentials>`.
+       * :py:meth:`check_credentials <howdy.core.core_rsync.check_credentials>`.
+       * :py:meth:`push_credentials <howdy.core.core_rsync.push_credentials>`.
     """
     val = session.query( PlexConfig ).filter(
         PlexConfig.service == 'rsync' ).first( )

@@ -112,32 +112,32 @@ def get_episodes_series_tmdb( tv_id, verify = True ):
 
       .. code-block:: python
 
-        [{'airedSeason': 1,
-          'airedEpisodeNumber': 1,
-          'firstAired': '1989-12-17',
-          'episodeName': 'Simpsons Roasting on an Open Fire',
-          'overview': "When his Christmas bonus is cancelled, Homer becomes a department-store Santa--and then bets his meager earnings at the track. When all seems lost, Homer and Bart save Christmas by adopting the losing greyhound, Santa's Little Helper."},
-         {'airedSeason': 1,
-          'airedEpisodeNumber': 2,
-          'firstAired': '1990-01-14',
-          'episodeName': 'Bart the Genius',
-          'overview': "After switching IQ tests with Martin, Bart is mistaken for a child genius. When he's enrolled in a school for gifted students, a series of embarrassments and mishaps makes him long for his old life."},
-         {'airedSeason': 1,
-          'airedEpisodeNumber': 3,
-          'firstAired': '1990-01-21',
-          'episodeName': "Homer's Odyssey",
-          'overview': 'Homer is fired for nearly causing a meltdown at the nuclear plant. When he finds a new calling as a public safety advocate, he finds himself facing off against Mr. Burns.'},
-         {'airedSeason': 1,
-          'airedEpisodeNumber': 4,
-          'firstAired': '1990-01-28',
-          'episodeName': "There's No Disgrace Like Home",
-          'overview': 'After an embarrassing experience at the company picnic, Homer pawns the TV and uses the proceeds to take the family to therapy sessions.'}
-         ...
-        ]
+         [{'airedSeason': 1,
+           'airedEpisodeNumber': 1,
+           'firstAired': '1989-12-17',
+           'episodeName': 'Simpsons Roasting on an Open Fire',
+           'overview': "When his Christmas bonus is cancelled, Homer becomes a department-store Santa--and then bets his meager earnings at the track. When all seems lost, Homer and Bart save Christmas by adopting the losing greyhound, Santa's Little Helper."},
+          {'airedSeason': 1,
+           'airedEpisodeNumber': 2,
+           'firstAired': '1990-01-14',
+           'episodeName': 'Bart the Genius',
+           'overview': "After switching IQ tests with Martin, Bart is mistaken for a child genius. When he's enrolled in a school for gifted students, a series of embarrassments and mishaps makes him long for his old life."},
+          {'airedSeason': 1,
+           'airedEpisodeNumber': 3,
+           'firstAired': '1990-01-21',
+           'episodeName': "Homer's Odyssey",
+           'overview': 'Homer is fired for nearly causing a meltdown at the nuclear plant. When he finds a new calling as a public safety advocate, he finds himself facing off against Mr. Burns.'},
+          {'airedSeason': 1,
+           'airedEpisodeNumber': 4,
+           'firstAired': '1990-01-28',
+           'episodeName': "There's No Disgrace Like Home",
+           'overview': 'After an embarrassing experience at the company picnic, Homer pawns the TV and uses the proceeds to take the family to therapy sessions.'}
+          ...
+         ]
 
     :rtype: list
     
-    .. seealso:: :py:meth:`get_tot_epdict_tmdb <howdy.tv.tv_attic.get_tot_epdict_tmdb>`
+    .. seealso:: :py:meth:`get_tot_epdict_tmdb <howdy.tv.tv_attic.get_tot_epdict_tmdb>`.
     """
     tmdb_tv_info = get_tv_info_for_series( tv_id, verify = verify )
     if tmdb_tv_info is None: return None
@@ -180,44 +180,44 @@ def get_movie_info( tmdb_id, verify = True ):
     
       .. code-block:: python
 
-        {'adult': False,
-         'backdrop_path': '/4iJfYYoQzZcONB9hNzg0J0wWyPH.jpg',
-         'belongs_to_collection': {'id': 10,
-          'name': 'Star Wars Collection',
-          'poster_path': '/iTQHKziZy9pAAY4hHEDCGPaOvFC.jpg',
-          'backdrop_path': '/d8duYyyC9J5T825Hg7grmaabfxQ.jpg'},
-         'budget': 11000000,
-         'genres': [{'id': 12, 'name': 'Adventure'},
-          {'id': 28, 'name': 'Action'},
-          {'id': 878, 'name': 'Science Fiction'}],
-         'homepage': 'http://www.starwars.com/films/star-wars-episode-iv-a-new-hope',
-         'id': 11,
-         'imdb_id': 'tt0076759',
-         'original_language': 'en',
-         'original_title': 'Star Wars',
-         'overview': 'Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire.',
-         'popularity': 50.48,
-         'poster_path': '/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
-         'production_companies': [{'id': 1,
-           'logo_path': '/o86DbpburjxrqAzEDhXZcyE8pDb.png',
-           'name': 'Lucasfilm',
-           'origin_country': 'US'},
-          {'id': 25,
-           'logo_path': '/qZCc1lty5FzX30aOCVRBLzaVmcp.png',
-           'name': '20th Century Fox',
-           'origin_country': 'US'}],
-         'production_countries': [{'iso_3166_1': 'US',
-           'name': 'United States of America'}],
-         'release_date': '1977-05-25',
-         'revenue': 775398007,
-         'runtime': 121,
-         'spoken_languages': [{'iso_639_1': 'en', 'name': 'English'}],
-         'status': 'Released',
-         'tagline': 'A long time ago in a galaxy far, far away...',
-         'title': 'Star Wars',
-         'video': False,
-         'vote_average': 8.2,
-         'vote_count': 12125}
+         {'adult': False,
+          'backdrop_path': '/4iJfYYoQzZcONB9hNzg0J0wWyPH.jpg',
+          'belongs_to_collection': {'id': 10,
+           'name': 'Star Wars Collection',
+           'poster_path': '/iTQHKziZy9pAAY4hHEDCGPaOvFC.jpg',
+           'backdrop_path': '/d8duYyyC9J5T825Hg7grmaabfxQ.jpg'},
+          'budget': 11000000,
+          'genres': [{'id': 12, 'name': 'Adventure'},
+           {'id': 28, 'name': 'Action'},
+           {'id': 878, 'name': 'Science Fiction'}],
+          'homepage': 'http://www.starwars.com/films/star-wars-episode-iv-a-new-hope',
+          'id': 11,
+          'imdb_id': 'tt0076759',
+          'original_language': 'en',
+          'original_title': 'Star Wars',
+          'overview': 'Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire.',
+          'popularity': 50.48,
+          'poster_path': '/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
+          'production_companies': [{'id': 1,
+            'logo_path': '/o86DbpburjxrqAzEDhXZcyE8pDb.png',
+            'name': 'Lucasfilm',
+            'origin_country': 'US'},
+           {'id': 25,
+            'logo_path': '/qZCc1lty5FzX30aOCVRBLzaVmcp.png',
+            'name': '20th Century Fox',
+            'origin_country': 'US'}],
+          'production_countries': [{'iso_3166_1': 'US',
+            'name': 'United States of America'}],
+          'release_date': '1977-05-25',
+          'revenue': 775398007,
+          'runtime': 121,
+          'spoken_languages': [{'iso_639_1': 'en', 'name': 'English'}],
+          'status': 'Released',
+          'tagline': 'A long time ago in a galaxy far, far away...',
+          'title': 'Star Wars',
+          'video': False,
+          'vote_average': 8.2,
+          'vote_count': 12125}
 
     :rtype: dict
 
@@ -248,7 +248,7 @@ def get_actor_ids_dict( actor_names, verify = True ):
     .. _`Steve Martin`: https://en.wikipedia.org/wiki/Steve_Martin
     .. _`Richard Pryor`: https://en.wikipedia.org/wiki/Richard_Pryor
 
-    .. seealso:: :py:meth:`get_movies_by_actors <howdy.movie.movie.get_movies_by_actors>`
+    .. seealso:: :py:meth:`get_movies_by_actors <howdy.movie.movie.get_movies_by_actors>`.
     """
     actor_name_dict = { }
     for actor_name in set(actor_names):
@@ -287,33 +287,33 @@ def get_movies_by_actors( actor_name_dict, verify = True ):
 
       .. code-block:: python
 
-            [{'title': 'The Muppet Movie',
-              'release_date': datetime.datetime(1979, 6, 22, 0, 0),
-              'popularity': 7.743,
-              'vote_average': 7.1,
-              'overview': 'Kermit the Frog is persuaded by agent Dom DeLuise to pursue a career in Hollywood. Along the way, Kermit picks up Fozzie Bear, Miss Piggy, Gonzo, and a motley crew of other Muppets with similar aspirations. Meanwhile, Kermit must elude the grasp of a frog-leg restaurant magnate.',
-              'poster_path': 'https://image.tmdb.org/t/p/w500/48Ve7uLDcPJFGaDnmYYdcV3Ve1M.jpg',
-              'isFound': False,
-              'tmdb_id': 11176,
-              'imdb_id': 'tt0079588'},
-             {'title': 'And the Oscar Goes To...',
-              'release_date': datetime.datetime(2014, 2, 2, 0, 0),
-              'popularity': 4.188,
-              'vote_average': 7.0,
-              'overview': 'The story of the gold-plated statuette that became the film industry\'s most coveted prize, AND THE OSCAR GOES TO... traces the history of the Academy itself, which began in 1927 when Louis B. Mayer, then head of MGM, led other prominent members of the industry in forming this professional honorary organization. Two years later the Academy began bestowing awards, which were nicknamed "Oscar," and quickly came to represent the pinnacle of cinematic achievement.',
-              'poster_path': 'https://image.tmdb.org/t/p/w500/kgH49kPNNtel04HPVGQLS63coRF.jpg',
-              'isFound': False,
-              'tmdb_id': 253639,
-              'imdb_id': 'tt3481232'},
-             {'title': "Cutting Edge Comedians of the '60s & '70s",
-              'release_date': datetime.datetime(2007, 4, 10, 0, 0),
-              'popularity': 0.842,
-              'vote_average': 0.0,
-              'overview': 'In the late 1950s, a fresh, unconventional style of standup comedy emerged in sharp contrast to the standard "Take my wife, please" approach. It tackled such previously taboo subjects as sex, religion, drugs, and politics, and ushered in an avant-garde era of comedy that was decidedly more cerebral, satirical, and improvisational than before. Here are many of the maverick comedians who took those big risks years ago and paved the way for today’s current crop of outrageous, in-your-face comics. Many of these rare television performances have not been seen in 30 or 40 years. Carl Reiner &amp; Mel Brooks (1966) Jackie Mason (1961) Bob Newhart (1966) Shelly Berman (1966) Bill Cosby (1965) Jonathan Winters (1961) Smothers Brothers (1974) Steve Martin (1977) Rowan &amp; Martin (1964) Lily Tomlin (1975) George Carlin (1967 &amp; 1975) Richard Pryor (1967 &amp; 1974) Andy Kaufman (1977) Hendra &amp; Ullett (1966) Billy Crystal (1976) Jay Leno (1978) David Letterman (1979)',
-              'poster_path': 'https://image.tmdb.org/t/p/w500/iRHXAdDXwcuKGLH6MmvOUBrhotT.jpg',
-              'isFound': False,
-              'tmdb_id': 78710,
-              'imdb_id': 'tt1002564'}]
+         [{'title': 'The Muppet Movie',
+           'release_date': datetime.datetime(1979, 6, 22, 0, 0),
+           'popularity': 7.743,
+           'vote_average': 7.1,
+           'overview': 'Kermit the Frog is persuaded by agent Dom DeLuise to pursue a career in Hollywood. Along the way, Kermit picks up Fozzie Bear, Miss Piggy, Gonzo, and a motley crew of other Muppets with similar aspirations. Meanwhile, Kermit must elude the grasp of a frog-leg restaurant magnate.',
+           'poster_path': 'https://image.tmdb.org/t/p/w500/48Ve7uLDcPJFGaDnmYYdcV3Ve1M.jpg',
+           'isFound': False,
+           'tmdb_id': 11176,
+           'imdb_id': 'tt0079588'},
+          {'title': 'And the Oscar Goes To...',
+           'release_date': datetime.datetime(2014, 2, 2, 0, 0),
+           'popularity': 4.188,
+           'vote_average': 7.0,
+           'overview': 'The story of the gold-plated statuette that became the film industry\'s most coveted prize, AND THE OSCAR GOES TO... traces the history of the Academy itself, which began in 1927 when Louis B. Mayer, then head of MGM, led other prominent members of the industry in forming this professional honorary organization. Two years later the Academy began bestowing awards, which were nicknamed "Oscar," and quickly came to represent the pinnacle of cinematic achievement.',
+           'poster_path': 'https://image.tmdb.org/t/p/w500/kgH49kPNNtel04HPVGQLS63coRF.jpg',
+           'isFound': False,
+           'tmdb_id': 253639,
+           'imdb_id': 'tt3481232'},
+          {'title': "Cutting Edge Comedians of the '60s & '70s",
+           'release_date': datetime.datetime(2007, 4, 10, 0, 0),
+           'popularity': 0.842,
+           'vote_average': 0.0,
+           'overview': 'In the late 1950s, a fresh, unconventional style of standup comedy emerged in sharp contrast to the standard "Take my wife, please" approach. It tackled such previously taboo subjects as sex, religion, drugs, and politics, and ushered in an avant-garde era of comedy that was decidedly more cerebral, satirical, and improvisational than before. Here are many of the maverick comedians who took those big risks years ago and paved the way for today’s current crop of outrageous, in-your-face comics. Many of these rare television performances have not been seen in 30 or 40 years. Carl Reiner &amp; Mel Brooks (1966) Jackie Mason (1961) Bob Newhart (1966) Shelly Berman (1966) Bill Cosby (1965) Jonathan Winters (1961) Smothers Brothers (1974) Steve Martin (1977) Rowan &amp; Martin (1964) Lily Tomlin (1975) George Carlin (1967 &amp; 1975) Richard Pryor (1967 &amp; 1974) Andy Kaufman (1977) Hendra &amp; Ullett (1966) Billy Crystal (1976) Jay Leno (1978) David Letterman (1979)',
+           'poster_path': 'https://image.tmdb.org/t/p/w500/iRHXAdDXwcuKGLH6MmvOUBrhotT.jpg',
+           'isFound': False,
+           'tmdb_id': 78710,
+           'imdb_id': 'tt1002564'}]
     
       If no common movies can be found, then returns an empty list.
 
@@ -372,21 +372,21 @@ def get_movies_by_title( title, verify = True, apiKey = None ):
 
       .. code-block:: python
 
-            {'title': 'Star Wars',
-             'release_date': datetime.datetime(1997, 1, 31, 0, 0),
-             'popularity': 50.48,
-             'vote_average': 8.2,
-             'overview': 'Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire.',
-             'poster_path': 'https://image.tmdb.org/t/p/w500/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
-             'isFound': False,
-             'tmdb_id': 11,
-             'imdb_id': 'tt0076759'}
-    
+         {'title': 'Star Wars',
+          'release_date': datetime.datetime(1997, 1, 31, 0, 0),
+          'popularity': 50.48,
+          'vote_average': 8.2,
+          'overview': 'Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire.',
+          'poster_path': 'https://image.tmdb.org/t/p/w500/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
+          'isFound': False,
+          'tmdb_id': 11,
+          'imdb_id': 'tt0076759'}
+
       If no matches can be found, then this method returns an empty list.
 
     :rtype: list
 
-    .. seealso:: :py:meth:`get_movie_tmdbids <howdy.movie.movie.get_movie_tmdbids>`
+    .. seealso:: :py:meth:`get_movie_tmdbids <howdy.movie.movie.get_movie_tmdbids>`.
     """
     if apiKey is None: apiKey = tmdb_apiKey
     for idx in range( 50 ):
@@ -571,28 +571,28 @@ def getMovieData( year, genre_id, verify = True ):
     
     :param int year: the year on which to search.
     :param int genre_id: the TMDB_ genre ID. The mapping of TMDB_ genre ID to genre is,
-
+    
       .. code-block:: python
 
-            {12: 'Adventure',
-             14: 'Fantasy',
-             16: 'Animation',
-             18: 'Drama',
-             27: 'Horror',
-             28: 'Action',
-             35: 'Comedy',
-             36: 'History',
-             37: 'Western',
-             53: 'Thriller',
-             80: 'Crime',
-             99: 'Documentary',
-             878: 'Science Fiction',
-             9648: 'Mystery',
-             10402: 'Music',
-             10749: 'Romance',
-             10751: 'Family',
-             10752: 'War',
-             10770: 'TV Movie'}
+         {12: 'Adventure',
+          14: 'Fantasy',
+          16: 'Animation',
+          18: 'Drama',
+          27: 'Horror',
+          28: 'Action',
+          35: 'Comedy',
+          36: 'History',
+          37: 'Western',
+          53: 'Thriller',
+          80: 'Crime',
+          99: 'Documentary',
+          878: 'Science Fiction',
+          9648: 'Mystery',
+          10402: 'Music',
+          10749: 'Romance',
+          10751: 'Family',
+          10752: 'War',
+          10770: 'TV Movie'}
       
       If ``genre_id`` is ``-1``, then **ALL** movies (of all genres) are chosen.
     

@@ -13,7 +13,7 @@ def parse_youtube_date( duration_string ):
     :returns: the :py:class:`datetime <datetime.datetime>` that can be used to infer duration using :py:meth:`format_youtube_date <howdy.plexmusic.format_youtube_date>`.
     :rtype: :py:class:`datetime <datetime.datetime>`
 
-    .. seealso:: :py:meth:`format_youtube_date <howdy.music.format_youtube_date>`
+    .. seealso:: :py:meth:`format_youtube_date <howdy.music.format_youtube_date>`.
     """
     dstring = duration_string.upper( )
     timedelta = isodate.parse_duration( dstring )
@@ -26,7 +26,7 @@ def format_youtube_date( dt_duration ):
     :returns: a standard second, or MM:SS (such as 4:33), or so on from a :py:class:`datetime <datetime.datetime>` returned by :py:meth:`parse_youtube_date <howdy.plexmusic.parse_youtube_date>`.
     :rtype: str
 
-    .. seealso:: :py:meth:`parse_youtube_date <howdy.music.parse_youtube_date>`
+    .. seealso:: :py:meth:`parse_youtube_date <howdy.music.parse_youtube_date>`.
     """
     delta = relativedelta( dt_duration, _dt0 )
     if delta.days >= 20:

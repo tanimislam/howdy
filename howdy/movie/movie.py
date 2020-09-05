@@ -117,25 +117,25 @@ def get_episodes_series_tmdb( tv_id, verify = True ):
            'firstAired': '1989-12-17',
            'episodeName': 'Simpsons Roasting on an Open Fire',
            'overview':
-             "When his Christmas bonus is cancelled, Homer becomes a department-store Santa--and then bets his meager earnings at the track. When all seems lost, Homer and Bart save Christmas by adopting the losing greyhound, Santa's Little Helper."},
+             "When his Christmas bonus is cancelled..."},
           {'airedSeason': 1,
            'airedEpisodeNumber': 2,
            'firstAired': '1990-01-14',
            'episodeName': 'Bart the Genius',
            'overview':
-             "After switching IQ tests with Martin, Bart is mistaken for a child genius. When he's enrolled in a school for gifted students, a series of embarrassments and mishaps makes him long for his old life."},
+             "After switching IQ tests with Martin, Bart..."},
           {'airedSeason': 1,
            'airedEpisodeNumber': 3,
            'firstAired': '1990-01-21',
            'episodeName': "Homer's Odyssey",
            'overview':
-             'Homer is fired for nearly causing a meltdown at the nuclear plant. When he finds a new calling as a public safety advocate, he finds himself facing off against Mr. Burns.'},
+             'Homer is fired for nearly causing a meltdown...'},
           {'airedSeason': 1,
            'airedEpisodeNumber': 4,
            'firstAired': '1990-01-28',
            'episodeName': "There's No Disgrace Like Home",
            'overview':
-             'After an embarrassing experience at the company picnic, Homer pawns the TV and uses the proceeds to take the family to therapy sessions.'}
+             'After an embarrassing experience at the company picnic...'}
           ...
          ]
 
@@ -199,8 +199,7 @@ def get_movie_info( tmdb_id, verify = True ):
           'imdb_id': 'tt0076759',
           'original_language': 'en',
           'original_title': 'Star Wars',
-          'overview':
-            'Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire.',
+          'overview': 'Princess Leia is captured and held hostage...',
           'popularity': 50.48,
           'poster_path': '/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
           'production_companies': [{'id': 1,
@@ -296,8 +295,7 @@ def get_movies_by_actors( actor_name_dict, verify = True ):
            'release_date': datetime.datetime(1979, 6, 22, 0, 0),
            'popularity': 7.743,
            'vote_average': 7.1,
-           'overview':
-             'Kermit the Frog is persuaded by agent Dom DeLuise to pursue a career in Hollywood. Along the way, Kermit picks up Fozzie Bear, Miss Piggy, Gonzo, and a motley crew of other Muppets with similar aspirations. Meanwhile, Kermit must elude the grasp of a frog-leg restaurant magnate.',
+           'overview': 'Kermit the Frog is persuaded by agent...',
            'poster_path': 'https://image.tmdb.org/t/p/w500/48Ve7uLDcPJFGaDnmYYdcV3Ve1M.jpg',
            'isFound': False,
            'tmdb_id': 11176,
@@ -306,8 +304,7 @@ def get_movies_by_actors( actor_name_dict, verify = True ):
            'release_date': datetime.datetime(2014, 2, 2, 0, 0),
            'popularity': 4.188,
            'vote_average': 7.0,
-           'overview': 
-             'The story of the gold-plated statuette that became the film industry\'s most coveted prize, AND THE OSCAR GOES TO... traces the history of the Academy itself, which began in 1927 when Louis B. Mayer, then head of MGM, led other prominent members of the industry in forming this professional honorary organization. Two years later the Academy began bestowing awards, which were nicknamed "Oscar," and quickly came to represent the pinnacle of cinematic achievement.',
+           'overview':  'The story of the gold-plated statuette...',
            'poster_path': 'https://image.tmdb.org/t/p/w500/kgH49kPNNtel04HPVGQLS63coRF.jpg',
            'isFound': False,
            'tmdb_id': 253639,
@@ -316,8 +313,7 @@ def get_movies_by_actors( actor_name_dict, verify = True ):
            'release_date': datetime.datetime(2007, 4, 10, 0, 0),
            'popularity': 0.842,
            'vote_average': 0.0,
-           'overview':
-             'In the late 1950s, a fresh, unconventional style of standup comedy emerged in sharp contrast to the standard "Take my wife, please" approach. It tackled such previously taboo subjects as sex, religion, drugs, and politics, and ushered in an avant-garde era of comedy that was decidedly more cerebral, satirical, and improvisational than before. Here are many of the maverick comedians who took those big risks years ago and paved the way for today’s current crop of outrageous, in-your-face comics. Many of these rare television performances have not been seen in 30 or 40 years. Carl Reiner &amp; Mel Brooks (1966) Jackie Mason (1961) Bob Newhart (1966) Shelly Berman (1966) Bill Cosby (1965) Jonathan Winters (1961) Smothers Brothers (1974) Steve Martin (1977) Rowan &amp; Martin (1964) Lily Tomlin (1975) George Carlin (1967 &amp; 1975) Richard Pryor (1967 &amp; 1974) Andy Kaufman (1977) Hendra &amp; Ullett (1966) Billy Crystal (1976) Jay Leno (1978) David Letterman (1979)',
+           'overview': 'In the late 1950s, a fresh, unconventional style...',
            'poster_path': 'https://image.tmdb.org/t/p/w500/iRHXAdDXwcuKGLH6MmvOUBrhotT.jpg',
            'isFound': False,
            'tmdb_id': 78710,
@@ -384,8 +380,7 @@ def get_movies_by_title( title, verify = True, apiKey = None ):
           'release_date': datetime.datetime(1997, 1, 31, 0, 0),
           'popularity': 50.48,
           'vote_average': 8.2,
-          'overview':
-            'Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire.',
+          'overview': 'Princess Leia is captured and held hostage...',
           'poster_path': 'https://image.tmdb.org/t/p/w500/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
           'isFound': False,
           'tmdb_id': 11,

@@ -40,13 +40,15 @@ class TVShow( object ):
     def create_tvshow_dict( cls, tvdata, token = None, verify = True,
                             debug = False, num_threads = 2 * multiprocessing.cpu_count( ) ):
         """
+        Higher level convenience method that returns a :py:class:`dict` of show names to their corresponding :py:class:`TVShow <howdy.tv.tv.TVShow>` object.
+
         :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <howdy.core.core.get_library_data>`.
         :param str token: optional argument. The TVDB_ API access token.
         :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
         :param debug False: optional argument. If ``True``, run with :py:const:`DEBUG <logging.DEBUG>` :py:mod:`logging` mode. Default is ``False``.
         :param int num_threads: the number of threads over which to parallelize this calculation. The default is *twice* the number of cores on the CPU.
 
-        :returns: a :py:class:`dict`, whose keys are the TV show names and whose values are the :py:class:`TVShow <howdy.tv.tv.TVSeason>` associated with that TV show.
+        :returns: a :py:class:`dict`, whose keys are the TV show names and whose values are the :py:class:`TVShow <howdy.tv.tv.TVShow>` associated with that TV show.
         :rtype: dict
         """
         time0 = time.time( )
@@ -71,11 +73,12 @@ class TVShow( object ):
         seriesName, seriesId, token, season, verify, eps = input_tuple
         return season, TVSeason( seriesName, seriesId, token, season, verify = verify,
                                  eps = eps )
-    
-    def _get_series_seasons( self, token, verify = True ):
+
+    @classmethod
+    def _get_series_seasons( cls, seriesId, token, verify = True ):
         headers = { 'Content-Type' : 'application/json',
                     'Authorization' : 'Bearer %s' % token }
-        response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/summary' % self.seriesId,
+        response = requests.get( 'https://api.thetvdb.com/series/%d/episodes/summary' % seriesId,
                                  headers = headers, verify = verify )
         if response.status_code != 200:
             return None
@@ -732,7 +735,7 @@ def get_series_info( series_id, tvdb_token, verify = True ):
     :param int series_id: the TVDB_ database series ID.
     :param str tvdb_token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
-
+    
     :returns: a :py:class:`tuple` of candidate TV show info, and the :py:class:`str` ``'SUCCESS'``. For example, here is the summary information returned for `The Simpsons`_.
     
       .. code-block:: python
@@ -1578,9 +1581,9 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
       * ``totFname`` is the destination prefix (without file extension) of the episode on the Plex_ server.
       * ``torFname`` is the search string to give to the Jackett_ server (see :numref:`The Jackett Server` on the Jackett_ server's setup) to search for and download this episode.
       * ``minSize`` is the minimum size, in MB, of the H264_ encoded MP4 or MKV episode file to search for.
-      * ``minSize_x265`` is the minimum size, in MB, of the `H265/HEVC`_ encoded MP4 or MKV episode file to search for. By defsault this is smaller than ``minSize``.
+      * ``minSize_x265`` is the minimum size, in MB, of the `H265/HEVC`_ encoded MP4 or MKV episode file to search for. By default this is smaller than ``minSize``.
       * ``maxSize`` is the maximum size, in MB, of the H264_ encoded MP4 or MKV episode file to search for.
-      * ``maxSize_x265`` is the maximum size, in MB, of the `H265/HEVC`_ encoded MP4 or MKV episode file to search for. By defsault this is smaller than ``maxSize``.
+      * ``maxSize_x265`` is the maximum size, in MB, of the `H265/HEVC`_ encoded MP4 or MKV episode file to search for. By default this is smaller than ``maxSize``.
       * ``tvshow`` is the name of the TV show to which this missing episode belongs.
       * ``do_raw`` is a :py:class:`boolean <bool>` flag. If ``True``, then search for this missing episode through the Jackett_ server using available IMDb_ information. If ``False``, then do a raw text search on ``torFname`` to find episode Magnet links.
 
@@ -1800,7 +1803,7 @@ def get_tot_epdict_tvdb(
     :param bool showSpecials: if ``True``, then also include TV specials. These specials will appear in a season ``0`` in this dictionary.
     :param bool showFuture: optional argument, if ``True`` then also include information on episodes that have not yet aired.
     
-    :returns: a :py:class:`dict` of TV show episodes that the TVDB_ database has found. An example for `The Simpsons`_ is shown below,
+    :returns: a :py:class:`dict` of TV show episodes that the TVDB_ has found. An example for `The Simpsons`_ is shown below,
     
       .. code-block:: python
 

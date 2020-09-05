@@ -486,8 +486,6 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
     If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
     
     :rtype: tuple
-
-    .. warning:: As of |date|, I cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
     
     .. _Jackett: https://github.com/Jackett/Jackett
     """

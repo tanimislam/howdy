@@ -1,0 +1,1518 @@
+{
+ "The Beatles": {
+  "Let It Be": {
+   "year": 1970,
+   "picurl": "http://localhost:32400/library/metadata/36887/thumb/1595707029",
+   "tracks": [
+    {
+     "track_name": "Let It Be",
+     "curdate": "17 March 2014",
+     "duration": 232.154,
+     "size": 7022658.5,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/Let It Be (1970)/The Beatles.Let It Be.m4a"
+    }
+   ]
+  },
+  "Abbey Road": {
+   "year": 1969,
+   "picurl": "http://localhost:32400/library/metadata/36807/thumb/1595706804",
+   "tracks": [
+    {
+     "track_name": "Come Together",
+     "curdate": "17 March 2014",
+     "duration": 255.304,
+     "size": 7978250.0,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Come Together.m4a"
+    },
+    {
+     "track_name": "Something",
+     "curdate": "17 March 2014",
+     "duration": 195.65200000000002,
+     "size": 5331517.0,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Something.m4a"
+    },
+    {
+     "track_name": "Maxwell's Silver Hammer",
+     "curdate": "17 March 2014",
+     "duration": 205.381,
+     "size": 6110084.75,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Maxwell's Silver Hammer.m4a"
+    },
+    {
+     "track_name": "Oh! Darling",
+     "curdate": "17 March 2014",
+     "duration": 205.75300000000001,
+     "size": 6018275.25,
+     "track": 4,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Oh Darling.m4a"
+    },
+    {
+     "track_name": "Octopus's Garden",
+     "curdate": "17 March 2014",
+     "duration": 168.577,
+     "size": 5015165.75,
+     "track": 5,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Octopus's Garden.m4a"
+    },
+    {
+     "track_name": "I Want You (She's So Heavy)",
+     "curdate": "17 March 2014",
+     "duration": 463.726,
+     "size": 13390088.25,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.I Want You (She's So Heavy).m4a"
+    },
+    {
+     "track_name": "Here Comes the Sun",
+     "curdate": "17 March 2014",
+     "duration": 185.296,
+     "size": 5628366.0,
+     "track": 7,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Here Comes the Sun.m4a"
+    },
+    {
+     "track_name": "Because",
+     "curdate": "17 March 2014",
+     "duration": 165.187,
+     "size": 4811071.375,
+     "track": 8,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Because.m4a"
+    },
+    {
+     "track_name": "You Never Give Me Your Money",
+     "curdate": "17 March 2014",
+     "duration": 242.394,
+     "size": 7120323.75,
+     "track": 9,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.You Never Give Me Your Money.m4a"
+    },
+    {
+     "track_name": "Sun King",
+     "curdate": "17 March 2014",
+     "duration": 146.263,
+     "size": 4022232.5,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Sun King.m4a"
+    },
+    {
+     "track_name": "Mean Mr. Mustard",
+     "curdate": "17 March 2014",
+     "duration": 66.224,
+     "size": 2226782.0,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Mean Mr. Mustard.m4a"
+    },
+    {
+     "track_name": "Polythene Pam",
+     "curdate": "17 March 2014",
+     "duration": 72.47,
+     "size": 2273746.25,
+     "track": 12,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Polythene Pam.m4a"
+    },
+    {
+     "track_name": "She Came In Through the Bathroom Window",
+     "curdate": "17 March 2014",
+     "duration": 117.679,
+     "size": 3751018.125,
+     "track": 13,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.She Came in Through the Bathroom Window.m4a"
+    },
+    {
+     "track_name": "Golden Slumbers",
+     "curdate": "17 March 2014",
+     "duration": 312.982,
+     "size": 9076478.0,
+     "track": 14,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Golden Slumbers.m4a"
+    },
+    {
+     "track_name": "Carry That Weight",
+     "curdate": "17 March 2014",
+     "duration": 96.758,
+     "size": 2939024.25,
+     "track": 15,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Carry That Weight.m4a"
+    },
+    {
+     "track_name": "The End",
+     "curdate": "17 March 2014",
+     "duration": 124.854,
+     "size": 3823653.75,
+     "track": 16,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.The End.m4a"
+    },
+    {
+     "track_name": "Her Majesty",
+     "curdate": "17 March 2014",
+     "duration": 22.501,
+     "size": 734095.125,
+     "track": 17,
+     "file": "/mnt/media/aacmusic/The Beatles/Abbey Road (1969)/The Beatles.Her Majesty.m4a"
+    }
+   ]
+  },
+  "The Beatles": {
+   "year": 1968,
+   "picurl": "http://localhost:32400/library/metadata/36805/thumb/1595706870",
+   "tracks": [
+    {
+     "track_name": "Back in the U.S.S.R.",
+     "curdate": "17 March 2014",
+     "duration": 162.865,
+     "size": 5170963.75,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Back in the U.S.S.R..m4a"
+    },
+    {
+     "track_name": "Birthday",
+     "curdate": "17 March 2014",
+     "duration": 162.888,
+     "size": 4968084.0,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Birthday.m4a"
+    },
+    {
+     "track_name": "Dear Prudence",
+     "curdate": "17 March 2014",
+     "duration": 235.381,
+     "size": 6943739.5,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Dear Prudence.m4a"
+    },
+    {
+     "track_name": "Yer Blues",
+     "curdate": "17 March 2014",
+     "duration": 241.11700000000002,
+     "size": 7444487.375000001,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Yer Blues.m4a"
+    },
+    {
+     "track_name": "Glass Onion",
+     "curdate": "17 March 2014",
+     "duration": 137.602,
+     "size": 4128060.0,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Glass Onion.m4a"
+    },
+    {
+     "track_name": "Mother Nature's Son",
+     "curdate": "17 March 2014",
+     "duration": 167.532,
+     "size": 4690896.0,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Mother Nature's Son.m4a"
+    },
+    {
+     "track_name": "Ob-La-Di, Ob-La-Da",
+     "curdate": "17 March 2014",
+     "duration": 188.663,
+     "size": 6084381.75,
+     "track": 4,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Ob-La-Di, Ob-La-Da.m4a"
+    },
+    {
+     "track_name": "Everybody's Got Something to Hide Except Me and My Monkey",
+     "curdate": "17 March 2014",
+     "duration": 144.8,
+     "size": 4724100.0,
+     "track": 4,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Everybody's Got Something to Hide (Except Me and My Monkey).m4a"
+    },
+    {
+     "track_name": "Wild Honey Pie",
+     "curdate": "17 March 2014",
+     "duration": 61.232,
+     "size": 2089542.0,
+     "track": 5,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Wild Honey Pie.m4a"
+    },
+    {
+     "track_name": "Sexy Sadie",
+     "curdate": "17 March 2014",
+     "duration": 195.35,
+     "size": 5665150.0,
+     "track": 5,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Sexy Sadie.m4a"
+    },
+    {
+     "track_name": "The Continuing Story of Bungalow Bill",
+     "curdate": "17 March 2014",
+     "duration": 194.05,
+     "size": 5603193.75,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.The Continuing Story of Bungalow Bill.m4a"
+    },
+    {
+     "track_name": "Helter Skelter",
+     "curdate": "17 March 2014",
+     "duration": 269.723,
+     "size": 8125405.375,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Helter Skelter.m4a"
+    },
+    {
+     "track_name": "While My Guitar Gently Weeps",
+     "curdate": "17 March 2014",
+     "duration": 285.142,
+     "size": 8625545.5,
+     "track": 7,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Whily My Guitar Gently Weeps.m4a"
+    },
+    {
+     "track_name": "Long, Long, Long",
+     "curdate": "17 March 2014",
+     "duration": 186.434,
+     "size": 4893892.5,
+     "track": 7,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Long, Long, Long.m4a"
+    },
+    {
+     "track_name": "Happiness Is a Warm Gun",
+     "curdate": "17 March 2014",
+     "duration": 162.56300000000002,
+     "size": 4734647.375000001,
+     "track": 8,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Happiness Is a Warm Gun.m4a"
+    },
+    {
+     "track_name": "Revolution 1",
+     "curdate": "17 March 2014",
+     "duration": 255.65200000000002,
+     "size": 7318038.5,
+     "track": 8,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Revolution 1.m4a"
+    },
+    {
+     "track_name": "Martha My Dear",
+     "curdate": "17 March 2014",
+     "duration": 148.306,
+     "size": 4245259.25,
+     "track": 9,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Martha My Dear.m4a"
+    },
+    {
+     "track_name": "Honey Pie",
+     "curdate": "17 March 2014",
+     "duration": 161.217,
+     "size": 4574532.375,
+     "track": 9,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Honey Pie.m4a"
+    },
+    {
+     "track_name": "I'm So Tired",
+     "curdate": "17 March 2014",
+     "duration": 123.159,
+     "size": 3417662.25,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.I'm So Tired.m4a"
+    },
+    {
+     "track_name": "Savoy Truffle",
+     "curdate": "17 March 2014",
+     "duration": 174.87,
+     "size": 5246100.0,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Savoy Truffle.m4a"
+    },
+    {
+     "track_name": "Blackbird",
+     "curdate": "17 March 2014",
+     "duration": 137.416,
+     "size": 3813294.0,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Blackbird.m4a"
+    },
+    {
+     "track_name": "Cry Baby Cry",
+     "curdate": "17 March 2014",
+     "duration": 190.93800000000002,
+     "size": 5752007.250000001,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Cry Baby Cry.m4a"
+    },
+    {
+     "track_name": "Piggies",
+     "curdate": "17 March 2014",
+     "duration": 123.71600000000001,
+     "size": 4129021.5000000005,
+     "track": 12,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Piggies.m4a"
+    },
+    {
+     "track_name": "Revolution 9",
+     "curdate": "17 March 2014",
+     "duration": 502.202,
+     "size": 14626633.25,
+     "track": 12,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Revolution 9.m4a"
+    },
+    {
+     "track_name": "Rocky Raccoon",
+     "curdate": "17 March 2014",
+     "duration": 221.054,
+     "size": 6438197.75,
+     "track": 13,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Rocky Raccoon.m4a"
+    },
+    {
+     "track_name": "Good Night",
+     "curdate": "17 March 2014",
+     "duration": 191.774,
+     "size": 5273785.0,
+     "track": 13,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Good Night.m4a"
+    },
+    {
+     "track_name": "Don't Pass Me By",
+     "curdate": "17 March 2014",
+     "duration": 222.03,
+     "size": 6522131.25,
+     "track": 14,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Don't Pass Me By.m4a"
+    },
+    {
+     "track_name": "Why Don't We Do It in the Road?",
+     "curdate": "17 March 2014",
+     "duration": 100.52,
+     "size": 2940210.0,
+     "track": 15,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Why Don't We Do It in the Road.m4a"
+    },
+    {
+     "track_name": "I Will",
+     "curdate": "17 March 2014",
+     "duration": 105.28,
+     "size": 2987320.0,
+     "track": 16,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.I Will.m4a"
+    },
+    {
+     "track_name": "Julia",
+     "curdate": "17 March 2014",
+     "duration": 173.38400000000001,
+     "size": 4724714.0,
+     "track": 17,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Julia.m4a"
+    }
+   ]
+  },
+  "Hey Jude / Revolution": {
+   "year": 1968,
+   "picurl": "http://localhost:32400/library/metadata/36854/thumb/1598558835",
+   "tracks": [
+    {
+     "track_name": "Hey Jude",
+     "curdate": "17 March 2014",
+     "duration": 422.418,
+     "size": 13675782.75,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/Hey Jude (1970)/The Beatles.Hey Jude.m4a"
+    }
+   ]
+  },
+  "Magical Mystery Tour": {
+   "year": 1967,
+   "picurl": "http://localhost:32400/library/metadata/36792/thumb/1595707047",
+   "tracks": [
+    {
+     "track_name": "Magical Mystery Tour",
+     "curdate": "17 March 2014",
+     "duration": 171.642,
+     "size": 4248139.5,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/Magical Mystery Tour (1967)/The Beatles.Magical Mystery Tour.m4a"
+    },
+    {
+     "track_name": "The Fool on the Hill",
+     "curdate": "17 March 2014",
+     "duration": 175.70600000000002,
+     "size": 5139400.500000001,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/Magical Mystery Tour (1967)/The Beatles.The Fool on the Hill.m4a"
+    },
+    {
+     "track_name": "Flying",
+     "curdate": "17 March 2014",
+     "duration": 133.608,
+     "size": 3707622.0,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/Magical Mystery Tour (1967)/The Beatles.Flying.m4a"
+    },
+    {
+     "track_name": "Blue Jay Way",
+     "curdate": "17 March 2014",
+     "duration": 233.82500000000002,
+     "size": 7073206.250000001,
+     "track": 4,
+     "file": "/mnt/media/aacmusic/The Beatles/Magical Mystery Tour (1967)/The Beatles.Blue Jay Way.m4a"
+    },
+    {
+     "track_name": "Your Mother Should Know",
+     "curdate": "17 March 2014",
+     "duration": 146.727,
+     "size": 4420150.875,
+     "track": 5,
+     "file": "/mnt/media/aacmusic/The Beatles/Magical Mystery Tour (1967)/The Beatles.Your Mother Should Know.m4a"
+    },
+    {
+     "track_name": "I Am the Walrus",
+     "curdate": "17 March 2014",
+     "duration": 274.391,
+     "size": 8471822.125,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/Magical Mystery Tour (1967)/The Beatles.I Am the Walrus.m4a"
+    },
+    {
+     "track_name": "Hello Goodbye",
+     "curdate": "17 March 2014",
+     "duration": 209.584,
+     "size": 6628094.0,
+     "track": 7,
+     "file": "/mnt/media/aacmusic/The Beatles/Magical Mystery Tour (1967)/The Beatles.Hello, Goodbye.m4a"
+    },
+    {
+     "track_name": "Strawberry Fields Forever",
+     "curdate": "17 March 2014",
+     "duration": 246.643,
+     "size": 7275968.5,
+     "track": 8,
+     "file": "/mnt/media/aacmusic/The Beatles/Magical Mystery Tour (1967)/The Beatles.Strawberry Fields Forever.m4a"
+    },
+    {
+     "track_name": "Penny Lane",
+     "curdate": "17 March 2014",
+     "duration": 179.282,
+     "size": 5266408.75,
+     "track": 9,
+     "file": "/mnt/media/aacmusic/The Beatles/Magical Mystery Tour (1967)/The Beatles.Penny Lane.m4a"
+    },
+    {
+     "track_name": "Baby You're a Rich Man",
+     "curdate": "17 March 2014",
+     "duration": 179.305,
+     "size": 5491215.625,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/Magical Mystery Tour (1967)/The Beatles.Baby You're a Rich Man.m4a"
+    },
+    {
+     "track_name": "All You Need Is Love",
+     "curdate": "17 March 2014",
+     "duration": 227.51,
+     "size": 7138126.25,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/Magical Mystery Tour (1967)/The Beatles.All You Need Is Love.m4a"
+    }
+   ]
+  },
+  "Sgt. Pepper's Lonely Hearts Club Band": {
+   "year": 1967,
+   "picurl": "http://localhost:32400/library/metadata/36781/thumb/1595707181",
+   "tracks": [
+    {
+     "track_name": "Sgt. Pepper's Lonely Hearts Club Band",
+     "curdate": "17 March 2014",
+     "duration": 120.605,
+     "size": 3467393.75,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.Sergeant Pepper's Lonely Hearts Club Band.m4a"
+    },
+    {
+     "track_name": "With a Little Help From My Friends",
+     "curdate": "17 March 2014",
+     "duration": 199.762,
+     "size": 6367413.75,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.With a Little Help From My Friends.m4a"
+    },
+    {
+     "track_name": "Lucy in the Sky With Diamonds",
+     "curdate": "17 March 2014",
+     "duration": 206.96,
+     "size": 6441630.0,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.Lucy in the Sky With Diamonds.m4a"
+    },
+    {
+     "track_name": "Getting Better",
+     "curdate": "17 March 2014",
+     "duration": 165.698,
+     "size": 4991652.25,
+     "track": 4,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.Getting Better.m4a"
+    },
+    {
+     "track_name": "Fixing a Hole",
+     "curdate": "17 March 2014",
+     "duration": 155.365,
+     "size": 4932838.75,
+     "track": 5,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.Fixing a Hole.m4a"
+    },
+    {
+     "track_name": "She's Leaving Home",
+     "curdate": "17 March 2014",
+     "duration": 214.437,
+     "size": 6218673.0,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.She's Leaving Home.m4a"
+    },
+    {
+     "track_name": "Being for the Benefit of Mr. Kite!",
+     "curdate": "17 March 2014",
+     "duration": 155.992,
+     "size": 4796754.0,
+     "track": 7,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.Being for the Benefit of Mr. Kite.m4a"
+    },
+    {
+     "track_name": "Within You Without You",
+     "curdate": "17 March 2014",
+     "duration": 304.6,
+     "size": 9747200.0,
+     "track": 8,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.Within You Without You.m4a"
+    },
+    {
+     "track_name": "When I'm Sixty-Four",
+     "curdate": "17 March 2014",
+     "duration": 157.478,
+     "size": 4527492.5,
+     "track": 9,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.When I'm Sixty-Four.m4a"
+    },
+    {
+     "track_name": "Lovely Rita",
+     "curdate": "17 March 2014",
+     "duration": 162.076,
+     "size": 5044615.5,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.Lovely Rita.m4a"
+    },
+    {
+     "track_name": "Good Morning Good Morning",
+     "curdate": "17 March 2014",
+     "duration": 161.24,
+     "size": 5159680.0,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.Good Morning Good Morning.m4a"
+    },
+    {
+     "track_name": "Sgt. Pepper's Lonely Hearts Club Band (reprise)",
+     "curdate": "17 March 2014",
+     "duration": 79.181,
+     "size": 2662461.125,
+     "track": 12,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.Sergeant Pepper's Lonely Hearts Club Band (Reprise).m4a"
+    },
+    {
+     "track_name": "A Day in the Life",
+     "curdate": "17 March 2014",
+     "duration": 331.651,
+     "size": 9452053.5,
+     "track": 13,
+     "file": "/mnt/media/aacmusic/The Beatles/Sgt. Pepper\u2019s Lonely Hearts Club Band (1967)/The Beatles.A Day in the Life.m4a"
+    }
+   ]
+  },
+  "A Collection of Beatles Oldies": {
+   "year": 1966,
+   "picurl": "http://localhost:32400/library/metadata/36819/thumb/1599247728",
+   "tracks": [
+    {
+     "track_name": "She Loves You",
+     "curdate": "17 March 2014",
+     "duration": 169.738,
+     "size": 4816315.75,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/A Collection of Beatles Oldies (1966)/The Beatles.She Loves You.m4a"
+    },
+    {
+     "track_name": "From Me to You",
+     "curdate": "17 March 2014",
+     "duration": 115.102,
+     "size": 4316325.0,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/A Collection of Beatles Oldies (1966)/The Beatles.From Me to You.m4a"
+    },
+    {
+     "track_name": "We Can Work It Out",
+     "curdate": "17 March 2014",
+     "duration": 134.63,
+     "size": 5250570.0,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/A Collection of Beatles Oldies (1966)/The Beatles.We Can Work It Out.m4a"
+    },
+    {
+     "track_name": "I Feel Fine",
+     "curdate": "17 March 2014",
+     "duration": 138.299,
+     "size": 5013338.75,
+     "track": 7,
+     "file": "/mnt/media/aacmusic/The Beatles/A Collection of Beatles Oldies (1966)/The Beatles.I Feel Fine.m4a"
+    },
+    {
+     "track_name": "Day Tripper",
+     "curdate": "17 March 2014",
+     "duration": 169.483,
+     "size": 6143758.75,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/A Collection of Beatles Oldies (1966)/The Beatles.Day Tripper.m4a"
+    },
+    {
+     "track_name": "Paperback Writer",
+     "curdate": "17 March 2014",
+     "duration": 138.345,
+     "size": 5066885.625,
+     "track": 14,
+     "file": "/mnt/media/aacmusic/The Beatles/A Collection of Beatles Oldies (1966)/The Beatles.Paperback Writer.m4a"
+    },
+    {
+     "track_name": "I Want to Hold Your Hand",
+     "curdate": "17 March 2014",
+     "duration": 144.73,
+     "size": 5282645.0,
+     "track": 16,
+     "file": "/mnt/media/aacmusic/The Beatles/A Collection of Beatles Oldies (1966)/The Beatles.I Want to Hold Your Hand.m4a"
+    }
+   ]
+  },
+  "Revolver": {
+   "year": 1966,
+   "picurl": "http://localhost:32400/library/metadata/36795/thumb/1595707153",
+   "tracks": [
+    {
+     "track_name": "Taxman",
+     "curdate": "17 March 2014",
+     "duration": 159.011,
+     "size": 5187733.875,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.Taxman.m4a"
+    },
+    {
+     "track_name": "Eleanor Rigby",
+     "curdate": "17 March 2014",
+     "duration": 127.664,
+     "size": 3877794.0,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.Eleanor Rigby.m4a"
+    },
+    {
+     "track_name": "I'm Only Sleeping",
+     "curdate": "17 March 2014",
+     "duration": 181.65,
+     "size": 5926331.25,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.I'm Only Sleeping.m4a"
+    },
+    {
+     "track_name": "Love You To",
+     "curdate": "17 March 2014",
+     "duration": 181.209,
+     "size": 5957245.875,
+     "track": 4,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.Love You To.m4a"
+    },
+    {
+     "track_name": "Here, There and Everywhere",
+     "curdate": "17 March 2014",
+     "duration": 145.868,
+     "size": 4284872.5,
+     "track": 5,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.Here, There, and Everywhere.m4a"
+    },
+    {
+     "track_name": "Yellow Submarine",
+     "curdate": "17 March 2014",
+     "duration": 160.381,
+     "size": 4951763.375,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.Yellow Submarine.m4a"
+    },
+    {
+     "track_name": "She Said She Said",
+     "curdate": "17 March 2014",
+     "duration": 157.13,
+     "size": 5067442.5,
+     "track": 7,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.She Said She Said.m4a"
+    },
+    {
+     "track_name": "Good Day Sunshine",
+     "curdate": "17 March 2014",
+     "duration": 129.754,
+     "size": 4054812.4999999995,
+     "track": 8,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.Good Day Sunshine.m4a"
+    },
+    {
+     "track_name": "And Your Bird Can Sing",
+     "curdate": "17 March 2014",
+     "duration": 121.72,
+     "size": 4336275.0,
+     "track": 9,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.And Your Bird Can Sing.m4a"
+    },
+    {
+     "track_name": "For No One",
+     "curdate": "17 March 2014",
+     "duration": 121.696,
+     "size": 3772576.0,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.For No One.m4a"
+    },
+    {
+     "track_name": "Doctor Robert",
+     "curdate": "17 March 2014",
+     "duration": 135.21,
+     "size": 4259115.0,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.Doctor Robert.m4a"
+    },
+    {
+     "track_name": "I Want to Tell You",
+     "curdate": "17 March 2014",
+     "duration": 149.862,
+     "size": 4683187.5,
+     "track": 12,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.I Want to Tell You.m4a"
+    },
+    {
+     "track_name": "Got to Get You Into My Life",
+     "curdate": "17 March 2014",
+     "duration": 150.605,
+     "size": 4875836.875,
+     "track": 13,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.Got to Get You Into My Life.m4a"
+    },
+    {
+     "track_name": "Tomorrow Never Knows",
+     "curdate": "17 March 2014",
+     "duration": 177.401,
+     "size": 6209035.0,
+     "track": 14,
+     "file": "/mnt/media/aacmusic/The Beatles/Revolver (1966)/The Beatles.Tomorrow Never Knows.m4a"
+    }
+   ]
+  },
+  "Rubber Soul": {
+   "year": 1965,
+   "picurl": "http://localhost:32400/library/metadata/36828/thumb/1595707181",
+   "tracks": [
+    {
+     "track_name": "Drive My Car",
+     "curdate": "25 May 2015",
+     "duration": 146.333,
+     "size": 4609489.5,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.Drive My Car.m4a"
+    },
+    {
+     "track_name": "Norwegian Wood (This Bird Has Flown)",
+     "curdate": "25 May 2015",
+     "duration": 124.041,
+     "size": 3721230.0,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.Norwegian Wood.m4a"
+    },
+    {
+     "track_name": "You Won't See Me",
+     "curdate": "25 May 2015",
+     "duration": 198.624,
+     "size": 6380796.0,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.You Won't See Me.m4a"
+    },
+    {
+     "track_name": "Nowhere Man",
+     "curdate": "25 May 2015",
+     "duration": 164.21200000000002,
+     "size": 5131625.000000001,
+     "track": 4,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.Nowhere Man.m4a"
+    },
+    {
+     "track_name": "Think for Yourself",
+     "curdate": "25 May 2015",
+     "duration": 137.347,
+     "size": 4566787.75,
+     "track": 5,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.Think for Yourself.m4a"
+    },
+    {
+     "track_name": "The Word",
+     "curdate": "25 May 2015",
+     "duration": 161.263,
+     "size": 5341836.875,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.The Word.m4a"
+    },
+    {
+     "track_name": "Michelle",
+     "curdate": "25 May 2015",
+     "duration": 159.684,
+     "size": 4590915.0,
+     "track": 7,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.Michelle.m4a"
+    },
+    {
+     "track_name": "What Goes On",
+     "curdate": "25 May 2015",
+     "duration": 166.55700000000002,
+     "size": 4975890.375000001,
+     "track": 8,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.What Goes On.m4a"
+    },
+    {
+     "track_name": "Girl",
+     "curdate": "25 May 2015",
+     "duration": 147.935,
+     "size": 4622968.75,
+     "track": 9,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.Girl.m4a"
+    },
+    {
+     "track_name": "I'm Looking Through You",
+     "curdate": "25 May 2015",
+     "duration": 144.382,
+     "size": 4403651.0,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.I'm Looking Through You.m4a"
+    },
+    {
+     "track_name": "In My Life",
+     "curdate": "25 May 2015",
+     "duration": 144.452,
+     "size": 4315503.5,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.In My Life.m4a"
+    },
+    {
+     "track_name": "Wait",
+     "curdate": "25 May 2015",
+     "duration": 132.749,
+     "size": 4347529.75,
+     "track": 12,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.Wait.m4a"
+    },
+    {
+     "track_name": "If I Needed Someone",
+     "curdate": "25 May 2015",
+     "duration": 140.272,
+     "size": 4471170.0,
+     "track": 13,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.If I Needed Someone.m4a"
+    },
+    {
+     "track_name": "Run for Your Life",
+     "curdate": "25 May 2015",
+     "duration": 137.718,
+     "size": 4510264.5,
+     "track": 14,
+     "file": "/mnt/media/aacmusic/The Beatles/Rubber Soul (1965)/The Beatles.Run for Your Life.m4a"
+    }
+   ]
+  },
+  "Help!": {
+   "year": 1965,
+   "picurl": "http://localhost:32400/library/metadata/36787/thumb/1595707029",
+   "tracks": [
+    {
+     "track_name": "Help!",
+     "curdate": "17 March 2014",
+     "duration": 138.299,
+     "size": 4200832.125,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.Help!.m4a"
+    },
+    {
+     "track_name": "The Night Before",
+     "curdate": "17 March 2014",
+     "duration": 156.712,
+     "size": 4564237.0,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.The Night Before.m4a"
+    },
+    {
+     "track_name": "You've Got to Hide Your Love Away",
+     "curdate": "17 March 2014",
+     "duration": 130.961,
+     "size": 3896089.7500000005,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.You've Got to Hide Your Love Away.m4a"
+    },
+    {
+     "track_name": "I Need You",
+     "curdate": "17 March 2014",
+     "duration": 151.348,
+     "size": 4370173.5,
+     "track": 4,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.I Need You.m4a"
+    },
+    {
+     "track_name": "Another Girl",
+     "curdate": "17 March 2014",
+     "duration": 127.78,
+     "size": 3689647.5,
+     "track": 5,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.Another Girl.m4a"
+    },
+    {
+     "track_name": "You're Going to Lose That Girl",
+     "curdate": "17 March 2014",
+     "duration": 136.511,
+     "size": 4078266.125,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.You're Going to Lose That Girl.m4a"
+    },
+    {
+     "track_name": "Ticket to Ride",
+     "curdate": "17 March 2014",
+     "duration": 187.014,
+     "size": 5633796.75,
+     "track": 7,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.Ticket to Ride.m4a"
+    },
+    {
+     "track_name": "Act Naturally",
+     "curdate": "17 March 2014",
+     "duration": 153.113,
+     "size": 4574250.875,
+     "track": 8,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.Act Naturally.m4a"
+    },
+    {
+     "track_name": "It's Only Love",
+     "curdate": "17 March 2014",
+     "duration": 118.771,
+     "size": 3592822.75,
+     "track": 9,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.It's Only Love.m4a"
+    },
+    {
+     "track_name": "You Like Me Too Much",
+     "curdate": "17 March 2014",
+     "duration": 158.755,
+     "size": 4584050.625,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.You Like Me Too Much.m4a"
+    },
+    {
+     "track_name": "Tell Me What You See",
+     "curdate": "17 March 2014",
+     "duration": 159.54500000000002,
+     "size": 4906008.750000001,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.Tell Me What You See.m4a"
+    },
+    {
+     "track_name": "I've Just Seen a Face",
+     "curdate": "17 March 2014",
+     "duration": 127.292,
+     "size": 3341415.0,
+     "track": 12,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.I've Just Seen a Face.m4a"
+    },
+    {
+     "track_name": "Yesterday",
+     "curdate": "17 March 2014",
+     "duration": 124.854,
+     "size": 3527125.5,
+     "track": 13,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.Yesterday.m4a"
+    },
+    {
+     "track_name": "Dizzy Miss Lizzy",
+     "curdate": "17 March 2014",
+     "duration": 173.709,
+     "size": 5580401.625,
+     "track": 14,
+     "file": "/mnt/media/aacmusic/The Beatles/Help! (1965)/The Beatles.Dizzy Miss Lizzie.m4a"
+    }
+   ]
+  },
+  "Beatles for Sale": {
+   "year": 1964,
+   "picurl": "http://localhost:32400/library/metadata/36803/thumb/1595706864",
+   "tracks": [
+    {
+     "track_name": "No Reply",
+     "curdate": "17 March 2014",
+     "duration": 133.237,
+     "size": 2281683.625,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.No Reply.m4a"
+    },
+    {
+     "track_name": "I'm a Loser",
+     "curdate": "17 March 2014",
+     "duration": 149.189,
+     "size": 2648104.75,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.I'm a Loser.m4a"
+    },
+    {
+     "track_name": "Baby's in Black",
+     "curdate": "17 March 2014",
+     "duration": 123.62400000000001,
+     "size": 2070702.0000000002,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.Baby's in Black.m4a"
+    },
+    {
+     "track_name": "Rock and Roll Music",
+     "curdate": "17 March 2014",
+     "duration": 149.653,
+     "size": 4190283.9999999995,
+     "track": 4,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.Rock and Roll Music.m4a"
+    },
+    {
+     "track_name": "I'll Follow the Sun",
+     "curdate": "17 March 2014",
+     "duration": 106.812,
+     "size": 2923978.5,
+     "track": 5,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.I'll Follow the Sun.m4a"
+    },
+    {
+     "track_name": "Mr. Moonlight",
+     "curdate": "17 March 2014",
+     "duration": 152.811,
+     "size": 2406773.25,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.Mr. Moonlight.m4a"
+    },
+    {
+     "track_name": "Eight Days a Week",
+     "curdate": "17 March 2014",
+     "duration": 167.393,
+     "size": 3013074.0,
+     "track": 8,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.Eight Days a Week.m4a"
+    },
+    {
+     "track_name": "Words of Love",
+     "curdate": "17 March 2014",
+     "duration": 131.333,
+     "size": 3348991.5,
+     "track": 9,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.Words of Love.m4a"
+    },
+    {
+     "track_name": "Honey Don't",
+     "curdate": "17 March 2014",
+     "duration": 175.21800000000002,
+     "size": 2934901.5000000005,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.Honey Don't.m4a"
+    },
+    {
+     "track_name": "Every Little Thing",
+     "curdate": "17 March 2014",
+     "duration": 120.605,
+     "size": 1959831.25,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.Every Little Thing.m4a"
+    },
+    {
+     "track_name": "I Don't Want to Spoil the Party",
+     "curdate": "17 March 2014",
+     "duration": 151.905,
+     "size": 2620361.25,
+     "track": 12,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.I Don't Want to Spoil the Party.m4a"
+    },
+    {
+     "track_name": "What You're Doing",
+     "curdate": "17 March 2014",
+     "duration": 150.721,
+     "size": 2505736.625,
+     "track": 13,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.What You're Doing.m4a"
+    },
+    {
+     "track_name": "Everybody's Trying to Be My Baby",
+     "curdate": "17 March 2014",
+     "duration": 143.268,
+     "size": 2543007.0,
+     "track": 14,
+     "file": "/mnt/media/aacmusic/The Beatles/Beatles for Sale (1964)/The Beatles.Everybody's Trying to Be My Baby.m4a"
+    }
+   ]
+  },
+  "The Beatles' Second Album": {
+   "year": 1964,
+   "picurl": "http://localhost:32400/library/metadata/36873/thumb/1599247695",
+   "tracks": [
+    {
+     "track_name": "Thank You Girl",
+     "curdate": "17 March 2014",
+     "duration": 123.949,
+     "size": 3625508.25,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/The Beatles Collection (1978)/The Beatles.Thank You Girl.m4a"
+    },
+    {
+     "track_name": "I'll Get You",
+     "curdate": "17 March 2014",
+     "duration": 124.274,
+     "size": 3417535.0,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/Rarities (1978)/The Beatles.I'll Get You.m4a"
+    }
+   ]
+  },
+  "A Hard Day's Night": {
+   "year": 1964,
+   "picurl": "http://localhost:32400/library/metadata/36783/thumb/1595707017",
+   "tracks": [
+    {
+     "track_name": "A Hard Day's Night",
+     "curdate": "17 March 2014",
+     "duration": 163.655,
+     "size": 3027617.5,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.A Hard Day's Night.m4a"
+    },
+    {
+     "track_name": "I Should Have Known Better",
+     "curdate": "17 March 2014",
+     "duration": 163.98,
+     "size": 5226862.5,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.I Should Have Known Better.m4a"
+    },
+    {
+     "track_name": "If I Fell",
+     "curdate": "17 March 2014",
+     "duration": 141.805,
+     "size": 4112345.0,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.If I Fell.m4a"
+    },
+    {
+     "track_name": "I'm Happy Just to Dance With You",
+     "curdate": "17 March 2014",
+     "duration": 118.654,
+     "size": 3796928.0,
+     "track": 4,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.I'm Happy Just to Dance With You.m4a"
+    },
+    {
+     "track_name": "And I Love Her",
+     "curdate": "17 March 2014",
+     "duration": 151.464,
+     "size": 4335657.0,
+     "track": 5,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.And I Love Her.m4a"
+    },
+    {
+     "track_name": "Tell Me Why",
+     "curdate": "17 March 2014",
+     "duration": 125.063,
+     "size": 3955117.375,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.Tell Me Why.m4a"
+    },
+    {
+     "track_name": "Can't Buy Me Love",
+     "curdate": "17 March 2014",
+     "duration": 130.079,
+     "size": 2975557.125,
+     "track": 7,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.Can't Buy Me Love.m4a"
+    },
+    {
+     "track_name": "Any Time at All",
+     "curdate": "17 March 2014",
+     "duration": 133.376,
+     "size": 4201344.0,
+     "track": 8,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.Any Time at All.m4a"
+    },
+    {
+     "track_name": "I'll Cry Instead",
+     "curdate": "17 March 2014",
+     "duration": 107.69500000000001,
+     "size": 3473163.7500000005,
+     "track": 9,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.I'll Cry Instead.m4a"
+    },
+    {
+     "track_name": "Things We Said Today",
+     "curdate": "17 March 2014",
+     "duration": 154.344,
+     "size": 4456683.0,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.The Things We Said Today.m4a"
+    },
+    {
+     "track_name": "When I Get Home",
+     "curdate": "17 March 2014",
+     "duration": 138.368,
+     "size": 4133744.0,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.When I Get Home.m4a"
+    },
+    {
+     "track_name": "You Can't Do That",
+     "curdate": "17 March 2014",
+     "duration": 157.66400000000002,
+     "size": 5045248.000000001,
+     "track": 12,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.You Can't Do That.m4a"
+    },
+    {
+     "track_name": "I'll Be Back",
+     "curdate": "17 March 2014",
+     "duration": 140.55100000000002,
+     "size": 4163823.3750000005,
+     "track": 13,
+     "file": "/mnt/media/aacmusic/The Beatles/A Hard Day\u2019s Night (1964)/The Beatles.I'll Be Back.m4a"
+    }
+   ]
+  },
+  "With The Beatles": {
+   "year": 1963,
+   "picurl": "http://localhost:32400/library/metadata/36789/thumb/1599247792",
+   "tracks": [
+    {
+     "track_name": "It Won't Be Long",
+     "curdate": "17 March 2014",
+     "duration": 133.701,
+     "size": 2590456.875,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.It Won't Be Long.m4a"
+    },
+    {
+     "track_name": "All I've Got to Do",
+     "curdate": "17 March 2014",
+     "duration": 124.506,
+     "size": 3750743.25,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.All I've Got to Do.m4a"
+    },
+    {
+     "track_name": "All My Loving",
+     "curdate": "17 March 2014",
+     "duration": 129.52100000000002,
+     "size": 2509469.3750000005,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.All My Loving.m4a"
+    },
+    {
+     "track_name": "Don't Bother Me",
+     "curdate": "17 March 2014",
+     "duration": 151.023,
+     "size": 4643957.25,
+     "track": 4,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.Don't Bother Me.m4a"
+    },
+    {
+     "track_name": "Little Child",
+     "curdate": "17 March 2014",
+     "duration": 107.927,
+     "size": 3386209.625,
+     "track": 5,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.Little Child.m4a"
+    },
+    {
+     "track_name": "Till There Was You",
+     "curdate": "17 March 2014",
+     "duration": 136.696,
+     "size": 2870616.0,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.Till There Was You.m4a"
+    },
+    {
+     "track_name": "Please Mister Postman",
+     "curdate": "17 March 2014",
+     "duration": 156.689,
+     "size": 4328533.625,
+     "track": 7,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.Please Mr. Postman.m4a"
+    },
+    {
+     "track_name": "Roll Over Beethoven",
+     "curdate": "17 March 2014",
+     "duration": 167.625,
+     "size": 5238281.25,
+     "track": 8,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.Roll Over Beethoven.m4a"
+    },
+    {
+     "track_name": "Hold Me Tight",
+     "curdate": "17 March 2014",
+     "duration": 152.532,
+     "size": 4823824.5,
+     "track": 9,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.Hold Me Tight.m4a"
+    },
+    {
+     "track_name": "You Really Got a Hold on Me",
+     "curdate": "17 March 2014",
+     "duration": 182.904,
+     "size": 5555709.0,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.You Really Got a Hold on Me.m4a"
+    },
+    {
+     "track_name": "I Wanna Be Your Man",
+     "curdate": "17 March 2014",
+     "duration": 118.887,
+     "size": 3774662.25,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.I Wanna Be Your Man.m4a"
+    },
+    {
+     "track_name": "Devil in Her Heart",
+     "curdate": "17 March 2014",
+     "duration": 147.679,
+     "size": 4762647.75,
+     "track": 12,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.Devil in Her Heart.m4a"
+    },
+    {
+     "track_name": "Not a Second Time",
+     "curdate": "17 March 2014",
+     "duration": 128.36,
+     "size": 4187745.0000000005,
+     "track": 13,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.Not a Second Time.m4a"
+    },
+    {
+     "track_name": "Money (That's What I Want)",
+     "curdate": "17 March 2014",
+     "duration": 166.975,
+     "size": 3443859.375,
+     "track": 14,
+     "file": "/mnt/media/aacmusic/The Beatles/With the Beatles (1963)/The Beatles.Money (That's What I Want).m4a"
+    }
+   ]
+  },
+  "Please Please Me": {
+   "year": 1963,
+   "picurl": "http://localhost:32400/library/metadata/36785/thumb/1595707103",
+   "tracks": [
+    {
+     "track_name": "I Saw Her Standing There",
+     "curdate": "17 March 2014",
+     "duration": 175.03300000000002,
+     "size": 4550858.0,
+     "track": 1,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.I Saw Her Standing There.m4a"
+    },
+    {
+     "track_name": "Misery",
+     "curdate": "17 March 2014",
+     "duration": 110.156,
+     "size": 3180754.5,
+     "track": 2,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.Misery.m4a"
+    },
+    {
+     "track_name": "Anna (Go to Him)",
+     "curdate": "17 March 2014",
+     "duration": 175.056,
+     "size": 4617102.0,
+     "track": 3,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.Anna (Go to Him).m4a"
+    },
+    {
+     "track_name": "Chains",
+     "curdate": "17 March 2014",
+     "duration": 146.495,
+     "size": 4193419.375,
+     "track": 4,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.Chains.m4a"
+    },
+    {
+     "track_name": "Boys",
+     "curdate": "17 March 2014",
+     "duration": 147.47,
+     "size": 2562291.25,
+     "track": 5,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.Boys.m4a"
+    },
+    {
+     "track_name": "Ask Me Why",
+     "curdate": "17 March 2014",
+     "duration": 147.726,
+     "size": 2529807.75,
+     "track": 6,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.Ask Me Why.m4a"
+    },
+    {
+     "track_name": "Please Please Me",
+     "curdate": "17 March 2014",
+     "duration": 123.229,
+     "size": 3789291.75,
+     "track": 7,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.Please Please Me.m4a"
+    },
+    {
+     "track_name": "Love Me Do",
+     "curdate": "17 March 2014",
+     "duration": 143.895,
+     "size": 3579388.1250000005,
+     "track": 8,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.Love Me Do.m4a"
+    },
+    {
+     "track_name": "P.S. I Love You",
+     "curdate": "17 March 2014",
+     "duration": 122.648,
+     "size": 1931706.0,
+     "track": 9,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.P.S. I Love You.m4a"
+    },
+    {
+     "track_name": "Baby It's You",
+     "curdate": "17 March 2014",
+     "duration": 158.036,
+     "size": 2666857.5,
+     "track": 10,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.Baby It's You.m4a"
+    },
+    {
+     "track_name": "Do You Want to Know a Secret",
+     "curdate": "17 March 2014",
+     "duration": 119.235,
+     "size": 3025588.125,
+     "track": 11,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.Do You Want to Know a Secret?.m4a"
+    },
+    {
+     "track_name": "A Taste of Honey",
+     "curdate": "17 March 2014",
+     "duration": 125.133,
+     "size": 2049052.875,
+     "track": 12,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.A Taste of Honey.m4a"
+    },
+    {
+     "track_name": "There's a Place",
+     "curdate": "17 March 2014",
+     "duration": 112.82600000000001,
+     "size": 2510378.5,
+     "track": 13,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.There's a Place.m4a"
+    },
+    {
+     "track_name": "Twist and Shout",
+     "curdate": "17 March 2014",
+     "duration": 153.229,
+     "size": 3945646.7500000005,
+     "track": 14,
+     "file": "/mnt/media/aacmusic/The Beatles/Please Please Me (1963)/The Beatles.Twist and Shout.m4a"
+    }
+   ]
+  }
+ }
+}

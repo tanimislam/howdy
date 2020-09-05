@@ -989,9 +989,30 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
             * ``director``: :py:class:`list` of the episode's directors.
             * ``writer``: :py:class:`list` of the episode's writers.
             
-        * An example ``tvdata`` :py:class:`dict` with one finished HBO show, `The Brink <https://en.wikipedia.org/wiki/The_Brink_(TV_series)>`_, can be found in :download:`tvdata example </_static/tvdata_example.json>` in JSON format.
+        * An example ``tvdata`` :py:class:`dict` with one finished HBO show, `The Brink`_, can be found in :download:`tvdata example </_static/tvdata_example.json>` in JSON format.
 
-      * Music data has this structure.
+      * Music data has this JSON like structure. ``musicdata`` is an example music data dictionary.
+
+        * ``musicdata`` is a :py:class:`dict` whose keys are the individual artists or groups (such as `The Beatles`_).
+
+        * Each value in ``musicdata[<artistname>]`` is a :py:class:`dict` of albums associated with ``<artistname>`` on the Plex_ server.
+
+        * The key is the album name, and the value is another :py:class:`dict` with three keys.
+        
+          * ``year``: the year of release.
+          * ``picurl``: the URL of album cover on the Plex_server.
+          * ``tracks``L contains the :py:class:`list` of songs associated with this artist and album on the Plex_ server.
+
+        * ``musicdata[<artistname>][<albumname>]['tracks']`` is a :py:class:`list` of :py:class:`dict`\ s representing each song that is on the Plex_ server. Each song :py:class:`dict` has the following keys and values.
+
+          * ``track_name``: the song name.
+          * ``curdate``: the :py:class:`date <datetime.date>` on which this song was added to the Plex_ music library.
+          * ``duration``: song length in seconds.
+          * ``size``: song file size in bytes.
+          * ``track``: track number in the album.
+          * ``file``: the song file's location on the Plex_ server.
+
+        * An example ``musicdata`` :py:class:`dict` with one artist, `The Beatles`_, can be found in :download:`musicdata example </_static/musicdata_example.json>`. Since :py:class:`date` is not JSON-serializable, I have represented each ``curdate`` as a string in this format: DAY MONTH YEAR (such as ``13 January 2020``).
     
     :param str title: the name of the library.
     :param str token: the Plex_ server access token.
@@ -1002,6 +1023,8 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
     :returns: a dictionary of library data on the Plex server.
     :rtype: dict
     
+    .. _`The Brink`: https://en.wikipedia.org/wiki/The_Brink_(TV_series)
+    .. _`The Beatles`: https://en.wikipedia.org/wiki/The_Beatles
     """
     time0 = time.time( )
     params = { 'X-Plex-Token' : token }

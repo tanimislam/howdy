@@ -118,21 +118,21 @@ class MusicInfo( object ):
       * ``tracks`` is a :py:class:`dict` of tracks on this album. Each key is the track number, and each value is a :py:class:`tuple` of song name, and song length.
 
       For example, here is information on the `Moon Safari`_ album released by Air_.
-    
+      
       .. code-block:: python
 
-        {'release-date': datetime.date(1998, 1, 16),
-         'album url': '',
-         'tracks': {1: ('La Femme D’argent', 429.56),
-          2: ('Sexy Boy', 298.466),
-          3: ('All I Need', 268.333),
-          4: ('Kelly, Watch the Stars!', 225.746),
-          5: ('Talisman', 256.48),
-          6: ('Remember', 154.293),
-          7: ('You Make It Easy', 240.826),
-          8: ('Ce Matin-Là', 218.506),
-          9: ('New Star in the Sky (Chanson Pour Solal)', 340.8),
-          10: ('Le Voyage De Pénélope', 190.866)}}
+         {'release-date': datetime.date(1998, 1, 16),
+          'album url': '',
+          'tracks': {1: ('La Femme D’argent', 429.56),
+           2: ('Sexy Boy', 298.466),
+           3: ('All I Need', 268.333),
+           4: ('Kelly, Watch the Stars!', 225.746),
+           5: ('Talisman', 256.48),
+           6: ('Remember', 154.293),
+           7: ('You Make It Easy', 240.826),
+           8: ('Ce Matin-Là', 218.506),
+           9: ('New Star in the Sky (Chanson Pour Solal)', 340.8),
+           10: ('Le Voyage De Pénélope', 190.866)}}
 
     .. _MusicBrainz: https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2
     .. _SQLite3: https://www.sqlite.org/index.html
@@ -146,7 +146,7 @@ class MusicInfo( object ):
         do_strict = True, artist_mbid = None ):
         """
         :param str artist_name: the artist over which to search.
-        :param int min_score: optional argument. Filter on this minimum score on artist name matches to ``artist_name``. 0 :math:`\le` ``min_score`` :math:`le` 100. Default is ``100``.
+        :param int min_score: optional argument. Filter on this minimum score on artist name matches to ``artist_name``. 0 :math:`\le` ``min_score`` :math:`\le 100`. Default is ``100``.
         :param bool do_strict: optional argument. If ``True``, performs a strict search using the :py:meth:`musicbrainzngs search_artists <musicbrainz.search_artists>` method. Default is ``True``.
         :param str artist_mbid: optional argument. If not ``None``, then uses musicbrainzngs's :py:meth:`get_artist_by_id <musicbrainzngs.get_artist_by_id>` to get information on an artist. Otherwise, gets all artist matches. Default is ``None``.
         :returns: a :py:class:`list` of artist information matches to ``artist_name``. If ``artist_mbid`` is not ``None``, then gets a *SINGLE* artist match. Otherwise gets all matches found.
@@ -170,7 +170,7 @@ class MusicInfo( object ):
           * ``appname`` is the application name registered with the MusicBrainz_ API.
           * ``version`` is the application version.
 
-        This information comes from the SQLite3_ configuration database.
+          This information comes from the SQLite3_ configuration database.
         
         :rtype: dict
         
@@ -234,15 +234,15 @@ class MusicInfo( object ):
           * ``first-release-date`` is the release date, as a :py:class:`str`.
           * ``primary-type`` is the main type of the release.
         
-        For example, for the artist Air_, whose MusicBrainz_ artist ID is ``"cb67438a-7f50-4f2b-a6f1-2bb2729fd538"``, an example first element in the list is,
-        
-        .. code-block:: python
+          For example, for the artist Air_, whose MusicBrainz_ artist ID is ``"cb67438a-7f50-4f2b-a6f1-2bb2729fd538"``, an example first element in the list is,
 
-            {'id': 'b0bf2b77-b8cf-32f6-8893-9741d757b400',
-             'type': 'Album',
-             'title': 'Moon Safari',
-             'first-release-date': '1998-01-16',
-             'primary-type': 'Album'}
+          .. code-block:: python
+
+             {'id': 'b0bf2b77-b8cf-32f6-8893-9741d757b400',
+              'type': 'Album',
+              'title': 'Moon Safari',
+              'first-release-date': '1998-01-16',
+              'primary-type': 'Album'}
 
         :rtype: list
         """
@@ -354,18 +354,18 @@ class MusicInfo( object ):
         :param str album_name: a studio album released by this artist.
         :returns: a two-element :py:class:`tuple`, whose first element is a :py:class:`list` of summary information on tracks for this album, and whose second element is the string ``"SUCCESS"``. The elements in this list are ordered by first song track to last song track. An example first song for the `Moon Safari`_ album released by Air_ is,
 
-        .. code-block:: python
+          .. code-block:: python
 
-            {'artist': 'Air',
-             'album': 'Moon Safari',
-             'year': 1998,
-             'total tracks': 10,
-             'song': 'La Femme D’argent',
-             'tracknumber': 1,
-             'album url': '',
-             'duration': 429}
+             {'artist': 'Air',
+              'album': 'Moon Safari',
+              'year': 1998,
+              'total tracks': 10,
+              'song': 'La Femme D’argent',
+              'tracknumber': 1,
+              'album url': '',
+              'duration': 429}
 
-        If the album name has not been published by this artist, return a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
+          If the album name has not been published by this artist, return a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
 
         :rtype: tuple
         """
@@ -416,14 +416,14 @@ class MusicInfo( object ):
 
           .. code-block:: python
         
-               {'album': 'Moon Safari',
-                'artist': 'Air',
-                'year': 1998,
-                'tracknumber': 4,
-                'total tracks': 10,
-                'song': 'Kelly, Watch the Stars!',
-                'duration': 225.746,
-                'album url': 'http://...2-490838855977/21141679576.jpg'}
+             {'album': 'Moon Safari',
+              'artist': 'Air',
+              'year': 1998,
+              'tracknumber': 4,
+              'total tracks': 10,
+              'song': 'Kelly, Watch the Stars!',
+              'duration': 225.746,
+              'album url': 'http://...2-490838855977/21141679576.jpg'}
 
           If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
         
@@ -484,7 +484,7 @@ class MusicInfo( object ):
         """
         :param str album_name: album_name.
         :returns: If successful, returns a two-element :py:class:`tuple`, whose first element is the list of songs ordered by track number, and whose second element is the string ``"SUCCESS"``. Each element in this list is a :py:class:`tuple` of song number and track number. For example, for `Moon Safari`_ by Air_,
-
+        
           .. code-block:: python
 
               [("La Femme d'Argent", 1),
@@ -498,7 +498,7 @@ class MusicInfo( object ):
                ('New Star in the Sky (Chanson Pour Solal)', 9),
                ('Le Voyage De Pénélope', 10)]
 
-        If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
+          If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
         
         :rtype: tuple
         """
@@ -1166,7 +1166,7 @@ class HowdyLastFM( object ):
               'total tracks': 10,
               'song': 'Kelly, Watch the Stars!',
               'duration': 225.746,
-              'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png'}
+              'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016....png'}
 
           If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
 
@@ -1306,18 +1306,18 @@ class HowdyLastFM( object ):
         :param str album_name: the album name.
         :returns: a two-element :py:class:`tuple`, whose first element is a :py:class:`list` of summary information on tracks for this album, and whose second element is the string ``"SUCCESS"``. The elements in this list are ordered by first song track to last song track. An example first song for the `Moon Safari`_ album released by Air_ is,
         
-           .. code-block:: python
+          .. code-block:: python
 
-               {'song': 'La Femme D’argent',
-                'artist': 'Air',
-                'tracknumber': 1,
-                'total tracks': 10,
-                'duration': 429.56,
-                'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png',
-                'album': 'Moon Safari',
-                'year': 1998}
+              {'song': 'La Femme D’argent',
+               'artist': 'Air',
+               'tracknumber': 1,
+               'total tracks': 10,
+               'duration': 429.56,
+               'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6....png',
+               'album': 'Moon Safari',
+               'year': 1998}
 
-           If the album name has not been published by this artist, return a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
+          If the album name has not been published by this artist, return a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
 
         :rtype: tuple
         """
@@ -1391,7 +1391,7 @@ class HowdyMusic( object ):
     
     .. warning::
 
-       As of October 20, 2019, this API may not be generally functional. A discussion is found on the `Pygn`_ Python Gracenote_ API implementation, https://github.com/cweichen/pygn/issues/14.
+       As of October 20, 2019, this API may not be generally functional. A discussion is found on the `Pygn`_ Python Gracenote_ API implementation, :issue:`cweichen/pygn#14`.
 
     .. _Pygn: https://github.com/cweichen/pygn
     .. _Gracenote: https://developer.gracenote.com/web-api
@@ -1471,20 +1471,21 @@ class HowdyMusic( object ):
         :param str artist_name: the artist name.
         :param str album_name: album_name.
         :returns: a :py:class:`list` of songs ordered by track number, and whose second element is the string ``"SUCCESS"``. Each element in this list is a :py:class:`tuple` of song number and track number. For example, for `Moon Safari`_ by Air_,
-
-        .. code-block:: python
-
-            [("La Femme d'Argent", 1),
-             ('Sexy Boy', 2),
-             ('All I Need', 3),
-             ('Kelly Watch the Stars', 4),
-             ('Talisman', 5),
-             ('Remember', 6),
-             ('You Make It Easy', 7),
-             ('Ce Matin-Là', 8),
-             ('New Star in the Sky (Chanson Pour Solal)', 9),
-             ('Le Voyage De Pénélope', 10)]
         
+          .. code-block:: python
+
+             [("La Femme d'Argent", 1),
+              ('Sexy Boy', 2),
+              ('All I Need', 3),
+              ('Kelly Watch the Stars', 4),
+              ('Talisman', 5),
+              ('Remember', 6),
+              ('You Make It Easy', 7),
+              ('Ce Matin-Là', 8),
+              ('New Star in the Sky (Chanson Pour Solal)', 9),
+              ('Le Voyage De Pénélope', 10)]
+
+
         :rtype: list
         """
         metadata_album = pygn.search( clientID = self.clientID, userID = self.userID,
@@ -1532,18 +1533,18 @@ class HowdyMusic( object ):
         :param str album_name: the album name.
         :returns: a two-element :py:class:`tuple`, whose first element is a :py:class:`list` of summary information on tracks for this album, and whose second element is the string ``"SUCCESS"``. The elements in this list are ordered by first song track to last song track. An example first song for the `Moon Safari`_ album released by Air_ is,
 
-        .. code-block:: python
+          .. code-block:: python
 
-            {'song': 'La Femme D’argent',
-             'artist': 'Air',
-             'tracknumber': 1,
-             'total tracks': 10,
-             'duration': 429.56,
-             'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png',
-             'album': 'Moon Safari',
-             'year': 1998}
+             {'song': 'La Femme D’argent',
+              'artist': 'Air',
+              'tracknumber': 1,
+              'total tracks': 10,
+              'duration': 429.56,
+              'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6....png',
+              'album': 'Moon Safari',
+              'year': 1998}
 
-        If the album name has not been published by this artist, return a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
+          If the album name has not been published by this artist, return a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
 
         :rtype: tuple
         """
@@ -1586,14 +1587,14 @@ class HowdyMusic( object ):
 
           .. code-block:: python
         
-              {'album': 'Moon Safari',
-               'artist': 'Air',
-               'year': 1998,
-               'tracknumber': 4,
-               'total tracks': 10,
-               'song': 'Kelly, Watch the Stars!',
-               'duration': 225.746,
-               'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6beaff6943ae8930faccca7d44f9.png'}
+             {'album': 'Moon Safari',
+              'artist': 'Air',
+              'year': 1998,
+              'tracknumber': 4,
+              'total tracks': 10,
+              'song': 'Kelly, Watch the Stars!',
+              'duration': 225.746,
+              'album url': 'https://lastfm.freetls.fastly.net/i/u/300x300/016b6b....png'}
 
           If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
 

@@ -158,11 +158,11 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_. The |c
    :width: 50
    :align: middle
 
-.. |howdy_tv_gui_icon| image:: howdy-tv/howdy-tv-gui-figs/howdy_tv_gui_SQUARE.png
+.. |howdy_tv_gui_icon| image:: howdy-tv/howdy-tv-figs/howdy_tv_gui_SQUARE.png
    :width: 50
    :align: middle
 
-.. |howdy_movie_totgui_icon| image:: howdy-movie/howdy-movie-totgui-figs/howdy_movie_gui_SQUARE.png
+.. |howdy_movie_totgui_icon| image:: howdy-movie/howdy-movie-figs/howdy_movie_gui_SQUARE.png
    :width: 50
    :align: middle
 	   

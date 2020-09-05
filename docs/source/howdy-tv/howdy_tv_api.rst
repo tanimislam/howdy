@@ -62,34 +62,77 @@ As of |date|, here are the magnet link methods that work and don't work when sea
 
 .. _table_working_tvtorrents:
 
-.. list-table::
+.. list-table:: Which TV Torrent Trackers or Services Work?
    :widths: auto
 
    * - Torrent Service
+     - Logo
      - Search Method
      - Does It Work?
    * - `EZTV.IO`_
+     - |eztv_logo_image|
      - :py:meth:`get_tv_torrent_eztv_io <howdy.tv.tv_torrents.get_tv_torrent_eztv_io>`
      - ``False``
    * - Zooqle_
+     - |zooqle_logo_image|
      - :py:meth:`get_tv_torrent_zooqle <howdy.tv.tv_torrents.get_tv_torrent_zooqle>`
      - ``True``
    * - RARBG_
+     - |rarbg_logo_image|
      - :py:meth:`get_tv_torrent_rarbg <howdy.tv.tv_torrents.get_tv_torrent_rarbg>`
      - ``False``
    * - Torrentz_
+     - |torrentz_logo_image|
      - :py:meth:`get_tv_torrent_torrentz <howdy.tv.tv_torrents.get_tv_torrent_torrentz>`
      - ``False``
    * - KickAssTorrents_
+     - |kickass_torrents_logo_image|
      - :py:meth:`get_tv_torrent_kickass <howdy.tv.tv_torrents.get_tv_torrent_kickass>`
      - ``False``
    * - `The Pirate Bay`_
+     - |pirate_bay_logo_image|
      - :py:meth:`get_tv_torrent_tpb <howdy.tv.tv_torrents.get_tv_torrent_tpb>`
      - ``False``
    * - Jackett_ torrent search
+     - |jackett_logo_image|
      - :py:meth:`get_tv_torrent_jackett <howdy.tv.tv_torrents.get_tv_torrent_jackett>`
      - ``True``
 
+.. |eztv_logo_image| image:: howdy-tv-figs/eztv_logo.png
+   :width: 100%
+   :align: middle
+   :target: `EZTV.IO`_
+
+.. |zooqle_logo_image| image:: howdy-tv-figs/zooqle_logo.png
+   :width: 100%
+   :align: middle
+   :target: Zooqle_
+
+.. |rarbg_logo_image| image:: howdy-tv-figs/rarbg_logo.png
+   :width: 100%
+   :align: middle
+   :target: RARBG_
+
+.. |torrentz_logo_image| image:: howdy-tv-figs/torrentz_logo.png
+   :width: 100%
+   :align: middle
+   :target: Torrentz_
+
+.. |kickass_torrents_logo_image| image:: howdy-tv-figs/kickass_torrents_logo.png
+   :width: 100%
+   :align: middle
+   :target: KickAssTorrents_
+
+.. |pirate_bay_logo_image| image:: howdy-tv-figs/pirate_bay_logo.svg
+   :width: 100%
+   :align: middle
+   :target: `The Pirate Bay`_
+
+.. |jackett_logo_image| image:: howdy-tv-figs/jackett_logo.png
+   :width: 100%
+   :align: middle
+   :target: Jackett_
+	   
 .. automodule:: howdy.tv.tv_torrents
    :members:
 

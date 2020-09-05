@@ -62,37 +62,80 @@ Here are the six methods that return the movie magnet links found by different t
 
 An extra method, :py:meth:`get_movie_torrent <howdy.movie.movie_torrents.get_movie_torrent>` uses the `YTS API`_ to retrieve movie `torrent files <torrent file_>`_.
 
-As of |date|, here are three movie torrent finding methods that work and don't work when searching for `Star Trek Beyond`_.
+As of |date|, here are three movie torrent finding methods that work and don't work when searching for `Star Trek Beyond`_. See :numref:`table_working_tvtorrents` for a description of what services or trackers work for downloading TV torrents.
 
 .. _table_working_movietorrents:
 
-.. list-table::
+.. list-table:: Which Movie Torrent Trackers or Services Work?
    :widths: auto
 
    * - Torrent Service
+     - Logo
      - Search Method
      - Does It Work?
    * - `EZTV.IO`_
+     - |eztv_logo_image|
      - :py:meth:`get_movie_torrent_eztv_io <howdy.movie.movie_torrents.get_movie_torrent_eztv_io>`
      - ``False``
    * - Zooqle_
+     - |zooqle_logo_image|
      - :py:meth:`get_movie_torrent_zooqle <howdy.movie.movie_torrents.get_movie_torrent_zooqle>`
      - ``True``
    * - RARBG_
+     - |rarbg_logo_image|
      - :py:meth:`get_movie_torrent_rarbg <howdy.movie.movie_torrents.get_movie_torrent_rarbg>`
      - ``False``
    * - KickAssTorrents_
+     - |kickass_torrents_logo_image|
      - :py:meth:`get_movie_torrent_kickass <howdy.movie.movie_torrents.get_movie_torrent_kickass>`
      - ``False``
    * - `The Pirate Bay`_
+     - |pirate_bay_logo_image|
      - :py:meth:`get_movie_torrent_tpb <howdy.movie.movie_torrents.get_movie_torrent_tpb>`
      - ``False``
    * - Jackett_ torrent search
+     - |jackett_logo_image|
      - :py:meth:`get_movie_torrent_jackett <howdy.movie.movie_torrents.get_movie_torrent_jackett>`
      - ``True``
    * - `YTS API`_
+     - |yts_logo_image|
      - :py:meth:`get_movie_torrent <howdy.movie.movie_torrents.get_movie_torrent>`
      - ``True``
+
+.. |eztv_logo_image| image:: howdy-movie-figs/eztv_logo.png
+   :width: 100%
+   :align: middle
+   :target: `EZTV.IO`_
+
+.. |zooqle_logo_image| image:: howdy-movie-figs/zooqle_logo.png
+   :width: 100%
+   :align: middle
+   :target: Zooqle_
+
+.. |rarbg_logo_image| image:: howdy-movie-figs/rarbg_logo.png
+   :width: 100%
+   :align: middle
+   :target: RARBG_
+
+.. |kickass_torrents_logo_image| image:: howdy-movie-figs/kickass_torrents_logo.png
+   :width: 100%
+   :align: middle
+   :target: KickAssTorrents_
+
+.. |pirate_bay_logo_image| image:: howdy-movie-figs/pirate_bay_logo.svg
+   :width: 100%
+   :align: middle
+   :target: `The Pirate Bay`_
+
+.. |jackett_logo_image| image:: howdy-movie-figs/jackett_logo.png
+   :width: 100%
+   :align: middle
+   :target: Jackett_
+
+.. |yts_logo_image| image:: howdy-movie-figs/yts_logo.svg
+   :width: 100%
+   :align: middle
+   :target: `YTS API`_
 
 .. automodule:: howdy.movie.movie_torrents
    :members:

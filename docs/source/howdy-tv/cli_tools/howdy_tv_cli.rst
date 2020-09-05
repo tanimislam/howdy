@@ -1,7 +1,7 @@
 ================================================
 Howdy TV Command Line Utilities
 ================================================
-This section describes the six Howdy Howdy TV command line utilities.
+This section describes the seven Howdy Howdy TV command line utilities.
 
 * :ref:`get_tv_batch` finds new episodes of TV shows that already exist on the Plex_ server.
 

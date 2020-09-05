@@ -277,7 +277,7 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     
     :rtype: tuple
     
-    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    .. warning:: As of |date|, I cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
     
     .. _RARBG: https://en.wikipedia.org/wiki/RARBG    
     """
@@ -382,7 +382,7 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     
     :rtype: tuple
 
-    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    .. warning:: As of |date|, I cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
     
     .. _Torrentz: https://en.wikipedia.org/wiki/Torrentz
     """
@@ -487,7 +487,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
     
     :rtype: tuple
 
-    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    .. warning:: As of |date|, I cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
     
     .. _Jackett: https://github.com/Jackett/Jackett
     """
@@ -650,7 +650,7 @@ def get_tv_torrent_kickass( name, maxnum = 10, verify = True ):
     
     :rtype: tuple
     
-    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    .. warning:: As of |date|, I cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
     
     .. _KickassTorrents: https://en.wikipedia.org/wiki/KickassTorrents
     """
@@ -742,7 +742,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
     
     :rtype: tuple
 
-    .. warning:: cannot get it to work as of |date|. Cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
+    .. warning:: As of |date|, I cannot get it to work when giving it valid episode searches, such as ``"The Simpsons S31E01"``. See :numref:`table_working_tvtorrents`.
     
     .. _`The Pirate Bay`: https://en.wikipedia.org/wiki/The_Pirate_Bay
     """

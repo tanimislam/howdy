@@ -7,8 +7,7 @@ class ShowsToExclude( Base ): # these are shows you want to exclude
     """
     This SQLAlchemy_ ORM class contains the list of shows to exclude from analysis. These shows must exist on the Plex_ server. Stored into the ``showstoexclude`` table in the SQLite3_ configuration database.
 
-    Attributes:
-        show: the show, that exists on the Plex_ server, to exclude from analysis and update.
+    :var show: the show, that exists on the Plex_ server, to exclude from analysis and update. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` object of size 65536.
 
     .. _TVDB: https://api.thetvdb.com/swagger
     .. _SQLAlchemy: https://www.sqlalchemy.org
@@ -28,7 +27,7 @@ create_all( )
     
 def save_tvdb_api( username, apikey, userkey, verify = True ):
     """
-    Saves the information on the TVDB_ API access into the ``tvdb`` configuration service in the ``plexconfig`` table. Details of how to set up the configuration in :ref:`TVDB API configuation <the_television_database_api>`, which uses :ref:`howdy_config_gui <howdy_config_gui_label>`.
+    Saves the information on the TVDB_ API access into the ``tvdb`` configuration service in the ``plexconfig`` table. Details of how to set up the configuration is in the :ref:`TVDB API configuation <the_television_database_api>`, which uses :ref:`howdy_config_gui <howdy_config_gui_label>`.
 
     :param str username: the TVDB_ API username.
     :param str apikey: the TVDB_ API key.
@@ -59,6 +58,18 @@ def save_tvdb_api( username, apikey, userkey, verify = True ):
     return 'SUCCESS'
 
 def check_tvdb_api( username, apikey, userkey, verify = True ):
+    """
+    Checks whether the TVDB_ API credentials are valid.
+    
+    :param str username: the TVDB_ API user name.
+    :param str apikey: the TVDB_ API key.
+    :param str userkey: THE TVDB_ API user key.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :returns: ``True`` if the credentials are valid, ``False`` otherwise.
+    :rtype: bool
+
+    .. seealso:: :py:meth:`get_token <howdy.tv.get_token>`.
+    """
     token = get_token( verify = verify,
                        data = {  'apikey' : apikey,
                                  'username' : username,
@@ -78,9 +89,9 @@ def get_tvdb_api( ):
          'userkey'  : USERKEY   # THE TVDB API user key
        }
 
-    :returns: the :py:class:`dictionary <dict>` of TVDB_ API credentials.
+    :returns: the :py:class:`dict` of TVDB_ API credentials.
     :rtype: dict
-    :raises: ValueError: if the TVDB_ API credentials are not found in the ``plexconfig`` table.
+    :raises ValueError: if the TVDB_ API credentials are not found in the ``plexconfig`` table.
     """
     query = session.query( PlexConfig ).filter( PlexConfig.service == 'tvdb' )
     val = query.first( )
@@ -98,7 +109,7 @@ def get_token( verify = True, data = None ):
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :param dict data: optional argument. If provided, must be a dictionary containing the TVDB_ API credentials as described in :py:meth:`get_tvdb_api <howdy.tv.tv.get_tvdb_api>`.
     
-    :returns: the TVDB_ API :py:class:`string <str>` token, otherwise returns :py:class:`None` if there are errors.
+    :returns: the TVDB_ API token, otherwise returns :py:class:`None` if there are errors.
     :rtype: str
     """
     if data is None:

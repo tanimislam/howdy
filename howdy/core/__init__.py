@@ -586,19 +586,20 @@ else: session = sessionmaker( )
 ## this will be used to replace all the existing credentials stored in separate tables
 class PlexConfig( Base ):
     """
-    This SQLAlchemy_ ORM class contains the configuration data used for running all the howdy tools. Stored into the ``plexconfig`` table in the SQLite3_ configuration database.
+    This SQLAlchemy_ ORM class contains the configuration data used for running all the Howdy_ tools. Stored into the ``plexconfig`` table in the SQLite3_ configuration database.
 
-    :var Column service: the name of the configuration service we store. Index on this unique key. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>` of size 65536.
-    :var Column data: the JSON formatted information on the data stored here. For instance, username and password can be stored in the following way
+    :var service: the name of the configuration service we store. Index on this unique key. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` of size 65536.
+    :var data: the JSON formatted information on the data stored here. For instance, username and password can be stored in the following way
     
-    .. code-block:: python
+      .. code-block:: python
 
-       { 'username' : USERNAME,
-         'password' : PASSWORD }
+         { 'username' : USERNAME,
+           'password' : PASSWORD }
 
-    This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`JSON <sqlalchemy.JSON>` object.
+      This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`JSON <sqlalchemy.types.JSON>` object.
 
     .. _SQLAlchemy: https://www.sqlalchemy.org
+    .. _Howdy: https://howdy.readthedocs.io
     """
     
     #
@@ -610,12 +611,9 @@ class PlexConfig( Base ):
 
 class LastNewsletterDate( Base ):
     """
-    This SQLAlchemy_ ORM class contains the date at which the last newsletter was sent.
-    It is not used much, and now that `Tautulli`_ has newsletter functionality, I
-    very likely won't use this at all. Stored into the ``lastnewsletterdate`` table in the
-    ``~/.config/howdy/app.db`` SQLite3_ configuration database.
+    This SQLAlchemy_ ORM class contains the date at which the last newsletter was sent. It is not used much, and now that Tautulli_ has newsletter functionality, I very likely won't use this at all. Stored into the ``lastnewsletterdate`` table in the SQLite3_ configuration database.
         
-    :var Column date: the :py:class:`datetime <datetime.datetime>` when the last newsletter was sent. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`Date <sqlalchemy.Date>` object.
+    :var date: the :py:class:`datetime <datetime.datetime>` when the last newsletter was sent. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`Date <sqlalchemy.types.Date>` object.
 
     .. _Tautulli: https://tautulli.com
     """
@@ -632,9 +630,9 @@ class PlexGuestEmailMapping( Base ):
     
     :var email: this is the main column, which must be the email of a Plex_ user who has access to the Plex_ server. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>`.
     
-    :var plexmapping: this is a collection of **different** email addresses, to which the emails are sent. For example, if a Plex_ user with email address ``A@email.com`` would like to send email to ``B@mail.com`` and ``C@mail.com``, the *plexmapping* column would be ``B@mail.com,C@mail.com``. NONE of the mapped emails will match *email*. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>` of size 65536.
+    :var plexmapping: this is a collection of **different** email addresses, to which the emails are sent. For example, if a Plex_ user with email address ``A@email.com`` would like to send email to ``B@mail.com`` and ``C@mail.com``, the *plexmapping* column would be ``B@mail.com,C@mail.com``. NONE of the mapped emails will match *email*. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` of size 65536.
     
-    :var plexreplaceexisting: this is a boolean that determines whether email also goes to the Plex_ user's email address. From the example above, if ``True`` then a Plex_ user at ``A@mail.com`` will have email delivered ONLY to ``B@mail.com`` and ``C@mail.com``. If ``False``, then that same Plex_ user will have email delivered to all three email addresses (``A@mail.com``, ``B@mail.com``, and ``C@mail.com``).  This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`Boolean <sqlalchemy.Boolean>`.
+    :var plexreplaceexisting: this is a boolean that determines whether email also goes to the Plex_ user's email address. From the example above, if ``True`` then a Plex_ user at ``A@mail.com`` will have email delivered ONLY to ``B@mail.com`` and ``C@mail.com``. If ``False``, then that same Plex_ user will have email delivered to all three email addresses (``A@mail.com``, ``B@mail.com``, and ``C@mail.com``).  This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`Boolean <sqlalchemy.types.Boolean>`.
     
     .. _Plex: https://plex.tv
     """

@@ -39,19 +39,19 @@ def get_series_omdb_id( series_name, apikey ):
 
 def get_possible_omdb_ids( series_name, apikey ):
     """
-    Returns a :py:class:`list` of basic information on TV shows from the OMDB_ API search of a TV show. Each element in the list is a :py:class:`tuple`: the first element is the IMDB_ series ID, and the second element is a :py:class:`list` of years during which the TV series has aired. For example, for `The Simpsons`_.
-
-    .. code-block:: python
-    
-       >> get_possible_omdb_ids( 'The Simpsons', omdb_apikey )
-       >> [ ( 'tt0096697', [ 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 ] ) ]
-
-    If unsuccessful, then returns ``None``.
+    Returns a :py:class:`list` of basic information on TV shows from the OMDB_ API search of a TV show. Each element in the list is a :py:class:`tuple`: the first element is the IMDB_ series ID, and the second element is a :py:class:`list` of years during which the TV series has aired.
 
     :param str series_name: the series name.
     :param str apikey: the OMDB_ API key.
     
-    :returns: a :py:class:`list` of IMDB_ based information on TV shows that match the series name. If unsuccessful, returns ``None``.
+    :returns: a :py:class:`list` of IMDB_ based information on TV shows that match the series name. For example, for `The Simpsons`_.
+
+      .. code-block:: python
+
+         >> get_possible_omdb_ids( 'The Simpsons', omdb_apikey )
+         >> [ ( 'tt0096697', [ 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 ] ) ]
+
+      If unsuccessful, returns ``None``. 
     :rtype: list
     """
     params = { 's' : series_name, 'type' : 'series', 'plot' : 'full', 'apikey' : apikey }
@@ -162,43 +162,43 @@ def get_episodes_series_omdb( imdbID, apikey, fromDate = None ):
 
 def get_tot_epdict_omdb( showName, apikey, inYear = None ):
     """
-     Returns a :py:class:`dict` of episodes found from the OMDB_ API. The top level dictionary's keys are the season numbers, and each value is the next-level dictionary of season information. The next level, season dictionary's keys are the episode number, and its values are the episode names. For example, for `The Simpsons`_ (here the collection of episodes is incomplete),
-    
-    .. code-block:: python
-        
-       {
-        1: {7: 'The Call of the Simpsons',
-         8: 'The Telltale Head',
-         9: 'Life on the Fast Lane',
-         10: "Homer's Night Out",
-         11: 'The Crepes of Wrath',
-         12: 'Krusty Gets Busted',
-         13: 'Some Enchanted Evening'},
-        2: {1: 'Bart Gets an F',
-         2: 'Simpson and Delilah',
-         3: 'Treehouse of Horror',
-         4: 'Two Cars in Every Garage and Three Eyes on Every Fish',
-         6: 'Dead Putting Society',
-         12: 'The Way We Was',
-         13: 'Homer vs. Lisa and the 8th Commandment',
-         14: 'Principal Charming',
-         15: 'Oh Brother, Where Art Thou?',
-         16: "Bart's Dog Gets an F",
-         17: 'Old Money',
-         18: 'Brush with Greatness',
-         19: "Lisa's Substitute",
-         20: 'The War of the Simpsons',
-         21: 'Three Men and a Comic Book',
-         22: 'Blood Feud'},
-        ...
-       }
-
-    If unsuccessful, then returns ``None``.
+     Returns a :py:class:`dict` of episodes found from the OMDB_ API. The top level dictionary's keys are the season numbers, and each value is the next-level dictionary of season information. The next level, season dictionary's keys are the episode number, and its values are the episode names.
 
     :param str showName: the series name.
     :param str apikey: the OMDB_ API key.
     :param int inYear: optional argument. If given, then search for those TV shows whose episodes aired in ``inYear``.
-    :returns: a :py:class:`dict` of episode information for that TV show.
+    :returns: a :py:class:`dict` of episode information for that TV show. For example, for `The Simpsons`_ (here the collection of episodes is incomplete),
+    
+      .. code-block:: python
+
+         {
+          1: {7: 'The Call of the Simpsons',
+           8: 'The Telltale Head',
+           9: 'Life on the Fast Lane',
+           10: "Homer's Night Out",
+           11: 'The Crepes of Wrath',
+           12: 'Krusty Gets Busted',
+           13: 'Some Enchanted Evening'},
+          2: {1: 'Bart Gets an F',
+           2: 'Simpson and Delilah',
+           3: 'Treehouse of Horror',
+           4: 'Two Cars in Every Garage and Three Eyes on Every Fish',
+           6: 'Dead Putting Society',
+           12: 'The Way We Was',
+           13: 'Homer vs. Lisa and the 8th Commandment',
+           14: 'Principal Charming',
+           15: 'Oh Brother, Where Art Thou?',
+           16: "Bart's Dog Gets an F",
+           17: 'Old Money',
+           18: 'Brush with Greatness',
+           19: "Lisa's Substitute",
+           20: 'The War of the Simpsons',
+           21: 'Three Men and a Comic Book',
+           22: 'Blood Feud'},
+          ...
+         }
+
+      If unsuccessful, then returns ``None``.
     :rtype: dict
 
     .. seealso::
@@ -230,16 +230,17 @@ def get_tot_epdict_omdb( showName, apikey, inYear = None ):
 
 def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
     """
-    Returns a :py:class:`list` of candidate TMDB_ TV shows given the series name. Each element in the list is a dictionary: the ``id`` is the TMDB_ series ID, and ``airedYear`` is the year in which the first episode aired. If nothing is found, returns ``None``. For example, for `The Simpsons`_,
-
-    .. code-block:: python
-
-       [{'id': 456, 'name': 'The Simpsons', 'airedYear': 1989},
-        {'id': 73980, 'name': 'Da Suisa', 'airedYear': 2013}]
+    Returns a :py:class:`list` of candidate TMDB_ TV shows given the series name. Each element in the list is a dictionary: the ``id`` is the TMDB_ series ID, and ``airedYear`` is the year in which the first episode aired.
 
     :param str series_name: the series name.
     :param int firstAiredYear: optional argument. If provided, filter on TV shows that were first aired that year.
-    :returns: a :py:class:`list` of candidate TMDB_ TV shows, otherwise ``None``.
+    :returns: a :py:class:`list` of candidate TMDB_ TV shows, otherwise ``None``. For example, for `The Simpsons`_,
+
+      .. code-block:: python
+
+         [{'id': 456, 'name': 'The Simpsons', 'airedYear': 1989},
+          {'id': 73980, 'name': 'Da Suisa', 'airedYear': 2013}]
+          
     :rtype: list
     """
     params = { 'api_key' : tmdb_apiKey, 'query' : '+'.join( series_name.split( ) ) }
@@ -299,31 +300,32 @@ def get_series_tmdb_id( series_name, firstAiredYear = None ):
 ##Ignore specials (season 0) for now...
 def get_episodes_series_tmdb( tmdbID, fromDate = None, showSpecials = False ):
     """
-    Returns a :py:class:`list` of episodes returned by the TMDB_ API. Each element is a dictionary: ``name`` is the episode name, ``airedDate`` is the :py:class:`date <datetime.date>` the episode aired, ``season`` is the season it aired, and ``episode`` is the episode number in that season. For example, for for `The Simpsons`_,
-    
-    .. code-block:: python
-
-       >> series_id = get_series_tmdb_id( 'The Simpsons' )
-       >> episodes_tmdb = get_episodes_series_tmdb( series_id )
-       >> [{'name': 'Simpsons Roasting on an Open Fire',
-            'airedDate': datetime.date(1989, 12, 17),
-            'season': 1,
-            'episode': 1},
-           {'name': 'Bart the Genius',
-            'airedDate': datetime.date(1990, 1, 14),
-            'season': 1,
-            'episode': 2},
-           {'name': "Homer's Odyssey",
-            'airedDate': datetime.date(1990, 1, 21),
-            'season': 1,
-            'episode': 3},
-           ...
-          ]
+    Returns a :py:class:`list` of episodes returned by the TMDB_ API. Each element is a dictionary: ``name`` is the episode name, ``airedDate`` is the :py:class:`date <datetime.date>` the episode aired, ``season`` is the season it aired, and ``episode`` is the episode number in that season.
 
     :param int tmdbID: the TMDB_ series ID.
     :param date fromDate: optional argument, of type :py:class:`date <datetime.date>`. If given, then only return episodes aired on or after this date.
     :param bool showSpecials: if ``True``, then also include TV specials. These specials will appear in a season ``0`` in this dictionary.
-    :returns: a :py:class:`list` of episoes returned by the TMDB_ database.
+    :returns: a :py:class:`list` of episoes returned by the TMDB_ database. For example, for `The Simpsons`_,
+    
+      .. code-block:: python
+
+         >> series_id = get_series_tmdb_id( 'The Simpsons' )
+         >> episodes_tmdb = get_episodes_series_tmdb( series_id )
+         >> [{'name': 'Simpsons Roasting on an Open Fire',
+              'airedDate': datetime.date(1989, 12, 17),
+              'season': 1,
+              'episode': 1},
+             {'name': 'Bart the Genius',
+              'airedDate': datetime.date(1990, 1, 14),
+              'season': 1,
+              'episode': 2},
+             {'name': "Homer's Odyssey",
+              'airedDate': datetime.date(1990, 1, 21),
+              'season': 1,
+              'episode': 3},
+             ...
+            ]
+          
     :rtype: list
 
     .. _`The Simpsons`: https://en.wikipedia.org/wiki/The_Simpsons
@@ -360,32 +362,33 @@ def get_episodes_series_tmdb( tmdbID, fromDate = None, showSpecials = False ):
 
 def get_tot_epdict_tmdb( showName, firstAiredYear = None, showSpecials = False ):
     """
-    Returns a :py:class:`dict` of episodes found from the TMDB_ API. The top level dictionary's keys are the season numbers, and each value is the next-level dictionary of season information. The next level, season dictionary's keys are the episode number, and its values are a two-element :tuple: of episode names and aired dates (as a :py:class:`date <datetime.date>` object). This two level dictionary has the same format as the output from :py:meth:`get_tot_epdict_tvdb <howdy.tv.tv.get_tot_epdict_tvdb>`. For example, for `The Simpsons`_,
-
-    .. code-block:: python
-
-       {1: {1: ('Simpsons Roasting on an Open Fire', datetime.date(1989, 12, 17)),
-         2: ('Bart the Genius', datetime.date(1990, 1, 14)),
-         3: ("Homer's Odyssey", datetime.date(1990, 1, 21)),
-         4: ("There's No Disgrace Like Home", datetime.date(1990, 1, 28)),
-         5: ('Bart the General', datetime.date(1990, 2, 4)),
-         6: ('Moaning Lisa', datetime.date(1990, 2, 11)),
-         7: ('The Call of the Simpsons', datetime.date(1990, 2, 18)),
-         8: ('The Telltale Head', datetime.date(1990, 2, 25)),
-         9: ('Life on the Fast Lane', datetime.date(1990, 3, 18)),
-         10: ("Homer's Night Out", datetime.date(1990, 3, 25)),
-         11: ('The Crepes of Wrath', datetime.date(1990, 4, 15)),
-         12: ('Krusty Gets Busted', datetime.date(1990, 4, 29)),
-         13: ('Some Enchanted Evening', datetime.date(1990, 5, 13))},
-         ...
-       }
-    
-    If unsuccessful, then returns ``None``.
+    Returns a :py:class:`dict` of episodes found from the TMDB_ API. The top level dictionary's keys are the season numbers, and each value is the next-level dictionary of season information. The next level, season dictionary's keys are the episode number, and its values are a two-element :tuple: of episode names and aired dates (as a :py:class:`date <datetime.date>` object). This two level dictionary has the same format as the output from :py:meth:`get_tot_epdict_tvdb <howdy.tv.tv.get_tot_epdict_tvdb>`.
 
     :param str showName: the series name.
     :param int firstAiredYear: optional argument. If provided, filter on TV shows that were first aired that year.
     :param bool showSpecials: if ``True``, then also include TV specials. These specials will appear in a season ``0`` in this dictionary.
-    :returns: a :py:class:`dict` of episode information for that TV show.
+    :returns: a :py:class:`dict` of episode information for that TV show. For example, for `The Simpsons`_,
+    
+      .. code-block:: python
+
+         {1: {1: ('Simpsons Roasting on an Open Fire', datetime.date(1989, 12, 17)),
+           2: ('Bart the Genius', datetime.date(1990, 1, 14)),
+           3: ("Homer's Odyssey", datetime.date(1990, 1, 21)),
+           4: ("There's No Disgrace Like Home", datetime.date(1990, 1, 28)),
+           5: ('Bart the General', datetime.date(1990, 2, 4)),
+           6: ('Moaning Lisa', datetime.date(1990, 2, 11)),
+           7: ('The Call of the Simpsons', datetime.date(1990, 2, 18)),
+           8: ('The Telltale Head', datetime.date(1990, 2, 25)),
+           9: ('Life on the Fast Lane', datetime.date(1990, 3, 18)),
+           10: ("Homer's Night Out", datetime.date(1990, 3, 25)),
+           11: ('The Crepes of Wrath', datetime.date(1990, 4, 15)),
+           12: ('Krusty Gets Busted', datetime.date(1990, 4, 29)),
+           13: ('Some Enchanted Evening', datetime.date(1990, 5, 13))},
+           ...
+         }
+         
+      If unsuccessful, then returns ``None``.
+       
     :rtype: dict
 
     .. seealso::
@@ -418,7 +421,7 @@ def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):
     :returns: a :py:class:`dict` of episodes for this season. Each key is the episode number, and each value is the episode name.
     :rtype: dict
 
-    .. warning::
+    .. deprecated:: 1.0
       
        This may not reliably work at all anymore! This is very brittle and has not been used since 2015.
 
@@ -458,7 +461,9 @@ def fix_missing_unnamed_episodes( seriesName, eps, verify = True, showFuture = F
     """
     This supposedly uses the TMDB_ API to find names for episodes that the TVDB_ API cannot find.
     
-    .. warning:: As of |date|, I still don't understand the purpose behind this method. and no other methods call this it. I might remove this method altogether.
+    .. deprecated:: 1.0
+    
+       I have not understood the purpose behind this method in years. No other methods call this it. I might remove this method altogether.
     """
     eps_copy = copy.deepcopy( eps )
     tmdb_id = movie.get_tv_ids_by_series_name( seriesName, verify = verify )

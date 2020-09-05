@@ -727,41 +727,43 @@ def get_episode_name( series_id, airedSeason, airedEpisode, tvdb_token, verify =
 
 def get_series_info( series_id, tvdb_token, verify = True ):
     """
-    Returns a :py:class:`tuple` of TVDB_ summary information AND the string "SUCCESS" for a given Tv show, otherwise returns an error :py:class:`tuple` given by :py:meth:`return_error_raw <howdy.core.return_error_raw>`. For example, here is the summary information returned for `The Simpsons`_.
-    
-    .. code-block:: python
-    
-       >> series_id = get_series_id( 'The Simpsons', tvdb_token )
-       >> series_info, _ = get_series_info( series_id, tvdb_token )
-       >> {'id': 71663,
-           'seriesName': 'The Simpsons',
-           'aliases': [],
-           'banner': 'graphical/71663-g13.jpg',
-           'seriesId': '146',
-           'status': 'Continuing',
-           'firstAired': '1989-12-17',
-           'network': 'FOX',
-           'networkId': '',
-           'runtime': '25',
-           'genre': ['Animation', 'Comedy'],
-           'overview': 'Set in Springfield, the average American town, the show focuses on the antics and everyday adventures of the Simpson family; Homer, Marge, Bart, Lisa and Maggie, as well as a virtual cast of thousands. Since the beginning, the series has been a pop culture icon, attracting hundreds of celebrities to guest star. The show has also made name for itself in its fearless satirical take on politics, media and American life in general.',
-           'lastUpdated': 1571687688,
-           'airsDayOfWeek': 'Sunday',
-           'airsTime': '8:00 PM',
-           'rating': 'TV-PG',
-           'imdbId': 'tt0096697',
-           'zap2itId': 'EP00018693',
-           'added': '',
-           'addedBy': None,
-           'siteRating': 8.9,
-           'siteRatingCount': 847,
-           'slug': 'the-simpsons'}
+    Returns a :py:class:`tuple` of TVDB_ summary information AND the string "SUCCESS" for a given Tv show, otherwise returns an error :py:class:`tuple` given by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
 
     :param int series_id: the TVDB_ database series ID.
     :param str tvdb_token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
-    :returns: a :py:class:`tuple` of candidate TV show info, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
+    :returns: a :py:class:`tuple` of candidate TV show info, and the :py:class:`str` ``'SUCCESS'``. For example, here is the summary information returned for `The Simpsons`_.
+    
+      .. code-block:: python
+
+         >> series_id = get_series_id( 'The Simpsons', tvdb_token )
+         >> series_info, _ = get_series_info( series_id, tvdb_token )
+         >> {'id': 71663,
+             'seriesName': 'The Simpsons',
+             'aliases': [],
+             'banner': 'graphical/71663-g13.jpg',
+             'seriesId': '146',
+             'status': 'Continuing',
+             'firstAired': '1989-12-17',
+             'network': 'FOX',
+             'networkId': '',
+             'runtime': '25',
+             'genre': ['Animation', 'Comedy'],
+             'overview': 'Set in Springfield, the average American town, the show focuses on the antics and everyday adventures of the Simpson family; Homer, Marge, Bart, Lisa and Maggie, as well as a virtual cast of thousands. Since the beginning, the series has been a pop culture icon, attracting hundreds of celebrities to guest star. The show has also made name for itself in its fearless satirical take on politics, media and American life in general.',
+             'lastUpdated': 1571687688,
+             'airsDayOfWeek': 'Sunday',
+             'airsTime': '8:00 PM',
+             'rating': 'TV-PG',
+             'imdbId': 'tt0096697',
+             'zap2itId': 'EP00018693',
+             'added': '',
+             'addedBy': None,
+             'siteRating': 8.9,
+             'siteRatingCount': 847,
+             'slug': 'the-simpsons'}
+
+      Otherwise an error tuple returned by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
     :rtype: tuple
     """
     headers = { 'Content-Type' : 'application/json',
@@ -774,19 +776,20 @@ def get_series_info( series_id, tvdb_token, verify = True ):
 
 def get_series_image( series_id, tvdb_token, verify = True ):
     """
-    Returns a :py:class:`tuple` of the TVDB_ URL of the TV show's poster AND the string "SUCCESS", if found. Otherwise returns an error :py:class:`tuple` given by :py:meth:`return_error_raw <howdy.core.return_error_raw>`. For example, here is the TVDB_ poster URL for `The Simpsons`_.
-    
-    .. code-block:: python
-
-       >> series_id = get_series_id( 'The Simpsons', tvdb_token )
-       >> series_image, _ = get_series_image( series_id, tvdb_token )
-       >> 'https://thetvdb.com/banners/posters/71663-1.jpg'
-
+    Returns a :py:class:`tuple` of the TVDB_ URL of the TV show's poster AND the string "SUCCESS", if found. Otherwise returns an error :py:class:`tuple` given by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
     :param int series_id: the TVDB_ database series ID.
     :param str tvdb_token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
-    :returns: a :py:class:`tuple` of TV show poster URL, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
+    :returns: a :py:class:`tuple` of TV show poster URL, and the :py:class:`str` ``'SUCCESS'``. For example, here is the TVDB_ poster URL for `The Simpsons`_.
+    
+      .. code-block:: python
+
+         >> series_id = get_series_id( 'The Simpsons', tvdb_token )
+         >> series_image, _ = get_series_image( series_id, tvdb_token )
+         >> 'https://thetvdb.com/banners/posters/71663-1.jpg'
+
+      Otherwise an error tuple returned by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
     :rtype: tuple
 
     .. seealso:: :py:meth:`get_series_season_image <howdy.tv.tv.get_series_season_image>`.
@@ -856,20 +859,21 @@ def get_series_image( series_id, tvdb_token, verify = True ):
 
 def get_series_season_image( series_id, airedSeason, tvdb_token, verify = True ):
     """
-    Returns a :py:class:`tuple` of the TVDB_ URL of the TV show's SEASON poster AND the string "SUCCESS", if found. Otherwise returns an error :py:class:`tuple` given by :py:meth:`return_error_raw <howdy.core.return_error_raw>`. For example, here is the TVDB_ season poster URL for `The Simpsons, season 10`_.
-    
-    .. code-block:: python
-
-       >> series_id = get_series_id( 'The Simpsons', tvdb_token )
-       >> season_image, _ = get_series_image( series_id, 10, tvdb_token )
-       >> 'https://thetvdb.com/banners/seasons/146-10.jpg'
-
+    Returns a :py:class:`tuple` of the TVDB_ URL of the TV show's SEASON poster AND the string "SUCCESS", if found. Otherwise returns an error :py:class:`tuple` given by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
     :param int series_id: the TVDB_ database series ID.
     :param int airedSeason: the season number of the episode.
     :param str tvdb_token: the TVDB_ API access token.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
-    :returns: a :py:class:`tuple` of TV show SEASON poster URL, and the :py:class:`str` ``'SUCCESS'``. Otherwise an error tuple returned by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
+    :returns: a :py:class:`tuple` of TV show SEASON poster URL, and the :py:class:`str` ``'SUCCESS'``. For example, here is the TVDB_ season poster URL for `The Simpsons, season 10`_.
+    
+      .. code-block:: python
+
+         >> series_id = get_series_id( 'The Simpsons', tvdb_token )
+         >> season_image, _ = get_series_image( series_id, 10, tvdb_token )
+         >> 'https://thetvdb.com/banners/seasons/146-10.jpg'
+
+      Otherwise an error tuple returned by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
     :rtype: tuple
 
     .. seealso:: :py:meth:`get_series_image <howdy.tv.tv.get_series_image>`.
@@ -983,49 +987,7 @@ def get_episodes_series( series_id, tvdb_token, showSpecials = True, fromDate = 
 
 def get_path_data_on_tvshow( tvdata, tvshow ):
     """
-    This method is used by the :ref:`get_tv_batch` tool that can automatically download new episodes. This returns a summary :py:class:`dict` of information on a TV show stored in the Plex_ server (see documentation in :py:meth:`get_library_data <howdy.core.core.get_library_data>` that focuses on the format of the dictionary for TV libraries). For example, here is the summary information on `The Simpsons`_ given in the ``tvdata``, the dictionary representation of TV library data. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server.
-
-    .. code-block:: python
-       
-       >> simpsons_summary = get_path_data_on_tvshow( tvdata, 'The Simpsons' )
-       >> {'prefix': '$LIBRARY_DIR/The Simpsons',
-           'showFileName': 'The Simpsons',
-           'season_prefix_dict': {1: 'Season 01',
-             2: 'Season 02',
-             3: 'Season 03',
-             4: 'Season 04',
-             5: 'Season 05',
-             6: 'Season 06',
-             7: 'Season 07',
-             8: 'Season 08',
-             9: 'Season 09',
-             10: 'Season 10',
-             11: 'Season 11',
-             12: 'Season 12',
-             13: 'Season 13',
-             14: 'Season 14',
-             15: 'Season 15',
-             16: 'Season 16',
-             17: 'Season 17',
-             18: 'Season 18',
-             19: 'Season 19',
-             20: 'Season 20',
-             21: 'Season 21',
-             22: 'Season 22',
-             23: 'Season 23',
-             24: 'Season 24',
-             25: 'Season 25',
-             26: 'Season 26',
-             27: 'Season 27',
-             28: 'Season 28',
-             29: 'Season 29',
-             30: 'Season 30',
-             31: 'Season 31'},
-           'min_inferred_length': 2,
-           'episode_number_length': 2,
-           'avg_length_mins': 22.0}
-
-    Here is a guide to the keys:
+    This method is used by the :ref:`get_tv_batch` tool that can automatically download new episodes. This returns a summary :py:class:`dict` of information on a TV show stored in the Plex_ server (see documentation in :py:meth:`get_library_data <howdy.core.core.get_library_data>` that focuses on the format of the dictionary for TV libraries). Here is a guide to the keys:
     
     * ``prefix`` is the root directory in which the episodes of the TV show live.
     * ``showFilename`` is the prefix of all episodes of this TV show. Here for instance, a new Simpsons episode, say S31E06, would start with ``"The Simpsons - s31e06 - ..."``.
@@ -1037,7 +999,49 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
     :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <howdy.core.core.get_library_data>`.
     :param str tvshow: the TV show's name.
 
-    :returns: the summary :py:class:`dict` for the TV show on this Plex_ server's TV library. If ``tvshow`` is not found, then returns ``None``.
+    :returns: the summary :py:class:`dict` for the TV show on this Plex_ server's TV library. For example, here is the summary information on `The Simpsons`_ given in the ``tvdata``, the dictionary representation of TV library data. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server.
+
+      .. code-block:: python
+
+         >> simpsons_summary = get_path_data_on_tvshow( tvdata, 'The Simpsons' )
+         >> {'prefix': '$LIBRARY_DIR/The Simpsons',
+             'showFileName': 'The Simpsons',
+             'season_prefix_dict': {1: 'Season 01',
+               2: 'Season 02',
+               3: 'Season 03',
+               4: 'Season 04',
+               5: 'Season 05',
+               6: 'Season 06',
+               7: 'Season 07',
+               8: 'Season 08',
+               9: 'Season 09',
+               10: 'Season 10',
+               11: 'Season 11',
+               12: 'Season 12',
+               13: 'Season 13',
+               14: 'Season 14',
+               15: 'Season 15',
+               16: 'Season 16',
+               17: 'Season 17',
+               18: 'Season 18',
+               19: 'Season 19',
+               20: 'Season 20',
+               21: 'Season 21',
+               22: 'Season 22',
+               23: 'Season 23',
+               24: 'Season 24',
+               25: 'Season 25',
+               26: 'Season 26',
+               27: 'Season 27',
+               28: 'Season 28',
+               29: 'Season 29',
+               30: 'Season 30',
+               31: 'Season 31'},
+             'min_inferred_length': 2,
+             'episode_number_length': 2,
+             'avg_length_mins': 22.0}
+
+      If ``tvshow`` is not found, then returns ``None``.
     :rtype: dict
 
     .. _`The Adventures of Rocky and Bullwinkle and Friends`: https://en.wikipedia.org/wiki/The_Adventures_of_Rocky_and_Bullwinkle_and_Friends
@@ -1270,41 +1274,8 @@ def get_remaining_episodes(
     """
     Returns a :py:class:`dict` of episodes missing from the Plex_ TV library for the TV shows that are in it. Each key in the dictionary is the TV show with missing episodes. The value is another dictionary. Here are their keys and values,
     
-    * ``episodes`` returns a :py:class:`list` of :py:class:`tuple`s of missing episodes. Each tuple is of the form ``( SEASON #, EPISODE #, EPISODE NAME )``.
+    * ``episodes`` returns a :py:class:`list` of :py:class:`tuple`\ s of missing episodes. Each tuple is of the form ``( SEASON #, EPISODE #, EPISODE NAME )``.
     * the remaining keys -- ``prefix``, ``showFilename``, ``min_inferred_length``, ``season_prefix_dict``, ``episode_number_length``, ``avg_length_mins`` -- and their values have the same meaning as the summary Plex_ TV library returned by :py:meth:`get_path_data_on_tvshow <howdy.tv.tv.get_path_data_on_tvshow>`.
-
-    Here is some example output. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server, and `The Great British Bake Off`_ is a British reality TV show on baking.
-
-    .. code-block:: python
-
-       {'The Great British Bake Off': {'episodes': [(5, 12, 'Masterclass 2'),
-       (5, 13, 'Class of 2013'),
-       (5, 14, 'Masterclass 3'),
-       (5, 15, 'Masterclass 4'),
-       (7, 11, 'Class of 2015'),
-       (10, 1, 'Cake Week'),
-       (10, 2, 'Biscuit Week'),
-       (10, 3, 'Bread Week'),
-       (10, 4, 'Dairy Week'),
-       (10, 5, 'The Roaring Twenties'),
-       (10, 6, 'Dessert Week'),
-       (10, 7, 'Festival Week'),
-       (10, 8, 'Pastry Week')],
-      'prefix': '$LIBRARY_DIR/The Great British Bake Off',
-      'showFileName': 'The Great British Bake Off',
-      'min_inferred_length': 1,
-      'season_prefix_dict': {0: 'Specials',
-       1: 'Season 1',
-       2: 'Season 2',
-       3: 'Season 3',
-       4: 'Season 4',
-       5: 'Season 5',
-       6: 'Season 6',
-       7: 'Season 7',
-       8: 'Season 8',
-       9: 'Season 9'},
-      'episode_number_length': 2,
-      'avg_length_mins': 52.0}}
     
     :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <howdy.core.core.get_library_data>`.
     :param bool showSpecials: if ``True``, also include episode info for TV specials for that given series. Default is ``True``.
@@ -1317,7 +1288,39 @@ def get_remaining_episodes(
     :param str token: optional TVDB_ API access token. If ``None``, then gets the TVDB_ API access token with :py:meth:`get_token <howdy.tv.get_token>`.
     :param bool mustHaveTitle: sometimes new episodes are registered in TVDB_ but without titles. Functionality to download missing episodes to the Plex_ server (see, e.g., :ref:`get_tv_batch`) fails if the episode does not have a name. If ``True``, then ignore new episodes that do not have titles. Default is ``True``.
     
-    :returns: a :py:class:`dict` of missing episodes by TV show on the Plex_ server.
+    :returns: a :py:class:`dict` of missing episodes by TV show on the Plex_ server. Here is some example output. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server, and `The Great British Bake Off`_ is a British reality TV show on baking.
+
+      .. code-block:: python
+
+         {'The Great British Bake Off': {'episodes': [(5, 12, 'Masterclass 2'),
+         (5, 13, 'Class of 2013'),
+         (5, 14, 'Masterclass 3'),
+         (5, 15, 'Masterclass 4'),
+         (7, 11, 'Class of 2015'),
+         (10, 1, 'Cake Week'),
+         (10, 2, 'Biscuit Week'),
+         (10, 3, 'Bread Week'),
+         (10, 4, 'Dairy Week'),
+         (10, 5, 'The Roaring Twenties'),
+         (10, 6, 'Dessert Week'),
+         (10, 7, 'Festival Week'),
+         (10, 8, 'Pastry Week')],
+        'prefix': '$LIBRARY_DIR/The Great British Bake Off',
+        'showFileName': 'The Great British Bake Off',
+        'min_inferred_length': 1,
+        'season_prefix_dict': {0: 'Specials',
+         1: 'Season 1',
+         2: 'Season 2',
+         3: 'Season 3',
+         4: 'Season 4',
+         5: 'Season 5',
+         6: 'Season 6',
+         7: 'Season 7',
+         8: 'Season 8',
+         9: 'Season 9'},
+        'episode_number_length': 2,
+        'avg_length_mins': 52.0}}
+      
     :rtype: dict
 
     .. seealso::
@@ -1435,22 +1438,6 @@ def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token =
                            fromDate = None, num_threads = 2 * multiprocessing.cpu_count( ) ):
     """
     Returns a :py:class:`dict` on which TV shows on the Plex_ server have a new season to start. Each key is a TV show in the Plex_ library. Each value is another dictionary: ``max_last_season`` is the latest season of the TV show, ``min_next_season`` is the next season to be aired, and ``start_date`` is the first :py:class:`date <datetime.date>` that a new episode will air.
-
-    An example output of this method is shown here,
-    
-    .. code-block:: python
-
-       {'American Crime Story': {'max_last_season': 2,
-         'min_next_season': 3,
-         'start_date': datetime.date(2020, 9, 27)},
-        'BoJack Horseman': {'max_last_season': 5,
-         'min_next_season': 6,
-         'start_date': datetime.date(2019, 10, 25)},
-        'Homeland': {'max_last_season': 7,
-         'min_next_season': 8,
-         'start_date': datetime.date(2020, 2, 9)},
-         ...
-       }
     
     :param dict tvdata: the Plex_ TV library information returned by :py:meth:`get_library_data <howdy.core.core.get_library_data>`.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
@@ -1459,7 +1446,22 @@ def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token =
     :param date fromDate: optional start :py:class:`date <datetime.date>` *after* which to search for new episodes. That is, if defined then only look for future episodes aired on or after this date. If not defined, then look for *any* aired episode to be aired after the current date.
     :param int num_threads: the number of threads over which to parallelize this calculation. The default is *twice* the number of cores on the CPU.
     
-    :returns: a :py:class:`dict` of TV shows that will start airing new episodes.
+    :returns: a :py:class:`dict` of TV shows that will start airing new episodes. An example output of this method is shown here,
+    
+      .. code-block:: python
+
+         {'American Crime Story': {'max_last_season': 2,
+           'min_next_season': 3,
+           'start_date': datetime.date(2020, 9, 27)},
+          'BoJack Horseman': {'max_last_season': 5,
+           'min_next_season': 6,
+           'start_date': datetime.date(2019, 10, 25)},
+          'Homeland': {'max_last_season': 7,
+           'min_next_season': 8,
+           'start_date': datetime.date(2020, 2, 9)},
+           ...
+         }
+
     :rtype: dict
 
     .. seealso:: :ref:`howdy_tv_futureshows`.
@@ -1793,54 +1795,53 @@ def get_tot_epdict_tvdb(
     
     * The second level dictionary has keys (for each season) that are the season's episodes. Each value is a :py:class:`tuple` of episode name and air date, as a :py:class:`date <datetime.date>`.
     
-    An example for `The Simpsons`_ is shown below,
-    
-    .. code-block:: python
-
-       {1 : {1: ('Simpsons Roasting on an Open Fire', datetime.date(1989, 12, 17)),
-         2: ('Bart the Genius', datetime.date(1990, 1, 14)),
-         3: ("Homer's Odyssey", datetime.date(1990, 1, 21)),
-         4: ("There's No Disgrace Like Home", datetime.date(1990, 1, 28)),
-         5: ('Bart the General', datetime.date(1990, 2, 4)),
-         6: ('Moaning Lisa', datetime.date(1990, 2, 11)),
-         7: ('The Call of the Simpsons', datetime.date(1990, 2, 18)),
-         8: ('The Telltale Head', datetime.date(1990, 2, 25)),
-         9: ('Life on the Fast Lane', datetime.date(1990, 3, 18)),
-         10: ("Homer's Night Out", datetime.date(1990, 3, 25)),
-         11: ('The Crepes of Wrath', datetime.date(1990, 4, 15)),
-         12: ('Krusty Gets Busted', datetime.date(1990, 4, 29)),
-         13: ('Some Enchanted Evening', datetime.date(1990, 5, 13))},
-       2: {1: ('Bart Gets an F', datetime.date(1990, 10, 11)),
-         2: ('Simpson and Delilah', datetime.date(1990, 10, 18)),
-         3: ('Treehouse of Horror', datetime.date(1990, 10, 24)),
-         4: ('Two Cars in Every Garage and Three Eyes on Every Fish', datetime.date(1990, 11, 1)),
-         5: ("Dancin' Homer", datetime.date(1990, 11, 8)),
-         6: ('Dead Putting Society', datetime.date(1990, 11, 15)),
-         7: ('Bart vs. Thanksgiving', datetime.date(1990, 11, 22)),
-         8: ('Bart the Daredevil', datetime.date(1990, 12, 6)),
-         9: ('Itchy & Scratchy & Marge', datetime.date(1990, 12, 20)),
-         10: ('Bart Gets Hit by a Car', datetime.date(1991, 1, 10)),
-         11: ('One Fish, Two Fish, Blowfish, Blue Fish', datetime.date(1991, 1, 24)),
-         12: ('The Way We Was', datetime.date(1991, 1, 31)),
-         13: ('Homer vs. Lisa and the Eighth Commandment', datetime.date(1991, 2, 7)),
-         14: ('Principal Charming', datetime.date(1991, 2, 14)),
-         15: ('Oh Brother, Where Art Thou?', datetime.date(1991, 2, 21)),
-         16: ("Bart's Dog Gets an F", datetime.date(1991, 3, 7)),
-         17: ('Old Money', datetime.date(1991, 3, 28)),
-         18: ('Brush With Greatness', datetime.date(1991, 4, 11)),
-         19: ("Lisa's Substitute", datetime.date(1991, 4, 25)),
-         20: ('The War of the Simpsons', datetime.date(1991, 5, 2)),
-         21: ('Three Men and a Comic Book', datetime.date(1991, 5, 9)),
-         22: ('Blood Feud', datetime.date(1991, 8, 11))},
-         ...
-       }
-
     :param str showName: the TV show's name.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :param bool showSpecials: if ``True``, then also include TV specials. These specials will appear in a season ``0`` in this dictionary.
     :param bool showFuture: optional argument, if ``True`` then also include information on episodes that have not yet aired.
     
-    :returns: a :py:class:`dict` of TV show episodes that the TVDB_ database has found.
+    :returns: a :py:class:`dict` of TV show episodes that the TVDB_ database has found. An example for `The Simpsons`_ is shown below,
+    
+      .. code-block:: python
+
+         {1 : {1: ('Simpsons Roasting on an Open Fire', datetime.date(1989, 12, 17)),
+           2: ('Bart the Genius', datetime.date(1990, 1, 14)),
+           3: ("Homer's Odyssey", datetime.date(1990, 1, 21)),
+           4: ("There's No Disgrace Like Home", datetime.date(1990, 1, 28)),
+           5: ('Bart the General', datetime.date(1990, 2, 4)),
+           6: ('Moaning Lisa', datetime.date(1990, 2, 11)),
+           7: ('The Call of the Simpsons', datetime.date(1990, 2, 18)),
+           8: ('The Telltale Head', datetime.date(1990, 2, 25)),
+           9: ('Life on the Fast Lane', datetime.date(1990, 3, 18)),
+           10: ("Homer's Night Out", datetime.date(1990, 3, 25)),
+           11: ('The Crepes of Wrath', datetime.date(1990, 4, 15)),
+           12: ('Krusty Gets Busted', datetime.date(1990, 4, 29)),
+           13: ('Some Enchanted Evening', datetime.date(1990, 5, 13))},
+         2: {1: ('Bart Gets an F', datetime.date(1990, 10, 11)),
+           2: ('Simpson and Delilah', datetime.date(1990, 10, 18)),
+           3: ('Treehouse of Horror', datetime.date(1990, 10, 24)),
+           4: ('Two Cars in Every Garage and Three Eyes on Every Fish', datetime.date(1990, 11, 1)),
+           5: ("Dancin' Homer", datetime.date(1990, 11, 8)),
+           6: ('Dead Putting Society', datetime.date(1990, 11, 15)),
+           7: ('Bart vs. Thanksgiving', datetime.date(1990, 11, 22)),
+           8: ('Bart the Daredevil', datetime.date(1990, 12, 6)),
+           9: ('Itchy & Scratchy & Marge', datetime.date(1990, 12, 20)),
+           10: ('Bart Gets Hit by a Car', datetime.date(1991, 1, 10)),
+           11: ('One Fish, Two Fish, Blowfish, Blue Fish', datetime.date(1991, 1, 24)),
+           12: ('The Way We Was', datetime.date(1991, 1, 31)),
+           13: ('Homer vs. Lisa and the Eighth Commandment', datetime.date(1991, 2, 7)),
+           14: ('Principal Charming', datetime.date(1991, 2, 14)),
+           15: ('Oh Brother, Where Art Thou?', datetime.date(1991, 2, 21)),
+           16: ("Bart's Dog Gets an F", datetime.date(1991, 3, 7)),
+           17: ('Old Money', datetime.date(1991, 3, 28)),
+           18: ('Brush With Greatness', datetime.date(1991, 4, 11)),
+           19: ("Lisa's Substitute", datetime.date(1991, 4, 25)),
+           20: ('The War of the Simpsons', datetime.date(1991, 5, 2)),
+           21: ('Three Men and a Comic Book', datetime.date(1991, 5, 9)),
+           22: ('Blood Feud', datetime.date(1991, 8, 11))},
+           ...
+         }
+         
     :rtype: dict
     """
     if token is None: token = get_token( verify = verify )

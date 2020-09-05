@@ -265,7 +265,7 @@ class MusicInfo( object ):
     def get_album_info( cls, album ):
         """
         :param dict album: a dictionary of low-level album info returned by :py:mod:`musicbrainzngs` associated with this studio album.
-        :returns: a two-element :py:class:`tuple` if successful, otherwise returns ``None``. The first is the studio album name, and each second element is a :py:class:`dict` containing summary album info of that album. See the ``altrackdata`` dictionary in :py:class:`MusicInfo <howdy.plexmusic.plexmusic.MusicInfo>` to understand the description of summary album information.
+        :returns: a two-element :py:class:`tuple` if successful, otherwise returns ``None``. The first is the studio album name, and each second element is a :py:class:`dict` containing summary album info of that album. See the ``altrackdata`` dictionary in :py:class:`MusicInfo <howdy.music.music.MusicInfo>` to understand the description of summary album information.
         :rtype: tuple
         """
         time0 = time.time( )
@@ -549,7 +549,7 @@ def gmusicmanager( useMobileclient = False, verify = True, device_id = None ):
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :param str device_id: optional argument. If defined, then attempt to use this MAC ID to register the music manager.
     
-    .. seealso:: :py:meth:`get_gmusicmanager <howdy.plexmusic.plexmusic.get_gmusicmanager>`.
+    .. seealso:: :py:meth:`get_gmusicmanager <howdy.music.music.get_gmusicmanager>`.
 
     .. _`Google Play Music`: https://play.google.com/music/listen
     """
@@ -568,7 +568,7 @@ def gmusicmanager_fixlogin( mmg ):
     :raise ValueError: if the music manager has not errored out.
     :raise ValueError: if the music manager is not a :py:class:`Mobileclient <gmusicapi.Mobileclient>`.
 
-    .. seealso:: :py:meth:`get_gmusicmanager <howdy.plexmusic.plexmusic.get_gmusicmanager>`.
+    .. seealso:: :py:meth:`get_gmusicmanager <howdy.music.music.get_gmusicmanager>`.
     """
     assert( isinstance( mmg, gmusicapi.Mobileclient ) ), "error, music manager object must be a Mobileclient"
     assert( len( mmg.error_device_ids ) != 0 ), "error, did not find the right device_id previously."
@@ -588,7 +588,7 @@ def get_gmusicmanager( useMobileclient = False, verify = True, device_id = None 
     :raise ValueError: if cannot instantiate the Musicmanager.
     :raise AssertionError: if cannot get machine's MAC id.
 
-    .. seealso:: :py:meth:`gmusicmanager <howdy.plexmusic.plexmusic.gmusicmanager>`.
+    .. seealso:: :py:meth:`gmusicmanager <howdy.music.music.gmusicmanager>`.
     """
 
     #
@@ -751,13 +751,13 @@ def download_best_song( artist_name, song_name, youtube = None,
 
     :param str artist_name: the artist name.
     :param str song_name: name of the song.
-    :param Resource youtube: optional aegument, a `googleapiclient Resource`_ object that allows for the access to the `YouTube Google API`_. If not defined, then instantiated with :py:meth:`get_youtube_service <howdy.plexmusic.plexmusic.get_youtube_service>`.
+    :param Resource youtube: optional aegument, a `googleapiclient Resource`_ object that allows for the access to the `YouTube Google API`_. If not defined, then instantiated with :py:meth:`get_youtube_service <howdy.music.music.get_youtube_service>`.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :returns: if successful, the file name of the downloaded M4A_ song (``"artist_name"."song_name".m4a``). If cannot find the song metadata, or cannot find YouTube_ clips for this song, then returns ``None``.
     """
     if youtube is not None:
-        youtube = plexmusic.get_youtube_service( verify = verify )
-    plastm = plexmusic.HowdyLastFM( verify = verify )
+        youtube = music.get_youtube_service( verify = verify )
+    plastm = music.HowdyLastFM( verify = verify )
     data_dict, status = plastfm.get_music_metadata(
         song_name = song_name,
         artist_name = artist_name, all_data = True )
@@ -766,13 +766,13 @@ def download_best_song( artist_name, song_name, youtube = None,
     artist_name = data_dict[ 'artist' ]
     song_name = data_dict[ 'song' ]
     name = '%s %s' % ( artist_name, song_name )
-    videos = plexmusic.youtube_search( youtube, name, max_results = 10 )
+    videos = music.youtube_search( youtube, name, max_results = 10 )
     if len( videos ) == 0:
         return None
     _, youtubeURL = videos[0]
     filename = '%s.%s.m4a' % ( artist_name, song_name )
-    plexmusic.get_youtube_file( youtubeURL, filename )
-    plexmusic.fill_m4a_metadata( filename, data_dict )
+    music.get_youtube_file( youtubeURL, filename )
+    music.fill_m4a_metadata( filename, data_dict )
     return filename
 
             
@@ -932,7 +932,7 @@ class HowdyLastFM( object ):
     """
     This object uses the LastFM_ API, through the higher level :py:mod:`musicbrainzngs` Python module, to get information on songs, albums, and artists. Where possible, this extracts additional song metadata using the MusicBrainz_ API.
     
-    :param dict data: optional argument, containg the LastFM_ API data: ``api_key``, ``api_secret``, ``application_name``, and ``username``. See :numref:`The Gracenote and LastFM APIs` to understand how to set up the LastFM_ API credentials. If not given, then gets the LastFM_ API data from :py:meth:`HowdyLastFM.get_lastfm_credentials <howdy.plexmusic.plexmusic.HowdyLastFM.get_lastfm_credentials>`.
+    :param dict data: optional argument, containg the LastFM_ API data: ``api_key``, ``api_secret``, ``application_name``, and ``username``. See :numref:`The Gracenote and LastFM APIs` to understand how to set up the LastFM_ API credentials. If not given, then gets the LastFM_ API data from :py:meth:`HowdyLastFM.get_lastfm_credentials <howdy.music.music.HowdyLastFM.get_lastfm_credentials>`.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     
     :var str api_key: the LastFM_ API key.
@@ -1045,9 +1045,8 @@ class HowdyLastFM( object ):
     def get_collection_album_info( self, album_name ):
         """
         :param str album_name: the name of a compilation album (consisting of multiple artists).
-        :returns: a two-element :py:class:`tuple`, whose first element is a :py:class:`dict` of summary information on tracks for this compilation album, and whose second element is the string ``"SUCCESS"``. This dictionary is a low level LastFM_ data structure. The example low level, nicely formatted JSON representation of this dictionary, for the compilation album, `The Politics of Photosynthesis`_, is located in :download:`lastfm_collection_data.json </_static/lastfm_collection_data.json>`.
-
-        If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
+        :returns: a two-element :py:class:`tuple`, whose first element is a :py:class:`dict` of summary information on tracks for this compilation album, and whose second element is the string ``"SUCCESS"``. This dictionary is a low level LastFM_ data structure. The example low level, nicely formatted JSON representation of this dictionary, for the compilation album, `The Politics of Photosynthesis`_, is located in :download:`lastfm_collection_data.json </_static/lastfm_collection_data.json>`. If unsuccessful, then returns a :py:class:`tuple` of format :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
+        
         :rtype: dict
 
         .. _`The Politics of Photosynthesis`: https://www.amazon.com/Politics-Photosynthesis-Tribute-Stereolab/dp/B0012BIPCG
@@ -1151,7 +1150,7 @@ class HowdyLastFM( object ):
     ## documentation found here, https://www.last.fm/api/show/album.getInfo, is incorrect.
     def get_music_metadata( self, song_name, artist_name, all_data = False ):
         """
-        Uses the MusicBrainz_ API to fill out as much metadata as possible for a given song. Before running this method, one should first set the MusicBrainz_ API header data with :py:meth:`MusicInfo.get_set_musicbrainz_useragent <howdy.plexmusic.plexmusic.`MusicInfo.get_set_musicbrainz_useragent>`.
+        Uses the MusicBrainz_ API to fill out as much metadata as possible for a given song. Before running this method, one should first set the MusicBrainz_ API header data with :py:meth:`MusicInfo.get_set_musicbrainz_useragent <howdy.music.music.MusicInfo.get_set_musicbrainz_useragent>`.
         
         :param str song_name: name of the song.
         :param str artist_name: name of the artist.

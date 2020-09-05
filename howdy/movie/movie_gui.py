@@ -495,7 +495,7 @@ class HowdyMovieTorrents( QDialogWithPrinting ):
             useIMDB = False ):
         data_torrents = [ ]
         if not bypass:
-            data, status = plextmdb_torrents.get_movie_torrent(
+            data, status = movie_torrents.get_movie_torrent(
                 movie_name, verify = self.verify )
         else: status = 'FAILURE'
         
@@ -522,16 +522,16 @@ class HowdyMovieTorrents( QDialogWithPrinting ):
             jobs = [ ]
             if tmdb_id is not None and useIMDB:
                 jobs.append( pool.apply_async(
-                    plextmdb_torrents.get_movie_torrent_jackett,
+                    movie_torrents.get_movie_torrent_jackett,
                     args = ( movie_name, maxnum, self.verify, False, tmdb_id ) ) )
             else:
                 jobs.append( pool.apply_async(
-                    plextmdb_torrents.get_movie_torrent_jackett,
+                    movie_torrents.get_movie_torrent_jackett,
                     args = ( movie_name, maxnum, self.verify, False ) ) )
             jobs+= list(map(
                 lambda func: pool.apply_async( func, args = ( movie_name, maxnum, self.verify ) ),
-                ( plextmdb_torrents.get_movie_torrent_zooqle,
-                  plextmdb_torrents.get_movie_torrent_eztv_io ) ) )
+                ( movie_torrents.get_movie_torrent_zooqle,
+                  movie_torrents.get_movie_torrent_eztv_io ) ) )
             items_lists = [ ]
             for job in jobs:
                 try:

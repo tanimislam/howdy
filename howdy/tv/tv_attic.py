@@ -49,7 +49,11 @@ def get_possible_omdb_ids( series_name, apikey ):
       .. code-block:: python
 
          >> get_possible_omdb_ids( 'The Simpsons', omdb_apikey )
-         >> [ ( 'tt0096697', [ 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 ] ) ]
+         >> [ ( 'tt0096697', [ 1989, 1990, 1991, 1992, 1993, 1994, 1995,
+                               1996, 1997, 1998, 1999, 2000, 2001, 2002,
+                               2003, 2004, 2005, 2006, 2007, 2008, 2009,
+                               2010, 2011, 2012, 2013, 2014, 2015, 2016,
+                               2017, 2018, 2019 ] ) ]
 
       If unsuccessful, returns ``None``. 
     :rtype: list
@@ -371,7 +375,8 @@ def get_tot_epdict_tmdb( showName, firstAiredYear = None, showSpecials = False )
     
       .. code-block:: python
 
-         {1: {1: ('Simpsons Roasting on an Open Fire', datetime.date(1989, 12, 17)),
+         {1: {1: ('Simpsons Roasting on an Open Fire',
+                  datetime.date(1989, 12, 17)),
            2: ('Bart the Genius', datetime.date(1990, 1, 14)),
            3: ("Homer's Odyssey", datetime.date(1990, 1, 21)),
            4: ("There's No Disgrace Like Home", datetime.date(1990, 1, 28)),

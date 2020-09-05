@@ -194,7 +194,8 @@ def get_movie_info( tmdb_id, verify = True ):
           'genres': [{'id': 12, 'name': 'Adventure'},
            {'id': 28, 'name': 'Action'},
            {'id': 878, 'name': 'Science Fiction'}],
-          'homepage': 'http://www.starwars.com/films/star-wars-episode-iv-a-new-hope',
+          'homepage':
+            'http://www.starwars.com/films/star-wars-episode-iv-a-new-hope',
           'id': 11,
           'imdb_id': 'tt0076759',
           'original_language': 'en',
@@ -296,7 +297,8 @@ def get_movies_by_actors( actor_name_dict, verify = True ):
            'popularity': 7.743,
            'vote_average': 7.1,
            'overview': 'Kermit the Frog is persuaded by agent...',
-           'poster_path': 'https://image.tmdb.org/t/p/w500/48Ve7uLDcPJFGaDnmYYdcV3Ve1M.jpg',
+           'poster_path':
+             'https://image.tmdb.org/t/p/w500/48Ve7uLDcPJFGaDnmYYdcV3Ve1M.jpg',
            'isFound': False,
            'tmdb_id': 11176,
            'imdb_id': 'tt0079588'},
@@ -305,7 +307,8 @@ def get_movies_by_actors( actor_name_dict, verify = True ):
            'popularity': 4.188,
            'vote_average': 7.0,
            'overview':  'The story of the gold-plated statuette...',
-           'poster_path': 'https://image.tmdb.org/t/p/w500/kgH49kPNNtel04HPVGQLS63coRF.jpg',
+           'poster_path':
+             'https://image.tmdb.org/t/p/w500/kgH49kPNNtel04HPVGQLS63coRF.jpg',
            'isFound': False,
            'tmdb_id': 253639,
            'imdb_id': 'tt3481232'},
@@ -314,7 +317,8 @@ def get_movies_by_actors( actor_name_dict, verify = True ):
            'popularity': 0.842,
            'vote_average': 0.0,
            'overview': 'In the late 1950s, a fresh, unconventional style...',
-           'poster_path': 'https://image.tmdb.org/t/p/w500/iRHXAdDXwcuKGLH6MmvOUBrhotT.jpg',
+           'poster_path':
+             'https://image.tmdb.org/t/p/w500/iRHXAdDXwcuKGLH6MmvOUBrhotT.jpg',
            'isFound': False,
            'tmdb_id': 78710,
            'imdb_id': 'tt1002564'}]
@@ -381,7 +385,8 @@ def get_movies_by_title( title, verify = True, apiKey = None ):
           'popularity': 50.48,
           'vote_average': 8.2,
           'overview': 'Princess Leia is captured and held hostage...',
-          'poster_path': 'https://image.tmdb.org/t/p/w500/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
+          'poster_path':
+            'https://image.tmdb.org/t/p/w500/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
           'isFound': False,
           'tmdb_id': 11,
           'imdb_id': 'tt0076759'}

@@ -1020,7 +1020,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
     :param int num_threads: the number of concurrent threads used to access the Plex_ server and get the library data.
     :param int timeout: optional time, in seconds, to wait for an HTTP conection to the Plex_ server.
     
-    :returns: a dictionary of library data on the Plex server.
+    :returns: a :py:class:`dict` of library data on the Plex_ server.
     :rtype: dict
     
     .. _`The Brink`: https://en.wikipedia.org/wiki/The_Brink_(TV_series)
@@ -1121,7 +1121,7 @@ def get_library_stats( key, token, fullURL = 'http://localhost:32400', sinceDate
     :param str fullURL: the Plex_ server address.
     :param sinceDate: If defined, only tally the library media that was added after this date. This is of type :py:class:`date <datetime.date>`.
     
-    :returns: a dictionary of summary statistics on the Plex_ library.
+    :returns: a :py:class:`dict` of summary statistics on the Plex_ library.
     :rtype: dict
 
     .. seealso:: :py:meth:`get_library_data <howdy.core.core.get_library_data>`.
@@ -1484,7 +1484,7 @@ def oauthGetOauth2ClientGoogleCredentials( ):
 
 def oauth_generate_google_permission_url( ):
     """
-    Generates a `Google OAuth2`_ web-based flow for all the Google services used in Howdy_. Descriptions of OAuth2_ and different flows (web server app, client, etc.)  is almost impossible for me to follow (see `this page on OAuth2 authentication flows <https://auth0.com/docs/api-auth/which-oauth-flow-to-use>`_), I have given up, and I can only understand the specific authentication work flow implemented in Howdy_. The authentication process that uses this method is described in :ref:`this subsection <Summary of Setting Up Google Credentials>`. Here are the programmatic steps to finally generate an  :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` object.
+    Generates a `Google OAuth2`_ web-based flow for all the Google services used in Howdy_. The authentication process that uses this flow is described in :ref:`this subsection <Summary of Setting Up Google Credentials>`. Here are the programmatic steps to finally generate an  :py:class:`AccessTokenCredentials <oauth2client.client.AccessTokenCredentials>` object.
     
       1. Get the  :py:class:`OAuth2WebServerFlow <oauth2client.client.OAuth2WebServerFlow>` and authentication URI.
 

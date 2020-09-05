@@ -628,7 +628,7 @@ class PlexGuestEmailMapping( Base ):
     """
     This SQLAlchemy_ ORM class contains mapping of emails of Plex_ server users, to other email addresses. This is used to determine other email addresses to which Howdy one-off or newsletter emails are delivered. Stored in the ``plexguestemailmapping`` table in the SQLite3_ configuration database. The structure of each row in this table is straightforward. Each column in the table is a member of the object in this ORM class. 
     
-    :var email: this is the main column, which must be the email of a Plex_ user who has access to the Plex_ server. This is a :py:class:`Column <sqlalchemy.Column>` containing a :py:class:`String <sqlalchemy.String>`.
+    :var email: this is the main column, which must be the email of a Plex_ user who has access to the Plex_ server. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>`.
     
     :var plexmapping: this is a collection of **different** email addresses, to which the emails are sent. For example, if a Plex_ user with email address ``A@email.com`` would like to send email to ``B@mail.com`` and ``C@mail.com``, the *plexmapping* column would be ``B@mail.com,C@mail.com``. NONE of the mapped emails will match *email*. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` of size 65536.
     

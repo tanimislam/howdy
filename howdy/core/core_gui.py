@@ -1225,7 +1225,7 @@ class HowdyConfigGUI( QDialogWithPrinting ):
                            self.selectionModel().selectedIndexes( ) ) )
                 self.parent.tm.plexConfigAtRow( index_valid.row( ) )
             menu = QMenu( self )
-            popupAction = QAction( 'Plex config category', menu )
+            popupAction = QAction( 'Howdy config category', menu )
             popupAction.triggered.connect( popupConfigInfo )
             menu.addAction( popupAction )
             menu.popup( QCursor.pos( ) )

@@ -78,62 +78,88 @@ class ConvertWidget( QDialogWithPrinting ):
         qf.setPointSize( 11 )
         qfm = QFontMetrics( qf )
         self.statusDialog = QLabel( )
-        self.textOutput = QTextEdit( )
+        self.textOutput = QPlainTextEdit( )
         self.textOutput.setTabStopWidth( 2 * qfm.width( 'A' ) )
         self.convertButton = QPushButton( 'CONVERT' )
+        self.saveButton = QPushButton( 'SAVE' )
         #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         #
-        myLayout.addWidget( self.convertButton )
+        topWidget = QWidget( )
+        topLayout = QHBoxLayout( )
+        topWidget.setLayout( topLayout )
+        topLayout.addWidget( self.convertButton )
+        topLayout.addWidget( self.saveButton )
+        myLayout.addWidget( topWidget )
         myLayout.addWidget( self.textOutput )
         myLayout.addWidget( self.statusDialog )
         self.convertButton.clicked.connect( self.printHTML )
+        self.saveButton.clicked.connect( self.saveFileName )
+        saveAction = QAction( self )
+        saveAction.setShortcut( 'Ctrl+S' )
+        saveAction.triggered.connect( self.saveFileName )
+        self.addAction( saveAction )
         #
         self.setFixedHeight( 650 )
         self.setFixedWidth( 600 )
 
+    #
+    def saveFileName( self ):
+        fname, _ = QFileDialog.getSaveFileName(
+            self, 'Save %s' % self.name,
+            os.path.expanduser( '~' ),
+            filter = '*.%s' % self.suffix.lower( ) )
+        if not fname.lower().endswith('.%s' % self.suffix.lower( ) ): return
+        if len( os.path.basename( fname ) ) == 0: return
+        if fname.lower( ).endswith( '.%s' % self.suffix.lower( ) ):
+            with open( fname, 'w' ) as openfile:
+                openfile.write( '%s\n' % self.getTextOutput( ) )
+
+    def getTextOutput( self ):
+        return r"%s" % self.textOutput.toPlainText( ).strip( )
+
     def printHTML( self ):
-        myString = r"%s" % self.textOutput.toPlainText( ).strip( )
         self.statusDialog.setText( '' )
+        myString = self.getTextOutput( )
         if not checkValidConversion( myString ):
             self.statusDialog.setText(
                 'COULD NOT CONVERT FROM %s TO HTML' % form.upper( ) )
             return
         #
         qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
+        #
         qdl.setModal( True )
-        qsb = QPushButton( 'SAVE' )
+        backButton = QPushButton( 'BACK' )
+        forwardButton = QPushButton( 'FORWARD' )
+        #
+        ##
         qte = HtmlView( qdl )
         qdlLayout = QVBoxLayout( )
         qdl.setLayout( qdlLayout )
-        qdlLayout.addWidget( qsb )
         qdlLayout.addWidget( qte )
+        bottomWidget = QWidget( )
+        bottomLayout = QHBoxLayout( )
+        bottomWidget.setLayout( bottomLayout )
+        bottomLayout.addWidget( backButton )
+        bottomLayout.addWidget( forwardButton )
+        qdlLayout.addWidget( bottomWidget )
         qf = QFont( )
         qf.setFamily( 'Consolas' )
         qf.setPointSize( 11 )
         qfm = QFontMetrics( qf )
-        qte.setFixedWidth( 85 * qfm.width( 'A' ) )
-        qte.setFixedHeight( 550 )
-        qdl.setFixedWidth( 85 * qfm.width( 'A' ) )
-        qdl.setFixedHeight( 550 )
+        #qte.setWidth( 85 * qfm.width( 'A' ) )
+        #qte.setHeight( 550 )
+        #qdl.width( 85 * qfm.width( 'A' ) )
+        #qdl.height( 550 )
+        qte.setMinimumSize( 85 * qfm.width( 'A' ), 550 )
+        qdl.setMinimumSize( 85 * qfm.width( 'A' ), 550 )
         #
+        backButton.clicked.connect( qte.back )
+        forwardButton.clicked.connect( qte.forward )
         qte.setHtml( convertString( myString ) )
         #
-        def saveFileName( ):
-            fname, _ = QFileDialog.getSaveFileName(
-                qdl, 'Save %s' % self.name,
-                os.path.expanduser( '~' ),
-                filter = '*.%s' % self.suffix.lower( ) )
-            if not fname.lower().endswith('.%s' % self.suffix.lower( ) ): return
-            if len( os.path.basename( fname ) ) == 0: return
-            if fname.lower( ).endswith( '.%s' % self.suffix.lower( ) ):
-                with open( fname, 'w' ) as openfile:
-                    openfile.write( '%s\n' % myString )
-        qsb.clicked.connect( saveFileName )
-        saveAction = QAction( qdl )
-        saveAction.setShortcut( 'Ctrl+S' )
-        saveAction.triggered.connect( saveFileName )
-        qdl.addAction( saveAction )
+        qte.setSizePolicy( QSizePolicy.Expanding, QSizePolicy.Expanding )
+        qdl.setSizePolicy( QSizePolicy.Expanding, QSizePolicy.Expanding )
         qdl.show( )
         qdl.exec_( )

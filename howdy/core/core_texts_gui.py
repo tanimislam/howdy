@@ -7,6 +7,7 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtNetwork import QNetworkAccessManager
 #
 from howdy.core import returnQAppWithFonts, QDialogWithPrinting
+from howdy.email import email_basegui
 
 def checkValidConversion( myString ):
     try:
@@ -28,8 +29,10 @@ def convertString( myString ):
         return None
 
 class HtmlView( QWebEngineView ):
-    def __init__( self, parent ):
+    def __init__( self, parent, htmlString ):
         super( HtmlView, self ).__init__( parent )
+        self.initHtmlString = htmlString
+        self.setHtml( self.initHtmlString )
         #channel = QWebChannel( self )
         #self.page( ).setWebChannel( channel )
         #channel.registerObject( 'thisFormula', self )
@@ -49,7 +52,10 @@ class HtmlView( QWebEngineView ):
         forwardAction = QAction( self )
         forwardAction.setShortcut( 'Shift+Ctrl+2' )
         forwardAction.triggered.connect( self.forward )
-        self.addAction( forwardAction )        
+        self.addAction( forwardAction )
+
+    def reset( self ):
+        self.setHtml( self.initHtmlString )
         
     def on_loadFinished( self ):
         self.initialized = True
@@ -78,10 +84,16 @@ class ConvertWidget( QDialogWithPrinting ):
         qf.setPointSize( 11 )
         qfm = QFontMetrics( qf )
         self.statusDialog = QLabel( )
+        self.rowColDialog = QLabel( )
         self.textOutput = QPlainTextEdit( )
         self.textOutput.setTabStopWidth( 2 * qfm.width( 'A' ) )
         self.convertButton = QPushButton( 'CONVERT' )
         self.saveButton = QPushButton( 'SAVE' )
+        self.loadButton = QPushButton( 'LOAD' )
+        self.pngShowButton = QPushButton( 'SHOW PNGS' )
+        #
+        self.pngWidget = email_basegui.PNGWidget( self )
+        self.pngWidget.hide( )
         #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
@@ -91,11 +103,22 @@ class ConvertWidget( QDialogWithPrinting ):
         topWidget.setLayout( topLayout )
         topLayout.addWidget( self.convertButton )
         topLayout.addWidget( self.saveButton )
+        topLayout.addWidget( self.loadButton )
+        topLayout.addWidget( self.pngShowButton )
         myLayout.addWidget( topWidget )
         myLayout.addWidget( self.textOutput )
-        myLayout.addWidget( self.statusDialog )
+        botWidget = QWidget( )
+        botLayout = QHBoxLayout( )
+        botWidget.setLayout( botLayout )
+        botLayout.addWidget( self.rowColDialog )
+        botLayout.addWidget( self.statusDialog )
+        myLayout.addWidget( botWidget )
+        #
         self.convertButton.clicked.connect( self.printHTML )
         self.saveButton.clicked.connect( self.saveFileName )
+        self.loadButton.clicked.connect( self.loadFileName )
+        self.pngShowButton.clicked.connect( self.showPNGs )
+        self.textOutput.cursorPositionChanged.connect( self.showRowCol )
         saveAction = QAction( self )
         saveAction.setShortcut( 'Ctrl+S' )
         saveAction.triggered.connect( self.saveFileName )
@@ -103,6 +126,16 @@ class ConvertWidget( QDialogWithPrinting ):
         #
         self.setFixedHeight( 650 )
         self.setFixedWidth( 600 )
+
+    def showPNGs( self ):
+        self.pngWidget.show( )
+        # self.pngAddButton.setEnabled( False )
+
+    def showRowCol( self ):
+        cursor = self.textOutput.textCursor( )
+        lineno = cursor.blockNumber( ) + 1
+        colno  = cursor.columnNumber( ) + 1
+        self.rowColDialog.setText( '(%d, %d)' % ( lineno, colno ) )
 
     #
     def saveFileName( self ):
@@ -115,6 +148,18 @@ class ConvertWidget( QDialogWithPrinting ):
         if fname.lower( ).endswith( '.%s' % self.suffix.lower( ) ):
             with open( fname, 'w' ) as openfile:
                 openfile.write( '%s\n' % self.getTextOutput( ) )
+
+    def loadFileName( self ):
+        fname, _ = QFileDialog.getOpenFileName(
+            self, 'Open %s' % self.name,
+            os.path.expanduser( '~' ),
+            filter = '*.%s' % self.suffix.lower( ) )
+        if not fname.lower().endswith('.%s' % self.suffix.lower( ) ): return
+        if len( os.path.basename( fname ) ) == 0: return
+        if fname.lower( ).endswith( '.%s' % self.suffix.lower( ) ):
+            myString = open( fname, 'r' ).read( )
+            self.textOutput.setPlainText( myString )
+        
 
     def getTextOutput( self ):
         return r"%s" % self.textOutput.toPlainText( ).strip( )
@@ -132,15 +177,17 @@ class ConvertWidget( QDialogWithPrinting ):
         qdl.setModal( True )
         backButton = QPushButton( 'BACK' )
         forwardButton = QPushButton( 'FORWARD' )
+        resetButton = QPushButton( 'RESET' )
         #
         ##
-        qte = HtmlView( qdl )
+        qte = HtmlView( qdl, convertString( myString ) )
         qdlLayout = QVBoxLayout( )
         qdl.setLayout( qdlLayout )
         qdlLayout.addWidget( qte )
         bottomWidget = QWidget( )
         bottomLayout = QHBoxLayout( )
         bottomWidget.setLayout( bottomLayout )
+        bottomLayout.addWidget( resetButton )
         bottomLayout.addWidget( backButton )
         bottomLayout.addWidget( forwardButton )
         qdlLayout.addWidget( bottomWidget )
@@ -155,6 +202,7 @@ class ConvertWidget( QDialogWithPrinting ):
         qte.setMinimumSize( 85 * qfm.width( 'A' ), 550 )
         qdl.setMinimumSize( 85 * qfm.width( 'A' ), 550 )
         #
+        resetButton.clicked.connect( qte.reset )
         backButton.clicked.connect( qte.back )
         forwardButton.clicked.connect( qte.forward )
         qte.setHtml( convertString( myString ) )

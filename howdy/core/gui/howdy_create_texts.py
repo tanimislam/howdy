@@ -1,10 +1,12 @@
-import os, sys, qtmodern.styles, qtmodern.windows
+import os, sys, qtmodern.styles, qtmodern.windows, warnings
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 #
 from howdy import resourceDir
 from howdy.core import core_texts_gui, returnQAppWithFonts
+#
+warnings.simplefilter( 'ignore' )
 
 def main( ):
     app = returnQAppWithFonts( )

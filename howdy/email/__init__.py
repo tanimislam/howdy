@@ -66,17 +66,15 @@ def send_email_localsmtp( msg ):
     smtp_conn.sendmail( msg['From'], [ msg["To"], ], msg.as_string( ) )
     smtp_conn.quit( )
 
-
-def get_email_contacts_dict( emailList, verify = True ):
+def get_all_email_contacts_dict( verify = True, pagesize = 4000 ):
     """
-    Returns the Google contacts given a set of emails, all using the `Google Contacts API`_.
-
-    :param list emailList: the :py:class:`list` of emails, used to determine to whom it belongs.
+    Returns *all* the Google contacts using the `Google Contacts API`_.
+    
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
-    :returns: a :py:class:`list` of two-element :py:class:`tuple`. The first element is the Google conatct name. The second element is a primary email associated with that contact.
-    :rtype: list
+    :param int pagesize: optional argument, the *maximum* number of candidate contacts to search through. Must be :math:`\ge 1`.
+    :returns: a :py:class:`dict` of contacts. The key is the contact name, and the value is the :py:class:`set` of email addresses for that contact.
+    :rtype: dict
     """
-    if len( emailList ) == 0: return [ ]
     credentials = core.oauthGetOauth2ClientGoogleCredentials( )
     assert( credentials is not None )
     http_auth = credentials.authorize( httplib2.Http(
@@ -88,7 +86,7 @@ def get_email_contacts_dict( emailList, verify = True ):
     #                        cache_discovery = False )
     connections = people_service.people( ).connections( ).list(
         resourceName='people/me', personFields='names,emailAddresses',
-        pageSize = 2000 ).execute( )
+        pageSize = pagesize ).execute( )
     emails_dict = { }
     for conn in filter(lambda conn: 'names' in conn and 'emailAddresses' in conn,
                        connections['connections']):
@@ -102,7 +100,7 @@ def get_email_contacts_dict( emailList, verify = True ):
     while 'nextPageToken' in connections: 
         connections = people_service.people( ).connections( ).list(
             resourceName='people/me', personFields='names,emailAddresses',
-            pageToken = connections['nextPageToken'], pageSize = 2000 ).execute( )
+            pageToken = connections['nextPageToken'], pageSize = pagesize ).execute( )
         for conn in filter(lambda conn: 'names' in conn and 'emailAddresses' in conn,
                            connections['connections']):
             name = conn['names'][0]['displayName']
@@ -112,8 +110,22 @@ def get_email_contacts_dict( emailList, verify = True ):
             else:
                 new_emails = emails | emails_dict[ name ]
                 emails_dict[ name ] = new_emails
-    #
-    emails_dict_rev = {}
+    return emails_dict
+    
+def get_email_contacts_dict( emailList, verify = True ):
+    """
+    Returns the Google contacts given a set of emails, all using the `Google Contacts API`_.
+
+    :param list emailList: the :py:class:`list` of emails, used to determine to whom it belongs.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :returns: a :py:class:`list` of two-element :py:class:`tuple`. The first element is the Google conatct name. The second element is a primary email associated with that contact.
+    :rtype: list
+
+    .. seealso:: :py:meth:`get_all_email_contacts_dict <howdy.email.get_all_email_contacts_dict>`.
+    """
+    if len( emailList ) == 0: return [ ]
+    emails_dict = get_all_email_contacts_dict( pagesize = 2000, verify = verify )
+    emails_dict_rev = { }
     for contact in emails_dict:
         for email in emails_dict[contact]:
             emails_dict_rev[ email ] = contact

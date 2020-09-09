@@ -1,5 +1,6 @@
 import os, sys, titlecase, datetime, re, time, requests, mimetypes, logging
 import mutagen.mp3, mutagen.mp4, glob, multiprocessing, re, httplib2
+from email.utils import formataddr
 from docutils.examples import html_parts
 from itertools import chain
 from bs4 import BeautifulSoup
@@ -192,15 +193,48 @@ def test_email( subject = None, htmlstring = None, verify = True ):
     msg.attach( body )
     send_email_lowlevel( msg, verify = verify )
 
+def send_collective_email_full(
+    mainHTML, subject, fromEmail, to_emails, cc_emails, bcc_emails, verify = True, email_service = None ):
+    """
+    Sends the HTML email to the following ``TO`` recipients, ``CC`` recipients, and ``BCC`` recipients altogether. It uses the `GMail API`_.
+
+    :param str mainHTML: the email body as an HTML :py:class:`string <str>` document.
+    :param str subject: the email subject.
+    :param str fromEmail: the `RFC 2047`_ sender's email with name.
+    :param set to_emails: the `RFC 2047`_ :py:class:`set` of ``TO`` recipients.
+    :param set cc_emails: the `RFC 2047`_ :py:class:`set` of ``CC`` recipients.
+    :param set bcc_emails: the `RFC 2047`_ :py:class:`set` of ``BCC`` recipients.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :param email_service: optional argument, the :py:class:`Resource <googleapiclient.discovery.Resource>` representing the Google email service used to send and receive emails. If ``None``, then generated here.
+
+    .. _`RFC 2047`: https://tools.ietf.org/html/rfc2047.html
+    """
+    #
+    ## get the RFC 2047 sender stuff
+    eName = ''
+    if emailName is not None: eName = emailName
+    fromEmail = formataddr( ( eName, emailAddress ) )
+    msg = MIMEMultipart( )
+    msg[ 'From' ] = fromEmail
+    msg[ 'Subject' ] = subject
+    msg[ 'To' ] = ', '.join( sorted(to_emails ) )
+    msg[ 'Cc' ] = ', '.join( sorted(cc_emails ) )
+    msg[ 'Bcc'] = ', '.join( sorted(bcc_emails ) )
+    logging.info( 'to_emails: %s.' % msg['To'] )
+    logging.info( 'cc_emails: %s.' % msg['Cc'] )
+    logging.info('bcc_emails: %s.' % msg['Bcc'])
+    msg.attach( MIMEText( mainHTML, 'html', 'utf-8' ) )
+    send_email_lowlevel( msg, email_service = email_service, verify = verify )
+
 def send_individual_email_full(
-    mainHTML, subject, email, name = None, attach = None,
+    mainHTML, subject, emailAddress, name = None, attach = None,
     attachName = None, attachType = 'txt', verify = True, email_service = None ):
     """
     Sends the HTML email, with optional *single* attachment, to a single recipient email address, using the `GMail API`_. Unlike :py:meth:`send_individual_email_full_withsingleattach <howdy.email.email.send_individual_email_full_withsingleattach>`, the attachment type is *also* set.
 
     :param str mainHTML: the email body as an HTML :py:class:`str` document.
     :param str subject: the email subject.
-    :param str email: the recipient email address.
+    :param str emailAddress: the recipient email address.
     :param str name: optional argument. If given, the recipient's name.
     :param date mydate: optional argument. The :py:class:`date <datetime.date>` at which the email is sent. Default is :py:meth:`now( ) <datetime.datetime.now>`.
     :param str attach: optional argument. If defined, the Base64_ encoded attachment.
@@ -212,9 +246,9 @@ def send_individual_email_full(
     :raise AssertionError: if the current Plex_ account user's email address does not exist.
     """
     assert( emailAddress is not None ), "Error, email address must not be None"
-    if emailName is None: emailString = emailAddress
-    else: emailString = '%s <%s>' % ( emailName, emailAddress )
-    fromEmail = emailString
+    emailName = ''
+    if name is not None: emailName = name
+    fromEmail = formataddr( ( emailName, emailAddress ) )
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
     msg['Subject'] = subject

@@ -1,4 +1,5 @@
 import glob, os, sys, textwrap, logging, time
+from email.utils import parseaddr, formataddr
 from itertools import chain
 from docutils.examples import html_parts
 from bs4 import BeautifulSoup
@@ -8,10 +9,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtNetwork import QNetworkAccessManager
 #
-import email.utils
-#
 from howdy.core import returnQAppWithFonts, QDialogWithPrinting
 from howdy.email import email_basegui, get_all_email_contacts_dict
+from howdy.email import email as howdy_email
 
 def checkValidConversion( myString ):
     try:
@@ -90,10 +90,10 @@ class EmailListDialog( QDialogWithPrinting ):
             model = self.parent.emailListTableModel
             row = index_unproxy.row( )
             column = index_unproxy.column( )
-            email = model.emails[ row ]
+            emailC = model.emails[ row ]
             name = model.names[ row ]
             if column == 0:
-                editor.setText( email.strip( ) )
+                editor.setText( emailC.strip( ) )
             elif column == 1:
                 editor.setText( name.strip( ) )
     
@@ -150,7 +150,7 @@ class EmailListDialog( QDialogWithPrinting ):
             self.emails.append( emailCurrent )
             self.names.append( name )
             self.parent.allData[ self.key ] = sorted(
-                map(email.utils.parseaddr, zip( self.names, self.emails ) ) )
+                map(formataddr, zip( self.names, self.emails ) ) )
             self.layoutChanged.emit( )
             self.sort( 1, Qt.AscendingOrder )
 
@@ -168,7 +168,7 @@ class EmailListDialog( QDialogWithPrinting ):
             self.emails.pop( row )
             self.names.pop( row )
             self.parent.allData[ self.key ] = sorted(
-                map(email.utils.parseaddr, zip( self.names, self.emails ) ) )
+                map(formataddr, zip( self.names, self.emails ) ) )
             self.layoutChanged.emit( )
             self.sort( 1, Qt.AscendingOrder )
 
@@ -182,7 +182,7 @@ class EmailListDialog( QDialogWithPrinting ):
             currentName = self.names[ row ]
             if col == 0: # check and change email
                 emails_rem = set(map(lambda emailC: emailC.lower( ), self.emails ) ) - set([ currentEmail.lower() ])
-                _, checkEmail = email.utils.parseaddr( val.strip( ) )
+                _, checkEmail = parseaddr( val.strip( ) )
                 if checkEmail == '': return False
                 if checkEmail.lower( ) in emails_rem: return False
                 self.emails[ row ] = checkEmail
@@ -192,7 +192,7 @@ class EmailListDialog( QDialogWithPrinting ):
                 self.names[ row ] = val.strip( )
             #
             self.parent.allData[ self.key ] = sorted(
-                map(email.utils.parseaddr, zip( self.names, self.emails ) ) )
+                map(formataddr, zip( self.names, self.emails ) ) )
             self.sort( 1, Qt.AscendingOrder )
             return True
 
@@ -291,7 +291,7 @@ class EmailListDialog( QDialogWithPrinting ):
             self.hide( )
 
         def checkValidEmail( self, replaceName = True ):
-            _, checkEmail = email.utils.parseaddr( self.emailLineEdit.text( ) )
+            _, checkEmail = parseaddr( self.emailLineEdit.text( ) )
             if checkEmail == '':
                 self.emailLineEdit.setText( '' )
                 return False
@@ -309,7 +309,7 @@ class EmailListDialog( QDialogWithPrinting ):
         def addEmail( self ):
             checkEmail = ''
             if self.checkValidEmail( replaceName = False ):
-                _, checkEmail = email.utils.parseaddr( self.emailLineEdit.text( ) )
+                _, checkEmail = parseaddr( self.emailLineEdit.text( ) )
             self.checkValidName( )
             checkName = self.nameLineEdit.text( ).strip( )
             self.statusSignal.emit(( checkName, checkEmail ))
@@ -336,6 +336,10 @@ class EmailListDialog( QDialogWithPrinting ):
         #
         self.emailListAddEmailName.statusSignal.connect(
             self.emailListTableModel.addEmail )
+        hideAction = QAction( self )
+        hideAction.setShortcut( 'Ctrl+W' )
+        hideAction.triggered.connect( self.hide )
+        self.addAction( hideAction )
         #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
@@ -404,6 +408,10 @@ class FromDialog( QDialogWithPrinting ):
         self.emailLineEdit.returnPressed.connect( self.setValidEmail )
         self.nameLineEdit.returnPressed.connect( self.setValidName )
         self.setCompleters( )
+        hideAction = QAction( self )
+        hideAction.setShortcut( 'Ctrl+W' )
+        hideAction.triggered.connect( self.actuallyCloseHide )
+        self.addAction( hideAction )
         #
         self.setFixedWidth( 300 )
         self.hide( )
@@ -425,13 +433,16 @@ class FromDialog( QDialogWithPrinting ):
         self.nameLineEdit.setCompleter( QCompleter( sorted( self.parent.allData[ 'emails dict' ] ) ) )
 
     def closeEvent( self, evt ):
+        self.actuallyCloseHide( )
+
+    def actuallyCloseHide( self ):
         self.hide( )
         self.setValidEmail( False )
         self.setValidName( False )
         self.parent.emailAndNameChangedSignal.emit( )
 
     def setValidEmail( self, emit = True ):
-        _, checkEmail = email.utils.parseaddr( self.emailLineEdit.text( ) )
+        _, checkEmail = parseaddr( self.emailLineEdit.text( ) )
         if checkEmail == '':
             validEmail = self.parent.allData[ 'from email' ]
             self.emailLineEdit.setText( validEmail )
@@ -467,7 +478,7 @@ class FromDialog( QDialogWithPrinting ):
         if validEmail == '': return ''
         emailAndName = validEmail
         if validName == '': return emailAndName
-        return email.utils.formataddr( ( validName, validEmail ) )
+        return formataddr( ( validName, validEmail ) )
 
 class ConvertWidget( QDialogWithPrinting ):
     emailAndNameChangedSignal = pyqtSignal( )
@@ -477,7 +488,8 @@ class ConvertWidget( QDialogWithPrinting ):
         self.setWindowTitle( 'RESTRUCTURED TEXT CONVERTER' )
         self.name = 'RESTRUCTURED TEXT'
         self.form = 'rst'
-        self.suffix = 'rst' 
+        self.suffix = 'rst'
+        self.verify = verify
         self.setStyleSheet("""
         QWidget {
         font-family: Consolas;
@@ -506,8 +518,8 @@ class ConvertWidget( QDialogWithPrinting ):
         logging.info( 'took %0.3f seconds to find all %d Google contacts.' % (
             time.time( ) - time0, len( self.allData[ 'emails dict' ] ) ) )
         #
-        self.statusDialog = QLabel( )
-        self.rowColDialog = QLabel( )
+        self.statusLabel = QLabel( )
+        self.rowColLabel = QLabel( )
         self.textOutput = QPlainTextEdit( )
         self.textOutput.setTabStopWidth( 2 * qfm.width( 'A' ) )
         #
@@ -536,6 +548,8 @@ class ConvertWidget( QDialogWithPrinting ):
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
         #
+        ## top widget
+        ## email buttons
         topWidget = QWidget( )
         topLayout = QGridLayout( )
         topWidget.setLayout( topLayout )
@@ -545,61 +559,131 @@ class ConvertWidget( QDialogWithPrinting ):
         topLayout.addWidget( self.bccButton, 0, 3, 1, 1 )
         topLayout.addWidget( self.sendButton, 0, 4, 1, 1 )
         #
+        ## editing buttons
         topLayout.addWidget( self.convertButton, 1, 0, 1, 1 )
         topLayout.addWidget( self.saveButton, 1, 1, 1, 1 )
         topLayout.addWidget( self.loadButton, 1, 2, 1, 1 )
         topLayout.addWidget( self.pngShowButton, 1, 3, 1, 1 )
         #
+        ## email subject and from widgets
         topLayout.addWidget( QLabel( 'FROM:' ), 2, 0, 1, 1 )
         topLayout.addWidget( self.fromLabel, 2, 1, 1, 4 )
         topLayout.addWidget( QLabel( 'SUBJECT:' ), 3, 0, 1, 1 )
         topLayout.addWidget( self.subjLineEdit, 3, 1, 1, 4 )
-        #
         myLayout.addWidget( topWidget )
+        #
+        ## middle widget, reStructuredText output
         myLayout.addWidget( self.textOutput )
+        #
+        ## bottom widget
         botWidget = QWidget( )
         botLayout = QHBoxLayout( )
         botWidget.setLayout( botLayout )
-        botLayout.addWidget( self.rowColDialog )
-        botLayout.addWidget( self.statusDialog )
+        botLayout.addWidget( self.rowColLabel )
+        botLayout.addWidget( self.statusLabel )
         myLayout.addWidget( botWidget )
         #
         self.fromButton.clicked.connect( self.fromDialog.show )
         self.toButton.clicked.connect( self.toEmailListDialog.show )
         self.ccButton.clicked.connect( self.ccEmailListDialog.show )
         self.bccButton.clicked.connect( self.bccEmailListDialog.show )
+        self.sendButton.clicked.connect( self.sendEmail )
+        #
         self.emailAndNameChangedSignal.connect( self.changeEmailAndName )
         self.convertButton.clicked.connect( self.printHTML )
+        #
+        ## save reStructuredText file
         self.saveButton.clicked.connect( self.saveFileName )
-        self.loadButton.clicked.connect( self.loadFileName )
-        self.pngShowButton.clicked.connect( self.pngWidget.show )
-        self.textOutput.cursorPositionChanged.connect( self.showRowCol )
-        self.subjLineEdit.returnPressed.connect( self.fixSubject )
         saveAction = QAction( self )
         saveAction.setShortcut( 'Ctrl+S' )
         saveAction.triggered.connect( self.saveFileName )
         self.addAction( saveAction )
         #
+        ## load reStructuredText file
+        self.loadButton.clicked.connect( self.loadFileName )
+        openAction = QAction( self )
+        openAction.setShortcut( 'Ctrl+O' )
+        openAction.triggered.connect( self.loadFileName )
+        self.addAction( openAction )
+        #
+        ## open PNG files
+        self.pngShowButton.clicked.connect( self.pngWidget.show )
+        self.textOutput.cursorPositionChanged.connect( self.showRowCol )
+        self.subjLineEdit.returnPressed.connect( self.fixSubject )
+        #
+        ## geometry stuff and final initialization
         self.setFixedHeight( 700 )
         self.setFixedWidth( 600 )
 
+    def sendEmail( self ):
+        myString = self.getTextOutput( )
+        htmlString = convertString( myString )
+        if len( htmlString.strip( ) ) == 0:
+            self.statusLabel.setText( 'OBVIOUSLY NO HTML. PLEASE FIX.' )
+            return
+        subject = self.subjLineEdit.text( ).strip( )
+        if len( subject ) == 0:
+            self.statusLabel.setText( 'NO SUBJECT. PLEASE FIX.' )
+            return
+        fullEmailString = formataddr( (
+            self.allData[ 'from name' ], self.allData[ 'from email' ] ) )
+        if fullEmailString == '':
+            self.statusLabel.setText( 'NO FROM EMAIL ADDRESS. PLEASE FIX.' )
+            return
+        to_emails = set( self.allData[ 'to' ] )
+        cc_emails = set( self.allData[ 'cc' ] )
+        bcc_emails= set( self.allData[ 'bcc' ] ) | set([ fullEmailString ])
+        logging.info( 'to_emails: %s.' % to_emails )
+        logging.info( 'cc_emails: %s.' % cc_emails )
+        logging.info( 'bcc_emails: %s.' % bcc_emails )
+        logging.info( 'htmlString: %s.' % htmlString )
+        if len( to_emails | cc_emails ) == 0:
+            self.statusLabel.setText( 'NO TO OR CC EMAIL ADDRESSES. PLEASE FIX.' )
+            return
+        #
+        ## now send the email out
+        time0 = time.time( )
+        num_emails = len( to_emails | cc_emails | bcc_emails )
+        howdy_email.send_collective_email_full(
+            htmlString, subject, fullEmailString,
+            to_emails, cc_emails, bcc_emails, verify = self.verify )
+        logging.info( 'sent out %d TO/CC/BCC emails in %0.3f seconds.' % (
+            num_emails, time.time( ) - time0 ) )
+        self.statusLabel.setText( 'SUCCESSFULLY SENT OUT EMAILS.' )
+        
     def changeEmailAndName( self ):
         self.fromLabel.setText( self.fromDialog.getEmailAndName( ) )
 
     def fixSubject( self ):
+        """
+        strips out the empty characters within the subject line.
+        """
         self.subjLineEdit.setText( self.subjLineEdit.text( ).strip( ) )
 
     def showRowCol( self ):
+        """
+        shows the row number and column number of the text cursor in the ``textOutput`` object's canvas.
+        """
         cursor = self.textOutput.textCursor( )
         lineno = cursor.blockNumber( ) + 1
         colno  = cursor.columnNumber( ) + 1
-        self.rowColDialog.setText( '(%d, %d)' % ( lineno, colno ) )
+        self.rowColLabel.setText( '(%d, %d)' % ( lineno, colno ) )
 
     #
     def saveFileName( self ):
+        """
+        This saves the reStructuredText_ that is currently within the ``textOutput`` object's canvas.
+
+        .. seealso::
+        
+           * :py:meth:`loadFileName <howdy.core.core_texts_gui.ConvertWidget.loadFileName>`.
+           * :py:meth:`getTextOutput <howdy.core.core_texts_gui.CovertWidget.getTextOutput>`.
+
+        .. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
+        """
         fname, _ = QFileDialog.getSaveFileName(
             self, 'Save %s' % self.name,
-            os.path.expanduser( '~' ),
+            os.getcwd( ),
             filter = '*.%s' % self.suffix.lower( ) )
         if not fname.lower().endswith('.%s' % self.suffix.lower( ) ): return
         if len( os.path.basename( fname ) ) == 0: return
@@ -608,9 +692,17 @@ class ConvertWidget( QDialogWithPrinting ):
                 openfile.write( '%s\n' % self.getTextOutput( ) )
 
     def loadFileName( self ):
+        """
+        This loads a reStructuredText_ file (ends with ``.rst``) into the ``textOutput`` object's canvas.
+
+        .. seealso::
+        
+           * :py:meth:`saveFileName <howdy.core.core_texts_gui.ConvertWidget.saveFileName>`.
+           * :py:meth:`getTextOutput <howdy.core.core_texts_gui.CovertWidget.getTextOutput>`.
+        """
         fname, _ = QFileDialog.getOpenFileName(
             self, 'Open %s' % self.name,
-            os.path.expanduser( '~' ),
+            os.getcwd( ),
             filter = '*.%s' % self.suffix.lower( ) )
         if not fname.lower().endswith('.%s' % self.suffix.lower( ) ): return
         if len( os.path.basename( fname ) ) == 0: return
@@ -618,15 +710,21 @@ class ConvertWidget( QDialogWithPrinting ):
             myString = open( fname, 'r' ).read( )
             self.textOutput.setPlainText( myString )
         
-
     def getTextOutput( self ):
+        """
+        :returns: the ``textOutput`` object's canvas as a :py:class:`string <str>`.
+        :rtype: str
+        """
         return r"%s" % self.textOutput.toPlainText( ).strip( )
 
     def printHTML( self ):
-        self.statusDialog.setText( '' )
+        """
+        launches a new :py:class:`HtmlView <howdy.core.core_text_gui.HtmlView>` that contains the rich HTML view of the reStructuredText_ that lives within the ``textOutput`` object's canvas.
+        """
+        self.statusLabel.setText( '' )
         myString = self.getTextOutput( )
         if not checkValidConversion( myString ):
-            self.statusDialog.setText(
+            self.statusLabel.setText(
                 'COULD NOT CONVERT FROM %s TO HTML' % form.upper( ) )
             return
         #
@@ -667,5 +765,6 @@ class ConvertWidget( QDialogWithPrinting ):
         #
         qte.setSizePolicy( QSizePolicy.Expanding, QSizePolicy.Expanding )
         qdl.setSizePolicy( QSizePolicy.Expanding, QSizePolicy.Expanding )
+        self.statusLabel.setText( 'SUCCESS' )
         qdl.show( )
         qdl.exec_( )

@@ -5,7 +5,7 @@
 ================================================
 This is documentation for the Howdy TV library visualization GUI, |howdy_tv_gui|.
 
-.. |howdy_tv_gui_icon| image:: howdy-tv-figs/howdy_tv_gui_SQUARE.png
+.. |howdy_tv_gui_icon| image:: howdy-tv-figs/howdy_tv_gui_SQUARE_VECTA.svg
    :width: 50
    :align: middle
 

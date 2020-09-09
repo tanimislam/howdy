@@ -143,7 +143,7 @@ Public access to the MusicBrainz service requires a `valid user agent <https://m
 
 The email address is taken from the login email for your Plex_ account. You can *probably* put nearly any non-empty string into the *APP VERSION* and *APP NAME* dialog boxes.
 
-.. |howdy_config_gui_icon| image:: howdy-config-gui-figures/howdy_config_gui_SQUARE.png
+.. |howdy_config_gui_icon| image:: howdy-config-gui-figures/howdy_config_gui_SQUARE_VECTA.svg
    :width: 50
    :align: middle
 

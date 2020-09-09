@@ -117,13 +117,13 @@ I have included this :download:`example restructuredText file </_static/howdy_cr
    
 .. |howdy_create_texts| replace:: ``howdy_create_texts``
 
-.. |howdy_create_texts_icon| image:: gui-tools-figures/howdy_create_texts_SQUARE.png
+.. |howdy_create_texts_icon| image:: gui-tools-figures/howdy_create_texts_SQUARE_VECTA.svg
    :width: 50
    :align: middle
 
 .. |howdy_core_gui| replace:: ``howdy_core_gui``
 
-.. |howdy_core_gui_icon| image:: gui-tools-figures/howdy_core_gui_SQUARE.png
+.. |howdy_core_gui_icon| image:: gui-tools-figures/howdy_core_gui_SQUARE_VECTA.svg
    :width: 50
    :align: middle
 

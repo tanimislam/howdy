@@ -22,7 +22,7 @@ def main( ):
     app = returnQAppWithFonts( )
     app.setAttribute(Qt.AA_UseHighDpiPixmaps)
     icn = QIcon( os.path.join(
-        resourceDir, 'icons', 'howdy_create_texts_SQUARE.png' ) )
+        resourceDir, 'icons', 'howdy_create_texts_SQUARE_VECTA.svg' ) )
     app.setWindowIcon( icn )
     qtmodern.styles.dark( app )
     cw = core_texts_gui.ConvertWidget( verify = args.do_verify )

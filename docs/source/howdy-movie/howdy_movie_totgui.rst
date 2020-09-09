@@ -5,7 +5,7 @@
 ================================================
 This is documentation for the Howdy GUI used to visualize your Plex_ movie library and to download new movies, |howdy_movie_totgui|.
 
-.. |howdy_movie_totgui_icon| image:: howdy-movie-figs/howdy_movie_gui_SQUARE.png
+.. |howdy_movie_totgui_icon| image:: howdy-movie-figs/howdy_movie_gui_SQUARE_VECTA.svg
    :width: 50
    :align: middle
 

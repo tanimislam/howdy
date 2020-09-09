@@ -145,26 +145,26 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_. The |c
 .. _fbs: https://www.learnpyqt.com/courses/packaging-and-distribution/packaging-pyqt5-apps-fbs
 .. _Howdy: https://howdy.readthedocs.io
 
-.. |howdy_config_gui_icon| image:: howdy-config/howdy-config-gui-figures/howdy_config_gui_SQUARE.png
+.. |howdy_config_gui_icon| image:: howdy-config/howdy-config-gui-figures/howdy_config_gui_SQUARE_VECTA.svg
    :width: 50
    :align: middle
 
-.. |howdy_core_gui_icon| image:: howdy-core/gui_tools/gui-tools-figures/howdy_core_gui_SQUARE.png
+.. |howdy_core_gui_icon| image:: howdy-core/gui_tools/gui-tools-figures/howdy_core_gui_SQUARE_VECTA.svg
    :width: 50
    :align: middle
 
-.. |howdy_create_texts_icon| image:: howdy-core/gui_tools/gui-tools-figures/howdy_create_texts_SQUARE.png
+.. |howdy_create_texts_icon| image:: howdy-core/gui_tools/gui-tools-figures/howdy_create_texts_SQUARE_VECTA.svg
    :width: 50
    :align: middle
 
-.. |howdy_tv_gui_icon| image:: howdy-tv/howdy-tv-figs/howdy_tv_gui_SQUARE.png
+.. |howdy_tv_gui_icon| image:: howdy-tv/howdy-tv-figs/howdy_tv_gui_SQUARE_VECTA.svg
    :width: 50
    :align: middle
 
-.. |howdy_movie_totgui_icon| image:: howdy-movie/howdy-movie-figs/howdy_movie_gui_SQUARE.png
+.. |howdy_movie_totgui_icon| image:: howdy-movie/howdy-movie-figs/howdy_movie_gui_SQUARE_VECTA.svg
    :width: 50
    :align: middle
 	   
-.. |howdy_email_gui_icon| image:: howdy-email/howdy-email-gui-figs/howdy_email_gui_SQUARE.png
+.. |howdy_email_gui_icon| image:: howdy-email/howdy-email-gui-figs/howdy_email_gui_SQUARE_VECTA.svg
    :width: 50
    :align: middle

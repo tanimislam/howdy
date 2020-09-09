@@ -1310,6 +1310,11 @@ class HowdyConfigGUI( QDialogWithPrinting ):
         self.credWidget = HowdyConfigCredWidget( self, verify = verify )
         self.loginWidget= HowdyConfigLoginWidget( self, verify = verify )
         self.musicWidget= HowdyConfigMusicWidget( self, verify = verify )
+        self.setStyleSheet("""
+        QWidget {
+        font-family: Consolas;
+        font-size: 11;
+        }""" )
         #
         ##
         self.tm = HowdyConfigGUI.HowdyConfigTableModel( self )

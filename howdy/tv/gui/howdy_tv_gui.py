@@ -17,7 +17,7 @@ warnings.simplefilter("ignore")
 
 def mainSub( info = False, doLocal = True, doLarge = False, verify = True ):
     app = QApplication([])
-    icn = QIcon( os.path.join( resourceDir, 'icons', 'howdy_tv_gui_SQUARE.png' ) )
+    icn = QIcon( os.path.join( resourceDir, 'icons', 'howdy_tv_gui_SQUARE_VECTA.svg' ) )
     app.setWindowIcon( icn )
     qtmodern.styles.dark( app )
     logger = logging.getLogger( )

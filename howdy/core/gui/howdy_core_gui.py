@@ -33,7 +33,7 @@ def main( ):
     app = QApplication([])
     app.setAttribute(Qt.AA_UseHighDpiPixmaps)
     icn = QIcon( os.path.join(
-        resourceDir, 'icons', 'howdy_core_gui_SQUARE.png' ) )
+        resourceDir, 'icons', 'howdy_core_gui_SQUARE_VECTA.svg' ) )
     app.setWindowIcon( icn )
     qtmodern.styles.dark( app )
     #

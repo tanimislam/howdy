@@ -17,7 +17,7 @@ def mainSub(info = False, doLocal = True, doLarge = False, verify = True):
     app = returnQAppWithFonts( )
     app.setAttribute(Qt.AA_UseHighDpiPixmaps)
     icn = QIcon( os.path.join(
-        resourceDir, 'icons', 'howdy_movie_gui_SQUARE.png' ) )
+        resourceDir, 'icons', 'howdy_movie_gui_SQUARE_VECTA.svg' ) )
     app.setWindowIcon( icn )
     qtmodern.styles.dark( app )
     logger = logging.getLogger( )

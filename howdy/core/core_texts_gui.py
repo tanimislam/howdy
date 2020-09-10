@@ -256,7 +256,12 @@ class EmailListDialog( QDialogWithPrinting ):
                     lambda index: index.column( ) == 0,
                     self.selectionModel( ).selectedIndexes( ) ) )
             index_valid = self.proxy.mapToSource( index_valid_proxy )
-            return index_valid.row( )        
+            return index_valid.row( )
+
+        def resizeTableColumns( self, newsize ):
+            width = newsize.width( )
+            self.setColumnWidth( 0, int( 0.5 * width ) )
+            self.setColumnWidth( 1, int( 0.5 * width ) )
     
     class EmailListAddEmailName( QDialogWithPrinting ):
 
@@ -349,6 +354,7 @@ class EmailListDialog( QDialogWithPrinting ):
         #
         self.setFixedWidth( 600 )
         self.setFixedHeight( 600 )
+        self.emailListTableView.resizeTableColumns( self.size( ) )
         self.hide( )
 
 class FromDialog( QDialogWithPrinting ):
@@ -485,7 +491,7 @@ class ConvertWidget( QDialogWithPrinting ):
     
     def __init__( self, verify = True ):
         super( ConvertWidget, self ).__init__( None, doQuit = True, isIsolated = True )
-        self.setWindowTitle( 'RESTRUCTURED TEXT CONVERTER' )
+        self.setWindowTitle( 'RESTRUCTURED TEXT EMAILER' )
         self.name = 'RESTRUCTURED TEXT'
         self.form = 'rst'
         self.suffix = 'rst'
@@ -530,17 +536,12 @@ class ConvertWidget( QDialogWithPrinting ):
         #
         self.fromButton = QPushButton( 'FROM' )
         self.toButton = QPushButton( 'TO' )
-        self.ccButton = QPushButton( 'CC' )
-        self.bccButton = QPushButton( 'BCC' )
+        #
+        self.convertButton = QPushButton( 'CONVERT' )
         self.sendButton = QPushButton( 'SEND' )
         #
         self.fromLabel = QLabel( '' )
         self.subjLineEdit = QLineEdit( '' )
-        #
-        self.convertButton = QPushButton( 'CONVERT' )
-        self.saveButton = QPushButton( 'SAVE' )
-        self.loadButton = QPushButton( 'LOAD' )
-        self.pngShowButton = QPushButton( 'SHOW PNGS' )
         #
         self.pngWidget = email_basegui.PNGWidget( self )
         self.pngWidget.hide( )
@@ -553,23 +554,18 @@ class ConvertWidget( QDialogWithPrinting ):
         topWidget = QWidget( )
         topLayout = QGridLayout( )
         topWidget.setLayout( topLayout )
-        topLayout.addWidget( self.fromButton, 0, 0, 1, 1 )
-        topLayout.addWidget( self.toButton, 0, 1, 1, 1 )
-        topLayout.addWidget( self.ccButton, 0, 2, 1, 1 )
-        topLayout.addWidget( self.bccButton, 0, 3, 1, 1 )
-        topLayout.addWidget( self.sendButton, 0, 4, 1, 1 )
+        topLayout.addWidget( self.fromButton, 0, 0, 1, 3 )
+        topLayout.addWidget( self.toButton, 0, 3, 1, 3 )
         #
         ## editing buttons
-        topLayout.addWidget( self.convertButton, 1, 0, 1, 1 )
-        topLayout.addWidget( self.saveButton, 1, 1, 1, 1 )
-        topLayout.addWidget( self.loadButton, 1, 2, 1, 1 )
-        topLayout.addWidget( self.pngShowButton, 1, 3, 1, 1 )
+        topLayout.addWidget( self.convertButton, 1, 0, 1, 3 )
+        topLayout.addWidget( self.sendButton, 1, 3, 1, 3 )
         #
         ## email subject and from widgets
         topLayout.addWidget( QLabel( 'FROM:' ), 2, 0, 1, 1 )
-        topLayout.addWidget( self.fromLabel, 2, 1, 1, 4 )
+        topLayout.addWidget( self.fromLabel, 2, 1, 1, 5 )
         topLayout.addWidget( QLabel( 'SUBJECT:' ), 3, 0, 1, 1 )
-        topLayout.addWidget( self.subjLineEdit, 3, 1, 1, 4 )
+        topLayout.addWidget( self.subjLineEdit, 3, 1, 1, 5 )
         myLayout.addWidget( topWidget )
         #
         ## middle widget, reStructuredText output
@@ -585,35 +581,60 @@ class ConvertWidget( QDialogWithPrinting ):
         #
         self.fromButton.clicked.connect( self.fromDialog.show )
         self.toButton.clicked.connect( self.toEmailListDialog.show )
-        self.ccButton.clicked.connect( self.ccEmailListDialog.show )
-        self.bccButton.clicked.connect( self.bccEmailListDialog.show )
         self.sendButton.clicked.connect( self.sendEmail )
-        #
-        self.emailAndNameChangedSignal.connect( self.changeEmailAndName )
         self.convertButton.clicked.connect( self.printHTML )
         #
+        self.emailAndNameChangedSignal.connect( self.changeEmailAndName )
+        #
         ## save reStructuredText file
-        self.saveButton.clicked.connect( self.saveFileName )
         saveAction = QAction( self )
         saveAction.setShortcut( 'Ctrl+S' )
         saveAction.triggered.connect( self.saveFileName )
         self.addAction( saveAction )
         #
         ## load reStructuredText file
-        self.loadButton.clicked.connect( self.loadFileName )
         openAction = QAction( self )
         openAction.setShortcut( 'Ctrl+O' )
         openAction.triggered.connect( self.loadFileName )
         self.addAction( openAction )
         #
-        ## open PNG files
-        self.pngShowButton.clicked.connect( self.pngWidget.show )
+        ## interactivity -- show row and column of text cursor in editor, and once press enter strip subject string
         self.textOutput.cursorPositionChanged.connect( self.showRowCol )
         self.subjLineEdit.returnPressed.connect( self.fixSubject )
+        #
+        ## make popup menu
+        self.popupMenu = self._makePopupMenu( )
         #
         ## geometry stuff and final initialization
         self.setFixedHeight( 700 )
         self.setFixedWidth( 600 )
+
+    def _makePopupMenu( self ):
+        menu = QMenu( self )
+        #
+        menu.addSection( 'SENDING ACTIONS' )
+        ccAction = QAction( 'CC', self )
+        ccAction.triggered.connect( self.ccEmailListDialog.show )
+        menu.addAction( ccAction )
+        bccAction= QAction( 'BCC', self )
+        bccAction.triggered.connect( self.bccEmailListDialog.show )
+        menu.addAction(bccAction )
+        #
+        menu.addSection( 'EMAIL ACTIONS' )
+        pngAction = QAction( 'SHOW PNGS', self )
+        pngAction.triggered.connect( self.pngWidget.show )
+        menu.addAction( pngAction )
+        loadAction = QAction( 'LOAD RST', self )
+        loadAction.triggered.connect( self.loadFileName )
+        menu.addAction( loadAction )
+        saveAction = QAction( 'SAVE RST', self )
+        saveAction.triggered.connect( self.saveFileName )
+        menu.addAction( saveAction )
+        #
+        return menu
+
+    def contextMenuEvent( self, evt ):
+        self.popupMenu.popup( QCursor.pos( ) )
 
     def sendEmail( self ):
         myString = self.getTextOutput( )
@@ -682,14 +703,12 @@ class ConvertWidget( QDialogWithPrinting ):
         .. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
         """
         fname, _ = QFileDialog.getSaveFileName(
-            self, 'Save %s' % self.name,
-            os.getcwd( ),
-            filter = '*.%s' % self.suffix.lower( ) )
-        if not fname.lower().endswith('.%s' % self.suffix.lower( ) ): return
+            self, 'Save ReStructuredText File', os.getcwd( ),
+            filter = '*.rst' )
+        if not fname.lower().endswith('.rst' ): return
         if len( os.path.basename( fname ) ) == 0: return
-        if fname.lower( ).endswith( '.%s' % self.suffix.lower( ) ):
-            with open( fname, 'w' ) as openfile:
-                openfile.write( '%s\n' % self.getTextOutput( ) )
+        with open( fname, 'w' ) as openfile:
+            openfile.write( '%s\n' % self.getTextOutput( ) )
 
     def loadFileName( self ):
         """
@@ -701,14 +720,12 @@ class ConvertWidget( QDialogWithPrinting ):
            * :py:meth:`getTextOutput <howdy.core.core_texts_gui.CovertWidget.getTextOutput>`.
         """
         fname, _ = QFileDialog.getOpenFileName(
-            self, 'Open %s' % self.name,
-            os.getcwd( ),
-            filter = '*.%s' % self.suffix.lower( ) )
-        if not fname.lower().endswith('.%s' % self.suffix.lower( ) ): return
+            self, 'Open ReStructuredText File', os.getcwd( ),
+            filter = '*.rst' )
+        if not fname.lower().endswith('.rst' ): return
         if len( os.path.basename( fname ) ) == 0: return
-        if fname.lower( ).endswith( '.%s' % self.suffix.lower( ) ):
-            myString = open( fname, 'r' ).read( )
-            self.textOutput.setPlainText( myString )
+        myString = open( fname, 'r' ).read( )
+        self.textOutput.setPlainText( myString )
         
     def getTextOutput( self ):
         """

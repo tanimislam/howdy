@@ -1,5 +1,5 @@
-import os, sys, base64, httplib2, numpy, glob
-import hashlib, requests, io, datetime
+import os, sys, base64, httplib2, numpy, glob, traceback
+import hashlib, requests, io, datetime, logging
 import pathos.multiprocessing as multiprocessing
 from googleapiclient.discovery import build
 from PIL import Image
@@ -49,8 +49,9 @@ def send_email_lowlevel( msg, email_service = None, verify = True ):
     if email_service is None: email_service = get_email_service( verify = verify )
     try: message = email_service.users( ).messages( ).send( userId='me', body = data ).execute( )
     except Exception as e:
-        print('here is exception: %s' % str( e ) )
-        print('problem with %s' % msg['To'] )
+        traceback.print_exc(file=sys.stdout)
+        logging.error('here is exception: %s' % str( e ) )
+        logging.error('problem with %s' % msg['To'] )
     
 def send_email_localsmtp( msg ):
     """

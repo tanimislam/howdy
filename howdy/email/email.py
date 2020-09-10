@@ -253,10 +253,10 @@ def send_individual_email_full(
     msg['From'] = fromEmail
     msg['Subject'] = subject
     if name is None:
-        msg['To'] = email
+        msg['To'] = emailAddress
         htmlstring = mainHTML
     else:
-        msg['To'] = '%s <%s>' % ( name, email )
+        msg['To'] = formataddr( ( name, emailAddress ) )
         firstname = name.split()[0].strip()
         htmlstring = re.sub( 'Hello Friend,', 'Hello %s,' % firstname, mainHTML )
     body = MIMEText( htmlstring, 'html', 'utf-8' )

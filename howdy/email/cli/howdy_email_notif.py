@@ -1,4 +1,5 @@
 import os, datetime, logging, time
+from email.utils import formataddr
 from argparse import ArgumentParser
 #
 from howdy.core import core
@@ -18,6 +19,7 @@ def main( ):
                       ( 'Plex notification for %s.' % date_now.strftime( '%B %d, %Y' ) ) )
     parser.add_argument('--body', dest='body', action='store', type=str, default = 'This is a test.',
                       help = 'Body of the email to be sent. Default is "This is a test."')
+    
     args = parser.parse_args( )
     logger = logging.getLogger( )
     if args.do_debug: logger.setLevel( level = logging.DEBUG )
@@ -52,10 +54,10 @@ def main( ):
     time0 = time.time( )
     if args.do_test:
         email.send_individual_email_full(
-            htmlString, args.subject, emailAddress, name = emailName )
+            htmlString, args.subject, emailAddress, name = emailName, verify = False )
         print( 'processed test email in %0.3f seconds.' % ( time.time( ) - time0 ) )
     else:
-        email_service = get_email_service( )
+        email_service = get_email_service( verify = False )
         def _send_email_perproc( input_tuple ):
             name, fullEmail = input_tuple
             email.send_individual_email_full(

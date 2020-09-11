@@ -5,7 +5,8 @@ from PyQt5.QtCore import Qt
 from argparse import ArgumentParser
 #
 from howdy import resourceDir
-from howdy.core import core_texts_gui, returnQAppWithFonts
+from howdy.core import returnQAppWithFonts
+from howdy.email import email_demo_gui
 #
 warnings.simplefilter( 'ignore' )
 
@@ -22,10 +23,10 @@ def main( ):
     app = returnQAppWithFonts( )
     app.setAttribute(Qt.AA_UseHighDpiPixmaps)
     icn = QIcon( os.path.join(
-        resourceDir, 'icons', 'howdy_create_texts_SQUARE_VECTA.svg' ) )
+        resourceDir, 'icons', 'howdy_email_demo_gui_SQUARE_VECTA.svg' ) )
     app.setWindowIcon( icn )
     qtmodern.styles.dark( app )
-    cw = core_texts_gui.ConvertWidget( verify = args.do_verify )
-    mw = qtmodern.windows.ModernWindow( cw )
+    hedg = email_demo_gui.HowdyEmailDemoGUI( verify = args.do_verify )
+    mw = qtmodern.windows.ModernWindow( hedg )
     mw.show( )
     result = app.exec_( )

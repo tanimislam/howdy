@@ -15,7 +15,6 @@ This documentation is organized into sections on :ref:`command line tools <Howdy
 
 Howdy Core TODO
 ------------------
-* Enhance :ref:`howdy_create_texts_label` to allow for the more versatile reStructuredText_ to be converted into HTML documents. |cbox|
 
 * Implement a PyQt5_ GUI to manipulate torrents on the remote Deluge_ server -- something much reduced from the full functionality of the `Deluge WebUI`_.
 

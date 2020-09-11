@@ -1,7 +1,6 @@
 import glob, os, sys, textwrap, logging, time
 from email.utils import parseaddr, formataddr
 from itertools import chain
-from docutils.examples import html_parts
 from bs4 import BeautifulSoup
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -9,69 +8,16 @@ from PyQt5.QtGui import *
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtNetwork import QNetworkAccessManager
 #
-from howdy.core import returnQAppWithFonts, QDialogWithPrinting
+from howdy.core import (
+    returnQAppWithFonts, QDialogWithPrinting, check_valid_RST,
+    convert_string_RST, HtmlView )
 from howdy.email import email_basegui, get_all_email_contacts_dict
 from howdy.email import email as howdy_email
 
-def checkValidConversion( myString ):
-    try:
-        html_body = html_parts( myString )[ 'whole' ]
-        html = BeautifulSoup( html_body, 'lxml' )
-        return html.prettify( )
-        return True
-    except RuntimeError as e:
-        return False
-
-def convertString( myString ):
-    try:
-        html_body = html_parts( myString )[ 'whole' ]
-        html = BeautifulSoup( html_body, 'lxml' )
-        return html.prettify( )
-    except RuntimeError as e:
-        print( "Error, could not convert %s of format %s. Error = %s." % (
-            myString, form.lower( ), str( e ) ) )
-        return None
-
-class HtmlView( QWebEngineView ):
-    def __init__( self, parent, htmlString ):
-        super( HtmlView, self ).__init__( parent )
-        self.initHtmlString = htmlString
-        self.setHtml( self.initHtmlString )
-        #channel = QWebChannel( self )
-        #self.page( ).setWebChannel( channel )
-        #channel.registerObject( 'thisFormula', self )
-        #
-        # self.setHtml( myhtml )
-        #self.loadFinished.connect( self.on_loadFinished )
-        #self.initialized = False
-        #
-        self._setupActions( )
-        self._manager = QNetworkAccessManager( self )
-
-    def _setupActions( self ):
-        backAction = QAction( self )
-        backAction.setShortcut( 'Shift+Ctrl+1' )
-        backAction.triggered.connect( self.back )
-        self.addAction( backAction )
-        forwardAction = QAction( self )
-        forwardAction.setShortcut( 'Shift+Ctrl+2' )
-        forwardAction.triggered.connect( self.forward )
-        self.addAction( forwardAction )
-
-    def reset( self ):
-        self.setHtml( self.initHtmlString )
-        
-    def on_loadFinished( self ):
-        self.initialized = True
-
-    def waitUntilReady( self ):
-        if not self.initialized:
-            loop = QEventLoop( )
-            self.loadFinished.connect( loop.quit )
-            loop.exec_( )
-
 class EmailListDialog( QDialogWithPrinting ):
-
+    """
+    This PyQt5_ widget performs the 
+    """
     class EmailListDelegate( QItemDelegate ):
         def __init__( self, parent ):
             super( EmailListDialog.EmailListDelegate, self ).__init__( parent )
@@ -96,11 +42,21 @@ class EmailListDialog( QDialogWithPrinting ):
                 editor.setText( emailC.strip( ) )
             elif column == 1:
                 editor.setText( name.strip( ) )
+
+    class EmailListQSortFilterModel( QSortFilterProxyModel ):
+        def __init__( self, model ):
+            super( EmailListDialog.EmailListQSortFilterModel, self ).__init__( )
+            self.setSourceModel( model )
+            model.emitFilterChanged.connect( self.invalidateFilter )
+
+        def filterAcceptsRow( self, rowNumber, sourceParent ):
+            return self.sourceModel( ).filterRow( rowNumber )
     
     class EmailListTableModel( QAbstractTableModel ):
         _columnNames = [ 'EMAIL', 'NAME' ]
 
         statusSignal = pyqtSignal( str )
+        emitFilterChanged = pyqtSignal( )
         
         def __init__( self, parent ):
             super( EmailListDialog.EmailListTableModel, self ).__init__( parent )
@@ -108,6 +64,13 @@ class EmailListDialog( QDialogWithPrinting ):
             self.emails = [ ]
             self.names = [ ]
             self.key = parent.key
+            #
+            self.filterOnNamesOrEmails = QLineEdit( '' )
+            self.filterRegExp = QRegExp( '.', Qt.CaseInsensitive, QRegExp.RegExp )
+            self.filterOnNamesOrEmails.textChanged.connect( self.setFilterString )
+            self.showingEmailsLabel = QLabel( '' )
+            self.emitFilterChanged.connect( self.showNumberFilterEmails )
+            self.showNumberFilterEmails( )
 
         def columnCount( self, parent ):
             return 2
@@ -152,6 +115,7 @@ class EmailListDialog( QDialogWithPrinting ):
             self.parent.allData[ self.key ] = sorted(
                 map(formataddr, zip( self.names, self.emails ) ) )
             self.layoutChanged.emit( )
+            self.emitFilterChanged.emit( )
             self.sort( 1, Qt.AscendingOrder )
 
         def sort( self, ncol, order ):
@@ -160,7 +124,7 @@ class EmailListDialog( QDialogWithPrinting ):
             email_names_list = sorted(zip(self.emails, self.names), key = lambda tup: tup[1] )
             self.emails = list( list(zip(*email_names_list))[0] )
             self.names = list( list(zip(*email_names_list))[1] )
-            self.layoutChanged.emit( )            
+            self.layoutChanged.emit( )
 
         def removeEmailAtRow( self, row ):
             assert( row >= 0 and row < len( self.emails ) )
@@ -170,6 +134,7 @@ class EmailListDialog( QDialogWithPrinting ):
             self.parent.allData[ self.key ] = sorted(
                 map(formataddr, zip( self.names, self.emails ) ) )
             self.layoutChanged.emit( )
+            self.emitFilterChanged.emit( )
             self.sort( 1, Qt.AscendingOrder )
 
         def setData( self, index, val, role ):
@@ -194,26 +159,36 @@ class EmailListDialog( QDialogWithPrinting ):
             self.parent.allData[ self.key ] = sorted(
                 map(formataddr, zip( self.names, self.emails ) ) )
             self.sort( 1, Qt.AscendingOrder )
+            self.emitFilterChanged.emit( )
             return True
+        
+        def filterRow( self, rowNumber ):
+            assert( rowNumber >= 0 )
+            assert( rowNumber < len( self.emails ) )
+            name = self.names[ rowNumber ]
+            email = self.emails[ rowNumber ]
+            #
+            ## if not one of selected emails and ONLY show selected emails...
+            if self.filterRegExp.indexIn( name ) != -1: return True
+            if self.filterRegExp.indexIn( email ) != -1: return True
+            return False
 
-    class EmailListQSortFilterProxyModel( QSortFilterProxyModel ):
-        def __init__( self, parent, tm ):
-            super( EmailListDialog.EmailListQSortFilterProxyModel, self ).__init__( parent )
-            self.setSourceModel( tm )
+        def showNumberFilterEmails( self ):
+            num_emails = len(list(filter(self.filterRow, range(len(self.emails)))))
+            self.showingEmailsLabel.setText('SHOWING %d EMAILS' % num_emails )
 
-        def sort( self, ncol, order ):
-            self.sourceModel( ).sort( ncol, order )
-
-        def filterAcceptsRow( self, row, sourceParent ):
-            return True
+        def setFilterString( self, newString ):
+            mytext = newString.strip( )
+            if len( mytext ) == 0: mytext = '.'
+            self.filterRegExp = QRegExp( mytext, Qt.CaseInsensitive, QRegExp.RegExp )
+            self.emitFilterChanged.emit( )
             
     class EmailListTableView( QTableView ):
         def __init__( self, parent ):
-            super( EmailListDialog.EmailListTableView, self ).__init__( parent )
+            super( EmailListDialog.EmailListTableView, self ).__init__( )
             self.parent = parent
-            self.proxy = EmailListDialog.EmailListQSortFilterProxyModel(
-                self, parent.emailListTableModel )
-            self.setModel( self.proxy )
+            self.setModel( EmailListDialog.EmailListQSortFilterModel(
+                parent.emailListTableModel ) )
             self.setItemDelegate( EmailListDialog.EmailListDelegate( parent ) )
             #
             self.setShowGrid( True )
@@ -235,10 +210,16 @@ class EmailListDialog( QDialogWithPrinting ):
             toTopAction.setShortcut( 'Home' )
             toTopAction.triggered.connect( self.scrollToTop )
             self.addAction( toTopAction )
+            #
+            addAction = QAction( self )
+            addAction.setShortcut( 'Ctrl+A' )
+            addAction.triggered.connect( self.parent.emailListAddEmailName.show )
+            self.addAction( addAction )
 
         def contextMenuEvent( self, evt ):
             menu = QMenu( self )
             addAction = QAction( 'ADD EMAIL', menu )
+            addAction.setShortcut( 'Ctrl+A' )
             addAction.triggered.connect( self.parent.emailListAddEmailName.show )
             menu.addAction( addAction )
             if len( self.parent.emailListTableModel.emails ) != 0:
@@ -255,7 +236,7 @@ class EmailListDialog( QDialogWithPrinting ):
                 filter(
                     lambda index: index.column( ) == 0,
                     self.selectionModel( ).selectedIndexes( ) ) )
-            index_valid = self.proxy.mapToSource( index_valid_proxy )
+            index_valid = self.model( ).mapToSource( index_valid_proxy )
             return index_valid.row( )
 
         def resizeTableColumns( self, newsize ):
@@ -337,7 +318,7 @@ class EmailListDialog( QDialogWithPrinting ):
         self.nameCompleter = QCompleter( self.all_names )
         self.emailListAddEmailName = EmailListDialog.EmailListAddEmailName( self )
         self.emailListTableModel = EmailListDialog.EmailListTableModel( self )
-        self.emailListTableView = EmailListDialog.EmailListTableView( self )
+        emailListTableView = EmailListDialog.EmailListTableView( self )
         #
         self.emailListAddEmailName.statusSignal.connect(
             self.emailListTableModel.addEmail )
@@ -348,13 +329,21 @@ class EmailListDialog( QDialogWithPrinting ):
         #
         myLayout = QVBoxLayout( )
         self.setLayout( myLayout )
-        myLayout.addWidget( QLabel( 'FILTER BOX GOES HERE' ) )
-        myLayout.addWidget( self.emailListTableView )
-        myLayout.addWidget( QLabel( 'COMMENT BOX' ) )
+        #
+        topWidget = QWidget( )
+        topLayout = QHBoxLayout( )
+        topWidget.setLayout( topLayout )
+        topLayout.addWidget( QLabel( 'FILTER' ) )
+        topLayout.addWidget( self.emailListTableModel.filterOnNamesOrEmails )
+        myLayout.addWidget( topWidget)
+        #
+        myLayout.addWidget( emailListTableView )
+        #
+        myLayout.addWidget( self.emailListTableModel.showingEmailsLabel )
         #
         self.setFixedWidth( 600 )
         self.setFixedHeight( 600 )
-        self.emailListTableView.resizeTableColumns( self.size( ) )
+        emailListTableView.resizeTableColumns( self.size( ) )
         self.hide( )
 
 class FromDialog( QDialogWithPrinting ):
@@ -486,11 +475,11 @@ class FromDialog( QDialogWithPrinting ):
         if validName == '': return emailAndName
         return formataddr( ( validName, validEmail ) )
 
-class ConvertWidget( QDialogWithPrinting ):
+class HowdyEmailDemoGUI( QDialogWithPrinting ):
     emailAndNameChangedSignal = pyqtSignal( )
     
     def __init__( self, verify = True ):
-        super( ConvertWidget, self ).__init__( None, doQuit = True, isIsolated = True )
+        super( HowdyEmailDemoGUI, self ).__init__( None, doQuit = True, isIsolated = True )
         self.setWindowTitle( 'RESTRUCTURED TEXT EMAILER' )
         self.name = 'RESTRUCTURED TEXT'
         self.form = 'rst'
@@ -530,9 +519,9 @@ class ConvertWidget( QDialogWithPrinting ):
         self.textOutput.setTabStopWidth( 2 * qfm.width( 'A' ) )
         #
         self.fromDialog = FromDialog( self )
-        self.toEmailListDialog = EmailListDialog( self, 'to' )
-        self.ccEmailListDialog = EmailListDialog( self, 'cc' )
-        self.bccEmailListDialog = EmailListDialog( self, 'bcc' )
+        self.toEmailListDialog = EmailListDialog( self, key = 'to' )
+        self.ccEmailListDialog = EmailListDialog( self, key = 'cc' )
+        self.bccEmailListDialog = EmailListDialog( self, key = 'bcc' )
         #
         self.fromButton = QPushButton( 'FROM' )
         self.toButton = QPushButton( 'TO' )
@@ -638,7 +627,7 @@ class ConvertWidget( QDialogWithPrinting ):
 
     def sendEmail( self ):
         myString = self.getTextOutput( )
-        htmlString = convertString( myString )
+        htmlString = convert_string_RST( myString )
         if len( htmlString.strip( ) ) == 0:
             self.statusLabel.setText( 'OBVIOUSLY NO HTML. PLEASE FIX.' )
             return
@@ -740,7 +729,7 @@ class ConvertWidget( QDialogWithPrinting ):
         """
         self.statusLabel.setText( '' )
         myString = self.getTextOutput( )
-        if not checkValidConversion( myString ):
+        if not check_valid_RST( myString ):
             self.statusLabel.setText(
                 'COULD NOT CONVERT FROM %s TO HTML' % form.upper( ) )
             return
@@ -753,7 +742,7 @@ class ConvertWidget( QDialogWithPrinting ):
         resetButton = QPushButton( 'RESET' )
         #
         ##
-        qte = HtmlView( qdl, convertString( myString ) )
+        qte = HtmlView( qdl, convert_string_RST( myString ) )
         qdlLayout = QVBoxLayout( )
         qdl.setLayout( qdlLayout )
         qdlLayout.addWidget( qte )
@@ -778,7 +767,7 @@ class ConvertWidget( QDialogWithPrinting ):
         resetButton.clicked.connect( qte.reset )
         backButton.clicked.connect( qte.back )
         forwardButton.clicked.connect( qte.forward )
-        qte.setHtml( convertString( myString ) )
+        qte.setHtml( convert_string_RST( myString ) )
         #
         qte.setSizePolicy( QSizePolicy.Expanding, QSizePolicy.Expanding )
         qdl.setSizePolicy( QSizePolicy.Expanding, QSizePolicy.Expanding )

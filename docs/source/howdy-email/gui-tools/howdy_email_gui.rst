@@ -41,7 +41,7 @@ When running with the ``(o)`` choice, this GUI only sends a non-newsletter email
 
 .. _onlyemail_mainwindow_ANNOTATED:
 
-.. figure:: howdy-email-gui-figs/howdy_email_gui_onlyemail_mainwindow_ANNOTATED.png
+.. figure:: howdy-email-gui-figures/howdy_email_gui_onlyemail_mainwindow_ANNOTATED.png
    :width: 100%
    :align: left
 
@@ -102,7 +102,7 @@ One can find some good tutorials on how to write valid reStructuredText_ online 
 
 * First click on ``SHOW PNGS`` to pop up a table that shows the available PNG_ images in our Imgur_ library.
 
-  .. figure:: howdy-email-gui-figs/onlyemail_show_pngs_information_ANNOTATED.png
+  .. figure:: howdy-email-gui-figures/onlyemail_show_pngs_information_ANNOTATED.png
      :width: 100%
      :align: left
 
@@ -110,7 +110,7 @@ One can find some good tutorials on how to write valid reStructuredText_ online 
 
 * Second, right-click on the row that has ``howdy_email_gui_SQUARE.png``, which will pop up a context menu. Select the ``Information`` context menu event to verify that we have the right image.
 
-  .. figure:: howdy-email-gui-figs/onlyemail_show_pngs_information_ANNOTATED.png
+  .. figure:: howdy-email-gui-figures/onlyemail_show_pngs_information_ANNOTATED.png
      :width: 100%
      :align: left
 
@@ -120,7 +120,7 @@ One can find some good tutorials on how to write valid reStructuredText_ online 
 
   .. _onlyemail_show_pngs_information_ANNOTATED:
   
-  .. figure:: howdy-email-gui-figs/onlyemail_show_pngs_information_ANNOTATED.png
+  .. figure:: howdy-email-gui-figures/onlyemail_show_pngs_information_ANNOTATED.png
      :width: 100%
      :align: left
 
@@ -128,7 +128,7 @@ One can find some good tutorials on how to write valid reStructuredText_ online 
 
 * Finally, copy that email using the ``Copy Image URL`` context menu event.
 
-  .. figure:: howdy-email-gui-figs/onlyemail_show_pngs_copyurl_ANNOTATED.png
+  .. figure:: howdy-email-gui-figures/onlyemail_show_pngs_copyurl_ANNOTATED.png
      :width: 100%
      :align: left
 
@@ -145,7 +145,7 @@ The movie below demonstrates the step-by-step workflow in :ref:`writing and test
 	   
 After we have our URL copied and pasted, we click on ``CHECK EMAIL`` to pop up the rich HTML representation of the email body.
 
-.. figure:: howdy-email-gui-figs/onlyemail_write_test_email_showHTML_ANNOTATED.png
+.. figure:: howdy-email-gui-figures/onlyemail_write_test_email_showHTML_ANNOTATED.png
    :width: 100%
    :align: left
 
@@ -164,7 +164,7 @@ Verify Plex_ Friends
 ---------------------
 Once you verify that your email is valid, you should check that your list of friends on your Plex_ server is valid. Just click on ``PLEX GUESTS`` to get the list of friends, one per row and ordered by name. First column is the full name, and the second column is the email address for their Plex_ account.
 
-.. figure:: howdy-email-gui-figs/onlyemail_show_plex_friends_ANNOTATED.png
+.. figure:: howdy-email-gui-figures/onlyemail_show_plex_friends_ANNOTATED.png
    :width: 100%
    :align: left
 
@@ -197,7 +197,7 @@ This GUI is launched when running ``howdy_email_gui --noverify --local n``.
 
 .. _newsletter_mainwindow:
 
-.. figure:: howdy-email-gui-figs/howdy_email_gui_newsletter_mainwindow.png
+.. figure:: howdy-email-gui-figures/howdy_email_gui_newsletter_mainwindow.png
    :width: 100%
    :align: left
 
@@ -227,7 +227,7 @@ Click on the ``PREAMBLE`` button to write up an introductory section in the news
 
 .. _newsletter_preamble_postamble_window:
 
-.. figure:: howdy-email-gui-figs/newsletter_preamble_postamble_window.png
+.. figure:: howdy-email-gui-figures/newsletter_preamble_postamble_window.png
    :width: 100%
    :align: left
 
@@ -237,7 +237,7 @@ The ``PREAMBLE`` window has a similar functionality as the :ref:`main email wind
 
 .. _newsletter_preamble_ANNOTATED:
 
-.. figure:: howdy-email-gui-figs/newsletter_preamble_ANNOTATED.png
+.. figure:: howdy-email-gui-figures/newsletter_preamble_ANNOTATED.png
    :width: 100%
    :align: left
 
@@ -253,7 +253,7 @@ Finally, test your introductory text by clicking on the ``TEST TEXT`` button. It
 
 .. _newsletter_preamble_showtext:
 	
-.. figure:: howdy-email-gui-figs/newsletter_preamble_showtext.png
+.. figure:: howdy-email-gui-figures/newsletter_preamble_showtext.png
    :width: 100%
    :align: left
 
@@ -261,7 +261,7 @@ Finally, test your introductory text by clicking on the ``TEST TEXT`` button. It
 
 .. _newsletter_postamble_showtext:
 
-.. figure:: howdy-email-gui-figs/newsletter_postamble_showtext.png
+.. figure:: howdy-email-gui-figures/newsletter_postamble_showtext.png
    :width: 100%
    :align: left
 
@@ -273,7 +273,7 @@ After choosing the form of the introductory (:numref:`newsletter_preamble_showte
 
 .. _newsletter_checkemail_ANNOTATED:
 
-.. figure:: howdy-email-gui-figs/newsletter_checkemail_ANNOTATED.png
+.. figure:: howdy-email-gui-figures/newsletter_checkemail_ANNOTATED.png
    :width: 100%
    :align: left
 
@@ -291,7 +291,7 @@ Furthermore, to aid in debugging, you can click on the ``RESTRUCTURED TEXT`` tab
 
 .. _newsletter_checkemail_restructuredtext_ANNOTATED:
 
-.. figure:: howdy-email-gui-figs/newsletter_checkemail_restructuredtext_ANNOTATED.png
+.. figure:: howdy-email-gui-figures/newsletter_checkemail_restructuredtext_ANNOTATED.png
    :width: 100%
    :align: left
 
@@ -308,7 +308,7 @@ Once your email body is valid (it generated HTML), and you are satisfied, that y
 
 .. _newsletter_sendemail_ANNOTATED:
 
-.. figure:: howdy-email-gui-figs/newsletter_sendemail_ANNOTATED.png
+.. figure:: howdy-email-gui-figures/newsletter_sendemail_ANNOTATED.png
    :width: 100%
    :align: left
 
@@ -318,7 +318,7 @@ The email dialog window starts with yourself on the top row. Subsequent rows are
 
 Once you have made your selection, click on ``SEND EMAIL`` to send the Plex_ newsletter emails to your group of selected friends and/or yourself. Just as in :numref:`Send Email`, I alway verify that the email is valid, by first clicking ``TEST EMAIL`` and then clicking ``SEND EMAIL``, before sending the newsletter email to everyone.
   
-.. |howdy_email_gui_icon| image:: howdy-email-gui-figs/howdy_email_gui_SQUARE_VECTA.svg
+.. |howdy_email_gui_icon| image:: howdy-email-gui-figures/howdy_email_gui_SQUARE_VECTA.svg
    :width: 50
    :align: middle
 

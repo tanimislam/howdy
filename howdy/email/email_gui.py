@@ -1,105 +1,169 @@
 import os, sys, titlecase, datetime, json, re, urllib, time, glob
 import pathos.multiprocessing as multiprocessing
-from docutils.examples import html_parts
+from email.utils import formataddr
 from bs4 import BeautifulSoup
 from itertools import chain
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 #
 from howdy import resourceDir
+from howdy.core import core, QDialogWithPrinting, check_valid_RST, convert_string_RST, HtmlView
 from howdy.email import email, email_basegui, emailAddress, emailName, get_email_contacts_dict, get_email_service
 from howdy.email.email_mygui import HowdyGuestEmailTV
-from howdy.core import core, QDialogWithPrinting
-#
-## throw an exception if cannot
-try:
-    from howdy.core import core_texts_gui
-except ImportError as e:
-    raise ValueError("Error, we need to be able to import PyQt5.QtWebEngineWidgets, which we cannot do. On Ubuntu Linux machines you can try 'apt install python3-pyqt5.qtwebengine'." )
+#from howdy.email.email_demo_gui import HowdyEmailDemoGUI
 
 class HowdyEmailGUI( QDialogWithPrinting ):
-    class EmailSendDialog( QDialogWithPrinting ):
-        
-        def __init__( self, parent ):
-            super( HowdyEmailGUI.EmailSendDialog, self ).__init__( parent, isIsolated = False )
-            self.setModal( True )
-            self.verify = parent.verify
-            self.setWindowTitle( 'SEND EMAILS' )
-            self.selectTestButton = QPushButton( 'TEST ADDRESS', self )
-            self.selectAllButton = QPushButton( 'ALL ADDRESSES', self )
-            self.sendEmailButton = QPushButton( 'SEND EMAIL', self )
-            self.myButtonGroup = QButtonGroup( self )
-            if emailName is None: emailString = emailAddress
-            else: emailString = '%s <%s>' % ( emailName, emailAddress )
-            self.allRadioButtons = list(
-                map( lambda name: QRadioButton( name, self ),
-                     [ emailString, ] +
-                     sorted(map( lambda idx: parent.emailComboBox.itemText( idx ),
-                                 range( parent.emailComboBox.count() ) ) ) ) )
-            self.mainHtml = parent.htmlString.strip( )
-            for button in self.allRadioButtons:
-                self.myButtonGroup.addButton( button )
-            self.myButtonGroup.setExclusive( False )
-            self.allRadioButtons[0].setChecked( True )
-            for button in self.allRadioButtons[1:]:
-                button.setChecked( False )
-            self.statusLabel = QLabel( )
-            myLayout = QVBoxLayout( )
-            self.setLayout( myLayout )
+
+    class EmailSendDialogDelegate( QItemDelegate ):
+        def __init__( self, model ):
+            super( HowdyEmailGUI.EmailSendDialogDelegate, self ).__init__( )
+            assert( isinstance( model, HowdyEmailGUI.EmailSendDialogTableModel ) )
+            self.model = model
+
+        def createEditor( self, parent, option, index ):
+            index_unproxy = index.model( ).mapToSource( index )
+            row = index_unproxy.row( )
+            col = index_unproxy.column( )
+            if col == 0:
+                cb = QCheckBox( self )
+                cb.setChecked( self.model.should_email[ row ] )
+                return cb
+            elif index.column( ) == 1:
+                return QLabel( self.model.emails_full[ row ] )
+
+        def setEditorData( self, editor, index ):
+            index_unproxy = index.model( ).mapToSource( index )
+            row = index_unproxy.row( )
+            col = index_unproxy.column( )
+            if col == 0: # is a QCheckBox
+                editor.setChecked( self.model.should_email[ row ] )
+
+        def editorEvent( self, event, model, option, index ):
+            index_unproxy = model.mapToSource( index )
+            row = index_unproxy.row( )
+            col = index_unproxy.column( )
+            if event.type( ) == QEvent.MouseButtonPress and col == 0:
+                is_email = self.model.should_email[ row ]
+                self.model.setData( index_unproxy, not is_email, Qt.CheckStateRole )
+                event.accept( )
+                return True
+            return False
+
+    #
+    ## dont-understand-code here: https://stackoverflow.com/a/59230434/3362358
+    class EmailSendDialogBooleanDelegate( QItemDelegate ):
+        def __init__( self, model ):
+            super( HowdyEmailGUI.EmailSendDialogBooleanDelegate, self ).__init__( )
+            assert( isinstance( model, HowdyEmailGUI.EmailSendDialogTableModel ) )
+            self.model = model
+    
+        def paint(self, painter, option, index):
+            # Depends on how the data function of your table model is implemented
+            # 'value' should receive a bool indicate if the checked value.
+            value = index.data( Qt.CheckStateRole )  
+            self.drawCheck(painter, option, option.rect, value)
+            self.drawFocus(painter, option, option.rect)
+    
+        def editorEvent(self, event, model, option, index):
+            if event.type() == QEvent.MouseButtonRelease:
+                value = model.data(index, Qt.CheckStateRole )
+                model.setData(index, not value, Qt.CheckStateRole )
+                event.accept( )
+                return True
+            return False
+
+    class EmailSendDialogQSortFilterModel( QSortFilterProxyModel ):
+        def __init__( self, model ):
+            super( HowdyEmailGUI.EmailSendDialogQSortFilterModel, self ).__init__( )
+            self.setSourceModel( model )
+            model.emitFilterChanged.connect( self.invalidateFilter )
+
+        def filterAcceptsRow( self, rowNumber, sourceParent ):
+            return self.sourceModel( ).filterRow( rowNumber )
+            
+    
+    class EmailSendDialogTableModel( QAbstractTableModel ):
+        _headers = [ 'SEND?', 'EMAIL' ]
+
+        statusSignal = pyqtSignal( str )
+        emitFilterChanged = pyqtSignal( )
+
+        def __init__( self, emails_array, verify = True ):
+            super( HowdyEmailGUI.EmailSendDialogTableModel, self ).__init__( )
+            self.verify = verify
+            self.emails_array = [ ]
+            self.emails_full = [ ]
+            self.should_email = [ ]
+            self.setEmails( emails_array )
             #
-            topLayout = QHBoxLayout( )
-            topWidget = QWidget( self )
-            topWidget.setLayout( topLayout )
-            topLayout.addWidget( self.selectTestButton )
-            topLayout.addWidget( self.selectAllButton )
-            topLayout.addWidget( self.sendEmailButton )
-            myLayout.addWidget( topWidget )
-            #
-            myButtonsWidget = QWidget( )
-            myButtonsLayout = QVBoxLayout( )
-            myButtonsWidget.setLayout( myButtonsLayout )
-            for button in self.allRadioButtons:
-                myButtonsLayout.addWidget( button )
-            myLayout.addWidget( myButtonsWidget )
-            #
-            myLayout.addWidget( self.statusLabel )
-            #
+            ##
+            self.selectTestButton = QPushButton( 'TEST ADDRESS' )
+            self.selectAllButton = QPushButton( 'ALL ADDRESSES' )
+            self.sendEmailButton = QPushButton( 'SEND EMAIL' )
             self.selectTestButton.clicked.connect( self.selectTest )
             self.selectAllButton.clicked.connect( self.selectAll )
             self.sendEmailButton.clicked.connect( self.sendEmail )
             #
-            self.setFixedWidth( self.sizeHint( ).width( ) )
-            self.setFixedHeight( int( 0.5 * self.sizeHint( ).height( ) ) )
-            self.show( )
+            ## now other members #2: the "show all emails" and "show selected emails"
+            self.showAllEmailsButton = QRadioButton( 'ALL EMAILS' )
+            self.showSelectedEmailsButton = QRadioButton( 'SELECTED EMAILS' )
+            buttonGroup = QButtonGroup( )
+            buttonGroup.addButton( self.showAllEmailsButton )
+            buttonGroup.addButton( self.showSelectedEmailsButton )
+            self.showAllEmailsButton.toggle( )
+            self.showAllEmailsButton.clicked.connect( self.setFilterShowWhichEmails )
+            self.showSelectedEmailsButton.clicked.connect( self.setFilterShowWhichEmails )
+            #
+            ## now other members #3: the QLineEdit doing a regex on filter on names OR emails
+            self.filterOnNamesOrEmails = QLineEdit( '' )
+            self.filterRegExp = QRegExp( '.', Qt.CaseInsensitive, QRegExp.RegExp )
+            self.filterOnNamesOrEmails.textChanged.connect( self.setFilterString )
+            self.showingEmailsLabel = QLabel( '' )
+            self.emitFilterChanged.connect( self.showNumberFilterEmails )
+            self.showNumberFilterEmails( )
+
+        def setEmails( self, emails_array ):
+            def get_email( input_tuple ):
+                name, email = input_tuple
+                if name is not None:
+                    name = name.replace('"', '').strip( )
+                    return formataddr((name, email))
+                return email
+            self.layoutAboutToBeChanged.emit( )
+            self.emails_array = emails_array.copy( )
+            self.emails_full = list(map(get_email, emails_array ) )
+            self.should_email = [ False ] * len( self.emails_full )
+            self.should_email[ 0 ] = True
+            self.layoutChanged.emit( )
+            self.emitFilterChanged.emit( )
 
         def selectTest( self ):
-            self.allRadioButtons[0].setChecked( True )
-            list(map(lambda button: button.setChecked( False ),
-                     self.allRadioButtons[1:]))
+            self.layoutAboutToBeChanged.emit( )
+            for idx in range( len( self.should_email ) ):
+                self.should_email[ idx ] = False
+            self.should_email[ 0 ] = True
+            self.layoutChanged.emit( )
 
         def selectAll( self ):
-            list(map(lambda button: button.setChecked( True ),
-                     self.allRadioButtons ) )
-
+            self.layoutAboutToBeChanged.emit( )
+            for idx in range(len( self.should_email ) ):
+                self.should_email[ idx ] = True
+            self.layoutChanged.emit( )
+        
         def sendEmail( self ):
-            validLists = list(
-                map(lambda button: str( button.text( ) ).strip( ),
-                    filter(lambda button: button.isChecked( ), self.allRadioButtons ) ) )
-            if len(validLists) == 0:
+            #
+            ## choose which emails to send
+            input_tuples = list(map(lambda tup: tup[1], filter(
+                lambda tup: tup[0] == True,
+                zip( self.should_email, self.emails_array ) ) ) )
+            if len( input_tuples ) == 0:
+                self.statusSignal.emit( 'SENT NO EMAILS.' )
                 return
-            input_tuples = []
-            for fullName in validLists:
-                if fullName.endswith('>'):
-                    name = fullName.split('<')[0].strip( )
-                    fullEmail = fullName.split('<')[1].strip().replace('>', '').strip()
-                else:
-                    name = None
-                    fullEmail = fullName.strip( )
-                input_tuples.append(( fullEmail, name ))
             #
             ## now send the emails
             time0 = time.time( )
-            self.statusLabel.setText( 'STARTING TO SEND EMAILS...')
+            self.statusSignal.emit( 'STARTING TO SEND EMAILS...' )
             email_service = get_email_service( verify = self.verify )
             mydate = datetime.datetime.now( ).date( )
             def _send_email_perproc( input_tuple ):
@@ -113,12 +177,157 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             with multiprocessing.Pool( processes = min(
                 multiprocessing.cpu_count( ), len( input_tuples ) ) ) as pool:
                 arrs = list( map( _send_email_perproc, input_tuples ) )
-            self.statusLabel.setText( 'SENT %d EMAILS IN %0.3f SECONDS.' %
-                                     ( len( input_tuples ), time.time() - time0 ) )
+            self.statusSignal.emit(
+                'SENT %d EMAILS IN %0.3f SECONDS.' %
+                ( len( input_tuples ), time.time() - time0 ) )
             #
             ## if I have sent out ALL EMAILS, then I mean to update the newsletter
-            if len(validLists) == len( self.allRadioButtons ):
-                core.set_date_newsletter( )
+            if all(self.should_email): core.set_date_newsletter( )
+            
+        def columnCount( self, parent ):
+            return 2
+
+        def rowCount( self, parent ):
+            return len( self.emails_full )
+
+        def headerData( self, col, orientation, role ):
+            if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+                return 'EMAIL'
+
+        def flags( self, index ):
+            if index.column( ) == 0:
+                return Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable
+            else: return Qt.ItemIsEnabled | Qt.ItemIsSelectable
+
+        def data( self, index, role ):
+            if not index.isValid( ): return None
+            row = index.row( )
+            col = index.column( )
+            if role == Qt.DisplayRole and col == 1:
+                return self.emails_full[ row ]
+            elif role == Qt.CheckStateRole and col == 0:
+                return self.should_email[ row ]
+
+        def setData( self, index, val, role ):
+            if not index.isValid( ): return False
+            row = index.row( )
+            col = index.column( )
+            if col == 1: return False
+            if role != Qt.CheckStateRole: return False
+            self.should_email[ row ] = val
+            return True
+
+        def filterRow( self, rowNumber ):
+            assert( rowNumber >= 0 )
+            assert( rowNumber < len( self.emails_full ) )
+            name, email = self.emails_array[ rowNumber ]
+            #
+            ## if not one of selected emails and ONLY show selected emails...
+            if not self.showAllEmailsButton.isChecked( ) and not self.should_email[ rowNumber ]: return False
+            if self.filterRegExp.indexIn( name ) != -1: return True
+            if self.filterRegExp.indexIn( email ) != -1: return True
+            return False
+
+        def showNumberFilterEmails( self ):
+            num_emails = len(list(filter(self.filterRow, range(len(self.emails_full)))))
+            self.showingEmailsLabel.setText('SHOWING %d EMAILS' % num_emails )
+
+        def setFilterString( self, newString ):
+            mytext = newString.strip( )
+            if len( mytext ) == 0: mytext = '.'
+            self.filterRegExp = QRegExp( mytext, Qt.CaseInsensitive, QRegExp.RegExp )
+            self.emitFilterChanged.emit( )
+
+        def setFilterShowWhichEmails( self ):
+            self.emitFilterChanged.emit( )
+    
+    class EmailSendDialogTableView( QTableView ):
+        def __init__( self, model ):
+            super( HowdyEmailGUI.EmailSendDialogTableView, self ).__init__( )
+            proxyModel = HowdyEmailGUI.EmailSendDialogQSortFilterModel( model )
+            self.setModel( proxyModel )
+            self.setItemDelegateForColumn(
+                0, HowdyEmailGUI.EmailSendDialogBooleanDelegate( model ) )
+            #
+            self.setShowGrid( True )
+            self.verticalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
+            self.horizontalHeader( ).setSectionResizeMode( QHeaderView.Fixed )
+            self.setSelectionBehavior( QAbstractItemView.SelectRows )
+            self.setSelectionMode( QAbstractItemView.SingleSelection )
+            self.setSortingEnabled( True )
+            #
+            self.setColumnWidth( 0, 180 )
+            self.setColumnWidth( 1, 180 )
+            #
+            toBotAction = QAction( self )
+            toBotAction.setShortcut( 'End' )
+            toBotAction.triggered.connect( self.scrollToBottom )
+            self.addAction( toBotAction )
+            #
+            toTopAction = QAction( self )
+            toTopAction.setShortcut( 'Home' )
+            toTopAction.triggered.connect( self.scrollToTop )
+            self.addAction( toTopAction )
+        
+        def getValidIndexRow( self ):
+            index_valid = max(
+                filter(
+                    lambda index: index.column( ) == 0,
+                    self.selectionModel( ).selectedIndexes( ) ) )
+            return index_valid.row( )
+        
+        def resizeTableColumns( self, width ):
+            self.setColumnWidth( 0, int( 0.07 * width ) )
+            self.setColumnWidth( 1, int( 0.93 * width ) )
+    
+    class EmailSendDialog( QDialogWithPrinting ):
+        def __init__( self, parent ):
+            super( HowdyEmailGUI.EmailSendDialog, self ).__init__(
+                parent, isIsolated = False, doQuit = False )
+            self.setModal( True )
+            self.verify = parent.verify
+            self.setWindowTitle( 'SEND EMAILS' )
+            self.emailSendDialogTableModel = HowdyEmailGUI.EmailSendDialogTableModel(
+                parent.emails_array, self.verify )
+            emailSendDialogTableView = HowdyEmailGUI.EmailSendDialogTableView(
+                self.emailSendDialogTableModel )
+            self.statusLabel = QLabel( )
+            #
+            myLayout = QVBoxLayout( )
+            self.setLayout( myLayout )
+            #
+            topLayout = QGridLayout( )
+            topWidget = QWidget( self )
+            topWidget.setLayout( topLayout )
+            topLayout.addWidget( self.emailSendDialogTableModel.selectTestButton, 0, 0, 1, 1 )
+            topLayout.addWidget( self.emailSendDialogTableModel.selectAllButton, 0, 1, 1, 1 )
+            topLayout.addWidget( self.emailSendDialogTableModel.sendEmailButton, 0, 2, 1, 1 )
+            #
+            topLayout.addWidget( QLabel( 'FILTER' ), 1, 0, 1, 1 )
+            topLayout.addWidget( self.emailSendDialogTableModel.filterOnNamesOrEmails, 1, 1, 1, 2 )
+            #
+            topLayout.addWidget( QLabel( 'SHOW EMAILS' ), 2, 0, 1, 1 )
+            topLayout.addWidget( self.emailSendDialogTableModel.showAllEmailsButton, 2, 1, 1, 1 )
+            topLayout.addWidget( self.emailSendDialogTableModel.showSelectedEmailsButton, 2, 2, 1, 1 )
+            myLayout.addWidget( topWidget )
+            #
+            myLayout.addWidget( emailSendDialogTableView )
+            #
+            botWidget = QWidget( )
+            botLayout = QHBoxLayout( )
+            botWidget.setLayout( botLayout )
+            botLayout.addWidget( self.statusLabel )
+            botLayout.addWidget( self.emailSendDialogTableModel.showingEmailsLabel )
+            myLayout.addWidget( botWidget )
+            #
+            self.emailSendDialogTableModel.statusSignal.connect( self.statusLabel.setText )
+            #
+            self.setFixedWidth( 500 )
+            self.setFixedHeight( 600 )
+            #self.setFixedWidth( self.sizeHint( ).width( ) )
+            #self.setFixedHeight( int( 0.5 * self.sizeHint( ).height( ) ) )
+            emailSendDialogTableView.resizeTableColumns( 500 )
+            self.hide( )
             
     class PrePostAmbleDialog( QDialogWithPrinting ):
         
@@ -178,17 +387,17 @@ class HowdyEmailGUI( QDialogWithPrinting ):
                 return
             sectionTitle = self.sectionNameWidget.text( ).strip( )
             mainText = '\n'.join([ sectionTitle, ''.join([ '=' ] * len( sectionTitle )), '', myStr ])
-            if not core_texts_gui.checkValidConversion( mainText ):
+            if not check_valid_RST( mainText ):
                 self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
                 self.isValidRST = False
                 return
             self.isValidRST = True
-            html = core_texts_gui.convertString( mainText )
+            html = convert_string_RST( mainText )
             self.statusLabel.setText( 'VALID RESTRUCTUREDTEXT' )
             #
             qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
             qdl.setWindowTitle( 'HTML EMAIL BODY' )
-            qte = core_texts_gui.HtmlView( qdl )
+            qte = HtmlView( qdl )
             qter = QTextEdit( self )
             qter.setReadOnly( True )
             qter.setPlainText( '%s\n' % html )
@@ -217,7 +426,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
             sectionTitle = self.sectionNameWidget.text( ).strip( )
             if not showSection or len( sectionTitle ) == 0: mainText = myStr
             else: mainText = '\n'.join([ sectionTitle, ''.join([ '=' ] * len( sectionTitle )), '', myStr ])
-            if not core_texts_gui.checkValidConversion( mainText ):
+            if not check_valid_RST( mainText ):
                 return ""
             return mainText
 
@@ -233,11 +442,11 @@ class HowdyEmailGUI( QDialogWithPrinting ):
                 sectionTitle,
                 '\n'.join([ '=' ] * len( sectionTitle )  ), '',
                 self.textEdit.toPlainText( ).strip( ) ])
-            try:
-                html = core_texts_gui.convertString( mainText )
-                return True, html
-            except Exception as e:
+            if not check_valid_RST( mainText ):
                 return False, None
+            #
+            html = convert_string_RST( mainText )
+            return True, html
             
     def __init__( self, doLocal = True, doLarge = False, verify = True ):
         super( HowdyEmailGUI, self ).__init__( None )
@@ -280,10 +489,10 @@ class HowdyEmailGUI( QDialogWithPrinting ):
         myLayout = QGridLayout( )
         self.setLayout( myLayout )
         #
-        self.emails_array = get_email_contacts_dict(
+        self.emails_array = [( emailName, emailAddress ), ] + get_email_contacts_dict(
             core.get_mapped_email_contacts(
                 self.token, verify = self.verify ), verify = self.verify )
-        self.emails_array.append(( emailName, emailAddress ) )
+        self.emailSendDialog = HowdyEmailGUI.EmailSendDialog( self )
         #
         myLayout.addWidget( self.checkEmailButton, 0, 0, 1, 1 )
         myLayout.addWidget( self.emailDialogButton, 0, 1, 1, 1 )
@@ -294,16 +503,9 @@ class HowdyEmailGUI( QDialogWithPrinting ):
         self.checkEmailButton.clicked.connect( self.createSummaryEmail )
         self.preambleButton.clicked.connect( self.preambleDialog.show )
         self.postambleButton.clicked.connect( self.postambleDialog.show )
-        self.emailDialogButton.clicked.connect( self.emailDialog )
-        # self.emailTestButton.clicked.connect( self.testEmail )
+        self.emailDialogButton.clicked.connect( self.emailSendDialog.show )
         self.emailListButton.clicked.connect( self.showEmails )
         #
-        #qf = QFont( )
-        #qf.setFamily( 'Consolas' )
-        #qf.setPointSize( int( 11 * self.resolution ) )
-        #qfm = QFontMetrics( qf )
-        #self.setFixedWidth( 55 * qfm.width( 'A' ) )
-        #self.setFixedHeight( 33 * qfm.height( ) )
         self.show( )
 
     def showEmails( self ):
@@ -339,7 +541,7 @@ class HowdyEmailGUI( QDialogWithPrinting ):
         #
         qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
         qdl.setWindowTitle( 'HTML EMAIL BODY' )
-        qte = core_texts_gui.HtmlView( qdl )
+        qte = HtmlView( qdl )
         qter = QTextEdit( self )
         qter.setReadOnly( True )
         qter.setPlainText( '%s\n' % self.htmlString )

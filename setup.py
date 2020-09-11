@@ -84,6 +84,7 @@ setup(
             # email stuff
             'howdy_email_notif = howdy.email.cli.howdy_email_notif:main',
             'howdy_email_gui = howdy.email.gui.howdy_email_gui:main',
+            'howdy_email_demo_gui = howdy.email.gui.howdy_email_demo_gui:main',
             # music stuff
             'howdy_music_album = howdy.music.cli.howdy_music_album:main',
             'howdy_music_metafill = howdy.music.cli.howdy_music_metafill:main',

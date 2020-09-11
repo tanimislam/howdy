@@ -5,11 +5,13 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
 from rapidfuzz.fuzz import partial_ratio
+from docutils.examples import html_parts
 #
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-import PyQt5.QtWidgets, PyQt5.QtCore
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtNetwork import QNetworkAccessManager
 #
 from howdy import resourceDir, baseConfDir
 #
@@ -54,7 +56,7 @@ def get_popularity_color( hpop, alpha = 1.0 ):
     """Get a color that represents some darkish cool looking color interpolated between 0 and 1.
 
     :param float hpop: the value (between 0 and 1) of the color.
-    :param float alpha: The alpha value of the color (between 0 and 1).
+    :param float alpha: The :math:`\alpha` value of the color (between 0 and 1).
     :returns: a :class:`QColor <PyQt5.QtGui.QColor>` object to put into a :class:`QWidget <PyQt5.QtWidgets.QWidget>`.
     :rtype: :class:`QColor <PyQt5.QtGui.QColor>`
 
@@ -67,9 +69,84 @@ def get_popularity_color( hpop, alpha = 1.0 ):
     color.setHsvF( h, s, v, alpha )
     return color
 
+def check_valid_RST( myString ):
+    """
+    Checks to see whether the input string is valid reStructuredText_.
+
+    :param str myString: the candidate reStructuredText_ input.
+    :returns: ``True`` if valid, otherwise ``False``.
+    :rtype: bool
+
+    .. seealso:: :py:meth:`convert_string_RST <howdy.core.convert_string_RST>`.
+
+    .. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
+    """
+    body = html_parts( myString)[ 'body' ]
+    html = BeautifulSoup( body, 'lxml' )
+    error_messages = html.find_all('p', { 'class' : 'system-message-title' } )
+    return len( error_messages) == 0
+
+def convert_string_RST( myString ):
+    """
+    Converts a valid reStructuredText_ input string into rich HTML.
+
+    :param str myString: the candidate reStructuredText_ input.
+    :returns: If the input string is valid reStructuredText_, returns the rich HTML as a :py:class:`string <str>`. Otherwise emits a :py:meth:`logging error message <logging.error>` and returns ``None``.
+    :rtype: str
+
+    .. seealso:: :py:meth:`check_valid_RST <howdy.core.check_valid_RST>`.
+    """
+    if not check_valid_RST( myString ):
+        logging.error( "Error, could not convert %s into RST." % myString )
+        return None
+    html_body = html_parts( myString )[ 'whole' ]
+    html = BeautifulSoup( html_body, 'lxml' )
+    return html.prettify( )
+
+class HtmlView( QWebEngineView ):
+    """
+    A convenient PyQt5_ widget that displays rich and interactive HTML (HTML with CSS and Javascript). This extends :py:class:`QWebEngineView <PyQt5.QtWebEngineWidgets.QWebEngineView>`.
+    """
+    def __init__( self, parent, htmlString = '' ):
+        super( HtmlView, self ).__init__( parent )
+        self.initHtmlString = htmlString
+        self.setHtml( self.initHtmlString )
+        #channel = QWebChannel( self )
+        #self.page( ).setWebChannel( channel )
+        #channel.registerObject( 'thisFormula', self )
+        #
+        # self.setHtml( myhtml )
+        #self.loadFinished.connect( self.on_loadFinished )
+        #self.initialized = False
+        #
+        self._setupActions( )
+        self._manager = QNetworkAccessManager( self )
+
+    def _setupActions( self ):
+        backAction = QAction( self )
+        backAction.setShortcut( 'Shift+Ctrl+1' )
+        backAction.triggered.connect( self.back )
+        self.addAction( backAction )
+        forwardAction = QAction( self )
+        forwardAction.setShortcut( 'Shift+Ctrl+2' )
+        forwardAction.triggered.connect( self.forward )
+        self.addAction( forwardAction )
+
+    def reset( self ):
+        self.setHtml( self.initHtmlString )
+        
+    def on_loadFinished( self ):
+        self.initialized = True
+
+    def waitUntilReady( self ):
+        if not self.initialized:
+            loop = QEventLoop( )
+            self.loadFinished.connect( loop.quit )
+            loop.exec_( )
+
 #
 ## a QLabel with save option of the pixmap
-class QLabelWithSave( PyQt5.QtWidgets.QLabel ):
+class QLabelWithSave( QLabel ):
     """
     A convenient PyQt5_ widget that inherits from :py:class:`QLabel <PyQt5.QtWidgets.QLabel>`, but allows screen shots.
 
@@ -108,7 +185,7 @@ class QLabelWithSave( PyQt5.QtWidgets.QLabel ):
         menu.addAction( savePixmapAction )
         menu.popup( QCursor.pos( ) )
 
-class QDialogWithPrinting( PyQt5.QtWidgets.QDialog ):
+class QDialogWithPrinting( QDialog ):
     """
     A convenient PyQt5_ widget, inheriting from :py:class:`QDialog <PyQt5.QtWidgets.QDialog>`, that allows for screen grabs and keyboard shortcuts to either hide this dialog window or quit the underlying program. This PyQt5_ widget is also resizable, in relative increments of 5% larger or smaller, to a maximum of :math:`1.05^5` times the initial size, and to a minimum of :math:`1.05^{-5}` times the initial size.
     
@@ -125,7 +202,7 @@ class QDialogWithPrinting( PyQt5.QtWidgets.QDialog ):
     :var int initHeight: the initial heigth of the GUI in pixels.    
     """
     
-    indexScalingSignal = PyQt5.QtCore.pyqtSignal( int )
+    indexScalingSignal = pyqtSignal( int )
     
     def screenGrab( self ):
         """
@@ -240,7 +317,7 @@ class QDialogWithPrinting( PyQt5.QtWidgets.QDialog ):
                 quitAction.triggered.connect( sys.exit )
             self.addAction( quitAction )
 
-class ProgressDialogThread( PyQt5.QtCore.QThread ):
+class ProgressDialogThread( QThread ):
     """
     This subclassing of :py:class:`QThread <PyQt5.QtCore.QThread>` provides a convenient scaffolding to run, in a non-blocking fashion, some long-running processes with an asssociated :py:class:`ProgressDialog <howdy.core.ProgressDialog>` widget.
 
@@ -286,9 +363,9 @@ class ProgressDialogThread( PyQt5.QtCore.QThread ):
     
     .. seealso:: :py:class:`ProgressDialog <howdy.core.ProgressDialog>`.
     """
-    emitString = PyQt5.QtCore.pyqtSignal( str )
-    stopDialog = PyQt5.QtCore.pyqtSignal( ) 
-    startDialog= PyQt5.QtCore.pyqtSignal( str )
+    emitString = pyqtSignal( str )
+    stopDialog = pyqtSignal( ) 
+    startDialog= pyqtSignal( str )
     
     def __init__( self, parent, title ):
         super( ProgressDialogThread, self ).__init__( )

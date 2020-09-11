@@ -73,7 +73,7 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_. The |c
      - |howdy_core_gui_icon| :ref:`howdy_core_gui <howdy_core_gui_label>` |cbox|
    * -
      - :ref:`howdy_resynclibs <howdy_resynclibs_label>` |cbox|
-     - |howdy_create_texts_icon| :ref:`howdy_create_texts <howdy_create_texts_label>` |cbox|
+     - 
    * -
      - :ref:`howdy_store_credentials <howdy_store_credentials_label>` |cbox|
      -
@@ -121,8 +121,10 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_. The |c
      -
    * - ``email``
      - :ref:`howdy_email_notif <howdy_email_notif_label>` |cbox|
-     - |howdy_email_gui_icon| :ref:`howdy_email_gui <howdy_email_gui_label>` |cbox| 
-
+     - |howdy_email_gui_icon| :ref:`howdy_email_gui <howdy_email_gui_label>` |cbox|
+   * -
+     -
+     - |howdy_email_demo_gui_icon| :ref:`howdy_email_demo_gui <howdy_email_demo_gui_labe>` |cbox|
 
 .. these are the links
 .. _GitHub: https://github.com
@@ -153,10 +155,6 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_. The |c
    :width: 50
    :align: middle
 
-.. |howdy_create_texts_icon| image:: howdy-core/gui_tools/gui-tools-figures/howdy_create_texts_SQUARE_VECTA.svg
-   :width: 50
-   :align: middle
-
 .. |howdy_tv_gui_icon| image:: howdy-tv/howdy-tv-figs/howdy_tv_gui_SQUARE_VECTA.svg
    :width: 50
    :align: middle
@@ -165,6 +163,10 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_. The |c
    :width: 50
    :align: middle
 	   
-.. |howdy_email_gui_icon| image:: howdy-email/howdy-email-gui-figs/howdy_email_gui_SQUARE_VECTA.svg
+.. |howdy_email_gui_icon| image:: howdy-email/gui-tools/howdy-email-gui-figures/howdy_email_gui_SQUARE_VECTA.svg
+   :width: 50
+   :align: middle
+
+.. |howdy_email_demo_gui_icon| image:: howdy-email/gui-tools/howdy-email-gui-figures/howdy_email_demo_gui_SQUARE_VECTA.svg
    :width: 50
    :align: middle

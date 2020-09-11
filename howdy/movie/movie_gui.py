@@ -1111,8 +1111,9 @@ class HowdyMovieTableModel( QAbstractTableModel ):
         self.tupData = None
         #
         ## filtering on name of movie
-        self.filterRegexp = QRegExp( '.', Qt.CaseInsensitive,
-                                     QRegExp.RegExp )
+        self.filterRegexp = QRegExp(
+            '.', Qt.CaseInsensitive,
+            QRegExp.RegExp )
         #
         ## filtering on minimum rating
         self.minRating = 0.0

@@ -7,16 +7,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 #
 from howdy import resourceDir
-from howdy.core import core, QDialogWithPrinting
+from howdy.core import core, QDialogWithPrinting, check_valid_RST, convert_string_RST, HtmlView
 from howdy.email import email, email_basegui, emailAddress, emailName
 from howdy.email import get_email_contacts_dict
-#
-## throw an exception if cannot
-try:
-    from howdy.core import core_texts_gui
-except ImportError as e:
-    raise ValueError("Error, we need to be able to import PyQt5.QtWebEngineWidgets, which we cannot do. On Ubuntu Linux machines you can try 'apt install python3-pyqt5.qtwebengine'." )
-    
+
 class QLineCustom( QLineEdit ):
     def __init__( self ):
         super( QLineCustom, self ).__init__( )
@@ -263,19 +257,19 @@ class HowdyEmailMyGUI( QDialogWithPrinting ):
             self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
             return
         mainText = '\n'.join([ 'Hello Friend,', '', myStr ])
-        if not core_texts_gui.checkValidConversion( mainText ):
+        if not check_valid_RST( mainText ):
             self.emailSendButton.setEnabled( False )
             self.emailTestButton.setEnabled( False )
             self.statusLabel.setText( 'INVALID RESTRUCTUREDTEXT' )
             return
-        html = core_texts_gui.convertString( mainText )
+        html = convert_string_RST( mainText )
         self.emailSendButton.setEnabled( True )
         self.emailTestButton.setEnabled( True )
         self.statusLabel.setText( 'VALID RESTRUCTUREDTEXT' )
         #
         qdl = QDialogWithPrinting( self, doQuit = False, isIsolated = True )
         qdl.setWindowTitle( 'HTML EMAIL BODY' )
-        qte = core_texts_gui.HtmlView( qdl )
+        qte = HtmlView( qdl )
         qter = QTextEdit( self )
         qter.setReadOnly( True )
         qter.setPlainText( '%s\n' % html )
@@ -300,7 +294,7 @@ class HowdyEmailMyGUI( QDialogWithPrinting ):
     def getHTML( self ):
         mainText = '\n'.join([ 'Hello Friend', '', self.mainEmailCanvas.toPlainText( ).strip( ) ])
         try:
-            html = core_texts_gui.convertString( mainText )
+            html = convert_string_RST( mainText )
             # html = core.processValidHTMLWithPNG( html, self.pngWidget.getAllDataAsDict( ) )
             return True, html
         except Exception as e:
@@ -321,7 +315,9 @@ class HowdyEmailMyGUI( QDialogWithPrinting ):
         if len(subject) == 0:
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
         for name, email in self.emails_array:
-            email.send_individual_email_full( html, subject, email, name = name, )
+            email.send_individual_email_full(
+                html, subject, email, name = name,
+                verify = self.verify )
         self.statusLabel.setText( 'EMAILS SENT' )
 
     def testEmail( self ):
@@ -336,5 +332,6 @@ class HowdyEmailMyGUI( QDialogWithPrinting ):
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
         #
         email.send_individual_email_full(
-            html, subject, emailAddress, name = emailName )
+            html, subject, emailAddress, name = emailName,
+            verify = self.verify )
         self.statusLabel.setText( 'EMAILS SENT TO %s.' % emailAddress.upper( ) )

@@ -93,10 +93,17 @@ intersphinx_mapping = {
 ## write out todos
 todo_include_todos = True
 
+#
+## do not verify SSL
 verify = False
 
-# numfig stuff
+#
+## numfig stuff
 numfig = True
+
+#
+## GitHub repo
+issues_github_path = "tanimislam/howdy"
 
 
 #

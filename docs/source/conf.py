@@ -109,7 +109,7 @@ issues_github_path = "tanimislam/howdy"
 #
 ## change favicon to CADUCEUS logo
 #html_logo = '_static/howdy_icon.svg'
-html_favicon = '_static/howdy_icon.svg'
+html_favicon = '_static/howdy_icon_VECTA.svg'
 #html_theme_options = {
 #    'logo_only': False,
 #}

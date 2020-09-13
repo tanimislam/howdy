@@ -69,6 +69,8 @@ Here we construct and send a rudimentary email that demonstrates an interesting 
 
 3. :ref:`Send email <Send Email>`.
 
+.. _write_and_test_email_label:
+   
 Write and Test Email
 ----------------------
 Here, we write an email that consists of some stylized text, some LaTeX_ math, and an inset image with caption using our Imgur_ library. The subject of the email is ``test``. The body is reStructuredText_, and is given by,

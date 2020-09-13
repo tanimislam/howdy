@@ -80,7 +80,6 @@ setup(
             ## gui
             'howdy_config_gui = howdy.core.gui.howdy_config_gui:main',
             'howdy_core_gui = howdy.core.gui.howdy_core_gui:main',
-            'howdy_create_texts = howdy.core.gui.howdy_create_texts:main',
             # email stuff
             'howdy_email_notif = howdy.email.cli.howdy_email_notif:main',
             'howdy_email_gui = howdy.email.gui.howdy_email_gui:main',

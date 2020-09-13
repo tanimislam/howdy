@@ -124,7 +124,7 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_. The |c
      - |howdy_email_gui_icon| :ref:`howdy_email_gui <howdy_email_gui_label>` |cbox|
    * -
      -
-     - |howdy_email_demo_gui_icon| :ref:`howdy_email_demo_gui <howdy_email_demo_gui_labe>` |cbox|
+     - |howdy_email_demo_gui_icon| :ref:`howdy_email_demo_gui <howdy_email_demo_gui_label>` |cbox|
 
 .. these are the links
 .. _GitHub: https://github.com

@@ -835,10 +835,13 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
 
 def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, tor_info ):
     from fabric import Connection
+    mainDir = 'downloads'
+    data = core_rsync.get_credentials( )
+    if 'subdir' in data: mainDir = data['subdir']
     media_file = max(tor_info[b'files'], key = lambda elem: elem[b'size'] )
     file_name = os.path.join( 'downloads', media_file[b'path'].decode('utf-8') )
     suffix = os.path.basename( file_name ).split('.')[-1].strip( )
-    new_file = os.path.join( 'downloads', '%s.%s' % ( os.path.basename( totFname ), suffix ) )
+    new_file = os.path.join( mainDir, '%s.%s' % ( os.path.basename( totFname ), suffix ) )
     uname = client.username
     password = client.password
     host = client.host    

@@ -7,7 +7,7 @@ from requests.compat import urljoin
 from multiprocessing import Process, Manager
 from pathos.multiprocessing import Pool
 #
-from howdy.core import core_deluge, get_formatted_size, get_maximum_matchval, return_error_raw, core
+from howdy.core import core_deluge, get_formatted_size, get_maximum_matchval, return_error_raw, core, core_rsync
 from howdy.tv import get_token, tv
 
 _num_to_quit = 10

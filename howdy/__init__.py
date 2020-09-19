@@ -1,12 +1,16 @@
 __author__ = 'Tanim Islam'
 __email__ = 'tanim.islam@gmail.com'
 
-import sys, os
+import sys, os, requests, urllib3
+
+# disable insecure request warnings, because do not recall how to get the name of the certificate for a given plex server
+requests.packages.urllib3.disable_warnings( )
+urllib3.disable_warnings( )
 
 _mainDir = os.path.dirname( os.path.abspath( __file__ ) )
 resourceDir = os.path.join( _mainDir, 'resources' )
 """
-the directory in which the Howdy_ resources are stored.
+the directory where Howdy_ stores its resources.
 
 .. _Howdy: https://howdy.readthedocs.io
 """

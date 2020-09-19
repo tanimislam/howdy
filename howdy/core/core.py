@@ -1,4 +1,4 @@
-import os, glob, datetime, gspread, logging, sys, numpy, urllib3
+import os, glob, datetime, logging, numpy, urllib3
 import uuid, requests, pytz, time, json, validators
 import pathos.multiprocessing as multiprocessing
 # oauth2 stuff
@@ -18,10 +18,6 @@ from multiprocessing import Manager
 from howdy import resourceDir
 from howdy.core import session, PlexConfig, LastNewsletterDate, PlexGuestEmailMapping
 from howdy.movie import movie
-
-# disable insecure request warnings, because do not recall how to get the name of the certificate for a given plex server
-requests.packages.urllib3.disable_warnings( )
-urllib3.disable_warnings( )
 
 def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
     """

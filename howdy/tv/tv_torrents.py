@@ -7,7 +7,7 @@ from requests.compat import urljoin
 from multiprocessing import Process, Manager
 from pathos.multiprocessing import Pool
 #
-from howdy.core import core_deluge, get_formatted_size, get_maximum_matchval, return_error_raw, core
+from howdy.core import core_deluge, get_formatted_size, get_maximum_matchval, return_error_raw, core, core_rsync
 from howdy.tv import get_token, tv
 
 _num_to_quit = 10
@@ -835,10 +835,13 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
 
 def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, tor_info ):
     from fabric import Connection
+    mainDir = 'downloads'
+    data = core_rsync.get_credentials( )
+    if 'subdir' in data: mainDir = data['subdir']
     media_file = max(tor_info[b'files'], key = lambda elem: elem[b'size'] )
     file_name = os.path.join( 'downloads', media_file[b'path'].decode('utf-8') )
     suffix = os.path.basename( file_name ).split('.')[-1].strip( )
-    new_file = os.path.join( 'downloads', '%s.%s' % ( os.path.basename( totFname ), suffix ) )
+    new_file = os.path.join( mainDir, '%s.%s' % ( os.path.basename( totFname ), suffix ) )
     uname = client.username
     password = client.password
     host = client.host    

@@ -756,8 +756,8 @@ def download_best_song( artist_name, song_name, youtube = None,
     :returns: if successful, the file name of the downloaded M4A_ song (``"artist_name"."song_name".m4a``). If cannot find the song metadata, or cannot find YouTube_ clips for this song, then returns ``None``.
     """
     if youtube is not None:
-        youtube = music.get_youtube_service( verify = verify )
-    plastm = music.HowdyLastFM( verify = verify )
+        youtube = get_youtube_service( verify = verify )
+    plastm = HowdyLastFM( verify = verify )
     data_dict, status = plastfm.get_music_metadata(
         song_name = song_name,
         artist_name = artist_name, all_data = True )
@@ -766,13 +766,13 @@ def download_best_song( artist_name, song_name, youtube = None,
     artist_name = data_dict[ 'artist' ]
     song_name = data_dict[ 'song' ]
     name = '%s %s' % ( artist_name, song_name )
-    videos = music.youtube_search( youtube, name, max_results = 10 )
+    videos = youtube_search( youtube, name, max_results = 10 )
     if len( videos ) == 0:
         return None
     _, youtubeURL = videos[0]
     filename = '%s.%s.m4a' % ( artist_name, song_name )
-    music.get_youtube_file( youtubeURL, filename )
-    music.fill_m4a_metadata( filename, data_dict )
+    get_youtube_file( youtubeURL, filename )
+    fill_m4a_metadata( filename, data_dict )
     return filename
 
             

@@ -50,6 +50,22 @@ def get_default_tvlibrary( fullURL, token ):
     key_found = min( key_found )
     return all_libraries[ key_found ][ 0 ], 'SUCCESS'
 
+def process_excluded_shows(
+    original_excluded_shows, excluded_shows ):
+    print( 'Originally %d shows to exclude. Now %d shows to exclude.\n' % (
+        len( original_excluded_shows ), len( excluded_shows ) ) )
+    maxlen = max( len( excluded_shows ), len( original_excluded_shows ) )
+    print_exclude_shows = list( chain.from_iterable([
+        sorted( excluded_shows ), [''] * ( maxlen - len( excluded_shows ) ) ] ) )
+    print_orig_excluded = list( chain.from_iterable([
+        sorted( original_excluded_shows ), [''] * ( maxlen - len( original_excluded_shows ) ) ]) )
+    print( '%s\n' % tabulate.tabulate(
+        list(zip( print_orig_excluded, print_exclude_shows ) ), headers = [ 'ORIGINAL', 'NEW' ] ) )
+    status = try_continue( )
+    if status:
+        set_excluded_shows( tvdata, excluded_shows )
+        print( 'NEW EXCLUDED SHOWS ADDED' )
+
 def main( ):
     parser = ArgumentParser( )
     parser.add_argument( '--remote', dest='do_local', action = 'store_false', default = True,
@@ -60,15 +76,25 @@ def main( ):
                         help = 'If named, then choose this as the TV library through which to look. Otherwise, look for first TV library found on Plex server.' )
     #
     ##
-    subparser = parser.add_subparsers( help = 'Either show or exclude shows.', dest = 'choose_option' )
+    subparser = parser.add_subparsers( help = 'Either show, exclude, add, or remove shows.', dest = 'choose_option' )
     #
     ##
     parser_show = subparser.add_parser( 'show', help = 'Show those TV shows that have been excluded.' )
     #
     ##
     parser_exclude = subparser.add_parser( 'exclude', help = 'Exclude a new list of TV shows.' )
-    parser_exclude.add_argument( 'tvshow', metavar='tvshow', type=str, action='store', nargs='*',
+    parser_exclude.add_argument( 'exclude_tvshow', metavar='tvshow', type=str, action='store', nargs='*',
                                 help = 'Set of TV shows to exclude from update.' )
+    #
+    ##
+    parser_add = subparser.add_parser( 'add', help = 'Add a new list of TV shows to the current exclude list.' )
+    parser.add.add_argument( 'add_tvshow', metavar = 'tvshow', type=str, action='store', nargs = '*',
+                            help = 'Set of TV shows to add, to excluded list.' )
+    #
+    ##
+    parser_remove = subparser.add_parser( 'remove', help = 'Remove a list of TV shows from the current exclude list.' )
+    parser_remove.add_argument( 'remove_tvshow', metavar = 'tvshow', type=str, action='store', nargs = '*',
+                               help = 'Set of TV shows to remove, to excluded list.' )
     #
     ##
     args = parser.parse_args( )
@@ -103,10 +129,11 @@ def main( ):
         print( '%s\n' % tabulate.tabulate( map(lambda tok: [ tok ], sorted( set( excluded_shows ) ) ), headers = [ 'SHOW' ] ) )
         return
     if args.choose_option == 'exclude':
-        if '*' in set( args.tvshow ):
+        exclude_tvshows = set(map(lambda tok: tok.strip( ), args.exclude_tvshow ) )
+        if '*' in exclude_tvshows:
             print( "Error, cannot exclude ALL shows." )
             return                  
-        excluded_shows = set( args.tvshow ) & set( tvdata )
+        excluded_shows = exclude_tvshows & set( tvdata )
         if len( excluded_shows ) == 0:
             print( "Found NO shows to exclude that are in the Plex TV library." )
             return
@@ -114,19 +141,32 @@ def main( ):
         if set( original_excluded_shows ) == excluded_shows:
             print( "No change in collection of excluded shows." )
             return
-        print( 'Originally %d shows to exclude. Now %d shows to exclude.\n' % (
-            len( original_excluded_shows ), len( excluded_shows ) ) )
-        maxlen = max( len( excluded_shows ), len( original_excluded_shows ) )
-        print_exclude_shows = list( chain.from_iterable([
-            sorted( excluded_shows ), [''] * ( maxlen - len( excluded_shows ) ) ] ) )
-        print_orig_excluded = list( chain.from_iterable([
-            sorted( original_excluded_shows ), [''] * ( maxlen - len( original_excluded_shows ) ) ]) )
-        print( '%s\n' % tabulate.tabulate(
-            list(zip( print_orig_excluded, print_exclude_shows ) ), headers = [ 'ORIGINAL', 'NEW' ] ) )
-        status = try_continue( )
-        if status:
-            set_excluded_shows( tvdata, excluded_shows )
-            print( 'NEW EXCLUDED SHOWS ADDED' )
+        process_excluded_shows( original_excluded_shows, excluded_shows )
         return
-                                                                               
-            
+    if args.choose_option == 'add':
+        original_excluded_shows = set( show_excluded_shows( tvdata ) )
+        added_tvshows = set(map(lambda tok: tok.strip( ), args.add_tvshow ) ) - original_excluded_shows
+        if '*' in added_tvshows:
+            print( "Error, cannot add ALL shows." )
+            return
+        added_shows = added_tvshows & set( tvdata )
+        if len( added_shows ) == 0:
+            print( "Found NO shows to add to exclusion list that are in the Plex TV library." )
+            return
+        excluded_shows = added_shows | original_excluded_shows
+        process_excluded_shows( original_excluded_shows, excluded_shows )
+        return
+    if args.choose_option == 'remove':
+        original_excluded_shows = set( show_excluded_shows( tvdata ) )
+        removed_tvshows = set(map(lambda tok: tok.strip( ), args.add_tvshow ) )
+        if '*' in removed_tvshows:
+            removed_tvshows = original_excluded_shows
+        removed_tvshows = removed_tvshows & original_excluded_shows
+        if len( removed_tvshows ) == 0:
+            print( "Found NO shows to remove from exclusion list that are in the Plex TV library." )
+            return
+        excluded_shows = original_excluded_shows - removed_tvshows
+        process_excluded_shows( original_excluded_shows, excluded_shows )
+        return
+        
+        

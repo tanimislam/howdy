@@ -50,7 +50,7 @@ def get_default_tvlibrary( fullURL, token ):
     key_found = min( key_found )
     return all_libraries[ key_found ][ 0 ], 'SUCCESS'
 
-def process_excluded_shows(
+def process_excluded_shows( tvdata,
     original_excluded_shows, excluded_shows ):
     print( 'Originally %d shows to exclude. Now %d shows to exclude.\n' % (
         len( original_excluded_shows ), len( excluded_shows ) ) )
@@ -64,7 +64,7 @@ def process_excluded_shows(
     status = try_continue( )
     if status:
         set_excluded_shows( tvdata, excluded_shows )
-        print( 'NEW EXCLUDED SHOWS ADDED' )
+        print( 'EXCLUDED SHOWS CHANGED' )
 
 def main( ):
     parser = ArgumentParser( )
@@ -88,7 +88,7 @@ def main( ):
     #
     ##
     parser_add = subparser.add_parser( 'add', help = 'Add a new list of TV shows to the current exclude list.' )
-    parser.add.add_argument( 'add_tvshow', metavar = 'tvshow', type=str, action='store', nargs = '*',
+    parser_add.add_argument( 'add_tvshow', metavar = 'tvshow', type=str, action='store', nargs = '*',
                             help = 'Set of TV shows to add, to excluded list.' )
     #
     ##
@@ -141,11 +141,14 @@ def main( ):
         if set( original_excluded_shows ) == excluded_shows:
             print( "No change in collection of excluded shows." )
             return
-        process_excluded_shows( original_excluded_shows, excluded_shows )
+        process_excluded_shows( tvdata, original_excluded_shows, excluded_shows )
         return
     if args.choose_option == 'add':
         original_excluded_shows = set( show_excluded_shows( tvdata ) )
         added_tvshows = set(map(lambda tok: tok.strip( ), args.add_tvshow ) ) - original_excluded_shows
+        if len( added_tvshows) == 0:
+            print( 'All TV shows to add are already in the exclude list.' )
+            return
         if '*' in added_tvshows:
             print( "Error, cannot add ALL shows." )
             return
@@ -154,11 +157,11 @@ def main( ):
             print( "Found NO shows to add to exclusion list that are in the Plex TV library." )
             return
         excluded_shows = added_shows | original_excluded_shows
-        process_excluded_shows( original_excluded_shows, excluded_shows )
+        process_excluded_shows( tvdata, original_excluded_shows, excluded_shows )
         return
     if args.choose_option == 'remove':
         original_excluded_shows = set( show_excluded_shows( tvdata ) )
-        removed_tvshows = set(map(lambda tok: tok.strip( ), args.add_tvshow ) )
+        removed_tvshows = set(map(lambda tok: tok.strip( ), args.remove_tvshow ) )
         if '*' in removed_tvshows:
             removed_tvshows = original_excluded_shows
         removed_tvshows = removed_tvshows & original_excluded_shows
@@ -166,7 +169,7 @@ def main( ):
             print( "Found NO shows to remove from exclusion list that are in the Plex TV library." )
             return
         excluded_shows = original_excluded_shows - removed_tvshows
-        process_excluded_shows( original_excluded_shows, excluded_shows )
+        process_excluded_shows( tvdata, original_excluded_shows, excluded_shows )
         return
         
         

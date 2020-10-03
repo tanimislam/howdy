@@ -64,8 +64,6 @@ extensions = [
     'sphinxcontrib.youtube',
     'sphinx_issues',
     'sphinxarg.ext',
-    # 'sphinx.ext.imgconverter',
-    # 'sphinxcontrib.cairosvgconverter',
 ]
 
 #

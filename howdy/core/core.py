@@ -824,7 +824,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
         return True
     #
     def _get_artist_data( input_data ):
-        cont =    input_data[ 'cont' ]
+        cont    = input_data[ 'cont' ]
         session = input_data[ 'session' ]
         timeout = input_data[ 'timeout' ]
         indices = input_data[ 'indices' ]
@@ -1413,8 +1413,7 @@ def oauthCheckGoogleCredentials( bypass = False ):
     :rtype: tuple.
 
     .. seealso::
-
-       * :py:meth:`oauthCheckGoogleCredentials <howdy.core.core.oauthCheckGoogleCredentials>`.
+    
        * :py:meth:`oauthGetGoogleCredentials <howdy.core.core.oauthGetGoogleCredentials>`.
        * :py:meth:`oauthGetOauth2ClientGoogleCredentials <howdy.core.core.oauthGetOauth2ClientGoogleCredentials>`.
        * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
@@ -1432,7 +1431,7 @@ def oauthCheckGoogleCredentials( bypass = False ):
 
 def oauthGetGoogleCredentials( verify = True ):
     """
-    Gets the `Google Oauth2`_ credentials, stored in the SQLite3_ configuration database, in the form of a refreshed :py:class:`Credentials <google.oauth2.credentials.Credentials>` object. The OAuth2 authentication with this method has not been implemented for services yet.
+    Gets the `Google Oauth2`_ credentials, stored in the SQLite3_ configuration database, in the form of a refreshed :py:class:`Credentials <google.oauth2.credentials.Credentials>` object. This OAuth2 authentication method is used for ALL the services accessed by Howdy_.
 
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
@@ -1441,7 +1440,7 @@ def oauthGetGoogleCredentials( verify = True ):
     
     .. seealso::
 
-       * :py:meth:`oauthGetGoogleCredentials <howdy.core.core.oauthGetGoogleCredentials>`.
+       * :py:meth:`oauthCheckGoogleCredentials <howdy.core.core.oauthCheckGoogleCredentials>`.
        * :py:meth:`oauthGetOauth2ClientGoogleCredentials <howdy.core.core.oauthGetOauth2ClientGoogleCredentials>`.
        * :py:meth:`oauth_generate_google_permission_url <howdy.core.core.oauth_generate_google_permission_url>`.
        * :py:meth:`oauth_store_google_credentials <howdy.core.core.oauth_store_google_credentials>`.
@@ -1510,7 +1509,7 @@ def oauth_generate_google_permission_url( ):
     """
     
     #flow = Flow.from_client_secrets_file(
-    #    os.path.join( mainDir, 'resources', 'client_secrets.json' ),
+    #    os.path.join( resourceDir, 'client_secrets.json' ),
     #    scopes = [ 'https://www.googleapis.com/auth/gmail.send',
     #               'https://www.googleapis.com/auth/contacts.readonly',
     #               'https://www.googleapis.com/auth/youtube.readonly',

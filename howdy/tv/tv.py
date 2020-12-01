@@ -1230,14 +1230,19 @@ def _get_remaining_eps_perproc( input_tuple ):
     mustHaveTitle = input_tuple[ 'mustHaveTitle' ]
     #
     ## only record those episodes that have an episodeName that is not None
-    if mustHaveTitle:
-        eps = list(
-            filter(lambda ep: 'episodeName' in ep and ep['episodeName'] is not None,
-                   get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
-                                        fromDate = fromDate, showFuture = showFuture ) ) )
-    else:
-        eps = get_episodes_series( series_id, token, showSpecials = showSpecials, verify = verify,
-                                   fromDate = fromDate, showFuture = showFuture )
+    try:
+        if mustHaveTitle:
+            eps = list(
+                filter(lambda ep: 'episodeName' in ep and ep['episodeName'] is not None,
+                    get_episodes_series(
+                        series_id, token, showSpecials = showSpecials, verify = verify,
+                        fromDate = fromDate, showFuture = showFuture ) ) )
+        else:
+            eps = get_episodes_series(
+                series_id, token, showSpecials = showSpecials, verify = verify,
+                fromDate = fromDate, showFuture = showFuture )
+    except:
+        return None
     tvdb_eps = set(map(lambda ep: ( ep['airedSeason'], ep['airedEpisodeNumber' ] ), eps ) )
     tvdb_eps_dict = { ( ep['airedSeason'], ep['airedEpisodeNumber' ] ) :
                       ( ep['airedSeason'], ep['airedEpisodeNumber' ], ep['episodeName'] ) for ep in eps }

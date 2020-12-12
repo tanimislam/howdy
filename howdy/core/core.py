@@ -629,9 +629,11 @@ def _get_library_data_show(
                 if 'parentguid' not in leafElem.attrs: continue
                 pguid = leafElem.attrs[ 'parentguid']
                 prs = urlparse( pguid )
-                try:
-                    tvdbID = int( prs.netloc )
-                    break
+                scheme = prs.scheme
+                if 'themoviedb' in scheme: continue
+                try:                  
+                  tvdbID = int( prs.netloc )
+                  break
                 except: pass
             if tvdbID is not None: showdata[ 'tvdbid' ] = tvdbID
             #

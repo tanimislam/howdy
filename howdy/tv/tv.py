@@ -536,9 +536,10 @@ def get_series_id( series_name, token, verify = True ):
     """
     data_ids, status = get_possible_ids( series_name, token, verify = verify )
     if data_ids is None:
-        print( 'PROBLEM WITH series %s' % series_name )
-        print( 'error message: %s.' % status )
+        logging.error( 'PROBLEM WITH series %s' % series_name )
+        logging.error( 'error message: %s.' % status )
         return None
+    logging.debug( 'data_ids = %s.' % data_ids )
     data_matches = list(filter(lambda dat: dat['seriesName'] == series_name,
                                data_ids ) )
     #
@@ -633,7 +634,10 @@ def did_series_end( series_id, tvdb_token, verify = True, date_now = None ):
                 'Authorization' : 'Bearer %s' % tvdb_token }
     response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
                              headers = headers, verify = verify )
-    if response.status_code != 200: return None
+    if response.status_code != 200:
+      logging.debug( 'was not able to get series info. status_code = %d. tvdb_token = %s. series_id = %d.' % (
+        response.status_code, tvdb_token, series_id ) )
+      return None
     try:
         data = response.json( )['data']
         

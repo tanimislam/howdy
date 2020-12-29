@@ -9,6 +9,7 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from email.mime.audio import MIMEAudio
 from email.mime.image import MIMEImage
+from jinja2 import Environment, FileSystemLoader, Template
 #
 from howdy import resourceDir
 from howdy.core import session, core, get_lastupdated_string
@@ -43,22 +44,26 @@ def send_email_movie_torrent( movieName, data, isJackett = False, verify = True 
     msg['From'] = emailString
     msg['To']  = emailString
     if emailName is not None:
-        msg['Subject'] = '%s, can you download this movie, %s, requested on %s?' % (
-           emailName.split()[0],  movieName, dtstring )
+        template = Template('{{ name }}, can you download this movie, {{ movieName }}, requested on {{ dtstring }}?' )
+        msg[ 'Subject' ] = template.render( name = name, movieName = movieName, dtstring = dtstring )
     else:
-        msg['Subject'] = 'Can you download this movie, %s, requested on %s?' % (
-            movieName, dtstring )
+        template = Template('Can you download this movie, {{ movieName }}, requested on {{ dtstring }}?' )
+        msg[ 'Subject' ] = template.render( movieName = movieName, dtstring = dtstring )
+
+    #
+    ## JINJA load in the directory in which these templates live, http://zetcode.com/python/jinja/
+    env = Environment( loader = FileSystemLoader( resourceDir ) )
     if not isJackett:
+        torrent_data = data
         torfile = '%s.torrent' % '_'.join( movieName.split( ) ) # change to get to work
         torfile_mystr = '%s.torrent' % '_'.join( movieName.split( ) ) # change to get to work
+        email_torrent = { 'name' : name, 'torfile_mystr' : torfile_mystr, 'dtstring' : dtstring }
+        template = env.get_template( 'howdy_sendmovie_torrent.rst' )
+        wholestr = template.render( email_torrent = email_torrent )
         #
-        tup_formatting = ( name, '%s.' % torfile_mystr, '%s.' % dtstring )
-        wholestr = open( os.path.join(
-            resourceDir, 'howdy_sendmovie_torrent.rst' ), 'r' ).read( )
-        wholestr = wholestr % tup_formatting
         htmlString = core.rstToHTML( wholestr )
         body = MIMEText( htmlString, 'html', 'utf-8' )
-        att = MIMEApplication( data, _subtype = 'torrent' )
+        att = MIMEApplication( torrent_data, _subtype = 'torrent' )
         att.add_header(
             'content-disposition', 'attachment',
             filename = torfile )
@@ -66,10 +71,10 @@ def send_email_movie_torrent( movieName, data, isJackett = False, verify = True 
         msg.attach( att )
     else:
         mag_link = data
-        wholestr = open( os.path.join(
-            resourceDir, 'howdy_sendmovie_magnet.rst' ), 'r' ).read( )
-        tup_formatting = (
-            name, mag_link, movieName, dtstring )
+        email_magnet = { 'name' : name, 'mag_link' : data, 'movieName' : movieName, 'dtstring' : dtstring }
+        template = env.get_template(  'howdy_sendmovie_magnet.rst' )
+        wholestr = template.render( email_magnet = email_magnet )
+        #
         htmlString = core.rstToHTML( wholestr )
         body = MIMEText( htmlString, 'html', 'utf-8' )
         msg.attach( body )
@@ -102,15 +107,17 @@ def send_email_movie_none( movieName, verify = True ):
     msg['From'] = emailString
     msg['To']  = emailString
     if emailName is not None:
-        msg['Subject'] = '%s, can you download this movie, %s, requested on %s?' % (
-           emailName.split()[0],  movieName, dtstring )
+        template = Template('{{ name }}, can you download this movie, {{ movieName }}, requested on {{ dtstring }}?' )
+        msg[ 'Subject' ] = template.render( name = name, movieName = movieName, dtstring = dtstring )
     else:
-        msg['Subject'] = 'Can you download this movie, %s, requested on %s?' % (
-            movieName, dtstring )
+        template = Template('Can you download this movie, {{ movieName }}, requested on {{ dtstring }}?' )
+        msg[ 'Subject' ] = template.render( movieName = movieName, dtstring = dtstring )
     #
-    wholestr = open( os.path.join( resourceDir, 'howdy_sendmovie_none.rst' ), 'r' ).read( )
-    tup_formatting = ( name, movieName, dtstring )
-    wholestr = wholestr % tup_formatting
+    env = Environment( loader = FileSystemLoader( resourceDir ) )
+    template = env.get_template( 'howdy_sendmovie_none.rst' )
+    email_none = { 'name' : name, 'movieName' : movieName, 'dtstring' : dtstring }
+    wholestr = template.render( email_none = email_none )
+    #
     htmlString = core.rstToHTML( wholestr )
     body = MIMEText( htmlString, 'html', 'utf-8' )
     msg.attach( body )
@@ -183,7 +190,7 @@ def test_email( subject = None, htmlstring = None, verify = True ):
     else: emailString = '%s <%s>' % ( emailName, emailAddress )
     fromEmail = emailString
     if subject is None:
-        subject = titlecase.titlecase( 'Plex Email Newsletter For %s' % mydate.strftime( '%B %Y' ) )
+        subject = titlecase.titlecase( 'Plex Email Newsletter for %s' % mydate.strftime( '%B %Y' ) )
     msg = MIMEMultipart( )
     msg['From'] = fromEmail
     msg['Subject'] = subject
@@ -481,16 +488,21 @@ def _get_album_prifile( prifile ):
         return ( prifile, album )
     else: return None
 
-def get_summary_data_music_remote( token, fullURL = 'http://localhost:32400' ):
+def get_summary_data_music_remote(
+    token, fullURL = 'http://localhost:32400',
+    sinceDate = datetime.datetime.strptime('January 1, 2020', '%B %d, %Y' ).date( ) ):
     """
-    This returns summary information on songs from all music libraries on the Plex_ server, for use as part of the Plex_ newsletter sent out to one's Plex_ server friends. The email first summarizes ALL the music data, and then summarizes the music data uploaded and processed since the last newsletter's date. For example,
+    This returns summary information on songs from all music libraries on the Plex_ server, for use as part of the Plex_ newsletter sent out to one's Plex_ server friends. The email first summarizes ALL the music data, and then summarizes the music data uploaded and processed since a previous date. For example,
     
-       There are 17379 songs made by 862 artists in 1715 albums. The total size of music media is 300.467 GB. The total duration of music media is 7 months, 13 days, 16 hours, 22 minutes, and 57.155 seconds. Since June 11, 2017, I have added 9692 songs made by 742 artists in 1314 albums. The total size of music media I added is 107.845 GB. The total duration of music media I added is 2 months, 28 days, 21 hours, 48 minutes, and 51.117 seconds.
- 
+       As of December 29, 2020, there are 17,853 songs made by 889 artists in 1,764 albums. The total size of music media is 306.979 GB. The total duration of music media is 7 months, 18 days, 15 hours, 8 minutes, and 15.785 seconds.
+
+       Since January 01, 2020, I have added 7,117 songs made by 700 artists in 1,180 albums. The total size of music media that I have added is 48.167 GB. The total duration of music media that I have added is 28 days, 15 hours, 25 minutes, and 37.580 seconds.
+    
     :param str token: the Plex_ access token.
     :param str fullURL: the Plex_ server URL.
+    :param date sinceDate: the :py:class:`datetime <datetime.date>` from which we have added songs. Default is :py:class:`date <datetime.date>` corresponding to ``January 1, 2020``.
     
-    :returns: a :py:class:`string <str>` description of music media in all music libraries on the Plex_ server.
+    :returns: a :py:class:`string <str>` description of music media in all music libraries on the Plex_ server. If there is no Plex_ server or music library, returns ``None``.
     :rtype: str
 
     .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`.
@@ -499,52 +511,50 @@ def get_summary_data_music_remote( token, fullURL = 'http://localhost:32400' ):
     if libraries_dict is None: return None
     keynums = set(filter(lambda keynum: libraries_dict[ keynum ][ 1 ] == 'artist', libraries_dict ) )
     if len( keynums ) == 0: return None
-    sinceDate = core.get_current_date_newsletter( )
+    # sinceDate = core.get_current_date_newsletter( )
     datas = list(map(lambda keynum: core.get_library_stats( keynum, token, fullURL = fullURL ), keynums))
-    mainstring = 'There are %d songs made by %d artists in %d albums.' % (
-        sum(list(map(lambda data: data[ 'num_songs' ], datas))),
-        sum(list(map(lambda data: data[ 'num_artists' ], datas))),
-        sum(list(map(lambda data: data[ 'num_albums' ], datas))))
-    sizestring = 'The total size of music media is %s.' % get_formatted_size(
-        sum(list(map(lambda data: data[ 'totsize' ], datas))))
-    durstring = 'The total duration of music media is %s.' % get_formatted_duration(
-        sum(list(map(lambda data: data[ 'totdur' ], datas))))
-    if sinceDate is not None:
-        datas_since = list(filter(
-            lambda data_since: data_since[ 'num_songs' ] > 0,
-            map(lambda keynum: core.get_library_stats(
-                keynum, token, fullURL = fullURL, sinceDate = sinceDate ), keynums ) ) )
-        if len( datas_since ) != 0:
-            num_songs_since = sum(list(map(lambda data_since: data_since[ 'num_songs' ], datas_since)))
-            num_artists_since = sum(list(map(lambda data_since: data_since[ 'num_artists' ], datas_since)))
-            num_albums_since = sum(list(map(lambda data_since: data_since[ 'num_albums' ], datas_since)))
-            totsize_since = sum(list(map(lambda data_since: data_since[ 'totsize'], datas_since)))
-            totdur_since = sum(list(map(lambda data_since: data_since[ 'totdur' ], datas_since)))
-            mainstring_since = ' '.join([
-                'Since %s, I have added %d songs made by %d artists in %d albums.' % (
-                    sinceDate.strftime( '%B %d, %Y' ),
-                    num_songs_since, num_artists_since, num_albums_since ),
-                #
-                'The total size of music media I added is %s.' %
-                get_formatted_size( totsize_since ),
-                #
-                'The total duration of music media I added is %s.' %
-                get_formatted_duration( totdur_since ) ] )
-            musicstring = ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
-            return musicstring
-    musicstring = ' '.join([ mainstring, sizestring, durstring ])
+    music_summ = {
+        'current_date_string' : datetime.datetime.now( ).date( ).strftime( '%B %d, %Y' ),
+        'num_songs' : f'{sum(list(map(lambda data: data[ "num_songs" ], datas))):,}',
+        'num_artists' : f'{sum(list(map(lambda data: data[ "num_artists" ], datas))):,}',
+        'num_albums' : f'{sum(list(map(lambda data: data[ "num_albums" ], datas))):,}',
+        'formatted_size' : get_formatted_size(sum(list(map(lambda data: data[ 'totsize' ], datas)))),
+        'formatted_duration' : get_formatted_duration(sum(list(map(lambda data: data[ 'totdur' ], datas)))) }
+    #
+    ## now since sinceDate
+    datas_since = list(filter(
+        lambda data_since: data_since[ 'num_songs' ] > 0,
+        map(lambda keynum: core.get_library_stats(
+            keynum, token, fullURL = fullURL, sinceDate = sinceDate ), keynums ) ) )
+    music_summ[ 'len_datas_since' ] = len( datas_since )
+    if len( datas_since ) > 0:
+        music_summ[ 'since_date_string' ] = sinceDate.strftime( '%B %d, %Y' )
+        music_summ[ 'num_songs_since' ] = f'{sum(list(map(lambda data_since: data_since[ "num_songs" ], datas_since))):,}'
+        music_summ[ 'num_artists_since' ] = f'{sum(list(map(lambda data_since: data_since[ "num_artists" ], datas_since))):,}'
+        music_summ[ 'num_albums_since' ] = f'{sum(list(map(lambda data_since: data_since[ "num_albums" ], datas_since))):,}'
+        music_summ[ 'formatted_size_since' ] = get_formatted_size( sum(list(map(lambda data_since: data_since[ 'totsize'], datas_since))))
+        music_summ[ 'formatted_duration_since' ] = get_formatted_duration( sum(list(map(lambda data_since: data_since[ 'totdur' ], datas_since))) )
+    #
+    env = Environment( loader = FileSystemLoader( resourceDir ) )
+    template = env.get_template( 'summary_data_music_template.rst' )
+    musicstring = template.render( music_summ = music_summ )
     return musicstring
 
-def get_summary_data_television_remote( token, fullURL = 'http://localhost:32400' ):
+def get_summary_data_television_remote(
+    token, fullURL = 'http://localhost:32400',
+    sinceDate = datetime.datetime.strptime('January 1, 2020', '%B %d, %Y' ).date( ) ):
     """
-    This returns summary information on TV media from all television libraries on the Plex_ server, for use as part of the Plex_ newsletter sent out to one's Plex_ server friends. The email first summarizes ALL the TV data, and then summarizes the TV data uploaded and processed since the last newsletter's date. For example,
+    This returns summary information on TV media from all television libraries on the Plex_ server, for use as part of the Plex_ newsletter sent out to one's Plex_ server friends. The email first summarizes ALL the TV data, and then summarizes the TV data uploaded and processed since a previous date. For example,
 
-       There are 21380 TV episodes in 240 TV shows. The total size of TV media is 5.381 TB. The total duration of TV media is 1 year, 2 months, 19 days, 13 hours, 35 minutes, and 10.818 seconds. Since June 11, 2017, I have added 10030 TV files in 240 TV shows. The total size of TV media I added is 2.429 TB. The total duration of TV media I added is 6 months, 19 days, 3 hours, 28 minutes, and 17.170 seconds.
+       As of December 29, 2020, there are 25,195 TV episodes in 298 TV shows. The total size of TV media is 6.690 TB. The total duration of TV media is 1 year, 5 months, 19 days, 9 hours, 29 minutes, and 13.919 seconds.
+
+       Since January 01, 2020, I have added 5,005 TV epsisodes in 298 TV shows. The total size of TV media that I have added is 1.571 TB. The total duration of TV media that I have added is 3 months, 16 days, 4 hours, 52 minutes, and 15.406 seconds.
 
     :param str token: the Plex_ access token.
     :param str fullURL: the Plex_ server URL.
+    :param date sinceDate: the :py:class:`datetime <datetime.date>` from which we have added songs. Default is :py:class:`date <datetime.date>` corresponding to ``January 1, 2020``.
     
-    :returns: a :py:class:`string <str>` description of TV media in all TV libraries on the Plex_ server.
+    :returns: a :py:class:`string <str>` description of TV media in all TV libraries on the Plex_ server. If there is no Plex_ server or TV library, returns ``None``.
     :rtype: str
 
     .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`.
@@ -554,56 +564,74 @@ def get_summary_data_television_remote( token, fullURL = 'http://localhost:32400
     keynums = set(filter(lambda keynum: libraries_dict[ keynum ][ 1 ] == 'show', libraries_dict ) )
     if len( keynums ) == 0: return None
     #
-    sinceDate = core.get_current_date_newsletter( )
-    datas = list(map(lambda keynum: core.get_library_stats( keynum, token, fullURL = fullURL ),
-                     keynums))
-    sizestring = 'The total size of TV media is %s.' % ( 
-        get_formatted_size( sum(list(map(lambda data: data[ 'totsize' ], datas)))))
-    durstring = 'The total duration of TV media is %s.' % (
-        get_formatted_duration( sum(list(map(lambda data: data[ 'totdur' ], datas)))))
-    mainstring = 'There are %d TV episodes in %d TV shows.' % (
-        sum(list(map(lambda data: data[ 'num_tveps' ], datas))),
-        sum(list(map(lambda data: data[ 'num_tvshows' ], datas))))
-    if sinceDate is not None:
-        datas_since = list(filter(
-            lambda data_since: data_since[ 'num_tveps' ] > 0,
-            map(lambda keynum: core.get_library_stats(
-                keynum, token, fullURL = fullURL, sinceDate = sinceDate ), keynums) ) )
-        if len( datas_since ) > 0:
-            mainstring_since = ' '.join([
-                'Since %s, I have added %d TV files in %d TV shows.' % (
-                    sinceDate.strftime('%B %d, %Y'),
-                    sum(list(map(lambda data_since: data_since[ 'num_tveps' ], datas_since))),
-                    sum(list(map(lambda data_since: data_since[ 'num_tvshows' ], datas_since)))),
-                'The total size of TV media I added is %s.' %
-                get_formatted_size(
-                    sum(list(map(lambda data_since: data_since[ 'totsize' ], datas_since)))),
-                'The total duration of TV media I added is %s.' %
-                get_formatted_duration(
-                    sum(list(map(lambda data_since: data_since[ 'totdur' ], datas_since)))) ])
-            tvstring = ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
-            return tvstring
-    tvstring = ' '.join([ mainstring, sizestring, durstring ])
+    # sinceDate = core.get_current_date_newsletter( )
+    datas = list(map(lambda keynum: core.get_library_stats( keynum, token, fullURL = fullURL ), keynums))
+    tv_summ = {
+        'current_date_string' : datetime.datetime.now( ).date( ).strftime( '%B %d, %Y' ),
+        'num_episodes' : f'{sum(list(map(lambda data: data[ "num_tveps" ], datas))):,}',
+        'num_shows' : f'{sum(list(map(lambda data: data[ "num_tvshows" ], datas))):,}',
+        'formatted_size' : get_formatted_size(sum(list(map(lambda data: data[ 'totsize' ], datas)))),
+        'formatted_duration' : get_formatted_duration(sum(list(map(lambda data: data[ 'totdur' ], datas)))) }
+    datas_since = list(filter(
+        lambda data_since: data_since[ 'num_tveps' ] > 0,
+        map(lambda keynum: core.get_library_stats(
+            keynum, token, fullURL = fullURL, sinceDate = sinceDate ), keynums) ) )
+    tv_summ[ 'len_datas_since' ] = len( datas_since )
+    if len( datas_since ) > 0:
+        tv_summ[ 'since_date_string' ] = sinceDate.strftime( '%B %d, %Y' )
+        tv_summ[ 'num_episodes_since' ] = f'{sum(list(map(lambda data_since: data_since[ "num_tveps" ], datas_since))):,}'
+        tv_summ[ 'num_shows_since' ] = f'{sum(list(map(lambda data_since: data_since[ "num_tvshows" ], datas_since))):,}'
+        tv_summ[ 'formatted_size_since' ] = get_formatted_size( sum(list(map(lambda data_since: data_since[ 'totsize'], datas_since))))
+        tv_summ[ 'formatted_duration_since' ] = get_formatted_duration( sum(list(map(lambda data_since: data_since[ 'totdur' ], datas_since))) )
+    env = Environment( loader = FileSystemLoader( resourceDir ) )
+    template = env.get_template( 'summary_data_tv_template.rst' )
+    tvstring = template.render( tv_summ = tv_summ )
     return tvstring
 
-def get_summary_data_movies_remote( token, fullURL = 'http://localhost:32400' ):
+def get_summary_data_movies_remote(
+    token, fullURL = 'http://localhost:32400',
+    sinceDate = datetime.datetime.strptime('January 1, 2020', '%B %d, %Y' ).date( ) ):
     """
     This returns summary information on movie media from all movie libraries on the Plex_ server, for use as part of the Plex_ newsletter sent out to one's Plex_ server friends. The email first summarizes ALL the movie data, and then summarizes the movie data uploaded and processed since the last newsletter's date. Unlike :py:meth:`get_summary_data_music_remote <howdy.email.email.get_summary_data_music_remote>` and :py:meth:`get_summary_data_television_remote <howdy.email.email.get_summary_data_television_remote>`, this returns a :py:class:`list` of strings rather than a string.
 
     :param str token: the Plex_ access token.
     :param str fullURL: the Plex_ server URL.
     
-    :returns: a :py:class:`list` containing the itemized summaries of movie media from all movie libraries on the Plex_ server. The format of the individual text is in reStructuredText_ format.
+    :returns: a :py:class:`string <str>` description of TV media in all TV libraries on the Plex_ server. If there is no Plex_ server or TV library, returns ``None``.
     :rtype: list
 
     .. seealso:: :py:meth:`get_summary_body <howdy.email.email.get_summary_body>`.
     """
     libraries_dict = core.get_libraries( token, fullURL = fullURL, do_full = True )
-    if libraries_dict is None: return None
+    if libraries_dict is None:
+        return None
     keynums = set(filter(lambda keynum: libraries_dict[ keynum ][ 1 ] == 'movie', libraries_dict ) )
-    if len( keynums ) == 0: return None
+    if len( keynums ) == 0:
+        return None
     #
-    sinceDate = core.get_current_date_newsletter( )
+    # sinceDate = core.get_current_date_newsletter( )
+    #
+    ## hard coding (for now) how to join by genres
+    join_genres = { 'action' : [ 'thriller', 'western' ], 'comedy' : [ 'family', ], 'drama' : [ 'drame', ] }
+    def _join_by_genre( sort_by_genre, join_genres ):
+        alljoins = list(chain.from_iterable(map(lambda genre: join_genres[ genre ], join_genres ) ) )
+        assert( len( alljoins ) == len( set( alljoins ) ) )
+        assert( len( set( alljoins ) & set( join_genres ) ) == 0 )
+        for genre in join_genres:
+            g2s = set( join_genres[ genre ] ) & set( sort_by_genre )
+            if len( g2s ) == 0: continue
+            if genre not in sort_by_genre:
+                sort_by_genre[ genre ][ 'totnum' ] = 0
+                sort_by_genre[ genre ][ 'totdur' ] = 0.0
+                sort_by_genre[ genre ][ 'totsize' ] = 0.0
+            for g2 in g2s:
+                sort_by_genre[ genre ][ 'totnum' ] += sort_by_genre[ g2 ][ 'totnum' ]
+                sort_by_genre[ genre ][ 'totdur' ] += sort_by_genre[ g2 ][ 'totdur' ]
+                sort_by_genre[ genre ][ 'totsize' ] += sort_by_genre[ g2 ][ 'totsize' ]
+            for g2 in g2s:
+                sort_by_genre.pop( g2 )
+    #
+    current_date_string = datetime.datetime.now( ).date( ).strftime( '%B %d, %Y' )
     datas = list(map(lambda keynum: core.get_library_stats( keynum, token, fullURL = fullURL ), keynums ) )
     num_movies_since = -1
     sorted_by_genres = { }
@@ -617,90 +645,94 @@ def get_summary_data_movies_remote( token, fullURL = 'http://localhost:32400' ):
             sorted_by_genres[ genre ][ 'totum'  ] += data_sorted_by_genre[ genre ][ 'totnum'  ]
             sorted_by_genres[ genre ][ 'totdur' ] += data_sorted_by_genre[ genre ][ 'totdur'  ]
             sorted_by_genres[ genre ][ 'totsize'] += data_sorted_by_genre[ genre ][ 'totsize' ]
-    
-    if sinceDate is not None:
-        datas_since = list(filter(
-            lambda data_since: data_since[ 'num_movies' ] > 0,
-            map(lambda keynum: core.get_library_stats(
-                keynum, token, fullURL = fullURL, sinceDate = sinceDate ), keynums ) ) )
-        if len( datas_since ) != 0:
-            num_movies_since = sum(list(map(lambda data_since: data_since[ 'num_movies' ], datas_since ) ) )
-            categories_since = set(chain.from_iterable(map(lambda data_since: data_since[ 'genres' ].keys( ), datas_since ) ) )
-            totsize_since = sum(list(map(lambda data_since: data_since[ 'totsize' ], datas_since ) ) )
-            totdur_since = sum(list(map(lambda data_since: data_since[ 'totdur' ], datas_since ) ) )
-            mainstring_since = ' '.join([
-                'Since %s, I have added %d movies in %d categories.' % (
-                    sinceDate.strftime('%B %d, %Y'), num_movies_since, len( categories_since ) ),
-                #
-                'The total size of movie media I added is %s.' %
-                get_formatted_size( totsize_since ),
-                #
-                'The total duration of movie media I added is %s.' %
-                get_formatted_duration( totdur_since ) ] )
-            for data_since in datas_since:
-                data_since_sorted_by_genre = data_since[ 'genres' ]
-                for genre in data_since_sorted_by_genre:
-                    if genre not in sorted_by_genres_since:
-                        sorted_by_genres_since[ genre ] = data_since_sorted_by_genre[ genre ].copy( )
-                        continue
-                    sorted_by_genres_since[ genre ][ 'totum'  ] += data_since_sorted_by_genre[ genre ][ 'totnum'  ]
-                    sorted_by_genres_since[ genre ][ 'totdur' ] += data_since_sorted_by_genre[ genre ][ 'totdur'  ]
-                    sorted_by_genres_since[ genre ][ 'totsize'] += data_since_sorted_by_genre[ genre ][ 'totsize' ]
-            
-    categories = set( sorted_by_genres.keys( ) )
-    num_movies = sum(list(map(lambda data: data[ 'num_movies' ], datas ) ) )
-    totdur = sum(list(map(lambda data: data[ 'totdur' ], datas ) ) )
-    totsize = sum(list(map(lambda data: data[ 'totsize' ], datas ) ) )
-    mainstring = 'There are %d movies in %d categories.' % (
-        num_movies, len( categories ) )
-    sizestring = 'The total size of movie media is %s.' % get_formatted_size( totsize )
-    durstring = 'The total duration of movie media is %s.' % get_formatted_duration( totdur )
+    _join_by_genre( sorted_by_genres, join_genres )
+    categories = set( sorted_by_genres )
+    num_movies = f'{sum(list(map(lambda data: data[ "num_movies" ], datas ) ) ):,}'
+    totdur = get_formatted_duration( sum(list(map(lambda data: data[ 'totdur' ], datas ) ) ) )
+    totsize = get_formatted_size( sum(list(map(lambda data: data[ 'totsize' ], datas ) ) ) )
+    movie_summ = {
+        'current_date_string' : current_date_string,
+        'num_movies' : num_movies,
+        'num_categories' : len( categories ),
+        'formatted_size' : totsize,
+        'formatted_duration' : totdur }
     #
-    ## get last 7 movies that I have added
+    datas_since = list(filter(
+        lambda data_since: data_since[ 'num_movies' ] > 0,
+        map(lambda keynum: core.get_library_stats(
+            keynum, token, fullURL = fullURL, sinceDate = sinceDate ), keynums ) ) )
+    movie_summ[ 'len_datas_since' ] = len( datas_since )
+    if len( datas_since ) != 0:
+        for data_since in datas_since:
+            data_since_sorted_by_genre = data_since[ 'genres' ]
+            for genre in data_since_sorted_by_genre:
+                if genre not in sorted_by_genres_since:
+                    sorted_by_genres_since[ genre ] = data_since_sorted_by_genre[ genre ].copy( )
+                    continue
+                sorted_by_genres_since[ genre ][ 'totum'  ] += data_since_sorted_by_genre[ genre ][ 'totnum'  ]
+                sorted_by_genres_since[ genre ][ 'totdur' ] += data_since_sorted_by_genre[ genre ][ 'totdur'  ]
+                sorted_by_genres_since[ genre ][ 'totsize'] += data_since_sorted_by_genre[ genre ][ 'totsize' ]
+        _join_by_genre( sorted_by_genres_since, join_genres )
+        num_movies_since = f'{sum(list(map(lambda data_since: data_since[ "num_movies" ], datas_since ) ) ):,}'
+        categories_since = set( sorted_by_genres_since )
+        totsize_since = get_formatted_size( sum(list(map(lambda data_since: data_since[ 'totsize' ], datas_since ) ) ) )
+        totdur_since = get_formatted_duration( sum(list(map(lambda data_since: data_since[ 'totdur' ], datas_since ) ) ) )
+        movie_summ[ 'since_date_string' ] = sinceDate.strftime( '%B %d, %Y' )
+        movie_summ[ 'num_movies_since' ] = num_movies_since
+        movie_summ[ 'num_categories_since' ] = len( categories_since )
+        movie_summ[ 'formatted_size_since' ] = totsize_since
+        movie_summ[ 'formatted_duration_since' ] =  totdur_since
+        
+    #
+    ## get last 7 movies that I have added, to pass to JINJA template
     lastN_movies = core.get_lastN_movies( 7, token, fullURL = fullURL )
-    lastNstrings = [ '', '',
-                     'Here are the last %d movies I have added.' % len( lastN_movies ),
-                     '' ]
-    for title, year, date, url in lastN_movies:
+    last_N_movies = [ ]
+    def _get_nth_movie( lastN_entry ):
+        title, year, date, url = lastN_entry
         if url is None:
-            lastNstrings.append( '* %s (%d), added on %s.' %
-                                 ( title, year, date.strftime( '%d %B %Y' ) ) )
-        else:
-            lastNstrings.append( '* `%s (%d) <%s>`_, added on %s.' %
-                                 ( title, year, url, date.strftime( '%d %B %Y' ) ) )
-    lastNstrings.append( '' )
-    lastNstrings.append( '' )
-    lastNstring = '\n'.join( lastNstrings )
-    if sinceDate is not None and num_movies_since > 0:
-        movstring = ' '.join([ mainstring, sizestring, durstring, mainstring_since,
-                               lastNstring, ])
-    else:
-        movstring = ' '.join([ mainstring, sizestring, durstring, lastNstring, ])
-    finalstring = 'Here is a summary by category.'
-    movstring = '\n'.join([ movstring, finalstring ] )
-    movstrings = [ movstring, ]
-    catmovstrings = {}
-    for cat in sorted( categories ):
-        num_movies = sorted_by_genres[ cat ][ 'totnum'  ]
-        totdur     = sorted_by_genres[ cat ][ 'totdur'  ]
-        totsize    = sorted_by_genres[ cat ][ 'totsize' ]
-        mainstring = 'There are %d movies in this category.' % num_movies
-        sizestring = 'The total size of movie media here is %s.' % get_formatted_size( totsize )
-        durstring = 'The total duration of movie media here is %s.' % get_formatted_duration( totdur )
-        if sinceDate is not None and cat in sorted_by_genres_since and num_movies > 0:
-            num_movies_since = sorted_by_genres_since[ cat ][ 'totnum'  ]
-            totdur_since     = sorted_by_genres_since[ cat ][ 'totdur'  ]
-            totsize_since    = sorted_by_genres_since[ cat ][ 'totsize' ]
-            mainstring_since = ' '.join([
-                'Since %s, I have added %d movies in this category.' %
-                ( sinceDate.strftime( '%B %d, %Y' ), num_movies_since ),
-                'The total size of movie media I added here is %s.' %
-                get_formatted_size( totsize_since ),
-                'The total duration of movie media I added here is %s.' %
-                get_formatted_duration( totdur_since ) ] )
-            movstring = ' '.join([ mainstring, sizestring, durstring, mainstring_since ])
-        else:
-            movstring = ' '.join([ mainstring, sizestring, durstring ])
-        catmovstrings[ cat ] = movstring    
-    movstrings.append( catmovstrings )    
-    return movstrings
+            return {
+                'hasURL' : False,
+                'name' : title,
+                'year' : year,
+                'added_date_string' : date.strftime( '%B %d, %Y' ),
+                'url' : '' }
+        return {
+            'hasURL' : True,
+            'name' : title,
+            'year' : year,
+            'added_date_string' : date.strftime( '%B %d, %Y' ),
+            'url' : url }
+    last_N_movies = list(map(_get_nth_movie, lastN_movies ) )
+    #
+    ## catmovstrings list to pass to JINJA template
+    template_mainstring = Template(' '.join([
+        'As of {{ current_date_string }}, there are {{ num_movies }} movies in this category.',
+        'The total size of movie media here is {{ totsize }}.',
+        'The total duration of movie media here is {{ totdur }}.' ]) )
+    template_sincestring = Template(' '.join([
+        'Since {{ since_date_string }}, I have added {{ num_movies_since }} movies in this category.',
+        'The total size of movie media I added here is {{ totsize_since }}.',
+        'The total duration of movie media I added here is {{ totdur_since }}.' ] ) )
+    def _get_category_entry( cat ):
+        mainstring = template_mainstring.render(
+            current_date_string = current_date_string,
+            num_movies = f'{sorted_by_genres[ cat ][ "totnum" ]:,}',
+            totsize = get_formatted_size( sorted_by_genres[ cat ][ 'totsize' ] ),
+            totdur = get_formatted_duration( sorted_by_genres[ cat ][ 'totdur' ] ) )
+        if cat in sorted_by_genres_since and sorted_by_genres_since[ cat ][ 'totnum' ] > 0:
+            num_movies_since = f'{sorted_by_genres_since[ cat ][ "totnum" ]:,}'
+            totsize_since    = get_formatted_size( sorted_by_genres_since[ cat ][ 'totsize' ] )
+            totdur_since     = get_formatted_duration( sorted_by_genres_since[ cat ][ 'totdur'  ] )
+            mainstring_since = template_sincestring.render(
+                since_date_string = sinceDate.strftime( '%B %d, %Y' ),
+                num_movies_since = num_movies_since,
+                totsize_since = totsize_since,
+                totdur_since = totdur_since )
+            description = ' '.join([ mainstring, mainstring_since ])
+            return { 'category' : cat, 'description' : description }
+        return { 'category' : cat, 'description' : mainstring }
+    catmovs = list(map(_get_category_entry, sorted( sorted_by_genres ) ) )
+    env = Environment( loader = FileSystemLoader( resourceDir ) )
+    template = env.get_template( 'summary_data_movie_template.rst' )
+    movstring = template.render( movie_summ = movie_summ, last_N_movies = last_N_movies, catmovs = catmovs )
+    return movstring

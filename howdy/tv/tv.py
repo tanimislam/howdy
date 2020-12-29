@@ -8,6 +8,7 @@ from itertools import chain
 from functools import reduce
 from dateutil.relativedelta import relativedelta
 from rapidfuzz.fuzz import ratio
+from nprstuff.core import autocrop_image
 #
 from howdy.tv import get_token, tv_torrents, ShowsToExclude, tv_attic
 from howdy.core import core_rsync, splitall, session, return_error_raw
@@ -351,17 +352,20 @@ def get_tvdata_ordered_by_date( tvdata ):
     return tvdata_date_dict
 
 def create_plot_year_tvdata( tvdata_date_dict, year = 2010,
-                             shouldPlot = True, dirname = None ):
+                             shouldPlot = True, dirname = None, format = 'svg' ):
     """
     Creates a calendar eye chart of episodes aired during a given calendar year. This either creates an SVG_ file, or shows the chart on the screen. An example chart is shown in :numref:`howdy_tv_cli_figures_plots_tvdata_2000`.
     
     :param dict tvdata_date_dict: the :py:class:`dictionary <dict>` of Plex_ TV library episodes, organized by date aired.
     :param int year: the calendar year for which to create an eye chart of episodes aired.
-    :param bool shouldPlot: if ``True``, then create an SVG_ file named ``tvdata.YEAR.svg``. Otherwise plot this eye chart on the screen.
-    :parm str dirname: the directory into which a file should be created (only applicable when ``shouldPlot = True``). If ``None``, then defaults to current working directory. If not ``None``, then must be a valid directory.
+    :param bool shouldPlot: if ``True``, then create an SVG_ file named ``tvdata.YEAR.svg`` or a PNG_ file named ``tvdata.YEAR.png``. Otherwise plot this eye chart on the screen.
+    :param str dirname: the directory into which a file should be created (only applicable when ``shouldPlot = True``). If ``None``, then defaults to current working directory. If not ``None``, then must be a valid directory.
+    :param str format: format of the figure to make (only runs if ``shouldPlot`` is ``True``). Can be only ``svg`` or ``png``.
 
     .. _SVG: https://en.wikipedia.org/wiki/Scalable_Vector_Graphics
+    .. _PNG: https://en.wikipedia.org/wiki/Portable_Network_Graphics
     """
+    assert( format.lower( ) in ( 'png', 'svg' ) )
     calendar.setfirstweekday( 6 )
     def suncal( mon, year = 2010, current_date = None ):
         if current_date is None:
@@ -517,10 +521,17 @@ def create_plot_year_tvdata( tvdata_date_dict, year = 2010,
         if dirname is not None: assert( os.path.isdir( dirname ) )
         else: dirname = os.getcwd( )
         canvas = FigureCanvasAgg(fig)
-        canvas.print_figure(
-            os.path.join( dirname, 'tvdata.%d.svg' % year ),
-            bbox_inches = 'tight' )
-        os.chmod( os.path.join( dirname, 'tvdata.%d.svg' % year ), 0o644 )
+        if format.lower( ) == 'svg':
+            canvas.print_figure(
+                os.path.join( dirname, 'tvdata.%d.svg' % year ),
+                bbox_inches = 'tight' )
+            os.chmod( os.path.join( dirname, 'tvdata.%d.svg' % year ), 0o644 )
+        else:
+            canvas.print_figure(
+                os.path.join( dirname, 'tvdata.%d.png' % year ),
+                bbox_inches = 'tight' )
+            autocrop_image.autocrop_image( os.path.join( dirname, 'tvdata.%d.png' % year ) )
+            os.chmod( os.path.join( dirname, 'tvdata.%d.png' % year ), 0o644 )
     return fig
     
 def get_series_id( series_name, token, verify = True ):

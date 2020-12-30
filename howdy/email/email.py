@@ -685,7 +685,7 @@ def get_summary_data_movies_remote(
         
     #
     ## get last 7 movies that I have added, to pass to JINJA template
-    lastN_movies = core.get_lastN_movies( 7, token, fullURL = fullURL )
+    lastN_movies = core.get_lastN_movies( 7, token, fullURL = fullURL, useLastNewsletterDate = False )
     last_N_movies = [ ]
     def _get_nth_movie( lastN_entry ):
         title, year, date, url = lastN_entry
@@ -706,11 +706,11 @@ def get_summary_data_movies_remote(
     #
     ## catmovstrings list to pass to JINJA template
     template_mainstring = Template(' '.join([
-        'As of {{ current_date_string }}, there are {{ num_movies }} movies in this category.',
+        'As of ``{{ current_date_string }}``, there are {{ num_movies }} movies in this category.',
         'The total size of movie media here is {{ totsize }}.',
         'The total duration of movie media here is {{ totdur }}.' ]) )
     template_sincestring = Template(' '.join([
-        'Since {{ since_date_string }}, I have added {{ num_movies_since }} movies in this category.',
+        'Since ``{{ since_date_string }}``, I have added {{ num_movies_since }} movies in this category.',
         'The total size of movie media I added here is {{ totsize_since }}.',
         'The total duration of movie media I added here is {{ totdur_since }}.' ] ) )
     def _get_category_entry( cat ):

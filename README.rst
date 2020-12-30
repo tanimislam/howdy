@@ -2,7 +2,7 @@
    :target: https://gitter.im/tanimislam/howdy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 
 .. image:: https://readthedocs.org/projects/howdy/badge/?version=latest
-   :target: https://howdy.readthedocs.io/en/latest
+   :target: https://tanimislam.ddns.net/howdy
 
 #############################################################################
 |howdy_icon| Howdy! - Yet Another Way to Manage Your Plex_ Server's Content

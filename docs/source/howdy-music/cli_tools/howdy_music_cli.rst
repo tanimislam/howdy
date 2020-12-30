@@ -413,10 +413,10 @@ download songs using ``--songs`` and ``--artist`` flag
 Here, one specifies the collection of songs to download by giving the artist and list of songs through ``--songs``. Each song is separated by a ";". The metadata service to use here is :ref:`progressive <progressive_selection>`. For example, to get `Don't be Light`_ and `Mer du Japon`_ by Air_ using the MusicBrainz_ service,
 
 .. _howdy_music_songs_download_artist_songs:
-
+ 
 .. youtube:: W5AYAFYI9QA
    :width: 100%
-
+   
 We generate this video by running this command,
 
 .. code-block:: console
@@ -513,17 +513,17 @@ Third, paste the code similar to as described in :ref:`Step #7 <google_step07_oa
 
 
 .. |gracenote_image| image:: howdy-music-cli-figures/gracenote_logo.svg
-   :height: 25
+   :width: 100
    :align: middle
    :target: Gracenote_
 
 .. |lastfm_image| image:: howdy-music-cli-figures/Lastfm_logo.svg
-   :height: 25
+   :width: 75
    :align: middle
    :target: LastFM_
 
 .. |musicbrainz_image| image:: howdy-music-cli-figures/musicbrainz_logo.svg
-   :height: 25
+   :width: 25
    :align: middle
    :target: MusicBrainz_
 

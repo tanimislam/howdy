@@ -233,8 +233,8 @@ class HowdyEmailMyGUI( QDialogWithPrinting ):
         myLayout = QVBoxLayout( )
         qdl.setLayout( myLayout )
         def email_name_dict( tup ):
-            name, email = tup
-            data_dict = { 'email' : email }
+            name, email_mine = tup
+            data_dict = { 'email' : email_mine }
             if name is not None:
                 data_dict[ 'name' ] = name
             return data_dict
@@ -314,9 +314,9 @@ class HowdyEmailMyGUI( QDialogWithPrinting ):
         subject = titlecase.titlecase( self.subjectLine.text( ).strip( ) )
         if len(subject) == 0:
             subject = 'GENERIC SUBJECT FOR %s' % datetime.datetime.now( ).strftime( '%B-%m-%d' )
-        for name, email in self.emails_array:
+        for name, email_mine in self.emails_array:
             email.send_individual_email_full(
-                html, subject, email, name = name,
+                html, subject, email_mine, name = name,
                 verify = self.verify )
         self.statusLabel.setText( 'EMAILS SENT' )
 

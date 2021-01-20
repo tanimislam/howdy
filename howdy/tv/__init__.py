@@ -21,6 +21,8 @@ class ShowsToExclude( Base ): # these are shows you want to exclude
     __table_args__ = { 'extend_existing': True }
     show = Column( String( 65536 ), index = True, primary_key = True )
 
+# class CurrentGetTVBatchSession( Base ): # this acts as a single 
+#    pass
 #
 ## commit all tables (implicit check on whether in READTHEDOCS variable is set
 create_all( )

@@ -21,3 +21,4 @@ help:
 
 deploy:
 	rsync -avz --delete --progress build/html/ ../docs/
+	touch ../docs/.nojekyll

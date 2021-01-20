@@ -1,0 +1,267 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>8. Howdy Email Functionality &mdash; howdy! 1.35-17-g3ce7735 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="8.1. howdy_email_notif" href="cli-tools/howdy_email_notif.html" />
+    <link rel="prev" title="7.2. Howdy Music API" href="../howdy-music/howdy_music_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> howdy!
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.35
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../howdy_prereqs.html">1. Prerequisites and Overall Design Philosophy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-config/howdy_config.html">2. Howdy Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy_api.html">3. Top Level Howdy API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-core/howdy_core.html">4. Howdy Core Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-tv/howdy_tv.html">5. Howdy TV Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-movie/howdy_movie.html">6. Howdy Movie Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-music/howdy_music.html">7. Howdy Music Functionality</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">8. Howdy Email Functionality</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli-tools/howdy_email_notif.html">8.1. <code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui-tools/howdy_email_gui.html">8.2.  <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui-tools/howdy_email_demo_gui.html">8.3.  <code class="docutils literal notranslate"><span class="pre">howdy_email_demo_gui</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_email_api.html">8.4. Howdy Email API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#howdy-email-todo">8.5. Howdy Email TODO</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">9. INDEX</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">howdy!</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><span class="section-number">8. </span>Howdy Email Functionality</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/howdy-email/howdy_email.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="howdy-email-functionality">
+<h1><span class="section-number">8. </span>Howdy Email Functionality<a class="headerlink" href="#howdy-email-functionality" title="Permalink to this headline">¶</a></h1>
+<p>These command line executables, graphical user interfaces, and APIs are used to send one-off announcement, or newsletter style emails. <a class="reference external" href="https://tautulli.com">Tautulli</a> is a much better tool for sending out newsletter style emails, although this functionality still exists.</p>
+<p>This documentation is organized into sections on <a class="reference internal" href="cli-tools/howdy_email_notif.html#howdy-email-notif-label"><span class="std std-ref">howdy_email_notif</span></a>, the Howdy one-off emailing command line interface; <a class="reference internal" href="gui-tools/howdy_email_gui.html#howdy-email-gui-label"><span class="std std-ref"> howdy_email_gui</span></a>, the Howdy one-off emailing and newslettering GUI; and <a class="reference internal" href="gui-tools/howdy_email_demo_gui.html#howdy-email-demo-gui-label"><span class="std std-ref"> howdy_email_demo_gui</span></a>, the Howdy test-bed demonstation email client, that sends out rich HTML email using <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a>; the <a class="reference internal" href="howdy_email_api.html#howdy-email-api"><span class="std std-ref">low level API</span></a>; and finally the <a class="reference internal" href="#howdy-email-todo"><span class="std std-ref">TODO</span></a>.</p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli-tools/howdy_email_notif.html">8.1. <code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui-tools/howdy_email_gui.html">8.2.  <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui-tools/howdy_email_gui.html#only-email-mode">8.2.1. Only Email Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui-tools/howdy_email_gui.html#newsletter-mode">8.2.2. Newsletter Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui-tools/howdy_email_demo_gui.html">8.3.  <code class="docutils literal notranslate"><span class="pre">howdy_email_demo_gui</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui-tools/howdy_email_demo_gui.html#specifying-a-sender">8.3.1. Specifying a sender</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui-tools/howdy_email_demo_gui.html#selecting-recipients">8.3.2. Selecting recipients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui-tools/howdy_email_demo_gui.html#writing-out-the-subject">8.3.3. Writing out the subject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui-tools/howdy_email_demo_gui.html#writing-and-verifying-the-email">8.3.4. Writing and verifying the email</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui-tools/howdy_email_demo_gui.html#sending-the-email">8.3.5. Sending the email</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui-tools/howdy_email_demo_gui.html#optional-functionalities">8.3.6. Optional functionalities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="howdy_email_api.html">8.4. Howdy Email API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howdy_email_api.html#howdy-email-module">8.4.1. howdy.email module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_email_api.html#howdy-email-email-module">8.4.2. howdy.email.email module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="howdy-email-todo">
+<h2><span class="section-number">8.5. </span>Howdy Email TODO<a class="headerlink" href="#howdy-email-todo" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Enhance <a class="reference internal" href="gui-tools/howdy_email_demo_gui.html#howdy-email-demo-gui-label"><span class="std std-ref"> howdy_email_demo_gui</span></a> to allow for the more versatile <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> to be converted into HTML documents and email out. ☑</p></li>
+</ul>
+<p>The Howdy! Email CLI and API functionality are fairly robust. I may see the need to enhance its functionality, or fix pressing bugs, as I reexamine this space.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="cli-tools/howdy_email_notif.html" class="btn btn-neutral float-right" title="8.1. howdy_email_notif" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../howdy-music/howdy_music_api.html" class="btn btn-neutral float-left" title="7.2. Howdy Music API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

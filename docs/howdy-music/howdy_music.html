@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>7. Howdy Music Functionality &mdash; howdy! 1.35-17-g3ce7735 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="7.1. Howdy Music Command Line Utilities" href="cli_tools/howdy_music_cli.html" />
+    <link rel="prev" title="6.3. Howdy Movie API" href="../howdy-movie/howdy_movie_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> howdy!
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.35
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../howdy_prereqs.html">1. Prerequisites and Overall Design Philosophy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-config/howdy_config.html">2. Howdy Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy_api.html">3. Top Level Howdy API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-core/howdy_core.html">4. Howdy Core Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-tv/howdy_tv.html">5. Howdy TV Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-movie/howdy_movie.html">6. Howdy Movie Functionality</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">7. Howdy Music Functionality</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_music_cli.html">7.1. Howdy Music Command Line Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_music_api.html">7.2. Howdy Music API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#howdy-music-todo">7.3. Howdy Music TODO</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-email/howdy_email.html">8. Howdy Email Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">9. INDEX</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">howdy!</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><span class="section-number">7. </span>Howdy Music Functionality</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/howdy-music/howdy_music.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="howdy-music-functionality">
+<h1><span class="section-number">7. </span>Howdy Music Functionality<a class="headerlink" href="#howdy-music-functionality" title="Permalink to this headline">¶</a></h1>
+<p>These command line executables, graphical user interfaces, and APIs are used to download and manage your music (even if the music has been spread between different main directories). This document is organized into sections on <a class="reference internal" href="cli_tools/howdy_music_cli.html#howdy-music-command-line-utilities"><span class="std std-ref">command line tools</span></a>, the <a class="reference internal" href="howdy_music_api.html#howdy-music-api"><span class="std std-ref">lower level API</span></a>, and finally the <a class="reference internal" href="#howdy-music-todo"><span class="std std-ref">TODO</span></a>.</p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli_tools/howdy_music_cli.html">7.1. Howdy Music Command Line Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_music_cli.html#howdy-music-album">7.1.1. howdy_music_album</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_music_cli.html#howdy-music-metafill">7.1.2. howdy_music_metafill</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_music_cli.html#howdy-music-songs">7.1.3. howdy_music_songs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_music_cli.html#upload-to-gmusic">7.1.4. upload_to_gmusic</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="howdy_music_api.html">7.2. Howdy Music API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howdy_music_api.html#howdy-music-module">7.2.1. howdy.music module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_music_api.html#howdy-music-music-module">7.2.2. howdy.music.music module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_music_api.html#howdy-music-pygn-module">7.2.3. howdy.music.pygn module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="howdy-music-todo">
+<h2><span class="section-number">7.3. </span>Howdy Music TODO<a class="headerlink" href="#howdy-music-todo" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Create a comprehensive GUI for the <a class="reference external" href="https://plex.tv">Plex</a> music library similar to what I have made for the TV library (<a class="reference internal" href="../howdy-tv/howdy_tv_gui.html#howdy-tv-gui-label"><span class="std std-ref"> howdy_tv_gui</span></a>) and movie library (<a class="reference internal" href="../howdy-movie/howdy_movie_totgui.html#howdy-movie-totgui-label"><span class="std std-ref"> howdy_movie_totgui</span></a>).</p></li>
+<li><p>Fix the manner in which songs can be emailed to the recipient. Currently <a class="reference internal" href="cli_tools/howdy_music_cli.html#howdy-music-songs"><span class="std std-ref">howdy_music_songs</span></a> emails a collection of downloaded songs with the <code class="docutils literal notranslate"><span class="pre">--email</span></code> flag. I am turning off this functionality until such time as I can develop a way to do this for <a class="reference internal" href="cli_tools/howdy_music_cli.html#howdy-music-songs"><span class="std std-ref">howdy_music_songs</span></a> and <a class="reference internal" href="cli_tools/howdy_music_cli.html#howdy-music-album"><span class="std std-ref">howdy_music_album</span></a>. There is a blog post, <a class="reference external" href="https://tanimislamblog.wordpress.com/2018/12/20/getting-plex_music_songs-to-upload-multiple-songs">Getting plex_music_songs to upload multiple songs</a>, that describes this older and currently untested functionality.</p></li>
+<li><p>Design a better and more natural way to incorporate emailing song functionality, because emails require the following,</p>
+<ul>
+<li><p>a custom setup of an SMTP relay on the <a class="reference external" href="https://plex.tv">Plex</a> server, which I describe in this blog post, <a class="reference external" href="https://tanimislamblog.wordpress.com/2018/11/19/sendmail-relay-setup-and-implementation">Sendmail Relay Setup and Implementation</a>.</p></li>
+<li><p>The sender is currently the owner of the <a class="reference external" href="https://plex.tv">Plex</a> server. Perhaps make this more transparent?</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="cli_tools/howdy_music_cli.html" class="btn btn-neutral float-right" title="7.1. Howdy Music Command Line Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../howdy-movie/howdy_movie_api.html" class="btn btn-neutral float-left" title="6.3. Howdy Movie API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

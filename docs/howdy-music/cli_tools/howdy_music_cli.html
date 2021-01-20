@@ -1,0 +1,669 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.35-17-g3ce7735 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="7.2. Howdy Music API" href="../howdy_music_api.html" />
+    <link rel="prev" title="7. Howdy Music Functionality" href="../howdy_music.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> howdy!
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.35
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../howdy_prereqs.html">1. Prerequisites and Overall Design Philosophy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-config/howdy_config.html">2. Howdy Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy_api.html">3. Top Level Howdy API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-core/howdy_core.html">4. Howdy Core Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-tv/howdy_tv.html">5. Howdy TV Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-movie/howdy_movie.html">6. Howdy Movie Functionality</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../howdy_music.html">7. Howdy Music Functionality</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7.1. Howdy Music Command Line Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-music-album">7.1.1. howdy_music_album</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-music-metafill">7.1.2. howdy_music_metafill</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-music-songs">7.1.3. howdy_music_songs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#download-songs-using-songs-and-artist-flag">7.1.3.1. download songs using <code class="docutils literal notranslate"><span class="pre">--songs</span></code> and <code class="docutils literal notranslate"><span class="pre">--artist</span></code> flag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#download-songs-using-artist-and-album-flag">7.1.3.2. download songs using <code class="docutils literal notranslate"><span class="pre">--artist</span></code> and <code class="docutils literal notranslate"><span class="pre">--album</span></code> flag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#download-songs-using-new-artists-and-songs">7.1.3.3. download songs using <code class="docutils literal notranslate"><span class="pre">--new</span></code>, <code class="docutils literal notranslate"><span class="pre">--artists</span></code> and <code class="docutils literal notranslate"><span class="pre">--songs</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#upload-to-gmusic">7.1.4. upload_to_gmusic</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../howdy_music_api.html">7.2. Howdy Music API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howdy_music.html#howdy-music-todo">7.3. Howdy Music TODO</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-email/howdy_email.html">8. Howdy Email Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">9. INDEX</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">howdy!</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../howdy_music.html"><span class="section-number">7. </span>Howdy Music Functionality</a> &raquo;</li>
+        
+      <li><span class="section-number">7.1. </span>Howdy Music Command Line Utilities</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/howdy-music/cli_tools/howdy_music_cli.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="howdy-music-command-line-utilities">
+<h1><span class="section-number">7.1. </span>Howdy Music Command Line Utilities<a class="headerlink" href="#howdy-music-command-line-utilities" title="Permalink to this headline">¶</a></h1>
+<p>This section describes the four Howdy music command line utilities.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#howdy-music-album"><span class="std std-ref">howdy_music_album</span></a> can do three possible things: download an album image given an artist name and album name; pretty-print out all the studio albums released by an artist; and print out all the songs released on an album by an artist. It uses either the <a class="reference external" href="https://www.last.fm/api">LastFM</a> or <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> APIs.</p></li>
+<li><p><a class="reference internal" href="#howdy-music-metafill"><span class="std std-ref">howdy_music_metafill</span></a> is an older <a class="reference external" href="https://plex.tv">Plex</a> Music executable. It gets choices and song clips from <a class="reference external" href="https://www.youtube.com">YouTube</a> and music metadata using the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> API. This was an earlier trial to improve the functionality of <a class="reference internal" href="#howdy-music-songs"><span class="std std-ref">howdy_music_songs</span></a>.</p></li>
+<li><p><a class="reference internal" href="#howdy-music-songs"><span class="std std-ref">howdy_music_songs</span></a> is a work-horse CLI that can do three things (<a class="reference internal" href="#download-by-artist-songs"><span class="std std-ref">download songs with artist and song list</span></a>, <a class="reference internal" href="#download-by-artist-album"><span class="std std-ref">download songs with artist and album</span></a>, or <a class="reference internal" href="#download-by-artists-songs-list"><span class="std std-ref">download a list of songs with a list of corresponding artists</span></a>) using the three music metadata services: <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> (<a class="reference external" href="https://developer.gracenote.com/web-api"><img alt="gracenote_image" class="align-middle" src="../../_images/gracenote_logo.svg" width="100" /></a>), <a class="reference external" href="https://www.last.fm/api">LastFM</a> (<a class="reference external" href="https://www.last.fm/api"><img alt="lastfm_image" class="align-middle" src="../../_images/Lastfm_logo.svg" width="75" /></a>), or <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> (<a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2"><img alt="musicbrainz_image" class="align-middle" src="../../_images/musicbrainz_logo.svg" width="25" /></a>).</p></li>
+<li><p><a class="reference internal" href="#upload-to-gmusic"><span class="std std-ref">upload_to_gmusic</span></a> uploads <a class="reference external" href="https://en.wikipedia.org/wiki/MP3">MP3</a> or <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> music files to one’s <a class="reference external" href="https://play.google.com/music/listen">Google Play Music</a> account, or pushes the appropriate <code class="xref py py-mod docutils literal notranslate"><span class="pre">gmusicapi</span></code> <code class="xref py py-class docutils literal notranslate"><span class="pre">Mobileclient</span></code> credentials into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p></li>
+</ul>
+<div class="section" id="howdy-music-album">
+<span id="howdy-music-album-label"></span><h2><span class="section-number">7.1.1. </span>howdy_music_album<a class="headerlink" href="#howdy-music-album" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_music_album</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_music_album [-h] -a ARTIST_NAME [-A ALBUM_NAME] [--songs]</span>
+<span class="go">                           [--formatted] [--albums] [--debug] [--noverify]</span>
+<span class="go">                           [--musicbrainz]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -a ARTIST_NAME, --artist ARTIST_NAME</span>
+<span class="go">                        Name of the artist to get album image for.</span>
+<span class="go">  -A ALBUM_NAME, --album ALBUM_NAME</span>
+<span class="go">                        Name of the album to get album image for.</span>
+<span class="go">  --songs               If chosen, get the song listing instead of downloading</span>
+<span class="go">                        the album image.</span>
+<span class="go">  --formatted           If chosen, print the song listing in a format</span>
+<span class="go">                        recognized by howdy_music_metafill for downloading a</span>
+<span class="go">                        collection of songs.</span>
+<span class="go">  --albums              If chosen, then get a list of all the songs in all</span>
+<span class="go">                        studio albums for the artist.</span>
+<span class="go">  --debug               Run with debug mode turned on.</span>
+<span class="go">  --noverify            If chosen, do not verify SSL connections.</span>
+<span class="go">  --musicbrainz         If chosen, use Musicbrainz to get the artist metadata.</span>
+<span class="go">                        Note that this is expensive, and is always applied</span>
+<span class="go">                        when the --albums flag is set.</span>
+</pre></div>
+</div>
+<p>These are the common operational flags,</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--debug</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
+<li><p>By default, this executable uses the <a class="reference external" href="https://www.last.fm/api">LastFM</a> API to get music metadata. The <code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code> flag then means the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API is used.</p></li>
+</ul>
+<p>Here are the three operations,</p>
+<ul>
+<li><p>Download an album’s image to a <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> file in the current working directory. Here, the <code class="docutils literal notranslate"><span class="pre">-a</span></code> or <code class="docutils literal notranslate"><span class="pre">--artist</span></code> (artist) and <code class="docutils literal notranslate"><span class="pre">-A</span></code> or <code class="docutils literal notranslate"><span class="pre">--album</span></code> (album) need to be specified. To download the album image for the <a class="reference external" href="https://en.wikipedia.org/wiki/Moon_Safari">Moon Safari</a> album released by <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a>,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_music_album -a Air -A &quot;Moon Safari&quot;</span>
+<span class="go">tanim-desktop $ Air.Moon Safari.png</span>
+</pre></div>
+</div>
+<p>Here is the image,</p>
+<div class="figure align-center" id="howdy-music-album-image">
+<a class="reference internal image-reference" href="../../_images/Air.Moon_Safari.png"><img alt="../../_images/Air.Moon_Safari.png" src="../../_images/Air.Moon_Safari.png" style="width: 100%;" /></a>
+</div>
+</li>
+</ul>
+<ul id="howdy-music-album-get-albums">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--albums</span></code> flag gets a formatted, pretty-printed list of albums released by an artist.  Here, the <code class="docutils literal notranslate"><span class="pre">-a</span></code> or <code class="docutils literal notranslate"><span class="pre">--artist</span></code> (artist) need to be specified. For example, for <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a>,</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_music_albums -a Air --albums</span>
+
+<span class="go">Air has 7 studio albums.</span>
+
+<span class="go">Studio Album                         Year    # Tracks</span>
+<span class="go">---------------------------------  ------  ----------</span>
+<span class="go">Moon Safari                          1998          10</span>
+<span class="go">10 000 Hz Legend                     2001          12</span>
+<span class="go">City Reading (Tre Storie Western)    2003          19</span>
+<span class="go">Talkie Walkie                        2004          11</span>
+<span class="go">Pocket Symphony                      2006          12</span>
+<span class="go">Love 2                               2009          12</span>
+<span class="go">Music for Museum                     2014           9</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--song</span></code> flag returns a list of songs released on a specific album by the artist. Here, the <code class="docutils literal notranslate"><span class="pre">-a</span></code> or <code class="docutils literal notranslate"><span class="pre">--artist</span></code> (artist) and <code class="docutils literal notranslate"><span class="pre">-A</span></code> or <code class="docutils literal notranslate"><span class="pre">--album</span></code> (album) need to be specified.</p>
+<ul>
+<li><p>By default, the standard pretty-printed formatting if we do not use the <code class="docutils literal notranslate"><span class="pre">--formatted</span></code> flag. To get all the songs in track order for <a class="reference external" href="https://en.wikipedia.org/wiki/Moon_Safari">Moon Safari</a> album released by <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a>,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_music_album -a Air -A &quot;Moon Safari&quot; --songs</span>
+
+<span class="go">Song                                        Track #</span>
+<span class="go">----------------------------------------  ---------</span>
+<span class="go">La Femme d&#39;Argent                                 1</span>
+<span class="go">Sexy Boy                                          2</span>
+<span class="go">All I Need                                        3</span>
+<span class="go">Kelly Watch the Stars                             4</span>
+<span class="go">Talisman                                          5</span>
+<span class="go">Remember                                          6</span>
+<span class="go">You Make It Easy                                  7</span>
+<span class="go">Ce Matin-Là                                       8</span>
+<span class="go">New Star in the Sky (Chanson Pour Solal)          9</span>
+<span class="go">Le Voyage De Pénélope                            10</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<ul id="howdy-music-abum-songs-formatted">
+<li><p>If we run with the <code class="docutils literal notranslate"><span class="pre">--formatted</span></code> flag, then the output is a semi-colon-delimited collection of songs in this album. This is an input format that can then be processed by <a class="reference internal" href="#howdy-music-metafill"><span class="std std-ref">howdy_music_metafill</span></a>. For songs in the <a class="reference external" href="https://en.wikipedia.org/wiki/Moon_Safari">Moon Safari</a> album released by <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a>,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_music_album -a Air -A &quot;Moon Safari&quot; --songs --formatted</span>
+
+<span class="go">La Femme d&#39;Argent;Sexy Boy;All I Need;Kelly Watch the Stars;Talisman;Remember;You Make It Easy;Ce Matin-Là;New Star in the Sky (Chanson Pour Solal);Le Voyage De Pénélope</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="howdy-music-metafill">
+<span id="howdy-music-metafill-label"></span><h2><span class="section-number">7.1.2. </span>howdy_music_metafill<a class="headerlink" href="#howdy-music-metafill" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_music_metafill</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_music_metafill [-h] -s SONG_NAMES -a ARTIST_NAME</span>
+<span class="go">                              [--maxnum MAXNUM] [-A ALBUM_NAME] [--noverify]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -s SONG_NAMES, --songs SONG_NAMES</span>
+<span class="go">                        Names of the song to put into M4A files. Separated by</span>
+<span class="go">                        ;</span>
+<span class="go">  -a ARTIST_NAME, --artist ARTIST_NAME</span>
+<span class="go">                        Name of the artist to put into the M4A file.</span>
+<span class="go">  --maxnum MAXNUM       Number of YouTube video choices to choose for your</span>
+<span class="go">                        song. Default is 10.</span>
+<span class="go">  -A ALBUM_NAME, --album ALBUM_NAME</span>
+<span class="go">                        If defined, then use ALBUM information to get all the</span>
+<span class="go">                        songs in order from the album.</span>
+<span class="go">  --noverify            If chosen, do not verify SSL connections.</span>
+</pre></div>
+</div>
+<p>Here are the common elements of its operation,</p>
+<ul class="simple">
+<li><p>the <code class="docutils literal notranslate"><span class="pre">--noverify</span></code> flag means to not verify SSL connections.</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">--maxnum</span></code> setting is the maximum numbr of <a class="reference external" href="https://www.youtube.com">YouTube</a> clips from which to choose. This must be <span class="math notranslate nohighlight">\(\ge 1\)</span>, and its default is <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p></li>
+<li><p>the artist must always be specified with the <code class="docutils literal notranslate"><span class="pre">-a</span></code> or <code class="docutils literal notranslate"><span class="pre">--artist</span></code> setting.</p></li>
+</ul>
+<p>This executable has two modes of operation. In each mode, for each song in the collection, this tool finds that song, finds that clip, and asks the user to select a clip with a number from <code class="docutils literal notranslate"><span class="pre">1</span></code> to at most <code class="docutils literal notranslate"><span class="pre">maxnum</span></code>. For convenience, each <a class="reference external" href="https://www.youtube.com">YouTube</a> clip also shows its duration in MM:SS format. For example, here I choose <a class="reference external" href="https://www.youtube.com">YouTube</a> clip #1 for the first track in the <a class="reference external" href="https://en.wikipedia.org/wiki/Moon_Safari">Moon Safari</a> album released by <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a>,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ACTUAL ARTIST: Air</span>
+<span class="go">ACTUAL ALBUM: Moon Safari</span>
+<span class="go">ACTUAL YEAR: 1998</span>
+<span class="go">ACTUAL NUM TRACKS: 10</span>
+<span class="go">ACTUAL SONG: La Femme d&#39;Argent</span>
+<span class="go">Choose YouTube video:</span>
+<span class="go">1: Air - La Femme d&#39;Argent (07:12)</span>
+<span class="go">2: Air - La Femme D&#39;Argent (07:11)</span>
+<span class="go">3: Air - La Femme D&#39;Argent (05:55)</span>
+<span class="go">4: La Femme D&#39;Argent Extended - 26 Seamless Minutes (26:37)</span>
+<span class="go">5: La femme d&#39;argent (07:07)</span>
+<span class="go">6: Air - La Femme d&#39;Argent (Live at Canal+ 17.06.2016) HD (08:39)</span>
+<span class="go">7: AIR - La Femme D&#39;Argent (Live in France, 2007) (10:13)</span>
+<span class="go">8: Air - La Femme D&#39;Argent (EXTENDED 1H47) (01:47:42)</span>
+<span class="go">9: Air - La femme d&#39;argent 432hz (07:11)</span>
+<span class="go">10: San Francisco 1906 with music by Air - La Femme D&#39;Argent (07:06)</span>
+<span class="go">1</span>
+<span class="go">[youtube] U4U19zwFENs: Downloading webpage</span>
+<span class="go">[youtube] U4U19zwFENs: Downloading video info webpage</span>
+<span class="go">WARNING: Unable to extract video title</span>
+<span class="go">[download] Air.La Femme d&#39;Argent.m4a has already been downloaded</span>
+<span class="go">[download] 100% of 6.90MiB</span>
+<span class="go">[ffmpeg] Correcting container in &quot;Air.La Femme d&#39;Argent.m4a&quot;</span>
+</pre></div>
+</div>
+<ul>
+<li><p>In the first mode of operation, give it a list of songs separated by semicolons. The format of songs is described in <a class="reference internal" href="#howdy-music-abum-songs-formatted"><span class="std std-ref">this bullet point</span></a>, e.g.,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">La Femme d&#39;Argent;Sexy Boy;All I Need;Kelly Watch the Stars;Talisman;Remember;You Make It Easy;Ce Matin-Là;New Star in the Sky (Chanson Pour Solal);Le Voyage De Pénélope</span>
+</pre></div>
+</div>
+<p>For songs in order in the album <a class="reference external" href="https://en.wikipedia.org/wiki/Moon_Safari">Moon Safari</a> by <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a>. Below is an animation showing how this works in practice when downloading these songs. Here we always choose <a class="reference external" href="https://www.youtube.com">YouTube</a> clip #1.</p>
+<div class="youtube_wrapper" id="howdy-music-metafill-songs" style="padding-bottom: 56.250000%; padding-top: 30px; position: relative; width: 100%">
+<iframe allowfullscreen="true" id="howdy-music-metafill-songs" src="https://www.youtube.com/embed/PflzMfN4A9w" style="border: 0; height: 100%; left: 0; position: absolute; top: 0; width: 100%">
+</iframe></div><p>The list of songs came from the <a class="reference external" href="https://www.last.fm/api">LastFM</a> service, and <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> cannot find <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a> songs in <a class="reference external" href="https://en.wikipedia.org/wiki/Moon_Safari">Moon Safari</a> with the names <code class="docutils literal notranslate"><span class="pre">Ce</span> <span class="pre">Matin-Là</span></code> and <code class="docutils literal notranslate"><span class="pre">Le</span> <span class="pre">Voyage</span> <span class="pre">De</span> <span class="pre">Pénélope</span></code> due (probably) to diacritical accents.</p>
+</li>
+<li><p>In the second mode of operation, give it the album name with <code class="docutils literal notranslate"><span class="pre">-A</span></code> or <code class="docutils literal notranslate"><span class="pre">--album</span></code>. For example <code class="docutils literal notranslate"><span class="pre">howdy_music_metafill</span> <span class="pre">-a</span> <span class="pre">Air</span> <span class="pre">-A</span> <span class="pre">&quot;Moon</span> <span class="pre">Safari&quot;</span></code> to get all ten songs in this album,</p>
+<div class="youtube_wrapper" id="howdy-music-metafill-album" style="padding-bottom: 56.250000%; padding-top: 30px; position: relative; width: 100%">
+<iframe allowfullscreen="true" id="howdy-music-metafill-album" src="https://www.youtube.com/embed/OMu5wpb49Sw" style="border: 0; height: 100%; left: 0; position: absolute; top: 0; width: 100%">
+</iframe></div><p>Here <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> is able to find all songs, including <code class="docutils literal notranslate"><span class="pre">Ce</span> <span class="pre">Matin</span> <span class="pre">La</span></code> (instead of <code class="docutils literal notranslate"><span class="pre">Ce</span> <span class="pre">Matin-Là</span></code>) and <code class="docutils literal notranslate"><span class="pre">Le</span> <span class="pre">Voyage</span> <span class="pre">De</span> <span class="pre">Penelope</span></code> (instead of <code class="docutils literal notranslate"><span class="pre">Le</span> <span class="pre">Voyage</span> <span class="pre">De</span> <span class="pre">Pénélope</span></code>).</p>
+</li>
+</ul>
+</div>
+<div class="section" id="howdy-music-songs">
+<span id="howdy-music-songs-label"></span><h2><span class="section-number">7.1.3. </span>howdy_music_songs<a class="headerlink" href="#howdy-music-songs" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_music_songs</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_music_songs [-h] -a ARTIST_NAME -s SONG_NAMES [--maxnum MAXNUM]</span>
+<span class="go">                           [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES]</span>
+<span class="go">                           [--lastfm] [--musicbrainz] [--noverify] [--debug]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -a ARTIST_NAME, --artist ARTIST_NAME</span>
+<span class="go">                        Name of the artist to put into the M4A file.</span>
+<span class="go">  -s SONG_NAMES, --songs SONG_NAMES</span>
+<span class="go">                        Names of the song to put into M4A files. Separated by</span>
+<span class="go">                        ;</span>
+<span class="go">  --maxnum MAXNUM       Number of YouTube video choices to choose for each of</span>
+<span class="go">                        your songs.Default is 10.</span>
+<span class="go">  -A ALBUM_NAME, --album ALBUM_NAME</span>
+<span class="go">                        If defined, then get all the songs in order from the</span>
+<span class="go">                        album.</span>
+<span class="go">  --new                 If chosen, use the new format for getting the song</span>
+<span class="go">                        list. Instead of -a or --artist, will look for</span>
+<span class="go">                        --artists. Each artist is separated by a &#39;;&#39;.</span>
+<span class="go">  --artists ARTIST_NAMES</span>
+<span class="go">                        List of artists. Each artist is separated by a &#39;;&#39;.</span>
+<span class="go">  --lastfm              If chosen, then only use the LastFM API to get song</span>
+<span class="go">                        metadata.</span>
+<span class="go">  --musicbrainz         If chosen, use Musicbrainz to get the artist metadata.</span>
+<span class="go">                        Note that this is expensive.</span>
+<span class="go">  --noverify            Do not verify SSL transactions if chosen.</span>
+<span class="go">  --debug               Run with debug mode turned on.</span>
+</pre></div>
+</div>
+<p>In all three operations, here are required arguments or common flags,</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-a</span></code> or <code class="docutils literal notranslate"><span class="pre">--artist</span></code>: the artist must always be specified.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--maxnum</span></code> specifies the maximum number of <a class="reference external" href="https://www.youtube.com">YouTube</a> video clips from which to choose. This number must be <span class="math notranslate nohighlight">\(\ge 1\)</span>, and its default is <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--debug</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+</ul>
+<p>Some example animated GIFs can be downloaded from here, and is mirrored in this project’s README:</p>
+<table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../_images/howdy_music_songs_download_by_song_and_artist.gif"><img alt="howdy_music_cli_clip1" class="align-middle" src="../../_images/howdy_music_songs_download_by_song_and_artist.gif" style="width: 100%;" /></a></p></td>
+<td><p><a class="reference internal" href="../../_images/howdy_music_songs_download_by_artist_and_album_SHRINK.gif"><img alt="howdy_music_cli_clip2" class="align-middle" src="../../_images/howdy_music_songs_download_by_artist_and_album_SHRINK.gif" style="width: 200%;" /></a></p></td>
+<td><p><a class="reference internal" href="../../_images/howdy_music_songs_download_by_sep_list_artist_songs.gif"><img alt="howdy_music_cli_clip3" class="align-middle" src="../../_images/howdy_music_songs_download_by_sep_list_artist_songs.gif" style="width: 100%;" /></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://youtu.be/W5AYAFYI9QA">Download artists &amp; songs</a></p></td>
+<td><p><a class="reference external" href="https://youtu.be/2IxzTvWN0K8">Download artist &amp; album</a></p></td>
+<td><p><a class="reference external" href="https://www.youtube.com/watch?v=cRvxkGb2q3Y">Download sep artists &amp; songs</a></p></td>
+</tr>
+</tbody>
+</table>
+<p>The complicated collection of flags and arguments allows <code class="docutils literal notranslate"><span class="pre">howdy_music_songs</span></code> to download a collection of songs in three ways,</p>
+<ul class="simple">
+<li><p>in <a class="reference internal" href="#download-by-artist-songs"><span class="std std-numref">Section 7.1.3.1</span></a>, by specifying artist and list of songs.</p></li>
+<li><p>in <a class="reference internal" href="#download-by-artist-album"><span class="std std-numref">Section 7.1.3.2</span></a>, by specifying artist and album.</p></li>
+<li><p>in <a class="reference internal" href="#download-by-artists-songs-list"><span class="std std-numref">Section 7.1.3.3</span></a>, by specifying a corresponding list of songs with matching artists.</p></li>
+</ul>
+<p>and using three music metadata services: <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a>, <a class="reference external" href="https://www.last.fm/api">LastFM</a>, and <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a>. The <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> service is used or started with by default, but,</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--lastfm</span></code> says to use or start with the <a class="reference external" href="https://www.last.fm/api">LastFM</a> API.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code> says to use or start with the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API.</p></li>
+<li><p>At most only one of <code class="docutils literal notranslate"><span class="pre">--lastfm</span></code> or <code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code> can be specified.</p></li>
+</ul>
+<p>Each of the three operations can be either <em>progressive</em> or <em>exclusive</em>.</p>
+<ul id="progressive-selection">
+<li><p><em>progressive</em> means that the selection and downloading of songs starts with a given music service. If that service does not work, then it continues by order until successful. For example, if the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> service does not work, then try <a class="reference external" href="https://www.last.fm/api">LastFM</a>; if <a class="reference external" href="https://www.last.fm/api">LastFM</a> does not work, then try <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a>; if <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> does not work, then give up. <code class="xref std std-numref docutils literal notranslate"><span class="pre">order_progress_music_service</span></code> summarizes how this process works, based on the metadata choice flag (<code class="docutils literal notranslate"><span class="pre">--lastfm</span></code>, <code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code>, or none). The number in each cell determines the order in which to try until success – 1 means 1st, 2 means 2nd, etc.</p>
+<blockquote>
+<div><table class="colwidths-auto docutils align-default" id="order-progress-music-service">
+<tbody>
+<tr class="row-odd"><td><p>metadata flag</p></td>
+<td><p><a class="reference external" href="https://developer.gracenote.com/web-api"><img alt="gracenote_image_big" class="align-middle" src="../../_images/gracenote_logo.svg" width="100%" /></a></p></td>
+<td><p><a class="reference external" href="https://www.last.fm/api"><img alt="lastfm_image_big" class="align-middle" src="../../_images/Lastfm_logo.svg" width="100%" /></a></p></td>
+<td><p><a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2"><img alt="musicbrainz_image_big" class="align-middle" src="../../_images/musicbrainz_logo.svg" width="100%" /></a></p></td>
+</tr>
+<tr class="row-even"><td><p>default (no flag)</p></td>
+<td><p>1</p></td>
+<td><p>2</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--lastfm</span></code></p></td>
+<td></td>
+<td><p>1</p></td>
+<td><p>2</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code></p></td>
+<td></td>
+<td></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</li>
+</ul>
+<ul id="exclusive-selection">
+<li><p><em>exclusive</em> means that the selection of downloading of songs <em>only uses</em> a single given music service; if the songs cannot be found using it, then it gives up. <code class="xref std std-numref docutils literal notranslate"><span class="pre">order_exclusive_music_service</span></code> summarizes how this process works, matching metadata flag to music service.</p>
+<table class="colwidths-auto docutils align-default" id="order-exclusive-music-service">
+<tbody>
+<tr class="row-odd"><td><p>metadata flag</p></td>
+<td><p><a class="reference external" href="https://developer.gracenote.com/web-api"><img alt="gracenote_image_big" class="align-middle" src="../../_images/gracenote_logo.svg" width="100%" /></a></p></td>
+<td><p><a class="reference external" href="https://www.last.fm/api"><img alt="lastfm_image_big" class="align-middle" src="../../_images/Lastfm_logo.svg" width="100%" /></a></p></td>
+<td><p><a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2"><img alt="musicbrainz_image_big" class="align-middle" src="../../_images/musicbrainz_logo.svg" width="100%" /></a></p></td>
+</tr>
+<tr class="row-even"><td><p>default (no flag)</p></td>
+<td><p>1</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--lastfm</span></code></p></td>
+<td></td>
+<td><p>1</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code></p></td>
+<td></td>
+<td></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<p>Once the metadata service finds the metadata for those songs, the CLI provides a selection of <a class="reference external" href="https://www.youtube.com">YouTube</a> clips corresponding to a given song <em>AND</em> what the music metadata service thinks is the best match to the selected song. Each clip also shows the length (in MM:SS format) to let you choose one that is high ranking and whose length best matches the song’s length.</p>
+<p id="example-song-youtube-clip">Here <code class="docutils literal notranslate"><span class="pre">howdy_music_songs</span></code> looks for a song, <a class="reference external" href="https://youtu.be/D7umgkNX8NM">Remember</a> by <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a>, using the music service <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a>,</p>
+<ol class="arabic">
+<li><p>The service finds the match and prints out the artist, album, and song.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ACTUAL ARTIST: Air</span>
+<span class="go">ACTUAL ALBUM: Moon Safari</span>
+<span class="go">ACTUAL SONG: Remember (02:34)</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> always gives the song length after the song name (ACTUAL SONG row). <a class="reference external" href="https://www.last.fm/api">LastFM</a> may do so if it can find the song’s length (by internally using the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API). <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> does not have the song length information.</p>
+</li>
+<li><p>A selection of candidate <a class="reference external" href="https://www.youtube.com">YouTube</a> clips are given, each with duration. I find it best to choose a clip that is as highly ranked as possible and whose duration matches the actual song’s duration (if provided).</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ACTUAL ARTIST: Air</span>
+<span class="go">ACTUAL ALBUM: Moon Safari</span>
+<span class="go">ACTUAL SONG: Remember (02:34)</span>
+<span class="go">Choose YouTube video:</span>
+<span class="go">1: Air - Remember (04:13)</span>
+<span class="go">2: Remember (02:35)</span>
+<span class="go">3: Air - Remember (02:49)</span>
+<span class="go">4: Remember (David Whitaker Version) (02:22)</span>
+<span class="go">5: Air - Remember – Live in San Francisco (03:04)</span>
+<span class="go">6: Air - Remember (03:41)</span>
+<span class="go">7: Air - Remember – Outside Lands 2016, Live in San Francisco (02:40)</span>
+<span class="go">8: Air - Remember (Original Mix) (03:14)</span>
+<span class="go">9: AIR - Remember live@ FOX Oakland (02:38)</span>
+<span class="go">10: Air - Remember (02:24)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Make a selection from the command line, such as <code class="docutils literal notranslate"><span class="pre">2</span></code> (because the high ranking clip’s duration matches the song’s duration very closely). The song then downloads into the file, <code class="docutils literal notranslate"><span class="pre">Air.Remember.m4a</span></code>, in the current working directory.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ACTUAL ARTIST: Air</span>
+<span class="go">ACTUAL ALBUM: Moon Safari</span>
+<span class="go">ACTUAL SONG: Remember (02:34)</span>
+<span class="go">Choose YouTube video:</span>
+<span class="go">1: Air - Remember (04:13)</span>
+<span class="go">2: Remember (02:35)</span>
+<span class="go">3: Air - Remember (02:49)</span>
+<span class="go">4: Remember (David Whitaker Version) (02:22)</span>
+<span class="go">5: Air - Remember – Live in San Francisco (03:04)</span>
+<span class="go">6: Air - Remember (03:41)</span>
+<span class="go">7: Air - Remember – Outside Lands 2016, Live in San Francisco (02:40)</span>
+<span class="go">8: Air - Remember (Original Mix) (03:14)</span>
+<span class="go">9: AIR - Remember live@ FOX Oakland (02:38)</span>
+<span class="go">10: Air - Remember (02:24)</span>
+<span class="go">2</span>
+<span class="go">[youtube] JqMdhEy4hG8: Downloading webpage</span>
+<span class="go">[youtube] JqMdhEy4hG8: Downloading video info webpage</span>
+<span class="go">WARNING: Unable to extract video title</span>
+<span class="go">[youtube] JqMdhEy4hG8: Downloading js player vflGnuoiU</span>
+<span class="go">[youtube] JqMdhEy4hG8: Downloading js player vflGnuoiU</span>
+<span class="go">[download] Destination: Air.Remember.m4a</span>
+<span class="go">[download] 100% of 2.38MiB in 00:02</span>
+<span class="go">[ffmpeg] Correcting container in &quot;Air.Remember.m4a&quot;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="section" id="download-songs-using-songs-and-artist-flag">
+<span id="download-by-artist-songs"></span><h3><span class="section-number">7.1.3.1. </span>download songs using <code class="docutils literal notranslate"><span class="pre">--songs</span></code> and <code class="docutils literal notranslate"><span class="pre">--artist</span></code> flag<a class="headerlink" href="#download-songs-using-songs-and-artist-flag" title="Permalink to this headline">¶</a></h3>
+<p>Here, one specifies the collection of songs to download by giving the artist and list of songs through <code class="docutils literal notranslate"><span class="pre">--songs</span></code>. Each song is separated by a “;”. The metadata service to use here is <a class="reference internal" href="#progressive-selection"><span class="std std-ref">progressive</span></a>. For example, to get <a class="reference external" href="https://youtu.be/ysk_dQ39ctE">Don’t be Light</a> and <a class="reference external" href="https://youtu.be/Sjq4_sHy06U">Mer du Japon</a> by <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a> using the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> service,</p>
+<div class="youtube_wrapper" id="howdy-music-songs-download-artist-songs" style="padding-bottom: 56.250000%; padding-top: 30px; position: relative; width: 100%">
+<iframe allowfullscreen="true" id="howdy-music-songs-download-artist-songs" src="https://www.youtube.com/embed/W5AYAFYI9QA" style="border: 0; height: 100%; left: 0; position: absolute; top: 0; width: 100%">
+</iframe></div><p>We generate this video by running this command,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_music_songs -a Air -A &quot;Don&#39;t Be Light;Mer du Japon&quot; --musicbrainz</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="download-songs-using-artist-and-album-flag">
+<span id="download-by-artist-album"></span><h3><span class="section-number">7.1.3.2. </span>download songs using <code class="docutils literal notranslate"><span class="pre">--artist</span></code> and <code class="docutils literal notranslate"><span class="pre">--album</span></code> flag<a class="headerlink" href="#download-songs-using-artist-and-album-flag" title="Permalink to this headline">¶</a></h3>
+<p>One specifies the collection of songs to download by giving the artist and album through <code class="docutils literal notranslate"><span class="pre">--album</span></code>. The metadata service to use is <a class="reference internal" href="#progressive-selection"><span class="std std-ref">progressive</span></a>. You can get the list of albums produced by the artist by running <a class="reference internal" href="#howdy-music-album-get-albums"><span class="std std-ref">howdy_music_albums –artist=”artist” –albums</span></a>. The clip below demonstrates how to get the album <a class="reference external" href="https://en.wikipedia.org/wiki/Moon_Safari">Moon Safari</a> by <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a> using the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> service,</p>
+<div class="youtube_wrapper" id="howdy-music-songs-download-artist-album" style="padding-bottom: 56.250000%; padding-top: 30px; position: relative; width: 100%">
+<iframe allowfullscreen="true" id="howdy-music-songs-download-artist-album" src="https://www.youtube.com/embed/2IxzTvWN0K8" style="border: 0; height: 100%; left: 0; position: absolute; top: 0; width: 100%">
+</iframe></div><p>We generate this video by running this command,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_music_songs -a Air -A &quot;Moon Safari&quot; --musicbrainz</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="download-songs-using-new-artists-and-songs">
+<span id="download-by-artists-songs-list"></span><h3><span class="section-number">7.1.3.3. </span>download songs using <code class="docutils literal notranslate"><span class="pre">--new</span></code>, <code class="docutils literal notranslate"><span class="pre">--artists</span></code> and <code class="docutils literal notranslate"><span class="pre">--songs</span></code><a class="headerlink" href="#download-songs-using-new-artists-and-songs" title="Permalink to this headline">¶</a></h3>
+<p>Here, one uses the <cite>–new`</cite> flag and specifies, IN ORDER, the artists (using the <code class="docutils literal notranslate"><span class="pre">--artists</span></code> argument) and respective songs (using the <code class="docutils literal notranslate"><span class="pre">--songs</span></code> argument)  to download the collection of songs. Artists are separated by “;” and songs are separated by “;”. The metadata service to use here is <a class="reference internal" href="#exclusive-selection"><span class="std std-ref">exclusive</span></a>. For example, to get these two songs by two different artists using the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> service,</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://youtu.be/YNB2Cw5y66o">Different</a> by <a class="reference external" href="https://en.wikipedia.org/wiki/Ximena_Sari%C3%B1ana">Ximena Sariñana</a>.</p></li>
+<li><p><a class="reference external" href="https://youtu.be/LkPn2ny5V4E">Piensa en Mí</a> by <a class="reference external" href="https://en.wikipedia.org/wiki/Natalia_Lafourcade">Natalia Lafourcade</a>.</p></li>
+</ul>
+<p>We run this command,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_music_songs --new --artists=&quot;Ximena Sariñana;Natalia Lafourcade&quot; -s &quot;Different;Piensa en Mí&quot; --musicbrainz</span>
+</pre></div>
+</div>
+<p>whose video is shown below,</p>
+<div class="youtube_wrapper" id="howdy-music-songs-download-artists-songs-list" style="padding-bottom: 56.250000%; padding-top: 30px; position: relative; width: 100%">
+<iframe allowfullscreen="true" id="howdy-music-songs-download-artists-songs-list" src="https://www.youtube.com/embed/11rOnEDfMos" style="border: 0; height: 100%; left: 0; position: absolute; top: 0; width: 100%">
+</iframe></div></div>
+</div>
+<div class="section" id="upload-to-gmusic">
+<span id="upload-to-gmusic-label"></span><h2><span class="section-number">7.1.4. </span>upload_to_gmusic<a class="headerlink" href="#upload-to-gmusic" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">upload_to_gmusic</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: upload_to_gmusic [-h] -f FILENAMES [-P] [--noverify]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -f FILENAMES, --filenames FILENAMES</span>
+<span class="go">                        Give the list of filenames to put into the Google</span>
+<span class="go">                        Music Player.</span>
+<span class="go">  -P                    If chosen, then push Google Music API Mobileclient</span>
+<span class="go">                        credentials into the configuration database.</span>
+<span class="go">  --noverify            If chosen, do not verify SSL connections.</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--noverify</span></code> flag disables verification of SSL HTTP connections. The standard operation of this tool is to <em>upload</em> songs to your <a class="reference external" href="https://play.google.com/music/listen">Google Play Music</a> account. The <code class="docutils literal notranslate"><span class="pre">-f</span></code> or <code class="docutils literal notranslate"><span class="pre">--filenames</span></code> argument can take semicolon-delimited filenames, or standard POSIX globs, for example,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">upload_to_gmusic -f &quot;Air.*m4a&quot;</span>
+</pre></div>
+</div>
+<p>attempts to upload all filenames that match <code class="docutils literal notranslate"><span class="pre">Air.*m4a</span></code>.</p>
+<p>The other mode of operation, running with the <code class="docutils literal notranslate"><span class="pre">-P</span></code> flag without specifying files to upload, attempts to refresh the <code class="xref py py-mod docutils literal notranslate"><span class="pre">gmusicapi</span></code> <code class="xref py py-class docutils literal notranslate"><span class="pre">Mobileclient</span></code> OAuth2 credentials. Its operation is similar to that of <a class="reference internal" href="../../howdy-core/cli_tools/howdy_core_cli.html#howdy-store-credentials"><span class="std std-ref">howdy_store_credentials</span></a>. These dialogs in the shell appear,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ upload_to_gmusic -P</span>
+<span class="go">Please go to this URL in a browser window:https://accounts.google.com/o/oauth2/auth...</span>
+<span class="go">After giving permission for Google services on your behalf,</span>
+<span class="go">type in the access code:</span>
+</pre></div>
+</div>
+<p>Second, go to the URL to which you are instructed. Once you copy that URL into your browser, you will follow a set of prompts asking you to choose which Google account to allow access, and to allow permissions for this app to access your <a class="reference external" href="https://play.google.com/music/listen">Google Play Music</a> account.</p>
+<p>Third, paste the code similar to as described in <a class="reference internal" href="../../howdy-config/howdy_services_config.html#google-step07-oauthtokencopy"><span class="std std-ref">Step #7</span></a> into the interactive text dialog, <code class="docutils literal notranslate"><span class="pre">...type</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">access</span> <span class="pre">code:</span></code>. Once successful, you will receive this message in the shell,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Success. Stored GMusicAPI Mobileclient credentials.</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../howdy_music_api.html" class="btn btn-neutral float-right" title="7.2. Howdy Music API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../howdy_music.html" class="btn btn-neutral float-left" title="7. Howdy Music Functionality" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>4.2. Howdy Core GUIs &mdash; howdy! 1.35-17-g3ce7735 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="4.3. Howdy Core API" href="../howdy_core_api.html" />
+    <link rel="prev" title="4.1. Howdy Core Command Line Utilities" href="../cli_tools/howdy_core_cli.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> howdy!
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.35
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../howdy_prereqs.html">1. Prerequisites and Overall Design Philosophy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-config/howdy_config.html">2. Howdy Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy_api.html">3. Top Level Howdy API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../howdy_core.html">4. Howdy Core Functionality</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../cli_tools/howdy_core_cli.html">4.1. Howdy Core Command Line Utilities</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4.2. Howdy Core GUIs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-core-gui-icon-howdy-core-gui">4.2.1.  <code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../howdy_core_api.html">4.3. Howdy Core API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howdy_core.html#howdy-core-todo">4.4. Howdy Core TODO</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-tv/howdy_tv.html">5. Howdy TV Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-movie/howdy_movie.html">6. Howdy Movie Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-music/howdy_music.html">7. Howdy Music Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-email/howdy_email.html">8. Howdy Email Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">9. INDEX</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">howdy!</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../howdy_core.html"><span class="section-number">4. </span>Howdy Core Functionality</a> &raquo;</li>
+        
+      <li><span class="section-number">4.2. </span>Howdy Core GUIs</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/howdy-core/gui_tools/howdy_core_gui.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="howdy-core-guis">
+<h1><span class="section-number">4.2. </span>Howdy Core GUIs<a class="headerlink" href="#howdy-core-guis" title="Permalink to this headline">¶</a></h1>
+<p>These are the <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a> core GUIs.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../howdy-config/howdy_config_gui_usage.html#howdy-config-gui-label"><span class="std std-ref">howdy_config_gui</span></a> is the configuration tool used to get the full Howdy functionality.</p></li>
+<li><p><a class="reference internal" href="#howdy-core-gui-label"><span class="std std-ref"> howdy_core_gui</span></a> is a more archaic version of <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code>. This only provides a GUI to set up the correct <a class="reference external" href="https://plex.tv">Plex</a> server settings or to set up <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a>.</p></li>
+</ul>
+<div class="section" id="howdy-core-gui-icon-howdy-core-gui">
+<span id="howdy-core-gui-label"></span><h2><span class="section-number">4.2.1. </span><a class="reference internal" href="../../_images/howdy_core_gui_SQUARE_VECTA.svg"><img alt="howdy_core_gui_icon" class="align-middle" src="../../_images/howdy_core_gui_SQUARE_VECTA.svg" width="50" /></a> <code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span></code><a class="headerlink" href="#howdy-core-gui-icon-howdy-core-gui" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span></code> has two modes of operation: either return the <a class="reference external" href="https://plex.tv">Plex</a> server token and URL; or set up <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a>. <code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span> <span class="pre">-h</span></code> produces this help screen,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Usage: howdy_core_gui [-h] [--info] [--remote] {googleauth} ...</span>
+
+<span class="go">positional arguments:</span>
+<span class="go">  {googleauth}  Can optionally choose to set up google oauth2 authentication.</span>
+<span class="go">    googleauth  Set up google oauth2 authentication.</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help    show this help message and exit</span>
+<span class="go">  --info        If chosen, run in INFO logging mode.</span>
+<span class="go">  --remote      If chosen, do not check localhost for running plex server.</span>
+</pre></div>
+</div>
+<p>At the top level, here are the options.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code>: print out the <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--remote</span></code>: If chosen, do not check localhost for a running <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
+</ul>
+<p>When running in standard mode, this tool prints out the current <a class="reference external" href="https://plex.tv">Plex</a> server and token URL.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_core_gui</span>
+<span class="go">token = XXXXXXXXXXXXXXXXXXXX</span>
+<span class="go">url = http://localhost:32400</span>
+</pre></div>
+</div>
+<p>I mask the 20-character token with <code class="docutils literal notranslate"><span class="pre">XXXXXXXXXXXXXXXXXXXX</span></code> for privacy reasons.</p>
+<p>When running with <code class="docutils literal notranslate"><span class="pre">googleauth</span></code>, this GUI pulls up a <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a> dialog window if we either choose to <em>bypass</em> any existing authentication, or if that authentication does not exist. Running <code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span> <span class="pre">googleauth</span> <span class="pre">-h</span></code> produces this help screen,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_core_gui googleauth [-h] [--bypass]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help  show this help message and exit</span>
+<span class="go">  --bypass    If chosen, then ignore any existing google oauth2 authentication</span>
+<span class="go">              credentials.</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--bypass</span></code> flag ignores any existing  <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a>.</p>
+<p>This GUI is launched when running <code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span> <span class="pre">googleauth</span></code>.</p>
+<div class="figure align-left" id="id1">
+<span id="howdy-core-gui-mainwindow"></span><a class="reference internal image-reference" href="../../_images/howdy_core_gui_mainwindow.png"><img alt="../../_images/howdy_core_gui_mainwindow.png" src="../../_images/howdy_core_gui_mainwindow.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 4.1 </span><span class="caption-text">Fill out the <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a> credentials in the text box in the same manner as done in <code class="xref std std-numref docutils literal notranslate"><span class="pre">google_step04_oauthtokenstring</span></code> in <a class="reference internal" href="../../howdy-config/howdy_services_config.html#summary-of-setting-up-google-credentials"><span class="std std-numref">Section 2.1.6</span></a> for <a class="reference internal" href="../../howdy-config/howdy_config_gui_usage.html#howdy-config-gui-label"><span class="std std-ref">howdy_config_gui</span></a>.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>Here, a browser tab or new window is launched (see <code class="xref std std-numref docutils literal notranslate"><span class="pre">google_step03_authorizeaccount</span></code>).</p>
+<ol class="arabic simple">
+<li><p>You will see a scary dialog window in the browser window (see <code class="xref std std-numref docutils literal notranslate"><span class="pre">google_step05_scaryscreen</span></code>).</p></li>
+<li><p>Click on the <em>Allow</em> button for the six Google services that Howdy requires (see <code class="xref std std-numref docutils literal notranslate"><span class="pre">google_step06_allowbutton</span></code>).</p></li>
+<li><p>The final browser window shows a text box with the <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a> token string (see <code class="xref std std-numref docutils literal notranslate"><span class="pre">google_step07_oauthtokencopy</span></code>). Copy that string into the GUI dialog widget in <a class="reference internal" href="#howdy-core-gui-mainwindow"><span class="std std-numref">Fig. 4.1</span></a>, and press return on the text box in this dialog window.</p></li>
+</ol>
+<p>If all goes well, then all the Google services needed by Howdy will have been authorized.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../howdy_core_api.html" class="btn btn-neutral float-right" title="4.3. Howdy Core API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../cli_tools/howdy_core_cli.html" class="btn btn-neutral float-left" title="4.1. Howdy Core Command Line Utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

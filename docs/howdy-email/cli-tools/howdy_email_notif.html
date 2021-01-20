@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>8.1. howdy_email_notif &mdash; howdy! 1.35-17-g3ce7735 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="8.2. howdy_email_gui" href="../gui-tools/howdy_email_gui.html" />
+    <link rel="prev" title="8. Howdy Email Functionality" href="../howdy_email.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> howdy!
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.35
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../howdy_prereqs.html">1. Prerequisites and Overall Design Philosophy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-config/howdy_config.html">2. Howdy Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy_api.html">3. Top Level Howdy API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-core/howdy_core.html">4. Howdy Core Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-tv/howdy_tv.html">5. Howdy TV Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-movie/howdy_movie.html">6. Howdy Movie Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-music/howdy_music.html">7. Howdy Music Functionality</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../howdy_email.html">8. Howdy Email Functionality</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">8.1. <code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui-tools/howdy_email_gui.html">8.2.  <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui-tools/howdy_email_demo_gui.html">8.3.  <code class="docutils literal notranslate"><span class="pre">howdy_email_demo_gui</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howdy_email_api.html">8.4. Howdy Email API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howdy_email.html#howdy-email-todo">8.5. Howdy Email TODO</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">9. INDEX</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">howdy!</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../howdy_email.html"><span class="section-number">8. </span>Howdy Email Functionality</a> &raquo;</li>
+        
+      <li><span class="section-number">8.1. </span><code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/howdy-email/cli-tools/howdy_email_notif.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="howdy-email-notif">
+<span id="howdy-email-notif-label"></span><h1><span class="section-number">8.1. </span><code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span></code><a class="headerlink" href="#howdy-email-notif" title="Permalink to this headline">¶</a></h1>
+<p>This is documentation for the Howdy! one-off email announcement commnand line interface, <code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span></code>. You specify a simple email, with a simple text subject line a simple plaintext body, to email either to yourself at your <a class="reference external" href="https://plex.tv">Plex</a> account or also to friends of your <a class="reference external" href="https://plex.tv">Plex</a> server. The list of your <a class="reference external" href="https://plex.tv">Plex</a> server friends can be accessed using <a class="reference internal" href="../../howdy-core/cli_tools/howdy_core_cli.html#howdy-core-cli"><span class="std std-ref">howdy_core_cli</span></a>, and specifically this command,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_core_cli --friends</span>
+</pre></div>
+</div>
+<p>that produces a list of friends with and without associated names in your Google Contacts.</p>
+<div class="figure align-left" id="id1">
+<span id="howdy-core-cli-example"></span><a class="reference internal image-reference" href="../../_images/howdy_core_cli_example.png"><img alt="../../_images/howdy_core_cli_example.png" src="../../_images/howdy_core_cli_example.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 8.1 </span><span class="caption-text">For privacy reasons, I choose to blank out the names, emails, and total number of friends who have access to my <a class="reference external" href="https://plex.tv">Plex</a> server.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_email_notif [-h] [--debug] [--test] [--subject SUBJECT] [--body BODY]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help         show this help message and exit</span>
+<span class="go">  --debug            Run debug mode if chosen.</span>
+<span class="go">  --test             Send a test notification email if chosen.</span>
+<span class="go">  --subject SUBJECT  Subject of notification email. Default is &quot;Plex notification for May 24, 2020.&quot;.</span>
+<span class="go">  --body BODY        Body of the email to be sent. Default is &quot;This is a test.&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--debug</span></code> flag prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--subject</span></code> specifies the subject line. If it is not specified, then the subject is <code class="docutils literal notranslate"><span class="pre">&quot;Plex</span> <span class="pre">notification</span> <span class="pre">for</span> <span class="pre">&lt;DATE&gt;&quot;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;DATE&gt;</span></code> is the current date in <code class="docutils literal notranslate"><span class="pre">MONTH</span> <span class="pre">DAY,</span> <span class="pre">YEAR</span></code> format (such as January 01, 2019).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--body</span></code> specifies the text body of the email. if it is not specified, then the default body is <code class="docutils literal notranslate"><span class="pre">&quot;This</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">test.&quot;</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--test</span></code> just sends the email to your <a class="reference external" href="https://plex.tv">Plex</a> email account. I find it useful to run with <code class="docutils literal notranslate"><span class="pre">--test</span></code> first, until the subject and the body of the email is correct. Without the <code class="docutils literal notranslate"><span class="pre">--test</span></code> flag, this email is sent to all the friends of youe <a class="reference external" href="https://plex.tv">Plex</a> server (see <a class="reference internal" href="#howdy-core-cli-example"><span class="std std-numref">Fig. 8.1</span></a>).</p></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../gui-tools/howdy_email_gui.html" class="btn btn-neutral float-right" title="8.2. howdy_email_gui" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../howdy_email.html" class="btn btn-neutral float-left" title="8. Howdy Email Functionality" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

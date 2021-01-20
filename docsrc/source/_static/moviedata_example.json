@@ -1,0 +1,124 @@
+{
+ "comedy": [
+  {
+   "title": "3 Idiots",
+   "rating": 10.0,
+   "contentrating": "PG-13",
+   "picurl": "http://localhost:32400/library/metadata/21619/art/1560969542",
+   "releasedate": "2009-06-19",
+   "addedat": "2016-01-25",
+   "summary": "In the tradition of \u201cFerris Bueller\u2019s Day Off\u201d comes this refreshing comedy about a rebellious prankster with a crafty mind and a heart of gold. Rascal. Joker. Dreamer. Genius... You've never met a college student quite like \"Rancho.\" From the moment he arrives at India's most prestigious university, Rancho's outlandish schemes turn the campus upside down\u2014along with the lives of his two newfound best friends. Together, they make life miserable for \"Virus,\" the school\u2019s uptight and heartless dean. But when Rancho catches the eye of the dean's sexy daughter, Virus sets his sights on flunking out the \"3 idiots\" once and for all.",
+   "duration": 9855.44,
+   "totsize": 1681049452.0,
+   "localpic": true
+  },
+  {
+   "title": "The Odd Couple",
+   "rating": 10.0,
+   "contentrating": "G",
+   "picurl": "http://localhost:32400/library/metadata/21178/art/1561745452",
+   "releasedate": "1968-06-28",
+   "addedat": "2016-04-08",
+   "summary": "Felix Ungar has just broken up with his wife. Despondent, he goes to kill himself but is saved by his friend Oscar Madison. With nowhere else to go, Felix is urged by Oscar to move in with him, at least for a while. The only problem is that Felix is neat, tidy, and neurotic, whereas Oscar is slovenly and casual.",
+   "duration": 6327.445,
+   "totsize": 2159654915.0,
+   "localpic": true
+  },
+  {
+   "title": "Mary Poppins",
+   "rating": 10.0,
+   "contentrating": "G",
+   "picurl": "http://localhost:32400/library/metadata/21446/art/1561745653",
+   "releasedate": "1964-08-27",
+   "addedat": "2019-03-23",
+   "summary": "A magical nanny employs music and adventure to help two neglected children become closer to their father.",
+   "duration": 8346.388,
+   "totsize": 1049679820.0,
+   "localpic": true
+  },
+  {
+   "title": "Paddington 2",
+   "rating": 10.0,
+   "contentrating": "PG",
+   "picurl": "http://localhost:32400/library/metadata/20681/art/1555344526",
+   "releasedate": "2017-11-09",
+   "addedat": "2018-03-19",
+   "summary": "Paddington, now happily settled with the Browns, picks up a series of odd jobs to buy the perfect present for his Aunt Lucy, but it is stolen.",
+   "duration": 6198.0160000000005,
+   "totsize": 927155583.0,
+   "localpic": true
+  },
+  {
+   "title": "Kapoor & Sons",
+   "rating": 10.0,
+   "contentrating": "Not Rated",
+   "picurl": "http://localhost:32400/library/metadata/21645/art/1555345585",
+   "releasedate": "2016-03-18",
+   "addedat": "2017-01-30",
+   "summary": "A story revolving around a dysfunctional family of two brothers who visit their parents and grandfather in Coonoor and end up falling for the same woman.",
+   "duration": 8264.266,
+   "totsize": 835497097.0,
+   "localpic": true
+  },
+  {
+   "title": "Andhadhun",
+   "rating": 10.0,
+   "contentrating": "Not Rated",
+   "picurl": "http://localhost:32400/library/metadata/20764/art/1561267721",
+   "releasedate": "2018-10-05",
+   "addedat": "2019-01-26",
+   "summary": "A series of mysterious events changes the life of a blind pianist who now must report a crime that was actually never witnessed by him.",
+   "duration": 8376.063,
+   "totsize": 1239946597.0,
+   "localpic": true
+  },
+  {
+   "title": "Lady Bird",
+   "rating": 9.9,
+   "contentrating": "R",
+   "picurl": "http://localhost:32400/library/metadata/21422/art/1560969373",
+   "releasedate": "2017-09-08",
+   "addedat": "2018-02-25",
+   "summary": "A California high school student plans to escape from her family and small town by going to college in New York, much to the disapproval of wildly loving, deeply opinionated and strong-willed mother.",
+   "duration": 5644.728,
+   "totsize": 1217154062.0,
+   "localpic": true
+  },
+  {
+   "title": "Don't Think Twice",
+   "rating": 9.8,
+   "contentrating": "R",
+   "picurl": "http://localhost:32400/library/metadata/20846/art/1561745171",
+   "releasedate": "2016-06-28",
+   "addedat": "2016-11-28",
+   "summary": "An improv group deals with several crises, including the loss of their lease and one member hitting the big time.",
+   "duration": 5525.152,
+   "totsize": 701940288.0,
+   "localpic": true
+  },
+  {
+   "title": "The Big Sick",
+   "rating": 9.8,
+   "contentrating": "R",
+   "picurl": "http://localhost:32400/library/metadata/21122/art/1555345012",
+   "releasedate": "2017-06-23",
+   "addedat": "2017-09-06",
+   "summary": "Pakistan-born comedian Kumail Nanjiani and grad student Emily Gardner fall in love but struggle as their cultures clash. When Emily contracts a mysterious illness, Kumail finds himself forced to face her feisty parents, his family's expectations, and his true feelings.",
+   "duration": 7218.645,
+   "totsize": 1109216577.0,
+   "localpic": true
+  },
+  {
+   "title": "Can You Ever Forgive Me?",
+   "rating": 9.8,
+   "contentrating": "R",
+   "picurl": "http://localhost:32400/library/metadata/21343/art/1555491800",
+   "releasedate": "2018-10-19",
+   "addedat": "2019-02-07",
+   "summary": "When bestselling celebrity biographer is no longer able to get published because she has fallen out of step with current tastes, she turns her art form to deception.",
+   "duration": 6382.485000000001,
+   "totsize": 1080078228.0,
+   "localpic": true
+  }
+ ]
+}

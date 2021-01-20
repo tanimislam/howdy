@@ -1,0 +1,266 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>4. Howdy Core Functionality &mdash; howdy! 1.35-17-g3ce7735 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4.1. Howdy Core Command Line Utilities" href="cli_tools/howdy_core_cli.html" />
+    <link rel="prev" title="3. Top Level Howdy API" href="../howdy_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> howdy!
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.35
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../howdy_prereqs.html">1. Prerequisites and Overall Design Philosophy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-config/howdy_config.html">2. Howdy Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy_api.html">3. Top Level Howdy API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Howdy Core Functionality</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_core_cli.html">4.1. Howdy Core Command Line Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_tools/howdy_core_gui.html">4.2. Howdy Core GUIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_core_api.html">4.3. Howdy Core API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#howdy-core-todo">4.4. Howdy Core TODO</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-tv/howdy_tv.html">5. Howdy TV Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-movie/howdy_movie.html">6. Howdy Movie Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-music/howdy_music.html">7. Howdy Music Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-email/howdy_email.html">8. Howdy Email Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">9. INDEX</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">howdy!</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><span class="section-number">4. </span>Howdy Core Functionality</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/howdy-core/howdy_core.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="howdy-core-functionality">
+<h1><span class="section-number">4. </span>Howdy Core Functionality<a class="headerlink" href="#howdy-core-functionality" title="Permalink to this headline">¶</a></h1>
+<p>These command line executables, graphical user interfaces, and APIs form the core functionality in Howdy. The API lives in <code class="docutils literal notranslate"><span class="pre">howdy.core</span></code>. These tools form the infrastructural basis of higher level tools to manage <a class="reference internal" href="../howdy-tv/howdy_tv.html#howdy-tv-functionality"><span class="std std-ref">television shows</span></a>, <a class="reference internal" href="../howdy-movie/howdy_movie.html#howdy-movie-functionality"><span class="std std-ref">movies</span></a>, <a class="reference internal" href="../howdy-music/howdy_music.html#howdy-music-functionality"><span class="std std-ref">music</span></a>, and <a class="reference internal" href="../howdy-email/howdy_email.html#howdy-email-functionality"><span class="std std-ref">email</span></a>.</p>
+<p>This documentation is organized into sections on <a class="reference internal" href="cli_tools/howdy_core_cli.html#howdy-core-command-line-utilities"><span class="std std-ref">command line tools</span></a>, <a class="reference internal" href="gui_tools/howdy_core_gui.html#howdy-core-guis"><span class="std std-ref">GUI tools</span></a>, <a class="reference internal" href="howdy_core_api.html#howdy-core-api"><span class="std std-ref">low level API</span></a>, and finally the <a class="reference internal" href="#howdy-core-todo"><span class="std std-ref">TODO</span></a>.</p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli_tools/howdy_core_cli.html">4.1. Howdy Core Command Line Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_core_cli.html#howdy-core-cli">4.1.1. howdy_core_cli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_core_cli.html#howdy-deluge-console">4.1.2. howdy_deluge_console</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_core_cli.html#howdy-resynclibs">4.1.3. howdy_resynclibs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_core_cli.html#howdy-store-credentials">4.1.4. howdy_store_credentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_core_cli.html#rsync-subproc">4.1.5. rsync_subproc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_core_cli.html#get-book-tor">4.1.6. get_book_tor</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui_tools/howdy_core_gui.html">4.2. Howdy Core GUIs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui_tools/howdy_core_gui.html#howdy-core-gui-icon-howdy-core-gui">4.2.1.  <code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="howdy_core_api.html">4.3. Howdy Core API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howdy_core_api.html#howdy-core-module">4.3.1. howdy.core module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_core_api.html#howdy-core-core-module">4.3.2. howdy.core.core module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_core_api.html#howdy-core-core-deluge-module">4.3.3. howdy.core.core_deluge module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_core_api.html#howdy-core-core-rsync-module">4.3.4. howdy.core.core_rsync module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_core_api.html#howdy-core-core-torrents-module">4.3.5. howdy.core.core_torrents module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="howdy-core-todo">
+<h2><span class="section-number">4.4. </span>Howdy Core TODO<a class="headerlink" href="#howdy-core-todo" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Implement a <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/index.html">PyQt5</a> GUI to manipulate torrents on the remote <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server – something much reduced from the full functionality of the <a class="reference external" href="https://wiki.archlinux.org/index.php/deluge#Web">Deluge WebUI</a>.</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="cli_tools/howdy_core_cli.html" class="btn btn-neutral float-right" title="4.1. Howdy Core Command Line Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../howdy_api.html" class="btn btn-neutral float-left" title="3. Top Level Howdy API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

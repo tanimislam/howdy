@@ -1,0 +1,620 @@
+{
+ "backdrop_path": "/f5uNbUC76oowt5mt5J9QlqrIYQ6.jpg",
+ "created_by": [
+  {
+   "id": 5741,
+   "credit_id": "5256bdc619c2956ff6001be4",
+   "name": "Matt Groening",
+   "gender": 2,
+   "profile_path": "/zYzOuM94hbVmage9XZrQ8daHyoF.jpg"
+  }
+ ],
+ "episode_run_time": [
+  22
+ ],
+ "first_air_date": "1989-12-17",
+ "genres": [
+  {
+   "id": 16,
+   "name": "Animation"
+  },
+  {
+   "id": 35,
+   "name": "Comedy"
+  }
+ ],
+ "homepage": "http://www.thesimpsons.com/",
+ "id": 456,
+ "in_production": true,
+ "languages": [
+  "en"
+ ],
+ "last_air_date": "2019-10-20",
+ "last_episode_to_air": {
+  "air_date": "2019-10-20",
+  "episode_number": 4,
+  "id": 1942104,
+  "name": "Treehouse of Horror XXX",
+  "overview": "",
+  "production_code": "",
+  "season_number": 31,
+  "show_id": 456,
+  "still_path": null,
+  "vote_average": 0.0,
+  "vote_count": 0
+ },
+ "name": "The Simpsons",
+ "next_episode_to_air": null,
+ "networks": [
+  {
+   "name": "FOX",
+   "id": 19,
+   "logo_path": "/1DSpHrWyOORkL9N2QHX7Adt31mQ.png",
+   "origin_country": "US"
+  }
+ ],
+ "number_of_episodes": 666,
+ "number_of_seasons": 31,
+ "origin_country": [
+  "US"
+ ],
+ "original_language": "en",
+ "original_name": "The Simpsons",
+ "overview": "Set in Springfield, the average American town, the show focuses on the antics and everyday adventures of the Simpson family; Homer, Marge, Bart, Lisa and Maggie, as well as a virtual cast of thousands. Since the beginning, the series has been a pop culture icon, attracting hundreds of celebrities to guest star. The show has also made name for itself in its fearless satirical take on politics, media and American life in general.",
+ "popularity": 155.661,
+ "poster_path": "/yTZQkSsxUFJZJe67IenRM0AEklc.jpg",
+ "production_companies": [
+  {
+   "id": 29500,
+   "logo_path": "/a3ltwX7b1opYeG7MxaxxswDmkeg.png",
+   "name": "The Curiosity Company",
+   "origin_country": "US"
+  },
+  {
+   "id": 18,
+   "logo_path": "/uqhagSwM7NAkQWVCQhKTyoqF8XH.png",
+   "name": "Gracie Films",
+   "origin_country": "US"
+  },
+  {
+   "id": 1556,
+   "logo_path": "/31h94rG9hzjprXoYNy3L1ErUya2.png",
+   "name": "20th Century Fox Television",
+   "origin_country": "US"
+  }
+ ],
+ "seasons": [
+  {
+   "air_date": "1987-04-19",
+   "episode_count": 61,
+   "id": 3581,
+   "name": "Specials",
+   "overview": "",
+   "poster_path": "/lzN0CllVFXtGtSl15r59Kb52DdT.jpg",
+   "season_number": 0
+  },
+  {
+   "air_date": "1989-12-17",
+   "episode_count": 13,
+   "id": 3582,
+   "name": "Season 1",
+   "overview": "The Simpsons' first season originally aired between December 17, 1989 and May 13, 1990, beginning with the Christmas special \"Simpsons Roasting on an Open Fire\". The executive producers for the first production season were Matt Groening, James L. Brooks, and Sam Simon.\n\nThe series was originally set to debut in late 1989 with the episode \"Some Enchanted Evening\", which was meant to introduce the main characters; during the first screening of the episode, the producers discovered that the animation was so appalling that 70% of the episode needed to be redone. The producers considered aborting the series if the next episode turned out as bad, but it only suffered from easily fixable problems. The producers convinced Fox to move the debut to December 17, and aired \"Simpsons Roasting on an Open Fire\" as the first episode of the series. The first season won one Emmy Award, and received four additional nominations.\n\nThe DVD boxset was released on September 25, 2001 in Region 1 and September 24, 2001 in both Region 2 and Region 4. Season one was also released for the iTunes Store on December 22, 2010, dubbed a \"digital edition.\"",
+   "poster_path": "/u3U4aGwSTpvbULPHTsm7XhadynO.jpg",
+   "season_number": 1
+  },
+  {
+   "air_date": "1991-03-23",
+   "episode_count": 22,
+   "id": 3583,
+   "name": "Season 2",
+   "overview": "The Simpsons' second season originally aired between October 11, 1990 and May 9, 1991, and contained 22 episodes, beginning with \"Bart Gets an F\". Another episode, \"Blood Feud\" aired during the summer after the official season finale. The executive producers for the second production season were Matt Groening, James L. Brooks, and Sam Simon, who had also been EPs for the previous season. The DVD box set was released on August 6, 2002 in Region 1, July 8, 2002 in Region 2 and in September, 2002 in Region 4. The episode \"Homer vs. Lisa and the 8th Commandment\" won the Primetime Emmy Award for Outstanding Animated Program, and was also nominated in the \"Outstanding Sound Mixing for a Comedy Series or a Special\" category.",
+   "poster_path": "/78320WYaATUuEESTvO4x0mBdndA.jpg",
+   "season_number": 2
+  },
+  {
+   "air_date": "1991-09-19",
+   "episode_count": 24,
+   "id": 3584,
+   "name": "Season 3",
+   "overview": "The Simpsons' third season originally aired on the Fox network between September 19, 1991 and May 7, 1992. The showrunners for the third production season were Al Jean and Mike Reiss who executive produced 22 episodes for the season, while two other episodes were produced by James L. Brooks, Matt Groening, and Sam Simon. An additional episode, \"Brother, Can You Spare Two Dimes?\", aired on August 27, 1992 after the official end of the third season and is included on the Season 3 DVD set. Season three won six Primetime Emmy Awards for \"Outstanding Voice-Over Performance\" and also received a nomination for \"Outstanding Animated Program\" for the episode \"Radio Bart\". The complete season was released on DVD in Region 1 on August 26, 2003, Region 2 on October 6, 2003, and in Region 4 on October 22, 2003.",
+   "poster_path": "/sEmfyUy9mts03y6KoI782gi2fVd.jpg",
+   "season_number": 3
+  },
+  {
+   "air_date": "1992-09-24",
+   "episode_count": 22,
+   "id": 3585,
+   "name": "Season 4",
+   "overview": "The Simpsons' fourth season originally aired on the Fox network between September 24, 1992 and May 13, 1993, beginning with \"Kamp Krusty.\" The showrunners for the fourth production season were Al Jean and Mike Reiss. The aired season contained two episodes which were hold-over episodes from season three, which Jean and Reiss also ran. Following the end of the production of the season, Jean, Reiss and most of the original writing staff left the show. The season was nominated for two Primetime Emmy Awards and Dan Castellaneta would win one for his performance as Homer in \"Mr. Plow\". The fourth season was released on DVD in Region 1 on June 15, 2004, Region 2 on August 2, 2004 and in Region 4 on August 25, 2004.",
+   "poster_path": "/99Y4jM3a6cX52DBD2Dw61g1dGh8.jpg",
+   "season_number": 4
+  },
+  {
+   "air_date": "1993-09-30",
+   "episode_count": 22,
+   "id": 3586,
+   "name": "Season 5",
+   "overview": "The Simpsons' fifth season originally aired on the Fox network between September 30, 1993 and May 19, 1994. The showrunner for the fifth production season was David Mirkin who executive produced 20 episodes. Al Jean and Mike Reiss executive produced the remaining two, which were both hold overs that were produced for the previous season. The season contains some of the series' most acclaimed episodes, including \"Cape Feare\" and \"Rosebud\". It also includes the 100th episode, \"Sweet Seymour Skinner's Baadasssss Song\". The season was nominated for two Primetime Emmy Awards and won an Annie Award for Best Animated Television Program as well as an Environmental Media Award and a Genesis Award. The DVD box set was released in Region 1 on December 21, 2004, Region 2 on March 21, 2005, and Region 4 on March 23, 2005.",
+   "poster_path": "/p8tRDtrkzquirArGp6S1b7Zxle3.jpg",
+   "season_number": 5
+  },
+  {
+   "air_date": "1994-09-04",
+   "episode_count": 25,
+   "id": 3587,
+   "name": "Season 6",
+   "overview": "The Simpsons' sixth season originally aired on the Fox network between September 4, 1994, and May 21, 1995, and consists of 25 episodes. The Simpsons is an animated series about a working class family, which consists of Homer, Marge, Bart, Lisa, and Maggie. The show is set in the fictional city of Springfield, and lampoons American culture, society, television and many aspects of the human condition.\n\nThe showrunner for the sixth production season was David Mirkin who executive-produced 23 episodes. Former showrunners Al Jean and Mike Reiss produced the remaining two; they produced the two episodes with the staff of The Critic, the show they left The Simpsons to create. This was done in order to relieve some of the stress The Simpsons' writing staff endured, as they felt that producing 25 in one season was too much. The episode \"A Star Is Burns\" caused some controversy among the staff with Matt Groening removing his name from the episode's credits as he saw it as blatant advertising for The Critic, which was airing at the time. Fox moved The Simpsons back to its original Sunday night time, having aired on Thursdays for the previous four seasons. It has remained in this slot ever since. The sixth season won one Primetime Emmy Award, and received three additional nominations. It also won the Annie Award for Best Animated Television Production.",
+   "poster_path": "/dJS8Xpp14LHHxuF22Vcm5XDm1wE.jpg",
+   "season_number": 6
+  },
+  {
+   "air_date": "1995-09-17",
+   "episode_count": 25,
+   "id": 3588,
+   "name": "Season 7",
+   "overview": "The Simpsons' seventh season originally aired on the Fox network between September 17, 1995 and May 19, 1996. The show runners for the seventh production season were Bill Oakley and Josh Weinstein who would executive produce 21 episodes this season. David Mirkin executive produced the remaining four, including two hold overs that were produced for the previous season. The season was nominated for two Primetime Emmy Awards, including Outstanding Animated Program and won an Annie Award for Best Animated Television Program. The DVD box set was released in Region 1 December 13, 2005, Region 2 January 30, 2006 and Region 4 on March 22, 2006. The set was released in two different forms: a Marge-shaped box and also a standard rectangular-shaped box in which the theme is a movie premiere.",
+   "poster_path": "/tLVFgS1kxkqmwakZRE4kTk6BiAR.jpg",
+   "season_number": 7
+  },
+  {
+   "air_date": "1996-10-27",
+   "episode_count": 25,
+   "id": 3589,
+   "name": "Season 8",
+   "overview": "The Simpsons' eighth season originally aired between October 27, 1996 and May 18, 1997, beginning with \"Treehouse of Horror VII\". The showrunners for the eighth production season were Bill Oakley and Josh Weinstein. The aired season contained two episodes which were hold-over episodes from season seven, which Oakley and Weinstein also ran. It also contained two episodes for which Al Jean and Mike Reiss were the show runners.\n\nSeason eight won multiple awards, including two Emmy Awards: \"Homer's Phobia\" won for Outstanding Animated Program in 1997, and Alf Clausen and Ken Keeler won for \"Outstanding Individual Achievement in Music and Lyrics\" with the song \"We Put The Spring In Springfield\" from the episode \"Bart After Dark\". Clausen also received an Emmy nomination for \"Outstanding Music Direction\" for \"Simpsoncalifragilisticexpialacious\". \"Brother from Another Series\" was nominated for the Emmy for \"Sound Mixing For a Comedy Series or a Special\". For \"Homer's Phobia\", Mike Anderson won the Annie Award for Best Individual Achievement: Directing in a TV Production, and the WAC Winner Best Director for Primetime Series at the 1998 World Animation Celebration. Gay & Lesbian Alliance Against Defamation awarded the episode the GLAAD Media Award for \"Outstanding TV \u2013 Individual Episode\".",
+   "poster_path": "/m72zcCV1djfXc60zup3T7orWKau.jpg",
+   "season_number": 8
+  },
+  {
+   "air_date": "1997-09-21",
+   "episode_count": 25,
+   "id": 3590,
+   "name": "Season 9",
+   "overview": "The Simpsons' ninth season originally aired between September 1997 and May 1998, beginning on Sunday, September 21, 1997 with \"The City of New York vs. Homer Simpson\". The showrunner for the ninth production season was Mike Scully. The aired season contained three episodes which were hold-over episodes from season eight, which Bill Oakley and Josh Weinstein ran. It also contained two episodes which were run by David Mirkin, and another two hold-over episodes from season seven which were run by Al Jean and Mike Reiss.\n\nSeason nine won three Emmy Awards: \"Trash of the Titans\" for Primetime Emmy Award for Outstanding Animated Program in 1998, Hank Azaria picked up \"Outstanding Voice-Over Performance\" for the voice of Apu Nahasapeemapetilon, and Alf Clausen and Ken Keeler picking up the \"Outstanding Music and Lyrics\" award. Clausen was also nominated for \"Outstanding Music Direction\" and \"Outstanding Music Composition for a Series\" for \"Treehouse of Horror VIII\". Season nine was also nominated for a \"Best Network Television Series\" award by the Saturn Awards and \"Best Sound Editing\" for a Golden Reel Award.",
+   "poster_path": "/cjZ0HnuMVi8SOTA0L2JnHbFZKms.jpg",
+   "season_number": 9
+  },
+  {
+   "air_date": "1998-08-23",
+   "episode_count": 23,
+   "id": 3591,
+   "name": "Season 10",
+   "overview": "The tenth season of the animated television series The Simpsons was originally broadcast on the Fox network in the United States between August 23, 1998 and May 16, 1999. It contains twenty-three episodes, starting with \"Lard of the Dance\". The Simpsons is a satire of a middle class American lifestyle epitomized by its family of the same name, which consists of Homer, Marge, Bart, Lisa and Maggie. Set in the fictional city of Springfield, the show lampoons American culture, society, television, and many aspects of the human condition.\n\nThe showrunner for the tenth season was Mike Scully. Before production began, a salary dispute between the main cast members of The Simpsons and Fox arose. However, it was soon settled and the actors' salaries were raised to $125,000 per episode. In addition to the large Simpsons cast, many guest stars appeared in season ten, including Phil Hartman in his last appearance before his death.\n\nThe season, which won the Annie Award for \"Outstanding Achievement in an Animated Television Program\", has been cited by several critics as the beginning of the series' decline in quality. It ranked twenty-fifth in the season ratings with an average of 13.5 million viewers per episode. The tenth season DVD boxset was released in the United States and Canada on August 7, 2007. It is available in two different packagings, both featuring Bart.",
+   "poster_path": "/t4wiOGBgoSRgofYxQvRL5WZe6Aj.jpg",
+   "season_number": 10
+  },
+  {
+   "air_date": "1999-09-26",
+   "episode_count": 22,
+   "id": 3592,
+   "name": "Season 11",
+   "overview": "The Simpsons' 11th season originally aired between September 1999 and May 2000, beginning on Sunday, September 26, 1999, with \"Beyond Blunderdome\". The showrunner for the 11th production season was Mike Scully. The season contained four hold-over episodes from the season 10 production line.",
+   "poster_path": "/swM9G5ojulvLYIF721Y6swoJQGh.jpg",
+   "season_number": 11
+  },
+  {
+   "air_date": "2000-11-01",
+   "episode_count": 21,
+   "id": 3593,
+   "name": "Season 12",
+   "overview": "The Simpsons' 12th season began on Wednesday, November 1, 2000 with \"Treehouse of Horror XI\". The season contains three hold over episodes from the season 11 production line. The show runner for the twelfth production was Mike Scully. The season features three episodes that were produced for the eleventh season which was also run by Scully. The season won and was nominated for numerous awards including two Primetime Emmy Awards wins and an Annie Award.",
+   "poster_path": "/oHBBoAlXX32ROwWCQ0SJrzORCAE.jpg",
+   "season_number": 12
+  },
+  {
+   "air_date": "2001-11-06",
+   "episode_count": 22,
+   "id": 3594,
+   "name": "Season 13",
+   "overview": "The Simpsons' thirteenth season originally aired on the Fox network between November 6, 2001 and May 22, 2002 and consists of 22 episodes. The show runner for the thirteenth production season was Al Jean who executive-produced 17 episodes. Mike Scully executive-produced the remaining five, which were all hold-overs that were produced for the previous season. The Simpsons is an animated series about a working-class family, which consists of Homer, Marge, Bart, Lisa, and Maggie. The show is set in the fictional city of Springfield, and lampoons American culture, society, television and many aspects of the human condition.\n\nThe season won an Annie Award for Best Animated Television Production, and was nominated for several other awards, including two Primetime Emmy Awards, three Writers Guild of America Awards, and an Environmental Media Award. The Simpsons ranked 30th in the season ratings with an average viewership of 12.4 million viewers. It was the second highest rated show on Fox after Malcolm in the Middle. The DVD boxset was released in the United States and Canada on August 24, 2010, eight years after it had completed broadcast on television.",
+   "poster_path": "/wQTdRc2sWgAKFHS1BTHdIzVRmwU.jpg",
+   "season_number": 13
+  },
+  {
+   "air_date": "2002-11-03",
+   "episode_count": 22,
+   "id": 3595,
+   "name": "Season 14",
+   "overview": "The fourteenth season of the animated television series The Simpsons was originally broadcast on the Fox network in the United States between November 3, 2002 and May 18, 2003. The show runner for the fourteenth production season was Al Jean, who executive produced 21 of 22 episodes. The other episode, \"How I Spent My Strummer Vacation\", was run by Mike Scully. The season contains five hold-overs from the previous season's production run. The fourteenth season won two Primetime Emmy Awards, including Outstanding Animated Program, four Annie Awards and a Writers Guild of America Award. On December 6, 2011, it was released on DVD and Blu-ray in North America.",
+   "poster_path": "/mgGrn5FiofW2bqpJC9PPcwEc84p.jpg",
+   "season_number": 14
+  },
+  {
+   "air_date": "2003-11-02",
+   "episode_count": 22,
+   "id": 3596,
+   "name": "Season 15",
+   "overview": "The Simpsons' 15th season began on Sunday, November 2, 2003, with \"Treehouse of Horror XIV\". The season contains five hold-over episodes from the season 14 production line. The most watched episode had 16.2 million viewers and the least watched had 6.2 million viewers.",
+   "poster_path": "/gSgRvuqI4cWOLONTBl6qW2y2Cih.jpg",
+   "season_number": 15
+  },
+  {
+   "air_date": "2004-11-07",
+   "episode_count": 21,
+   "id": 3597,
+   "name": "Season 16",
+   "overview": "The Simpsons' 16th season began on Sunday, November 7, 2004 and contained 21 episodes, beginning with Treehouse of Horror XV. The season contains six hold-over episodes from the season 15 production line.",
+   "poster_path": "/rdsBcs6VPJHnQgeLg8YinKyvnjO.jpg",
+   "season_number": 16
+  },
+  {
+   "air_date": "2005-09-11",
+   "episode_count": 22,
+   "id": 3598,
+   "name": "Season 17",
+   "overview": "The Simpsons' seventeenth season originally aired between September 2005 and May 2006, beginning on Sunday, September 11, 2005. It broke Fox's tradition of pushing its shows' season premieres back to November to accommodate the Major League Baseball games airing on the network during September and October of each year.",
+   "poster_path": "/9EpBFv9YpKCZhXQhKKTSG1h3OGi.jpg",
+   "season_number": 17
+  },
+  {
+   "air_date": "2006-09-10",
+   "episode_count": 22,
+   "id": 3599,
+   "name": "Season 18",
+   "overview": "The Simpsons' 18th season aired from September 10, 2006 to May 20, 2007. The season contained seven hold-over episodes from the season 17 production line. Al Jean served as the Showrunner, a position he has held since the thirteenth season.\n\nThe season finale, \"You Kent Always Say What You Want\", was the series' 400th episode. Additionally, the Simpsons franchise celebrated its 20th anniversary, as it has been on the air since April 1987, beginning with shorts on The Tracey Ullman Show.\n\nSeason 18 included guest appearances by Metallica, Tom Wolfe, Gore Vidal, Michael Chabon, Jonathan Franzen, Fran Drescher, The White Stripes, Kiefer Sutherland, Mary Lynn Rajskub, Richard Lewis, Phil McGraw, Elvis Stojko, Natalie Portman, Jon Lovitz, Betty White, Eric Idle, Sir Mix-a-Lot, Stephen Sondheim, Cristiano Ronaldo, Meg Ryan, Andy Dick, Peter Bogdanovich, James Patterson and others.",
+   "poster_path": "/7L7ZUZYghgjCcUfLcOPl86MiCvT.jpg",
+   "season_number": 18
+  },
+  {
+   "air_date": "2007-09-23",
+   "episode_count": 20,
+   "id": 3600,
+   "name": "Season 19",
+   "overview": "The Simpsons' nineteenth season originally aired on the Fox network between September 23, 2007 and May 18, 2008.",
+   "poster_path": "/8SkD4jvPIPkugszVeWoAa0gLxW.jpg",
+   "season_number": 19
+  },
+  {
+   "air_date": "2008-09-28",
+   "episode_count": 21,
+   "id": 3601,
+   "name": "Season 20",
+   "overview": "The Simpsons' twentieth season aired on Fox from September 28, 2008 to May 17, 2009. With this season, the show tied Gunsmoke as the longest running American primetime television series in terms of total number of seasons. The season was released on BD January 12, 2010, making this the first season released on BD. It was released on DVD in Region 1 on January 12, 2010, and in Region 4 on January 20, 2010. The season was only released on DVD in Region 2 in a few areas.",
+   "poster_path": "/or7v8DhoSXX4DoDPXqFg0qT6RSR.jpg",
+   "season_number": 20
+  },
+  {
+   "air_date": "2009-09-27",
+   "episode_count": 23,
+   "id": 3602,
+   "name": "Season 21",
+   "overview": "The Simpsons' twenty-first season aired on Fox from September 27, 2009 to May 23, 2010. It was the first of two seasons that the show was renewed for by Fox, and also the first season of the show to air entirely in high definition.\n\nWith this season, The Simpsons established itself as the longest-running American primetime television series surpassing Gunsmoke.\n\nThe season received mainly positive reviews from critics, with many praising \"The Squirt and the Whale\", \"To Surveil with Love\" and \"The Bob Next Door\". The show moved up 16 positions in the Nielsen ratings from the previous season and received numerous award nominations, winning two - an Emmy Award for Anne Hathaway for her voicing in \"Once Upon a Time in Springfield\", and an Annie Award for \"Treehouse of Horror XX\".",
+   "poster_path": "/vT5OgXM5rMKzzF4rrSjFxI3USCg.jpg",
+   "season_number": 21
+  },
+  {
+   "air_date": "2010-09-26",
+   "episode_count": 22,
+   "id": 3603,
+   "name": "Season 22",
+   "overview": "The Simpsons' twenty-second season began airing on Fox on September 26, 2010 and ended on May 22, 2011. The Simpsons was renewed for at least two additional seasons during the twentieth season leading up to this season. The cast is currently signed through the 25th season. On November 11, 2010, the series was renewed for a 23rd season by Fox with 22 episodes.",
+   "poster_path": "/fOX0HS4Tn8w21hwhOa8YrAakv7k.jpg",
+   "season_number": 22
+  },
+  {
+   "air_date": "2011-09-25",
+   "episode_count": 22,
+   "id": 3604,
+   "name": "Season 23",
+   "overview": "The Simpsons' twenty-third season began airing on Fox on September 25, 2011 and ended on May 20, 2012. The show's 500th episode, \"At Long Last Leave\", aired on February 19, 2012.",
+   "poster_path": "/6SKdh36MCY9fzjen19mIBiZI8p6.jpg",
+   "season_number": 23
+  },
+  {
+   "air_date": "2012-09-30",
+   "episode_count": 22,
+   "id": 3605,
+   "name": "Season 24",
+   "overview": "The Simpsons' twenty-fourth season began airing on Fox on September 30, 2012 and concluded on May 19, 2013.",
+   "poster_path": "/kejxf5JJoIJR4jygJQQhuutK7el.jpg",
+   "season_number": 24
+  },
+  {
+   "air_date": "2013-09-29",
+   "episode_count": 22,
+   "id": 3606,
+   "name": "Season 25",
+   "overview": "The Simpsons' twenty-fifth season began airing on Fox on September 29, 2013.\n\nIn this season, Homer sells his Mapple stock to buy a bowling ball, Marge blames herself and KISS for Bart's rebellious streak, Lisa becomes a cheerleader for Springfield's football team, and Homer delivers a baby. Guest stars for this season will include Christiane Amanpour, Will Arnett, Stan Lee, Rachel Maddow, Elisabeth Moss, Joe Namath, Gordon Ramsay, Aaron Sorkin, Eva Longoria, Daniel Radcliffe, Kristen Wiig, Billy West, Katey Sagal, John DiMaggio, Phil LaMarr, Zach Galifianakis, Harlan Ellison, Anderson Cooper, Maurice LaMarche, and Judd Apatow. This is Al Jean's 13th consecutive season as showrunner and 15th overall. Matt Groening, James L. Brooks, Matt Selman, and John Frink serve as executive producers.",
+   "poster_path": "/sBYXSBgzVwyUXG4QncOv9DoSp5E.jpg",
+   "season_number": 25
+  },
+  {
+   "air_date": "2014-09-28",
+   "episode_count": 22,
+   "id": 62103,
+   "name": "Season 26",
+   "overview": "In this season, Homer and Bart attempt to solve some father/son conflicts, Marge opens a sandwich franchise, the Simpsons meet their former selves, Bart schemes to bring down his new fourth grade teacher, Homer has a mid-life crisis, and the cast of Futurama make an appearance in Springfield.",
+   "poster_path": "/qoj96WCeePxkC0qkV391T7a6iom.jpg",
+   "season_number": 26
+  },
+  {
+   "air_date": "2015-09-27",
+   "episode_count": 22,
+   "id": 68067,
+   "name": "Season 27",
+   "overview": "",
+   "poster_path": "/AoOVTGxfGyfRpmNJhonfqPeTiY8.jpg",
+   "season_number": 27
+  },
+  {
+   "air_date": "2016-09-25",
+   "episode_count": 22,
+   "id": 80361,
+   "name": "Season 28",
+   "overview": "",
+   "poster_path": "/Asrn5wh8mHVm8a1ZsIWfwBX00RM.jpg",
+   "season_number": 28
+  },
+  {
+   "air_date": "2017-10-01",
+   "episode_count": 21,
+   "id": 91255,
+   "name": "Season 29",
+   "overview": "",
+   "poster_path": "/9LAihbWybQA2UCLjitES1K3xc3T.jpg",
+   "season_number": 29
+  },
+  {
+   "air_date": "2018-09-30",
+   "episode_count": 23,
+   "id": 110088,
+   "name": "Season 30",
+   "overview": "",
+   "poster_path": "/sj24nG5NSTiz8kR7YstmTR3h1AQ.jpg",
+   "season_number": 30
+  },
+  {
+   "air_date": "2019-09-29",
+   "episode_count": 4,
+   "id": 131143,
+   "name": "Season 31",
+   "overview": "",
+   "poster_path": "/16zhdPZupRPPhnHFwNPm6PXtPvB.jpg",
+   "season_number": 31
+  }
+ ],
+ "status": "Returning Series",
+ "type": "Scripted",
+ "vote_average": 7.1,
+ "vote_count": 2196,
+ "images": {
+  "backdrops": [
+   {
+    "aspect_ratio": 1.777777777777778,
+    "file_path": "/xSbCHliGcks410LZuy24BeWcLh6.jpg",
+    "height": 2160,
+    "iso_639_1": "en",
+    "vote_average": 5.312,
+    "vote_count": 1,
+    "width": 3840
+   },
+   {
+    "aspect_ratio": 1.777777777777778,
+    "file_path": "/7DE3BwlBgy1BN9XDdZiJXxJ4zKI.jpg",
+    "height": 2160,
+    "iso_639_1": "en",
+    "vote_average": 5.312,
+    "vote_count": 1,
+    "width": 3840
+   },
+   {
+    "aspect_ratio": 1.777777777777778,
+    "file_path": "/41iPYCMOHMLljNZE5XSzWsh1b3p.jpg",
+    "height": 1080,
+    "iso_639_1": "en",
+    "vote_average": 5.208333333333334,
+    "vote_count": 1,
+    "width": 1920
+   },
+   {
+    "aspect_ratio": 1.777777777777778,
+    "file_path": "/gDYdFsM5rCQa8PA72ZF9aEpuOPl.jpg",
+    "height": 720,
+    "iso_639_1": "en",
+    "vote_average": 5.194,
+    "vote_count": 2,
+    "width": 1280
+   },
+   {
+    "aspect_ratio": 1.777777777777778,
+    "file_path": "/kvm8CtEqQ69QNXKDuKetMRlLD5s.jpg",
+    "height": 2160,
+    "iso_639_1": "en",
+    "vote_average": 0.0,
+    "vote_count": 0,
+    "width": 3840
+   }
+  ],
+  "posters": [
+   {
+    "aspect_ratio": 0.6666666666666666,
+    "file_path": "/yTZQkSsxUFJZJe67IenRM0AEklc.jpg",
+    "height": 1500,
+    "iso_639_1": "en",
+    "vote_average": 5.752,
+    "vote_count": 14,
+    "width": 1000
+   },
+   {
+    "aspect_ratio": 0.6666666666666666,
+    "file_path": "/q20DdHEMebtLCLTvMX0aBE3N90g.jpg",
+    "height": 3000,
+    "iso_639_1": "en",
+    "vote_average": 5.586,
+    "vote_count": 7,
+    "width": 2000
+   },
+   {
+    "aspect_ratio": 0.6666666666666666,
+    "file_path": "/bQKcJ2zfCURXoUAFwjC6kp2fYhR.jpg",
+    "height": 1425,
+    "iso_639_1": "en",
+    "vote_average": 5.562,
+    "vote_count": 9,
+    "width": 950
+   },
+   {
+    "aspect_ratio": 0.6666666666666666,
+    "file_path": "/5p7jDrhbibW7pzxhz2RjT3qgUt7.jpg",
+    "height": 1500,
+    "iso_639_1": "en",
+    "vote_average": 5.384,
+    "vote_count": 2,
+    "width": 1000
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/zJZgFHqQUFC2jaUIpRXF3tY5CBT.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.326,
+    "vote_count": 7,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.6666666666666666,
+    "file_path": "/sgK5KO2B6IJuPyDFYPLcUMRzueQ.jpg",
+    "height": 1440,
+    "iso_639_1": "en",
+    "vote_average": 5.312,
+    "vote_count": 1,
+    "width": 960
+   },
+   {
+    "aspect_ratio": 0.6666666666666666,
+    "file_path": "/vDOdCrr770zc0rSpRJMoGnQA7Tp.jpg",
+    "height": 750,
+    "iso_639_1": "en",
+    "vote_average": 5.312,
+    "vote_count": 1,
+    "width": 500
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/tZEh6qYlqfN7ivYAwpxjemLMipF.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.252,
+    "vote_count": 5,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.6666666666666666,
+    "file_path": "/joj9UBNx53CiYefqklqiHN5afTP.jpg",
+    "height": 1140,
+    "iso_639_1": "en",
+    "vote_average": 5.245535714285714,
+    "vote_count": 1,
+    "width": 760
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/eiM2LgsJOGwgRmBexSM4fh5Wsaq.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.168,
+    "vote_count": 4,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/tUqU6uzOZdEpYY7YU551AIsTJAD.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.138,
+    "vote_count": 3,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/kH1zSFSx6QGDSkXCKsGHJF7DTfR.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.122,
+    "vote_count": 3,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/bQCjVzo9DqQkdmGRFyAGwH1fX68.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.122,
+    "vote_count": 3,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/goTEQDDqKkhuCpimKZE67T3W1Mk.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.108,
+    "vote_count": 3,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/meiEKpC2v4vIDY3rEUyid6k9qpJ.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.104,
+    "vote_count": 4,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/ziMvGWhdsnupJOc0QweZvU2I7rb.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.094,
+    "vote_count": 3,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/dcq8iPUeL4A03Mm2EF4FuRPEHHe.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.08,
+    "vote_count": 3,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/vKpo3ZUNZpCEDAE8wbv905Bf1KM.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.08,
+    "vote_count": 3,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/gNzRJ9NGk7d1KVpNGWsd1nhxeF6.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.08,
+    "vote_count": 3,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/740L0l8QyGDNHk6Y8vWADmY0HmJ.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.058,
+    "vote_count": 3,
+    "width": 680
+   },
+   {
+    "aspect_ratio": 0.68,
+    "file_path": "/hFW9PMBGHX1F9gMWYMAMzsM10Oc.jpg",
+    "height": 1000,
+    "iso_639_1": "en",
+    "vote_average": 5.046,
+    "vote_count": 4,
+    "width": 680
+   }
+  ]
+ }
+}

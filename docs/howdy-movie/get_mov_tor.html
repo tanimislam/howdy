@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>6.1. get_mov_tor &mdash; howdy! 1.35-17-g3ce7735 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.2. howdy_movie_totgui" href="howdy_movie_totgui.html" />
+    <link rel="prev" title="6. Howdy Movie Functionality" href="howdy_movie.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> howdy!
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.35
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../howdy_prereqs.html">1. Prerequisites and Overall Design Philosophy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-config/howdy_config.html">2. Howdy Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy_api.html">3. Top Level Howdy API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-core/howdy_core.html">4. Howdy Core Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-tv/howdy_tv.html">5. Howdy TV Functionality</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="howdy_movie.html">6. Howdy Movie Functionality</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.1. get_mov_tor</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#demonstration-of-default-operation">6.1.1. Demonstration of Default Operation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#common-flags-and-settings">6.1.2. Common Flags and Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#choice-of-torrent-search">6.1.3. Choice of Torrent Search</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_movie_totgui.html">6.2.  <code class="docutils literal notranslate"><span class="pre">howdy_movie_totgui</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_movie_api.html">6.3. Howdy Movie API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_movie.html#howdy-movie-todo">6.4. Howdy Movie TODO</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-music/howdy_music.html">7. Howdy Music Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-email/howdy_email.html">8. Howdy Email Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">9. INDEX</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">howdy!</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="howdy_movie.html"><span class="section-number">6. </span>Howdy Movie Functionality</a> &raquo;</li>
+        
+      <li><span class="section-number">6.1. </span>get_mov_tor</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/howdy-movie/get_mov_tor.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="get-mov-tor">
+<span id="get-mov-tor-label"></span><h1><span class="section-number">6.1. </span>get_mov_tor<a class="headerlink" href="#get-mov-tor" title="Permalink to this headline">¶</a></h1>
+<p>This executable finds either Magnet links or <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent files</a> of movies. By default it either prints out the chosen magnet link, or downloads the <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a> into the directory to which this tool has executed. This executable uses, among other torrent searches, the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> server to search for movies, and may optionally upload the Magnet links or <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent files</a> to the specified <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server (see <a class="reference internal" href="../howdy-config/howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a>).</p>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">get_mov_tor</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: get_mov_tor [-h] -n NAME [-y YEAR] [--maxnum MAXNUM] [--timeout TIMEOUT] [-f FILENAME] [--bypass] [--nozooq] [--info] [--add] [--noverify] [--raw]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -n NAME, --name NAME  Name of the movie to get.</span>
+<span class="go">  -y YEAR, --year YEAR  Year to look for the movie to get.</span>
+<span class="go">  --maxnum MAXNUM       Maximum number of torrents to look through. Default is 10.</span>
+<span class="go">  --timeout TIMEOUT     Timeout on when to quit searching for torrents (in seconds). Default is 60 seconds.</span>
+<span class="go">  -f FILENAME, --filename FILENAME</span>
+<span class="go">                        If defined, put torrent or magnet file into filename.</span>
+<span class="go">  --bypass              If chosen, bypass YTS.</span>
+<span class="go">  --nozooq              If chosen, bypass ZOOQLE.</span>
+<span class="go">  --info                If chosen, run in info mode.</span>
+<span class="go">  --add                 If chosen, push the magnet link or torrent file into the deluge server.</span>
+<span class="go">  --noverify            If chosen, do not verify SSL connections.</span>
+<span class="go">  --raw                 If chosen, do not use IMDB matching for Jackett torrents.</span>
+</pre></div>
+</div>
+<p>There are 13 flags or command line settings, so it is useful to split the different functionalities into separate sections. This tool can operate in three ways: choose a <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a>; choose a Magnet link (similar to what is done in <a class="reference internal" href="../howdy-tv/cli_tools/howdy_tv_cli.html#get-tv-tor"><span class="std std-ref">get_tv_tor</span></a>); and bypass the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> server to use a cocktail of torrent trackers for which I have developed some functionality (see <a class="reference internal" href="howdy_movie_api.html#howdy-movie-movie-torrents-module"><span class="std std-numref">Section 6.3.3</span></a>). <a class="reference internal" href="#demonstration-of-default-operation"><span class="std std-numref">Section 6.1.1</span></a> demonstrates the default mode of operation for this tool. <a class="reference internal" href="#common-flags-and-settings"><span class="std std-numref">Section 6.1.2</span></a> describe those settings to <code class="docutils literal notranslate"><span class="pre">get_mov_tor</span></code> that are shared by all operations. Finally, <a class="reference internal" href="#choice-of-torrent-search"><span class="std std-numref">Section 6.1.3</span></a> describes how to change the search for <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent files</a>.</p>
+<div class="section" id="demonstration-of-default-operation">
+<h2><span class="section-number">6.1.1. </span>Demonstration of Default Operation<a class="headerlink" href="#demonstration-of-default-operation" title="Permalink to this headline">¶</a></h2>
+<p>The only required argument is <code class="docutils literal notranslate"><span class="pre">-n</span></code> or <code class="docutils literal notranslate"><span class="pre">--name</span></code>, which specifies which movie to search. It is the only argument that is required.By default, this tool uses the <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDb</a> information on a movie to search for the movie torrent. It also first searches for <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent files</a> using the <a class="reference external" href="https://yts.ag/api">YTS API</a>: if it finds a selection of <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent files</a>, then it stops there, asks for user input, and creates a <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a> in the current working directory; if the <cite>torrent file</cite> search does not work, then it searches for Magnet links using <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> and <a class="reference external" href="https://zooqle.com">Zooqle</a>, asks for user input, and prints out the full Magnet link in the user shell. Here are two examples of default operation,</p>
+<ul>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">get_mov_tor</span></code> is able to find <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent files</a>, here looking for <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Trek_Beyond">Star Trek Beyond</a>. Here, there is only a single choice, and a single <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a>, <code class="docutils literal notranslate"><span class="pre">Star_Trek_Beyond.torrent</span></code>, is created in the current working directory</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_mov_tor -n &quot;Star Trek Beyond&quot;</span>
+<span class="go">Chosen movie Star Trek Beyond</span>
+</pre></div>
+</div>
+<p>If there were several choices, such as searching for <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek&quot;</span></code>, then we would choose the number of the <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a> corresponding to <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Trek_IV:_The_Voyage_Home">Star Trek IV</a> (choice <code class="docutils literal notranslate"><span class="pre">6</span></code>), and its <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a>, <code class="docutils literal notranslate"><span class="pre">Star_Trek_IV:_The_Voyage_Home.torrent</span></code>, is created in the current working directory.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_mov_tor -n &quot;Star Trek&quot;</span>
+<span class="go">choose movie: 1: Star Trek</span>
+<span class="go">2: Star Trek Beyond</span>
+<span class="go">3: Star Trek Generations</span>
+<span class="go">4: Star Trek II: The Wrath of Khan</span>
+<span class="go">5: Star Trek III: The Search for Spock</span>
+<span class="go">6: Star Trek IV: The Voyage Home</span>
+<span class="go">7: Star Trek Into Darkness</span>
+<span class="go">8: Star Trek V: The Final Frontier</span>
+<span class="go">9: Star Trek VI: The Undiscovered Country</span>
+<span class="go">10: Star Trek: First Contact</span>
+<span class="go">11: Star Trek: Insurrection</span>
+<span class="go">12: Star Trek: Nemesis</span>
+<span class="go">13: Star Trek: The Motion Picture</span>
+<span class="go">6</span>
+<span class="go">Chosen movie Star Trek IV: The Voyage Home</span>
+</pre></div>
+</div>
+</li>
+<li><p>In default operation, if we choose a more obscure movie for which a <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a> cannot be found, we get a selection of Magnet links. For example, here we search for the more obscure Michael Moore documentary, <span class="target" id="slacker-uprising">Slacker Uprising</span>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_mov_tor -n &quot;Slacker Uprising&quot;</span>
+<span class="go">Choose movie:</span>
+<span class="go">1: Восстание бездельников / Slacker Uprising (Майкл Мур / Michael Moore) [2008, США, Документальный, WEB-DL 1080p] VO + Sub Rus + Original Eng () (1 SE, 2 LE)</span>
+<span class="go">2: Slacker Uprising 2007.1080p WEB-DL AAC2.0 H264-TrollHD [PublicHD] (3.666 GB) (1 SE, 0 LE)</span>
+<span class="go">2</span>
+<span class="go">magnet link: magnet:?xt=urn:btih:08dcd040e04ae3a0aebf7da22f03e9050ec52edc&amp;dn=Slacker+Uprising+2007.1080p+WEB-DL+AAC2.0+H264-TrollHD+[PublicHD]&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.pomf.se%3A80%2Fannounce&amp;tr=udp%3A%2F%2Ftorrent.gresille.org%3A80%2Fannounce&amp;tr=udp%3A%2F%2F11.rarbg.com%2Fannounce&amp;tr=udp%3A%2F%2F11.rarbg.com%3A80%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&amp;tr=http%3A%2F%2Ftracker.ex.ua%3A80%2Fannounce&amp;tr=http%3A%2F%2Ftracker.ex.ua%2Fannounce&amp;tr=http%3A%2F%2Fbt.careland.com.cn%3A6969%2Fannounce&amp;tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce</span>
+</pre></div>
+</div>
+</li>
+<li><p>Finally, if you do not like any of the choices, <em>and if there is more than one choice</em>, you can type in <code class="docutils literal notranslate"><span class="pre">q</span></code> or other non-numeric character to exit.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_mov_tor -n &quot;Slacker Uprising&quot;</span>
+<span class="go">Choose movie:</span>
+<span class="go">1: Восстание бездельников / Slacker Uprising (Майкл Мур / Michael Moore) [2008, США, Документальный, WEB-DL 1080p] VO + Sub Rus + Original Eng () (1 SE, 2 LE)</span>
+<span class="go">2: Slacker Uprising 2007.1080p WEB-DL AAC2.0 H264-TrollHD [PublicHD] (3.666 GB) (1 SE, 0 LE)</span>
+<span class="go">q</span>
+<span class="go">Error, did not give a valid integer value. Exiting...</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this is a bug, I should try to allow the user to stop their choice even if only one Magnet link or <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a> is found.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="common-flags-and-settings">
+<h2><span class="section-number">6.1.2. </span>Common Flags and Settings<a class="headerlink" href="#common-flags-and-settings" title="Permalink to this headline">¶</a></h2>
+<p>Separate from whether or not a <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a> or Magnet link is downloaded, or on which torrent trackers will be searched, are the choices and modifications of the movie on which to search.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-y</span></code> or <code class="docutils literal notranslate"><span class="pre">--year</span></code> is optionally the YEAR on which to search for the torrent. Setting this can better specify the movie, and may be useful when searching for more obscure movies.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--maxnum</span></code> is the maximum number of magnet links or torrent files to return. The default is 10, but it must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--timeout</span></code> tells <code class="docutils literal notranslate"><span class="pre">get_mov_tor</span></code> to exit after this many seconds if no selection has been found. The default is 60 seconds, but it must be <span class="math notranslate nohighlight">\(\ge 10\)</span> seconds.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="docutils literal notranslate"><span class="pre">INFO</span></code> level logging output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> says to not verify SSL connections.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--raw</span></code> says to only use the search string in <code class="docutils literal notranslate"><span class="pre">-n</span></code> or <code class="docutils literal notranslate"><span class="pre">--name</span></code> to search for Magnet links. If a collection of <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent files</a> are found, then this flag is ignored.</p></li>
+</ul>
+<p>These two flags change what happens to the magnet link or <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-f</span></code> or <code class="docutils literal notranslate"><span class="pre">--filename</span></code> means to put the Magnet link into a file specified by <code class="docutils literal notranslate"><span class="pre">--filename</span></code>. <em>However</em>, this argument is ignored if the tool finds a collection of <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent files</a>; the name is fixed by the <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a> choice name (see <a class="reference internal" href="#demonstration-of-default-operation"><span class="std std-numref">Section 6.1.1</span></a> for examples).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--add</span></code> adds the Magnet URI to the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server. The operation of <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span></code> is described in <a class="reference internal" href="../howdy-core/cli_tools/howdy_core_cli.html#howdy-deluge-console"><span class="std std-numref">Section 4.1.2</span></a>.</p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">--f</span></code> is used, then the <code class="docutils literal notranslate"><span class="pre">--add</span></code> flag cannot be set. Consequently, if the <code class="docutils literal notranslate"><span class="pre">--add</span></code> flag is set, then <code class="docutils literal notranslate"><span class="pre">--f</span></code> cannot be used.</p>
+</div>
+<div class="section" id="choice-of-torrent-search">
+<h2><span class="section-number">6.1.3. </span>Choice of Torrent Search<a class="headerlink" href="#choice-of-torrent-search" title="Permalink to this headline">¶</a></h2>
+<p>The default operation is <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a> search first, then Magnet link. Setting the <code class="docutils literal notranslate"><span class="pre">--bypass</span></code> flag stops the <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a> search to go directly to Magnet link; this can be useful if the file search does not work, or if the <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent file</a> we choose never gets started (this often occurs with older and more stale torrents).</p>
+<p>By default one parallel process searches for Magnet links using <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a>, and the other parallel process uses <a class="reference external" href="https://zooqle.com">Zooqle</a>. The <code class="docutils literal notranslate"><span class="pre">--nozooq</span></code> flag turns off the <a class="reference external" href="https://zooqle.com">Zooqle</a> Magnet link search.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="howdy_movie_totgui.html" class="btn btn-neutral float-right" title="6.2. howdy_movie_totgui" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="howdy_movie.html" class="btn btn-neutral float-left" title="6. Howdy Movie Functionality" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

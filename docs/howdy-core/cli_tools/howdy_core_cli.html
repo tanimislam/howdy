@@ -1,0 +1,767 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>4.1. Howdy Core Command Line Utilities &mdash; howdy! 1.35-17-g3ce7735 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="4.2. Howdy Core GUIs" href="../gui_tools/howdy_core_gui.html" />
+    <link rel="prev" title="4. Howdy Core Functionality" href="../howdy_core.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> howdy!
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.35
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../howdy_prereqs.html">1. Prerequisites and Overall Design Philosophy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-config/howdy_config.html">2. Howdy Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy_api.html">3. Top Level Howdy API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../howdy_core.html">4. Howdy Core Functionality</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4.1. Howdy Core Command Line Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-core-cli">4.1.1. howdy_core_cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-deluge-console">4.1.2. howdy_deluge_console</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#torrent-info-info">4.1.2.1. torrent info (info)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#removing-torrents-rm-or-del">4.1.2.2. removing torrents (rm or del)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adding-torrents-add">4.1.2.3. adding torrents (add)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pausing-and-resuming-torrents-pause-or-resume">4.1.2.4. pausing and resuming torrents (pause or resume)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pushing-credentials-push">4.1.2.5. pushing credentials (push)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-resynclibs">4.1.3. howdy_resynclibs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-store-credentials">4.1.4. howdy_store_credentials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rsync-subproc">4.1.5. rsync_subproc</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#rsync-based-functionality">4.1.5.1. rsync based functionality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rsync-subproc-settings-with-push">4.1.5.2. rsync_subproc settings with push</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#get-book-tor">4.1.6. get_book_tor</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gui_tools/howdy_core_gui.html">4.2. Howdy Core GUIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howdy_core_api.html">4.3. Howdy Core API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howdy_core.html#howdy-core-todo">4.4. Howdy Core TODO</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-tv/howdy_tv.html">5. Howdy TV Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-movie/howdy_movie.html">6. Howdy Movie Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-music/howdy_music.html">7. Howdy Music Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-email/howdy_email.html">8. Howdy Email Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">9. INDEX</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">howdy!</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../howdy_core.html"><span class="section-number">4. </span>Howdy Core Functionality</a> &raquo;</li>
+        
+      <li><span class="section-number">4.1. </span>Howdy Core Command Line Utilities</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/howdy-core/cli_tools/howdy_core_cli.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="howdy-core-command-line-utilities">
+<h1><span class="section-number">4.1. </span>Howdy Core Command Line Utilities<a class="headerlink" href="#howdy-core-command-line-utilities" title="Permalink to this headline">¶</a></h1>
+<p>This section describes the six Howdy core command line utilities.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#howdy-core-cli"><span class="std std-ref">howdy_core_cli</span></a> shows the list of email addresses, and names, of Plex account holders who have access to your Plex server. It can also show emails and names of all people who can receive email notifications about your Plex server. One can also change the list of email addresses that are notified by email of the Plex server.</p></li>
+<li><p><a class="reference internal" href="#howdy-deluge-console"><span class="std std-ref">howdy_deluge_console</span></a> is a mocked up <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> client, whose operation is very similar to the <a class="reference external" href="https://whatbox.ca/wiki/Deluge_Console_Documentation">deluge-console</a> command line interface. It is designed for the most common operations of <a class="reference external" href="https://whatbox.ca/wiki/Deluge_Console_Documentation">deluge-console</a>, using <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server settings that are described in <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a> and <a class="reference internal" href="../../howdy-config/howdy_config_gui_usage.html#login-services"><span class="std std-numref">Section 2.3.1</span></a>.</p></li>
+<li><p><a class="reference internal" href="#howdy-resynclibs"><span class="std std-ref">howdy_resynclibs</span></a> summarizes information about the <a class="reference external" href="https://plex.tv">Plex</a> servers to which you have access, summarizes the <a class="reference external" href="https://plex.tv">Plex</a> library information for those <a class="reference external" href="https://plex.tv">Plex</a> servers which you own, and can also refresh those libraries in your owned servers.</p></li>
+<li><p><a class="reference internal" href="#howdy-store-credentials"><span class="std std-ref">howdy_store_credentials</span></a> sets up the Google OAuth2 services authentication from the command line, similarly to what <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code> does as described in <a class="reference internal" href="../../howdy-config/howdy_services_config.html#summary-of-setting-up-google-credentials"><span class="std std-numref">Section 2.1.6</span></a> and in <a class="reference internal" href="../../howdy-config/howdy_config_gui_usage.html#music-services"><span class="std std-numref">Section 2.3.3</span></a> when setting up the <a class="reference external" href="https://unofficial-google-music-api.readthedocs.io/en/latest">unofficial Google Music API</a>.</p></li>
+<li><p><a class="reference internal" href="#rsync-subproc"><span class="std std-ref">rsync_subproc</span></a> <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> copies (and removes) files from the remote server and optional remote subdirectory, to the local server and local directory, or vice-versa. This tool also allows one to update the location of the remote server, the remote subdirectory, and the local subdirectory. The update of the remote path, and local and remote subdirectories, can also be changed through the <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code> GUI, as described in <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#local-and-remote-seedhost-ssh-setup"><span class="std std-numref">Section 2.2.3</span></a> and <a class="reference internal" href="../../howdy-config/howdy_config_gui_usage.html#login-services"><span class="std std-numref">Section 2.3.1</span></a> (see the screen shot in <code class="xref std std-numref docutils literal notranslate"><span class="pre">login_step02_settings</span></code>).</p></li>
+<li><p><a class="reference internal" href="#get-book-tor"><span class="std std-ref">get_book_tor</span></a> finds <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">Magnet links</a> of ebooks, and by default prints out the chosen magnet link. This executable uses the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> server to search for ebooks, and can optionally upload these links to the specified <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server (see <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a>). It borrows much of its workflow from <a class="reference internal" href="../../howdy-tv/cli_tools/howdy_tv_cli.html#get-tv-tor"><span class="std std-ref">get_tv_tor</span></a> and <a class="reference internal" href="../../howdy-movie/get_mov_tor.html#get-mov-tor"><span class="std std-ref">get_mov_tor</span></a>.</p></li>
+</ul>
+<div class="section" id="howdy-core-cli">
+<span id="howdy-core-cli-label"></span><h2><span class="section-number">4.1.1. </span>howdy_core_cli<a class="headerlink" href="#howdy-core-cli" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_core_cli</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_core_cli [-h] [--username USERNAME] [--password PASSWORD] [--friends] [--mappedfriends] [--addmapping] [--guestemail GUEST_EMAIL] [--newemails NEW_EMAILS] [--replace_existing]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --username USERNAME   Your plex username.</span>
+<span class="go">  --password PASSWORD   Your plex password.</span>
+<span class="go">  --friends             Get list of guests of your Plex server.</span>
+<span class="go">  --mappedfriends       Get list of guests with mapping, of your Plex server.</span>
+<span class="go">  --addmapping          If chosen, then add extra friends from Plex friends.</span>
+<span class="go">  --guestemail GUEST_EMAIL</span>
+<span class="go">                        Name of the Plex guest email.</span>
+<span class="go">  --newemails NEW_EMAILS</span>
+<span class="go">                        Name of the new emails associated with the Plex guest email.</span>
+<span class="go">  --replace_existing    If chosen, replace existing email to send newsletter to.</span>
+</pre></div>
+</div>
+<p>As described in the above section, this CLI can do the following <em>operations</em>.</p>
+<ul class="simple">
+<li><p>list the email addresses, with names (if found), of friends of your <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
+<li><p>list the email addresses, with names (if found), of <em>all</em> people who have access to your <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
+<li><p>change those people who can have access to your <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
+</ul>
+<p>There are two parts to this tool: <em>authentication</em> and <em>operation</em>. Each <em>operation</em> with <code class="docutils literal notranslate"><span class="pre">howdy_core_cli</span></code> must be run with a given <em>authorization</em>. For example, to get a list of friends of the <a class="reference external" href="https://plex.tv">Plex</a> server by giving the <a class="reference external" href="https://plex.tv">Plex</a> username and password for your <a class="reference external" href="https://plex.tv">Plex</a> server, you would run.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_core_cli --username=XXXX --password=YYYY --friends</span>
+</pre></div>
+</div>
+<p>Authentication happens in two ways.</p>
+<ul>
+<li><p>by providing the <em>username</em> and <em>password</em> for the <a class="reference external" href="https://plex.tv">Plex</a> account that runs your <a class="reference external" href="https://plex.tv">Plex</a> server. Here, provide it with,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_core_cli --username=XXXX --password=YYYY ...</span>
+</pre></div>
+</div>
+<p>here, <code class="docutils literal notranslate"><span class="pre">...</span></code> refers to subsequent commands. One must give a valid <em>username</em> and <em>password</em>, otherwise the program exits.</p>
+</li>
+<li><p>by implicitly using the <a class="reference external" href="https://plex.tv">Plex</a> authorizations stored in <code class="docutils literal notranslate"><span class="pre">~/.config/howdy/app.db</span></code>. Here, no extra authorization needs to be provided.</p></li>
+</ul>
+<p>Here is how to do each of the three <em>operations</em>.</p>
+<ul>
+<li><p>to list the email addresses and names of the <a class="reference external" href="https://plex.tv">Plex</a> friends, run this way using implicit authorization, for example.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_core_cli --friends</span>
+</pre></div>
+</div>
+<p>this will produce this type of output.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">XX HAVE FOUND NAMES, 0 DO NOT HAVE FOUND NAMES</span>
+
+<span class="go">XX PLEX FRIENDS WITH NAMES</span>
+
+<span class="go">NAME                       |  EMAIL</span>
+<span class="go">---------------------------|--------------------------------</span>
+<span class="go">AAAAA                      |  A@AA.com</span>
+<span class="go">BBBBB                      |  B@BB.com</span>
+<span class="go">CCCCC                      |  C@CC.com</span>
+<span class="go">DDDDD                      |  D@DD.com</span>
+<span class="go">EEEEE                      |  E@EE.com</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<p>this tool gets the names for each email address from the Google contacts on your authenticated Google account.</p>
+</li>
+<li><p>to list the email addresses and names of the people who can receive <a class="reference external" href="https://plex.tv">Plex</a> newsletter and notification emails, run this way using implicit authorization, for example.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_core_cli --mappedfriends</span>
+</pre></div>
+</div>
+<p>this will produce this type of output.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">XX HAVE FOUND NAMES, 0 DO NOT HAVE FOUND NAMES</span>
+
+<span class="go">XX MAPPED PLEX FRIENDS WITH NAMES</span>
+
+<span class="go">NAME                       |  EMAIL</span>
+<span class="go">---------------------------|--------------------------------</span>
+<span class="go">AAAAA                      |  A@AA.com</span>
+<span class="go">BBBBB                      |  B@BB.com</span>
+<span class="go">CCCCC                      |  C@CC.com</span>
+<span class="go">DDDDD                      |  D@DD.com</span>
+<span class="go">EEEEE                      |  E@EE.com</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<p>this tool gets the names for each email address from the Google contacts on your authenticated Google account.</p>
+</li>
+<li><p>to add new emails that will reveice <a class="reference external" href="https://plex.tv">Plex</a> newsletter or notification emails, here we run with implicit authorization and add two new emails (<code class="docutils literal notranslate"><span class="pre">A&#64;XXX.com</span></code> and <code class="docutils literal notranslate"><span class="pre">A&#64;YYY.com</span></code>) associated with a <a class="reference external" href="https://plex.tv">Plex</a> friend with email account <code class="docutils literal notranslate"><span class="pre">A&#64;AA.com</span></code>. There can be two ways email addresses are added.</p>
+<ol class="arabic">
+<li><p>to add these new emails while also getting emails at <code class="docutils literal notranslate"><span class="pre">A&#64;AA.com</span></code>, run the following command,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_core_cli --addmapping --guestemail=A@AA.com --newemails=A@XXX.com,A@YYY.com</span>
+</pre></div>
+</div>
+</li>
+<li><p>to add these new emails while no longer getting emails at <code class="docutils literal notranslate"><span class="pre">A&#64;AA.com</span></code>, run the following command but with <code class="docutils literal notranslate"><span class="pre">--replace_existing</span></code>,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_core_cli --addmapping --guestemail=A@AA.com --newemails=A@XXX.com,A@YYY.com --replace_existing</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">A&#64;AA.com</span></code> must be a friend email of the <a class="reference external" href="https://plex.tv">Plex</a> server, otherwise this operation will not work.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="howdy-deluge-console">
+<span id="howdy-deluge-console-label"></span><h2><span class="section-number">4.1.2. </span>howdy_deluge_console<a class="headerlink" href="#howdy-deluge-console" title="Permalink to this headline">¶</a></h2>
+<p>This is a much reduced Deluge command line console client. It does the following operations: <a class="reference internal" href="#torrent-info-info"><span class="std std-ref">torrent info (info)</span></a>, <a class="reference internal" href="#removing-torrents-rm-or-del"><span class="std std-ref">removing torrents (rm or del)</span></a>, <a class="reference internal" href="#adding-torrents-add"><span class="std std-ref">adding torrents (add)</span></a>, <a class="reference internal" href="#pausing-and-resuming-torrents-pause-or-resume"><span class="std std-ref">pausing and resuming torrents (pause or resume)</span></a>, and <a class="reference internal" href="#pushing-credentials-push"><span class="std std-ref">pushing credentials (push)</span></a>. Running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">-h</span></code> gives the following output.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_deluge_console [-h] {info,resume,pause,rm,del,add,push} ...</span>
+
+<span class="go">positional arguments:</span>
+<span class="go">  {info,resume,pause,rm,del,add,push}</span>
+<span class="go">                        Choose one of these three modes of operation: rm, add, pause, resume, or push.</span>
+<span class="go">    info                Print summary info on a specific torrent, or all torrents.</span>
+<span class="go">    resume              Resume selected torrents, or all torrents.</span>
+<span class="go">    pause               Pause selected torrents, or all torrents.</span>
+<span class="go">    rm (del)            Remove selected torrents, or all torrents.</span>
+<span class="go">    add                 Add a single torrent, as a magnet link or a file.</span>
+<span class="go">    push                Push settings for a new deluge server to configuration.</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+</pre></div>
+</div>
+<p>By convention, the variable <code class="docutils literal notranslate"><span class="pre">md5_trunc</span></code> refers to a truncated initial substring of the full torrent’s MD5 hash. For example, given an MD5 hash of a torrent, such as <code class="docutils literal notranslate"><span class="pre">ed53ba61555cab24946ebf2f346752805601a7fb</span></code>, a possible <code class="docutils literal notranslate"><span class="pre">md5_trunc</span></code> is <code class="docutils literal notranslate"><span class="pre">ed5</span></code>. One can specify a collection of multiple <code class="docutils literal notranslate"><span class="pre">md5_trunc</span></code> as long as they are valid and unique (such as <code class="docutils literal notranslate"><span class="pre">md5_trunc_1,</span> <span class="pre">md5_trunc_2,</span> <span class="pre">...</span></code>).</p>
+<p>It may be convenient to have some useful BASH shortcuts for <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span></code>, which you can store in <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code>. Here is a snippet of self-explanatory aliases I find useful.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">alias pdci=&#39;howdy_deluge_console info&#39;</span>
+<span class="go">alias pdcr=&#39;howdy_deluge_console rm&#39;</span>
+<span class="go">alias pdca=&#39;howdy_deluge_console add&#39;</span>
+<span class="go">alias pdcp=&#39;howdy_deluge_console pause&#39;</span>
+<span class="go">alias pdcres=&#39;howdy_deluge_console resume&#39;</span>
+</pre></div>
+</div>
+<div class="section" id="torrent-info-info">
+<h3><span class="section-number">4.1.2.1. </span>torrent info (info)<a class="headerlink" href="#torrent-info-info" title="Permalink to this headline">¶</a></h3>
+<p>You can get nicely formatted information on a collection of torrents, or all torrents, through running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">info</span></code>. Running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">info</span> <span class="pre">-h</span></code> gives the following output.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_deluge_console info [-h] [-f] [torrent [torrent ...]]</span>
+
+<span class="go">positional arguments:</span>
+<span class="go">  torrent     The hash ID, or identifying initial substring, of torrents for which to get information. Example usage is &quot;howdy_deluge_console info ab1 bc2&quot;, where &quot;ab1&quot; and &quot;bc2&quot; are the first three digits of</span>
+<span class="go">              the MD5 hashes of torrents to examine.</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help  show this help message and exit</span>
+<span class="go">  -f, --file  If chosen, then spit out the torrent selections into a debug output file. Name of the file is given by howdy_deluge_console.YYYYMMDD-HHMMSS.txt</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">info</span></code> will show nicely formatted information on ALL torrents.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_deluge_console info</span>
+<span class="go">Name: ubuntu-19.10-beta-desktop-amd64.iso</span>
+<span class="go">ID: ed53ba61555cab24946ebf2f346752805601a7fb</span>
+<span class="go">State: Seeding</span>
+<span class="go">Up Speed: 0.0 KiB/s</span>
+<span class="go">Seeds: 0 (72) Peers: 0 (3) Availability: 0.00</span>
+<span class="go">Size: 2.1 GiB/2.1 GiB Ratio: 0.000</span>
+<span class="go">Seed time: 0 days 00:01:40 Active: 0 days 00:01:53</span>
+<span class="go">Tracker status: ubuntu.com: Announce OK</span>
+
+<span class="go">Name: ubuntu-19.10-beta-live-server-amd64.iso</span>
+<span class="go">ID: ed4bd9a0aed4c5e5dd7911aa785a3d180e267e4d</span>
+<span class="go">State: Downloading</span>
+<span class="go">Down Speed: 901.9 KiB/s Up Speed: 0.0 KiB/s ETA: 0 days 00:12:58</span>
+<span class="go">Seeds: 8 (21) Peers: 1 (1) Availability: 8.01</span>
+<span class="go">Size: 5.0 MiB/691.0 MiB Ratio: 0.000</span>
+<span class="go">Seed time: 0 days 00:00:00 Active: 0 days 00:00:05</span>
+<span class="go">Tracker status: ubuntu.com: Announce OK</span>
+<span class="go">Progress: 0.72%             [#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</span>
+</pre></div>
+</div>
+<p>You can give it a list of truncated MD5 hashes to get status information on selected torrents,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_deluge_console info ed5</span>
+<span class="go">Name: ubuntu-19.10-beta-desktop-amd64.iso</span>
+<span class="go">ID: ed53ba61555cab24946ebf2f346752805601a7fb</span>
+<span class="go">State: Seeding</span>
+<span class="go">Up Speed: 112.2 KiB/s ETA: 0 days 02:47:24</span>
+<span class="go">Seeds: 0 (72) Peers: 1 (3) Availability: 0.00</span>
+<span class="go">Size: 2.1 GiB/2.1 GiB Ratio: 0.000</span>
+<span class="go">Seed time: 0 days 00:03:44 Active: 0 days 00:03:57</span>
+<span class="go">Tracker status: ubuntu.com: Announce OK</span>
+</pre></div>
+</div>
+<p>Furthermore, since this CLI does not have UNIX piping and redirect functionalities, running with the <code class="docutils literal notranslate"><span class="pre">-f</span></code> or <code class="docutils literal notranslate"><span class="pre">--file</span></code> flag will spit out a debug text output of torrent statuses, the same as spit out into the command line. The name of the debug output file is <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console.YYYYMMDD-HHMMSS.txt</span></code>: the middle text is the 4-digit year, 2-digit month, 2-digit-day, followed by hour-min-second, at the time when the info command was requested.</p>
+</div>
+<div class="section" id="removing-torrents-rm-or-del">
+<h3><span class="section-number">4.1.2.2. </span>removing torrents (rm or del)<a class="headerlink" href="#removing-torrents-rm-or-del" title="Permalink to this headline">¶</a></h3>
+<p>You can remove some or all torrents by running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">rm</span></code> or <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">del</span></code>. Running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">rm</span> <span class="pre">-h</span></code> gives the following output.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_deluge_console rm [-h] [-R] torrent [torrent ...]</span>
+
+<span class="go">positional arguments:</span>
+<span class="go">  torrent            The hash ID, or identifying initial substring, of torrents to remove.</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help         show this help message and exit</span>
+<span class="go">  -R, --remove_data  Remove the torrent&#39;s data.</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">rm</span> <span class="pre">md5trunc_1</span> <span class="pre">md5_trunc_2</span> <span class="pre">...</span></code> removes specified torrents but keeps whatever data has been downloaded on the Deluge server. You would run this once the torrent’s state was <code class="docutils literal notranslate"><span class="pre">Seeding</span></code> or <code class="docutils literal notranslate"><span class="pre">Paused</span></code> (see <a class="reference internal" href="#torrent-info-info"><span class="std std-ref">torrent info (info)</span></a>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">rm</span> <span class="pre">-R</span> <span class="pre">...</span></code> does the same, but also removes whatever data has been downloaded from the Deluge server.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">rm</span></code> without specific torrents removes (or removes with deletion) ALL torrents from the Deluge server.</p></li>
+</ul>
+</div>
+<div class="section" id="adding-torrents-add">
+<h3><span class="section-number">4.1.2.3. </span>adding torrents (add)<a class="headerlink" href="#adding-torrents-add" title="Permalink to this headline">¶</a></h3>
+<p>You can add torrents to the Deluge server by running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">add</span></code>. You can add a torrent file as URL, a torrent file on disk, and a <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">Magnet URI</a>. Running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">add</span> <span class="pre">-h</span></code> gives the following output.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_deluge_console add [-h] torrent</span>
+
+<span class="go">positional arguments:</span>
+<span class="go">  torrent     The fully realized magnet link, or file, to add to the torrent server.</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help  show this help message and exit</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>torrent file as remote URL:</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_deluge_console add http://releases.ubuntu.com/19.10/ubuntu-19.10-beta-live-server-amd64.iso.torrent</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>torrent file on disk:</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_deluge_console add ubuntu-19.10-beta-desktop-amd64.iso.torrent</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">Magnet URI</a>:</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_deluge_console add &quot;magnet:?xt=urn:btih:49efb5fdd274abb26c5ea6361d1d9be28e4db2d3&amp;dn=archlinux-2019.09.01-x86_64.iso&amp;tr=udp://tracker.archlinux.org:6969&amp;tr=http://tracker.archlinux.org:6969/announce&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pausing-and-resuming-torrents-pause-or-resume">
+<h3><span class="section-number">4.1.2.4. </span>pausing and resuming torrents (pause or resume)<a class="headerlink" href="#pausing-and-resuming-torrents-pause-or-resume" title="Permalink to this headline">¶</a></h3>
+<p>You can pause torrents on the Deluge server by running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">pause</span></code>, and you can resume them by running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">resume</span></code>.</p>
+<ul class="simple">
+<li><p>You can pause/resume specific torrents by running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">pause</span> <span class="pre">md5trunc_1</span> <span class="pre">md5_trunc_2</span> <span class="pre">...</span></code> or <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">resume</span> <span class="pre">md5trunc_1</span> <span class="pre">md5_trunc_2</span> <span class="pre">...</span></code>.</p></li>
+<li><p>You can pause/resume ALL torrents on the Deluge server by not specifying any truncated MD5 hashes, <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">pause</span></code> or <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">resume</span></code>.</p></li>
+</ul>
+</div>
+<div class="section" id="pushing-credentials-push">
+<h3><span class="section-number">4.1.2.5. </span>pushing credentials (push)<a class="headerlink" href="#pushing-credentials-push" title="Permalink to this headline">¶</a></h3>
+<p>You can push new Deluge server credentials (URL, port, username, and password) to the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database. Running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">push</span> <span class="pre">-h</span></code> gives its help syntax,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_deluge_console push [-h] [--host url] [--port port] [--username username] [--password password]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help           show this help message and exit</span>
+<span class="go">  --host url           URL of the deluge server. Default is localhost.</span>
+<span class="go">  --port port          Port for the deluge server. Default is 12345.</span>
+<span class="go">  --username username  Username to login to the deluge server. Default is admin.</span>
+<span class="go">  --password password  Password to login to the deluge server. Default is admin.</span>
+</pre></div>
+</div>
+<p>Push new Deluge server settings into the configuration database by running,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_deluge_console push --host=HOST --port=PORT --username=USERNAME --password=PASSWORD</span>
+</pre></div>
+</div>
+<p>If those are valid settings, nothing more happens. If these are invalid settings, then specific error messages will print to the screen.</p>
+</div>
+</div>
+<div class="section" id="howdy-resynclibs">
+<span id="howdy-resynclibs-label"></span><h2><span class="section-number">4.1.3. </span>howdy_resynclibs<a class="headerlink" href="#howdy-resynclibs" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_resynclibs</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_resynclibs [-h] [--libraries] [--refresh] [--summary] [--library LIBRARY] [--servername SERVERNAME] [--servernames] [--noverify]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --libraries           If chosen, just give the sorted names of all libraries in the Plex server.</span>
+<span class="go">  --refresh             If chosen, refresh a chosen library in the Plex server. Must give a valid name for the library.</span>
+<span class="go">  --summary             If chosen, perform a summary of the chosen library in the Plex server. Must give a valid name for the library.</span>
+<span class="go">  --library LIBRARY     Name of a (valid) library in the Plex server.</span>
+<span class="go">  --servername SERVERNAME</span>
+<span class="go">                        Optional name of the server to check for.</span>
+<span class="go">  --servernames         If chosen, print out all the servers owned by the user.</span>
+<span class="go">  --noverify            Do not verify SSL transactions if chosen.</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> is a standard option in many of the Howdy CLI and GUIs to ignore verification of SSL transactions. It is optional and will default to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>When running this CLI, you must choose <em>one and only one</em> of these options.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--servernames</span></code> gives you the list of the <a class="reference external" href="https://plex.tv">Plex</a> servers to which you have access, and which you own.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--libraries</span></code>  prints out a list of the libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server you chose and which you own. Here you can explicitly choose a <a class="reference external" href="https://plex.tv">Plex</a> server by name with <code class="docutils literal notranslate"><span class="pre">--servername=SERVERNAME</span></code> or have a default one you own chosen for you.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--summary</span></code> prints out a summary of the <a class="reference external" href="https://plex.tv">Plex</a> library you have chosen with <code class="docutils literal notranslate"><span class="pre">--library=LIBRARY</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--refresh</span></code> refreshes the <a class="reference external" href="https://plex.tv">Plex</a> library you have chosen withh <code class="docutils literal notranslate"><span class="pre">--library=LIBRARY</span></code>.</p></li>
+</ul>
+<p>Here I find it useful to show how this tool works by example.</p>
+<ol class="arabic">
+<li><p>First, we can determine those <a class="reference external" href="https://plex.tv">Plex</a> servers to which we have access</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_resynclibs --servernames</span>
+</pre></div>
+</div>
+<p>This will print out a nicely formatted table. Each row is a <a class="reference external" href="https://plex.tv">Plex</a> server. The columns are the server’s name, whether we own it, and its remote URL with port (which is of the form <code class="docutils literal notranslate"><span class="pre">https://IP-ADDRESS:PORT</span></code>).</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Name           Is Owned    URL</span>
+<span class="go">-------------  ----------  ---------------------------</span>
+<span class="go">tanim-desktop  True        https://IP-ADDR1:PORT1</span>
+<span class="go">XXXX           False       https://IP-ADDR2:PORT2</span>
+<span class="go">YYYY           False       https://IP-ADDR3:PORT3</span>
+</pre></div>
+</div>
+</li>
+<li><p>Now we can look for the <a class="reference external" href="https://plex.tv">Plex</a> libraries in the <a class="reference external" href="https://plex.tv">Plex</a> server <em>which we own</em>. If we don’t choose a <a class="reference external" href="https://plex.tv">Plex</a> server with <code class="docutils literal notranslate"><span class="pre">--servername=SERVERNAME</span></code>, then the first one in the row which we own will be chosen by default. The syntax is,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_resynclibs --servername=tanim-desktop --libraries</span>
+</pre></div>
+</div>
+<p>This will print out a nicely formatted table. Each row is a library. There is a column of the library’s name and its type. I have only shown three of the six <a class="reference external" href="https://plex.tv">Plex</a> libraries on my server.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Here are the 6 libraries in this Plex server: tanim-desktop.</span>
+
+<span class="go">Name                Library Type</span>
+<span class="go">------------------  --------------</span>
+<span class="go">Movies              movie</span>
+<span class="go">Music               artist</span>
+<span class="go">XXXX                AAAA</span>
+<span class="go">YYYY                BBBB</span>
+<span class="go">TV Shows            show</span>
+<span class="go">ZZZZ                CCCC</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">movie</span></code> means Movies, <code class="docutils literal notranslate"><span class="pre">show</span></code> means TV shows, and <code class="docutils literal notranslate"><span class="pre">artist</span></code> means music.</p>
+</li>
+<li><p>We can get summary information about each <a class="reference external" href="https://plex.tv">Plex</a> library with the <code class="docutils literal notranslate"><span class="pre">--summary</span></code> flag and <code class="docutils literal notranslate"><span class="pre">--library=LIBRARY</span></code>. Here are the three examples on getting summary information on a movie, TV show, and music library. This summary information may take a while.</p>
+<ul>
+<li><p>On a movie library.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_resynclibs --servername=tanim-desktop --library=Movies --summary</span>
+
+<span class="go">&quot;Movies&quot; is a movie library. There are 1886 movies here. The total size of movie media is 1.632 TB.</span>
+<span class="go">The total duration of movie media is 4 months, 20 days, 19 hours, 50 minutes, and 22.054 seconds.</span>
+</pre></div>
+</div>
+</li>
+<li><p>On a TV show library.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_resynclibs --servername=tanim-desktop --library=&quot;TV Shows&quot; --summary</span>
+
+<span class="go">&quot;TV Shows&quot; is a TV library. There are 21167 TV files in 236 TV shows. The total size of TV media is</span>
+<span class="go">5.301 TB. The total duration of TV shows is 1 year, 2 months, 15 days, 11 hours, 42 minutes, and</span>
+<span class="go">6.409 seconds.</span>
+</pre></div>
+</div>
+</li>
+<li><p>On a music library.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_resynclibs --servername=tanim-desktop --library=Music --summary</span>
+
+<span class="go">&quot;Music&quot; is a music library. There are 9911 songs made by 814 artists in 1549 albums. The total size</span>
+<span class="go">of music media is 54.785 GB. The total duration of music media is 26 days, 18 hours, 59 minutes, and</span>
+<span class="go">55.185 seconds.</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>Finally, we can refresh a library that we specify with the <code class="docutils literal notranslate"><span class="pre">--refresh</span></code> flag and <code class="docutils literal notranslate"><span class="pre">--library=LIBRARY</span></code>. Here are three examples on how to refresh the movie, TV show, and music library.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_resynclibs --servername=tanim-desktop --library=Movies --refresh</span>
+<span class="go">howdy_resynclibs --servername=tanim-desktop --library=&quot;TV Shows&quot; --refresh</span>
+<span class="go">howdy_resynclibs --servername=tanim-desktop --library=Music --refresh</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="howdy-store-credentials">
+<span id="howdy-store-credentials-label"></span><h2><span class="section-number">4.1.4. </span>howdy_store_credentials<a class="headerlink" href="#howdy-store-credentials" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="#howdy-core-command-line-utilities"><span class="std std-numref">Section 4.1</span></a> describes this executable’s functionality very well. Its help screen can be displayed by running <code class="docutils literal notranslate"><span class="pre">howdy_store_credentials</span> <span class="pre">-h</span></code>,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_store_credentials [-h] [--noverify]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help  show this help message and exit</span>
+<span class="go">  --noverify  If chosen, do not verify SSL connections.</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--noverify</span></code> flag disables the verification of SSL connections. First, run this executable, <code class="docutils literal notranslate"><span class="pre">howdy_store_credentials</span></code>, which will return this interactive text dialog in the shell.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_store_credentials</span>
+<span class="go">Please go to this URL in a browser window:https://accounts.google.com/o/oauth2/auth...</span>
+<span class="go">After giving permission for Google services on your behalf,</span>
+<span class="go">type in the access code:</span>
+</pre></div>
+</div>
+<p>Second, go to the URL to which you are instructed. Once you copy that URL into your browser, you will see a browser window as shown in <a class="reference internal" href="../../howdy-config/howdy_services_config.html#google-step03-authorizeaccount"><span class="std std-ref">Step #3</span></a>, <a class="reference internal" href="../../howdy-config/howdy_services_config.html#google-step05-scaryscreen"><span class="std std-ref">Step #5</span></a>, <a class="reference internal" href="../../howdy-config/howdy_services_config.html#google-step06-allowbutton"><span class="std std-ref">Step #6</span></a>, and <a class="reference internal" href="../../howdy-config/howdy_services_config.html#google-step07-oauthtokencopy"><span class="std std-ref">Step #7</span></a> in <a class="reference internal" href="../../howdy-config/howdy_services_config.html#summary-of-setting-up-google-credentials"><span class="std std-numref">Section 2.1.6</span></a>.</p>
+<p>Third, paste the code as described in <a class="reference internal" href="../../howdy-config/howdy_services_config.html#google-step07-oauthtokencopy"><span class="std std-ref">Step #7</span></a> into the interactive text dialog, <code class="docutils literal notranslate"><span class="pre">...type</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">access</span> <span class="pre">code:</span></code>. Once successful, you will receive this message in the shell,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Success. Stored GOOGLE credentials.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="rsync-subproc">
+<span id="rsync-subproc-label"></span><h2><span class="section-number">4.1.5. </span>rsync_subproc<a class="headerlink" href="#rsync-subproc" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">rsync_subproc</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: rsync_subproc [-h] [-S STRING] [-N NUMTRIES] [-D] [-R] {-P} ...</span>
+
+<span class="go">positional arguments:</span>
+<span class="go">  {push}</span>
+<span class="go">    push                push RSYNC credentials into configuration file.</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -S STRING, --string STRING</span>
+<span class="go">                        the globbed string to rsync from on the remote account. Default is &quot;*.mkv&quot;.</span>
+<span class="go">  -N NUMTRIES, --numtries NUMTRIES</span>
+<span class="go">                        number of attempts to go through an rsync process. Default is 10.</span>
+<span class="go">  -D, --debug           if chosen, then write debug output.</span>
+<span class="go">  -R, --reverse         If chosen, push files from local server to remote. Since files are deleted from source once done, you should probably make a copy of the source files if you want to still keep them afterwards.</span>
+</pre></div>
+</div>
+<p>This executable provides a convenient higher-level command-line interface to <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> uploading and downloading that resumes on transfer failure, and deletes the origin files once the transfer is complete. One also does not need to execute this command in <code class="docutils literal notranslate"><span class="pre">LOCAL_DIR</span></code>.</p>
+<p>The main <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> based uploading and downloading is described in <a class="reference internal" href="#rsync-based-functionality"><span class="std std-ref">rsync based functionality</span></a>. Setting the SSH credentials, and local and remote locations, is described in <a class="reference internal" href="#rsync-subproc-settings-with-push"><span class="std std-ref">rsync_subproc settings with push</span></a>.</p>
+<div class="section" id="rsync-based-functionality">
+<h3><span class="section-number">4.1.5.1. </span><a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> based functionality<a class="headerlink" href="#rsync-based-functionality" title="Permalink to this headline">¶</a></h3>
+<p>One can either upload files and directories to, or download files and directories from, the remote location and the remote subdirectory (which we call <code class="docutils literal notranslate"><span class="pre">SUBDIR</span></code>). The local directory is called <code class="docutils literal notranslate"><span class="pre">LOCAL_DIR</span></code>. If the remote directory is not defined, it is <em>by default</em> the home directory of that account.</p>
+<p>The debug flag, <code class="docutils literal notranslate"><span class="pre">-D</span></code> or <code class="docutils literal notranslate"><span class="pre">--debug</span></code>, is extremely useful, as it displays the lower level shell command that is executed to get the <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> transfer going.</p>
+<p>The files or directories are selected with <code class="docutils literal notranslate"><span class="pre">-S</span> <span class="pre">STRING</span></code> or <code class="docutils literal notranslate"><span class="pre">--string=STRING</span></code> and follows the standard <a class="reference external" href="https://en.wikipedia.org/wiki/Glob_(programming)">POSIX globbing</a> convention. For instance, you can specify <code class="docutils literal notranslate"><span class="pre">-S</span> <span class="pre">&quot;The*&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">STRING</span></code> in quotations) to select the remote directory <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">Simpsons</span></code> to download. In order to simplify this CLI’s behavior,</p>
+<ul class="simple">
+<li><p>There can be no spaces in the <code class="docutils literal notranslate"><span class="pre">STRING</span></code> selection.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">STRING</span></code> selection does not behave as a <a class="reference external" href="https://en.wikipedia.org/wiki/Regular_expression">Regular expression</a>.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">-N</span></code> or <code class="docutils literal notranslate"><span class="pre">--numtries</span></code> flag sets the number of tries that the <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> process will attempt before giving up or finishing the transfer. The default is 10, but this number must be <span class="math notranslate nohighlight">\(\ge 1\)</span>.</p>
+<p>To download a remote directory (<code class="docutils literal notranslate"><span class="pre">SUBDIR/Ubuntu_18.04</span></code>) until success into <code class="docutils literal notranslate"><span class="pre">LOCAL_DIR</span></code>, and delete all files inside the remote directory, you can run this command with debug.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ rsync_subproc -D -S &quot;Ubuntu_*&quot;</span>
+<span class="go">STARTING THIS RSYNC CMD: rsync --remove-source-files -P -avz --rsh=&quot;/usr/bin/sshpass XXXX ssh&quot; -e ssh YYYY@ZZZZ:SUBDIR/Ubuntu_* LOCAL_DIR</span>
+<span class="go">TRYING UP TO 10 TIMES.</span>
+
+<span class="go">SUCCESSFUL ATTEMPT 1 / 10 IN 25.875 SECONDS.</span>
+</pre></div>
+</div>
+<p>Note that after a period of time (here, 25.875 seconds), the process will terminate with either a descriptive success or descriptive failure message. Note that in the debug output, the SSH password is not printed out (except for an <code class="docutils literal notranslate"><span class="pre">XXXX</span></code>).</p>
+<p>To upload the local directory (<code class="docutils literal notranslate"><span class="pre">LOCAL_DIR/Ubuntu_18.04</span></code>) until success into <code class="docutils literal notranslate"><span class="pre">SUBDIR</span></code>, and delete all files inside the local directory, you can run this command with debug and the <code class="docutils literal notranslate"><span class="pre">-R</span></code> or <code class="docutils literal notranslate"><span class="pre">--reverse</span></code> flag.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ rsync_subproc -D -R -S Ubuntu*</span>
+<span class="go">STARTING THIS RSYNC CMD: rsync --remove-source-files -P -avz --rsh=&quot;/usr/bin/sshpass XXXX ssh&quot; -e ssh LOCAL_DIR/Ubuntu_18.04 YYYY@ZZZZ:SUBDIR/</span>
+<span class="go">TRYING UP TO 10 TIMES.</span>
+
+<span class="go">SUCCESSFUL ATTEMPT 1 / 10 IN 264.802 SECONDS.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="rsync-subproc-settings-with-push">
+<h3><span class="section-number">4.1.5.2. </span>rsync_subproc settings with push<a class="headerlink" href="#rsync-subproc-settings-with-push" title="Permalink to this headline">¶</a></h3>
+<p>Running <code class="docutils literal notranslate"><span class="pre">rsync_subproc</span> <span class="pre">push</span></code> will update or set the SSH settings for the remote server, and the local and remote subdirectories. <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#local-and-remote-seedhost-ssh-setup"><span class="std std-numref">Section 2.2.3</span></a> and <a class="reference internal" href="../../howdy-config/howdy_config_gui_usage.html#login-services"><span class="std std-numref">Section 2.3.1</span></a> (see the screen shot in <code class="xref std std-numref docutils literal notranslate"><span class="pre">login_step02_settings</span></code>) describe the form that these settings take. The help output, when running <code class="docutils literal notranslate"><span class="pre">rsync_subproc</span> <span class="pre">push</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: rsync_subproc push [-h] [-L LOCAL_DIR] [--ssh SSHPATH] [--subdir SUBDIR]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help       show this help message and exit</span>
+<span class="go">  -L LOCAL_DIR     Name of the local directory into which we download files and directory. Default is XXXX.</span>
+<span class="go">  --ssh SSHPATH    SSH path from which to get files.</span>
+<span class="go">  --subdir SUBDIR  name of the remote sub directory from which to get files. Optional.</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>the format of the SSH setting is <code class="docutils literal notranslate"><span class="pre">username&#64;ssh_server</span></code>.</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">SUBDIR</span></code> is located relative to the <code class="docutils literal notranslate"><span class="pre">usename</span></code> home directory on <code class="docutils literal notranslate"><span class="pre">ssh_server</span></code>, <code class="docutils literal notranslate"><span class="pre">$HOME/SUBDIR</span></code>.</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">LOCAL_DIR</span></code> local directory is described with an absolute path.</p></li>
+</ul>
+<p>Thus, to set settings for <code class="docutils literal notranslate"><span class="pre">rsync_subproc</span></code>, one would run,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">rsync_subproc push -L LOCAL_DIR --ssh=username@ssh_server --subdir=SUBDIR</span>
+</pre></div>
+</div>
+<p>Note that here, the SSH password is the same as the remote <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server’s password. See, e.g., <a class="reference internal" href="#howdy-deluge-console"><span class="std std-numref">Section 4.1.2</span></a> or <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#local-and-remote-seedhost-ssh-setup"><span class="std std-numref">Section 2.2.3</span></a> and figures therein.</p>
+</div>
+</div>
+<div class="section" id="get-book-tor">
+<span id="get-book-tor-label"></span><h2><span class="section-number">4.1.6. </span>get_book_tor<a class="headerlink" href="#get-book-tor" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">get_book_tor</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: get_book_tor [-h] -n NAME [--maxnum MAXNUM] [-f FILENAME] [--add] [--info] [--noverify]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -n NAME, --name NAME  Name of the book to get.</span>
+<span class="go">  --maxnum MAXNUM       Maximum number of torrents to look through. Default is 10.</span>
+<span class="go">  -f FILENAME, --filename FILENAME</span>
+<span class="go">                        If defined, put magnet link into filename.</span>
+<span class="go">  --add                 If chosen, push the magnet link into the deluge server.</span>
+<span class="go">  --info                If chosen, run in info mode.</span>
+<span class="go">  --noverify            If chosen, do not verify SSL connections.</span>
+</pre></div>
+</div>
+<p>These are common flags used by all standard operations of this CLI.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">-n</span></code> or <code class="docutils literal notranslate"><span class="pre">--name</span></code> flag is used to specify the ebook, for example <a class="reference external" href="https://en.wikipedia.org/wiki/Plagues_and_Peoples">Plagues and Peoples</a> by <a class="reference external" href="https://en.wikipedia.org/wiki/William_H._McNeill_(historian)">William McNeill</a>.</p>
+<p>Here is how to get this ebook,  <a class="reference external" href="https://en.wikipedia.org/wiki/Plagues_and_Peoples">Plagues and Peoples</a>. The selection of ebook torrents are much smaller than TV shows and movies, so we often get <em>one</em> choice rather than multiple choices. If we had multiple choices, we could choose a given Magnet link by number, and the choices are sorted by the total number of seeds (SE) and leechers (LE) found for that link. The Magnet link is printed out here.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_book_tor -n &quot;Plagues and Peoples&quot;</span>
+<span class="go">Chosen book: Plagues and Peoples (2.1 MiB)</span>
+<span class="go">magnet link: magnet:?xt=urn:btih:85C37477333AD716864B3D25F5DFF1B9AFF1ADE6&amp;dn=Plagues+and+Peoples&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&amp;tr=udp%3A%2F%2F9.rarbg.to%3A2920%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&amp;tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.pirateparty.gr%3A6969%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.cyberia.is%3A6969%2Fannounce</span>
+</pre></div>
+</div>
+<p>We can modify this command with the following.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">-f</span></code> or <code class="docutils literal notranslate"><span class="pre">--filename</span></code> is used to output the Magnet URI into a file,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_book_tor -n &quot;Plagues and Peoples&quot; -f plagues_and_peoples.txt</span>
+<span class="go">Chosen book: Plagues and Peoples (2.1 MiB)</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--add</span></code> adds the Magnet URI to the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server. The operation of <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span></code> is described in <a class="reference internal" href="#howdy-deluge-console"><span class="std std-numref">Section 4.1.2</span></a>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop: torrents $ get_book_tor -n &quot;Plagues and Peoples&quot; --add</span>
+<span class="go">Chosen book: Plagues and Peoples (2.1 MiB)</span>
+<span class="go">...</span>
+<span class="go">tanim-desktop: torrents $ howdy_deluge_console info</span>
+<span class="go">Name: Plagues and Peoples</span>
+<span class="go">ID: 85c37477333ad716864b3d25f5dff1b9aff1ade6</span>
+<span class="go">State: Downloading</span>
+<span class="go">Down Speed: 0.0 KiB/s Up Speed: 0.0 KiB/s</span>
+<span class="go">Seeds: 0 (1) Peers: 0 (1) Availability: 0.00</span>
+<span class="go">Size: 0.0 KiB/0.0 KiB Ratio: -1.000</span>
+<span class="go">Seed time: 0 days 00:00:00 Active: 0 days 00:00:35</span>
+<span class="go">Tracker status: coppersurfer.tk: Announce OK</span>
+<span class="go">Progress: 0.00% [~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../gui_tools/howdy_core_gui.html" class="btn btn-neutral float-right" title="4.2. Howdy Core GUIs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../howdy_core.html" class="btn btn-neutral float-left" title="4. Howdy Core Functionality" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

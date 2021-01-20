@@ -1,0 +1,1819 @@
+{
+ "_id": "5256c24919c2956ff60058cb",
+ "air_date": "1998-08-23",
+ "episodes": [
+  {
+   "air_date": "1998-08-23",
+   "episode_number": 1,
+   "id": 62445,
+   "name": "Lard of the Dance",
+   "overview": "Homer and Bart try to make money by selling used grease. Meanwhile, Lisa organizes a school dance but feels alienated when a new classmate and her friends try to act like adults.",
+   "production_code": "5F20",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/5r9D8z84aWMCgJYKS00Tz8HTE6U.jpg",
+   "vote_average": 6.625,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 1223636,
+     "credit_id": "5256c2e419c2956ff601529c",
+     "name": "Jane O'Brien",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 1,
+     "profile_path": null
+    },
+    {
+     "id": 1223625,
+     "credit_id": "5256c2aa19c2956ff600f36c",
+     "name": "Dominic Polcino",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 14406,
+     "name": "Lisa Kudrow",
+     "credit_id": "5256c2e319c2956ff60151c2",
+     "character": "",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/9c7WB5dqsA3zpZvh6CKRQ6xupjw.jpg"
+    },
+    {
+     "id": 6035,
+     "name": "Russi Taylor",
+     "credit_id": "5256c25a19c2956ff6006b65",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/3rfnBDgLRc7CjoIw9bGRBlDXxMf.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1998-09-20",
+   "episode_number": 2,
+   "id": 62434,
+   "name": "The Wizard of Evergreen Terrace",
+   "overview": "A midlife crisis prompts Homer to quit his job and become an inventor.",
+   "production_code": "5F21",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/8dooJxYyjSCH0wiXaqxolvhexzN.jpg",
+   "vote_average": 7.625,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 1216638,
+     "credit_id": "5256bdc919c2956ff6001df6",
+     "name": "John Swartzwelder",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 0,
+     "profile_path": null
+    },
+    {
+     "id": 1223614,
+     "credit_id": "5256c26419c2956ff600796c",
+     "name": "Mark Kirkland",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 0,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 10775,
+     "name": "William Daniels",
+     "credit_id": "5256c2d919c2956ff601412b",
+     "character": "",
+     "order": 0,
+     "gender": 2,
+     "profile_path": "/1SCR6im2maiASfTD5h7r0g9dU78.jpg"
+    },
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1998-09-27",
+   "episode_number": 3,
+   "id": 62430,
+   "name": "Bart the Mother",
+   "overview": "Under Nelson's bad influence, Bart shoots a bird with a BB gun. Stricken with remorse, he tries to nurture the eggs from the bird's nest, which hatch into a species of lizard outlawed in Springfield.",
+   "production_code": "5F22",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/uTWK7Jz2oHZOIHM5HvYfYpXVqcY.jpg",
+   "vote_average": 6.5,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 94290,
+     "credit_id": "5256bdc819c2956ff6001d14",
+     "name": "David X. Cohen",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1223622,
+     "credit_id": "5256c2a119c2956ff600e6ad",
+     "name": "Steven Dean Moore",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6036,
+     "name": "Marcia Wallace",
+     "credit_id": "5256c25919c2956ff6006ad9",
+     "character": "",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/oYxoYD9mTEKPMBgOBA9dESRTaSo.jpg"
+    },
+    {
+     "id": 14104,
+     "name": "Phil Hartman",
+     "credit_id": "5256c26219c2956ff60078ee",
+     "character": "",
+     "order": 0,
+     "gender": 2,
+     "profile_path": "/rf62sAab9vOjm9x7ZA0VBWDkHvD.jpg"
+    },
+    {
+     "id": 6035,
+     "name": "Russi Taylor",
+     "credit_id": "5256c25a19c2956ff6006b65",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/3rfnBDgLRc7CjoIw9bGRBlDXxMf.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1998-10-25",
+   "episode_number": 4,
+   "id": 62447,
+   "name": "Treehouse of Horror IX",
+   "overview": "In \"Hell Toup\u00e9e,\" Snake is sent to the electric chair, and his hair is transplanted onto Homer. In \"The Terror of Tiny Toon,\" Bart and Lisa become cartoon characters in an episode of Itchy & Scratchy. In \"Starship Poopers,\" a growth spurt casts doubt on Maggie's paternity, and the family goes on the Jerry Springer show.",
+   "production_code": "AABF01",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/dwicl3ahKPqKdyXvvpJav3fgPb7.jpg",
+   "vote_average": 7.125,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 94290,
+     "credit_id": "5256bdc819c2956ff6001d14",
+     "name": "David X. Cohen",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1216629,
+     "credit_id": "5256bdc819c2956ff6001d3a",
+     "name": "Donick Cary",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 52314,
+     "credit_id": "5256bdca19c2956ff6001e80",
+     "name": "Larry Doyle",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1223622,
+     "credit_id": "5256c2a119c2956ff600e6ad",
+     "name": "Steven Dean Moore",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 151657,
+     "name": "Regis Philbin",
+     "credit_id": "5256c2e519c2956ff60153ec",
+     "character": "",
+     "order": 0,
+     "gender": 2,
+     "profile_path": "/rsT4miGEy1MwExsdJjCMPG2zii6.jpg"
+    },
+    {
+     "id": 162783,
+     "name": "Kathie Lee Gifford",
+     "credit_id": "5256c2e519c2956ff601545e",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/hogGXSwfwftCHJFHHp1RSITxoto.jpg"
+    },
+    {
+     "id": 112884,
+     "name": "Ed McMahon",
+     "credit_id": "5256c2e619c2956ff60154e8",
+     "character": "",
+     "order": 2,
+     "gender": 2,
+     "profile_path": "/jonzqeEynXQkfiyZTEYHD9Bgklk.jpg"
+    },
+    {
+     "id": 5139,
+     "name": "Robert Englund",
+     "credit_id": "5256c2e619c2956ff60155ce",
+     "character": "",
+     "order": 3,
+     "gender": 2,
+     "profile_path": "/h4LEgXsvbfmIbwktkiGWNwwtr8q.jpg"
+    },
+    {
+     "id": 94743,
+     "name": "Jerry Springer",
+     "credit_id": "5256c2e619c2956ff6015686",
+     "character": "",
+     "order": 5,
+     "gender": 0,
+     "profile_path": "/uwlqChyS9RTqXWObp3smWqzOBuA.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1998-11-08",
+   "episode_number": 5,
+   "id": 62442,
+   "name": "When You Dish upon a Star",
+   "overview": "After a chance encounter with Hollywood celebrities secretly living in Springfield, Homer becomes their friend and gofer... until he spills the beans to the gang at Moe's.",
+   "production_code": "5F19",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/nDZMa8idiP3N2Wqaj7cvObUSXyA.jpg",
+   "vote_average": 5.625,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 1216656,
+     "credit_id": "5256bdcb19c2956ff6001f48",
+     "name": "Richard Appel",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 53215,
+     "credit_id": "5256c2be19c2956ff6011a27",
+     "name": "Pete Michels",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": "/2aGKvszKBp5eaPjpFQICN50UWlA.jpg"
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 339,
+     "name": "Brian Grazer",
+     "credit_id": "5256c2e119c2956ff6014cb7",
+     "character": "",
+     "order": 0,
+     "gender": 2,
+     "profile_path": "/yqiKX3auDuorea0BOtuB6Ifhyp6.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    },
+    {
+     "id": 7447,
+     "name": "Alec Baldwin",
+     "credit_id": "5256c2e119c2956ff6014dc9",
+     "character": "Dr. Caleb Thorn",
+     "order": 1,
+     "gender": 2,
+     "profile_path": "/5WrluUJK8nXVrDndY8Ykf2X87pT.jpg"
+    },
+    {
+     "id": 326,
+     "name": "Kim Basinger",
+     "credit_id": "5256c2e119c2956ff6014e87",
+     "character": "",
+     "order": 2,
+     "gender": 1,
+     "profile_path": "/xpv6NgpY0mDr5QSWjZLXy5KlFn9.jpg"
+    },
+    {
+     "id": 6159,
+     "name": "Ron Howard",
+     "credit_id": "5256c2e119c2956ff6014f7b",
+     "character": "",
+     "order": 3,
+     "gender": 2,
+     "profile_path": "/67WIgpOGIeb4NSN9yIxsOITbnns.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1998-11-15",
+   "episode_number": 6,
+   "id": 62449,
+   "name": "D'Oh-in' in the Wind",
+   "overview": "In a quest to learn Homer's middle name, Homer and Grandpa travel to his mother's old commune, where Homer embraces the hippie life.",
+   "production_code": "AABF02",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/xaEXWyTTHyvJLoUm3sv52BI0WBv.jpg",
+   "vote_average": 6.4,
+   "vote_count": 10,
+   "crew": [
+    {
+     "id": 1216629,
+     "credit_id": "5256bdc819c2956ff6001d3a",
+     "name": "Donick Cary",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1223614,
+     "credit_id": "5256c26419c2956ff600796c",
+     "name": "Mark Kirkland",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 0,
+     "profile_path": null
+    },
+    {
+     "id": 1223635,
+     "credit_id": "5256c2e019c2956ff6014bc4",
+     "name": "Matthew Nastuk",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 15903,
+     "name": "George Carlin",
+     "credit_id": "5256c2e719c2956ff60157ec",
+     "character": "",
+     "order": 0,
+     "gender": 2,
+     "profile_path": "/xmSn6p5QVn66UK2ueEJisrUR5Bg.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    },
+    {
+     "id": 80742,
+     "name": "Martin Mull",
+     "credit_id": "5256c2e719c2956ff60158d8",
+     "character": "",
+     "order": 3,
+     "gender": 2,
+     "profile_path": "/k38QXv1z5VHZiRu1ddmU0wzGkN.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1998-11-22",
+   "episode_number": 7,
+   "id": 62450,
+   "name": "Lisa Gets an \"A\"",
+   "overview": "Stuck at home with a cold, Lisa gets addicted to a video game and neglects her homework. Her A+++ on a test wins the school a grant, but when she confesses that she cheated, Skinner covers it up. Meanwhile, Homer raises a lobster.",
+   "production_code": "AABF03",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/cbWaF8owl8wD5yyo5K7gOSESdQ7.jpg",
+   "vote_average": 7.25,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 1216632,
+     "credit_id": "5256bdc819c2956ff6001d58",
+     "name": "Ian Maxtone-Graham",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1223611,
+     "credit_id": "5256c25519c2956ff600651c",
+     "name": "Bob Anderson",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6036,
+     "name": "Marcia Wallace",
+     "credit_id": "5256c25919c2956ff6006ad9",
+     "character": "",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/oYxoYD9mTEKPMBgOBA9dESRTaSo.jpg"
+    },
+    {
+     "id": 6035,
+     "name": "Russi Taylor",
+     "credit_id": "5256c25a19c2956ff6006b65",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/3rfnBDgLRc7CjoIw9bGRBlDXxMf.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1998-12-06",
+   "episode_number": 8,
+   "id": 62448,
+   "name": "Homer Simpson in: \"Kidney Trouble\"",
+   "overview": "When Grandpa needs a new kidney, Homer agrees to donate one, but then chickens out.",
+   "production_code": "AABF04",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/zoNBTexGBURmZlw2ruzvy5qqmM6.jpg",
+   "vote_average": 6.375,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 1216638,
+     "credit_id": "5256bdc919c2956ff6001df6",
+     "name": "John Swartzwelder",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 0,
+     "profile_path": null
+    },
+    {
+     "id": 165825,
+     "credit_id": "5256c2ad19c2956ff600f839",
+     "name": "Mike B. Anderson",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1998-12-20",
+   "episode_number": 9,
+   "id": 62438,
+   "name": "Mayored to the Mob",
+   "overview": "After a riot at a sci-fi convention, Mayor Quimby hires Homer as his bodyguard, and Homer witnesses the rampant corruption in town politics. When Homer takes a stand, he runs afoul of the Springfield mafia.",
+   "production_code": "AABF05",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/8suiIlNl3DJ64zQfBfU9OnuhUOn.jpg",
+   "vote_average": 6.125,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 1219048,
+     "credit_id": "5256c29d19c2956ff600e1e5",
+     "name": "Swinton O. Scott III",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1216657,
+     "credit_id": "5256bdcb19c2956ff6001f5c",
+     "name": "Ron Hauge",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6036,
+     "name": "Marcia Wallace",
+     "credit_id": "5256c25919c2956ff6006ad9",
+     "character": "",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/oYxoYD9mTEKPMBgOBA9dESRTaSo.jpg"
+    },
+    {
+     "id": 2,
+     "name": "Mark Hamill",
+     "credit_id": "5256c2dd19c2956ff60146b5",
+     "character": "",
+     "order": 0,
+     "gender": 2,
+     "profile_path": "/fk8OfdReNltKZqOk2TZgkofCUFq.jpg"
+    },
+    {
+     "id": 6035,
+     "name": "Russi Taylor",
+     "credit_id": "5256c25a19c2956ff6006b65",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/3rfnBDgLRc7CjoIw9bGRBlDXxMf.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    },
+    {
+     "id": 1222804,
+     "name": "Dick Tufeld",
+     "credit_id": "5256c2dd19c2956ff60147af",
+     "character": "",
+     "order": 2,
+     "gender": 0,
+     "profile_path": null
+    },
+    {
+     "id": 3266,
+     "name": "Joe Mantegna",
+     "credit_id": "5256c26c19c2956ff6008e20",
+     "character": "Fat Tony",
+     "order": 2,
+     "gender": 2,
+     "profile_path": "/ltiEDmkciymyMfnju7yeIM2NoYf.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-01-10",
+   "episode_number": 10,
+   "id": 62432,
+   "name": "Viva Ned Flanders",
+   "overview": "When clean-living Ned Flanders wants to experience a new side of life, Homer takes him to Las Vegas. After a drunken binge, they marry a pair of cocktail waitresses.",
+   "production_code": "AABF06",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/M3F2x4JJuOfBapvqcgy448lNgr.jpg",
+   "vote_average": 7.0,
+   "vote_count": 10,
+   "crew": [
+    {
+     "id": 1216624,
+     "credit_id": "5256bdc719c2956ff6001cd0",
+     "name": "David M. Stern",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 133798,
+     "credit_id": "5256c2b919c2956ff6010eb6",
+     "name": "Neil Affleck",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 14670,
+     "name": "Joan Rivers",
+     "credit_id": "5256c2d819c2956ff6013f37",
+     "character": "",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/5BrrmJsKaDABJJWmAWKSzkaa1On.jpg"
+    },
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6036,
+     "name": "Marcia Wallace",
+     "credit_id": "5256c25919c2956ff6006ad9",
+     "character": "",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/oYxoYD9mTEKPMBgOBA9dESRTaSo.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-01-17",
+   "episode_number": 11,
+   "id": 62436,
+   "name": "Wild Barts Can't Be Broken",
+   "overview": "Scapegoated for the vandalism of drunken Isotopes fans, the children of Springfield wage war on the adults by broadcasting their secrets on the radio.",
+   "production_code": "AABF07",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/bs9djAMVDsqRGfmzoXS0JfW13sX.jpg",
+   "vote_average": 6.375,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 52314,
+     "credit_id": "5256bdca19c2956ff6001e80",
+     "name": "Larry Doyle",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1219046,
+     "credit_id": "5256c2c619c2956ff6012d50",
+     "name": "Mark Ervin",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 87255,
+     "name": "Cyndi Lauper",
+     "credit_id": "5256c2db19c2956ff601431b",
+     "character": "",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4fMFl40wCdIEjlajmdpqqPJkhMQ.jpg"
+    },
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6036,
+     "name": "Marcia Wallace",
+     "credit_id": "5256c25919c2956ff6006ad9",
+     "character": "",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/oYxoYD9mTEKPMBgOBA9dESRTaSo.jpg"
+    },
+    {
+     "id": 6035,
+     "name": "Russi Taylor",
+     "credit_id": "5256c25a19c2956ff6006b65",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/3rfnBDgLRc7CjoIw9bGRBlDXxMf.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-01-31",
+   "episode_number": 12,
+   "id": 62429,
+   "name": "Sunday, Cruddy Sunday",
+   "overview": "Homer and his friends charter a bus to the Super Bowl, only to find that their tickets are fake. Misadventures ensue.",
+   "production_code": "AABF08",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/oVitZ5lpHiDBge1HveaULMQkX9p.jpg",
+   "vote_average": 5.625,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 165810,
+     "credit_id": "5256bdca19c2956ff6001ed6",
+     "name": "Mike Scully",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": "/tanR1P1A0uzvfxkAWWfJFYpVSyq.jpg"
+    },
+    {
+     "id": 1213119,
+     "credit_id": "5256bdc619c2956ff6001c3c",
+     "name": "Brian Scully",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1216184,
+     "credit_id": "5256bdcc19c2956ff6001f9c",
+     "name": "Tom Martin",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1216631,
+     "credit_id": "5256bdc819c2956ff6001d4e",
+     "name": "George Meyer",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1223622,
+     "credit_id": "5256c2a119c2956ff600e6ad",
+     "name": "Steven Dean Moore",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 1214277,
+     "name": "John Madden",
+     "credit_id": "5256c2cd19c2956ff6013784",
+     "character": "",
+     "order": 0,
+     "gender": 2,
+     "profile_path": "/cD8EeZ6EzR17md778HJvW0XL76R.jpg"
+    },
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 1223629,
+     "name": "Dan Marino",
+     "credit_id": "5256c2cf19c2956ff60137f8",
+     "character": "",
+     "order": 1,
+     "gender": 0,
+     "profile_path": null
+    },
+    {
+     "id": 1223630,
+     "name": "Rupert Murdoch",
+     "credit_id": "5256c2d119c2956ff601386c",
+     "character": "",
+     "order": 2,
+     "gender": 2,
+     "profile_path": "/5Ysbvoasjtp1gioafrhGudg4lcF.jpg"
+    },
+    {
+     "id": 20753,
+     "name": "Fred Willard",
+     "credit_id": "5256c2d119c2956ff6013936",
+     "character": "",
+     "order": 3,
+     "gender": 2,
+     "profile_path": "/j1jWdqmklfIH4hpAbw1DK0gPMX0.jpg"
+    },
+    {
+     "id": 1223631,
+     "name": "Troy Aikman",
+     "credit_id": "5256c2d319c2956ff60139aa",
+     "character": "",
+     "order": 4,
+     "gender": 0,
+     "profile_path": null
+    },
+    {
+     "id": 101429,
+     "name": "Rosey Grier",
+     "credit_id": "5256c2d319c2956ff6013a2a",
+     "character": "",
+     "order": 5,
+     "gender": 0,
+     "profile_path": "/jdIdMs0rCEnvXJFrxpl6Q7FmIBz.jpg"
+    },
+    {
+     "id": 67274,
+     "name": "Dolly Parton",
+     "credit_id": "5256c2d319c2956ff6013ac0",
+     "character": "",
+     "order": 6,
+     "gender": 1,
+     "profile_path": "/wjnZVSGaI1s2tcIq2D6JtZ6YQdG.jpg"
+    },
+    {
+     "id": 1223632,
+     "name": "Pat Summerall",
+     "credit_id": "5256c2d419c2956ff6013b34",
+     "character": "",
+     "order": 7,
+     "gender": 2,
+     "profile_path": "/5mpLGDBSE7uqwyQEj3AQi1PuaEr.jpg"
+    },
+    {
+     "id": 77089,
+     "name": "Ken Marino",
+     "credit_id": "5256c2d419c2956ff6013bc4",
+     "character": "",
+     "order": 8,
+     "gender": 2,
+     "profile_path": "/xbmSwYL7yWDmTRR74eNJY5CDrqK.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-02-07",
+   "episode_number": 13,
+   "id": 62439,
+   "name": "Homer to the Max",
+   "overview": "A new TV series features a suave and debonair character named Homer Simpson. Homer capitalizes on his new namesake, until the character is rewritten to be a bumbling fool. Trying to recapture the positive attention he enjoyed, Homer changes his name to \"Max Power.\"",
+   "production_code": "AABF09",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/hXysSwnlvgbKk6W1mmyr3tY0NPC.jpg",
+   "vote_average": 5.875,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 53215,
+     "credit_id": "5256c2be19c2956ff6011a27",
+     "name": "Pete Michels",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": "/2aGKvszKBp5eaPjpFQICN50UWlA.jpg"
+    },
+    {
+     "id": 1216638,
+     "credit_id": "5256bdc919c2956ff6001df6",
+     "name": "John Swartzwelder",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 0,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 42157,
+     "name": "Ed Begley Jr.",
+     "credit_id": "5256c2de19c2956ff60149b0",
+     "character": "",
+     "order": 0,
+     "gender": 2,
+     "profile_path": "/au4qlxxeHitgPDHmt7WhWTA7Znb.jpg"
+    },
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-02-14",
+   "episode_number": 14,
+   "id": 62444,
+   "name": "I'm with Cupid",
+   "overview": "Apu is making the husbands of Springfield look bad with his extravagent Valentine's Day efforts for Manjula. When the men try to sabotage Apu's grand gesture, they accidentally wind up benefiting from it.",
+   "production_code": "AABF11",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/kCbIbtXQZ8agldYEiSzbeAhIgyw.jpg",
+   "vote_average": 6.625,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 1216623,
+     "credit_id": "5256bdc719c2956ff6001cc6",
+     "name": "Dan Greaney",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1223611,
+     "credit_id": "5256c25519c2956ff600651c",
+     "name": "Bob Anderson",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 129332,
+     "name": "Jan Hooks",
+     "credit_id": "5256c2c119c2956ff6011ea9",
+     "character": "",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/9XIElHw7adTbQ0rAPucRmQAnxG1.jpg"
+    },
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6036,
+     "name": "Marcia Wallace",
+     "credit_id": "5256c25919c2956ff6006ad9",
+     "character": "",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/oYxoYD9mTEKPMBgOBA9dESRTaSo.jpg"
+    },
+    {
+     "id": 11370,
+     "name": "Elton John",
+     "credit_id": "5256c2e219c2956ff60150af",
+     "character": "",
+     "order": 1,
+     "gender": 2,
+     "profile_path": "/bFQvidUsrWfWo4ZI7oZgTnB8Zb6.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-02-21",
+   "episode_number": 15,
+   "id": 62451,
+   "name": "Marge Simpson in: \"Screaming Yellow Honkers\"",
+   "overview": "A new Canyonero SUV turns timid Marge into an aggressive driver, and her road rage lands her in traffic school. But when a stampede occurs at the zoo, the town looks to Marge to save the day.",
+   "production_code": "AABF10",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/sHsnFWqEmDzL22t6mGmJkY6AwxX.jpg",
+   "vote_average": 6.5,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 1216624,
+     "credit_id": "5256bdc719c2956ff6001cd0",
+     "name": "David M. Stern",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1223614,
+     "credit_id": "5256c26419c2956ff600796c",
+     "name": "Mark Kirkland",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 0,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6036,
+     "name": "Marcia Wallace",
+     "credit_id": "5256c25919c2956ff6006ad9",
+     "character": "",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/oYxoYD9mTEKPMBgOBA9dESRTaSo.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    },
+    {
+     "id": 31365,
+     "name": "John Kassir",
+     "credit_id": "5256c2e819c2956ff6015a1e",
+     "character": "",
+     "order": 1,
+     "gender": 2,
+     "profile_path": "/d6zZiJ7t3Ve41Ny0ow4PhCyqfMw.jpg"
+    },
+    {
+     "id": 86995,
+     "name": "Hank Williams, Jr.",
+     "credit_id": "5256c2c419c2956ff6012900",
+     "character": "",
+     "order": 4,
+     "gender": 2,
+     "profile_path": "/pfeZ36viiZbwetz9O78Ur8t5z7h.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-02-28",
+   "episode_number": 16,
+   "id": 62441,
+   "name": "Make Room for Lisa",
+   "overview": "Indebted from a mishap at the Smithsonian, Homer lets a cell phone company put a transmitter in the house. Forced to share a room with Bart, Lisa resents Homer until a New Age experience gives her empathy.",
+   "production_code": "AABF12",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/SFKGR1zsPT94hjUpNiRBOiWQAf.jpg",
+   "vote_average": 6.75,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 1213119,
+     "credit_id": "5256bdc619c2956ff6001c3c",
+     "name": "Brian Scully",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1223635,
+     "credit_id": "5256c2e019c2956ff6014bc4",
+     "name": "Matthew Nastuk",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-03-28",
+   "episode_number": 17,
+   "id": 62443,
+   "name": "Maximum Homerdrive",
+   "overview": "After beating Homer in a steak-eating competition, a trucker dies; Homer and Bart take over his rig to complete his shipment.",
+   "production_code": "AABF13",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/ttJO9K9ygsoVhvyBojfos2tpAzF.jpg",
+   "vote_average": 6.625,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 1219048,
+     "credit_id": "5256c29d19c2956ff600e1e5",
+     "name": "Swinton O. Scott III",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1216638,
+     "credit_id": "5256bdc919c2956ff6001df6",
+     "name": "John Swartzwelder",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 0,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-04-04",
+   "episode_number": 18,
+   "id": 62435,
+   "name": "Simpsons Bible Stories",
+   "overview": "When Reverend Lovejoy subjects the congregation to an extended Bible reading, the Simpsons fall asleep and have dreams based on Bible stories.",
+   "production_code": "AABF14",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/4QQaUqQTxOONKoaOAqvbDct9k5p.jpg",
+   "vote_average": 7.125,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 52314,
+     "credit_id": "5256bdca19c2956ff6001e80",
+     "name": "Larry Doyle",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1216660,
+     "credit_id": "5256bdcc19c2956ff6001fa6",
+     "name": "Tim Long",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 165843,
+     "credit_id": "5256bdca19c2956ff6001eae",
+     "name": "Matt Selman",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1223634,
+     "credit_id": "5256c2db19c2956ff601427e",
+     "name": "Nancy Kruse",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 0,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6035,
+     "name": "Russi Taylor",
+     "credit_id": "5256c25a19c2956ff6006b65",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/3rfnBDgLRc7CjoIw9bGRBlDXxMf.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-04-11",
+   "episode_number": 19,
+   "id": 62431,
+   "name": "Mom and Pop Art",
+   "overview": "Homer's failed do-it-yourself project gets mistaken for \"outsider art.\" Suddenly in the limelight, Homer must come up with new \"works\" to impress the art world.",
+   "production_code": "AABF15",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/6t6QGM1qYB15v7uiBkC8IQlDLpn.jpg",
+   "vote_average": 7.5,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 162931,
+     "credit_id": "5256bdc619c2956ff6001c00",
+     "name": "Al Jean",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": "/7BMNhfDplGKgHMgM2ckiaxEwbTb.jpg"
+    },
+    {
+     "id": 1223622,
+     "credit_id": "5256c2a119c2956ff600e6ad",
+     "name": "Steven Dean Moore",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 1223633,
+     "name": "Jasper Johns",
+     "credit_id": "5256c2d719c2956ff6013d56",
+     "character": "",
+     "order": 0,
+     "gender": 0,
+     "profile_path": null
+    },
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6036,
+     "name": "Marcia Wallace",
+     "credit_id": "5256c25919c2956ff6006ad9",
+     "character": "",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/oYxoYD9mTEKPMBgOBA9dESRTaSo.jpg"
+    },
+    {
+     "id": 6588,
+     "name": "Isabella Rossellini",
+     "credit_id": "5256c2d719c2956ff6013e3a",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/wY9gXByrcpvvErqg2gMdLsFnaeb.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-04-25",
+   "episode_number": 20,
+   "id": 62440,
+   "name": "The Old Man and the \"C\" Student",
+   "overview": "When Bart ruins Springfield's chance to host the Olympics, the kids are sentenced to community service work at the retirement home. To help the residents recapture their youth, Bart takes them on an ill-fated boat ride.",
+   "production_code": "AABF16",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/1pGKZRK8O79AsVmjv0w8X7pkKEI.jpg",
+   "vote_average": 6.5,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 1216643,
+     "credit_id": "5256bdc919c2956ff6001e3c",
+     "name": "Julie Thacker",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 1,
+     "profile_path": null
+    },
+    {
+     "id": 1223614,
+     "credit_id": "5256c26419c2956ff600796c",
+     "name": "Mark Kirkland",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 0,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 102933,
+     "name": "Jack LaLanne",
+     "credit_id": "5256c2de19c2956ff6014a89",
+     "character": "",
+     "order": 0,
+     "gender": 2,
+     "profile_path": "/7AQCSDZKfETPPryMFYCRJ1oy6Ue.jpg"
+    },
+    {
+     "id": 6035,
+     "name": "Russi Taylor",
+     "credit_id": "5256c25a19c2956ff6006b65",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/3rfnBDgLRc7CjoIw9bGRBlDXxMf.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-05-02",
+   "episode_number": 21,
+   "id": 62446,
+   "name": "Monty Can't Buy Me Love",
+   "overview": "A new mogul wins the hearts of the townspeople with a shower of cash. Jealous, Mr. Burns asks Homer to help make him a beloved billionaire too, and they hatch a plan to bring the Loch Ness Monster to Springfield.",
+   "production_code": "AABF17",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/owd1FY3CAn3cvyLcQO14zowgLTo.jpg",
+   "vote_average": 6.5,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 1219046,
+     "credit_id": "5256c2c619c2956ff6012d50",
+     "name": "Mark Ervin",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 1216638,
+     "credit_id": "5256bdc919c2956ff6001df6",
+     "name": "John Swartzwelder",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 0,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 21731,
+     "name": "Michael McKean",
+     "credit_id": "5256c27019c2956ff6009553",
+     "character": "",
+     "order": 0,
+     "gender": 2,
+     "profile_path": "/iVcsvBb15nep7TZ07MlJFcxMzvD.jpg"
+    },
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-05-09",
+   "episode_number": 22,
+   "id": 62433,
+   "name": "They Saved Lisa's Brain",
+   "overview": "Mayor Quimby flees Springfield, leaving the town chapter of Mensa in charge. As the group's new power goes to their heads, they take their utopian plans too far and the townspeople revolt.",
+   "production_code": "AABF18",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/1dbl4S3BFkue7gKqGs3FdSWCLs5.jpg",
+   "vote_average": 6.875,
+   "vote_count": 8,
+   "crew": [
+    {
+     "id": 53215,
+     "credit_id": "5256c2be19c2956ff6011a27",
+     "name": "Pete Michels",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 2,
+     "profile_path": "/2aGKvszKBp5eaPjpFQICN50UWlA.jpg"
+    },
+    {
+     "id": 165843,
+     "credit_id": "5256bdca19c2956ff6001eae",
+     "name": "Matt Selman",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 39657,
+     "name": "Stephen Hawking",
+     "credit_id": "5256c2d919c2956ff601403a",
+     "character": "",
+     "order": 0,
+     "gender": 2,
+     "profile_path": "/z4Nn0qbQP3ne9TjvPrXt2RZvyeT.jpg"
+    }
+   ]
+  },
+  {
+   "air_date": "1999-05-16",
+   "episode_number": 23,
+   "id": 62437,
+   "name": "Thirty Minutes over Tokyo",
+   "overview": "After their bank account is drained at a cyber-cafe, the Simpsons go on a disastrous low-budget trip to Japan, where they wind up as contestants on a humiliating game show.",
+   "production_code": "AABF20",
+   "season_number": 10,
+   "show_id": 456,
+   "still_path": "/wWq9UN1Iet444NOQKLT1Su2zcko.jpg",
+   "vote_average": 7.143,
+   "vote_count": 7,
+   "crew": [
+    {
+     "id": 1216629,
+     "credit_id": "5256bdc819c2956ff6001d3a",
+     "name": "Donick Cary",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    },
+    {
+     "id": 15020,
+     "credit_id": "5256c26619c2956ff6007f09",
+     "name": "Jim Reardon",
+     "department": "Directing",
+     "job": "Director",
+     "gender": 0,
+     "profile_path": "/s5dbDBNIHZoYp2SP9SEXobRjqh3.jpg"
+    },
+    {
+     "id": 1216623,
+     "credit_id": "5256bdc719c2956ff6001cc6",
+     "name": "Dan Greaney",
+     "department": "Writing",
+     "job": "Writer",
+     "gender": 2,
+     "profile_path": null
+    }
+   ],
+   "guest_stars": [
+    {
+     "id": 91387,
+     "name": "Keone Young",
+     "credit_id": "5256c2dc19c2956ff601443a",
+     "character": "",
+     "order": 0,
+     "gender": 2,
+     "profile_path": "/fidmDw0MYC9F6kfOwTsSviqCWJG.jpg"
+    },
+    {
+     "id": 34983,
+     "name": "Tress MacNeille",
+     "credit_id": "5256c25a19c2956ff6006cd1",
+     "character": "Angela Dare / Gwen the waitress / Homer's cousin's wife (voice)",
+     "order": 0,
+     "gender": 1,
+     "profile_path": "/4abcX0gAhxoHluUI2nPLsEvsnKa.jpg"
+    },
+    {
+     "id": 16183,
+     "name": "Gedde Watanabe",
+     "credit_id": "5256c2bd19c2956ff601160a",
+     "character": "",
+     "order": 1,
+     "gender": 2,
+     "profile_path": "/nyTEOm2sEMJONOp3oWFKUZuJNTv.jpg"
+    },
+    {
+     "id": 1752,
+     "name": "George Takei",
+     "credit_id": "5256c26519c2956ff6007b6c",
+     "character": "",
+     "order": 1,
+     "gender": 2,
+     "profile_path": "/5eBSvAPy6DnWsMX61IlJyjUzCRJ.jpg"
+    },
+    {
+     "id": 6007,
+     "name": "Maggie Roswell",
+     "credit_id": "5256c25b19c2956ff6006e32",
+     "character": "",
+     "order": 1,
+     "gender": 1,
+     "profile_path": "/v2rJHrmv3fcTLfdjX42to9F0JuA.jpg"
+    },
+    {
+     "id": 157865,
+     "name": "Karen Maruyama",
+     "credit_id": "5256c2bd19c2956ff601167c",
+     "character": "",
+     "order": 2,
+     "gender": 1,
+     "profile_path": "/6tQrfCwNHIsYjjXKKCInKT19Vuz.jpg"
+    },
+    {
+     "id": 10134,
+     "name": "Mako Iwamatsu",
+     "credit_id": "5256c2dc19c2956ff601456a",
+     "character": "",
+     "order": 4,
+     "gender": 2,
+     "profile_path": "/gU3eoZP8OQZLFMPZ9MYWa6pajvT.jpg"
+    }
+   ]
+  }
+ ],
+ "name": "Season 10",
+ "overview": "The tenth season of the animated television series The Simpsons was originally broadcast on the Fox network in the United States between August 23, 1998 and May 16, 1999. It contains twenty-three episodes, starting with \"Lard of the Dance\". The Simpsons is a satire of a middle class American lifestyle epitomized by its family of the same name, which consists of Homer, Marge, Bart, Lisa and Maggie. Set in the fictional city of Springfield, the show lampoons American culture, society, television, and many aspects of the human condition.\n\nThe showrunner for the tenth season was Mike Scully. Before production began, a salary dispute between the main cast members of The Simpsons and Fox arose. However, it was soon settled and the actors' salaries were raised to $125,000 per episode. In addition to the large Simpsons cast, many guest stars appeared in season ten, including Phil Hartman in his last appearance before his death.\n\nThe season, which won the Annie Award for \"Outstanding Achievement in an Animated Television Program\", has been cited by several critics as the beginning of the series' decline in quality. It ranked twenty-fifth in the season ratings with an average of 13.5 million viewers per episode. The tenth season DVD boxset was released in the United States and Canada on August 7, 2007. It is available in two different packagings, both featuring Bart.",
+ "id": 3591,
+ "poster_path": "/t4wiOGBgoSRgofYxQvRL5WZe6Aj.jpg",
+ "season_number": 10,
+ "images": {
+  "posters": [
+   {
+    "aspect_ratio": 0.6666666666666666,
+    "file_path": "/t4wiOGBgoSRgofYxQvRL5WZe6Aj.jpg",
+    "height": 1500,
+    "iso_639_1": "en",
+    "vote_average": 5.258,
+    "vote_count": 6,
+    "width": 1000
+   },
+   {
+    "aspect_ratio": 0.6920415224913494,
+    "file_path": "/ixqRTQkjBDHT0n1YyKEcHCsAyS1.jpg",
+    "height": 578,
+    "iso_639_1": "en",
+    "vote_average": 5.246,
+    "vote_count": 2,
+    "width": 400
+   },
+   {
+    "aspect_ratio": 0.6666666666666666,
+    "file_path": "/oXFElouedRJkMu6v9KNQt6cHjXJ.jpg",
+    "height": 1500,
+    "iso_639_1": "en",
+    "vote_average": 5.18,
+    "vote_count": 3,
+    "width": 1000
+   },
+   {
+    "aspect_ratio": 0.6666666666666666,
+    "file_path": "/jDbUCyqgcpLmAmaPBrlqOpvDWLM.jpg",
+    "height": 750,
+    "iso_639_1": "en",
+    "vote_average": 5.172,
+    "vote_count": 1,
+    "width": 500
+   },
+   {
+    "aspect_ratio": 0.6920415224913494,
+    "file_path": "/zrEI4T6DcAGNytbnWuOPflTqAC0.jpg",
+    "height": 578,
+    "iso_639_1": "en",
+    "vote_average": 5.172,
+    "vote_count": 1,
+    "width": 400
+   },
+   {
+    "aspect_ratio": 0.6920415224913494,
+    "file_path": "/q8OQT1rvyzE8hKHKOaQCwHLwLOO.jpg",
+    "height": 578,
+    "iso_639_1": "en",
+    "vote_average": 5.172,
+    "vote_count": 1,
+    "width": 400
+   },
+   {
+    "aspect_ratio": 0.6920415224913494,
+    "file_path": "/bg5MqADHbOgNj1iEz3LuiKE1JTA.jpg",
+    "height": 578,
+    "iso_639_1": "en",
+    "vote_average": 0.0,
+    "vote_count": 0,
+    "width": 400
+   }
+  ]
+ }
+}

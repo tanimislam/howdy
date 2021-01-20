@@ -1,0 +1,703 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>5.1. Howdy TV Command Line Utilities &mdash; howdy! 1.35-17-g3ce7735 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="5.2. howdy_tv_gui" href="../howdy_tv_gui.html" />
+    <link rel="prev" title="5. Howdy TV Functionality" href="../howdy_tv.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> howdy!
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.35
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../howdy_prereqs.html">1. Prerequisites and Overall Design Philosophy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-config/howdy_config.html">2. Howdy Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy_api.html">3. Top Level Howdy API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-core/howdy_core.html">4. Howdy Core Functionality</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../howdy_tv.html">5. Howdy TV Functionality</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.1. Howdy TV Command Line Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#get-tv-batch">5.1.1. get_tv_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-tv-tor">5.1.2. get_tv_tor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-tv-epinfo">5.1.3. howdy_tv_epinfo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-tv-epname">5.1.4. howdy_tv_epname</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-tv-futureshows">5.1.5. howdy_tv_futureshows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-tv-plots">5.1.6. howdy_tv_plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-tv-excludes">5.1.7. howdy_tv_excludes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../howdy_tv_gui.html">5.2.  <code class="docutils literal notranslate"><span class="pre">howdy_tv_gui</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howdy_tv_api.html">5.3. Howdy TV API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../howdy_tv.html#howdy-tv-todo">5.4. Howdy TV TODO</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-movie/howdy_movie.html">6. Howdy Movie Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-music/howdy_music.html">7. Howdy Music Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../howdy-email/howdy_email.html">8. Howdy Email Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">9. INDEX</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">howdy!</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../howdy_tv.html"><span class="section-number">5. </span>Howdy TV Functionality</a> &raquo;</li>
+        
+      <li><span class="section-number">5.1. </span>Howdy TV Command Line Utilities</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/howdy-tv/cli_tools/howdy_tv_cli.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="howdy-tv-command-line-utilities">
+<h1><span class="section-number">5.1. </span>Howdy TV Command Line Utilities<a class="headerlink" href="#howdy-tv-command-line-utilities" title="Permalink to this headline">¶</a></h1>
+<p>This section describes the seven Howdy Howdy TV command line utilities.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#get-tv-batch"><span class="std std-ref">get_tv_batch</span></a> finds new episodes of TV shows that already exist on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
+<li><p><a class="reference internal" href="#get-tv-tor"><span class="std std-ref">get_tv_tor</span></a> finds <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">Magnet links</a> of television shows, and by default prints out the chosen magnet link. This executable uses the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> server to search for TV shows, and can optionally upload these links to the specified <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server (see <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a>).</p></li>
+<li><p><a class="reference internal" href="#howdy-tv-epinfo"><span class="std std-ref">howdy_tv_epinfo</span></a> creates a JSON file of the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of episodes associated with a TV show, and uploads this JSON episodes file to the SSH server, and remote subdirectory (see <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a>). This JSON file can be used to rename episodes in a season or TV show that has been downloaded by the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server.</p></li>
+<li><p><a class="reference internal" href="#howdy-tv-epname"><span class="std std-ref">howdy_tv_epname</span></a> prints out information by season or by episode for a TV show.</p></li>
+<li><p><a class="reference internal" href="#howdy-tv-futureshows"><span class="std std-ref">howdy_tv_futureshows</span></a> summarizes information on those TV shows, that exist in the <a class="reference external" href="https://plex.tv">Plex</a> server, that will air new seasons.</p></li>
+<li><p><a class="reference internal" href="#howdy-tv-plots"><span class="std std-ref">howdy_tv_plots</span></a> creates eye chart summary plots, by calendar year, of TV shows that have aired in a given year. These plots are in <a class="reference external" href="https://en.wikipedia.org/wiki/Scalable_Vector_Graphics#Compression">SVGZ</a> format.</p></li>
+<li><p><a class="reference internal" href="#howdy-tv-excludes"><span class="std std-ref">howdy_tv_excludes</span></a> administers selects those TV shows, that exist on the <a class="reference external" href="https://plex.tv">Plex</a> server, that we want to exclude from automatic update.</p></li>
+</ul>
+<div class="section" id="get-tv-batch">
+<span id="get-tv-batch-label"></span><h2><span class="section-number">5.1.1. </span>get_tv_batch<a class="headerlink" href="#get-tv-batch" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">get_tv_batch</span> <span class="pre">-h</span></code>, produces the following. Here, <code class="docutils literal notranslate"><span class="pre">$(num_cores)</span></code> is <em>TWICE</em> the number of CPUs on the <a class="reference external" href="https://plex.tv">Plex</a> server. This code is currently designed to be run <em>ONLY</em> on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: get_tv_batch [-h] [--maxtime MAXTIME_IN_SECS] [--num NUM_ITERS] [--token TOKEN] [--debuglevel {None,info,debug}] [--numthreads NUMTHREADS] [--nomax] [--nomin] [--raw]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --maxtime MAXTIME_IN_SECS</span>
+<span class="go">                        The maximum amount of time to spend (in seconds), per candidate magnet link, trying to download a TV show. Default is 1000 seconds.</span>
+<span class="go">  --num NUM_ITERS       The maximum number of different magnet links to try before giving up. Default is 2.</span>
+<span class="go">  --token TOKEN         Optional argument. If chosen, user provided Plex access token.</span>
+<span class="go">  --debuglevel {None,info,debug}</span>
+<span class="go">                        Choose the debug level for the system logger. Default is None (no logging). Can be one of None (no logging), info, or debug.</span>
+<span class="go">  --numthreads NUMTHREADS</span>
+<span class="go">                        Number of threads over which to search for TV shows in my library. Default is 16.</span>
+<span class="go">  --nomax               If chosen, do not restrict maximum size of downloaded file.</span>
+<span class="go">  --nomin               If chosen, do not restrict minimum size of downloaded file.</span>
+<span class="go">  --raw                 If chosen, then use the raw string to specify TV show torrents.</span>
+</pre></div>
+</div>
+<p>To better understand the command line switches (flags and inputs), we describe how the this executable, which searches for new episodes of TV shows on the <a class="reference external" href="https://plex.tv">Plex</a> server on a given day, works.</p>
+<ol class="arabic simple" id="get-tv-batch-point1label">
+<li><p>by default, this does a Magnet link search for an episode using its <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDb</a> info, and looks for those episodes whose download sizes are 80% to 120% of the average size of episodes that already exist for that TV show on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
+</ol>
+<ol class="arabic simple" id="get-tv-batch-point2label" start="2">
+<li><p>by default, the number of threads this executable uses for its work is <em>TWICE</em> the number of CPUs on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
+</ol>
+<ol class="arabic simple" id="get-tv-batch-point3label" start="3">
+<li><p>For a given episode that has been aired but is missing from the <a class="reference external" href="https://plex.tv">Plex</a> server, this will wait for <code class="docutils literal notranslate"><span class="pre">MAXTIME_IN_SECS</span></code> seconds to fully download an episode from its Magnet link, and will only search through the <code class="docutils literal notranslate"><span class="pre">NUM_ITERS</span></code> top choices of Magnet links found for each episode. The choices for Magnet links for an episode are ordered by the sum of its number of seeders and leechers (see <a class="reference internal" href="#get-tv-tor"><span class="std std-ref">get_tv_tor</span></a>).</p></li>
+</ol>
+<p>Here are the common flags and command line inputs.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--token</span></code> allows you to explicitly set the <a class="reference external" href="https://plex.tv">Plex</a> access token for the server.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--debuglevel</span></code> specifies the amount of system logging into STDOUT that you want to show. The default choice is <code class="docutils literal notranslate"><span class="pre">None</span></code> (no logging). If <code class="docutils literal notranslate"><span class="pre">info</span></code>, then it prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output. If <code class="docutils literal notranslate"><span class="pre">debug</span></code>, then it prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+</ul>
+<p>Here are the command line inputs that change the operation of this execution.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--maxtime_in_secs</span></code> sets the maximum number of seconds that a given thread will wait for an episode Magnet link to download (see <a class="reference internal" href="#get-tv-batch-point3label"><span class="std std-ref">point #3</span></a>). This must be positive.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--nums</span></code> sets the number of top choices of Magnet links through which to search (see <a class="reference internal" href="#get-tv-batch-point3label"><span class="std std-ref">point #3</span></a>). This must be positive.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--numthreads</span></code> sets the number of threads used for downloading new episodes onto the <a class="reference external" href="https://plex.tv">Plex</a> server (see <a class="reference internal" href="#get-tv-batch-point2label"><span class="std std-ref">point #2</span></a>).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--nomin</span></code> flag means that there is no <em>lower</em> limit to the size of episode files to be downloaded onto the <a class="reference external" href="https://plex.tv">Plex</a> server (see <a class="reference internal" href="#get-tv-batch-point1label"><span class="std std-ref">point #1</span></a>).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--nomax</span></code> flag means that there is no <em>upper</em> limit to the size of episode files to be downloaded onto the <a class="reference external" href="https://plex.tv">Plex</a> server (see <a class="reference internal" href="#get-tv-batch-point1label"><span class="std std-ref">point #1</span></a>).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--raw</span></code> flag does not use the default <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDB</a> information to search for the torrent. Instead it uses the full string to search for the episode (see <a class="reference internal" href="#get-tv-batch-point1label"><span class="std std-ref">point #1</span></a>).</p></li>
+</ul>
+<p>Here is a demonstration of its operation, searching for new episodes to download on the <a class="reference external" href="https://plex.tv">Plex</a> server on <code class="docutils literal notranslate"><span class="pre">Sunday,</span> <span class="pre">20</span> <span class="pre">October</span> <span class="pre">2019</span></code>. <a class="reference external" href="https://en.wikipedia.org/wiki/The_Great_British_Bake_Off">The Great British Bake-Off</a> is going to be ignored because this show has been excluded for identification and searches. The output format during evaluation is descriptive because the process can take more than a few seconds.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_tv_batch</span>
+
+<span class="go">0, started on October 20, 2019 @ 05:34:46 PM</span>
+<span class="go">1, found TV library: TV Shows.</span>
+<span class="go">2, excluding these TV shows: The Great British Bake Off.</span>
+<span class="go">3, took 22.912 seconds to get list of 4 episodes to download.</span>
+<span class="go">4, here are the 4 episodes to get: Bob&#39;s Burgers S10E04, Family Guy S18E04, Mr. Robot S04E03, The Simpsons S31E04.</span>
+<span class="go">started downloading 4 episodes on October 20, 2019 @ 05:35:09 PM</span>
+<span class="go">successfully processed 0 / 4 episodes in 69.244 seconds.</span>
+<span class="go">could not download Bob&#39;s Burgers S10E04, Family Guy S18E04, Mr. Robot S04E03, The Simpsons S31E04.</span>
+<span class="go">processed from start to finish in 69.244 seconds.</span>
+<span class="go">5, everything done in 92.156 seconds.</span>
+<span class="go">6, finished on October 20, 2019 @ 05:36:19 PM.</span>
+</pre></div>
+</div>
+<p>Here, there were four new episodes to download: <a class="reference external" href="https://www.imdb.com/title/tt10750120">Bob’s Burgers S10E04</a>, <a class="reference external" href="https://www.imdb.com/title/tt10680780">Family Guy S18E04</a>, <a class="reference external" href="https://www.imdb.com/title/tt8084160">Mr. Robot S04E03</a>, and <a class="reference external" href="https://www.imdb.com/title/tt10750104">The Simpsons S31E04</a>. One can find it very useful to run this executable through an automated process. Here is an example systemd user unit file (<a class="reference download internal" download="" href="../../_downloads/39c2546129181a19f97555deb455788c/get_tv_batch.service"><code class="xref download docutils literal notranslate"><span class="pre">get_tv_batch.service</span></code></a>) and timer file (<a class="reference download internal" download="" href="../../_downloads/049484b1da1ef6e477f961fade8be588/get_tv_batch.timer"><code class="xref download docutils literal notranslate"><span class="pre">get_tv_batch.timer</span></code></a>) to run <code class="docutils literal notranslate"><span class="pre">get_tv_batch</span></code> every day at 130 AM, 630 PM, and 930 PM. One can follow <a class="reference external" href="https://wiki.archlinux.org/index.php/systemd/User">instructions on how to set up and run systemd user units</a>.</p>
+<ul class="simple">
+<li><p>copy <a class="reference download internal" download="" href="../../_downloads/39c2546129181a19f97555deb455788c/get_tv_batch.service"><code class="xref download docutils literal notranslate"><span class="pre">get_tv_batch.service</span></code></a> and <a class="reference download internal" download="" href="../../_downloads/049484b1da1ef6e477f961fade8be588/get_tv_batch.timer"><code class="xref download docutils literal notranslate"><span class="pre">get_tv_batch.timer</span></code></a> to the <code class="docutils literal notranslate"><span class="pre">~/.config/systemd/user</span></code> directory.</p></li>
+<li><p>replace <code class="docutils literal notranslate"><span class="pre">$PLEXSTUFF_DIR</span></code> with the path to <code class="docutils literal notranslate"><span class="pre">get_tv_batch</span></code>.</p></li>
+<li><p>register the unit and timer with systemd by running <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">--user</span> <span class="pre">enable</span> <span class="pre">get_tv_batch.service</span></code> and <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">--user</span> <span class="pre">enable</span> <span class="pre">get_tv_batch.timer</span></code>.</p></li>
+<li><p>start the unit with timer by running <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">--user</span> <span class="pre">start</span> <span class="pre">get_tv_batch.service</span></code>.</p></li>
+</ul>
+</div>
+<div class="section" id="get-tv-tor">
+<span id="get-tv-tor-label"></span><h2><span class="section-number">5.1.2. </span>get_tv_tor<a class="headerlink" href="#get-tv-tor" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">get_tv_tor</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: get_tv_tor [-h] -n NAME [--maxnum MAXNUM] [--raw] [-f FILENAME] [--add] [--info] [--noverify] [--timing]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -n NAME, --name NAME  Name of the TV show to get.</span>
+<span class="go">  --maxnum MAXNUM       Maximum number of torrents to look through. Default is 10.</span>
+<span class="go">  --raw                 If chosen, then use the raw string (for jackett) to download the torrent.</span>
+<span class="go">  -f FILENAME, --filename FILENAME</span>
+<span class="go">                        If defined, put torrent or magnet link into filename.</span>
+<span class="go">  --add                 If chosen, push the magnet link into the deluge server.</span>
+<span class="go">  --info                If chosen, run in info mode.</span>
+<span class="go">  --noverify            If chosen, do not verify SSL connections.</span>
+</pre></div>
+</div>
+<p>These are common flags used by all standard operations of this CLI.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">-n</span></code> or <code class="docutils literal notranslate"><span class="pre">--name</span></code> flag is used to specify the TV show and episode, for example <a class="reference external" href="https://en.wikipedia.org/wiki/'Tis_the_30th_Season">The Simpsons S30E10</a> (<a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons">The Simpsons</a>, season 30 and episode 10)</p>
+<p>Here is how to get an episode, <a class="reference external" href="https://en.wikipedia.org/wiki/'Tis_the_30th_Season">The Simpsons S30E10</a>. We choose a given Magnet link by number, and the Magnet URI is printed out. The choices are sorted by the total number of seeds (SE) and leechers (LE) found for that link. By default, the <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDb</a> information for this episode (TV show and season) is used to look for Magnet links.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_tv_tor -n &quot;The Simpsons S30E10&quot;</span>
+<span class="go">Choose TV episode or series:</span>
+<span class="go">1: The Simpsons s30e10 720p WEB x264-300M (1 SE, 17 LE)</span>
+<span class="go">2: The Simpsons S30E10 720p WEB x264-TBS[TGx] (5 SE, 12 LE)</span>
+<span class="go">3: The Simpsons S30E10 XviD-AFG[TGx] (0 SE, 14 LE)</span>
+<span class="go">4: The Simpsons S30E10 Tis the 30th Season 1080p AMZN WEB-DL DD+5 1 H 264-QOQ[TGx] (5 SE, 5 LE)</span>
+<span class="go">5: The Simpsons S30E10 WEB x264-TBS[ettv] (8 SE, 1 LE)</span>
+<span class="go">6: The Simpsons S30E10 1080P WEB-DL DD5 1 H 264 (3 SE, 5 LE)</span>
+<span class="go">7: The Simpsons S30E10 1080p WEB x264-TBS[TGx] (2 SE, 6 LE)</span>
+<span class="go">8: The Simpsons S30E10 720p WEB x265-MiNX[TGx] (0 SE, 8 LE)</span>
+<span class="go">9: The Simpsons S30E10 720p WEB x264-TBS[ettv] (1 SE, 6 LE)</span>
+<span class="go">10: The Simpsons S30E10 720p WEB x264-TBS [eztv] (5 SE, 1 LE)</span>
+<span class="go">1</span>
+<span class="go">Chosen TV show: The Simpsons s30e10 720p WEB x264-300M</span>
+<span class="gp">magnet:?xt=urn:btih:17f7373e9e7e0343370191a3173e0f69ce02dbc1&amp;dn=The+Simpsons+s30e10+720p+WEB+x264-300M&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.pomf.se%3A80%2Fannounce&amp;tr=udp%3A%2F%2Ftorrent.gresille.org%3A80%2Fannounce&amp;tr=udp%3A%2F%2F11.rarbg.com%2Fannounce&amp;tr=udp%3A%2F%2F11.rarbg.com%3A80%2Fannounce&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&amp;tr=http%3A%2F%2Ftracker.ex.ua%3A80%2Fannounce&amp;tr=http%3A%2F%2Ftracker.ex.ua%2Fannounce&amp;tr=http%3A%2F%2Fbt.careland.com.cn%3A6969%2Fannounce&amp;tr=udp%3A%2F%2Fglotorrents.pw%3A6969%</span>2Fannounce
+</pre></div>
+</div>
+<p>We can modify this command with the following.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">-f</span></code> or <code class="docutils literal notranslate"><span class="pre">--filename</span></code> is used to output the Magnet URI into a file,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_tv_tor -n &quot;The Simpsons S30E10&quot; -f simpsons_s30e10.magnet</span>
+
+<span class="go">Choose TV episode or series:</span>
+<span class="go">1: The Simpsons s30e10 720p WEB x264-300M (1 SE, 17 LE)</span>
+<span class="go">2: The Simpsons S30E10 720p WEB x264-TBS[TGx] (5 SE, 12 LE)</span>
+<span class="go">3: The Simpsons S30E10 XviD-AFG[TGx] (0 SE, 14 LE)</span>
+<span class="go">4: The Simpsons S30E10 Tis the 30th Season 1080p AMZN WEB-DL DD+5 1 H 264-QOQ[TGx] (5 SE, 5 LE)</span>
+<span class="go">5: The Simpsons S30E10 WEB x264-TBS[ettv] (8 SE, 1 LE)</span>
+<span class="go">6: The Simpsons S30E10 1080P WEB-DL DD5 1 H 264 (3 SE, 5 LE)</span>
+<span class="go">7: The Simpsons S30E10 1080p WEB x264-TBS[TGx] (2 SE, 6 LE)</span>
+<span class="go">8: The Simpsons S30E10 720p WEB x265-MiNX[TGx] (0 SE, 8 LE)</span>
+<span class="go">9: The Simpsons S30E10 720p WEB x264-TBS[ettv] (1 SE, 6 LE)</span>
+<span class="go">10: The Simpsons S30E10 720p WEB x264-TBS [eztv] (5 SE, 1 LE)</span>
+<span class="go">1</span>
+<span class="go">Chosen TV show: The Simpsons s30e10 720p WEB x264-300M</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--add</span></code> adds the Magnet URI to the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server. The operation of <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span></code> is described in <a class="reference internal" href="../../howdy-core/cli_tools/howdy_core_cli.html#howdy-deluge-console"><span class="std std-numref">Section 4.1.2</span></a>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_tv_tor -n &quot;The Simpsons S30E10&quot; --add</span>
+<span class="go">...</span>
+<span class="go">tanim-desktop $ howdy_deluge_console info</span>
+<span class="go">Name: The Simpsons s30e10 720p WEB x264-300M</span>
+<span class="go">ID: 17f7373e9e7e0343370191a3173e0f69ce02dbc1</span>
+<span class="go">State: Downloading</span>
+<span class="go">Down Speed: 0.0 KiB/s Up Speed: 0.0 KiB/s</span>
+<span class="go">Seeds: 0 (0) Peers: 0 (1) Availability: 0.00</span>
+<span class="go">Size: 0.0 KiB/0.0 KiB Ratio: -1.000</span>
+<span class="go">Seed time: 0 days 00:00:00 Active: 0 days 00:00:03</span>
+<span class="go">Tracker status: opentrackr.org: Announce OK</span>
+<span class="go">Progress: 0.00% [~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</span>
+</pre></div>
+</div>
+</li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--raw</span></code> flag does not use the default <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDB</a> information to search for the torrent. Instead it uses the full string (here <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S30E10&quot;</span></code>) to search for the episode. Here is an example,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_tv_tor -n &quot;The Simpsons S30E10&quot; --raw</span>
+
+<span class="go">Choose TV episode or series:</span>
+<span class="go">1: The.Simpsons.S30E10.WEB.x264-TBS[ettv] (159.1 MiB) (1130 SE, 1336 LE)</span>
+<span class="go">2: The.Simpsons.S30E10.720p.WEB.x264-TBS[ettv] (444.1 MiB) (488 SE, 596 LE)</span>
+<span class="go">3: The Simpsons S30E10 720p WEB x265-MiNX (186.4 MiB) (401 SE, 441 LE)</span>
+<span class="go">4: The Simpsons S30E10 WEB x264-TBS (159.1 MiB) (298 SE, 327 LE)</span>
+<span class="go">5: The Simpsons S30E10 720p WEB x264-TBS (444.1 MiB) (207 SE, 230 LE)</span>
+<span class="go">6: The Simpsons S30E10 WEBRip x264-ION10 (199.2 MiB) (109 SE, 123 LE)</span>
+<span class="go">7: [ACESSE COMANDOTORRENTS.COM] The Simpsons S30E10 [720p] [WEB-DL] [DUAL] (373.0 MiB) (45 SE, 51 LE)</span>
+<span class="go">8: The.Simpsons.S30E10.720p.WEB.x265-MiNX[eztv].mkv (186.4 MiB) (15 SE, 32 LE)</span>
+<span class="go">9: The.Simpsons.S30E10.WEBRip.x264-ION10 (199.2 MiB) (15 SE, 23 LE)</span>
+<span class="go">10: The.Simpsons.S30E10.WEB.x264-TBS[ettv] (159.0 MiB) (13 SE, 15 LE)</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<p>Notice the differences in these links from the ones before (using the <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDb</a> information).</p>
+</li>
+</ul>
+</div>
+<div class="section" id="howdy-tv-epinfo">
+<span id="howdy-tv-epinfo-label"></span><h2><span class="section-number">5.1.3. </span>howdy_tv_epinfo<a class="headerlink" href="#howdy-tv-epinfo" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_tv_epinfo</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_tv_epinfo [-h] [-s SHOW] [-j JSONFILE] [--showspecials] [--debug] [--noverify]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -s SHOW, --show SHOW  Name of the TV Show to push into remote server.</span>
+<span class="go">  -j JSONFILE, --jsonfile JSONFILE</span>
+<span class="go">                        Name of the JSON file into which to store the episode information. Default is eps.json.</span>
+<span class="go">  --showspecials        If chosen, then also find all the specials.</span>
+<span class="go">  --debug               If chosen, then run DEBUG logging.</span>
+<span class="go">  --noverify            If chosen, do not verify the SSL connection.</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-s</span></code> or <code class="docutils literal notranslate"><span class="pre">--show</span></code> specifies the show whose information, as a JSON file, is uploaded to the remote SSH server.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-j</span></code> or <code class="docutils literal notranslate"><span class="pre">--jsonfile</span></code> specifies the name of the JSON file. The file’s name must end in <code class="docutils literal notranslate"><span class="pre">.json</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--debug</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--showspecials</span></code> means to also record this TV show’s specials, as a dictionary under season <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
+</ul>
+<p>For example, to upload information about <a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons">The Simpsons</a> into a file, <code class="docutils literal notranslate"><span class="pre">the_simpsons.json</span></code>, in the remote SSH server and the remote home directory (<code class="docutils literal notranslate"><span class="pre">REMOTE_HOME_DIR</span></code>).</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_tv_epinfo -s &quot;The Simpsons&quot; -j the_simpsons.json</span>
+<span class="go">put episode info for &quot;The Simpsons&quot; into REMOTE_HOME_DIR/the_simpsons.json in 7.341 seconds.</span>
+</pre></div>
+</div>
+<p>This JSON file contains dictionary data. Each key is the season number. Each value is another dictionary – keys are the episode number, and values are the episode names.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="p">{</span>
+   <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;Simpsons Roasting on an Open Fire&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;Bart the Genius&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="s2">&quot;Homer&#39;s Odyssey&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;4&quot;</span><span class="p">:</span> <span class="s2">&quot;There&#39;s No Disgrace Like Home&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="s2">&quot;Bart the General&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;6&quot;</span><span class="p">:</span> <span class="s2">&quot;Moaning Lisa&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;7&quot;</span><span class="p">:</span> <span class="s2">&quot;The Call of the Simpsons&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;8&quot;</span><span class="p">:</span> <span class="s2">&quot;The Telltale Head&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;9&quot;</span><span class="p">:</span> <span class="s2">&quot;Life on the Fast Lane&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;10&quot;</span><span class="p">:</span> <span class="s2">&quot;Homer&#39;s Night Out&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;11&quot;</span><span class="p">:</span> <span class="s2">&quot;The Crepes of Wrath&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;12&quot;</span><span class="p">:</span> <span class="s2">&quot;Krusty Gets Busted&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;13&quot;</span><span class="p">:</span> <span class="s2">&quot;Some Enchanted Evening&quot;</span>
+  <span class="p">},</span>
+<span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="howdy-tv-epname">
+<span id="howdy-tv-epname-label"></span><h2><span class="section-number">5.1.4. </span>howdy_tv_epname<a class="headerlink" href="#howdy-tv-epname" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_tv_epname</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_tv_epname [-h] -s SERIES [-e EPSTRING] [--summary] [-S SEASON] [--noverify]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -s SERIES, --series SERIES</span>
+<span class="go">                        The name of the series</span>
+<span class="go">  -e EPSTRING, --epstring EPSTRING</span>
+<span class="go">                        The episode string, in the form S%02dE%02d.</span>
+<span class="go">  --summary             If chosen, get a summary of all the seasons and episodes for the SERIES.</span>
+<span class="go">  -S SEASON, --season SEASON</span>
+<span class="go">                        If chosen, get a list of all episode titles for this season of the SERIES.</span>
+<span class="go">  --noverify            If chosen, do not verify the SSL connection.</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--noverify</span></code> flag says to not verify SSL connections.</p>
+<p>Here are the three ways to get information on episodes for a specified TV show. For the purposes of this demonstration, we will use <a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons">The Simpsons</a>.</p>
+<ul>
+<li><p>To get a summary of all episodes of a TV show (<a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons">The Simpsons</a>), run <code class="docutils literal notranslate"><span class="pre">howdy_tv_epname</span> <span class="pre">-s</span> <span class="pre">&quot;The</span> <span class="pre">Simpsons&quot;</span> <span class="pre">--summary</span></code>,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">668 episodes for The Simpsons</span>
+<span class="go">SEASON 01: 13 episodes</span>
+<span class="go">SEASON 02: 22 episodes</span>
+<span class="go">SEASON 03: 24 episodes</span>
+<span class="go">SEASON 04: 22 episodes</span>
+<span class="go">SEASON 05: 22 episodes</span>
+<span class="go">SEASON 06: 25 episodes</span>
+<span class="go">SEASON 07: 25 episodes</span>
+<span class="go">SEASON 08: 25 episodes</span>
+<span class="go">SEASON 09: 25 episodes</span>
+<span class="go">SEASON 10: 23 episodes</span>
+<span class="go">SEASON 11: 22 episodes</span>
+<span class="go">SEASON 12: 21 episodes</span>
+<span class="go">SEASON 13: 22 episodes</span>
+<span class="go">SEASON 14: 22 episodes</span>
+<span class="go">SEASON 15: 22 episodes</span>
+<span class="go">SEASON 16: 21 episodes</span>
+<span class="go">SEASON 17: 22 episodes</span>
+<span class="go">SEASON 18: 22 episodes</span>
+<span class="go">SEASON 19: 20 episodes</span>
+<span class="go">SEASON 20: 21 episodes</span>
+<span class="go">SEASON 21: 23 episodes</span>
+<span class="go">SEASON 22: 22 episodes</span>
+<span class="go">SEASON 23: 22 episodes</span>
+<span class="go">SEASON 24: 22 episodes</span>
+<span class="go">SEASON 25: 22 episodes</span>
+<span class="go">SEASON 26: 22 episodes</span>
+<span class="go">SEASON 27: 22 episodes</span>
+<span class="go">SEASON 28: 22 episodes</span>
+<span class="go">SEASON 29: 21 episodes</span>
+<span class="go">SEASON 30: 23 episodes</span>
+<span class="go">SEASON 31: 6 episodes</span>
+</pre></div>
+</div>
+</li>
+<li><p>To get a summary of episodes aired (so far) for a given season and a TV show, for example run <code class="docutils literal notranslate"><span class="pre">howdy_tv_epname</span> <span class="pre">-s</span> <span class="pre">&quot;The</span> <span class="pre">Simpsons&quot;</span> <span class="pre">-S</span> <span class="pre">10</span></code>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">23 episodes in SEASON 10 of The Simpsons.</span>
+<span class="go">Episode 01/23: Lard of the Dance (Sunday, 23 August 1998)</span>
+<span class="go">Episode 02/23: The Wizard of Evergreen Terrace (Sunday, 20 September 1998)</span>
+<span class="go">Episode 03/23: Bart the Mother (Sunday, 27 September 1998)</span>
+<span class="go">Episode 04/23: Treehouse of Horror IX (Sunday, 25 October 1998)</span>
+<span class="go">Episode 05/23: When You Dish Upon a Star (Sunday, 08 November 1998)</span>
+<span class="go">Episode 06/23: D&#39;oh-in in the Wind (Sunday, 15 November 1998)</span>
+<span class="go">Episode 07/23: Lisa Gets an A (Sunday, 22 November 1998)</span>
+<span class="go">Episode 08/23: Homer Simpson in: &#39;Kidney Trouble&#39; (Sunday, 06 December 1998)</span>
+<span class="go">Episode 09/23: Mayored to the Mob (Sunday, 20 December 1998)</span>
+<span class="go">Episode 10/23: Viva Ned Flanders (Sunday, 10 January 1999)</span>
+<span class="go">Episode 11/23: Wild Barts Can&#39;t Be Broken (Sunday, 17 January 1999)</span>
+<span class="go">Episode 12/23: Sunday, Cruddy Sunday (Sunday, 31 January 1999)</span>
+<span class="go">Episode 13/23: Homer to the Max (Sunday, 07 February 1999)</span>
+<span class="go">Episode 14/23: I&#39;m with Cupid (Sunday, 14 February 1999)</span>
+<span class="go">Episode 15/23: Marge Simpson in: &#39;Screaming Yellow Honkers&#39; (Sunday, 21 February 1999)</span>
+<span class="go">Episode 16/23: Make Room for Lisa (Sunday, 28 February 1999)</span>
+<span class="go">Episode 17/23: Maximum Homerdrive (Sunday, 28 March 1999)</span>
+<span class="go">Episode 18/23: Simpsons Bible Stories (Sunday, 04 April 1999)</span>
+<span class="go">Episode 19/23: Mom and Pop Art (Sunday, 11 April 1999)</span>
+<span class="go">Episode 20/23: The Old Man and the C Student (Sunday, 25 April 1999)</span>
+<span class="go">Episode 21/23: Monty Can&#39;t Buy Me Love (Sunday, 02 May 1999)</span>
+<span class="go">Episode 22/23: They Saved Lisa&#39;s Brain (Sunday, 09 May 1999)</span>
+<span class="go">Episode 23/23: Thirty Minutes Over Tokyo (Sunday, 16 May 1999)</span>
+</pre></div>
+</div>
+</li>
+<li><p>To get summary information on a specific episode, for example run <code class="docutils literal notranslate"><span class="pre">howdy_tv_epname</span> <span class="pre">-s</span> <span class="pre">&quot;The</span> <span class="pre">Simpsons&quot;</span> <span class="pre">-e</span> <span class="pre">s30e10</span></code> (season 30, episode 10).</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_tv_epname -s &quot;The Simpsons&quot; -e s30e10</span>
+<span class="go">&#39;Tis the 30th Season (Sunday, 09 December 2018)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="howdy-tv-futureshows">
+<span id="howdy-tv-futureshows-label"></span><h2><span class="section-number">5.1.5. </span>howdy_tv_futureshows<a class="headerlink" href="#howdy-tv-futureshows" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_tv_futureshows</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_tv_futureshows [-h] [--noverify] [--local] [--info]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help  show this help message and exit</span>
+<span class="go">  --noverify  If chosen, do not verify the SSL connection.</span>
+<span class="go">  --local     Check for locally running plex server.</span>
+<span class="go">  --info      If chosen, run with INFO logging mode.</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--local</span></code> specifies that we look for a local (<code class="docutils literal notranslate"><span class="pre">https://localhost:3400</span></code>) running <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+</ul>
+<p>This executable prints out summary information on TV shows, that exist on the <a class="reference external" href="https://plex.tv">Plex</a> server, excluding those shows that will not be searched. In this example, <a class="reference external" href="https://en.wikipedia.org/wiki/The_Great_British_Bake_Off">The Great British Bake-Off</a> is going to be ignored. The output format during evaluation is descriptive because the process can take more than a few seconds.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_tv_futureshows</span>
+<span class="go">0, started on October 20, 2019 @ 04:30:33 PM</span>
+<span class="go">1, found TV library: TV Shows.</span>
+<span class="go">2, excluding these TV shows: The Great British Bake Off.</span>
+<span class="go">3, Found 11 TV shows with new seasons after October 20, 2019, in 23.104 seconds.</span>
+
+<span class="go">SHOW                          LAST SEASON    NEXT SEASON  AIR DATE              DAYS TO NEW SEASON</span>
+<span class="go">--------------------------  -------------  -------------  ------------------  --------------------</span>
+<span class="go">Travel Man: 48 Hours in...              9             10  October 21, 2019                       1</span>
+<span class="go">BoJack Horseman                         5              6  October 25, 2019                       5</span>
+<span class="go">Silicon Valley                          5              6  October 27, 2019                       7</span>
+<span class="go">Rick and Morty                          3              4  November 10, 2019                     21</span>
+<span class="go">The Man in the High Castle              3              4  November 15, 2019                     26</span>
+<span class="go">The Expanse                             3              4  December 13, 2019                     54</span>
+<span class="go">Lost in Space (2018)                    1              2  December 24, 2019                     65</span>
+<span class="go">Schitt&#39;s Creek                          5              6  January 07, 2020                      79</span>
+<span class="go">Homeland                                7              8  February 09, 2020                    112</span>
+<span class="go">Outlander                               4              5  February 16, 2020                    119</span>
+<span class="go">American Crime Story                    2              3  September 27, 2020                   343</span>
+
+<span class="go">4, processed everything in 23.106 seconds.</span>
+<span class="go">5, finished everything on October 20, 2019 @ 04:30:56 PM.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="howdy-tv-plots">
+<span id="howdy-tv-plots-label"></span><h2><span class="section-number">5.1.6. </span>howdy_tv_plots<a class="headerlink" href="#howdy-tv-plots" title="Permalink to this headline">¶</a></h2>
+<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_tv_plots</span> <span class="pre">-h</span></code>, produces the following. <code class="docutils literal notranslate"><span class="pre">$(cwd)</span></code> refers to the current working directory in which this CLI is run.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_tv_plots [-h] [--years S_YEARS] [--local] [--dirname DIRNAME] [--noverify]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help         show this help message and exit</span>
+<span class="go">  --years S_YEARS    Give a list of years as a string, such as &quot;1980,1981&quot;. Optional.</span>
+<span class="go">  --local            Check for locally running plex server.</span>
+<span class="go">  --dirname DIRNAME  Directory into which to store those plots. Default is $(cwd).</span>
+<span class="go">  --noverify         If chosen, do not verify SSL connections.</span>
+</pre></div>
+</div>
+<p>You can choose the calendar year or years for which you want to return eye chart plots of episodes that exist on the <a class="reference external" href="https://plex.tv">Plex</a> server, excluding those shows that will not be searched. In this example, <a class="reference external" href="https://en.wikipedia.org/wiki/The_Great_British_Bake_Off">The Great British Bake-Off</a> is going to be ignored. In this example, we look for all episodes in the <a class="reference external" href="https://plex.tv">Plex</a> server that have aired in 2000, 2005, 2010, and 2015. The output format during evaluation is descriptive because the process can take more than a few seconds.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop: docs $ howdy_tv_plots --years 2000,2005,2010,2015</span>
+<span class="go">0, started on May 24, 2020 @ 09:23:44 PM</span>
+<span class="go">1, found TV library: TV Shows.</span>
+<span class="go">2, excluding these TV shows: Lip Sync Battle; Reno 911!; SpongeBob SquarePants.</span>
+<span class="go">3, we found 4 years to use: 2000, 2005, 2010, 2015.</span>
+<span class="go">4, started processing 4 years of TV shows after 8.152 seconds.</span>
+<span class="go">5, finished processing year = 2000 (01 / 04) in 11.539 seconds.</span>
+<span class="go">6, finished processing year = 2005 (02 / 04) in 11.862 seconds.</span>
+<span class="go">7, finished processing year = 2010 (03 / 04) in 12.710 seconds.</span>
+<span class="go">8, finished processing year = 2015 (04 / 04) in 13.196 seconds.</span>
+<span class="go">9, processed all 4 years in 13.197 seconds.</span>
+<span class="go">10, finished everything on May 24, 2020 @ 09:23:57 PM.</span>
+</pre></div>
+</div>
+<p>This produces the episode eye charts for 2000, 2005, 2010, and 2015.</p>
+<table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../_images/tvdata.2000.svg"><img alt="tvdata_2000" src="../../_images/tvdata.2000.svg" width="100%" /></a></p></td>
+<td><p><a class="reference internal" href="../../_images/tvdata.2005.svg"><img alt="tvdata_2005" src="../../_images/tvdata.2005.svg" width="100%" /></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../_images/tvdata.2010.svg"><img alt="tvdata_2010" src="../../_images/tvdata.2010.svg" width="100%" /></a></p></td>
+<td><p><a class="reference internal" href="../../_images/tvdata.2015.svg"><img alt="tvdata_2015" src="../../_images/tvdata.2015.svg" width="100%" /></a></p></td>
+</tr>
+</tbody>
+</table>
+<p>Here is an example eye chart, for episodes aired in 2000. Each day is colored and annotated by the number of new episodes aired that day, using a legend on the upper left named <code class="docutils literal notranslate"><span class="pre">number</span> <span class="pre">of</span> <span class="pre">new</span> <span class="pre">episodes</span> <span class="pre">on</span> <span class="pre">a</span> <span class="pre">day</span></code>. Each month also shows the number of new episodes, in the number of TV shows, aired that month. On the upper right summarizes the new episodes aired that year: the number of days on which new episodes aired, the number of new episodes, and the number of shows.</p>
+<div class="figure align-center" id="howdy-tv-cli-figures-plots-tvdata-2000">
+<a class="reference internal image-reference" href="../../_images/tvdata.2000.svg"><img alt="../../_images/tvdata.2000.svg" src="../../_images/tvdata.2000.svg" width="100%" /></a>
+</div>
+</div>
+<div class="section" id="howdy-tv-excludes">
+<span id="howdy-tv-excludes-label"></span><h2><span class="section-number">5.1.7. </span>howdy_tv_excludes<a class="headerlink" href="#howdy-tv-excludes" title="Permalink to this headline">¶</a></h2>
+<p>This CLI can determine, and change, the set of TV shows to exclude from regular update (using the CLI, <a class="reference internal" href="#get-tv-batch"><span class="std std-ref">get_tv_batch</span></a>). This can only include TV shows that exist on the <a class="reference external" href="https://plex.tv">Plex</a> server. The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_tv_excludes</span> <span class="pre">-h</span></code>, produces the top level help. It has two operations: <code class="docutils literal notranslate"><span class="pre">show</span></code> (which shows the TV shows to be excluded), and <code class="docutils literal notranslate"><span class="pre">exclude</span></code> (where the user specifies which shows to exclude).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage: howdy_tv_excludes <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--remote<span class="o">]</span> <span class="o">[</span>--noverify<span class="o">]</span> <span class="o">[</span>-L LIBRARY<span class="o">]</span> <span class="o">{</span>show,exclude<span class="o">}</span> ...
+
+positional arguments:
+  <span class="o">{</span>show,exclude<span class="o">}</span>        Either show or exclude shows.
+    show                Show those TV shows that have been excluded.
+    exclude             Exclude a new list of TV shows.
+
+optional arguments:
+  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  --remote              If chosen, <span class="k">do</span> not check localhost <span class="k">for</span> running plex server.
+  --noverify            If chosen, <span class="k">do</span> not verify SSL connections.
+  -L LIBRARY, --library LIBRARY
+                        If named, <span class="k">then</span> choose this as the TV library through which to look. Otherwise, look <span class="k">for</span> first TV library found on Plex server.
+</pre></div>
+</div>
+<p>Default flags are the following:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--remote</span></code> says to look for a <em>remote</em> Plex server rather than <code class="docutils literal notranslate"><span class="pre">localhost</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> means to not verify SSL connections.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-L</span></code> or <code class="docutils literal notranslate"><span class="pre">--library</span></code> is used to explicitly specify the TV library. If not chosen, then first available TV library is chosen in the <a class="reference external" href="https://plex.tv">Plex</a> server. If a TV library cannot be found, then <strong>exit</strong>.</p></li>
+</ul>
+<p>In <code class="docutils literal notranslate"><span class="pre">show</span></code> mode, for example, this is how it looks. Here, we use the default TV library.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tanim-desktop: torrents $ plex_config_excludes show
+found <span class="m">256</span> TV shows in Plex server.
+found <span class="m">2</span> / <span class="m">256</span> TV shows that are excluded from update.
+
+SHOW
+---------------------
+Lip Sync Battle
+SpongeBob SquarePants
+</pre></div>
+</div>
+<p>In <code class="docutils literal notranslate"><span class="pre">exclude</span></code> mode, for example, this is how it looks when we choose to exclude <a class="reference external" href="https://www.imdb.com/title/tt4335742">Lip Sync Battle</a>, <a class="reference external" href="https://www.imdb.com/title/tt0206512">SpongeBob SquarePants</a>, and <a class="reference external" href="https://www.imdb.com/title/tt0370194">Reno 911!</a> from update. Here, we use the default TV library.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tanim-desktop: torrents $ plex_config_excludes exclude <span class="s2">&quot;Lip Sync Battle&quot;</span> <span class="s2">&quot;SpongeBob SquarePants&quot;</span> <span class="s2">&quot;Reno 911!&quot;</span>
+found <span class="m">256</span> TV shows in Plex server.
+Originally <span class="m">2</span> shows to exclude. Now <span class="m">3</span> shows to exclude.
+
+ORIGINAL               NEW
+---------------------  ---------------------
+Lip Sync Battle        Lip Sync Battle
+SpongeBob SquarePants  Reno <span class="m">911</span>!
+                       SpongeBob SquarePants
+
+PERFORM OPERATION <span class="o">(</span>must choose one<span class="o">)</span> <span class="o">[</span>y/n<span class="o">]</span>:y
+found <span class="m">3</span> shows to exclude from TV database.
+had to remove <span class="m">2</span> excluded shows from DB that were not in TV library.
+adding <span class="m">3</span> extra shows to exclusion database.
+NEW EXCLUDED SHOWS ADDED
+</pre></div>
+</div>
+<p>Running <code class="docutils literal notranslate"><span class="pre">howdy_tv_excludes</span> <span class="pre">show</span></code> will display, in this instance, those three shows instead of the original two.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../howdy_tv_gui.html" class="btn btn-neutral float-right" title="5.2. howdy_tv_gui" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../howdy_tv.html" class="btn btn-neutral float-left" title="5. Howdy TV Functionality" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

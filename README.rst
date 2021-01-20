@@ -25,7 +25,7 @@ Here are some of the best known lower APIs used to help one manage your Plex_ se
 
 The command line tools are built using Python's ArgumentParser_ object, and the GUIs are built with PyQt5_.
 
-The comprehensive documentation lives in HTML created with Sphinx_, and now in the `Read the Docs <Howdy_>`_ page for this project. To generate the documentation,
+The comprehensive documentation lives in HTML created with Sphinx_, and now in the `Custom GitHub Page <Howdy_>`_ for this project. To generate the documentation,
 
 1. go to the ``docs`` subdirectory.
 2. In that directory, run ``make html``.
@@ -143,4 +143,4 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
 .. _`howdy_music_songs`: https://tanimislam.github.io/howdy/howdy-music/cli_tools/howdy_music_cli.html#howdy-music-songs
 .. _`howdy_music_album`: https://tanimislam.github.io/howdy/howdy-music/cli_tools/howdy_music_cli.html#howdy-music-album
 .. _Youtube: https://www.youtube.com
-.. _Howdy: https://howdy.readthedocs.io
+.. _Howdy: https://tanimislam.github.io/howdy

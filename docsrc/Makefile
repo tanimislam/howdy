@@ -20,5 +20,5 @@ help:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 deploy:
-	rsync -avz --delete --progress build/html/ ../docs/
+	cp -rf build/html/ ../docs/
 	touch ../docs/.nojekyll

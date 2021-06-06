@@ -167,7 +167,9 @@ def _download_actual_song(
     track_number = data_dict[ 'tracknumber' ]
     total_tracks = data_dict[ 'total tracks' ]
     if 'duration' in data_dict:
-        dur = int( data_dict[ 'duration' ] )
+        try:
+            dur = int( data_dict[ 'duration' ] )
+        except: dur = 0
         song_name_after = _get_final_song_name( song_name, dur )
     print( 'ACTUAL ARTIST: %s' % artist_name )
     print( 'ACTUAL ALBUM: %s' % album_name )

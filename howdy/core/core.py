@@ -18,6 +18,7 @@ from multiprocessing import Manager
 from howdy import resourceDir
 from howdy.core import session, PlexConfig, LastNewsletterDate, PlexGuestEmailMapping
 from howdy.movie import movie
+from howdy.tv import TMDBShowIds, tv_attic
 
 def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
     """
@@ -567,7 +568,7 @@ def _get_library_data_show(
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
                              params = params, verify = False, timeout = timeout )
     if response.status_code != 200:
-        logging.debug('ERROR TANIM: COULD NOT REACH PLEX LIBRARIES AT %s/library/sections/%d/all' % ( fullURL, key ) )
+        logging.debug('ERROR: COULD NOT REACH PLEX LIBRARIES AT %s/library/sections/%d/all' % ( fullURL, key ) )
         return None
 
     logging.debug('SUCCESS AT %s/library/sections/%d/all' %
@@ -593,7 +594,7 @@ def _get_library_data_show(
     def _get_show_data( input_data ):
         times_requests_given = [ ]
         cont =    input_data[ 'cont' ]
-        session = input_data[ 'session' ]
+        sess = input_data[ 'session' ]
         slist =   input_data[ 'slist' ]
         t0 =      input_data[ 't0' ]
         timeout = input_data[ 'timeout' ]
@@ -610,7 +611,7 @@ def _get_library_data_show(
             if 'art' in direlem.attrs: picurl = '%s%s' % ( fullURL, direlem.get('art') )
             else: picurl = None
             newURL = urljoin( fullURL, direlem['key'] )
-            resp2 = session.get( newURL, params = params, verify = False, timeout = timeout )
+            resp2 = sess.get( newURL, params = params, verify = False, timeout = timeout )
             times_requests_given.append( time.time( ) - t0 )
             if resp2.status_code != 200: continue
             h2 = BeautifulSoup( resp2.content, 'lxml' )
@@ -625,21 +626,28 @@ def _get_library_data_show(
             #
             ## now look for tvdb ID for series
             tvdbID = None
+            tmdbID = None
+            result = session.query( TMDBShowIds ).filter(  TMDBShowIds.show == show ).first( )
+            if result is not None: tmdbID = result.tmdbid
             for leafElem in leafElems:
                 if 'parentguid' not in leafElem.attrs: continue
                 pguid = leafElem.attrs[ 'parentguid']
                 prs = urlparse( pguid )
                 scheme = prs.scheme
-                if 'themoviedb' in scheme: continue
-                try:                  
-                  tvdbID = int( prs.netloc )
-                  break
-                except: pass
+                if 'themoviedb' in scheme and tmdbID is None:
+                    try:
+                        tmdbID = int( prs.netloc )
+                    except: pass
+                if tvdbID is None:
+                    try:                  
+                        tvdbID = int( prs.netloc )
+                    except: pass
             if tvdbID is not None: showdata[ 'tvdbid' ] = tvdbID
+            if tmdbID is not None: showdata[ 'tmdbid' ] = tmdbID
             #
             for idx, leafElem in enumerate(leafElems):
                 newURL = urljoin( fullURL, leafElem[ 'key' ] )
-                resp3 = session.get( newURL, params = params, verify = False, timeout = timeout )
+                resp3 = sess.get( newURL, params = params, verify = False, timeout = timeout )
                 times_requests_given.append( time.time( ) - t0 )
                 h3 = BeautifulSoup( resp3.content, 'lxml' )
                 for videlem in h3.find_all( _valid_videlem ):
@@ -738,8 +746,19 @@ def _get_library_data_show(
         logging.debug( 'total number of requests given = %d.' % len( total_times_requests_given ) )
         logging.debug( 'minimum time between requests = %0.3e seconds.' % dts.min( ) )
         logging.debug( 'maximum time between requests = %0.3e seconds.' % dts.max( ) )
-        logging.debug( 'average time between requests = %0.3e seconds.' % dts.mean( ) )            
-        return key, tvdata
+        logging.debug( 'average time between requests = %0.3e seconds.' % dts.mean( ) )
+        #
+        ## replacing F**k with Fuck
+        whats_in_name = set(filter(lambda name: 'F**k' in name, tvdata))
+        whats_in_name_replace = set(map(lambda name: name.replace('F**k', 'Fuck'), whats_in_name ) )
+        assert( len( whats_in_name & whats_in_name_replace ) == 0 )
+        for name in whats_in_name:
+            newname = name.replace('F**k', 'Fuck')
+            tvdata[newname] = tvdata[name]
+        for name in whats_in_name:
+            tvdata.pop(name)
+            
+        return key,  tv_attic.populate_out_tmdbshowids_and_fix( tvdata ) # maybe try this out...?
 
 def _get_library_stats_show(
         key, token, fullURL = 'http://localhost:32400',

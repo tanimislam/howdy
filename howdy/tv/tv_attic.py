@@ -1,10 +1,12 @@
-import requests, os, sys, time, json, titlecase
+import requests, os, sys, time, json, titlecase, re, copy
 import logging, datetime, rapidfuzz.fuzz
 from dateutil.relativedelta import relativedelta
+from pathos.multiprocessing import Pool, cpu_count
 from imdb import IMDb
 #
+from howdy.core import session
 from howdy.movie import tmdb_apiKey, movie
-from howdy.tv import get_token, tv
+from howdy.tv import get_token, tv, TMDBShowIds
 
 def get_series_omdb_id( series_name, apikey ):
     """
@@ -19,8 +21,7 @@ def get_series_omdb_id( series_name, apikey ):
     .. _OMDB: http://www.omdbapi.com
     """
     params = { 's' : series_name, 'type' : 'series', 'plot' : 'full', 'apikey' : apikey }
-    response = requests.get( 'http://www.omdbapi.com',
-                             params = params )
+    response = requests.get( 'http://www.omdbapi.com', params = params )
     if response.status_code != 200:
         return None
     data = response.json( )
@@ -232,12 +233,13 @@ def get_tot_epdict_omdb( showName, apikey, inYear = None ):
         tot_epdict[seasnum][epno] = title
     return tot_epdict
 
-def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
+def get_possible_tmdb_ids( series_name, firstAiredYear = None, minmatch = 10.0 ):
     """
     Returns a :py:class:`list` of candidate TMDB_ TV shows given the series name. Each element in the list is a dictionary: the ``id`` is the TMDB_ series ID, and ``airedYear`` is the year in which the first episode aired.
 
     :param str series_name: the series name.
     :param int firstAiredYear: optional argument. If provided, filter on TV shows that were first aired that year.
+    :param float minmatch: minimum value of the ratio match. Must be :math:`> 0` and :math:`\le 100.0`. Default is 10.0.
     :returns: a :py:class:`list` of candidate TMDB_ TV shows, otherwise ``None``. For example, for `The Simpsons`_,
 
       .. code-block:: python
@@ -247,6 +249,8 @@ def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
           
     :rtype: list
     """
+    assert( minmatch > 0 )
+    assert( minmatch <= 100.0 )
     params = { 'api_key' : tmdb_apiKey, 'query' : '+'.join( series_name.split( ) ) }
     if firstAiredYear is not None:
         params[ 'first_air_date_year' ] = firstAiredYear
@@ -256,11 +260,11 @@ def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
         return None
     data = response.json( )
     total_pages = data[ 'total_pages' ]
-    results = filter(lambda result: rapidfuzz.fuzz.ratio( result['name'], series_name ) >= 10.0,
+    results = filter(lambda result: rapidfuzz.fuzz.ratio( result['name'], series_name ) >= minmatch,
                      data['results'] )
     results = sorted( results, key = lambda result: -rapidfuzz.fuzz.ratio( result['name'], series_name ) )
     if total_pages >= 2:
-        for pageno in xrange(2, max( 5, total_pages + 1 ) ):
+        for pageno in range(2, max( 5, total_pages + 1 ) ):
             params = { 'api_key' : tmdb_apiKey,
                        'query' : '+'.join( series_name.split( ) ),
                        'page' : pageno }
@@ -272,10 +276,10 @@ def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
                 continue
             data = response.json( )
             newresults = list(
-                filter(lambda result: rapidfuzz.fuzz.ratio( result['title'], title ) >= 10.0,
+                filter(lambda result: rapidfuzz.fuzz.ratio( result['name'], series_name ) >= minmatch,
                        data['results'] ) )
             if len( newresults ) > 0:
-                results += sorted( newresults, key = lambda result: -rapidfuzz.fuzz.ratio( result['title'], title ) )
+                results += sorted( newresults, key = lambda result: -rapidfuzz.fuzz.ratio( result['name'], series_name ) )
     if len( results ) == 0: return None
     def get_candidate_show( result ):
         try:
@@ -285,48 +289,213 @@ def get_possible_tmdb_ids( series_name, firstAiredYear = None ):
         except: return None
     return list(filter(None, map(get_candidate_show, results ) ) )
 
-def get_series_tmdb_id( series_name, firstAiredYear = None ):
+
+def did_series_end_tmdb( series_id, date_now = None ):
+    """
+    Check on shows that have ended more than 365 days from the last day.
+    
+    :param int series_id: the TMDB_ database series ID.
+    :param date date_now: an optional specific last :py:class:`date <datetime.date>` to describe when a show was deemed to have ended. That is, if a show has not aired any episodes more than 365 days before ``date_now``, then define the show as ended. By default, ``date_now`` is the current date.
+
+    :returns: ``True`` if the show is "ended," otherwise ``False``.
+    :rtype: bool
+
+    :raise ValueError: if we get a 200 response, but the response does not contain JSON data.
+    """
+    response = requests.get( 'https://api.themoviedb.org/3/tv/%d' % series_id,
+                             params = { 'api_key' : tmdb_apiKey }, verify = False )
+    if response.status_code != 200:
+        logging.debug( 'was not able to get series info. status_code = %d. series_id = %d.' % (
+            response.status_code, series_id ) )
+        return None
+    try:
+        data = response.json( )
+        if data['status'] == 'Ended': return True
+
+        #
+        ## now check when the last date of the show was
+        if date_now is None: date_now = datetime.datetime.now( ).date( )
+        last_date = max(
+            map(lambda epdata: epdata['airedDate'],
+                get_episodes_series_tmdb( series_id, showSpecials = False ) ) )
+        td = date_now - last_date
+        return td.days > 365
+    except:
+        raise ValueError("Error, no JSON in the response for show with TMDB ID = %d." % series_id )
+
+
+def fix_show_tmdbid( show, firstAiredYear ):
+    """
+    This fixes the database of TV shows with TMDB_ ids when wrong. DOCUMENTATION TO FOLLOW.
+
+    :param str show: name of the TV show in the ``tmdbshowids`` database.
+    :param int firstAiredYear: the year in which the show aired.
+    """
+    result = session.query( TMDBShowIds ).filter( TMDBShowIds.show == show ).first( )
+    if result is None:
+        logging.error("Error, could not find %s in the TMDB show ids database." )
+        return
+    tmdb_show_id = get_series_tmdb_id( show, firstAiredYear = firstAiredYear, minmatch = 10.0 )
+    if tmdb_show_id is None:
+        logging.error("Error, could not find a tmdb id for the show = %s with candidate first year = %d." % (
+            show, firstAiredYear ) )
+        return
+    session.delete( result )
+    session.add( TMDBShowIds( show = show, tmdbid = tmdb_show_id ) )
+    session.commit( )
+    
+def populate_out_tmdbshowids_and_fix( tvdata ):
+    """
+    This fills out the database of TV show names with the TMDB_ ids. DOCUMENTATION TO FOLLOW.
+    
+    :param dict tvdata: the dictionary of TV shows to their attributes.
+    :returns: a modified ``tvdata`` dictionary that contains all the TMDB_ ids it could find. For each TV show it finds, it fills in the ``tmdbid`` key associated with it.
+    :rtype: dict
+    """
+    #
+    ## first get ALL the current mappings of TV shows with tmdb ids
+    tvshows_with_tmdbids =    dict(map(lambda tvshow: ( tvshow, tvdata[tvshow]['tmdbid'] ), filter(lambda tvshow: 'tmdbid' in tvdata[tvshow], tvdata)))
+    tvshows_without_tmdbids = set(filter(lambda tvshow: 'tmdbid' not in tvdata[ tvshow ], tvdata ) )
+    #
+    ## now find those shows for which I can find a TMDB ID
+    def get_tvshow_tmdbid( tvshow ):
+        tmdb_id = get_series_tmdb_id( tvshow )
+        if tmdb_id is None: return None
+        return ( tvshow, tmdb_id )
+    with Pool( processes = 2 * cpu_count( ) ) as pool:
+        tmdbid_dict = dict(filter(None, pool.map(get_tvshow_tmdbid, tvshows_without_tmdbids)))
+    #
+    ## now find the TV shows remaining
+    tvshows_remaining = set(  tvshows_without_tmdbids ) - set( tmdbid_dict )
+    #
+    ## first, those TV shows with years in parentheses they end on...
+    def get_firstaired_year( tvshow ):
+        if not re.findall('\)$', tvshow.strip( ) ): return None
+        lastelem = tvshow.split()[-1].strip( )
+        if not re.findall('^\(', lastelem ): return None
+        try:
+            return int( lastelem[1:-1])
+        except:
+            return None
+    tvshows_years_parentheses = set(filter(lambda tvshow: get_firstaired_year( tvshow ) is not None, tvshows_remaining ) )
+    tvshows_years_parentheses_dict = dict(map(lambda tvshow: ( tvshow, { 'name' : ' '.join( tvshow.strip( ).split()[:-1] ),
+                                                                         'year' : get_firstaired_year( tvshow ) } ),
+                                              tvshows_years_parentheses))
+    def get_tvshow_year( tvshow, name, firstAiredYear ):
+        tmdb_id = get_series_tmdb_id( name, firstAiredYear = firstAiredYear )
+        if tmdb_id is None: return None
+        return ( tvshow, tmdb_id )
+    with Pool( processes = 2 * cpu_count( ) ) as pool:
+        tmdb_id_dict2 = dict(filter(None, pool.map(lambda tvshow: get_tvshow_year(
+            tvshow, ' '.join( tvshow.strip( ).split( )[:-1] ), get_firstaired_year( tvshow ) ), tvshows_years_parentheses ) ) )
+        for tvshow in tmdb_id_dict2:
+            tmdbid_dict[ tvshow ] = tmdb_id_dict2[ tvshow ]
+    #
+    ## now find the TV shows remaining
+    tvshows_remaining = set( tvshows_without_tmdbids ) - set( tmdbid_dict )
+    def get_tvshow_low( tvshow ):
+        lastelem = tvshow.strip( ).split()[-1]
+        tvshow_act = tvshow
+        if lastelem.startswith('(') and lastelem.endswith(')'):
+            tvshow_act = ' '.join( tvshow.strip().split()[:-1] )
+        tmdb_id = get_series_tmdb_id( tvshow_act, minmatch = 10.0 )
+        if tmdb_id is None: return None
+        return (tvshow, tmdb_id )
+    with Pool( processes = 2 * cpu_count( ) ) as pool:
+        tmdb_id_dict2 = dict(filter(None, pool.map(get_tvshow_low, tvshows_remaining)))
+        for tvshow in tmdb_id_dict2:
+            tmdbid_dict[ tvshow ] = tmdb_id_dict2[ tvshow ]
+    #
+    ## final collection of remaining TV shows which we cannot identify
+    tvshows_remaining = set( tvshows_without_tmdbids ) - set( tmdbid_dict )
+    logging.info( 'these %d TV shows remaining: %s.' % ( len( tvshows_remaining ), sorted( tvshows_remaining ) ) )
+    #
+    ## now perform operations on tvdata
+    tvdata_copy = copy.deepcopy( tvdata )
+    for tvshow in tmdbid_dict:
+        tvdata_copy[ tvshow ][ 'tmdbid' ] = tmdbid_dict[ tvshow ]
+    #
+    ## now create the tmdbid_dict from where we have MORE tmdbids from tv shows
+    tmdb_dict = dict(map(lambda tvshow: ( tvshow, tvdata_copy[ tvshow ][ 'tmdbid' ] ),
+                         filter(lambda tvshow: 'tmdbid' in tvdata_copy[ tvshow ], tvdata_copy ) ) )
+    #
+    ## now find all the rows in the ``tmdbshowids`` database, make a dict of them
+    tmdb_dict_db = dict(map(lambda val: ( val.show, val.tmdbid ), session.query( TMDBShowIds ) ) )
+    #
+    ## find the entries to get rid of...
+    ## and get rid of them
+    tvshows_to_delete_from_database = set( tmdb_dict_db ) - set( tmdb_dict )
+    result = session.query( TMDBShowIds ).filter( TMDBShowIds.show.in_(list(tvshows_to_delete_from_database)))
+    for tmdbshowid in result:
+        session.delete( tmdbshowid )
+    session.commit( )
+    for tvshow in tvshows_to_delete_from_database:
+        tmdb_dict_db.pop( tvshow )
+    #
+    ## now find the entries to change or add
+    entries_to_change_in_db = set( tmdb_dict.items( ) ) - set( tmdb_dict_db.items( ) )
+    #
+    ## find those tvshows already in the db, and get rid of them
+    tvshows_already_in_db = set(map(lambda tup: tup[0], entries_to_change_in_db ) ) & set(
+        map(lambda tmdbshowid: tmdbshowid.show, session.query( TMDBShowIds ) ) )
+    result = session.query( TMDBShowIds ).filter( TMDBShowIds.show.in_(list( tvshows_already_in_db)))
+    for tmdbshowid in result:
+        session.delete( tmdbshowid )
+    session.commit( )
+    #
+    ## finally, create entries to change in db by adding them back to the db
+    for show, tmdbid in entries_to_change_in_db:
+        session.add( TMDBShowIds( show = show, tmdbid = tmdbd ) )
+    session.commit( )
+    #
+    ## return copy of tvdata with all possible tmdbids filled out
+    return tvdata_copy
+
+def get_series_tmdb_id( series_name, firstAiredYear = None, minmatch = 50.0 ):
     """
     Returns the first TMDB_ series ID for a TV show. Otherwise returns ``None`` if no TV series could be found.
     
     :param str series_name: the series name.
     :param int firstAiredYear: optional argument. If provided, filter on TV shows that were first aired that year.
+    :param float minmatch: the minimal matching of the series name. Default is 50.0.
     :returns: the TMDB_ series ID for that TV show.
     :rtype: int
 
     .. _TMDB: https://www.themoviedb.org/documentation/api?language=en-US
     """
-    results = get_possible_tmdb_ids( series_name, firstAiredYear = firstAiredYear )
+    results = get_possible_tmdb_ids( series_name, firstAiredYear = firstAiredYear, minmatch = minmatch )
+    if results is None: return None
     if len( results ) == 0: return None
     return results[0]['id']
 
 #
 ##Ignore specials (season 0) for now...
-def get_episodes_series_tmdb( tmdbID, fromDate = None, showSpecials = False ):
+def get_episodes_series_tmdb( tmdbID, fromDate = None, showSpecials = False, showFuture = False ):
     """
     Returns a :py:class:`list` of episodes returned by the TMDB_ API. Each element is a dictionary: ``name`` is the episode name, ``airedDate`` is the :py:class:`date <datetime.date>` the episode aired, ``season`` is the season it aired, and ``episode`` is the episode number in that season.
 
     :param int tmdbID: the TMDB_ series ID.
     :param date fromDate: optional argument, of type :py:class:`date <datetime.date>`. If given, then only return episodes aired on or after this date.
     :param bool showSpecials: if ``True``, then also include TV specials. These specials will appear in a season ``0`` in this dictionary.
+    :param bool showFuture: optional argument, if ``True`` then also include information on episodes that have not yet aired.
     :returns: a :py:class:`list` of episoes returned by the TMDB_ database. For example, for `The Simpsons`_,
     
       .. code-block:: python
 
          >> series_id = get_series_tmdb_id( 'The Simpsons' )
          >> episodes_tmdb = get_episodes_series_tmdb( series_id )
-         >> [{'name': 'Simpsons Roasting on an Open Fire',
+         >> [{'episodeName': 'Simpsons Roasting on an Open Fire',
               'airedDate': datetime.date(1989, 12, 17),
-              'season': 1,
-              'episode': 1},
-             {'name': 'Bart the Genius',
+              'airedSeason': 1,
+              'airedEpisodeNumber': 1},
+             {'episodeName': 'Bart the Genius',
               'airedDate': datetime.date(1990, 1, 14),
-              'season': 1,
-              'episode': 2},
-             {'name': "Homer's Odyssey",
+              'airedSeason': 1,
+              'airedEpisodeNumber': 2},
+             {'episodeName': "Homer's Odyssey",
               'airedDate': datetime.date(1990, 1, 21),
-              'season': 1,
-              'episode': 3},
+              'airedSeason': 1,
+              'airedEpisodeNumber': 3},
              ...
             ]
           
@@ -351,15 +520,15 @@ def get_episodes_series_tmdb( tmdbID, fromDate = None, showSpecials = False ):
         for episode in data_season[ 'episodes' ]:
             try:
                 date = datetime.datetime.strptime( episode['air_date'], '%Y-%m-%d' ).date( )
-                if date >= currentDate:
+                if date >= currentDate and not showFuture:
                     continue
                 if fromDate is not None:
                     if date < fromDate:
                         continue
-                sData.append( { 'name' : titlecase.titlecase( episode['name'] ),
+                sData.append( { 'episodeName' : episode['name'],
                                 'airedDate' : date,
-                                'season' : season_number,
-                                'episode' : episode['episode_number'] } )
+                                'airedSeason' : season_number,
+                                'airedEpisodeNumber' : episode['episode_number'] } )
             except:
                 continue
     return sData

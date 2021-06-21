@@ -1,5 +1,5 @@
 import os, requests, json, sys, logging
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, Integer
 #
 from howdy.core import session, create_all, PlexConfig, Base
 
@@ -10,6 +10,7 @@ class ShowsToExclude( Base ): # these are shows you want to exclude
     :var show: the show, that exists on the Plex_ server, to exclude from analysis and update. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` object of size 65536.
 
     .. _TVDB: https://api.thetvdb.com/swagger
+    .. _TMDB: https://developers.themoviedb.org/3/getting-started/introduction
     .. _SQLAlchemy: https://www.sqlalchemy.org
     .. _Plex: https://plex.tv
     .. _SQLite3: https://www.sqlite.org/index.html
@@ -21,10 +22,24 @@ class ShowsToExclude( Base ): # these are shows you want to exclude
     __table_args__ = { 'extend_existing': True }
     show = Column( String( 65536 ), index = True, primary_key = True )
 
+class TMDBShowIds( Base ): # these are the TMDB IDs for shows
+    """
+    This SQLAlchemy_ ORM class contains the show names with the TMDB IDs of the shows. These shows must exist on the Plex_ server. Storied in the the ``tmdbshowids`` table in the SQLite3_ configuration database.
+
+       :var show: the show, that exists on the Plex_ server. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` object of size 65536.
+       :var tmdbid: the TMDB_ ID of the show. THis is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`Integer <sqlalchemy.types.Integer>`.
+    """
+    #
+    ## create the table using Base.metadata.create_all( _engine )
+    __tablename__ = 'tmdbshowids'
+    __table_args__ = { 'extend_existing' : True }
+    show = Column( String( 65536), index = True, primary_key = True )
+    tmdbid = Column( Integer )
+    
 # class CurrentGetTVBatchSession( Base ): # this acts as a single 
 #    pass
 #
-## commit all tables (implicit check on whether in READTHEDOCS variable is set
+## commit all tables (implicit check on whether in READTHEDOCS variable is set)
 create_all( )
     
 def save_tvdb_api( username, apikey, userkey, verify = True ):

@@ -1,6 +1,6 @@
 import requests, os, sys, json, re, logging
 import datetime, time, numpy, copy, calendar, shutil
-import pathos.multiprocessing as multiprocessing
+from pathos.multiprocessing import Pool, cpu_count
 from matplotlib.figure import Figure
 from matplotlib.patches import Rectangle, Ellipse
 from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -39,7 +39,7 @@ class TVShow( object ):
     
     @classmethod
     def create_tvshow_dict( cls, tvdata, token = None, verify = True,
-                            debug = False, num_threads = 2 * multiprocessing.cpu_count( ) ):
+                            debug = False, num_threads = 2 * cpu_count( ) ):
         """
         Higher level convenience method that returns a :py:class:`dict` of show names to their corresponding :py:class:`TVShow <howdy.tv.tv.TVShow>` object.
 
@@ -60,8 +60,7 @@ class TVShow( object ):
                           TVShow( seriesName, tvdata[ seriesName ],
                                   token, verify = verify ) )
             except: return None
-        with multiprocessing.Pool(
-                processes = max( num_threads, multiprocessing.cpu_count( ) ) ) as pool:
+        with Pool( processes = max( num_threads, cpu_count( ) ) ) as pool:
             tvshow_dict = dict(filter(None, pool.map(_create_tvshow, sorted( tvdata )[:60] ) ) )
             mystr = 'took %0.3f seconds to get a dictionary of %d / %d TV Shows.' % (
                 time.time( ) - time0, len( tvshow_dict ), len( tvdata ) )
@@ -134,7 +133,7 @@ class TVShow( object ):
             tmdb_id = tmdb_id[ 0 ]
             eps = movie.get_episodes_series_tmdb( tmdb_id, verify = verify )
         allSeasons = sorted( set( map(lambda episode: int( episode['airedSeason' ] ), eps ) ) )
-        #with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
+        #with Pool( processes = cpu_count( ) ) as pool:
         input_tuples = map(lambda seasno: (
             self.seriesName, self.seriesId, token, seasno, verify, eps ), allSeasons)
         self.seasonDict = dict(
@@ -547,8 +546,8 @@ def get_series_id( series_name, token, verify = True ):
     """
     data_ids, status = get_possible_ids( series_name, token, verify = verify )
     if data_ids is None:
-        logging.error( 'PROBLEM WITH series %s' % series_name )
-        logging.error( 'error message: %s.' % status )
+        logging.error( ' '.join(['PROBLEM WITH series %s.' % series_name, 
+                                 'error message: %s.' % status ]) )
         return None
     logging.debug( 'data_ids = %s.' % data_ids )
     data_matches = list(filter(lambda dat: dat['seriesName'] == series_name,
@@ -646,9 +645,9 @@ def did_series_end( series_id, tvdb_token, verify = True, date_now = None ):
     response = requests.get( 'https://api.thetvdb.com/series/%d' % series_id,
                              headers = headers, verify = verify )
     if response.status_code != 200:
-      logging.debug( 'was not able to get series info. status_code = %d. tvdb_token = %s. series_id = %d.' % (
-        response.status_code, tvdb_token, series_id ) )
-      return None
+        logging.debug( 'was not able to get series info. status_code = %d. tvdb_token = %s. series_id = %d.' % (
+            response.status_code, tvdb_token, series_id ) )
+        return None
     try:
         data = response.json( )['data']
         
@@ -1179,9 +1178,7 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
              'avg_length_mins' : avg_length_secs // 60 }
 
 def get_all_series_didend(
-        tvdata, verify = True,
-        num_threads = 2 * multiprocessing.cpu_count( ),
-        tvdb_token = None ):
+        tvdata, verify = True, num_threads = 2 * cpu_count( ), tvdb_token = None ):
     """
     Returns a :py:class:`dict` on which TV shows on the Plex_ server have ended. Each key is the TV show, and its value is whether the show ended or not. Here is its format.
 
@@ -1206,8 +1203,7 @@ def get_all_series_didend(
     """
     time0 = time.time( )
     if tvdb_token is None: tvdb_token = get_token( verify = verify )
-    with multiprocessing.Pool(
-            processes = max(num_threads, multiprocessing.cpu_count( ) ) ) as pool:
+    with Pool( processes = max(num_threads, cpu_count( ) ) ) as pool:
         date_now = datetime.datetime.now( ).date( )
         tvshow_id_list = list(map(lambda seriesName: ( seriesName, tvdata[ seriesName ][ 'tvdbid' ] ),
                                   filter(lambda seriesName: 'tvdbid' in tvdata[ seriesName ], tvdata ) ) )
@@ -1230,17 +1226,17 @@ def get_all_series_didend(
             didend_map[ seriesName ] = True
         logging.debug( 'processed %d series to check if they ended, in %0.3f seconds.' % (
             len( tvdata ), time.time( ) - time0 ) )
-        return didend_map                                
+        return didend_map
     
 def _get_remaining_eps_perproc( input_tuple ):
+    #
+    ## now use TMDB functionality instead
     time0 = time.time( )
     name = input_tuple[ 'name' ]
     series_id = input_tuple[ 'series_id' ]
     epsForShow = input_tuple[ 'epsForShow' ]
-    token = input_tuple[ 'token' ]
     showSpecials = input_tuple[ 'showSpecials' ]
     fromDate = input_tuple[ 'fromDate' ]
-    verify = input_tuple[ 'verify' ]
     showFuture = input_tuple[ 'showFuture' ]
     mustHaveTitle = input_tuple[ 'mustHaveTitle' ]
     #
@@ -1249,50 +1245,51 @@ def _get_remaining_eps_perproc( input_tuple ):
         if mustHaveTitle:
             eps = list(
                 filter(lambda ep: 'episodeName' in ep and ep['episodeName'] is not None,
-                    get_episodes_series(
-                        series_id, token, showSpecials = showSpecials, verify = verify,
+                    tv_attic.get_episodes_series_tmdb(
+                        series_id, showSpecials = showSpecials,
                         fromDate = fromDate, showFuture = showFuture ) ) )
         else:
-            eps = get_episodes_series(
-                series_id, token, showSpecials = showSpecials, verify = verify,
+            eps = tv_attic.get_episodes_series_tmdb(
+                series_id, showSpecials = showSpecials,
                 fromDate = fromDate, showFuture = showFuture )
     except:
         return None
-    tvdb_eps = set(map(lambda ep: ( ep['airedSeason'], ep['airedEpisodeNumber' ] ), eps ) )
-    tvdb_eps_dict = { ( ep['airedSeason'], ep['airedEpisodeNumber' ] ) :
+    tmdb_eps = set(map(lambda ep: ( ep['airedSeason'], ep['airedEpisodeNumber' ] ), eps ) )
+    tmdb_eps_dict = { ( ep['airedSeason'], ep['airedEpisodeNumber' ] ) :
                       ( ep['airedSeason'], ep['airedEpisodeNumber' ], ep['episodeName'] ) for ep in eps }
     here_eps = set([ ( seasno, epno ) for seasno in epsForShow for
                      epno in epsForShow[ seasno ][ 'episodes' ] ] )
-    tuples_to_get = tvdb_eps - here_eps
+    tuples_to_get = tmdb_eps - here_eps
     if len( tuples_to_get ) == 0: return None
-    tuples_to_get_act = list(map(lambda tup: tvdb_eps_dict[ tup ], tuples_to_get ) )
+    tuples_to_get_act = list(map(lambda tup: tmdb_eps_dict[ tup ], tuples_to_get ) )
     logging.debug( 'finished processing %s in %0.3f seconds.' % ( name, time.time( ) - time0 ) )
     return name, sorted( tuples_to_get_act, key = lambda tup: (tup[0], tup[1]))
 
 def _get_series_id_perproc( input_tuple ):
+    #
+    ## change this to use the tmdbid rather than the tmdbid
     show = input_tuple[ 'show' ]
-    token = input_tuple[ 'token' ]
-    verify = input_tuple[ 'verify' ]
     doShowEnded = input_tuple[ 'doShowEnded' ]
     try:
-        if 'tvdbid' not in input_tuple:
-            series_id = get_series_id( show, token, verify = verify )
-        else: series_id = input_tuple[ 'tvdbid' ]
+        if 'tmdbid' not in input_tuple:
+            series_id = tv_attic.get_series_tmdb_id( show )
+        else: series_id = input_tuple[ 'tmdbid' ]
         if series_id is None:
             logging.info( 'something happened with show %s' % show )
-            return None
+            return None        
         if not doShowEnded:
-            didEnd = did_series_end( series_id, token, verify = verify )
-            if didEnd is None or didEnd: return None
+            didEnd = tv_attic.did_series_end_tmdb( series_id )
+            if didEnd is None: return None
+            if didEnd: return None
         return show, series_id
     except Exception as e:
-        print( 'problem getting %s, error = %s.' % ( show, str( e ) ) )
+        logging.error( 'problem getting %s, error = %s.' % ( show, str( e ) ) )
         return None
     
 def get_remaining_episodes(
         tvdata, showSpecials = True, fromDate = None, verify = True,
         doShowEnded = False, showsToExclude = None, showFuture = False,
-        num_threads = 2 * multiprocessing.cpu_count( ), token = None,
+        num_threads = 2 * cpu_count( ), token = None,
         mustHaveTitle = True ):
     """
     Returns a :py:class:`dict` of episodes missing from the Plex_ TV library for the TV shows that are in it. Each key in the dictionary is the TV show with missing episodes. The value is another dictionary. Here are their keys and values,
@@ -1354,21 +1351,21 @@ def get_remaining_episodes(
     .. _`The Great British Bake Off`: https://en.wikipedia.org/wiki/The_Great_British_Bake_Off
     """
     assert( num_threads >= 1 )
-    if token is None: token = get_token( verify = verify )
+    #
+    ## no longer use TVDB token, and use TMDB instead...
+    #if token is None: token = get_token( verify = verify )
     tvdata_copy = copy.deepcopy( tvdata )
     if showsToExclude is not None:
         showsExclude = set( showsToExclude ) & set( tvdata_copy.keys( ) )
         for show in showsExclude: tvdata_copy.pop( show )
-    with multiprocessing.Pool( processes = max( num_threads, multiprocessing.cpu_count( ) ) ) as pool:
+    with Pool( processes = max( num_threads, cpu_count( ) ) ) as pool:        
         input_tuples = list(
-            map(lambda show: {
-                'show' : show, 'token' : token, 'verify' : verify, 'doShowEnded' : doShowEnded,
-                'tvdbid' : tvdata_copy[ show ][ 'tvdbid' ] },
-                filter(lambda show: 'tvdbid' in tvdata_copy[ show ], tvdata_copy ) ) )
+            map(lambda show: { 'show' : show, 'doShowEnded' : doShowEnded,
+                'tmdbid' : tvdata_copy[ show ][ 'tmdbid' ] },
+                filter(lambda show: 'tmdbid' in tvdata_copy[ show ], tvdata_copy ) ) )
         input_tuples_2 = list(
-            map(lambda show: {
-                'show' : show, 'token' : token, 'verify' : verify, 'doShowEnded' : doShowEnded },
-                filter(lambda show: 'tvdbid' not in tvdata_copy[ show ], tvdata_copy ) ) )
+            map(lambda show: { 'show' : show, 'doShowEnded' : doShowEnded },
+                filter(lambda show: 'tmdbid' not in tvdata_copy[ show ], tvdata_copy ) ) )
         tvshow_id_map = dict(filter(
             None, pool.map( _get_series_id_perproc, input_tuples + input_tuples_2 ) ) )
         
@@ -1383,16 +1380,13 @@ def get_remaining_episodes(
     input_tuples = list(
         map(lambda name:
             { 'name' : name,
-              'token' : token,
               'showSpecials' : showSpecials,
               'fromDate' : fromDate,
-              'verify' : verify,
               'series_id' : tvshow_id_map[ name ],
               'showFuture' : showFuture,
               'mustHaveTitle' : mustHaveTitle,
               'epsForShow' : tvdata_copy[ name ][ 'seasons' ] }, tvshow_id_map ) )
-    with multiprocessing.Pool(
-            processes = max(num_threads, multiprocessing.cpu_count( ) ) ) as pool:
+    with Pool( processes = max(num_threads, cpu_count( ) ) ) as pool:
         toGet_sub = dict( filter(
             None, pool.map( _get_remaining_eps_perproc, input_tuples ) ) )
     #
@@ -1411,7 +1405,7 @@ def get_remaining_episodes(
             'season_prefix_dict' : tvdata_path_data[ tvshow ][ 'season_prefix_dict' ],
             'episode_number_length' : tvdata_path_data[ tvshow ][ 'episode_number_length' ],
             'avg_length_mins' : tvdata_path_data[ tvshow ][ 'avg_length_mins' ] } ),
-                         sorted( tvshows_act ) ) )
+                         tvshows_act ) )
     else:
         tvshows_act = set(filter(lambda tvshow: len( toGet_sub[ tvshow ] ) != 0, toGet_sub ) )
         tvdata_path_data = dict(filter(None, map(lambda tvshow: (
@@ -1458,7 +1452,7 @@ def get_remaining_episodes(
     return toGet
 
 def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token = None,
-                           fromDate = None, num_threads = 2 * multiprocessing.cpu_count( ) ):
+                           fromDate = None, num_threads = 2 * cpu_count( ) ):
     """
     Returns a :py:class:`dict` on which TV shows on the Plex_ server have a new season to start. Each key is a TV show in the Plex_ library. Each value is another dictionary: ``max_last_season`` is the latest season of the TV show, ``min_next_season`` is the next season to be aired, and ``start_date`` is the first :py:class:`date <datetime.date>` that a new episode will air.
     
@@ -1525,7 +1519,7 @@ def get_future_info_shows( tvdata, verify = True, showsToExclude = None, token =
             return show, max_last_season, min_next_season, date_min
         except: return None
 
-    with multiprocessing.Pool( processes = num_threads ) as pool:
+    with Pool( processes = num_threads ) as pool:
         future_shows_dict = dict(
             map(lambda tup:
                 ( tup[0], { 'max_last_season' : tup[1],
@@ -1752,8 +1746,7 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
                 tvTorUnit[ 'torFname' ], str( e ), traceback.print_tb( e.__traceback__ ) )
     #
     ## now create a pool to multiprocess collect those episodes
-    with multiprocessing.Pool( processes = min(
-            multiprocessing.cpu_count( ), len( tvTorUnits ) ) ) as pool:
+    with Pool( processes = min( cpu_count( ), len( tvTorUnits ) ) ) as pool:
         allTvTorUnits = list( pool.map(
             worker_process_download_tvtorrent_perproc, tvTorUnits ) )
     successfulTvTorUnits = list(filter(lambda tup: not isinstance( tup, str ),

@@ -445,7 +445,7 @@ def populate_out_tmdbshowids_and_fix( tvdata ):
     #
     ## finally, create entries to change in db by adding them back to the db
     for show, tmdbid in entries_to_change_in_db:
-        session.add( TMDBShowIds( show = show, tmdbid = tmdbd ) )
+        session.add( TMDBShowIds( show = show, tmdbid = tmdbid ) )
     session.commit( )
     #
     ## return copy of tvdata with all possible tmdbids filled out
@@ -533,13 +533,15 @@ def get_episodes_series_tmdb( tmdbID, fromDate = None, showSpecials = False, sho
                 continue
     return sData
 
-def get_tot_epdict_tmdb( showName, firstAiredYear = None, showSpecials = False ):
+def get_tot_epdict_tmdb( showName, firstAiredYear = None, showSpecials = False, showFuture = False, minmatch = 50.0 ):
     """
     Returns a :py:class:`dict` of episodes found from the TMDB_ API. The top level dictionary's keys are the season numbers, and each value is the next-level dictionary of season information. The next level, season dictionary's keys are the episode number, and its values are a two-element :tuple: of episode names and aired dates (as a :py:class:`date <datetime.date>` object). This two level dictionary has the same format as the output from :py:meth:`get_tot_epdict_tvdb <howdy.tv.tv.get_tot_epdict_tvdb>`.
 
     :param str showName: the series name.
     :param int firstAiredYear: optional argument. If provided, filter on TV shows that were first aired that year.
     :param bool showSpecials: if ``True``, then also include TV specials. These specials will appear in a season ``0`` in this dictionary.
+    :param bool showFuture: optional argument, if ``True`` then also include information on episodes that have not yet aired.
+    :param float minmatch: the minimal matching of the series name. Default is 50.0.
     :returns: a :py:class:`dict` of episode information for that TV show. For example, for `The Simpsons`_,
     
       .. code-block:: python
@@ -571,14 +573,14 @@ def get_tot_epdict_tmdb( showName, firstAiredYear = None, showSpecials = False )
        * :py:meth:`get_tot_epdict_imdb <howdy.tv.tv_attic.get_tot_epdict_imdb>`.
        * :py:meth:`get_tot_epdict_omdb <howdy.tv.tv_attic.get_tot_epdict_omdb>`.
     """
-    tmdbID = get_series_tmdb_id( showName, firstAiredYear = firstAiredYear )
+    tmdbID = get_series_tmdb_id( showName, firstAiredYear = firstAiredYear, minmatch = minmatch )
     if tmdbID is None: return None
-    eps = get_episodes_series_tmdb( tmdbID, showSpecials = showSpecials )
+    eps = get_episodes_series_tmdb( tmdbID, showSpecials = showSpecials, showFuture = showFuture )
     tot_epdict = { }
     for episode in eps:
-        seasnum = episode[ 'season' ]
-        title = episode[ 'name' ]
-        epno = episode[ 'episode' ]
+        seasnum = episode[ 'airedSeason' ]
+        title = episode[ 'episodeName' ]
+        epno = episode[ 'airedEpisodeNumber' ]
         airedDate = episode[ 'airedDate' ]
         tot_epdict.setdefault( seasnum, { } )
         tot_epdict[ seasnum ][ epno ] = ( title, airedDate )

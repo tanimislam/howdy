@@ -7,7 +7,7 @@ signal.signal( signal.SIGINT, signal_handler )
 import titlecase
 from argparse import ArgumentParser
 #
-from howdy.tv import tv
+from howdy.tv import tv, tv_attic
 
 def main( ):
     parser = ArgumentParser( )
@@ -15,12 +15,12 @@ def main( ):
                         help = 'The name of the series', required = True )
     parser.add_argument('-e', '--epstring', dest='epstring', type=str, action='store',
                         help = 'The episode string, in the form S%%02dE%%02d.' )
-    parser.add_argument('--summary', dest='do_summary', action='store_true', default = False,
-                        help = 'If chosen, get a summary of all the seasons and episodes for the SERIES.')
     parser.add_argument('-S', '--season', dest='season', action='store', type=int,
                         help = 'If chosen, get a list of all episode titles for this season of the SERIES.')
-    parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
-                        help = 'If chosen, do not verify the SSL connection.')
+    parser.add_argument('-f', '--firstyear', dest='firstyear', action='store', type=int,
+                        help = 'Optional argument, because of TMDB ambiguities, we can specify a year in which the first episode aired to get the SPECIFIC TMDB id on the show.' )
+    parser.add_argument('--summary', dest='do_summary', action='store_true', default = False,
+                        help = 'If chosen, get a summary of all the seasons and episodes for the SERIES.')
     #
     ## big option
     #parser.add_option('--add', dest='do_add', action='store_true', default = False,
@@ -30,7 +30,7 @@ def main( ):
     args = parser.parse_args( )
     if args.do_summary:
         seriesName = args.series.strip( )
-        epdicts = tv.get_tot_epdict_tvdb( seriesName, verify = args.do_verify, showFuture = True )
+        epdicts = tv_attic.get_tot_epdict_tmdb( seriesName, showFuture = True, minmatch = 10.0, firstAiredYear = args.firstyear )
         if epdicts is None:
             print('Error, could not find %s' % seriesName)
             return
@@ -41,7 +41,7 @@ def main( ):
             print('SEASON %02d: %d episodes' % ( seasno, len( epdicts[ seasno ] ) ) )
     elif args.season is not None:
         seriesName = args.series.strip( )
-        epdicts = tv.get_tot_epdict_tvdb( seriesName, verify = args.do_verify, showFuture = True )
+        epdicts = tv_attic.get_tot_epdict_tmdb( seriesName, showFuture = True, minmatch = 10.0, firstAiredYear = args.firstyear )
         if epdicts is None:
             print( 'Error, could not find %s' % seriesName )
             return

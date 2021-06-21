@@ -9,7 +9,7 @@ from io import BytesIO
 from fabric import Connection
 from argparse import ArgumentParser
 #
-from howdy.tv import tv
+from howdy.tv import tv, tv_attic
 from howdy.core import core_deluge
 
 def main( ):
@@ -19,12 +19,12 @@ def main( ):
                         help = 'Name of the TV Show to push into remote server.')
     parser.add_argument('-j', '--jsonfile', type=str, action='store', dest='jsonfile', default = 'eps.json',
                         help = 'Name of the JSON file into which to store the episode information. Default is eps.json.' )
+    parser.add_argument('-f', '--firstyear', dest='firstyear', action='store', type=int,
+                        help = 'Optional argument, because of TMDB ambiguities, we can specify a year in which the first episode aired to get the SPECIFIC TMDB id on the show.' )
     parser.add_argument('--showspecials', dest='do_showspecials', action='store_true', default = False,
                         help = 'If chosen, then also find all the specials.' )
     parser.add_argument('--debug', dest='do_debug', action='store_true', default = False,
                         help = 'If chosen, then run DEBUG logging.' )
-    parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
-                        help = 'If chosen, do not verify the SSL connection.')
     args = parser.parse_args( )
     assert( args.show is not None ), "error, show name not defined."
     assert( args.jsonfile.endswith('.json' ) ), "error, JSON file does not end with json."
@@ -40,8 +40,8 @@ def main( ):
     #
     ## now get episode information
     try:
-        epdicts = tv.get_tot_epdict_tvdb(
-            args.show.strip( ), showSpecials = args.do_showspecials, verify = args.do_verify )
+        epdicts = tv_attic.get_tot_epdict_tmdb(
+            args.show.strip( ), showSpecials = args.do_showspecials, minmatch = 10.0, firstAiredYear = args.firstyear )
         logging.debug( 'name of show: %s. Number of eps: %d.' % (
             args.show.strip( ), sum(list(map(lambda seasno: len( epdicts[ seasno ] ), epdicts)))))
     except Exception as e:

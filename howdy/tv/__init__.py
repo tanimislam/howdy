@@ -10,7 +10,6 @@ class ShowsToExclude( Base ): # these are shows you want to exclude
     :var show: the show, that exists on the Plex_ server, to exclude from analysis and update. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` object of size 65536.
 
     .. _TVDB: https://api.thetvdb.com/swagger
-    .. _TMDB: https://developers.themoviedb.org/3/getting-started/introduction
     .. _SQLAlchemy: https://www.sqlalchemy.org
     .. _Plex: https://plex.tv
     .. _SQLite3: https://www.sqlite.org/index.html

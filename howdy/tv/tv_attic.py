@@ -19,6 +19,7 @@ def get_series_omdb_id( series_name, apikey ):
     :rtype: str
 
     .. _OMDB: http://www.omdbapi.com
+    .. _TMDB: https://www.themoviedb.org/documentation/api?language=en-US
     """
     params = { 's' : series_name, 'type' : 'series', 'plot' : 'full', 'apikey' : apikey }
     response = requests.get( 'http://www.omdbapi.com', params = params )
@@ -461,7 +462,6 @@ def get_series_tmdb_id( series_name, firstAiredYear = None, minmatch = 50.0 ):
     :returns: the TMDB_ series ID for that TV show.
     :rtype: int
 
-    .. _TMDB: https://www.themoviedb.org/documentation/api?language=en-US
     """
     results = get_possible_tmdb_ids( series_name, firstAiredYear = firstAiredYear, minmatch = minmatch )
     if results is None: return None

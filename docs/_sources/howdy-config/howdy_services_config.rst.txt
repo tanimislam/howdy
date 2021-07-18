@@ -56,33 +56,35 @@ The TVDB API registration is more involved and (currently, as of 2 July 2019) no
 
   How to get TVDB_ API access.
 
-3. This will send you to the API keys web page for your account. On the top, you will see two labels showing your **username**, and an **unique ID** that the TVDB asigns to you. In the middle section is a table showing the API keys you have created, if any. Each row is a project you have created that the TVDB uses to grant you API access. Each project has an *API key*, the *project name*, and *project website*. A hopefully illuminating screen shot is shown in :numref:`tvdb_step03_apikeys_generated`.
+3. This will send you to the API keys web page for your account. On the top, you will see two labels showing your **username**, and an **unique ID** that the TVDB assigns to you. A hopefully illuminating screen shot is shown in :numref:`tvdb_step03_apikeys_generated`.
 
 .. _tvdb_step03_apikeys_generated:
 
 .. figure:: howdy-config-services-figures/tvdb_step03_apikeys_generated.png
-  :width: 100%
-  :align: center
+   :width: 100%
+   :align: left
+
+   In the middle section is a table showing the API keys you have created, if any. Each row is a project you have created that the TVDB uses to grant you API access. Each project has an *API key*, the *project name*, and *project website*.
 
 4. Generate an API key by defining a *project name*, *project website*, and then click on the *Generate API key* button, as shown in :numref:`tvdb_step04_apikeys_generate`.
 
 .. _tvdb_step04_apikeys_generate:
 
 .. figure:: howdy-config-services-figures/tvdb_step04_apikeys_generate.png
-  :width: 100%
-  :align: center
+   :width: 100%
+   :align: left
 
-Make sure to record the TVDB_ *project name*, *API key*, and *unique ID*.
+   Make sure to record the TVDB_ *project name*, *API key*, and *unique ID*.
 
 The final information one programmatically sends to the TVDB service, through REST commands, is represented by the following JSON data.
 
 .. code-block:: python
 
-  {
-    "apikey":  "XXXXXXX",
-    "username": "YYYYYY",
-    "userkey":  "ZZZZZZ"
-   }
+   {
+     "apikey":  "XXXXXXX",
+     "username": "YYYYYY",
+     "userkey":  "ZZZZZZ"
+    }
 
 The Imgur API
 ^^^^^^^^^^^^^^^
@@ -108,23 +110,29 @@ Here are the steps used to get working Imgur API access using the :ref:`howdy_co
 
 .. figure:: howdy-config-services-figures/imgur_step02_getclientsecret.png
    :width: 100%
-   :align: center
+   :align: left
+
+   Generate the secret on the Imgur_\ 's application web page.
 
 3. Then record the client ID and client secret, which will be used in ``howdy_config_gui``. Here is a screen shot.
 
 .. _imgur_step03_clientsecret:
 .. figure:: howdy-config-services-figures/imgur_step03_clientsecret.png
    :width: 100%
-   :align: center
+   :align: left
+
+   The Imgur_ client secret widget.
 
 4. Launch ``howdy_config_gui``, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC*. Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. Here is a screen shot.
 
 .. _imgur_step04_credentials:
 
 .. figure:: howdy-config-services-figures/imgur_step04_credentials.png
-  :width: 100%
-  :align: center
+   :width: 100%
+   :align: left
 
+   Click on *Plex config credentials*.
+  
 5. Fill in the Imgur client ID and Imgur client secret as shown in :numref:`imgur_step03_clientsecret` and then press the *REFRESH CLIENT* button. Here is a screen shot.
 
 .. _imgur_step05_authorizeaccount:
@@ -139,13 +147,17 @@ Here are the steps used to get working Imgur API access using the :ref:`howdy_co
 
 .. figure:: howdy-config-services-figures/imgur_step06a_launchedURL.png
    :width: 100%
-   :align: center
+   :align: left
+
+   This is the full URL in the browser's tab.
 
 .. _imgur_step06b_copyURLdialog:
 
 .. figure:: howdy-config-services-figures/imgur_step06b_copyURLdialog.png
    :width: 100%
-   :align: center
+   :align: left
+
+   Copy the full URL in :numref:`imgur_step06a_launchedURL` into the Imgur_ configuration URL dialog.
 
 7. This **should** work -- the *Plex config credentials* widget should show **WORKING** under the Imgur_ settings panel. If this does not work, then close the Imgur URL dialog in :numref:`imgur_step06b_copyURLdialog` with the ``Esc`` key, and generate a new client secret as shown in :numref:`imgur_step02_getclientsecret`, and repeat until you are able to generate good Imgur_ client credentials.
 
@@ -252,7 +264,7 @@ We set up `Google <https://www.google.com>`_ services that use `YouTube <https:/
 
 Since these are all Google services, a single tool sets all of them up given a single Google account using Google's OAuth2_ authentication mechanism. The easiest way to do this is through the :ref:`howdy_config_gui executable <howdy_config_gui_label>`, which is part of Howdy.
 
-1. Launch :ref:`howdy_config_gui <howdy_config_gui_label>`, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC* (see :numref:`howdy_config_gui_serviceswidget`). Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. These instructions are the same as in :ref:`step 4 <imgur_step04_credentials>` in :numref:`The Imgur API` and in :numref:`imgur_step04_credentials`, which we reproduce here.
+1. Launch :ref:`howdy_config_gui <howdy_config_gui_label>`, which starts with a three row table: *LOGIN*, *CREDENTIALS*, and *MUSIC* (see :numref:`howdy_config_gui_serviceswidget`). Right click on the *CREDENTIALS* row to launch a context menu with a single item, *Plex config credentials*. Click on *Plex config credentials*. These instructions are the same as in :ref:`step 4 <imgur_step04_credentials>` in :numref:`The Imgur API` and in :ref:`step 4 <imgur_step04_credentials>`, which we reproduce here.
 
 .. figure:: howdy-config-services-figures/google_step01_credentials.png
   :width: 100%
@@ -261,52 +273,63 @@ Since these are all Google services, a single tool sets all of them up given a s
 2. A *PLEX CREDENTIALS CONFIGURATION* widget will open. Click on the *CLIENT REFRESH* button in the Google section of this widget. Here is a screen shot.
 
 .. _google_step02_refreshcredentials:
-
 .. figure:: howdy-config-services-figures/google_step02_refreshcredentials.png
-  :width: 100%
-  :align: center
+   :width: 800
+   :align: left
+
+   Refresh Google credentials.
 
 3. A browser window in your default internet browser will launch, asking you to authorize access to a Google account. Here is the first screen shot.
 
 .. _google_step03_authorizeaccount:
 
 .. figure:: howdy-config-services-figures/google_step03_authorizeaccount.png
-  :width: 100%
-  :align: center
+   :width: 100%
+   :align: left
+
+   First authorize your Google account.
 
 4. Also, a new dialog widget will open asking you to put in an OAuth2_ token string once you have given permission. Here is the second screen shot.
 
 .. _google_step04_oauthtokenstring:
 
 .. figure:: howdy-config-services-figures/google_step04_oauthtokenstring.png
-  :width: 600
-  :align: center
+   :width: 800
+   :align: left
+
+   Next copy and paste in your Oauth2_ token string.
 
 5. In :ref:`step 3 <google_step03_authorizeaccount>`, when you choose a Google account, currently you will be redirected to a scary browser page that says "this app isn't verified". It isn't, but the services still work. If you use Google Chrome or derived browser, click on the *Show Advanced* toggling link. Then click on *Go to Project Default Service Account (unsafe)* to go forward. Here is a screen shot.
 
 .. _google_step05_scaryscreen:
 
 .. figure:: howdy-config-services-figures/google_step05_scaryscreen.png
-  :width: 100%
-  :align: center
+   :width: 100%
+   :align: left
+
+   The *very* scary screen that Google spits out, saying your app is **not** verified.
 
 6. Howdy asks for six different Google authorizations. Click on the *Allow* button.
 
 .. _google_step06_allowbutton:
 
 .. figure:: howdy-config-services-figures/google_step06_allowbutton.png
-  :width: 100%
-  :align: center
+   :width: 800
+   :align: left
+
+   Allow Howdy to access these *six* Google APIs through your Google account.
 
 7. The final browser window shows a text box with the OAuth2_ token string. Copy that string into the GUI dialog widget in :ref:`step 4 <google_step04_oauthtokenstring>`, and press return on the text box in that widget.
 
 .. _google_step07_oauthtokencopy:
 
 .. figure:: howdy-config-services-figures/google_step07_oauthtokencopy.png
-  :width: 100%
-  :align: center
+   :width: 800
+   :align: left
 
-If all goes well, then all the Google services needed by Howdy will have been authorized.
+   Copy this string into the GUI dialog widget in :ref:`step 4 <google_step04_oauthtokenstring>`.
+	   
+If all goes well, then you will have authorized all the Google services needed by Howdy.
 
 .. _OAuth2: https://en.wikipedia.org/wiki/OAuth#OAuth_2.0
 .. _unofficial_google_music_api: https://unofficial-google-music-api.readthedocs.io/en/latest

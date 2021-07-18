@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>8.4. Howdy Email API &mdash; howdy! 1.35-28-g889838b documentation</title>
+  <title>8.4. Howdy Email API &mdash; howdy! 1.35-32-g72f22a5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -31,10 +33,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -188,8 +191,8 @@
 <h2><span class="section-number">8.4.1. </span>howdy.email module<a class="headerlink" href="#howdy-email-module" title="Permalink to this headline">¶</a></h2>
 <p>This contains the lowest level methods to send email using either the <a class="reference external" href="https://developers.google.com/contacts/v3">Google Contacts API</a> or through Python’s <a class="reference external" href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMTP</span></code></a> functionality, and to find the Google contact names of friend emails on the <a class="reference external" href="https://plex.tv">Plex</a> server. <a class="reference internal" href="#howdy.email.HowdyIMGClient" title="howdy.email.HowdyIMGClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">HowdyIMGClient</span></code></a> and <a class="reference internal" href="#howdy.email.PNGPicObject" title="howdy.email.PNGPicObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">PNGPicObject</span></code></a> allow one to add or remove images from one’s <a class="reference external" href="https://imgur.com">Imgur</a> acount.</p>
 <span class="target" id="module-howdy.email"></span><dl class="py class">
-<dt id="howdy.email.HowdyIMGClient">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.email.</code><code class="sig-name descname">HowdyIMGClient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">data_imgurl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.HowdyIMGClient">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.email.</span></span><span class="sig-name descname"><span class="pre">HowdyIMGClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_imgurl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>This object contains and implements the collection of images located in a single main album in the <a class="reference external" href="https://imgur.com">Imgur</a> account. This uses the <a class="reference external" href="https://imgur.com">Imgur</a> API to peform all operations. This object is constructed using <a class="reference external" href="https://imgur.com">Imgur</a> credentials – the client ID, secret, and refresh token – stored in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database, and stores the following attributes: the client ID, secret, refresh token, and the <em>access token</em> used for API access to your <a class="reference external" href="https://imgur.com">Imgur</a> album and images.</p>
 <p>If the <a class="reference external" href="https://imgur.com">Imgur</a> albums cannot be accessed, or there are no albums, then <code class="docutils literal notranslate"><span class="pre">self.albumID</span> <span class="pre">=</span> <span class="pre">None</span></code>, the <code class="docutils literal notranslate"><span class="pre">self.imgHashes</span></code> is an empty <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.</p>
 <p>The main album ID is stored as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> in the <a class="reference external" href="https://imgur.com">Imgur</a> configuration under the <code class="docutils literal notranslate"><span class="pre">mainALBUMID</span></code> key, if it exists; otherwise the <a class="reference external" href="https://imgur.com">Imgur</a> configuration dictionary does not have a <code class="docutils literal notranslate"><span class="pre">mainALBUMID</span></code> key.</p>
@@ -228,8 +231,8 @@
 <p><a class="reference internal" href="#howdy.email.HowdyIMGClient.refreshImages" title="howdy.email.HowdyIMGClient.refreshImages"><code class="xref py py-meth docutils literal notranslate"><span class="pre">refreshImages</span></code></a>.</p>
 </div>
 <dl class="py method">
-<dt id="howdy.email.HowdyIMGClient.change_album_name">
-<code class="sig-name descname">change_album_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_album_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.change_album_name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.HowdyIMGClient.change_album_name">
+<span class="sig-name descname"><span class="pre">change_album_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.change_album_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Changes the main album name to a new name, only if the new name is different from the old name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -243,8 +246,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.HowdyIMGClient.change_name">
-<code class="sig-name descname">change_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">imgMD5</span></em>, <em class="sig-param"><span class="n">new_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.change_name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.HowdyIMGClient.change_name">
+<span class="sig-name descname"><span class="pre">change_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgMD5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.change_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Changes the name of an image in the main <a class="reference external" href="https://imgur.com">Imgur</a> library.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -270,8 +273,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.HowdyIMGClient.delete_candidate_album">
-<code class="sig-name descname">delete_candidate_album</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candidate_album_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.delete_candidate_album" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.HowdyIMGClient.delete_candidate_album">
+<span class="sig-name descname"><span class="pre">delete_candidate_album</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">candidate_album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.delete_candidate_album" title="Permalink to this definition">¶</a></dt>
 <dd><p>This deletes the candidate album from the <a class="reference external" href="https://imgur.com">Imgur</a> account. This album with that name must exist in the <a class="reference external" href="https://imgur.com">Imgur</a> account.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -285,8 +288,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.HowdyIMGClient.delete_image">
-<code class="sig-name descname">delete_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">b64img</span></em>, <em class="sig-param"><span class="n">imgMD5</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.delete_image" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.HowdyIMGClient.delete_image">
+<span class="sig-name descname"><span class="pre">delete_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b64img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imgMD5</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.delete_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes an image from the main <a class="reference external" href="https://imgur.com">Imgur</a> library.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -312,8 +315,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.HowdyIMGClient.get_candidate_album_names">
-<code class="sig-name descname">get_candidate_album_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.get_candidate_album_names" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.HowdyIMGClient.get_candidate_album_names">
+<span class="sig-name descname"><span class="pre">get_candidate_album_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.get_candidate_album_names" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of album names in the <a class="reference external" href="https://imgur.com">Imgur</a> account. <code class="xref py py-meth docutils literal notranslate"><span class="pre">set_main_album</span></code> can use this method to determine the valid album name to choose.</p>
@@ -326,8 +329,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.HowdyIMGClient.get_candidate_albums">
-<code class="sig-name descname">get_candidate_albums</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.get_candidate_albums" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.HowdyIMGClient.get_candidate_albums">
+<span class="sig-name descname"><span class="pre">get_candidate_albums</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.get_candidate_albums" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of album information, organized by album name. Each key in the top-level dictionary is the album name. Each value is a lower level dictionary: the <code class="docutils literal notranslate"><span class="pre">id</span></code> key is the album ID, and the <code class="docutils literal notranslate"><span class="pre">images</span></code> key is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of low-level <a class="reference external" href="https://imgur.com">Imgur</a> image information.</p>
@@ -336,21 +339,21 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.HowdyIMGClient.get_image_md5">
-<em class="property">classmethod </em><code class="sig-name descname">get_image_md5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.get_image_md5" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.HowdyIMGClient.get_image_md5">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">get_image_md5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.get_image_md5" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the <a class="reference external" href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash of the image.</p>
 </dd>
 <dt class="field-even">Parameters</dt>
-<dd class="field-even"><p><strong>image</strong> (<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/plugins.html#PIL.PngImagePlugin.PngImageFile" title="(in Pillow (PIL Fork) v8.1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PngImageFile</span></code></a>) – the native Pillow PNG image object.</p>
+<dd class="field-even"><p><strong>image</strong> (<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/plugins.html#PIL.PngImagePlugin.PngImageFile" title="(in Pillow (PIL Fork) v8.3.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PngImageFile</span></code></a>) – the native Pillow PNG image object.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.HowdyIMGClient.get_main_album_name">
-<code class="sig-name descname">get_main_album_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.get_main_album_name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.HowdyIMGClient.get_main_album_name">
+<span class="sig-name descname"><span class="pre">get_main_album_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.get_main_album_name" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the name of the main <a class="reference external" href="https://imgur.com">Imgur</a> album, if albums exist on this account. Otherwise returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
@@ -362,8 +365,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.HowdyIMGClient.refreshImages">
-<code class="sig-name descname">refreshImages</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.refreshImages" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.HowdyIMGClient.refreshImages">
+<span class="sig-name descname"><span class="pre">refreshImages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.refreshImages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Refreshes the collection of images in the main <a class="reference external" href="https://imgur.com">Imgur</a> album, by filling out <code class="docutils literal notranslate"><span class="pre">self.imghashes</span></code>. The pictures in an album in our <a class="reference external" href="https://imgur.com">Imgur</a> account are expected to be filled through methods in this object.</p>
 <ul class="simple">
 <li><p>The key is the <a class="reference external" href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash of the image in that library.</p></li>
@@ -372,8 +375,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.HowdyIMGClient.set_main_album">
-<code class="sig-name descname">set_main_album</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_album_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.set_main_album" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.HowdyIMGClient.set_main_album">
+<span class="sig-name descname"><span class="pre">set_main_album</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.set_main_album" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets or changes the main <a class="reference external" href="https://imgur.com">Imgur</a> album used for storing and displaying images to a new album name. If <code class="docutils literal notranslate"><span class="pre">new_album_name</span></code> exists in the <a class="reference external" href="https://imgur.com">Imgur</a> account, then sets that name. If <code class="docutils literal notranslate"><span class="pre">new_album_name</span></code> does not exist, then creates this new <a class="reference external" href="https://imgur.com">Imgur</a> album.</p>
 <p>Once this album is set or created,</p>
 <ul class="simple">
@@ -395,8 +398,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.HowdyIMGClient.upload_image">
-<code class="sig-name descname">upload_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">b64img</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">imgMD5</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.upload_image" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.HowdyIMGClient.upload_image">
+<span class="sig-name descname"><span class="pre">upload_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b64img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imgMD5</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.upload_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uploads a <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> encoded file into the main <a class="reference external" href="https://imgur.com">Imgur</a> album. If the image exists, then returns information (from <code class="docutils literal notranslate"><span class="pre">self.imghashes</span></code>) about the file. If not, create it, put it into <code class="docutils literal notranslate"><span class="pre">self.imghashes</span></code>, and then return its information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -426,8 +429,8 @@
 </dd></dl>
 
 <dl class="py class">
-<dt id="howdy.email.PNGPicObject">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.email.</code><code class="sig-name descname">PNGPicObject</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initdata</span></em>, <em class="sig-param"><span class="n">pImgClient</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.PNGPicObject" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.PNGPicObject">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.email.</span></span><span class="sig-name descname"><span class="pre">PNGPicObject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pImgClient</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.PNGPicObject" title="Permalink to this definition">¶</a></dt>
 <dd><p>This provides a GUI widget to the <a class="reference external" href="https://imgur.com">Imgur</a> interface implemented in <a class="reference internal" href="#howdy.email.HowdyIMGClient" title="howdy.email.HowdyIMGClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexIMGClient</span></code></a>. Initializaton of the image can either upload this image to the <a class="reference external" href="https://imgur.com">Imgur</a> account, or retrieve the image from the main <a class="reference external" href="https://imgur.com">Imgur</a> album. This object can also launch a GUI dialog window through <a class="reference internal" href="#howdy.email.PNGPicObject.getInfoGUI" title="howdy.email.PNGPicObject.getInfoGUI"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getInfoGUI</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -466,8 +469,8 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt id="howdy.email.PNGPicObject.b64String">
-<code class="sig-name descname">b64String</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.PNGPicObject.b64String" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.PNGPicObject.b64String">
+<span class="sig-name descname"><span class="pre">b64String</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.PNGPicObject.b64String" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>a 3-element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> on the image incorporated into this object: its <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> string, its width in pixels, and the <a class="reference external" href="https://imgur.com">Imgur</a> link.</p>
@@ -479,8 +482,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.PNGPicObject.changeName">
-<code class="sig-name descname">changeName</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_name</span></em>, <em class="sig-param"><span class="n">hImgClient</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.PNGPicObject.changeName" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.PNGPicObject.changeName">
+<span class="sig-name descname"><span class="pre">changeName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hImgClient</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.PNGPicObject.changeName" title="Permalink to this definition">¶</a></dt>
 <dd><p>changes the filename into a new name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -493,8 +496,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.PNGPicObject.createPNGPicObjects">
-<em class="property">classmethod </em><code class="sig-name descname">createPNGPicObjects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pImgClient</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.PNGPicObject.createPNGPicObjects" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.PNGPicObject.createPNGPicObjects">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">createPNGPicObjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pImgClient</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.PNGPicObject.createPNGPicObjects" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>pImgClient</strong> (<em>PlexIMGClient</em>) – the <a class="reference internal" href="#howdy.email.HowdyIMGClient" title="howdy.email.HowdyIMGClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexIMGClient</span></code></a> used to access and manipulate (add, delete, rename) images in the main <a class="reference external" href="https://imgur.com">Imgur</a> album.</p>
@@ -509,8 +512,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.email.PNGPicObject.getInfoGUI">
-<code class="sig-name descname">getInfoGUI</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.PNGPicObject.getInfoGUI" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.PNGPicObject.getInfoGUI">
+<span class="sig-name descname"><span class="pre">getInfoGUI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.PNGPicObject.getInfoGUI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Launches a <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qdialog.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></a> that contains the underlying image and some other labels: <code class="docutils literal notranslate"><span class="pre">ACTNAME</span></code> is the actual PNG file name, <code class="docutils literal notranslate"><span class="pre">URL</span></code> is the image’s <a class="reference external" href="https://imgur.com">Imgur</a> link, and <code class="docutils literal notranslate"><span class="pre">UPLOADED</span> <span class="pre">AT</span></code> is the date and time at which the file was uploaded. An example image is shown below,</p>
 <div class="figure align-left" id="id5">
 <a class="reference internal image-reference" href="../_images/email_pngpicobject_infogui.png"><img alt="../_images/email_pngpicobject_infogui.png" src="../_images/email_pngpicobject_infogui.png" style="width: 100%;" /></a>
@@ -526,8 +529,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.get_all_email_contacts_dict">
-<code class="sig-prename descclassname">howdy.email.</code><code class="sig-name descname">get_all_email_contacts_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">pagesize</span><span class="o">=</span><span class="default_value">4000</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.get_all_email_contacts_dict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.get_all_email_contacts_dict">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.</span></span><span class="sig-name descname"><span class="pre">get_all_email_contacts_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pagesize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.get_all_email_contacts_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns <em>all</em> the Google contacts using the <a class="reference external" href="https://developers.google.com/contacts/v3">Google Contacts API</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -546,8 +549,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.get_email_contacts_dict">
-<code class="sig-prename descclassname">howdy.email.</code><code class="sig-name descname">get_email_contacts_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">emailList</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.get_email_contacts_dict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.get_email_contacts_dict">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.</span></span><span class="sig-name descname"><span class="pre">get_email_contacts_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emailList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.get_email_contacts_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the Google contacts given a set of emails, all using the <a class="reference external" href="https://developers.google.com/contacts/v3">Google Contacts API</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -570,8 +573,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.get_email_service">
-<code class="sig-prename descclassname">howdy.email.</code><code class="sig-name descname">get_email_service</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.get_email_service" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.get_email_service">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.</span></span><span class="sig-name descname"><span class="pre">get_email_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.get_email_service" title="Permalink to this definition">¶</a></dt>
 <dd><p>This returns a working <code class="xref py py-class docutils literal notranslate"><span class="pre">Resource</span></code> representing the Google email service used to send and receive emails.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -587,8 +590,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.send_email_localsmtp">
-<code class="sig-prename descclassname">howdy.email.</code><code class="sig-name descname">send_email_localsmtp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.send_email_localsmtp" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.send_email_localsmtp">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.</span></span><span class="sig-name descname"><span class="pre">send_email_localsmtp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.send_email_localsmtp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends the email using the <a class="reference external" href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMTP</span></code></a> Python functionality to send through a local <a class="reference external" href="https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol">SMTP</a> server. <a class="reference external" href="https://tanimislamblog.wordpress.com/2018/11/19/sendmail-relay-setup-and-implementation">This blog post</a> describes how I set up a GMail relay using my local <a class="reference external" href="https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol">SMTP</a> server on my <a class="reference external" href="https://www.ubuntu.com">Ubuntu</a> machine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -598,8 +601,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.send_email_lowlevel">
-<code class="sig-prename descclassname">howdy.email.</code><code class="sig-name descname">send_email_lowlevel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="n">email_service</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.send_email_lowlevel" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.send_email_lowlevel">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.</span></span><span class="sig-name descname"><span class="pre">send_email_lowlevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email_service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.send_email_lowlevel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends out an email using the <a class="reference external" href="https://developers.google.com/contacts/v3">Google Contacts API</a>. If process is unsuccessfull, prints out an error message, <code class="docutils literal notranslate"><span class="pre">&quot;problem</span> <span class="pre">with</span> <span class="pre">&lt;TO-EMAIL&gt;&quot;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;TO-EMAIL&gt;</span></code> is the recipient’s email address.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -621,8 +624,8 @@
 <h2><span class="section-number">8.4.2. </span>howdy.email.email module<a class="headerlink" href="#howdy-email-email-module" title="Permalink to this headline">¶</a></h2>
 <p>This implements the following functionality: sending emails of torrent files and magnet links; sending <code class="xref py py-class docutils literal notranslate"><span class="pre">MIMEMultiPart</span></code> newsletter or more general style emails to friends of the <a class="reference external" href="https://plex.tv">Plex</a> server; and sending general emails with attachments.</p>
 <span class="target" id="module-howdy.email.email"></span><dl class="py function">
-<dt id="howdy.email.email.get_summary_body">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">get_summary_body</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">nameSection</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'http://localhost:32400'</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.get_summary_body" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.get_summary_body">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">get_summary_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nameSection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.get_summary_body" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the summary body of the <a class="reference external" href="https://plex.tv">Plex</a> newsletter email as a <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> string document, for the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -651,8 +654,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.get_summary_data_movies_remote">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">get_summary_data_movies_remote</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'http://localhost:32400'</span></em>, <em class="sig-param"><span class="n">sinceDate</span><span class="o">=</span><span class="default_value">datetime.date(2020, 1, 1)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.get_summary_data_movies_remote" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.get_summary_data_movies_remote">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">get_summary_data_movies_remote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sinceDate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.date(2020,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.get_summary_data_movies_remote" title="Permalink to this definition">¶</a></dt>
 <dd><p>This returns summary information on movie media from all movie libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server, for use as part of the <a class="reference external" href="https://plex.tv">Plex</a> newsletter sent out to one’s <a class="reference external" href="https://plex.tv">Plex</a> server friends. The email first summarizes ALL the movie data, and then summarizes the movie data uploaded and processed since the last newsletter’s date. Unlike <a class="reference internal" href="#howdy.email.email.get_summary_data_music_remote" title="howdy.email.email.get_summary_data_music_remote"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_summary_data_music_remote</span></code></a> and <a class="reference internal" href="#howdy.email.email.get_summary_data_television_remote" title="howdy.email.email.get_summary_data_television_remote"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_summary_data_television_remote</span></code></a>, this returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of strings rather than a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -675,8 +678,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.get_summary_data_music_remote">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">get_summary_data_music_remote</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'http://localhost:32400'</span></em>, <em class="sig-param"><span class="n">sinceDate</span><span class="o">=</span><span class="default_value">datetime.date(2020, 1, 1)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.get_summary_data_music_remote" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.get_summary_data_music_remote">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">get_summary_data_music_remote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sinceDate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.date(2020,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.get_summary_data_music_remote" title="Permalink to this definition">¶</a></dt>
 <dd><p>This returns summary information on songs from all music libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server, for use as part of the <a class="reference external" href="https://plex.tv">Plex</a> newsletter sent out to one’s <a class="reference external" href="https://plex.tv">Plex</a> server friends. The email first summarizes ALL the music data, and then summarizes the music data uploaded and processed since a previous date. For example,</p>
 <blockquote>
 <div><p>As of December 29, 2020, there are 17,853 songs made by 889 artists in 1,764 albums. The total size of music media is 306.979 GB. The total duration of music media is 7 months, 18 days, 15 hours, 8 minutes, and 15.785 seconds.</p>
@@ -704,8 +707,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.get_summary_data_television_remote">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">get_summary_data_television_remote</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'http://localhost:32400'</span></em>, <em class="sig-param"><span class="n">sinceDate</span><span class="o">=</span><span class="default_value">datetime.date(2020, 1, 1)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.get_summary_data_television_remote" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.get_summary_data_television_remote">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">get_summary_data_television_remote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sinceDate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.date(2020,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.get_summary_data_television_remote" title="Permalink to this definition">¶</a></dt>
 <dd><p>This returns summary information on TV media from all television libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server, for use as part of the <a class="reference external" href="https://plex.tv">Plex</a> newsletter sent out to one’s <a class="reference external" href="https://plex.tv">Plex</a> server friends. The email first summarizes ALL the TV data, and then summarizes the TV data uploaded and processed since a previous date. For example,</p>
 <blockquote>
 <div><p>As of December 29, 2020, there are 25,195 TV episodes in 298 TV shows. The total size of TV media is 6.690 TB. The total duration of TV media is 1 year, 5 months, 19 days, 9 hours, 29 minutes, and 13.919 seconds.</p>
@@ -733,8 +736,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.get_summary_html">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">get_summary_html</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'http://localhost:32400'</span></em>, <em class="sig-param"><span class="n">preambleText</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">postambleText</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.get_summary_html" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.get_summary_html">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">get_summary_html</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preambleText</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postambleText</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.get_summary_html" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a <a class="reference external" href="https://plex.tv">Plex</a> newsletter summary HTML email of the media on the <a class="reference external" href="https://plex.tv">Plex</a> server. Used by the email GUI to send out summary emails.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -760,8 +763,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.send_collective_email_full">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">send_collective_email_full</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mainHTML</span></em>, <em class="sig-param"><span class="n">subject</span></em>, <em class="sig-param"><span class="n">fromEmail</span></em>, <em class="sig-param"><span class="n">to_emails</span></em>, <em class="sig-param"><span class="n">cc_emails</span></em>, <em class="sig-param"><span class="n">bcc_emails</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">email_service</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_collective_email_full" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.send_collective_email_full">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">send_collective_email_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mainHTML</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromEmail</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_emails</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cc_emails</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bcc_emails</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email_service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_collective_email_full" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends the HTML email to the following <code class="docutils literal notranslate"><span class="pre">TO</span></code> recipients, <code class="docutils literal notranslate"><span class="pre">CC</span></code> recipients, and <code class="docutils literal notranslate"><span class="pre">BCC</span></code> recipients altogether. It uses the <a class="reference external" href="https://developers.google.com/gmail/api">GMail API</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -780,8 +783,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.send_email_movie_none">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">send_email_movie_none</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">movieName</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_email_movie_none" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.send_email_movie_none">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">send_email_movie_none</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">movieName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_email_movie_none" title="Permalink to this definition">¶</a></dt>
 <dd><p>Request an individual movie from the <a class="reference external" href="https://plex.tv">Plex</a> server’s administrator, using the <a class="reference external" href="https://developers.google.com/gmail/api">GMail API</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -803,8 +806,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.send_email_movie_torrent">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">send_email_movie_torrent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">movieName</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">isJackett</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_email_movie_torrent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.send_email_movie_torrent">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">send_email_movie_torrent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">movieName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isJackett</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_email_movie_torrent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends an individual torrent file or magnet link to the <a class="reference external" href="https://plex.tv">Plex</a> user’s email, using the <a class="reference external" href="https://developers.google.com/gmail/api">GMail API</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -828,8 +831,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.send_individual_email">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">send_individual_email</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mainHTML</span></em>, <em class="sig-param"><span class="n">email</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mydate</span><span class="o">=</span><span class="default_value">datetime.date(2021, 1, 31)</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">email_service</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.send_individual_email">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">send_individual_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mainHTML</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mydate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.date(2021,</span> <span class="pre">7,</span> <span class="pre">18)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email_service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email" title="Permalink to this definition">¶</a></dt>
 <dd><p>sends the HTML email to a single recipient email address using the <a class="reference external" href="https://developers.google.com/gmail/api">GMail API</a>. The subject is <code class="docutils literal notranslate"><span class="pre">&quot;Plex</span> <span class="pre">Email</span> <span class="pre">Newsletter</span> <span class="pre">for</span> <span class="pre">&lt;MONTH&gt;</span> <span class="pre">&lt;YEAR&gt;&quot;</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -849,8 +852,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.send_individual_email_full">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">send_individual_email_full</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mainHTML</span></em>, <em class="sig-param"><span class="n">subject</span></em>, <em class="sig-param"><span class="n">emailAddress</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">attach</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">attachName</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">attachType</span><span class="o">=</span><span class="default_value">'txt'</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">email_service</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email_full" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.send_individual_email_full">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">send_individual_email_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mainHTML</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emailAddress</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attach</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'txt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email_service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email_full" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends the HTML email, with optional <em>single</em> attachment, to a single recipient email address, using the <a class="reference external" href="https://developers.google.com/gmail/api">GMail API</a>. Unlike <a class="reference internal" href="#howdy.email.email.send_individual_email_full_withsingleattach" title="howdy.email.email.send_individual_email_full_withsingleattach"><code class="xref py py-meth docutils literal notranslate"><span class="pre">send_individual_email_full_withsingleattach</span></code></a>, the attachment type is <em>also</em> set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -874,8 +877,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.send_individual_email_full_withattachs">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">send_individual_email_full_withattachs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mainHTML</span></em>, <em class="sig-param"><span class="n">subject</span></em>, <em class="sig-param"><span class="n">email</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">attachNames</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">attachDatas</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email_full_withattachs" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.send_individual_email_full_withattachs">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">send_individual_email_full_withattachs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mainHTML</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachDatas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email_full_withattachs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends the HTML email, with optional attachments, to a single recipient email address. This uses the <a class="reference external" href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMTP</span></code></a> Python functionality to send through a local <a class="reference external" href="https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol">SMTP</a> server (see <a class="reference internal" href="#howdy.email.send_email_localsmtp" title="howdy.email.send_email_localsmtp"><code class="xref py py-meth docutils literal notranslate"><span class="pre">send_email_localsmtp</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -896,8 +899,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.send_individual_email_full_withsingleattach">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">send_individual_email_full_withsingleattach</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mainHTML</span></em>, <em class="sig-param"><span class="n">subject</span></em>, <em class="sig-param"><span class="n">email</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">attachData</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">attachName</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">email_service</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email_full_withsingleattach" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.send_individual_email_full_withsingleattach">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">send_individual_email_full_withsingleattach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mainHTML</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachData</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email_service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email_full_withsingleattach" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends the HTML email, with optional <em>single</em> attachment, to a single recipient email address, using the <a class="reference external" href="https://developers.google.com/gmail/api">GMail API</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -920,8 +923,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.send_individual_email_perproc">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">send_individual_email_perproc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_tuple</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email_perproc" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.send_individual_email_perproc">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">send_individual_email_perproc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email_perproc" title="Permalink to this definition">¶</a></dt>
 <dd><p>A tuple-ized version of <a class="reference internal" href="#howdy.email.email.send_individual_email" title="howdy.email.email.send_individual_email"><code class="xref py py-meth docutils literal notranslate"><span class="pre">send_individual_email</span></code></a> used by the <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> module to send out emails.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -935,8 +938,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.email.email.test_email">
-<code class="sig-prename descclassname">howdy.email.email.</code><code class="sig-name descname">test_email</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">subject</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">htmlstring</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.test_email" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.email.email.test_email">
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">test_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">htmlstring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.test_email" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends a test email to the <a class="reference external" href="https://plex.tv">Plex</a> user’s email address.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

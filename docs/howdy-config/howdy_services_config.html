@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>2.1. Howdy Services Configuration &mdash; howdy! 1.35-28-g889838b documentation</title>
+  <title>2.1. Howdy Services Configuration &mdash; howdy! 1.35-32-g72f22a5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -31,10 +33,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -236,18 +238,19 @@
 <p class="caption"><span class="caption-number">Fig. 2.2 </span><span class="caption-text">How to get <a class="reference external" href="https://www.thetvdb.com">TVDB</a> API access.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple" start="3">
-<li><p>This will send you to the API keys web page for your account. On the top, you will see two labels showing your <strong>username</strong>, and an <strong>unique ID</strong> that the TVDB asigns to you. In the middle section is a table showing the API keys you have created, if any. Each row is a project you have created that the TVDB uses to grant you API access. Each project has an <em>API key</em>, the <em>project name</em>, and <em>project website</em>. A hopefully illuminating screen shot is shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">tvdb_step03_apikeys_generated</span></code>.</p></li>
+<li><p>This will send you to the API keys web page for your account. On the top, you will see two labels showing your <strong>username</strong>, and an <strong>unique ID</strong> that the TVDB assigns to you. A hopefully illuminating screen shot is shown in <a class="reference internal" href="#tvdb-step03-apikeys-generated"><span class="std std-numref">Fig. 2.3</span></a>.</p></li>
 </ol>
-<div class="figure align-center" id="tvdb-step03-apikeys-generated">
-<a class="reference internal image-reference" href="../_images/tvdb_step03_apikeys_generated.png"><img alt="../_images/tvdb_step03_apikeys_generated.png" src="../_images/tvdb_step03_apikeys_generated.png" style="width: 100%;" /></a>
+<div class="figure align-left" id="id6">
+<span id="tvdb-step03-apikeys-generated"></span><a class="reference internal image-reference" href="../_images/tvdb_step03_apikeys_generated.png"><img alt="../_images/tvdb_step03_apikeys_generated.png" src="../_images/tvdb_step03_apikeys_generated.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.3 </span><span class="caption-text">In the middle section is a table showing the API keys you have created, if any. Each row is a project you have created that the TVDB uses to grant you API access. Each project has an <em>API key</em>, the <em>project name</em>, and <em>project website</em>.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple" start="4">
-<li><p>Generate an API key by defining a <em>project name</em>, <em>project website</em>, and then click on the <em>Generate API key</em> button, as shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">tvdb_step04_apikeys_generate</span></code>.</p></li>
+<li><p>Generate an API key by defining a <em>project name</em>, <em>project website</em>, and then click on the <em>Generate API key</em> button, as shown in <a class="reference internal" href="#tvdb-step04-apikeys-generate"><span class="std std-numref">Fig. 2.4</span></a>.</p></li>
 </ol>
-<div class="figure align-center" id="tvdb-step04-apikeys-generate">
-<a class="reference internal image-reference" href="../_images/tvdb_step04_apikeys_generate.png"><img alt="../_images/tvdb_step04_apikeys_generate.png" src="../_images/tvdb_step04_apikeys_generate.png" style="width: 100%;" /></a>
+<div class="figure align-left" id="id7">
+<span id="tvdb-step04-apikeys-generate"></span><a class="reference internal image-reference" href="../_images/tvdb_step04_apikeys_generate.png"><img alt="../_images/tvdb_step04_apikeys_generate.png" src="../_images/tvdb_step04_apikeys_generate.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.4 </span><span class="caption-text">Make sure to record the <a class="reference external" href="https://www.thetvdb.com">TVDB</a> <em>project name</em>, <em>API key</em>, and <em>unique ID</em>.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </div>
-<p>Make sure to record the <a class="reference external" href="https://www.thetvdb.com">TVDB</a> <em>project name</em>, <em>API key</em>, and <em>unique ID</em>.</p>
 <p>The final information one programmatically sends to the TVDB service, through REST commands, is represented by the following JSON data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;apikey&quot;</span><span class="p">:</span>  <span class="s2">&quot;XXXXXXX&quot;</span><span class="p">,</span>
@@ -272,38 +275,43 @@
 <ol class="arabic simple" start="2">
 <li><p>Now go to your <a class="reference external" href="https://imgur.com/account/settings/apps">Imgur application’s webpage</a> and click on the <em>generate new secret</em> to generate an application Oauth2 secret ID. Here is a screen shot.</p></li>
 </ol>
-<div class="figure align-center" id="imgur-step02-getclientsecret">
-<a class="reference internal image-reference" href="../_images/imgur_step02_getclientsecret.png"><img alt="../_images/imgur_step02_getclientsecret.png" src="../_images/imgur_step02_getclientsecret.png" style="width: 100%;" /></a>
+<div class="figure align-left" id="id8">
+<span id="imgur-step02-getclientsecret"></span><a class="reference internal image-reference" href="../_images/imgur_step02_getclientsecret.png"><img alt="../_images/imgur_step02_getclientsecret.png" src="../_images/imgur_step02_getclientsecret.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.5 </span><span class="caption-text">Generate the secret on the <a class="reference external" href="https://imgur.com">Imgur</a>‘s application web page.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple" start="3">
 <li><p>Then record the client ID and client secret, which will be used in <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code>. Here is a screen shot.</p></li>
 </ol>
-<div class="figure align-center" id="imgur-step03-clientsecret">
-<a class="reference internal image-reference" href="../_images/imgur_step03_clientsecret.png"><img alt="../_images/imgur_step03_clientsecret.png" src="../_images/imgur_step03_clientsecret.png" style="width: 100%;" /></a>
+<div class="figure align-left" id="id9">
+<span id="imgur-step03-clientsecret"></span><a class="reference internal image-reference" href="../_images/imgur_step03_clientsecret.png"><img alt="../_images/imgur_step03_clientsecret.png" src="../_images/imgur_step03_clientsecret.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.6 </span><span class="caption-text">The <a class="reference external" href="https://imgur.com">Imgur</a> client secret widget.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple" start="4">
 <li><p>Launch <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code>, which starts with a three row table: <em>LOGIN</em>, <em>CREDENTIALS</em>, and <em>MUSIC</em>. Right click on the <em>CREDENTIALS</em> row to launch a context menu with a single item, <em>Plex config credentials</em>. Click on <em>Plex config credentials</em>. Here is a screen shot.</p></li>
 </ol>
-<div class="figure align-center" id="imgur-step04-credentials">
-<a class="reference internal image-reference" href="../_images/imgur_step04_credentials.png"><img alt="../_images/imgur_step04_credentials.png" src="../_images/imgur_step04_credentials.png" style="width: 100%;" /></a>
+<div class="figure align-left" id="id10">
+<span id="imgur-step04-credentials"></span><a class="reference internal image-reference" href="../_images/imgur_step04_credentials.png"><img alt="../_images/imgur_step04_credentials.png" src="../_images/imgur_step04_credentials.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.7 </span><span class="caption-text">Click on <em>Plex config credentials</em>.</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple" start="5">
-<li><p>Fill in the Imgur client ID and Imgur client secret as shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">imgur_step03_clientsecret</span></code> and then press the <em>REFRESH CLIENT</em> button. Here is a screen shot.</p></li>
+<li><p>Fill in the Imgur client ID and Imgur client secret as shown in <a class="reference internal" href="#imgur-step03-clientsecret"><span class="std std-numref">Fig. 2.6</span></a> and then press the <em>REFRESH CLIENT</em> button. Here is a screen shot.</p></li>
 </ol>
 <div class="figure align-center" id="imgur-step05-authorizeaccount">
 <a class="reference internal image-reference" href="../_images/imgur_step05_authorizeaccount.png"><img alt="../_images/imgur_step05_authorizeaccount.png" src="../_images/imgur_step05_authorizeaccount.png" style="width: 100%;" /></a>
 </div>
 <ol class="arabic simple" start="6">
-<li><p>At this point, two things occur. First, a new web browser window (or tab, if a browser window is open) that resolves to the URL that the Imgur client must use in order to finally authenticate the client. Copy the full URL in the browser’s tab, as shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">imgur_step06a_launchedURL</span></code> into the new dialog window shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">imgur_step06b_copyURLdialog</span></code>. Press return in that dialog window.</p></li>
+<li><p>At this point, two things occur. First, a new web browser window (or tab, if a browser window is open) that resolves to the URL that the Imgur client must use in order to finally authenticate the client. Copy the full URL in the browser’s tab, as shown in <a class="reference internal" href="#imgur-step06a-launchedurl"><span class="std std-numref">Fig. 2.8</span></a> into the new dialog window shown in <a class="reference internal" href="#imgur-step06b-copyurldialog"><span class="std std-numref">Fig. 2.9</span></a>. Press return in that dialog window.</p></li>
 </ol>
-<div class="figure align-center" id="imgur-step06a-launchedurl">
-<a class="reference internal image-reference" href="../_images/imgur_step06a_launchedURL.png"><img alt="../_images/imgur_step06a_launchedURL.png" src="../_images/imgur_step06a_launchedURL.png" style="width: 100%;" /></a>
+<div class="figure align-left" id="id11">
+<span id="imgur-step06a-launchedurl"></span><a class="reference internal image-reference" href="../_images/imgur_step06a_launchedURL.png"><img alt="../_images/imgur_step06a_launchedURL.png" src="../_images/imgur_step06a_launchedURL.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.8 </span><span class="caption-text">This is the full URL in the browser’s tab.</span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
 </div>
-<div class="figure align-center" id="imgur-step06b-copyurldialog">
-<a class="reference internal image-reference" href="../_images/imgur_step06b_copyURLdialog.png"><img alt="../_images/imgur_step06b_copyURLdialog.png" src="../_images/imgur_step06b_copyURLdialog.png" style="width: 100%;" /></a>
+<div class="figure align-left" id="id12">
+<span id="imgur-step06b-copyurldialog"></span><a class="reference internal image-reference" href="../_images/imgur_step06b_copyURLdialog.png"><img alt="../_images/imgur_step06b_copyURLdialog.png" src="../_images/imgur_step06b_copyURLdialog.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.9 </span><span class="caption-text">Copy the full URL in <a class="reference internal" href="#imgur-step06a-launchedurl"><span class="std std-numref">Fig. 2.8</span></a> into the <a class="reference external" href="https://imgur.com">Imgur</a> configuration URL dialog.</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple" start="7">
-<li><p>This <strong>should</strong> work – the <em>Plex config credentials</em> widget should show <strong>WORKING</strong> under the <a class="reference external" href="https://imgur.com">Imgur</a> settings panel. If this does not work, then close the Imgur URL dialog in <code class="xref std std-numref docutils literal notranslate"><span class="pre">imgur_step06b_copyURLdialog</span></code> with the <code class="docutils literal notranslate"><span class="pre">Esc</span></code> key, and generate a new client secret as shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">imgur_step02_getclientsecret</span></code>, and repeat until you are able to generate good <a class="reference external" href="https://imgur.com">Imgur</a> client credentials.</p></li>
+<li><p>This <strong>should</strong> work – the <em>Plex config credentials</em> widget should show <strong>WORKING</strong> under the <a class="reference external" href="https://imgur.com">Imgur</a> settings panel. If this does not work, then close the Imgur URL dialog in <a class="reference internal" href="#imgur-step06b-copyurldialog"><span class="std std-numref">Fig. 2.9</span></a> with the <code class="docutils literal notranslate"><span class="pre">Esc</span></code> key, and generate a new client secret as shown in <a class="reference internal" href="#imgur-step02-getclientsecret"><span class="std std-numref">Fig. 2.5</span></a>, and repeat until you are able to generate good <a class="reference external" href="https://imgur.com">Imgur</a> client credentials.</p></li>
 </ol>
 </div>
 <div class="section" id="low-level-imgur-credentials">
@@ -332,7 +340,7 @@
 </pre></div>
 </div>
 </li>
-<li><p>Copy the browser URL, as described in <code class="xref std std-numref docutils literal notranslate"><span class="pre">imgur_step06a_launchedURL</span></code>, into <code class="docutils literal notranslate"><span class="pre">response_url</span></code>, and generate the final OAuth2 token into a <code class="docutils literal notranslate"><span class="pre">token</span></code> dictionary object.</p>
+<li><p>Copy the browser URL, as described in <a class="reference internal" href="#imgur-step06a-launchedurl"><span class="std std-numref">Fig. 2.8</span></a>, into <code class="docutils literal notranslate"><span class="pre">response_url</span></code>, and generate the final OAuth2 token into a <code class="docutils literal notranslate"><span class="pre">token</span></code> dictionary object.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">imgur</span> <span class="o">=</span> <span class="n">Oauth2Session</span><span class="p">(</span> <span class="n">client_ID</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">state</span> <span class="p">)</span>
 <span class="n">token</span> <span class="o">=</span> <span class="n">imgur</span><span class="o">.</span><span class="n">fetch_token</span><span class="p">(</span> <span class="n">token_url</span><span class="p">,</span> <span class="n">authorization_response</span><span class="o">=</span><span class="n">response_url</span><span class="p">,</span> <span class="n">client_secret</span><span class="o">=</span><span class="n">client_secret</span><span class="p">)</span>
 </pre></div>
@@ -387,7 +395,7 @@
 <p>We set up <a class="reference external" href="https://www.google.com">Google</a> services that use <a class="reference external" href="https://www.youtube.com">YouTube</a>, GMail, Google Contacts, Google Spreadsheets, and the <a class="reference external" href="https://unofficial-google-music-api.readthedocs.io/en/latest/">unofficial Google Music API</a>.</p>
 <p>Since these are all Google services, a single tool sets all of them up given a single Google account using Google’s <a class="reference external" href="https://en.wikipedia.org/wiki/OAuth#OAuth_2.0">OAuth2</a> authentication mechanism. The easiest way to do this is through the <a class="reference internal" href="howdy_config_gui_usage.html#howdy-config-gui-label"><span class="std std-ref">howdy_config_gui executable</span></a>, which is part of Howdy.</p>
 <ol class="arabic simple">
-<li><p>Launch <a class="reference internal" href="howdy_config_gui_usage.html#howdy-config-gui-label"><span class="std std-ref">howdy_config_gui</span></a>, which starts with a three row table: <em>LOGIN</em>, <em>CREDENTIALS</em>, and <em>MUSIC</em> (see <code class="xref std std-numref docutils literal notranslate"><span class="pre">howdy_config_gui_serviceswidget</span></code>). Right click on the <em>CREDENTIALS</em> row to launch a context menu with a single item, <em>Plex config credentials</em>. Click on <em>Plex config credentials</em>. These instructions are the same as in <a class="reference internal" href="#imgur-step04-credentials"><span class="std std-ref">step 4</span></a> in <a class="reference internal" href="#the-imgur-api"><span class="std std-numref">Section 2.1.3</span></a> and in <code class="xref std std-numref docutils literal notranslate"><span class="pre">imgur_step04_credentials</span></code>, which we reproduce here.</p></li>
+<li><p>Launch <a class="reference internal" href="howdy_config_gui_usage.html#howdy-config-gui-label"><span class="std std-ref">howdy_config_gui</span></a>, which starts with a three row table: <em>LOGIN</em>, <em>CREDENTIALS</em>, and <em>MUSIC</em> (see <a class="reference internal" href="howdy_config_gui_usage.html#howdy-config-gui-serviceswidget"><span class="std std-numref">Fig. 2.18</span></a>). Right click on the <em>CREDENTIALS</em> row to launch a context menu with a single item, <em>Plex config credentials</em>. Click on <em>Plex config credentials</em>. These instructions are the same as in <a class="reference internal" href="#imgur-step04-credentials"><span class="std std-ref">step 4</span></a> in <a class="reference internal" href="#the-imgur-api"><span class="std std-numref">Section 2.1.3</span></a> and in <a class="reference internal" href="#imgur-step04-credentials"><span class="std std-ref">step 4</span></a>, which we reproduce here.</p></li>
 </ol>
 <div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/google_step01_credentials.png"><img alt="../_images/google_step01_credentials.png" src="../_images/google_step01_credentials.png" style="width: 100%;" /></a>
@@ -395,40 +403,46 @@
 <ol class="arabic simple" start="2">
 <li><p>A <em>PLEX CREDENTIALS CONFIGURATION</em> widget will open. Click on the <em>CLIENT REFRESH</em> button in the Google section of this widget. Here is a screen shot.</p></li>
 </ol>
-<div class="figure align-center" id="google-step02-refreshcredentials">
-<a class="reference internal image-reference" href="../_images/google_step02_refreshcredentials.png"><img alt="../_images/google_step02_refreshcredentials.png" src="../_images/google_step02_refreshcredentials.png" style="width: 100%;" /></a>
+<div class="figure align-left" id="id13">
+<span id="google-step02-refreshcredentials"></span><a class="reference internal image-reference" href="../_images/google_step02_refreshcredentials.png"><img alt="../_images/google_step02_refreshcredentials.png" src="../_images/google_step02_refreshcredentials.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.10 </span><span class="caption-text">Refresh Google credentials.</span><a class="headerlink" href="#id13" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple" start="3">
 <li><p>A browser window in your default internet browser will launch, asking you to authorize access to a Google account. Here is the first screen shot.</p></li>
 </ol>
-<div class="figure align-center" id="google-step03-authorizeaccount">
-<a class="reference internal image-reference" href="../_images/google_step03_authorizeaccount.png"><img alt="../_images/google_step03_authorizeaccount.png" src="../_images/google_step03_authorizeaccount.png" style="width: 100%;" /></a>
+<div class="figure align-left" id="id14">
+<span id="google-step03-authorizeaccount"></span><a class="reference internal image-reference" href="../_images/google_step03_authorizeaccount.png"><img alt="../_images/google_step03_authorizeaccount.png" src="../_images/google_step03_authorizeaccount.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.11 </span><span class="caption-text">First authorize your Google account.</span><a class="headerlink" href="#id14" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple" start="4">
 <li><p>Also, a new dialog widget will open asking you to put in an <a class="reference external" href="https://en.wikipedia.org/wiki/OAuth#OAuth_2.0">OAuth2</a> token string once you have given permission. Here is the second screen shot.</p></li>
 </ol>
-<div class="figure align-center" id="google-step04-oauthtokenstring">
-<a class="reference internal image-reference" href="../_images/google_step04_oauthtokenstring.png"><img alt="../_images/google_step04_oauthtokenstring.png" src="../_images/google_step04_oauthtokenstring.png" style="width: 600px;" /></a>
+<div class="figure align-left" id="id15">
+<span id="google-step04-oauthtokenstring"></span><a class="reference internal image-reference" href="../_images/google_step04_oauthtokenstring.png"><img alt="../_images/google_step04_oauthtokenstring.png" src="../_images/google_step04_oauthtokenstring.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.12 </span><span class="caption-text">Next copy and paste in your <a class="reference external" href="https://en.wikipedia.org/wiki/OAuth#OAuth_2.0">Oauth2</a> token string.</span><a class="headerlink" href="#id15" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple" start="5">
 <li><p>In <a class="reference internal" href="#google-step03-authorizeaccount"><span class="std std-ref">step 3</span></a>, when you choose a Google account, currently you will be redirected to a scary browser page that says “this app isn’t verified”. It isn’t, but the services still work. If you use Google Chrome or derived browser, click on the <em>Show Advanced</em> toggling link. Then click on <em>Go to Project Default Service Account (unsafe)</em> to go forward. Here is a screen shot.</p></li>
 </ol>
-<div class="figure align-center" id="google-step05-scaryscreen">
-<a class="reference internal image-reference" href="../_images/google_step05_scaryscreen.png"><img alt="../_images/google_step05_scaryscreen.png" src="../_images/google_step05_scaryscreen.png" style="width: 100%;" /></a>
+<div class="figure align-left" id="id16">
+<span id="google-step05-scaryscreen"></span><a class="reference internal image-reference" href="../_images/google_step05_scaryscreen.png"><img alt="../_images/google_step05_scaryscreen.png" src="../_images/google_step05_scaryscreen.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.13 </span><span class="caption-text">The <em>very</em> scary screen that Google spits out, saying your app is <strong>not</strong> verified.</span><a class="headerlink" href="#id16" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple" start="6">
 <li><p>Howdy asks for six different Google authorizations. Click on the <em>Allow</em> button.</p></li>
 </ol>
-<div class="figure align-center" id="google-step06-allowbutton">
-<a class="reference internal image-reference" href="../_images/google_step06_allowbutton.png"><img alt="../_images/google_step06_allowbutton.png" src="../_images/google_step06_allowbutton.png" style="width: 100%;" /></a>
+<div class="figure align-left" id="id17">
+<span id="google-step06-allowbutton"></span><a class="reference internal image-reference" href="../_images/google_step06_allowbutton.png"><img alt="../_images/google_step06_allowbutton.png" src="../_images/google_step06_allowbutton.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.14 </span><span class="caption-text">Allow Howdy to access these <em>six</em> Google APIs through your Google account.</span><a class="headerlink" href="#id17" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple" start="7">
 <li><p>The final browser window shows a text box with the <a class="reference external" href="https://en.wikipedia.org/wiki/OAuth#OAuth_2.0">OAuth2</a> token string. Copy that string into the GUI dialog widget in <a class="reference internal" href="#google-step04-oauthtokenstring"><span class="std std-ref">step 4</span></a>, and press return on the text box in that widget.</p></li>
 </ol>
-<div class="figure align-center" id="google-step07-oauthtokencopy">
-<a class="reference internal image-reference" href="../_images/google_step07_oauthtokencopy.png"><img alt="../_images/google_step07_oauthtokencopy.png" src="../_images/google_step07_oauthtokencopy.png" style="width: 100%;" /></a>
+<div class="figure align-left" id="id18">
+<span id="google-step07-oauthtokencopy"></span><a class="reference internal image-reference" href="../_images/google_step07_oauthtokencopy.png"><img alt="../_images/google_step07_oauthtokencopy.png" src="../_images/google_step07_oauthtokencopy.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.15 </span><span class="caption-text">Copy this string into the GUI dialog widget in <a class="reference internal" href="#google-step04-oauthtokenstring"><span class="std std-ref">step 4</span></a>.</span><a class="headerlink" href="#id18" title="Permalink to this image">¶</a></p>
 </div>
-<p>If all goes well, then all the Google services needed by Howdy will have been authorized.</p>
+<p>If all goes well, then you will have authorized all the Google services needed by Howdy.</p>
 </div>
 </div>
 

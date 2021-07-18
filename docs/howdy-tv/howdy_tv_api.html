@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>5.3. Howdy TV API &mdash; howdy! 1.35-28-g889838b documentation</title>
+  <title>5.3. Howdy TV API &mdash; howdy! 1.35-32-g72f22a5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -31,10 +33,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -194,19 +197,35 @@
 <li><p>Retrieve and refresh the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> API access token.</p></li>
 </ul>
 <span class="target" id="module-howdy.tv"></span><dl class="py class">
-<dt id="howdy.tv.ShowsToExclude">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.tv.</code><code class="sig-name descname">ShowsToExclude</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.ShowsToExclude" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.ShowsToExclude">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.tv.</span></span><span class="sig-name descname"><span class="pre">ShowsToExclude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.ShowsToExclude" title="Permalink to this definition">¶</a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains the list of shows to exclude from analysis. These shows must exist on the <a class="reference external" href="https://plex.tv">Plex</a> server. Stored into the <code class="docutils literal notranslate"><span class="pre">showstoexclude</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables</dt>
-<dd class="field-odd"><p><strong>show</strong> – the show, that exists on the <a class="reference external" href="https://plex.tv">Plex</a> server, to exclude from analysis and update. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a> object of size 65536.</p>
+<dd class="field-odd"><p><strong>show</strong> – the show, that exists on the <a class="reference external" href="https://plex.tv">Plex</a> server, to exclude from analysis and update. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a> object of size 65536.</p>
 </dd>
 </dl>
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="howdy.tv.TMDBShowIds">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.tv.</span></span><span class="sig-name descname"><span class="pre">TMDBShowIds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.TMDBShowIds" title="Permalink to this definition">¶</a></dt>
+<dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains the show names with the TMDB IDs of the shows. These shows must exist on the <a class="reference external" href="https://plex.tv">Plex</a> server. Storied in the the <code class="docutils literal notranslate"><span class="pre">tmdbshowids</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">var show</dt>
+<dd class="field-odd"><p>the show, that exists on the <a class="reference external" href="https://plex.tv">Plex</a> server. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a> object of size 65536.</p>
+</dd>
+<dt class="field-even">var tmdbid</dt>
+<dd class="field-even"><p>the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> ID of the show. THis is a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/type_basics.html#sqlalchemy.types.Integer" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Integer</span></code></a>.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
 <dl class="py function">
-<dt id="howdy.tv.check_tvdb_api">
-<code class="sig-prename descclassname">howdy.tv.</code><code class="sig-name descname">check_tvdb_api</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">username</span></em>, <em class="sig-param"><span class="n">apikey</span></em>, <em class="sig-param"><span class="n">userkey</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.check_tvdb_api" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.check_tvdb_api">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.</span></span><span class="sig-name descname"><span class="pre">check_tvdb_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.check_tvdb_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks whether the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> API credentials are valid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -231,8 +250,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.get_token">
-<code class="sig-prename descclassname">howdy.tv.</code><code class="sig-name descname">get_token</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.get_token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.get_token">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.</span></span><span class="sig-name descname"><span class="pre">get_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.get_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> API token that allows access to the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> database. If there are errors, then returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -251,8 +270,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.get_tvdb_api">
-<code class="sig-prename descclassname">howdy.tv.</code><code class="sig-name descname">get_tvdb_api</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.get_tvdb_api" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.get_tvdb_api">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.</span></span><span class="sig-name descname"><span class="pre">get_tvdb_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.get_tvdb_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></a> of <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> API credentials (see <a class="reference internal" href="../howdy-config/howdy_services_config.html#the-television-database-api"><span class="std std-ref">TVDB API configuration</span></a>), taken from the <code class="docutils literal notranslate"><span class="pre">tvdb</span></code> configuration service in the <code class="docutils literal notranslate"><span class="pre">plexconfig</span></code> table. The form of the dictionary is,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s1">&#39;username&#39;</span> <span class="p">:</span> <span class="n">USERNAME</span><span class="p">,</span> <span class="c1"># the TVDB API user name</span>
@@ -275,8 +294,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.refresh_token">
-<code class="sig-prename descclassname">howdy.tv.</code><code class="sig-name descname">refresh_token</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.refresh_token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.refresh_token">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.</span></span><span class="sig-name descname"><span class="pre">refresh_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.refresh_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Refreshes the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> API token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -295,8 +314,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.save_tvdb_api">
-<code class="sig-prename descclassname">howdy.tv.</code><code class="sig-name descname">save_tvdb_api</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">username</span></em>, <em class="sig-param"><span class="n">apikey</span></em>, <em class="sig-param"><span class="n">userkey</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.save_tvdb_api" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.save_tvdb_api">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.</span></span><span class="sig-name descname"><span class="pre">save_tvdb_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.save_tvdb_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves the information on the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> API access into the <code class="docutils literal notranslate"><span class="pre">tvdb</span></code> configuration service in the <code class="docutils literal notranslate"><span class="pre">plexconfig</span></code> table. Details of how to set up the configuration is in the <a class="reference internal" href="../howdy-config/howdy_services_config.html#the-television-database-api"><span class="std std-ref">TVDB API configuration</span></a>, which uses <a class="reference internal" href="../howdy-config/howdy_config_gui_usage.html#howdy-config-gui-label"><span class="std std-ref">howdy_config_gui</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -331,8 +350,8 @@
 <li><p>Robust functionality that, with the <a class="reference internal" href="#howdy-tv-tv-torrents-module"><span class="std std-ref">howdy.tv.tv_torrents module</span></a>, allows for the automatic download of episodes missing from the <a class="reference external" href="https://plex.tv">Plex</a> TV library.</p></li>
 </ul>
 <span class="target" id="module-howdy.tv.tv"></span><dl class="py class">
-<dt id="howdy.tv.tv.TVSeason">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">TVSeason</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seriesName</span></em>, <em class="sig-param"><span class="n">seriesId</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">seasno</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVSeason" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.TVSeason">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">TVSeason</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seriesName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seriesId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasno</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVSeason" title="Permalink to this definition">¶</a></dt>
 <dd><p>A convenience object that stores season information for a TV show. This provides a higher level object oriented implementation of the lower level pure method implementation of manipulating TV show data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -351,7 +370,7 @@
 <li><p><strong>seriesId</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> series ID.</p></li>
 <li><p><strong>seasno</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the season number. If this is a TV special, then the season number is <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
 <li><p><strong>imageURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> URL of the season poster.</p></li>
-<li><p><strong>img</strong> (<em>Image</em>) – the <a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image" title="(in Pillow (PIL Fork) v8.1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object associated with this season poster, if found. Otherwise <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>img</strong> (<em>Image</em>) – the <a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image" title="(in Pillow (PIL Fork) v8.3.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object associated with this season poster, if found. Otherwise <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>episodes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – <p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of episode data. Each key is the episode number. Each value is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> summary of that episode.</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">airedEpisodeNumber</span></code> is the episode number in the season.</p></li>
@@ -364,8 +383,8 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt id="howdy.tv.tv.TVSeason.get_max_date">
-<code class="sig-name descname">get_max_date</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVSeason.get_max_date" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.TVSeason.get_max_date">
+<span class="sig-name descname"><span class="pre">get_max_date</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVSeason.get_max_date" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the last <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> of episodes aired this season.</p>
@@ -377,8 +396,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.tv.tv.TVSeason.get_min_date">
-<code class="sig-name descname">get_min_date</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVSeason.get_min_date" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.TVSeason.get_min_date">
+<span class="sig-name descname"><span class="pre">get_min_date</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVSeason.get_min_date" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the first <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> of episodes aired this season.</p>
@@ -390,8 +409,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.tv.tv.TVSeason.get_num_episodes">
-<code class="sig-name descname">get_num_episodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVSeason.get_num_episodes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.TVSeason.get_num_episodes">
+<span class="sig-name descname"><span class="pre">get_num_episodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVSeason.get_num_episodes" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the total number of episodes for this season.</p>
@@ -405,8 +424,8 @@
 </dd></dl>
 
 <dl class="py class">
-<dt id="howdy.tv.tv.TVShow">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">TVShow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seriesName</span></em>, <em class="sig-param"><span class="n">seriesInfo</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">showSpecials</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVShow" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.TVShow">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">TVShow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seriesName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seriesInfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showSpecials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVShow" title="Permalink to this definition">¶</a></dt>
 <dd><p>A convenience object that stores TV show information for a TV show. This provides a higher level object oriented implementation of the lower level pure method implementation of manipulating TV show data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -436,8 +455,8 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt id="howdy.tv.tv.TVShow.create_tvshow_dict">
-<em class="property">classmethod </em><code class="sig-name descname">create_tvshow_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tvdata</span></em>, <em class="sig-param"><span class="n">token</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">num_threads</span><span class="o">=</span><span class="default_value">16</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVShow.create_tvshow_dict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.TVShow.create_tvshow_dict">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">create_tvshow_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVShow.create_tvshow_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Higher level convenience method that returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of show names to their corresponding <a class="reference internal" href="#howdy.tv.tv.TVShow" title="howdy.tv.tv.TVShow"><code class="xref py py-class docutils literal notranslate"><span class="pre">TVShow</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -459,8 +478,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.tv.tv.TVShow.get_episode_name">
-<code class="sig-name descname">get_episode_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">airedSeason</span></em>, <em class="sig-param"><span class="n">airedEpisode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVShow.get_episode_name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.TVShow.get_episode_name">
+<span class="sig-name descname"><span class="pre">get_episode_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airedSeason</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airedEpisode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVShow.get_episode_name" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -481,8 +500,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.tv.tv.TVShow.get_episodes_series">
-<code class="sig-name descname">get_episodes_series</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">showSpecials</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fromDate</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVShow.get_episodes_series" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.TVShow.get_episodes_series">
+<span class="sig-name descname"><span class="pre">get_episodes_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">showSpecials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromDate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVShow.get_episodes_series" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -500,8 +519,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.tv.tv.TVShow.get_tot_epdict_tvdb">
-<code class="sig-name descname">get_tot_epdict_tvdb</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVShow.get_tot_epdict_tvdb" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.TVShow.get_tot_epdict_tvdb">
+<span class="sig-name descname"><span class="pre">get_tot_epdict_tvdb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.TVShow.get_tot_epdict_tvdb" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>a summary nested <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of episode information for a given TV show.</p>
@@ -526,9 +545,9 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.create_plot_year_tvdata">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">create_plot_year_tvdata</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tvdata_date_dict</span></em>, <em class="sig-param"><span class="n">year</span><span class="o">=</span><span class="default_value">2010</span></em>, <em class="sig-param"><span class="n">shouldPlot</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dirname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'svg'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.create_plot_year_tvdata" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a calendar eye chart of episodes aired during a given calendar year. This either creates an <a class="reference external" href="https://en.wikipedia.org/wiki/Scalable_Vector_Graphics">SVG</a> file, or shows the chart on the screen. An example chart is shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">howdy_tv_cli_figures_plots_tvdata_2000</span></code>.</p>
+<dt class="sig sig-object py" id="howdy.tv.tv.create_plot_year_tvdata">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">create_plot_year_tvdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvdata_date_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2010</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shouldPlot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dirname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'svg'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.create_plot_year_tvdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a calendar eye chart of episodes aired during a given calendar year. This either creates an <a class="reference external" href="https://en.wikipedia.org/wiki/Scalable_Vector_Graphics">SVG</a> file, or shows the chart on the screen. An example chart is shown in <a class="reference internal" href="cli_tools/howdy_tv_cli.html#howdy-tv-cli-figures-plots-tvdata-2000"><span class="std std-numref">Fig. 5.1</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -543,8 +562,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.create_tvTorUnits">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">create_tvTorUnits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">toGet</span></em>, <em class="sig-param"><span class="n">restrictMaxSize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">restrictMinSize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">do_raw</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.create_tvTorUnits" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.create_tvTorUnits">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">create_tvTorUnits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">toGet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restrictMaxSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restrictMinSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.create_tvTorUnits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used by, e.g., <a class="reference internal" href="cli_tools/howdy_tv_cli.html#get-tv-batch"><span class="std std-ref">get_tv_batch</span></a>, to download missing episodes on the <a class="reference external" href="https://plex.tv">Plex</a> TV library. This returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of missing episodes to (torrent) download from the remote <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> torrent server, and a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of new directories to create, given a set of missing episode information, <code class="docutils literal notranslate"><span class="pre">toGet</span></code>, as produced by <a class="reference internal" href="#howdy.tv.tv.get_remaining_episodes" title="howdy.tv.tv.get_remaining_episodes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_remaining_episodes</span></code></a>. <code class="docutils literal notranslate"><span class="pre">$LIBRARY_DIR</span></code> is the TV library’s location on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 <ul>
 <li><p>The first element of the tuple is a list of missing episodes to download using the remote <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server (see <a class="reference internal" href="../howdy-config/howdy_settings_config.html#seedhost-services-setup"><span class="std std-numref">Section 2.2.2</span></a> on the server’s setup). Each element in the list consists of summary information, as a dictionary, that describes those TV Magnet links to download. Here are the keys.</p>
@@ -606,8 +625,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.did_series_end">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">did_series_end</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_id</span></em>, <em class="sig-param"><span class="n">tvdb_token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">date_now</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.did_series_end" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.did_series_end">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">did_series_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tvdb_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_now</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.did_series_end" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check on shows that have ended more than 365 days from the last day.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -631,8 +650,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.download_batched_tvtorrent_shows">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">download_batched_tvtorrent_shows</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tvTorUnits</span></em>, <em class="sig-param"><span class="n">newdirs</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">maxtime_in_secs</span><span class="o">=</span><span class="default_value">240</span></em>, <em class="sig-param"><span class="n">num_iters</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">do_raw</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.download_batched_tvtorrent_shows" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.download_batched_tvtorrent_shows">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">download_batched_tvtorrent_shows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvTorUnits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newdirs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxtime_in_secs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">240</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_iters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.download_batched_tvtorrent_shows" title="Permalink to this definition">¶</a></dt>
 <dd><p>Engine backend code, used by <a class="reference internal" href="cli_tools/howdy_tv_cli.html#get-tv-batch"><span class="std std-ref">get_tv_batch</span></a>, that searches for Magnet links for missing episodes on the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> server, downloads the Magnet links using the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server, and finally copies the downloaded missing episodes to the appropriate locations in the <a class="reference external" href="https://plex.tv">Plex</a> TV library. This expects the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> input returned by <a class="reference internal" href="#howdy.tv.tv.create_tvTorUnits" title="howdy.tv.tv.create_tvTorUnits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">create_tvTorUnits</span></code></a> to run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -657,8 +676,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_all_series_didend">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_all_series_didend</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tvdata</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">num_threads</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">tvdb_token</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_all_series_didend" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_all_series_didend">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_all_series_didend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tvdb_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_all_series_didend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> on which TV shows on the <a class="reference external" href="https://plex.tv">Plex</a> server have ended. Each key is the TV show, and its value is whether the show ended or not. Here is its format.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s1">&#39;11.22.63&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
@@ -689,8 +708,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_episode_id">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_episode_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_id</span></em>, <em class="sig-param"><span class="n">airedSeason</span></em>, <em class="sig-param"><span class="n">airedEpisode</span></em>, <em class="sig-param"><span class="n">tvdb_token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_episode_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_episode_id">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_episode_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airedSeason</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airedEpisode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tvdb_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_episode_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> episode ID of an episode, given its <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> series ID, season, and episode number. If cannot be found, then returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -712,8 +731,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_episode_name">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_episode_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_id</span></em>, <em class="sig-param"><span class="n">airedSeason</span></em>, <em class="sig-param"><span class="n">airedEpisode</span></em>, <em class="sig-param"><span class="n">tvdb_token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_episode_name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_episode_name">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_episode_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airedSeason</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airedEpisode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tvdb_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_episode_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the episode given its <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> series ID, season number, and episode number. If cannot be found, then returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -735,8 +754,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_episodes_series">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_episodes_series</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_id</span></em>, <em class="sig-param"><span class="n">tvdb_token</span></em>, <em class="sig-param"><span class="n">showSpecials</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fromDate</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">showFuture</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_episodes_series" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_episodes_series">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_episodes_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tvdb_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showSpecials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromDate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showFuture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_episodes_series" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a large and comprehensive <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> episode info on a given TV show. Example <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> show data for <a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons">The Simpsons</a>, represented as a JSON file, is located in <a class="reference download internal" download="" href="../_downloads/24bb7ea3e2c680ac477c485d704e7a35/tvdb_simpsons_info.json"><code class="xref download docutils literal notranslate"><span class="pre">tvdb_simpsons_info.json</span></code></a>. Each element of the list is an episode, and the list is ordered from earliest aired episode to latest aired episode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -759,8 +778,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_future_info_shows">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_future_info_shows</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tvdata</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">showsToExclude</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">token</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fromDate</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">num_threads</span><span class="o">=</span><span class="default_value">16</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_future_info_shows" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_future_info_shows">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_future_info_shows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showsToExclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromDate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_future_info_shows" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> on which TV shows on the <a class="reference external" href="https://plex.tv">Plex</a> server have a new season to start. Each key is a TV show in the <a class="reference external" href="https://plex.tv">Plex</a> library. Each value is another dictionary: <code class="docutils literal notranslate"><span class="pre">max_last_season</span></code> is the latest season of the TV show, <code class="docutils literal notranslate"><span class="pre">min_next_season</span></code> is the next season to be aired, and <code class="docutils literal notranslate"><span class="pre">start_date</span></code> is the first <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> that a new episode will air.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -801,8 +820,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_imdb_id">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_imdb_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_id</span></em>, <em class="sig-param"><span class="n">tvdb_token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_imdb_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_imdb_id">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_imdb_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tvdb_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_imdb_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDb</a> string ID given a <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> series ID, otherwise return <code class="docutils literal notranslate"><span class="pre">None</span></code> if show’s <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDb</a> ID cannot be found.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -822,8 +841,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_path_data_on_tvshow">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_path_data_on_tvshow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tvdata</span></em>, <em class="sig-param"><span class="n">tvshow</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_path_data_on_tvshow" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_path_data_on_tvshow">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_path_data_on_tvshow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tvshow</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_path_data_on_tvshow" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method is used by the <a class="reference internal" href="cli_tools/howdy_tv_cli.html#get-tv-batch"><span class="std std-ref">get_tv_batch</span></a> tool that can automatically download new episodes. This returns a summary <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of information on a TV show stored in the <a class="reference external" href="https://plex.tv">Plex</a> server (see documentation in <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.core.get_library_data" title="howdy.core.core.get_library_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_library_data</span></code></a> that focuses on the format of the dictionary for TV libraries). Here is a guide to the keys:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">prefix</span></code> is the root directory in which the episodes of the TV show live.</p></li>
@@ -891,8 +910,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_possible_ids">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_possible_ids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_name</span></em>, <em class="sig-param"><span class="n">tvdb_token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_possible_ids" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_possible_ids">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_possible_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tvdb_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_possible_ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate TV shows from the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> database that match a series name, and status string. If matches could not be found, returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a> – first element is <code class="docutils literal notranslate"><span class="pre">None</span></code>, second element is <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> error message.</p>
 <p>The form of the candidate TV shows is a list of dictionaries. Each dictionary is a candidate TV show: the <code class="docutils literal notranslate"><span class="pre">'id'</span></code> key is the <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> series ID, and the <code class="docutils literal notranslate"><span class="pre">'seriesName'</span></code> key is the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> series name. For example, for <a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons">The Simpsons</a></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;</span>&gt; candidate_series, <span class="nv">_</span> <span class="o">=</span> get_possible_ids<span class="o">(</span> <span class="s1">&#39;The Simpsons&#39;</span>, tvdb_token <span class="o">)</span>
@@ -917,8 +936,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_remaining_episodes">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_remaining_episodes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tvdata</span></em>, <em class="sig-param"><span class="n">showSpecials</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fromDate</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">doShowEnded</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">showsToExclude</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">showFuture</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">num_threads</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">token</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mustHaveTitle</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_remaining_episodes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_remaining_episodes">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_remaining_episodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showSpecials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromDate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doShowEnded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showsToExclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showFuture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mustHaveTitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_remaining_episodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of episodes missing from the <a class="reference external" href="https://plex.tv">Plex</a> TV library for the TV shows that are in it. Each key in the dictionary is the TV show with missing episodes. The value is another dictionary. Here are their keys and values,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">episodes</span></code> returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>s of missing episodes. Each tuple is of the form <code class="docutils literal notranslate"><span class="pre">(</span> <span class="pre">SEASON</span> <span class="pre">#,</span> <span class="pre">EPISODE</span> <span class="pre">#,</span> <span class="pre">EPISODE</span> <span class="pre">NAME</span> <span class="pre">)</span></code>.</p></li>
@@ -987,8 +1006,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_series_id">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_series_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_name</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_series_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_series_id">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_series_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_series_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> series ID given its series name. If no candidate is found, returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1008,8 +1027,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_series_image">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_series_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_id</span></em>, <em class="sig-param"><span class="n">tvdb_token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_series_image" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_series_image">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_series_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tvdb_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_series_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> URL of the TV show’s poster AND the string “SUCCESS”, if found. Otherwise returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> given by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.
 :param int series_id: the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> database series ID.
 :param str tvdb_token: the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> API access token.
@@ -1036,8 +1055,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_series_info">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_series_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_id</span></em>, <em class="sig-param"><span class="n">tvdb_token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_series_info" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_series_info">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_series_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tvdb_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_series_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> summary information AND the string “SUCCESS” for a given Tv show, otherwise returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> given by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1086,8 +1105,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_series_season_image">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_series_season_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_id</span></em>, <em class="sig-param"><span class="n">airedSeason</span></em>, <em class="sig-param"><span class="n">tvdb_token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_series_season_image" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_series_season_image">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_series_season_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airedSeason</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tvdb_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_series_season_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> URL of the TV show’s SEASON poster AND the string “SUCCESS”, if found. Otherwise returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> given by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.
 :param int series_id: the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> database series ID.
 :param int airedSeason: the season number of the episode.
@@ -1115,8 +1134,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_shows_to_exclude">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_shows_to_exclude</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tvdata</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_shows_to_exclude" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_shows_to_exclude">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_shows_to_exclude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvdata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_shows_to_exclude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the list of shows in the <a class="reference external" href="https://plex.tv">Plex</a> library that are ignored from analysis or update. This queries the <code class="docutils literal notranslate"><span class="pre">showstoexclude</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1136,8 +1155,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_tot_epdict_tvdb">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_tot_epdict_tvdb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">showName</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">showSpecials</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">showFuture</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">token</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_tot_epdict_tvdb" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_tot_epdict_tvdb">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_tot_epdict_tvdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">showName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showSpecials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showFuture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_tot_epdict_tvdb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a summary nested <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of episode information for a given TV show.</p>
 <ul class="simple">
 <li><p>The top level dictionary has keys that are the TV show’s seasons. Each value is a second level dictionary of information about each season.</p></li>
@@ -1206,8 +1225,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.get_tvdata_ordered_by_date">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">get_tvdata_ordered_by_date</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tvdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_tvdata_ordered_by_date" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.get_tvdata_ordered_by_date">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_tvdata_ordered_by_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_tvdata_ordered_by_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>This <em>flattens</em> the TV data, stored as a nested <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> (see documentation in <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.core.get_library_data" title="howdy.core.core.get_library_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_library_data</span></code></a> that focuses on the format of the dictionary for TV libraries) into a dictionary whose keys are the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> at which episodes have been aired, and whose values are the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of episodes aired on that date. Each element of that list is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> representing a given episode: <code class="docutils literal notranslate"><span class="pre">(</span> <span class="pre">SHOW,</span> <span class="pre">SEASON</span> <span class="pre">#,</span> <span class="pre">EPISODE</span> <span class="pre">#,</span> <span class="pre">EPISODE</span> <span class="pre">TITLE</span> <span class="pre">)</span></code>.</p>
 <p>For example, let <code class="docutils literal notranslate"><span class="pre">tvdata</span></code> represent the <a class="reference external" href="https://plex.tv">Plex</a> TV library information  collected with <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.core.get_library_data" title="howdy.core.core.get_library_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_library_data</span></code></a>. Then here are the episodes on the <a class="reference external" href="https://plex.tv">Plex</a> server aired on the <em>last</em> date.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">tvdata_flatten</span> <span class="o">=</span> <span class="n">get_tvdata_ordered_by_date</span><span class="p">(</span> <span class="n">tvdata</span> <span class="p">)</span>
@@ -1235,8 +1254,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv.push_shows_to_exclude">
-<code class="sig-prename descclassname">howdy.tv.tv.</code><code class="sig-name descname">push_shows_to_exclude</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tvdata</span></em>, <em class="sig-param"><span class="n">showsToExclude</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.push_shows_to_exclude" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv.push_shows_to_exclude">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">push_shows_to_exclude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showsToExclude</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.push_shows_to_exclude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a list of new shows to exclude from analysis or update in the <a class="reference external" href="https://plex.tv">Plex</a> TV library. This updates the <code class="docutils literal notranslate"><span class="pre">showstoexclude</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database with new shows. The shows in the list must exist in the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1277,7 +1296,7 @@
 </li>
 <li><p>If unsuccesful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p></li>
 </ul>
-<p>As of January 31, 2021, here are the magnet link methods that work and don’t work when searching for <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>.</p>
+<p>As of July 18, 2021, here are the magnet link methods that work and don’t work when searching for <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>.</p>
 <span id="table-working-tvtorrents"></span><table class="colwidths-auto docutils align-default" id="id17">
 <caption><span class="caption-number">Table 5.1 </span><span class="caption-text">Which TV Torrent Trackers or Services Work?</span><a class="headerlink" href="#id17" title="Permalink to this table">¶</a></caption>
 <tbody>
@@ -1324,8 +1343,8 @@
 </tbody>
 </table>
 <span class="target" id="module-howdy.tv.tv_torrents"></span><dl class="py function">
-<dt id="howdy.tv.tv_torrents.get_tv_torrent_eztv_io">
-<code class="sig-prename descclassname">howdy.tv.tv_torrents.</code><code class="sig-name descname">get_tv_torrent_eztv_io</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">maxnum</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">series_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">minsizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">maxsizes</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_eztv_io" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_torrents.get_tv_torrent_eztv_io">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_torrents.</span></span><span class="sig-name descname"><span class="pre">get_tv_torrent_eztv_io</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">series_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxsizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_eztv_io" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate episode Magnet links found using the <a class="reference external" href="https://eztv.io">EZTV.IO</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1371,8 +1390,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_torrents.get_tv_torrent_jackett">
-<code class="sig-prename descclassname">howdy.tv.tv_torrents.</code><code class="sig-name descname">get_tv_torrent_jackett</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">maxnum</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">minsizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">maxsizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keywords</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">keywords_exc</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">must_have</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">series_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">raw</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_jackett" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_torrents.get_tv_torrent_jackett">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_torrents.</span></span><span class="sig-name descname"><span class="pre">get_tv_torrent_jackett</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxsizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords_exc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_have</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">series_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_jackett" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate episode Magnet links found using the main <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1421,8 +1440,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_torrents.get_tv_torrent_kickass">
-<code class="sig-prename descclassname">howdy.tv.tv_torrents.</code><code class="sig-name descname">get_tv_torrent_kickass</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">maxnum</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_kickass" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_torrents.get_tv_torrent_kickass">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_torrents.</span></span><span class="sig-name descname"><span class="pre">get_tv_torrent_kickass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_kickass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate episode Magnet links found using the <a class="reference external" href="https://en.wikipedia.org/wiki/KickassTorrents">KickAssTorrents</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1451,13 +1470,13 @@
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of January 31, 2021, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
+<p>As of July 18, 2021, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
 </div>
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_torrents.get_tv_torrent_rarbg">
-<code class="sig-prename descclassname">howdy.tv.tv_torrents.</code><code class="sig-name descname">get_tv_torrent_rarbg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">maxnum</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_rarbg" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_torrents.get_tv_torrent_rarbg">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_torrents.</span></span><span class="sig-name descname"><span class="pre">get_tv_torrent_rarbg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_rarbg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate episode Magnet links found using the <a class="reference external" href="https://en.wikipedia.org/wiki/RARBG">RARBG</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1486,13 +1505,13 @@
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of January 31, 2021, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
+<p>As of July 18, 2021, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
 </div>
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_torrents.get_tv_torrent_torrentz">
-<code class="sig-prename descclassname">howdy.tv.tv_torrents.</code><code class="sig-name descname">get_tv_torrent_torrentz</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">maxnum</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_torrentz" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_torrents.get_tv_torrent_torrentz">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_torrents.</span></span><span class="sig-name descname"><span class="pre">get_tv_torrent_torrentz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_torrentz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate episode Magnet links found using the <a class="reference external" href="https://en.wikipedia.org/wiki/Torrentz">Torrentz</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1521,13 +1540,13 @@
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of January 31, 2021, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
+<p>As of July 18, 2021, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
 </div>
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_torrents.get_tv_torrent_tpb">
-<code class="sig-prename descclassname">howdy.tv.tv_torrents.</code><code class="sig-name descname">get_tv_torrent_tpb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">maxnum</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">doAny</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_tpb" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_torrents.get_tv_torrent_tpb">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_torrents.</span></span><span class="sig-name descname"><span class="pre">get_tv_torrent_tpb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doAny</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_tpb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate episode Magnet links found using the <a class="reference external" href="https://en.wikipedia.org/wiki/The_Pirate_Bay">The Pirate Bay</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1558,13 +1577,13 @@
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of January 31, 2021, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
+<p>As of July 18, 2021, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
 </div>
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_torrents.get_tv_torrent_zooqle">
-<code class="sig-prename descclassname">howdy.tv.tv_torrents.</code><code class="sig-name descname">get_tv_torrent_zooqle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">maxnum</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_zooqle" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_torrents.get_tv_torrent_zooqle">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_torrents.</span></span><span class="sig-name descname"><span class="pre">get_tv_torrent_zooqle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.get_tv_torrent_zooqle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate episode Magnet links found using the <a class="reference external" href="https://zooqle.com">Zooqle</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1595,8 +1614,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_torrents.return_error_couldnotfind">
-<code class="sig-prename descclassname">howdy.tv.tv_torrents.</code><code class="sig-name descname">return_error_couldnotfind</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.return_error_couldnotfind" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_torrents.return_error_couldnotfind">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_torrents.</span></span><span class="sig-name descname"><span class="pre">return_error_couldnotfind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.return_error_couldnotfind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> error message in the format of <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>, but with the message <code class="docutils literal notranslate"><span class="pre">&quot;Failure,</span> <span class="pre">could</span> <span class="pre">not</span> <span class="pre">find</span> <span class="pre">any</span> <span class="pre">tv</span> <span class="pre">shows</span> <span class="pre">with</span> <span class="pre">search</span> <span class="pre">term</span> <span class="pre">&lt;name&gt;&quot;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code> is the episode torrent that could not be found.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1616,8 +1635,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_torrents.worker_process_download_tvtorrent">
-<code class="sig-prename descclassname">howdy.tv.tv_torrents.</code><code class="sig-name descname">worker_process_download_tvtorrent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tvTorUnit</span></em>, <em class="sig-param"><span class="n">client</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">maxtime_in_secs</span><span class="o">=</span><span class="default_value">14400</span></em>, <em class="sig-param"><span class="n">num_iters</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">kill_if_fail</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.worker_process_download_tvtorrent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_torrents.worker_process_download_tvtorrent">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_torrents.</span></span><span class="sig-name descname"><span class="pre">worker_process_download_tvtorrent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvTorUnit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxtime_in_secs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">14400</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_iters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kill_if_fail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_torrents.worker_process_download_tvtorrent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used by, e.g., <a class="reference internal" href="cli_tools/howdy_tv_cli.html#get-tv-batch"><span class="std std-ref">get_tv_batch</span></a>, to download missing episodes on the <a class="reference external" href="https://plex.tv">Plex</a> TV library. Attempts to use the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server, specified in <a class="reference internal" href="../howdy-config/howdy_settings_config.html#seedhost-services-setup"><span class="std std-numref">Section 2.2.2</span></a>, to download an episode. If successful then uploads the finished episode from the remote SSH server to the <a class="reference external" href="https://plex.tv">Plex</a> server and local directory, specified in <a class="reference internal" href="../howdy-config/howdy_settings_config.html#local-and-remote-seedhost-ssh-setup"><span class="std std-numref">Section 2.2.3</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1664,8 +1683,31 @@
 <h2><span class="section-number">5.3.4. </span>howdy.tv.tv_attic module<a class="headerlink" href="#howdy-tv-tv-attic-module" title="Permalink to this headline">¶</a></h2>
 <p>This contains broken, stale, and long-untested and unused Plex TVDB functionality. Some methods may live here until they are actively used in Howdy TV GUIs and CLIs.</p>
 <span class="target" id="module-howdy.tv.tv_attic"></span><dl class="py function">
-<dt id="howdy.tv.tv_attic.fix_missing_unnamed_episodes">
-<code class="sig-prename descclassname">howdy.tv.tv_attic.</code><code class="sig-name descname">fix_missing_unnamed_episodes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seriesName</span></em>, <em class="sig-param"><span class="n">eps</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">showFuture</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.fix_missing_unnamed_episodes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.did_series_end_tmdb">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">did_series_end_tmdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_now</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.did_series_end_tmdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check on shows that have ended more than 365 days from the last day.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>series_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database series ID.</p></li>
+<li><p><strong>date_now</strong> (<em>date</em>) – an optional specific last <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> to describe when a show was deemed to have ended. That is, if a show has not aired any episodes more than 365 days before <code class="docutils literal notranslate"><span class="pre">date_now</span></code>, then define the show as ended. By default, <code class="docutils literal notranslate"><span class="pre">date_now</span></code> is the current date.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the show is “ended,” otherwise <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if we get a 200 response, but the response does not contain JSON data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.fix_missing_unnamed_episodes">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">fix_missing_unnamed_episodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seriesName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showFuture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.fix_missing_unnamed_episodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>This supposedly uses the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API to find names for episodes that the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> API cannot find.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 1.0: </span>I have not understood the purpose behind this method in years. No other methods call this it. I might remove this method altogether.</p>
@@ -1673,8 +1715,22 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_attic.get_episodes_series_omdb">
-<code class="sig-prename descclassname">howdy.tv.tv_attic.</code><code class="sig-name descname">get_episodes_series_omdb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">imdbID</span></em>, <em class="sig-param"><span class="n">apikey</span></em>, <em class="sig-param"><span class="n">fromDate</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_episodes_series_omdb" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.fix_show_tmdbid">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">fix_show_tmdbid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">firstAiredYear</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.fix_show_tmdbid" title="Permalink to this definition">¶</a></dt>
+<dd><p>This fixes the database of TV shows with <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> ids when wrong. DOCUMENTATION TO FOLLOW.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>show</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – name of the TV show in the <code class="docutils literal notranslate"><span class="pre">tmdbshowids</span></code> database.</p></li>
+<li><p><strong>firstAiredYear</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the year in which the show aired.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.get_episodes_series_omdb">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">get_episodes_series_omdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imdbID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromDate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_episodes_series_omdb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of episodes found using the <a class="reference external" href="http://www.omdbapi.com">OMDB</a> API. Each element has the following keys,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Title</span></code> is the episode name.</p></li>
@@ -1724,8 +1780,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_attic.get_episodes_series_tmdb">
-<code class="sig-prename descclassname">howdy.tv.tv_attic.</code><code class="sig-name descname">get_episodes_series_tmdb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmdbID</span></em>, <em class="sig-param"><span class="n">fromDate</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">showSpecials</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_episodes_series_tmdb" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.get_episodes_series_tmdb">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">get_episodes_series_tmdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmdbID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromDate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showSpecials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showFuture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_episodes_series_tmdb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of episodes returned by the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API. Each element is a dictionary: <code class="docutils literal notranslate"><span class="pre">name</span></code> is the episode name, <code class="docutils literal notranslate"><span class="pre">airedDate</span></code> is the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> the episode aired, <code class="docutils literal notranslate"><span class="pre">season</span></code> is the season it aired, and <code class="docutils literal notranslate"><span class="pre">episode</span></code> is the episode number in that season.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1733,24 +1789,25 @@
 <li><p><strong>tmdbID</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series ID.</p></li>
 <li><p><strong>fromDate</strong> (<em>date</em>) – optional argument, of type <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a>. If given, then only return episodes aired on or after this date.</p></li>
 <li><p><strong>showSpecials</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, then also include TV specials. These specials will appear in a season <code class="docutils literal notranslate"><span class="pre">0</span></code> in this dictionary.</p></li>
+<li><p><strong>showFuture</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – optional argument, if <code class="docutils literal notranslate"><span class="pre">True</span></code> then also include information on episodes that have not yet aired.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of episoes returned by the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database. For example, for <a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons">The Simpsons</a>,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">series_id</span> <span class="o">=</span> <span class="n">get_series_tmdb_id</span><span class="p">(</span> <span class="s1">&#39;The Simpsons&#39;</span> <span class="p">)</span>
 <span class="o">&gt;&gt;</span> <span class="n">episodes_tmdb</span> <span class="o">=</span> <span class="n">get_episodes_series_tmdb</span><span class="p">(</span> <span class="n">series_id</span> <span class="p">)</span>
-<span class="o">&gt;&gt;</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Simpsons Roasting on an Open Fire&#39;</span><span class="p">,</span>
+<span class="o">&gt;&gt;</span> <span class="p">[{</span><span class="s1">&#39;episodeName&#39;</span><span class="p">:</span> <span class="s1">&#39;Simpsons Roasting on an Open Fire&#39;</span><span class="p">,</span>
      <span class="s1">&#39;airedDate&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">1989</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span>
-     <span class="s1">&#39;season&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-     <span class="s1">&#39;episode&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Bart the Genius&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;airedSeason&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+     <span class="s1">&#39;airedEpisodeNumber&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;episodeName&#39;</span><span class="p">:</span> <span class="s1">&#39;Bart the Genius&#39;</span><span class="p">,</span>
      <span class="s1">&#39;airedDate&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span>
-     <span class="s1">&#39;season&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-     <span class="s1">&#39;episode&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s2">&quot;Homer&#39;s Odyssey&quot;</span><span class="p">,</span>
+     <span class="s1">&#39;airedSeason&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+     <span class="s1">&#39;airedEpisodeNumber&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;episodeName&#39;</span><span class="p">:</span> <span class="s2">&quot;Homer&#39;s Odyssey&quot;</span><span class="p">,</span>
      <span class="s1">&#39;airedDate&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span>
-     <span class="s1">&#39;season&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-     <span class="s1">&#39;episode&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+     <span class="s1">&#39;airedSeason&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+     <span class="s1">&#39;airedEpisodeNumber&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
     <span class="o">...</span>
    <span class="p">]</span>
 </pre></div>
@@ -1764,8 +1821,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_attic.get_possible_omdb_ids">
-<code class="sig-prename descclassname">howdy.tv.tv_attic.</code><code class="sig-name descname">get_possible_omdb_ids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_name</span></em>, <em class="sig-param"><span class="n">apikey</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_possible_omdb_ids" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.get_possible_omdb_ids">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">get_possible_omdb_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_possible_omdb_ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of basic information on TV shows from the <a class="reference external" href="http://www.omdbapi.com">OMDB</a> API search of a TV show. Each element in the list is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>: the first element is the <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDB</a> series ID, and the second element is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of years during which the TV series has aired.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1794,14 +1851,15 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_attic.get_possible_tmdb_ids">
-<code class="sig-prename descclassname">howdy.tv.tv_attic.</code><code class="sig-name descname">get_possible_tmdb_ids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_name</span></em>, <em class="sig-param"><span class="n">firstAiredYear</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_possible_tmdb_ids" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.get_possible_tmdb_ids">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">get_possible_tmdb_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">firstAiredYear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minmatch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_possible_tmdb_ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of candidate <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> TV shows given the series name. Each element in the list is a dictionary: the <code class="docutils literal notranslate"><span class="pre">id</span></code> is the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series ID, and <code class="docutils literal notranslate"><span class="pre">airedYear</span></code> is the year in which the first episode aired.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>series_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the series name.</p></li>
 <li><p><strong>firstAiredYear</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – optional argument. If provided, filter on TV shows that were first aired that year.</p></li>
+<li><p><strong>minmatch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – minimum value of the ratio match. Must be <span class="math notranslate nohighlight">\(&gt; 0\)</span> and <span class="math notranslate nohighlight">\(\le 100.0\)</span>. Default is 10.0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1819,8 +1877,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_attic.get_series_omdb_id">
-<code class="sig-prename descclassname">howdy.tv.tv_attic.</code><code class="sig-name descname">get_series_omdb_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_name</span></em>, <em class="sig-param"><span class="n">apikey</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_series_omdb_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.get_series_omdb_id">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">get_series_omdb_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_series_omdb_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the most likely <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDB</a> key, using the <a class="reference external" href="http://www.omdbapi.com">OMDB</a> API, for a TV show.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1839,14 +1897,15 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_attic.get_series_tmdb_id">
-<code class="sig-prename descclassname">howdy.tv.tv_attic.</code><code class="sig-name descname">get_series_tmdb_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series_name</span></em>, <em class="sig-param"><span class="n">firstAiredYear</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_series_tmdb_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.get_series_tmdb_id">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">get_series_tmdb_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">firstAiredYear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minmatch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_series_tmdb_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the first <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series ID for a TV show. Otherwise returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if no TV series could be found.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>series_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the series name.</p></li>
 <li><p><strong>firstAiredYear</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – optional argument. If provided, filter on TV shows that were first aired that year.</p></li>
+<li><p><strong>minmatch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the minimal matching of the series name. Default is 50.0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1859,8 +1918,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_attic.get_series_updated_fromdate">
-<code class="sig-prename descclassname">howdy.tv.tv_attic.</code><code class="sig-name descname">get_series_updated_fromdate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">date</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_series_updated_fromdate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.get_series_updated_fromdate">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">get_series_updated_fromdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_series_updated_fromdate" title="Permalink to this definition">¶</a></dt>
 <dd><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> of <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> series IDs of TV shows that have been updated <em>at least</em> four weeks fron now.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1880,8 +1939,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_attic.get_tot_epdict_imdb">
-<code class="sig-prename descclassname">howdy.tv.tv_attic.</code><code class="sig-name descname">get_tot_epdict_imdb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">showName</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_tot_epdict_imdb" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.get_tot_epdict_imdb">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">get_tot_epdict_imdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">showName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_tot_epdict_imdb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a summary nested <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of episode information for a given TV show, using <code class="xref py py-class docutils literal notranslate"><span class="pre">IMDb</span></code> class in the <a class="reference external" href="https://imdbpy.readthedocs.io/en/latest">IMDB Python Package</a>.</p>
 <ul class="simple">
 <li><p>The top level dictionary has keys that are the TV show’s seasons. Each value is a second level dictionary of information about each season.</p></li>
@@ -1899,8 +1958,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_attic.get_tot_epdict_omdb">
-<code class="sig-prename descclassname">howdy.tv.tv_attic.</code><code class="sig-name descname">get_tot_epdict_omdb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">showName</span></em>, <em class="sig-param"><span class="n">apikey</span></em>, <em class="sig-param"><span class="n">inYear</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_tot_epdict_omdb" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.get_tot_epdict_omdb">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">get_tot_epdict_omdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">showName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inYear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_tot_epdict_omdb" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of episodes found from the <a class="reference external" href="http://www.omdbapi.com">OMDB</a> API. The top level dictionary’s keys are the season numbers, and each value is the next-level dictionary of season information. The next level, season dictionary’s keys are the episode number, and its values are the episode names.</p>
 </div></blockquote>
@@ -1959,8 +2018,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_attic.get_tot_epdict_singlewikipage">
-<code class="sig-prename descclassname">howdy.tv.tv_attic.</code><code class="sig-name descname">get_tot_epdict_singlewikipage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">epURL</span></em>, <em class="sig-param"><span class="n">seasnums</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_tot_epdict_singlewikipage" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.get_tot_epdict_singlewikipage">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">get_tot_epdict_singlewikipage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epURL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasnums</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_tot_epdict_singlewikipage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a dictionary of episodes from a <a class="reference external" href="https://en.wikipedia.org">Wikipedia</a> URL for a TV show.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1983,8 +2042,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.tv.tv_attic.get_tot_epdict_tmdb">
-<code class="sig-prename descclassname">howdy.tv.tv_attic.</code><code class="sig-name descname">get_tot_epdict_tmdb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">showName</span></em>, <em class="sig-param"><span class="n">firstAiredYear</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">showSpecials</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_tot_epdict_tmdb" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.get_tot_epdict_tmdb">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">get_tot_epdict_tmdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">showName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">firstAiredYear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showSpecials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showFuture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minmatch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.get_tot_epdict_tmdb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of episodes found from the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API. The top level dictionary’s keys are the season numbers, and each value is the next-level dictionary of season information. The next level, season dictionary’s keys are the episode number, and its values are a two-element :tuple: of episode names and aired dates (as a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> object). This two level dictionary has the same format as the output from <a class="reference internal" href="#howdy.tv.tv.get_tot_epdict_tvdb" title="howdy.tv.tv.get_tot_epdict_tvdb"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_tot_epdict_tvdb</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1992,6 +2051,8 @@
 <li><p><strong>showName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the series name.</p></li>
 <li><p><strong>firstAiredYear</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – optional argument. If provided, filter on TV shows that were first aired that year.</p></li>
 <li><p><strong>showSpecials</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, then also include TV specials. These specials will appear in a season <code class="docutils literal notranslate"><span class="pre">0</span></code> in this dictionary.</p></li>
+<li><p><strong>showFuture</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – optional argument, if <code class="docutils literal notranslate"><span class="pre">True</span></code> then also include information on episodes that have not yet aired.</p></li>
+<li><p><strong>minmatch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the minimal matching of the series name. Default is 50.0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2029,6 +2090,23 @@
 <li><p><a class="reference internal" href="#howdy.tv.tv_attic.get_tot_epdict_omdb" title="howdy.tv.tv_attic.get_tot_epdict_omdb"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_tot_epdict_omdb</span></code></a>.</p></li>
 </ul>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.tv.tv_attic.populate_out_tmdbshowids_and_fix">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv_attic.</span></span><span class="sig-name descname"><span class="pre">populate_out_tmdbshowids_and_fix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv_attic.populate_out_tmdbshowids_and_fix" title="Permalink to this definition">¶</a></dt>
+<dd><p>This fills out the database of TV show names with the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> ids. DOCUMENTATION TO FOLLOW.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tvdata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – the dictionary of TV shows to their attributes.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a modified <code class="docutils literal notranslate"><span class="pre">tvdata</span></code> dictionary that contains all the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> ids it could find. For each TV show it finds, it fills in the <code class="docutils literal notranslate"><span class="pre">tmdbid</span></code> key associated with it.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

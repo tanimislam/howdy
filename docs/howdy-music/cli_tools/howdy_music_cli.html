@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.35-28-g889838b documentation</title>
+  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.35-32-g72f22a5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
 
   
   
@@ -31,10 +33,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -430,9 +433,10 @@
 </ul>
 <p>Each of the three operations can be either <em>progressive</em> or <em>exclusive</em>.</p>
 <ul id="progressive-selection">
-<li><p><em>progressive</em> means that the selection and downloading of songs starts with a given music service. If that service does not work, then it continues by order until successful. For example, if the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> service does not work, then try <a class="reference external" href="https://www.last.fm/api">LastFM</a>; if <a class="reference external" href="https://www.last.fm/api">LastFM</a> does not work, then try <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a>; if <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> does not work, then give up. <code class="xref std std-numref docutils literal notranslate"><span class="pre">order_progress_music_service</span></code> summarizes how this process works, based on the metadata choice flag (<code class="docutils literal notranslate"><span class="pre">--lastfm</span></code>, <code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code>, or none). The number in each cell determines the order in which to try until success – 1 means 1st, 2 means 2nd, etc.</p>
+<li><p><em>progressive</em> means that the selection and downloading of songs starts with a given music service. If that service does not work, then it continues by order until successful. For example, if the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> service does not work, then try <a class="reference external" href="https://www.last.fm/api">LastFM</a>; if <a class="reference external" href="https://www.last.fm/api">LastFM</a> does not work, then try <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a>; if <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> does not work, then give up. <a class="reference internal" href="#order-progress-music-service"><span class="std std-numref">Table 7.1</span></a> summarizes how this process works, based on the metadata choice flag (<code class="docutils literal notranslate"><span class="pre">--lastfm</span></code>, <code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code>, or none). The number in each cell determines the order in which to try until success – 1 means 1st, 2 means 2nd, etc.</p>
 <blockquote>
-<div><table class="colwidths-auto docutils align-default" id="order-progress-music-service">
+<div><span id="order-progress-music-service"></span><table class="colwidths-auto docutils align-default" id="id1">
+<caption><span class="caption-number">Table 7.1 </span><span class="caption-text">a summary of the music services chosen in <em>progressive</em> selection mode</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p>metadata flag</p></td>
 <td><p><a class="reference external" href="https://developer.gracenote.com/web-api"><img alt="gracenote_image_big" class="align-middle" src="../../_images/gracenote_logo.svg" width="100%" /></a></p></td>
@@ -460,8 +464,9 @@
 </li>
 </ul>
 <ul id="exclusive-selection">
-<li><p><em>exclusive</em> means that the selection of downloading of songs <em>only uses</em> a single given music service; if the songs cannot be found using it, then it gives up. <code class="xref std std-numref docutils literal notranslate"><span class="pre">order_exclusive_music_service</span></code> summarizes how this process works, matching metadata flag to music service.</p>
-<table class="colwidths-auto docutils align-default" id="order-exclusive-music-service">
+<li><p><em>exclusive</em> means that the selection of downloading of songs <em>only uses</em> a single given music service; if the songs cannot be found using it, then it gives up. <a class="reference internal" href="#order-exclusive-music-service"><span class="std std-numref">Table 7.2</span></a> summarizes how this process works, matching metadata flag to music service.</p>
+<span id="order-exclusive-music-service"></span><table class="colwidths-auto docutils align-default" id="id2">
+<caption><span class="caption-number">Table 7.2 </span><span class="caption-text">a summary of the music services chosen in <em>exclusive</em> selection mode</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p>metadata flag</p></td>
 <td><p><a class="reference external" href="https://developer.gracenote.com/web-api"><img alt="gracenote_image_big" class="align-middle" src="../../_images/gracenote_logo.svg" width="100%" /></a></p></td>

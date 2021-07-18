@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>4.3. Howdy Core API &mdash; howdy! 1.35-28-g889838b documentation</title>
+  <title>4.3. Howdy Core API &mdash; howdy! 1.35-32-g72f22a5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -31,10 +33,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -199,36 +202,36 @@
 <li><p>initialization, in order to check for necessary prerequisites (see <a class="reference internal" href="../howdy_prereqs.html#prerequisites"><span class="std std-ref">Prerequisites</span></a>) and to install missing Python modules and packages (see <a class="reference internal" href="../howdy_prereqs.html#installation"><span class="std std-ref">Installation</span></a>). This initialization is handled via a <code class="xref py py-class docutils literal notranslate"><span class="pre">HowdyInitialization</span></code> singleton object.</p></li>
 </ul>
 <span class="target" id="module-howdy.core"></span><dl class="py class">
-<dt id="howdy.core.HtmlView">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">HtmlView</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em>, <em class="sig-param"><span class="n">htmlString</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.HtmlView" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.HtmlView">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">HtmlView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">htmlString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.HtmlView" title="Permalink to this definition">¶</a></dt>
 <dd><p>A convenient <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget that displays rich and interactive HTML (HTML with CSS and Javascript). This extends <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwebenginewidgets/qwebengineview.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QWebEngineView</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="howdy.core.LastNewsletterDate">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">LastNewsletterDate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.LastNewsletterDate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.LastNewsletterDate">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">LastNewsletterDate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.LastNewsletterDate" title="Permalink to this definition">¶</a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains the date at which the last newsletter was sent. It is not used much, and now that <a class="reference external" href="https://tautulli.com">Tautulli</a> has newsletter functionality, I very likely won’t use this at all. Stored into the <code class="docutils literal notranslate"><span class="pre">lastnewsletterdate</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables</dt>
-<dd class="field-odd"><p><strong>date</strong> – the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> when the last newsletter was sent. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/type_basics.html#sqlalchemy.types.Date" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Date</span></code></a> object.</p>
+<dd class="field-odd"><p><strong>date</strong> – the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> when the last newsletter was sent. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/type_basics.html#sqlalchemy.types.Date" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Date</span></code></a> object.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py class">
-<dt id="howdy.core.PlexConfig">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">PlexConfig</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexConfig" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.PlexConfig">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains the configuration data used for running all the <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a> tools. Stored into the <code class="docutils literal notranslate"><span class="pre">plexconfig</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>service</strong> – the name of the configuration service we store. Index on this unique key. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a> of size 65536.</p></li>
+<li><p><strong>service</strong> – the name of the configuration service we store. Index on this unique key. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a> of size 65536.</p></li>
 <li><p><strong>data</strong> – <p>the JSON formatted information on the data stored here. For instance, username and password can be stored in the following way</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s1">&#39;username&#39;</span> <span class="p">:</span> <span class="n">USERNAME</span><span class="p">,</span>
   <span class="s1">&#39;password&#39;</span> <span class="p">:</span> <span class="n">PASSWORD</span> <span class="p">}</span>
 </pre></div>
 </div>
-<p>This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/type_basics.html#sqlalchemy.types.JSON" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">JSON</span></code></a> object.</p>
+<p>This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/type_basics.html#sqlalchemy.types.JSON" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">JSON</span></code></a> object.</p>
 </p></li>
 </ul>
 </dd>
@@ -236,23 +239,23 @@
 </dd></dl>
 
 <dl class="py class">
-<dt id="howdy.core.PlexGuestEmailMapping">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">PlexGuestEmailMapping</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexGuestEmailMapping" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.PlexGuestEmailMapping">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexGuestEmailMapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexGuestEmailMapping" title="Permalink to this definition">¶</a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains mapping of emails of <a class="reference external" href="https://plex.tv">Plex</a> server users, to other email addresses. This is used to determine other email addresses to which Howdy one-off or newsletter emails are delivered. Stored in the <code class="docutils literal notranslate"><span class="pre">plexguestemailmapping</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database. The structure of each row in this table is straightforward. Each column in the table is a member of the object in this ORM class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>plexemail</strong> – this is the main column, which must be the email of a <a class="reference external" href="https://plex.tv">Plex</a> user who has access to the <a class="reference external" href="https://plex.tv">Plex</a> server. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a>.</p></li>
-<li><p><strong>plexmapping</strong> – this is a collection of <strong>different</strong> email addresses, to which the emails are sent. For example, if a <a class="reference external" href="https://plex.tv">Plex</a> user with email address <code class="docutils literal notranslate"><span class="pre">A&#64;email.com</span></code> would like to send email to <code class="docutils literal notranslate"><span class="pre">B&#64;mail.com</span></code> and <code class="docutils literal notranslate"><span class="pre">C&#64;mail.com</span></code>, the <em>plexmapping</em> column would be <code class="docutils literal notranslate"><span class="pre">B&#64;mail.com,C&#64;mail.com</span></code>. NONE of the mapped emails will match <em>email</em>. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a> of size 65536.</p></li>
-<li><p><strong>plexreplaceexisting</strong> – this is a boolean that determines whether email also goes to the <a class="reference external" href="https://plex.tv">Plex</a> user’s email address. From the example above, if <code class="docutils literal notranslate"><span class="pre">True</span></code> then a <a class="reference external" href="https://plex.tv">Plex</a> user at <code class="docutils literal notranslate"><span class="pre">A&#64;mail.com</span></code> will have email delivered ONLY to <code class="docutils literal notranslate"><span class="pre">B&#64;mail.com</span></code> and <code class="docutils literal notranslate"><span class="pre">C&#64;mail.com</span></code>. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, then that same <a class="reference external" href="https://plex.tv">Plex</a> user will have email delivered to all three email addresses (<code class="docutils literal notranslate"><span class="pre">A&#64;mail.com</span></code>, <code class="docutils literal notranslate"><span class="pre">B&#64;mail.com</span></code>, and <code class="docutils literal notranslate"><span class="pre">C&#64;mail.com</span></code>).  This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/type_basics.html#sqlalchemy.types.Boolean" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Boolean</span></code></a>.</p></li>
+<li><p><strong>plexemail</strong> – this is the main column, which must be the email of a <a class="reference external" href="https://plex.tv">Plex</a> user who has access to the <a class="reference external" href="https://plex.tv">Plex</a> server. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a>.</p></li>
+<li><p><strong>plexmapping</strong> – this is a collection of <strong>different</strong> email addresses, to which the emails are sent. For example, if a <a class="reference external" href="https://plex.tv">Plex</a> user with email address <code class="docutils literal notranslate"><span class="pre">A&#64;email.com</span></code> would like to send email to <code class="docutils literal notranslate"><span class="pre">B&#64;mail.com</span></code> and <code class="docutils literal notranslate"><span class="pre">C&#64;mail.com</span></code>, the <em>plexmapping</em> column would be <code class="docutils literal notranslate"><span class="pre">B&#64;mail.com,C&#64;mail.com</span></code>. NONE of the mapped emails will match <em>email</em>. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a> of size 65536.</p></li>
+<li><p><strong>plexreplaceexisting</strong> – this is a boolean that determines whether email also goes to the <a class="reference external" href="https://plex.tv">Plex</a> user’s email address. From the example above, if <code class="docutils literal notranslate"><span class="pre">True</span></code> then a <a class="reference external" href="https://plex.tv">Plex</a> user at <code class="docutils literal notranslate"><span class="pre">A&#64;mail.com</span></code> will have email delivered ONLY to <code class="docutils literal notranslate"><span class="pre">B&#64;mail.com</span></code> and <code class="docutils literal notranslate"><span class="pre">C&#64;mail.com</span></code>. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, then that same <a class="reference external" href="https://plex.tv">Plex</a> user will have email delivered to all three email addresses (<code class="docutils literal notranslate"><span class="pre">A&#64;mail.com</span></code>, <code class="docutils literal notranslate"><span class="pre">B&#64;mail.com</span></code>, and <code class="docutils literal notranslate"><span class="pre">C&#64;mail.com</span></code>).  This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/type_basics.html#sqlalchemy.types.Boolean" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Boolean</span></code></a>.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py class">
-<dt id="howdy.core.ProgressDialog">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">ProgressDialog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em>, <em class="sig-param"><span class="n">windowTitle</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">doQuit</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.ProgressDialog">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">ProgressDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windowTitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doQuit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>A convenient <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget, inheriting from <a class="reference internal" href="#howdy.core.QDialogWithPrinting" title="howdy.core.QDialogWithPrinting"><code class="xref py py-class docutils literal notranslate"><span class="pre">QDialogWithPrinting</span></code></a>, that acts as a GUI blocking progress window for longer lasting operations. Like its parent class, this dialog widget is also resizable. This shows the passage of the underlying slow process in 5 second increments.</p>
 <p>This progress dialog exposes three methods – <a class="reference internal" href="#howdy.core.ProgressDialog.addText" title="howdy.core.ProgressDialog.addText"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addText</span></code></a>, <a class="reference internal" href="#howdy.core.ProgressDialog.stopDialog" title="howdy.core.ProgressDialog.stopDialog"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stopDialog</span></code></a>, and <a class="reference internal" href="#howdy.core.ProgressDialog.startDialog" title="howdy.core.ProgressDialog.startDialog"><code class="xref py py-meth docutils literal notranslate"><span class="pre">startDialog</span></code></a> – to which a custom <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtcore/qthread.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QThread</span></code></a> object can connect.</p>
 <ul class="simple">
@@ -279,8 +282,8 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt id="howdy.core.ProgressDialog.addText">
-<code class="sig-name descname">addText</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog.addText" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.ProgressDialog.addText">
+<span class="sig-name descname"><span class="pre">addText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog.addText" title="Permalink to this definition">¶</a></dt>
 <dd><p>adds some text to this progress dialog window.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -290,14 +293,14 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.core.ProgressDialog.showTime">
-<code class="sig-name descname">showTime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog.showTime" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.ProgressDialog.showTime">
+<span class="sig-name descname"><span class="pre">showTime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog.showTime" title="Permalink to this definition">¶</a></dt>
 <dd><p>method connected to the internal <code class="xref py py-attr docutils literal notranslate"><span class="pre">timer</span></code> that prints out how many seconds have passed, on the underlying <code class="xref py py-attr docutils literal notranslate"><span class="pre">elapsedTime</span></code> <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qlabel.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QLabel</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.core.ProgressDialog.startDialog">
-<code class="sig-name descname">startDialog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initString</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog.startDialog" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.ProgressDialog.startDialog">
+<span class="sig-name descname"><span class="pre">startDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog.startDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>starts running the progress dialog, with an optional labeling string, and starts the timer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -307,16 +310,16 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.core.ProgressDialog.stopDialog">
-<code class="sig-name descname">stopDialog</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog.stopDialog" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.ProgressDialog.stopDialog">
+<span class="sig-name descname"><span class="pre">stopDialog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog.stopDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>stops running, and hides, this progress dialog.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="howdy.core.ProgressDialogThread">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">ProgressDialogThread</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em>, <em class="sig-param"><span class="n">title</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialogThread" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.ProgressDialogThread">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">ProgressDialogThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialogThread" title="Permalink to this definition">¶</a></dt>
 <dd><p>This subclassing of <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtcore/qthread.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QThread</span></code></a> provides a convenient scaffolding to run, in a non-blocking fashion, some long-running processes with an asssociated <a class="reference internal" href="#howdy.core.ProgressDialog" title="howdy.core.ProgressDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressDialog</span></code></a> widget.</p>
 <p>Subclasses of this object need to have a particular structure for their <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method. The first three arguments MUST be <code class="docutils literal notranslate"><span class="pre">self</span></code>, <code class="docutils literal notranslate"><span class="pre">parent</span></code>, <code class="docutils literal notranslate"><span class="pre">self</span></code> is a reference to this object. <code class="docutils literal notranslate"><span class="pre">parent</span></code> is the parent <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qwidget.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></a> to which the <a class="reference internal" href="#howdy.core.ProgressDialog" title="howdy.core.ProgressDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressDialog</span></code></a> attribute, named <code class="docutils literal notranslate"><span class="pre">progress_dialog</span></code>, is the child. <code class="docutils literal notranslate"><span class="pre">title</span></code> is the title of <code class="docutils literal notranslate"><span class="pre">progress_dialog</span></code>. Here is an example, where an example class named <code class="docutils literal notranslate"><span class="pre">ProgressDialogThreadChildClass</span></code> inherits from  <a class="reference internal" href="#howdy.core.ProgressDialogThread" title="howdy.core.ProgressDialogThread"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressDialogThread</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
@@ -348,8 +351,8 @@
 <dt class="field-even">Variables</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>emitString</strong> – the signal, with <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> signature, that is triggered to send progress messages into <code class="docutils literal notranslate"><span class="pre">progress_dialog</span></code>.</p></li>
-<li><p><a class="reference internal" href="#howdy.core.ProgressDialog.stopDialog" title="howdy.core.ProgressDialog.stopDialog"><strong>stopDialog</strong></a> – the signal that is triggered to stop the <code class="docutils literal notranslate"><span class="pre">progress_dialog</span></code>, calling <a class="reference internal" href="#howdy.core.ProgressDialog.stopDialog" title="howdy.core.ProgressDialog.stopDialog"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stopDialog</span></code></a>.</p></li>
-<li><p><a class="reference internal" href="#howdy.core.ProgressDialog.startDialog" title="howdy.core.ProgressDialog.startDialog"><strong>startDialog</strong></a> – the signal, with <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> signature, that is triggered to restart the <code class="docutils literal notranslate"><span class="pre">progress_dialog</span></code> widget, calling <a class="reference internal" href="#howdy.core.ProgressDialog.startDialog" title="howdy.core.ProgressDialog.startDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">startDialog</span></code></a>.</p></li>
+<li><p><strong>stopDialog</strong> – the signal that is triggered to stop the <code class="docutils literal notranslate"><span class="pre">progress_dialog</span></code>, calling <a class="reference internal" href="#howdy.core.ProgressDialog.stopDialog" title="howdy.core.ProgressDialog.stopDialog"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stopDialog</span></code></a>.</p></li>
+<li><p><strong>startDialog</strong> – the signal, with <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> signature, that is triggered to restart the <code class="docutils literal notranslate"><span class="pre">progress_dialog</span></code> widget, calling <a class="reference internal" href="#howdy.core.ProgressDialog.startDialog" title="howdy.core.ProgressDialog.startDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">startDialog</span></code></a>.</p></li>
 <li><p><strong>progress_dialog</strong> – the GUI that shows, in a non-blocking fashion, the progress on some longer-running method.</p></li>
 <li><p><strong>time0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – a convenience attribute, the UTC time at which the <code class="docutils literal notranslate"><span class="pre">progress_dialog</span></code> object was first instantiated. Can be used to determine the time each submethod takes (for example, <code class="docutils literal notranslate"><span class="pre">time.time(</span> <span class="pre">)</span> <span class="pre">-</span> <span class="pre">self.time0</span></code>).</p></li>
 </ul>
@@ -362,8 +365,8 @@
 </dd></dl>
 
 <dl class="py class">
-<dt id="howdy.core.QDialogWithPrinting">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">QDialogWithPrinting</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em>, <em class="sig-param"><span class="n">isIsolated</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">doQuit</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.QDialogWithPrinting">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">QDialogWithPrinting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isIsolated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doQuit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting" title="Permalink to this definition">¶</a></dt>
 <dd><p>A convenient <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget, inheriting from <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qdialog.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></a>, that allows for screen grabs and keyboard shortcuts to either hide this dialog window or quit the underlying program. This <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget is also resizable, in relative increments of 5% larger or smaller, to a maximum of <span class="math notranslate nohighlight">\(1.05^5\)</span> times the initial size, and to a minimum of <span class="math notranslate nohighlight">\(1.05^{-5}\)</span> times the initial size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -382,32 +385,32 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt id="howdy.core.QDialogWithPrinting.makeBigger">
-<code class="sig-name descname">makeBigger</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting.makeBigger" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.QDialogWithPrinting.makeBigger">
+<span class="sig-name descname"><span class="pre">makeBigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting.makeBigger" title="Permalink to this definition">¶</a></dt>
 <dd><p>makes the widget incrementally 5% larger, for a maximum of <span class="math notranslate nohighlight">\(1.05^5\)</span>, or approximately 28% larger than, the initial size.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.core.QDialogWithPrinting.makeSmaller">
-<code class="sig-name descname">makeSmaller</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting.makeSmaller" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.QDialogWithPrinting.makeSmaller">
+<span class="sig-name descname"><span class="pre">makeSmaller</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting.makeSmaller" title="Permalink to this definition">¶</a></dt>
 <dd><p>makes the widget incrementally 5% smaller, for a minimum of <span class="math notranslate nohighlight">\(1.05^{-5}\)</span>, or approximately 28% smaller than, the initial size.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.core.QDialogWithPrinting.resetSize">
-<code class="sig-name descname">resetSize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting.resetSize" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.QDialogWithPrinting.resetSize">
+<span class="sig-name descname"><span class="pre">resetSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting.resetSize" title="Permalink to this definition">¶</a></dt>
 <dd><p>reset the widget size to the initial size.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.core.QDialogWithPrinting.reset_sizes">
-<code class="sig-name descname">reset_sizes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting.reset_sizes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.QDialogWithPrinting.reset_sizes">
+<span class="sig-name descname"><span class="pre">reset_sizes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting.reset_sizes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the default widget size to the current size.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.core.QDialogWithPrinting.screenGrab">
-<code class="sig-name descname">screenGrab</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting.screenGrab" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.QDialogWithPrinting.screenGrab">
+<span class="sig-name descname"><span class="pre">screenGrab</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting.screenGrab" title="Permalink to this definition">¶</a></dt>
 <dd><p>take a screen shot of itself and saver to a PNG file through a <code class="xref py py-class docutils literal notranslate"><span class="pre">QFileDialog</span></code> widget.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -418,12 +421,12 @@
 </dd></dl>
 
 <dl class="py class">
-<dt id="howdy.core.QLabelWithSave">
-<em class="property">class </em><code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">QLabelWithSave</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QLabelWithSave" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.QLabelWithSave">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">QLabelWithSave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QLabelWithSave" title="Permalink to this definition">¶</a></dt>
 <dd><p>A convenient <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget that inherits from <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qlabel.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QLabel</span></code></a>, but allows screen shots.</p>
 <dl class="py method">
-<dt id="howdy.core.QLabelWithSave.contextMenuEvent">
-<code class="sig-name descname">contextMenuEvent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QLabelWithSave.contextMenuEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.QLabelWithSave.contextMenuEvent">
+<span class="sig-name descname"><span class="pre">contextMenuEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QLabelWithSave.contextMenuEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a <a class="reference external" href="https://en.wikipedia.org/wiki/Context_menu">context menu</a> with a single action, <em>Save Pixmap</em>, that takes a screen shot of this widget, using <a class="reference internal" href="#howdy.core.QLabelWithSave.screenGrab" title="howdy.core.QLabelWithSave.screenGrab"><code class="xref py py-meth docutils literal notranslate"><span class="pre">screenGrab</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -433,8 +436,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="howdy.core.QLabelWithSave.screenGrab">
-<code class="sig-name descname">screenGrab</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QLabelWithSave.screenGrab" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.QLabelWithSave.screenGrab">
+<span class="sig-name descname"><span class="pre">screenGrab</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QLabelWithSave.screenGrab" title="Permalink to this definition">¶</a></dt>
 <dd><p>take a screen shot of itself and save to a PNG file through a <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qfiledialog.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QFileDialog</span></code></a> widget.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -445,8 +448,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.check_valid_RST">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">check_valid_RST</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">myString</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.check_valid_RST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.check_valid_RST">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">check_valid_RST</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">myString</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.check_valid_RST" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks to see whether the input string is valid <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -466,8 +469,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.convert_string_RST">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">convert_string_RST</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">myString</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.convert_string_RST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.convert_string_RST">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">convert_string_RST</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">myString</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.convert_string_RST" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a valid <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> input string into rich HTML.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -487,20 +490,20 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.create_all">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">create_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.create_all" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.create_all">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">create_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.create_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>creates the necessary <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> tables into the database file <code class="docutils literal notranslate"><span class="pre">~/.config/howdy/app.db</span></code> if they don’t already exist, but only if not building documentation in <a class="reference external" href="https://www.readthedocs.io">Read the docs</a>.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="howdy.core.geoip_reader">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">geoip_reader</code><em class="property"> = &lt;geoip2.database.Reader object&gt;</em><a class="headerlink" href="#howdy.core.geoip_reader" title="Permalink to this definition">¶</a></dt>
-<dd><p>This contains an on-disk <a class="reference external" href="https://www.maxmind.com/en/geoip2-services-and-databases">MaxMind</a> database, of type <a class="reference external" href="https://geoip2.readthedocs.io/en/latest/index.html#geoip2.database.Reader" title="(in geoip2 v3.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">geoip2.database.Reader</span></code></a>, containing location information for IP addresses.</p>
+<dt class="sig sig-object py" id="howdy.core.geoip_reader">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">geoip_reader</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;geoip2.database.Reader</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#howdy.core.geoip_reader" title="Permalink to this definition">¶</a></dt>
+<dd><p>This contains an on-disk <a class="reference external" href="https://www.maxmind.com/en/geoip2-services-and-databases">MaxMind</a> database, of type <a class="reference external" href="https://geoip2.readthedocs.io/en/latest/index.html#geoip2.database.Reader" title="(in geoip2 v4.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">geoip2.database.Reader</span></code></a>, containing location information for IP addresses.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.get_formatted_duration">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">get_formatted_duration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">totdur</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_formatted_duration" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.get_formatted_duration">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_formatted_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">totdur</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_formatted_duration" title="Permalink to this definition">¶</a></dt>
 <dd><p>This routine spits out a nice, formatted string representation of the duration, which is of
 type <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>.</p>
 <dl class="field-list simple">
@@ -517,8 +520,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.get_formatted_size">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">get_formatted_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">totsizebytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_formatted_size" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.get_formatted_size">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_formatted_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">totsizebytes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_formatted_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>This routine spits out a nice, formatted string representation of a file size, which is represented in int.</p>
 <p>This method works like this.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">get_formatted_size</span><span class="p">(</span> <span class="nb">int</span><span class="p">(</span><span class="mf">2e3</span><span class="p">)</span> <span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;1.953 kB&#39;</span> <span class="c1"># kilobytes</span>
@@ -544,8 +547,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.get_formatted_size_MB">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">get_formatted_size_MB</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">totsizeMB</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_formatted_size_MB" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.get_formatted_size_MB">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_formatted_size_MB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">totsizeMB</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_formatted_size_MB" title="Permalink to this definition">¶</a></dt>
 <dd><p>Same as <a class="reference internal" href="#howdy.core.get_formatted_size" title="howdy.core.get_formatted_size"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_formatted_size</span></code></a>, except this operates on file sizes in units of megabytes rather than bytes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -565,8 +568,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.get_lastupdated_string">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">get_lastupdated_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">datetime.datetime(2021, 1, 31, 21, 52, 23, 468940)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.get_lastupdated_string">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2021,</span> <span class="pre">7,</span> <span class="pre">18,</span> <span class="pre">8,</span> <span class="pre">43,</span> <span class="pre">9,</span> <span class="pre">801363)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a string representation of a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -586,8 +589,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.get_maximum_matchval">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">get_maximum_matchval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">check_string</span></em>, <em class="sig-param"><span class="n">input_string</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_maximum_matchval" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.get_maximum_matchval">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_maximum_matchval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">check_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_maximum_matchval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the <a class="reference external" href="https://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein</a> distance of two strings, implemented using  A perfect match is a score of <code class="docutils literal notranslate"><span class="pre">100.0</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -606,8 +609,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.get_popularity_color">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">get_popularity_color</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">hpop</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">1.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_popularity_color" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.get_popularity_color">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_popularity_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hpop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_popularity_color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a color that represents some darkish cool looking color interpolated between 0 and 1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -626,14 +629,14 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.returnQAppWithFonts">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">returnQAppWithFonts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.returnQAppWithFonts" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.returnQAppWithFonts">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">returnQAppWithFonts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.returnQAppWithFonts" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns a customized <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qapplication.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QApplication</span></code></a> with all custom fonts loaded.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.return_error_raw">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">return_error_raw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.return_error_raw" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.return_error_raw">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">return_error_raw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.return_error_raw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a default <code class="docutils literal notranslate"><span class="pre">tuple</span></code> of type <code class="docutils literal notranslate"><span class="pre">None,</span> <span class="pre">msg</span></code>, where <code class="docutils literal notranslate"><span class="pre">msg</span></code> is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -649,8 +652,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.splitall">
-<code class="sig-prename descclassname">howdy.core.</code><code class="sig-name descname">splitall</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_init</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.splitall" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.splitall">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">splitall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_init</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.splitall" title="Permalink to this definition">¶</a></dt>
 <dd><p>This routine is used by <a class="reference internal" href="../howdy-tv/howdy_tv_api.html#howdy.tv.tv.get_path_data_on_tvshow" title="howdy.tv.tv.get_path_data_on_tvshow"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_path_data_on_tvshow</span></code></a> to split a TV show file path into separate directory delimited tokens.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -675,8 +678,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <li><p>miscellaneous functionalities, such as the following: getting formatted date strings from a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> object.</p></li>
 </ul>
 <span class="target" id="module-howdy.core.core"></span><dl class="py function">
-<dt id="howdy.core.core.add_mapping">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">add_mapping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">plex_email</span></em>, <em class="sig-param"><span class="n">plex_emails</span></em>, <em class="sig-param"><span class="n">new_emails</span></em>, <em class="sig-param"><span class="n">replace_existing</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.add_mapping" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.add_mapping">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">add_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plex_email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plex_emails</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_emails</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_existing</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.add_mapping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Changes the mapping of one member of the <a class="reference external" href="https://plex.tv">Plex</a> server’s emails from an old set of emails to a new set of emails. The command line tool, <a class="reference internal" href="cli_tools/howdy_core_cli.html#howdy-core-cli"><span class="std std-ref">howdy_core_cli</span></a>, is a front end to the lower-level functionality implemented here.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -690,8 +693,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.checkServerCredentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">checkServerCredentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doLocal</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">checkWorkingServer</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.checkServerCredentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.checkServerCredentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">checkServerCredentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doLocal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkWorkingServer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.checkServerCredentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns get a local or remote URL and <a class="reference external" href="https://plex.tv">Plex</a> access token to allow for API access to the server. If there is already a VALID token in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database, then uses that. Otherwise, tries to acquire a <a class="reference external" href="https://plex.tv">Plex</a> access token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -715,8 +718,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.check_imgurl_credentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">check_imgurl_credentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clientID</span></em>, <em class="sig-param"><span class="n">clientSECRET</span></em>, <em class="sig-param"><span class="n">clientREFRESHTOKEN</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.check_imgurl_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.check_imgurl_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">check_imgurl_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clientSECRET</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clientREFRESHTOKEN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.check_imgurl_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>validate the <a class="reference external" href="https://imgur.com/">Imgur</a> API credentials with the provided API client ID, secret, and refresh token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -744,8 +747,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.check_jackett_credentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">check_jackett_credentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">apikey</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.check_jackett_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.check_jackett_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">check_jackett_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.check_jackett_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>validate the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> server credentials with the provided URL and API key.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -772,8 +775,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.fill_out_movies_stuff">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">fill_out_movies_stuff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'http://localhost:32400'</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.fill_out_movies_stuff" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.fill_out_movies_stuff">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">fill_out_movies_stuff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.fill_out_movies_stuff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. The first element of the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of movies from this <a class="reference external" href="https://plex.tv">Plex</a> server. Each element in that list is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> with the following structure with 12 keys and values, as shown in this example</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Blue Collar&#39;</span><span class="p">,</span>
   <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span>
@@ -809,8 +812,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.getCredentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">getCredentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">checkWorkingServer</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.getCredentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.getCredentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">getCredentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkWorkingServer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.getCredentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the <a class="reference external" href="https://plex.tv">Plex</a> user account information stored in <code class="docutils literal notranslate"><span class="pre">~/.config/howdy/app.db</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -833,8 +836,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.getTokenForUsernamePassword">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">getTokenForUsernamePassword</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">username</span></em>, <em class="sig-param"><span class="n">password</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.getTokenForUsernamePassword" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.getTokenForUsernamePassword">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">getTokenForUsernamePassword</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.getTokenForUsernamePassword" title="Permalink to this definition">¶</a></dt>
 <dd><p>get the <a class="reference external" href="https://plex.tv">Plex</a> access token for the <a class="reference external" href="https://plex.tv">Plex</a> server given an username and password for the user account.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -862,8 +865,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_all_servers">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_all_servers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_all_servers" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_all_servers">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_all_servers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_all_servers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find all the <a class="reference external" href="https://plex.tv">Plex</a> servers for which you have access.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -895,8 +898,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_current_date_newsletter">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_current_date_newsletter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_current_date_newsletter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_current_date_newsletter">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_current_date_newsletter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_current_date_newsletter" title="Permalink to this definition">¶</a></dt>
 <dd><p>the last date and time at which the <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a> email newsletter was updated.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -913,8 +916,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_date_from_datestring">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_date_from_datestring</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dstring</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_date_from_datestring" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_date_from_datestring">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_date_from_datestring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dstring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_date_from_datestring" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> object from a date string with the format, “January 1, 2000”.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -930,8 +933,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_email_contacts">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_email_contacts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_email_contacts" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_email_contacts">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_email_contacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_email_contacts" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of all email addresses of friends who have stream access to your <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -950,8 +953,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_imgurl_credentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_imgurl_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_imgurl_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_imgurl_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_imgurl_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_imgurl_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>retrieves the <a class="reference external" href="https://imgur.com/">Imgur</a> API credentials from the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -980,8 +983,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_jackett_credentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_jackett_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_jackett_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_jackett_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_jackett_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_jackett_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>retrieves the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> server’s API credentials from the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1001,8 +1004,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_lastN_movies">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_lastN_movies</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lastN</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'http://localhost:32400'</span></em>, <em class="sig-param"><span class="n">useLastNewsletterDate</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_lastN_movies" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_lastN_movies">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_lastN_movies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lastN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useLastNewsletterDate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_lastN_movies" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the last <span class="math notranslate nohighlight">\(N\)</span> movies that were uploaded to the <a class="reference external" href="https://plex.tv">Plex</a> server, either after the last date at which a newsletter was sent out or not.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1023,8 +1026,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_libraries">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_libraries</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'http://localhost:32400'</span></em>, <em class="sig-param"><span class="n">do_full</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_libraries" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_libraries">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_libraries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_full</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_libraries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server. The key is the library number, while the value can be either the name of the library or a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of library name and library type</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1044,8 +1047,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_library_data">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_library_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'http://localhost:32400'</span></em>, <em class="sig-param"><span class="n">num_threads</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_library_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_library_data">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_library_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_library_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the data on the specific Plex library, as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>. This lower level functionality lives in the same space as <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest">PlexAPI</a>. Three types of library data can be returned: movies, TV shows, and music.</p>
 <blockquote>
 <div><ul class="simple">
@@ -1141,8 +1144,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_library_stats">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_library_stats</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'http://localhost:32400'</span></em>, <em class="sig-param"><span class="n">sinceDate</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_library_stats" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_library_stats">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_library_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sinceDate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_library_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets summary data on a specific library on the <a class="reference external" href="https://plex.tv">Plex</a> server. returned as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>. The <a class="reference external" href="https://plex.tv">Plex</a> library <code class="docutils literal notranslate"><span class="pre">mediatype</span></code> can be one of <code class="docutils literal notranslate"><span class="pre">movie</span></code> (Movies), <code class="docutils literal notranslate"><span class="pre">show</span></code> (TV shows), or <code class="docutils literal notranslate"><span class="pre">artist</span></code> (Music). The common part of the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> looks like the following.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s1">&#39;fullURL&#39;</span>   <span class="p">:</span> <span class="n">FULLURL</span><span class="p">,</span>   <span class="c1"># URL of the Plex server in the form of https://IP-ADDRESS:PORT</span>
@@ -1216,8 +1219,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_mapped_email_contacts">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_mapped_email_contacts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_mapped_email_contacts" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_mapped_email_contacts">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_mapped_email_contacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_mapped_email_contacts" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of all email addresses (including <a class="reference external" href="https://plex.tv">Plex</a> server friends and mapped emails) to send <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a> related emails.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1236,8 +1239,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_movies_libraries">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_movies_libraries</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'http://localhost:32400'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_movies_libraries" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_movies_libraries">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_movies_libraries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_movies_libraries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the key numbers of all Plex movie libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1256,9 +1259,9 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_pic_data">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_pic_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">plexPICURL</span></em>, <em class="sig-param"><span class="n">token</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_pic_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> data as a <a class="reference external" href="https://requests.readthedocs.io/en/master/api/#requests.Response" title="(in Requests v2.25.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a> object, from a movie picture URL on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
+<dt class="sig sig-object py" id="howdy.core.core.get_pic_data">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_pic_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plexPICURL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_pic_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> data as a <a class="reference external" href="https://docs.python-requests.org/en/master/api/#requests.Response" title="(in Requests v2.26.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a> object, from a movie picture URL on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1270,14 +1273,14 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dd class="field-even"><p>the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> data for the movie image.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://requests.readthedocs.io/en/master/api/#requests.Response" title="(in Requests v2.25.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python-requests.org/en/master/api/#requests.Response" title="(in Requests v2.26.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.get_updated_at">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">get_updated_at</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'https://localhost:32400'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_updated_at" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.get_updated_at">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_updated_at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'https://localhost:32400'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_updated_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the date and time at which the <a class="reference external" href="https://plex.tv">Plex</a> server was last updated, as a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1296,8 +1299,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.oauthCheckGoogleCredentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">oauthCheckGoogleCredentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bypass</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.oauthCheckGoogleCredentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.oauthCheckGoogleCredentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">oauthCheckGoogleCredentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bypass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.oauthCheckGoogleCredentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks whether the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google OAuth2</a> authentication settings exist in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database. The format of the authentication data in the configuration database is,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s1">&#39;access_token&#39;</span><span class="p">:</span> <span class="n">XXXX</span><span class="p">,</span>
   <span class="s1">&#39;client_id&#39;</span><span class="p">:</span> <span class="n">YYYY</span><span class="p">,</span>
@@ -1349,18 +1352,18 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.oauthGetGoogleCredentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">oauthGetGoogleCredentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.oauthGetGoogleCredentials" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google Oauth2</a> credentials, stored in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database, in the form of a refreshed <a class="reference external" href="https://google-auth.readthedocs.io/en/latest/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials" title="(in google-auth v1.18.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Credentials</span></code></a> object. This OAuth2 authentication method is used for ALL the services accessed by <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a>.</p>
+<dt class="sig sig-object py" id="howdy.core.core.oauthGetGoogleCredentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">oauthGetGoogleCredentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.oauthGetGoogleCredentials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google Oauth2</a> credentials, stored in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database, in the form of a refreshed <a class="reference external" href="https://google-auth.readthedocs.io/en/latest/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials" title="(in google-auth v1.30.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Credentials</span></code></a> object. This OAuth2 authentication method is used for ALL the services accessed by <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://google-auth.readthedocs.io/en/latest/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials" title="(in google-auth v1.18.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Credentials</span></code></a> form of the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google Oauth2</a> credentials for various Oauth2 services.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://google-auth.readthedocs.io/en/latest/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials" title="(in google-auth v1.30.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Credentials</span></code></a> form of the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google Oauth2</a> credentials for various Oauth2 services.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://google-auth.readthedocs.io/en/latest/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials" title="(in google-auth v1.18.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Credentials</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://google-auth.readthedocs.io/en/latest/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials" title="(in google-auth v1.30.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Credentials</span></code></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1375,8 +1378,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.oauthGetOauth2ClientGoogleCredentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">oauthGetOauth2ClientGoogleCredentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.oauthGetOauth2ClientGoogleCredentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.oauthGetOauth2ClientGoogleCredentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">oauthGetOauth2ClientGoogleCredentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.oauthGetOauth2ClientGoogleCredentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google Oauth2</a> credentials, stored in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database, in the form of a refreshed <a class="reference external" href="https://oauth2client.readthedocs.io/en/latest/source/oauth2client.client.html#oauth2client.client.AccessTokenCredentials" title="(in oauth2client v4.1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccessTokenCredentials</span></code></a> object. This OAuth2 authentication method IS used for all the services accessed by <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1398,8 +1401,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.oauth_generate_google_permission_url">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">oauth_generate_google_permission_url</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.oauth_generate_google_permission_url" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.oauth_generate_google_permission_url">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">oauth_generate_google_permission_url</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.oauth_generate_google_permission_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google OAuth2</a> web-based flow for all the Google services used in <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a>. The authentication process that uses this flow is described in <a class="reference internal" href="../howdy-config/howdy_services_config.html#summary-of-setting-up-google-credentials"><span class="std std-ref">this subsection</span></a>. Here are the programmatic steps to finally generate an  <a class="reference external" href="https://oauth2client.readthedocs.io/en/latest/source/oauth2client.client.html#oauth2client.client.AccessTokenCredentials" title="(in oauth2client v4.1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccessTokenCredentials</span></code></a> object.</p>
 <blockquote>
 <div><ol class="arabic">
@@ -1436,8 +1439,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.oauth_store_google_credentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">oauth_store_google_credentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">credentials</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.oauth_store_google_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.oauth_store_google_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">oauth_store_google_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.oauth_store_google_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Store the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google OAuth2</a> credentials, in the form of a <a class="reference external" href="https://oauth2client.readthedocs.io/en/latest/source/oauth2client.client.html#oauth2client.client.AccessTokenCredentials" title="(in oauth2client v4.1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccessTokenCredentials</span></code></a> object, into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1456,8 +1459,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.processValidHTMLWithPNG">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">processValidHTMLWithPNG</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">pngDataDict</span></em>, <em class="sig-param"><span class="n">doEmbed</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.processValidHTMLWithPNG" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.processValidHTMLWithPNG">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">processValidHTMLWithPNG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pngDataDict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doEmbed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.processValidHTMLWithPNG" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a prettified HTML document, using <a class="reference external" href="https://www.crummy.com/software/BeautifulSoup/bs4/doc">BeautifulSoup</a>, including all <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> image data (whether URLs or <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base 64 encoded</a> data) in <code class="docutils literal notranslate"><span class="pre">&lt;img&gt;</span></code> tags.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1477,8 +1480,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.pushCredentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">pushCredentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">username</span></em>, <em class="sig-param"><span class="n">password</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.pushCredentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.pushCredentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">pushCredentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.pushCredentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>replace the <a class="reference external" href="https://plex.tv">Plex</a> server credentials, located in <code class="docutils literal notranslate"><span class="pre">~/.config/howdy/app.db</span></code>, with a new <code class="docutils literal notranslate"><span class="pre">username</span></code> and <code class="docutils literal notranslate"><span class="pre">password</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1501,8 +1504,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.refresh_library">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">refresh_library</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">library_dict</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="n">fullURL</span><span class="o">=</span><span class="default_value">'http://localhost:32400'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.refresh_library" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.refresh_library">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">refresh_library</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.refresh_library" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lower level front-end to <code class="docutils literal notranslate"><span class="pre">plex_resynclibs.py</span></code> that refreshes a <a class="reference external" href="https://plex.tv">Plex</a> server library. Here I use instructions found in this <a class="reference external" href="https://support.plex.tv/hc/en-us/articles/201638786-Plex-Media-Server-URL-Commands">Plex forum article on URL commands</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1517,8 +1520,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.rstToHTML">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">rstToHTML</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rstString</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.rstToHTML" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.rstToHTML">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">rstToHTML</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rstString</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.rstToHTML" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> string into HTML, then prettifies the intermediate HTML using <a class="reference external" href="https://www.crummy.com/software/BeautifulSoup/bs4/doc">BeautifulSoup</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1534,8 +1537,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.set_date_newsletter">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">set_date_newsletter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.set_date_newsletter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.set_date_newsletter">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">set_date_newsletter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.set_date_newsletter" title="Permalink to this definition">¶</a></dt>
 <dd><p>sets the date of the <a class="reference external" href="https://plex.tv">Plex</a> newsletter to <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="(in Python v3.9)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">now()</span></code></a>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1544,8 +1547,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.store_imgurl_credentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">store_imgurl_credentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clientID</span></em>, <em class="sig-param"><span class="n">clientSECRET</span></em>, <em class="sig-param"><span class="n">clientREFRESHTOKEN</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">mainALBUMID</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mainALBUMNAME</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.store_imgurl_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.store_imgurl_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">store_imgurl_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clientSECRET</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clientREFRESHTOKEN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mainALBUMID</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mainALBUMNAME</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.store_imgurl_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>stores the <a class="reference external" href="https://imgur.com/">Imgur</a> API credentials into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1575,8 +1578,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core.store_jackett_credentials">
-<code class="sig-prename descclassname">howdy.core.core.</code><code class="sig-name descname">store_jackett_credentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">apikey</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.store_jackett_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core.store_jackett_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">store_jackett_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.store_jackett_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>stores the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> server’s API credentials into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1607,8 +1610,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <h2><span class="section-number">4.3.3. </span>howdy.core.core_deluge module<a class="headerlink" href="#howdy-core-core-deluge-module" title="Permalink to this headline">¶</a></h2>
 <p>This module implements the functionality to interact with a <a class="reference external" href="https://www.seedhost.eu">Seedhost</a> <a class="reference external" href="https://en.wikipedia.org/wiki/Seedbox">seedbox</a> <a class="reference external" href="https://deluge-torrent.org">Deluge torrent server</a>, by copying a minimal set of the functionality of a <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge torrent client</a>. The data formatting in this module is largely or wholly copied from the <a class="reference external" href="https://deluge.readthedocs.io/en/latest">Deluge SDK</a>. The much reduced Deluge torrent client, <a class="reference internal" href="cli_tools/howdy_core_cli.html#howdy-deluge-console"><span class="std std-ref">howdy_deluge_console</span></a>, is a CLI front-end to this module.</p>
 <span class="target" id="module-howdy.core.core_deluge"></span><dl class="py function">
-<dt id="howdy.core.core_deluge.create_deluge_client">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">create_deluge_client</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">port</span></em>, <em class="sig-param"><span class="n">username</span></em>, <em class="sig-param"><span class="n">password</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.create_deluge_client" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.create_deluge_client">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">create_deluge_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.create_deluge_client" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a minimal Deluge torrent client to the Deluge seedbox server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1634,8 +1637,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.deluge_add_magnet_file">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">deluge_add_magnet_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">magnet_uri</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_add_magnet_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_add_magnet_file">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_add_magnet_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnet_uri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_add_magnet_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uploads a <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">Magnet URI</a> to the Deluge server through the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">Deluge RPC client</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1651,8 +1654,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.deluge_add_torrent_file">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">deluge_add_torrent_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">torrent_file_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_add_torrent_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_add_torrent_file">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_add_torrent_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_add_torrent_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Higher level method that takes a torrent file on disk and uploads to the Deluge server through the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">Deluge RPC client</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1672,8 +1675,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.deluge_add_torrent_file_as_data">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">deluge_add_torrent_file_as_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">torrent_file_name</span></em>, <em class="sig-param"><span class="n">torrent_file_data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_add_torrent_file_as_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_add_torrent_file_as_data">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_add_torrent_file_as_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_file_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_add_torrent_file_as_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Higher level method that takes a torrent file name, and its byte data representation, and uploads to the Deluge server through the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">Deluge RPC client</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1694,8 +1697,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.deluge_add_url">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">deluge_add_url</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">torrent_url</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_add_url" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_add_url">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_add_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_add_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a torrent file via URL to the Deluge server through the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">Deluge RPC client</a>. If the URL is valid, then added. If the URL is invalid, then nothing happens.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1708,8 +1711,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.deluge_format_info">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">deluge_format_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span></em>, <em class="sig-param"><span class="n">torrent_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_format_info" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_format_info">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_format_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_format_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a nicely formatted representation of the status of a torrent.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;</span>&gt;&gt; print<span class="o">(</span> <span class="s1">&#39;%s&#39;</span> % deluge_format_info<span class="o">(</span> status, <span class="s1">&#39;ed53ba61555cab24946ebf2f346752805601a7fb&#39;</span> <span class="o">)</span> <span class="o">)</span>
 
@@ -1745,8 +1748,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.deluge_get_matching_torrents">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">deluge_get_matching_torrents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">torrent_id_strings</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_get_matching_torrents" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_get_matching_torrents">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_get_matching_torrents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_id_strings</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_get_matching_torrents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of possibly truncated MD5 hashes of candidate torrents on the Deluge server, returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of MD5 sums of torrents that match what was provided.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1765,8 +1768,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.deluge_get_torrents_info">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">deluge_get_torrents_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_get_torrents_info" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_get_torrents_info">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_get_torrents_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_get_torrents_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of status info for every torrent on the Deluge server through the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">Deluge RPC client</a>. The key in this <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> is the MD5 hash of the torrent, and its value is a status <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.  For each torrent, here are the keys in the status <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>: <code class="docutils literal notranslate"><span class="pre">active_time</span></code>, <code class="docutils literal notranslate"><span class="pre">all_time_download</span></code>, <code class="docutils literal notranslate"><span class="pre">distributed_copies</span></code>, <code class="docutils literal notranslate"><span class="pre">download_location</span></code>, <code class="docutils literal notranslate"><span class="pre">download_payload_rate</span></code>, <code class="docutils literal notranslate"><span class="pre">eta</span></code>, <code class="docutils literal notranslate"><span class="pre">file_priorities</span></code>, <code class="docutils literal notranslate"><span class="pre">file_progress</span></code>, <code class="docutils literal notranslate"><span class="pre">files</span></code>, <code class="docutils literal notranslate"><span class="pre">is_finished</span></code>, <code class="docutils literal notranslate"><span class="pre">is_seed</span></code>, <code class="docutils literal notranslate"><span class="pre">last_seen_complete</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">next_announce</span></code>, <code class="docutils literal notranslate"><span class="pre">num_peers</span></code>, <code class="docutils literal notranslate"><span class="pre">num_pieces</span></code>, <code class="docutils literal notranslate"><span class="pre">num_seeds</span></code>, <code class="docutils literal notranslate"><span class="pre">peers</span></code>, <code class="docutils literal notranslate"><span class="pre">piece_length</span></code>, <code class="docutils literal notranslate"><span class="pre">progress</span></code>, <code class="docutils literal notranslate"><span class="pre">ratio</span></code>, <code class="docutils literal notranslate"><span class="pre">seed_rank</span></code>, <code class="docutils literal notranslate"><span class="pre">seeding_time</span></code>, <code class="docutils literal notranslate"><span class="pre">state</span></code>, <code class="docutils literal notranslate"><span class="pre">time_added</span></code>, <code class="docutils literal notranslate"><span class="pre">time_since_transfer</span></code>, <code class="docutils literal notranslate"><span class="pre">total_done</span></code>, <code class="docutils literal notranslate"><span class="pre">total_payload_download</span></code>, <code class="docutils literal notranslate"><span class="pre">total_payload_upload</span></code>, <code class="docutils literal notranslate"><span class="pre">total_peers</span></code>, <code class="docutils literal notranslate"><span class="pre">total_seeds</span></code>, <code class="docutils literal notranslate"><span class="pre">total_size</span></code>, <code class="docutils literal notranslate"><span class="pre">total_uploaded</span></code>, <code class="docutils literal notranslate"><span class="pre">tracker_host</span></code>, <code class="docutils literal notranslate"><span class="pre">tracker_status</span></code>, <code class="docutils literal notranslate"><span class="pre">upload_payload_rate</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1782,8 +1785,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.deluge_is_torrent_file">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">deluge_is_torrent_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">torrent_file_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_is_torrent_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_is_torrent_file">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_is_torrent_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">torrent_file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_is_torrent_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if a file is a torrent file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1799,8 +1802,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.deluge_is_url">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">deluge_is_url</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">torrent_url</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_is_url" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_is_url">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_is_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">torrent_url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_is_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks whether an URL is valid, following <a class="reference external" href="https://stackoverflow.com/questions/7160737/python-how-to-validate-a-url-in-python-malformed-or-not">this prescription</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1816,8 +1819,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.deluge_pause_torrent">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">deluge_pause_torrent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">torrent_ids</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_pause_torrent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_pause_torrent">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_pause_torrent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_ids</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_pause_torrent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pauses torrents on the Deluge server. Unlike other methods here, this does not use the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">Deluge RPC client</a> lower-level RPC calls, but system command line calls to the deluge-console client. If the deluge-console executable cannot be found, then this does nothing. I do not know the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">Deluge RPC client</a> is not working.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1830,8 +1833,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.deluge_remove_torrent">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">deluge_remove_torrent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">torrent_ids</span></em>, <em class="sig-param"><span class="n">remove_data</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_remove_torrent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_remove_torrent">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_remove_torrent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_remove_torrent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove torrents from the Deluge server through the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">Deluge RPC client</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1845,8 +1848,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.deluge_resume_torrent">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">deluge_resume_torrent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">torrent_ids</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_resume_torrent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_resume_torrent">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_resume_torrent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_ids</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_resume_torrent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resumes torrents on the Deluge server. Unlike other methods here, this does not use the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">Deluge RPC client</a> lower-level RPC calls, but system command line calls to the deluge-console client. If the deluge-console executable cannot be found, then this does nothing. I do not know the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">Deluge RPC client</a> is not working.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1859,8 +1862,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.format_progressbar">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">format_progressbar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">progress</span></em>, <em class="sig-param"><span class="n">width</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.format_progressbar" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.format_progressbar">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">format_progressbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">progress</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.format_progressbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a string of a progress bar. This code has been copied from <code class="xref py py-meth docutils literal notranslate"><span class="pre">deluge's</span> <span class="pre">format_progressbar</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1881,8 +1884,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.format_size">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">format_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fsize_b</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.format_size" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.format_size">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">format_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fsize_b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.format_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Formats the bytes value into a string with KiB, MiB or GiB units. This code has been copied from <code class="xref py py-meth docutils literal notranslate"><span class="pre">deluge's</span> <span class="pre">format_size</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1903,8 +1906,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.format_speed">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">format_speed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bps</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.format_speed" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.format_speed">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">format_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.format_speed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Formats a string to display a transfer speed utilizing <code class="xref py py-func docutils literal notranslate"><span class="pre">fsize()</span></code>. This is code has been copied from <code class="xref py py-meth docutils literal notranslate"><span class="pre">deluge's</span> <span class="pre">format_speed</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1925,8 +1928,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.format_time">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">format_time</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seconds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.format_time" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.format_time">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">format_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.format_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Formats the time, in seconds, to a nice format. Unfortunately, the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> class is too unwieldy for this type of formatting. This code is copied from <code class="xref py py-meth docutils literal notranslate"><span class="pre">deluge's</span> <span class="pre">format_time</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1947,8 +1950,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.get_deluge_client">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">get_deluge_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.get_deluge_client" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.get_deluge_client">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">get_deluge_client</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.get_deluge_client" title="Permalink to this definition">¶</a></dt>
 <dd><p>Using a minimal Deluge torrent client from server credentials stored in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1969,8 +1972,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.get_deluge_credentials">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">get_deluge_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.get_deluge_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.get_deluge_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">get_deluge_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.get_deluge_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the Deluge server credentials from the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database. The data looks like this.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">XXXX</span><span class="p">,</span>
   <span class="s1">&#39;port&#39;</span><span class="p">:</span> <span class="n">YYYY</span><span class="p">,</span>
@@ -1997,8 +2000,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_deluge.push_deluge_credentials">
-<code class="sig-prename descclassname">howdy.core.core_deluge.</code><code class="sig-name descname">push_deluge_credentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">port</span></em>, <em class="sig-param"><span class="n">username</span></em>, <em class="sig-param"><span class="n">password</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.push_deluge_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_deluge.push_deluge_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">push_deluge_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.push_deluge_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stores the Deluge server credentials into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2031,8 +2034,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <h2><span class="section-number">4.3.4. </span>howdy.core.core_rsync module<a class="headerlink" href="#howdy-core-core-rsync-module" title="Permalink to this headline">¶</a></h2>
 <p>This module implements the functionality to interact with a <a class="reference external" href="https://www.seedhost.eu">Seedhost</a> <a class="reference external" href="https://en.wikipedia.org/wiki/Seedbox">seedbox</a> SSH server to download or upload files and directories using the <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> protocol tunneled through SSH. <a class="reference internal" href="cli_tools/howdy_core_cli.html#rsync-subproc"><span class="std std-ref">rsync_subproc</span></a> is a CLI front-end to this module.</p>
 <span class="target" id="module-howdy.core.core_rsync"></span><dl class="py function">
-<dt id="howdy.core.core_rsync.check_credentials">
-<code class="sig-prename descclassname">howdy.core.core_rsync.</code><code class="sig-name descname">check_credentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">local_dir</span></em>, <em class="sig-param"><span class="n">sshpath</span></em>, <em class="sig-param"><span class="n">password</span></em>, <em class="sig-param"><span class="n">subdir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_rsync.check_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_rsync.check_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_rsync.</span></span><span class="sig-name descname"><span class="pre">check_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sshpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_rsync.check_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks whether one can download to (or upload from) the directory <code class="docutils literal notranslate"><span class="pre">local_dir</span></code> on the <a class="reference external" href="https://plex.tv">Plex</a> server to the remote SSH server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2060,8 +2063,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_rsync.download_upload_files">
-<code class="sig-prename descclassname">howdy.core.core_rsync.</code><code class="sig-name descname">download_upload_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">glob_string</span></em>, <em class="sig-param"><span class="n">numtries</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">debug_string</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">do_reverse</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_rsync.download_upload_files" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_rsync.download_upload_files">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_rsync.</span></span><span class="sig-name descname"><span class="pre">download_upload_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">glob_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numtries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_rsync.download_upload_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the system process, using <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a>, to download files and directories from, or upload to, the remote SSH server. <em>On completion, the source files are all deleted</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2076,8 +2079,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_rsync.get_credentials">
-<code class="sig-prename descclassname">howdy.core.core_rsync.</code><code class="sig-name descname">get_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_rsync.get_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_rsync.get_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_rsync.</span></span><span class="sig-name descname"><span class="pre">get_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_rsync.get_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the rsync’ing setup from the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> in the following form.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s1">&#39;local_dir&#39;</span> <span class="p">:</span> <span class="n">XXXX</span><span class="p">,</span>
   <span class="s1">&#39;sshpath&#39;</span> <span class="p">:</span> <span class="n">YYYY</span><span class="nd">@ZZZZ</span><span class="p">,</span>
@@ -2103,8 +2106,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_rsync.get_rsync_command">
-<code class="sig-prename descclassname">howdy.core.core_rsync.</code><code class="sig-name descname">get_rsync_command</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">mystr</span></em>, <em class="sig-param"><span class="n">do_download</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_rsync.get_rsync_command" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_rsync.get_rsync_command">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_rsync.</span></span><span class="sig-name descname"><span class="pre">get_rsync_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mystr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_download</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_rsync.get_rsync_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the actual <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> command, and the command with password information obscured, to download from or upload to the remote SSH server from the <a class="reference external" href="https://plex.tv">Plex</a> server. <em>We require that sshpass_ exists and is accessible on this system</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2124,8 +2127,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt id="howdy.core.core_rsync.push_credentials">
-<code class="sig-prename descclassname">howdy.core.core_rsync.</code><code class="sig-name descname">push_credentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">local_dir</span></em>, <em class="sig-param"><span class="n">sshpath</span></em>, <em class="sig-param"><span class="n">password</span></em>, <em class="sig-param"><span class="n">subdir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_rsync.push_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_rsync.push_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_rsync.</span></span><span class="sig-name descname"><span class="pre">push_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sshpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_rsync.push_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Push the rsync’ing setup (<code class="docutils literal notranslate"><span class="pre">local_dir</span></code>, <code class="docutils literal notranslate"><span class="pre">sshpath</span></code>, <code class="docutils literal notranslate"><span class="pre">password</span></code>, and <code class="docutils literal notranslate"><span class="pre">subdir</span></code>), if working, into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2157,8 +2160,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <h2><span class="section-number">4.3.5. </span>howdy.core.core_torrents module<a class="headerlink" href="#howdy-core-core-torrents-module" title="Permalink to this headline">¶</a></h2>
 <p>This is a newer module. It implements higher level interfaces to the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching server to search for ebooks. <a class="reference internal" href="cli_tools/howdy_core_cli.html#get-book-tor"><span class="std std-ref">get_book_tor</span></a> is its only CLI front-end.</p>
 <span class="target" id="module-howdy.core.core_torrents"></span><dl class="py function">
-<dt id="howdy.core.core_torrents.get_book_torrent_jackett">
-<code class="sig-prename descclassname">howdy.core.core_torrents.</code><code class="sig-name descname">get_book_torrent_jackett</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">maxnum</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">keywords</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">verify</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.get_book_torrent_jackett" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="howdy.core.core_torrents.get_book_torrent_jackett">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_torrents.</span></span><span class="sig-name descname"><span class="pre">get_book_torrent_jackett</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.get_book_torrent_jackett" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate book Magnet links found using the main <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

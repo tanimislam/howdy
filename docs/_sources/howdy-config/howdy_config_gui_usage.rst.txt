@@ -1,19 +1,20 @@
 .. _howdy_config_gui_label:
 
-=====================================================================================
 |howdy_config_gui_icon| Consolidating Howdy Configuration With ``howdy_config_gui``
 =====================================================================================
 Although ``howdy_config_gui`` is part of ``core``, and naturally lives in :numref:`Howdy Core Functionality`, I suggest you use this configuration tool to naturally consolidate the services and settings. The final configuration data will live in an `sqlite version 3 <https://en.wikipedia.org/wiki/SQLite>`_ database that is located in ``~/.local/howdy/app.db`` and is readable only by the user (and root).
 
 Some of the ``howdy_config_gui`` screenshots are found in :numref:`Summary of Setting Up Google Credentials` (specifically :numref:`imgur_step04_credentials`, :numref:`google_step02_refreshcredentials`, and :numref:`google_step04_oauthtokenstring`) and in :numref:`Howdy Settings Configuration` (specifically :numref:`login_step01_login` and :numref:`login_step02_settings`).
 
-As described in :numref:`Howdy Services Configuration` and :numref:`Howdy Settings Configuration`, ``howdy_config_gui`` start with the initial dialog widget of three sets of services and settings organized into three rows: *LOGIN*, *CREDENTIALS*, and *MUSIC*. The second column shows the number of services for each service set. The third column shows that number of services that are *working*. A screen shot illuminates this.
+:numref:`howdy_config_gui_serviceswidget` describes the three initial sets of services and settings.
 
 .. _howdy_config_gui_serviceswidget:
 
 .. figure:: howdy-config-gui-figures/howdy_config_gui_serviceswidget.png
    :width: 100%
-   :align: center
+   :align: left
+
+   As described in :numref:`Howdy Services Configuration` and :numref:`Howdy Settings Configuration`, ``howdy_config_gui`` start with the initial dialog widget of three sets of services and settings organized into three rows: *LOGIN*, *CREDENTIALS*, and *MUSIC*. The second column shows the number of services for each service set. The third column shows that number of services that are *working*.
 
 The document is organized into these three sections.
 
@@ -23,7 +24,6 @@ The document is organized into these three sections.
 
 Login Services
 --------------
-
 As described in :numref:`Howdy Settings Configuration`, right click on the *LOGIN* row in the main widget to launch the *PLEX LOGIN CONFIGURATION* widget. The relevant screen shot, :ref:`login window <login_step01_login>`, is shown below.
 
 .. figure:: howdy-config-settings-figures/login_step01_login.png
@@ -47,20 +47,21 @@ Use your Plex_ email and password for *PLEXLOGIN*, as described in :numref:`cred
 
 Credentials Services
 ----------------------------
-
 As described in :numref:`Summary of Setting Up Google Credentials`, right click on the *CREDENTIALS* row in the main widget to launch the *PLEX CREDENTIALS CONFIGURATION* widget. The relevant screen shot, :ref:`credentials window <imgur_step04_credentials>`, is shown below.
 
 .. figure:: howdy-config-services-figures/google_step01_credentials.png
    :width: 100%
    :align: center
 
-The *PLEX CREDENTIALS CONFIGURATION* widget is organized into four services: the `TMDB service <TMDB_>`_, the `TVDB service <TVDB_>`_, the `Imgur image hosting service <Imgur_>`_, and Google's services (see :numref:`Howdy Services Configuration` for a list). Here is a screen shot.
+:numref:`howdy_credentials_mainfigure`: is a screen shot of the *PLEX CREDENTIALS CONFIGURATION* widget.
 
 .. _howdy_credentials_mainfigure:
 
 .. figure:: howdy-config-gui-figures/howdy_credentials_mainfigure.png
    :width: 100%
-   :align: center
+   :align: left
+
+   The *PLEX CREDENTIALS CONFIGURATION* widget is organized into four services: the `TMDB service <TMDB_>`_, the `TVDB service <TVDB_>`_, the `Imgur image hosting service <Imgur_>`_, and Google's services (see :numref:`Howdy Services Configuration` for a list).
 
 Apply the TMDB_ service settings according to :numref:`the_movie_database_api`. Apply the TVDB_ service settings according to :numref:`the_television_database_api`. Apply the Imgur_ settings according to :numref:`The Imgur API`. Finally, follow instructions in :numref:`Summary of Setting Up Google Credentials` to set up all six of the Google and Google-related services that Howdy uses.
 
@@ -108,7 +109,9 @@ This GUI can do four things: :ref:`add a new album (and make it the main Imgur a
 
   .. figure:: howdy-config-gui-figures/howdy_imgurlchoosealbum_delete.png
      :width: 100%
-     :align: center
+     :align: left
+
+     Here is what happens when we delete a non-main album.
 
 .. _rename_album:
 

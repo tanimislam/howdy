@@ -297,7 +297,7 @@ Each of the three operations can be either *progressive* or *exclusive*.
 
    .. _order_progress_music_service:
 
-   .. list-table::
+   .. list-table:: a summary of the music services chosen in *progressive* selection mode
       :widths: auto
 
       * - metadata flag
@@ -323,7 +323,7 @@ Each of the three operations can be either *progressive* or *exclusive*.
 
   .. _order_exclusive_music_service:
 
-  .. list-table::
+  .. list-table:: a summary of the music services chosen in *exclusive* selection mode
      :widths: auto
 
      * - metadata flag

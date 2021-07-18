@@ -5,19 +5,19 @@ This document contains all the needed information to get started on getting set 
 
 This configuration is handled through the :ref:`howdy_config_gui <howdy_config_gui_label>`, and consists of the following elements. The *Plex Settings Configuration* document describes the Jackett server settings, where one may use either the Jackett server provided by Seedbox or one's own server.
 
-1. Plex user settings.
+#. Plex user settings.
    
   * user name.
   * password.
 
-2. Deluge and Seedhost settings.
+#. Deluge and Seedhost settings.
 
   * the URL of the Deluge server.
   * the port number of the Deluge server.
   * the username of the Deluge server and the SSH account (both are the same).
   * the password of the Deluge server and the SSH account.
 
-3. Local settings to transfer downloaded torrent files to one's local machine.
+#. Local settings to transfer downloaded torrent files to one's local machine.
 
   * The local directory on one's machine to download finished torrent files from your Seedhost machine.
   * The SSH path (``username@server path``) of the remote machine.
@@ -29,16 +29,20 @@ To begin, launch ``howdy_config_gui``, which starts with a three row table: *LOG
 .. _login_step01_login:
 
 .. figure:: howdy-config-settings-figures/login_step01_login.png
-  :width: 100%
-  :align: center
+   :width: 800
+   :align: left
+   
+   The *Plex login credentials* widget.
 
 The dialog widget that launches shows the Plex and other server settings that are set in order for Howdy to fully function. The inset in **blue** refers to the Jackett server settings. This is shown in :numref:`login_step02_settings`.
 
 .. _login_step02_settings:
 
 .. figure:: howdy-config-settings-figures/login_step02_settings.png
-  :width: 100%
-  :align: center
+   :width: 800
+   :align: left
+
+   The inset Jackett server settings in the panel of service settings.
 
 I confess that the current organization of this data is duplicated and not fully logical. For example, why define the username and password in two places instead of one? Here are two reasons:
 

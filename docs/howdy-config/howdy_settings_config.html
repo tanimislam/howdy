@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>2.2. Howdy Settings Configuration &mdash; howdy! 1.35-28-g889838b documentation</title>
+  <title>2.2. Howdy Settings Configuration &mdash; howdy! 1.35-32-g72f22a5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -31,10 +33,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -193,7 +195,7 @@
 <li><p>password.</p></li>
 </ul>
 </div></blockquote>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple">
 <li><p>Deluge and Seedhost settings.</p></li>
 </ol>
 <blockquote>
@@ -204,7 +206,7 @@
 <li><p>the password of the Deluge server and the SSH account.</p></li>
 </ul>
 </div></blockquote>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple">
 <li><p>Local settings to transfer downloaded torrent files to one’s local machine.</p></li>
 </ol>
 <blockquote>
@@ -215,13 +217,15 @@
 <li><p>The password on the Seedhost account.</p></li>
 </ul>
 </div></blockquote>
-<p>To begin, launch <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code>, which starts with a three row table: <em>LOGIN</em>, <em>CREDENTIALS</em>, and <em>MUSIC</em>. Right click on the <em>CREDENTIALS</em> row to launch a context menu with a single item, <em>Plex login credentials</em>. Click on <em>Plex login credentials</em>, as shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">login_step01_login</span></code>.</p>
-<div class="figure align-center" id="login-step01-login">
-<a class="reference internal image-reference" href="../_images/login_step01_login.png"><img alt="../_images/login_step01_login.png" src="../_images/login_step01_login.png" style="width: 100%;" /></a>
+<p>To begin, launch <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code>, which starts with a three row table: <em>LOGIN</em>, <em>CREDENTIALS</em>, and <em>MUSIC</em>. Right click on the <em>CREDENTIALS</em> row to launch a context menu with a single item, <em>Plex login credentials</em>. Click on <em>Plex login credentials</em>, as shown in <a class="reference internal" href="#login-step01-login"><span class="std std-numref">Fig. 2.16</span></a>.</p>
+<div class="figure align-left" id="id2">
+<span id="login-step01-login"></span><a class="reference internal image-reference" href="../_images/login_step01_login.png"><img alt="../_images/login_step01_login.png" src="../_images/login_step01_login.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.16 </span><span class="caption-text">The <em>Plex login credentials</em> widget.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
-<p>The dialog widget that launches shows the Plex and other server settings that are set in order for Howdy to fully function. The inset in <strong>blue</strong> refers to the Jackett server settings. This is shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">login_step02_settings</span></code>.</p>
-<div class="figure align-center" id="login-step02-settings">
-<a class="reference internal image-reference" href="../_images/login_step02_settings.png"><img alt="../_images/login_step02_settings.png" src="../_images/login_step02_settings.png" style="width: 100%;" /></a>
+<p>The dialog widget that launches shows the Plex and other server settings that are set in order for Howdy to fully function. The inset in <strong>blue</strong> refers to the Jackett server settings. This is shown in <a class="reference internal" href="#login-step02-settings"><span class="std std-numref">Fig. 2.17</span></a>.</p>
+<div class="figure align-left" id="id3">
+<span id="login-step02-settings"></span><a class="reference internal image-reference" href="../_images/login_step02_settings.png"><img alt="../_images/login_step02_settings.png" src="../_images/login_step02_settings.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2.17 </span><span class="caption-text">The inset Jackett server settings in the panel of service settings.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <p>I confess that the current organization of this data is duplicated and not fully logical. For example, why define the username and password in two places instead of one? Here are two reasons:</p>
 <ul class="simple">
@@ -276,7 +280,7 @@
 </div>
 <div class="section" id="local-and-remote-seedhost-ssh-setup">
 <h2><span class="section-number">2.2.3. </span>Local and Remote (Seedhost) SSH Setup<a class="headerlink" href="#local-and-remote-seedhost-ssh-setup" title="Permalink to this headline">¶</a></h2>
-<p>You have already set up your SSH account by registering a Seedhost account. Presumably you know enough to have a an SSH account on a server you own, and on which your Plex server runs. This is usually your login account on your home SSH server. All instructions refer to the login dialog widget shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">login_step02_settings</span></code>.</p>
+<p>You have already set up your SSH account by registering a Seedhost account. Presumably you know enough to have a an SSH account on a server you own, and on which your Plex server runs. This is usually your login account on your home SSH server. All instructions refer to the login dialog widget shown in <a class="reference internal" href="#login-step02-settings"><span class="std std-numref">Fig. 2.17</span></a>.</p>
 <ul class="simple">
 <li><p>Put the full username and SSH server URL path into the <em>SSH Path</em> text box.</p></li>
 <li><p>Put the Seedhost (account/Deluge/SSH) password into the <em>PASSWORD</em> text box.</p></li>

@@ -480,7 +480,9 @@ Here is an example eye chart, for episodes aired in 2000. Each day is colored an
 
 .. figure:: howdy-tv-cli-figures/tvdata.2000.*
    :width: 100%
-   :align: center
+   :align: left
+
+   A summary plot of the TV shows on the Plex server, that have aired in 2000.
 
 .. _howdy_tv_excludes_label:
 

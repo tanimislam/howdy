@@ -1,6 +1,7 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2, json, logging, oauth2client.client
 import requests, youtube_dl, gmusicapi, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid
 import pathos.multiprocessing as multiprocessing
+from bs4 import BeautifulSoup
 from contextlib import contextmanager
 from googleapiclient.discovery import build
 from itertools import chain
@@ -59,6 +60,7 @@ class MusicInfo( object ):
 
     :param str artist_name: the artist over which to search.
     :param str artist_mbid: optional argument. If not ``None``, then information on this artist uses this MusicBrainz_ artist ID to get its info. Default is ``None``.
+    :param bool do_direct: optional argument. If ``True``, then perform a *direct* search on the artist rather than using the default indexed search at a low lebvel. Default is ``False``. See :py:meth`get_artist_direct_search_MBID <howdy.music.music.MusicInfo.get_artist_direct_search_MBID>` for the low-level functionality.
     
     :var dict artist: the low level information on a specific artist, returned by :py:mod:`musicbrainzngs`. For example, for the artist _Air, this looks like,
 
@@ -142,17 +144,54 @@ class MusicInfo( object ):
     """
 
     @classmethod
+    def get_artist_direct_search_MBID( cls, artist_name ):
+        """
+        Sometimes the MusicBrainz_ server does not update. Fixes-when-broken of the MusicBrainz_ server do not happen on a schedule, or even a quickness. In such an instance, you can specify the *specific* artist using direct search rather than indexed search. This method returns the artist's MBID of the artist one queries. *If there is more than one match*, then returns ``None``.
+
+        :param str artist_name: the artist over which to perform a search.
+        :returns: the MBID of the artist. If more than one matching artist is found, or *no* matching artists, then returns ``None``.
+        """
+        response = requests.get( 'https://musicbrainz.org/search', params = {
+            'query' : '+'.join( artist_name.split()),
+            'type' : 'artist',
+            'limit' : 25,
+            'method' : 'direct' }, verify = False )
+        if response.status_code != 200:
+            return None
+        html = BeautifulSoup( response.content, 'lxml' )
+        table = html.find_all('table', { 'class' : 'tbl'})
+        if len( table ) != 1:
+            return None
+        table = table[ 0 ]
+        all_elems = list(filter(lambda elem: 'href' in elem.attrs and '/artist/' in elem['href'] and elem.text.strip( ) == artist_name, table.find_all('a')))
+        if len( all_elems ) != 1: return None
+        #
+        ## success
+        elem = all_elems[ 0 ]
+        return os.path.basename( elem['href'] )
+    
+    @classmethod
     def get_artist_datas_LL(
         cls, artist_name, min_score = 100,
-        do_strict = True, artist_mbid = None ):
+        do_strict = True, artist_mbid = None, do_direct = False ):
         """
         :param str artist_name: the artist over which to search.
         :param int min_score: optional argument. Filter on this minimum score on artist name matches to ``artist_name``. 0 :math:`\le` ``min_score`` :math:`\le 100`. Default is ``100``.
         :param bool do_strict: optional argument. If ``True``, performs a strict search using the :py:meth:`musicbrainzngs search_artists <musicbrainz.search_artists>` method. Default is ``True``.
         :param str artist_mbid: optional argument. If not ``None``, then uses musicbrainzngs's :py:meth:`get_artist_by_id <musicbrainzngs.get_artist_by_id>` to get information on an artist. Otherwise, gets all artist matches. Default is ``None``.
+        :param bool do_direct: Sometimes the MusicBrainz_ server does not update. Fixes-when-broken of the MusicBrainz_ server do not happen on a schedule, or even a quickness. In such an instance, you can specify the *specific* artist using direct search rather than indexed search. See :py:meth`get_artist_direct_search_MBID <howdy.music.music.MusicInfo.get_artist_direct_search_MBID>`.
+        
         :returns: a :py:class:`list` of artist information matches to ``artist_name``. If ``artist_mbid`` is not ``None``, then gets a *SINGLE* artist match. Otherwise gets all matches found.
         :rtype: list
         """
+        #
+        ## when do_direct is TRUE
+        if do_direct:
+            artist_mbid = MusicInfo.get_artist_direct_search_MBID( artist_name )
+            if artist_mbid is None: return None
+            adata = [ musicbrainzngs.get_artist_by_id( artist_mbid )[ 'artist' ] ]
+            return adata
+        
         if artist_mbid is not None:
             adata = [ musicbrainzngs.get_artist_by_id( artist_mbid )[ 'artist' ] ]
             return adata
@@ -330,11 +369,11 @@ class MusicInfo( object ):
         logging.debug( 'processed %s in %0.3f seconds.' % ( rtitle, time.time( ) - time0 ) )
         return titlecase.titlecase( rtitle ), albumdata
     
-    def __init__( self, artist_name, artist_mbid = None ):
+    def __init__( self, artist_name, artist_mbid = None, do_direct = False ):
         time0 = time.time( )
         #
         ## first get out artist MBID, called ambid, with score = 100
-        adata = MusicInfo.get_artist_datas_LL( artist_name, min_score = 100, artist_mbid = artist_mbid )
+        adata = MusicInfo.get_artist_datas_LL( artist_name, min_score = 100, artist_mbid = artist_mbid, do_direct = do_direct )
         if len(adata) == 0:
             raise ValueError( 'Could not find artist = %s in MusicBrainz.' % artist_name )
         self.artist = adata[ 0 ]

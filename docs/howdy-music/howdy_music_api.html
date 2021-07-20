@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>7.2. Howdy Music API &mdash; howdy! 1.35-32-g72f22a5 documentation</title>
+  <title>7.2. Howdy Music API &mdash; howdy! 1.35-34-g215d506 documentation</title>
   
 
   
@@ -689,13 +689,14 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">MusicInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_mbid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">MusicInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_mbid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_direct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>This object uses the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API, through the higher level <a class="reference external" href="https://python-musicbrainzngs.readthedocs.io/en/latest/api/#module-musicbrainzngs" title="(in musicbrainzngs v0.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">musicbrainzngs</span></code></a> Python module, to get information on songs, albums, and artists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>artist_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the artist over which to search.</p></li>
 <li><p><strong>artist_mbid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – optional argument. If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, then information on this artist uses this <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> artist ID to get its info. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>do_direct</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – optional argument. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then perform a <em>direct</em> search on the artist rather than using the default indexed search at a low lebvel. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>. See :py:meth`get_artist_direct_search_MBID &lt;howdy.music.music.MusicInfo.get_artist_direct_search_MBID&gt;` for the low-level functionality.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Variables</dt>
@@ -846,7 +847,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.get_artist_datas_LL">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">get_artist_datas_LL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_mbid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_artist_datas_LL" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">get_artist_datas_LL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_mbid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_direct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_artist_datas_LL" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -854,6 +855,7 @@
 <li><p><strong>min_score</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – optional argument. Filter on this minimum score on artist name matches to <code class="docutils literal notranslate"><span class="pre">artist_name</span></code>. 0 <span class="math notranslate nohighlight">\(\le\)</span> <code class="docutils literal notranslate"><span class="pre">min_score</span></code> <span class="math notranslate nohighlight">\(\le 100\)</span>. Default is <code class="docutils literal notranslate"><span class="pre">100</span></code>.</p></li>
 <li><p><strong>do_strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – optional argument. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, performs a strict search using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">musicbrainzngs</span> <span class="pre">search_artists</span></code> method. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>artist_mbid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – optional argument. If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, then uses musicbrainzngs’s <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_artist_by_id</span></code> to get information on an artist. Otherwise, gets all artist matches. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>do_direct</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Sometimes the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> server does not update. Fixes-when-broken of the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> server do not happen on a schedule, or even a quickness. In such an instance, you can specify the <em>specific</em> artist using direct search rather than indexed search. See :py:meth`get_artist_direct_search_MBID &lt;howdy.music.music.MusicInfo.get_artist_direct_search_MBID&gt;`.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -861,6 +863,20 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="howdy.music.music.MusicInfo.get_artist_direct_search_MBID">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">get_artist_direct_search_MBID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_artist_direct_search_MBID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sometimes the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> server does not update. Fixes-when-broken of the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> server do not happen on a schedule, or even a quickness. In such an instance, you can specify the <em>specific</em> artist using direct search rather than indexed search. This method returns the artist’s MBID of the artist one queries. <em>If there is more than one match</em>, then returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>artist_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the artist over which to perform a search.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the MBID of the artist. If more than one matching artist is found, or <em>no</em> matching artists, then returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>

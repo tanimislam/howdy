@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.35-32-g72f22a5 documentation</title>
+  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.35-34-g215d506 documentation</title>
   
 
   
@@ -201,9 +201,7 @@
 <div class="section" id="howdy-music-album">
 <span id="howdy-music-album-label"></span><h2><span class="section-number">7.1.1. </span>howdy_music_album<a class="headerlink" href="#howdy-music-album" title="Permalink to this headline">¶</a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_music_album</span> <span class="pre">-h</span></code>, produces the following.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_music_album [-h] -a ARTIST_NAME [-A ALBUM_NAME] [--songs]</span>
-<span class="go">                           [--formatted] [--albums] [--debug] [--noverify]</span>
-<span class="go">                           [--musicbrainz]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_music_album [-h] -a ARTIST_NAME [-A ALBUM_NAME] [--songs] [--formatted] [--albums] [--debug] [--noverify] [-M] [-D]</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -211,25 +209,22 @@
 <span class="go">                        Name of the artist to get album image for.</span>
 <span class="go">  -A ALBUM_NAME, --album ALBUM_NAME</span>
 <span class="go">                        Name of the album to get album image for.</span>
-<span class="go">  --songs               If chosen, get the song listing instead of downloading</span>
-<span class="go">                        the album image.</span>
-<span class="go">  --formatted           If chosen, print the song listing in a format</span>
-<span class="go">                        recognized by howdy_music_metafill for downloading a</span>
-<span class="go">                        collection of songs.</span>
-<span class="go">  --albums              If chosen, then get a list of all the songs in all</span>
-<span class="go">                        studio albums for the artist.</span>
+<span class="go">  --songs               If chosen, get the song listing instead of downloading the album image.</span>
+<span class="go">  --formatted           If chosen, print the song listing in a format recognized by plex_music_metafill.py for downloading a collection of songs.</span>
+<span class="go">  --albums              If chosen, then get a list of all the songs in all studio albums for the artist.</span>
 <span class="go">  --debug               Run with debug mode turned on.</span>
 <span class="go">  --noverify            If chosen, do not verify SSL connections.</span>
-<span class="go">  --musicbrainz         If chosen, use Musicbrainz to get the artist metadata.</span>
-<span class="go">                        Note that this is expensive, and is always applied</span>
-<span class="go">                        when the --albums flag is set.</span>
+<span class="go">  -M, --musicbrainz     If chosen, use Musicbrainz to get the artist metadata. Note that this is expensive, and is always applied when the --albums flag</span>
+<span class="go">                        is set.</span>
+<span class="go">  -D, --direct          Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.</span>
 </pre></div>
 </div>
 <p>These are the common operational flags,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--debug</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
-<li><p>By default, this executable uses the <a class="reference external" href="https://www.last.fm/api">LastFM</a> API to get music metadata. The <code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code> flag then means the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API is used.</p></li>
+<li><p>By default, this executable uses the <a class="reference external" href="https://www.last.fm/api">LastFM</a> API to get music metadata. The <code class="docutils literal notranslate"><span class="pre">-M</span></code> or <code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code> flag then means the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API is used.</p></li>
+<li><p>By default (with <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a>) we perform an <em>indexed</em> search. The <code class="docutils literal notranslate"><span class="pre">-D</span></code> or <code class="docutils literal notranslate"><span class="pre">--direct</span></code> flag means to perform a <em>direct</em> search on an arist with the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API.</p></li>
 </ul>
 <p>Here are the three operations,</p>
 <ul>
@@ -370,33 +365,29 @@
 <div class="section" id="howdy-music-songs">
 <span id="howdy-music-songs-label"></span><h2><span class="section-number">7.1.3. </span>howdy_music_songs<a class="headerlink" href="#howdy-music-songs" title="Permalink to this headline">¶</a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_music_songs</span> <span class="pre">-h</span></code>, produces the following.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_music_songs [-h] -a ARTIST_NAME -s SONG_NAMES [--maxnum MAXNUM]</span>
-<span class="go">                           [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES]</span>
-<span class="go">                           [--lastfm] [--musicbrainz] [--noverify] [--debug]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_music_songs [-h] [-a ARTIST_NAME] [-s SONG_NAMES] [--maxnum MAXNUM] [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES] [-L] [-M] [--noverify] [--debug] [-D]</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
 <span class="go">  -a ARTIST_NAME, --artist ARTIST_NAME</span>
 <span class="go">                        Name of the artist to put into the M4A file.</span>
 <span class="go">  -s SONG_NAMES, --songs SONG_NAMES</span>
-<span class="go">                        Names of the song to put into M4A files. Separated by</span>
-<span class="go">                        ;</span>
-<span class="go">  --maxnum MAXNUM       Number of YouTube video choices to choose for each of</span>
-<span class="go">                        your songs.Default is 10.</span>
+<span class="go">                        Names of the song to put into M4A files. Separated by ;</span>
+<span class="go">  --maxnum MAXNUM       Number of YouTube video choices to choose for each of your songs.Default is 10.</span>
 <span class="go">  -A ALBUM_NAME, --album ALBUM_NAME</span>
-<span class="go">                        If defined, then get all the songs in order from the</span>
-<span class="go">                        album.</span>
-<span class="go">  --new                 If chosen, use the new format for getting the song</span>
-<span class="go">                        list. Instead of -a or --artist, will look for</span>
-<span class="go">                        --artists. Each artist is separated by a &#39;;&#39;.</span>
+<span class="go">                        If defined, then get all the songs in order from the album.</span>
+<span class="go">  --new                 If chosen, use the new format for getting the song list. Instead of -a or --artist, will look for --artists. Each artist is separated by a &#39;;&#39;.</span>
 <span class="go">  --artists ARTIST_NAMES</span>
 <span class="go">                        List of artists. Each artist is separated by a &#39;;&#39;.</span>
-<span class="go">  --lastfm              If chosen, then only use the LastFM API to get song</span>
-<span class="go">                        metadata.</span>
-<span class="go">  --musicbrainz         If chosen, use Musicbrainz to get the artist metadata.</span>
-<span class="go">                        Note that this is expensive.</span>
+<span class="go">  -L, --lastfm          If chosen, then only use the LastFM API to get song metadata.</span>
+<span class="go">  -M, --musicbrainz     If chosen, use Musicbrainz to get the artist metadata. Note that this is expensive.</span>
 <span class="go">  --noverify            Do not verify SSL transactions if chosen.</span>
 <span class="go">  --debug               Run with debug mode turned on.</span>
+<span class="go">  -D, --direct          Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.</span>
+
+<span class="go">   usage: howdy_music_songs [-h] -a ARTIST_NAME -s SONG_NAMES [--maxnum MAXNUM]</span>
+<span class="go">                              [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES]</span>
+<span class="go">                              [--lastfm] [--musicbrainz] [--noverify] [--debug]</span>
 </pre></div>
 </div>
 <p>In all three operations, here are required arguments or common flags,</p>
@@ -405,6 +396,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">--maxnum</span></code> specifies the maximum number of <a class="reference external" href="https://www.youtube.com">YouTube</a> video clips from which to choose. This number must be <span class="math notranslate nohighlight">\(\ge 1\)</span>, and its default is <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--debug</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-D</span></code> or <code class="docutils literal notranslate"><span class="pre">--direct</span></code> only makes sense with the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> operation. With the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API we perform an <em>indexed</em> search. The <code class="docutils literal notranslate"><span class="pre">-D</span></code> or <code class="docutils literal notranslate"><span class="pre">--direct</span></code> flag means to perform a <em>direct</em> search on an arist instead.</p></li>
 </ul>
 <p>Some example animated GIFs can be downloaded from here, and is mirrored in this project’s README:</p>
 <table class="colwidths-auto docutils align-default">
@@ -427,9 +419,9 @@
 </ul>
 <p>and using three music metadata services: <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a>, <a class="reference external" href="https://www.last.fm/api">LastFM</a>, and <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a>. The <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> service is used or started with by default, but,</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--lastfm</span></code> says to use or start with the <a class="reference external" href="https://www.last.fm/api">LastFM</a> API.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code> says to use or start with the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API.</p></li>
-<li><p>At most only one of <code class="docutils literal notranslate"><span class="pre">--lastfm</span></code> or <code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code> can be specified.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-L</span></code> or <code class="docutils literal notranslate"><span class="pre">--lastfm</span></code> says to use or start with the <a class="reference external" href="https://www.last.fm/api">LastFM</a> API.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-M</span></code> or <code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code> says to use or start with the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API.</p></li>
+<li><p>At most only one of <code class="docutils literal notranslate"><span class="pre">-L</span></code>/<code class="docutils literal notranslate"><span class="pre">--lastfm</span></code> or <code class="docutils literal notranslate"><span class="pre">-M</span></code>/<code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code> can be specified.</p></li>
 </ul>
 <p>Each of the three operations can be either <em>progressive</em> or <em>exclusive</em>.</p>
 <ul id="progressive-selection">

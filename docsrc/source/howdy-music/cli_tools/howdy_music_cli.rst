@@ -19,9 +19,7 @@ The help output, when running ``howdy_music_album -h``, produces the following.
 
 .. code-block:: console
 
-   usage: howdy_music_album [-h] -a ARTIST_NAME [-A ALBUM_NAME] [--songs]
-			      [--formatted] [--albums] [--debug] [--noverify]
-			      [--musicbrainz]
+   usage: howdy_music_album [-h] -a ARTIST_NAME [-A ALBUM_NAME] [--songs] [--formatted] [--albums] [--debug] [--noverify] [-M] [-D]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -29,18 +27,14 @@ The help output, when running ``howdy_music_album -h``, produces the following.
 			   Name of the artist to get album image for.
      -A ALBUM_NAME, --album ALBUM_NAME
 			   Name of the album to get album image for.
-     --songs               If chosen, get the song listing instead of downloading
-			   the album image.
-     --formatted           If chosen, print the song listing in a format
-			   recognized by howdy_music_metafill for downloading a
-			   collection of songs.
-     --albums              If chosen, then get a list of all the songs in all
-			   studio albums for the artist.
+     --songs               If chosen, get the song listing instead of downloading the album image.
+     --formatted           If chosen, print the song listing in a format recognized by plex_music_metafill.py for downloading a collection of songs.
+     --albums              If chosen, then get a list of all the songs in all studio albums for the artist.
      --debug               Run with debug mode turned on.
      --noverify            If chosen, do not verify SSL connections.
-     --musicbrainz         If chosen, use Musicbrainz to get the artist metadata.
-			   Note that this is expensive, and is always applied
-			   when the --albums flag is set.
+     -M, --musicbrainz     If chosen, use Musicbrainz to get the artist metadata. Note that this is expensive, and is always applied when the --albums flag
+			   is set.
+     -D, --direct          Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.
 
 These are the common operational flags,
 
@@ -48,7 +42,9 @@ These are the common operational flags,
 
 * ``--noverify`` does not verify SSL connections.
 
-* By default, this executable uses the LastFM_ API to get music metadata. The ``--musicbrainz`` flag then means the MusicBrainz_ API is used.
+* By default, this executable uses the LastFM_ API to get music metadata. The ``-M`` or ``--musicbrainz`` flag then means the MusicBrainz_ API is used.
+
+* By default (with MusicBrainz_) we perform an *indexed* search. The ``-D`` or ``--direct`` flag means to perform a *direct* search on an arist with the MusicBrainz_ API.
 			     
 Here are the three operations,
 
@@ -211,33 +207,29 @@ The help output, when running ``howdy_music_songs -h``, produces the following.
 
 .. code-block:: console
 
-   usage: howdy_music_songs [-h] -a ARTIST_NAME -s SONG_NAMES [--maxnum MAXNUM]
-			      [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES]
-			      [--lastfm] [--musicbrainz] [--noverify] [--debug]
+   usage: howdy_music_songs [-h] [-a ARTIST_NAME] [-s SONG_NAMES] [--maxnum MAXNUM] [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES] [-L] [-M] [--noverify] [--debug] [-D]
 
    optional arguments:
      -h, --help            show this help message and exit
      -a ARTIST_NAME, --artist ARTIST_NAME
 			   Name of the artist to put into the M4A file.
      -s SONG_NAMES, --songs SONG_NAMES
-			   Names of the song to put into M4A files. Separated by
-			   ;
-     --maxnum MAXNUM       Number of YouTube video choices to choose for each of
-			   your songs.Default is 10.
+			   Names of the song to put into M4A files. Separated by ;
+     --maxnum MAXNUM       Number of YouTube video choices to choose for each of your songs.Default is 10.
      -A ALBUM_NAME, --album ALBUM_NAME
-			   If defined, then get all the songs in order from the
-			   album.
-     --new                 If chosen, use the new format for getting the song
-			   list. Instead of -a or --artist, will look for
-			   --artists. Each artist is separated by a ';'.
+			   If defined, then get all the songs in order from the album.
+     --new                 If chosen, use the new format for getting the song list. Instead of -a or --artist, will look for --artists. Each artist is separated by a ';'.
      --artists ARTIST_NAMES
 			   List of artists. Each artist is separated by a ';'.
-     --lastfm              If chosen, then only use the LastFM API to get song
-			   metadata.
-     --musicbrainz         If chosen, use Musicbrainz to get the artist metadata.
-			   Note that this is expensive.
+     -L, --lastfm          If chosen, then only use the LastFM API to get song metadata.
+     -M, --musicbrainz     If chosen, use Musicbrainz to get the artist metadata. Note that this is expensive.
      --noverify            Do not verify SSL transactions if chosen.
      --debug               Run with debug mode turned on.
+     -D, --direct          Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.
+
+      usage: howdy_music_songs [-h] -a ARTIST_NAME -s SONG_NAMES [--maxnum MAXNUM]
+				 [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES]
+				 [--lastfm] [--musicbrainz] [--noverify] [--debug]
 
 In all three operations, here are required arguments or common flags,
 
@@ -248,6 +240,8 @@ In all three operations, here are required arguments or common flags,
 * ``--noverify`` does not verify SSL connections.
 
 * ``--debug`` prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
+
+* ``-D`` or ``--direct`` only makes sense with the MusicBrainz_ operation. With the MusicBrainz_ API we perform an *indexed* search. The ``-D`` or ``--direct`` flag means to perform a *direct* search on an arist instead.
 
 Some example animated GIFs can be downloaded from here, and is mirrored in this project's README:
 
@@ -283,11 +277,11 @@ The complicated collection of flags and arguments allows ``howdy_music_songs`` t
 
 and using three music metadata services: Gracenote_, LastFM_, and MusicBrainz_. The Gracenote_ service is used or started with by default, but,
 
-* ``--lastfm`` says to use or start with the LastFM_ API.
+* ``-L`` or ``--lastfm`` says to use or start with the LastFM_ API.
 
-* ``--musicbrainz`` says to use or start with the MusicBrainz_ API.
+* ``-M`` or ``--musicbrainz`` says to use or start with the MusicBrainz_ API.
 
-* At most only one of ``--lastfm`` or ``--musicbrainz`` can be specified.
+* At most only one of ``-L``/``--lastfm`` or ``-M``/``--musicbrainz`` can be specified.
 
 Each of the three operations can be either *progressive* or *exclusive*.
 

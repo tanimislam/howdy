@@ -50,7 +50,7 @@ def _choose_youtube_item( name, maxnum = 10, verify = True ):
 
 def _process_data_album_dict(
         hm, lastfm, alb_name, a_name, do_whichone, mi = None,
-        process_to_end = True ):
+        process_to_end = True, do_direct = False ):
     assert( do_whichone in ( 'GRACENOTE', 'LASTFM', 'MUSICBRAINZ' ) ), "error, metadata service = %s should be one of GRACENOTE, LASTFM, or MUSICBRAINZ" % do_whichone
     if do_whichone == 'GRACENOTE':
         album_data_dict, status = hm.get_music_metadatas_album(
@@ -69,7 +69,7 @@ def _process_data_album_dict(
         ## now musicbrainz
         if mi is not None:
             assert( mi.artist_name == a_name )
-        else: mi = music.MusicInfo( a_name )
+        else: mi = music.MusicInfo( a_name, do_direct = do_direct )
         album_data_dict, status = mi.get_music_metadatas_album( alb_name )
         if status == 'SUCCESS': return album_data_dict, status
         return return_error_raw( status )
@@ -97,7 +97,7 @@ def _process_data_album_dict(
 
 def _process_data_song_dict(
         hm, lastfm, s_name, a_name, do_whichone, mi = None,
-        process_to_end = True ):
+        process_to_end = True, do_direct = False ):
     assert( do_whichone in ( 'GRACENOTE', 'LASTFM', 'MUSICBRAINZ' ) ), "error, metadata service = %s should be one of GRACENOTE, LASTFM, or MUSICBRAINZ" % do_whichone
     if do_whichone == 'GRACENOTE':
         data_dict, status = hm.get_music_metadata(
@@ -117,7 +117,7 @@ def _process_data_song_dict(
         if mi is not None:
             assert( mi.artist_name == a_name )
         else:
-            mi = music.MusicInfo( a_name )
+            mi = music.MusicInfo( a_name, do_direct = do_direct )
             data_dict, status = mi.get_music_metadata( s_name )
             if status == 'SUCCESS': return data_dict, status
             return return_error_raw( status )
@@ -145,11 +145,11 @@ def _process_data_song_dict(
 
 def _download_actual_song(
         hm, lastfm, s_name, a_name, maxnum, do_whichone = 'GRACENOTE',
-        mi = None, process_to_end = True ):
+        mi = None, process_to_end = True, do_direct = False ):
     assert( do_whichone in ( 'GRACENOTE', 'LASTFM', 'MUSICBRAINZ' ) ), "error, metadata service = %s should be one of GRACENOTE, LASTFM, or MUSICBRAINZ" % do_whichone
     try:
         data_dict, status = _process_data_song_dict(
-            hm, lastfm, s_name, a_name, do_whichone, mi = mi, process_to_end = process_to_end )
+            hm, lastfm, s_name, a_name, do_whichone, mi = mi, process_to_end = process_to_end, do_direct = do_direct )
         if status != 'SUCCESS':
             print( 'PROBLEM GETTING %s, %s: %s.' % ( s_name, a_name, status ) )
             return None
@@ -292,11 +292,11 @@ def _download_songs_oldformat( args ):
             do_whichone = 'LASTFM'
         elif args.do_musicbrainz:
             do_whichone = 'MUSICBRAINZ'
-            mi = music.MusicInfo( args.artist_name )
+            mi = music.MusicInfo( args.artist_name, do_direct = args.do_direct )
         else: do_whichone = 'GRACENOTE'
         album_data_dict, status = _process_data_album_dict(
             hm, lastfm, args.album_name.strip( ), args.artist_name,
-            do_whichone, mi = mi )
+            do_whichone, mi = mi, do_direct = args.do_direct )
         if status != 'SUCCESS':
             print( status )
             return
@@ -354,7 +354,7 @@ def _download_songs_oldformat( args ):
             do_whichone = 'LASTFM'
         elif args.do_musicbrainz:
             do_whichone = 'MUSICBRAINZ'
-            mi = music.MusicInfo( args.artist_name )
+            mi = music.MusicInfo( args.artist_name, do_direct = args.do_direct )
         else: do_whichone = 'GRACENOTE'
         #
         ## now do the processing
@@ -365,7 +365,8 @@ def _download_songs_oldformat( args ):
             map(lambda song_name:
                 _download_actual_song(
                     hm, lastfm, song_name, args.artist_name, args.maxnum,
-                    do_whichone, mi = mi, process_to_end = False ),
+                    do_whichone, mi = mi, process_to_end = False,
+                    do_direct = args.do_direct ),
                 song_names ) ) )
     return all_songs_downloaded
 
@@ -394,9 +395,9 @@ def main( ):
                              "Each artist is separated by a ';'." ]))
     parser.add_argument( '--artists', dest='artist_names', type=str, action='store',
                          help = "List of artists. Each artist is separated by a ';'.")
-    parser.add_argument( '--lastfm', dest='do_lastfm', action='store_true', default = False,
+    parser.add_argument( '-L', '--lastfm', dest='do_lastfm', action='store_true', default = False,
                          help = 'If chosen, then only use the LastFM API to get song metadata.' )
-    parser.add_argument( '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
+    parser.add_argument( '-M', '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
                          help = ' '.join( [
                              'If chosen, use Musicbrainz to get the artist metadata.',
                              'Note that this is expensive.' ] ) )
@@ -404,6 +405,8 @@ def main( ):
                          help = 'Do not verify SSL transactions if chosen.' )
     parser.add_argument( '--debug', dest='do_debug', action='store_true', default=False,
                          help = 'Run with debug mode turned on.' )
+    parser.add_argument( '-D', '--direct', dest='do_direct', action='store_true', default=False,
+                         help = 'Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.' )
     args = parser.parse_args( )
     music.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
     music.MusicInfo.set_musicbrainz_verify( verify = args.do_verify )

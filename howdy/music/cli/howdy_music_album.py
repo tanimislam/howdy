@@ -25,10 +25,15 @@ def main( ):
                          help = 'Run with debug mode turned on.' )
     parser.add_argument( '--noverify', dest='do_verify', action='store_false', default = True,
                          help = 'If chosen, do not verify SSL connections.' )
-    parser.add_argument( '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
-                         help = ' '.join([
-                             'If chosen, use Musicbrainz to get the artist metadata.',
-                             'Note that this is expensive, and is always applied when the --albums flag is set.' ]))
+    parser.add_argument( '-M', '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
+                        help = ' '.join([
+                            'If chosen, use Musicbrainz to get the artist metadata.',
+                            'Note that this is expensive, and is always applied when the --albums flag is set.' ]))
+    parser.add_argument( '-D', '--direct', dest='do_direct', action='store_true', default = False,
+                        help = ' '.join([ 'Only makes sense when running with MusicBrainz.',
+                                         'Option of using direct instead of indexed search on the artist.',
+                                         'Default is False.' ]) )
+                                         
     args = parser.parse_args( )
     music.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
     music.MusicInfo.set_musicbrainz_verify( verify = args.do_verify )
@@ -40,13 +45,13 @@ def main( ):
     ##
     hlastfm = music.HowdyLastFM( verify = args.do_verify )
     if args.do_albums:
-        mi = music.MusicInfo( args.artist_name.strip( ) )
+        mi = music.MusicInfo( args.artist_name.strip( ), do_direct = args.do_direct )
         mi.print_format_album_names( )
         return
     
     if not args.do_songs: # just get the song image
         if args.do_musicbrainz:
-            mi = music.MusicInfo( args.artist_name.strip( ) )
+            mi = music.MusicInfo( args.artist_name.strip( ), do_direct = args.do_direct )
             _, status = mi.get_album_image( args.album_name )
         else:
             _, status = hlastfm.get_album_image( args.artist_name, args.album_name )
@@ -57,7 +62,7 @@ def main( ):
     #
     ## now get song listing, --songs is chosen
     if args.do_musicbrainz:
-        mi = music.MusicInfo( args.artist_name.strip( ) )
+        mi = music.MusicInfo( args.artist_name.strip( ), do_direct = args.do_direct )
         track_listing, status = mi.get_song_listing(
             args.album_name )
     else:

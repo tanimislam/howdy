@@ -57,8 +57,8 @@ def main( ):
     else:
         assert( args.epstring is not None )
         seriesName = args.series.strip( )
-        token = tv.get_token( verify = args.do_verify )
-        series_id = tv.get_series_id( seriesName, token, verify = args.do_verify )
+        token = tv.get_token( verify = False )
+        series_id = tv.get_series_id( seriesName, token, verify = False )
         if series_id is None:
             print( 'Error, could not find %s' % seriesName )
             return
@@ -82,7 +82,7 @@ def main( ):
             print( 'Error, invalid episode number.' )
             return
         data = tv.get_episode_name( series_id, seasno, epno, token,
-                                          verify = args.do_verify )
+                                          verify = False )
         if data is None:
             print( 'Error, could not find SEASON %02d, EPISODE %02d, in %s.' % (
                 seasno, epno, seriesName ) )

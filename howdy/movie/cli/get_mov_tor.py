@@ -217,13 +217,14 @@ def main( ):
 
     pool = Pool( processes = 4 )
     if not args.do_nozooq: jobs = [
-            pool.apply_async( get_items_zooqle, args = ( args.name, args.maxnum ) ) ]
+        pool.apply_async( get_items_zooqle, args = ( args.name, args.maxnum ) ) ]
     else: jobs = [ ]
     #
     ## check for jackett
     if get_jackett_credentials( ) is None:
         jobs += list(map(lambda func: pool.apply_async( func, args = ( args.name, args.maxnum ) ),
                          ( get_items_rarbg, get_items_tpb ) ) )
+        logging.info("JACKETT CREDS NONE, ADDED RARBG AND TPB")
         #if args.do_torrentz:
         #    jobs.append( pool.apply_async( get_items_torrentz, args = ( args.name, args.maxnum ) ) )
     else:
@@ -231,6 +232,7 @@ def main( ):
             get_items_jackett, args = ( args.name, tmdb_id, args.maxnum, args.do_verify, args.do_raw ) ) )
         jobs.append( pool.apply_async(
             get_items_eztv_io, args = ( args.name, tmdb_id, args.maxnum, args.do_verify ) ) )
+        logging.info("ADDED JACKETT AND EZTV")
     items_lists = [ ]
     for job in jobs:
         try:

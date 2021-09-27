@@ -1,4 +1,6 @@
 import requests, os, sys, numpy
+from plexapi.server import PlexServer
+#
 from howdy.core import core
 
 def get_tautulli_apikey( username, password, endpoint ):

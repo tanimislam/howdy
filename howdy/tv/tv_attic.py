@@ -475,7 +475,7 @@ def get_episodes_series_tmdb( tmdbID, fromDate = None, showSpecials = False, sho
     Returns a :py:class:`list` of episodes returned by the TMDB_ API. Each element is a dictionary: ``name`` is the episode name, ``airedDate`` is the :py:class:`date <datetime.date>` the episode aired, ``season`` is the season it aired, and ``episode`` is the episode number in that season.
 
     :param int tmdbID: the TMDB_ series ID.
-    :param date fromDate: optional argument, of type :py:class:`date <datetime.date>`. If given, then only return episodes aired on or after this date.
+    :param date fromDate: optional argument, of type :py:class:`date <datetime.date>`. If given, then only return episodes aired *after* this date.
     :param bool showSpecials: if ``True``, then also include TV specials. These specials will appear in a season ``0`` in this dictionary.
     :param bool showFuture: optional argument, if ``True`` then also include information on episodes that have not yet aired.
     :returns: a :py:class:`list` of episoes returned by the TMDB_ database. For example, for `The Simpsons`_,
@@ -520,7 +520,7 @@ def get_episodes_series_tmdb( tmdbID, fromDate = None, showSpecials = False, sho
         for episode in data_season[ 'episodes' ]:
             try:
                 date = datetime.datetime.strptime( episode['air_date'], '%Y-%m-%d' ).date( )
-                if date >= currentDate and not showFuture:
+                if date > currentDate and not showFuture:
                     continue
                 if fromDate is not None:
                     if date < fromDate:

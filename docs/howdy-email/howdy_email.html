@@ -1,79 +1,37 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>8. Howdy Email Functionality &mdash; howdy! 1.35-34-g215d506 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-
-  
-  
+  <title>8. Howdy Email Functionality &mdash; howdy! 1.35-37-g3225905 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
-  
-
-  
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="8.1. howdy_email_notif" href="cli-tools/howdy_email_notif.html" />
     <link rel="prev" title="7.2. Howdy Music API" href="../howdy-music/howdy_music_api.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> howdy!
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 1.35
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -81,18 +39,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../howdy_prereqs.html">1. Prerequisites and Overall Design Philosophy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../howdy-config/howdy_config.html">2. Howdy Configuration</a></li>
@@ -112,77 +59,36 @@
 <li class="toctree-l1"><a class="reference internal" href="../genindex.html">9. INDEX</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">howdy!</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li><span class="section-number">8. </span>Howdy Email Functionality</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../_sources/howdy-email/howdy_email.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="howdy-email-functionality">
-<h1><span class="section-number">8. </span>Howdy Email Functionality<a class="headerlink" href="#howdy-email-functionality" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">8. </span>Howdy Email Functionality<a class="headerlink" href="#howdy-email-functionality" title="Permalink to this headline"></a></h1>
 <p>These command line executables, graphical user interfaces, and APIs are used to send one-off announcement, or newsletter style emails. <a class="reference external" href="https://tautulli.com">Tautulli</a> is a much better tool for sending out newsletter style emails, although this functionality still exists.</p>
 <p>This documentation is organized into sections on <a class="reference internal" href="cli-tools/howdy_email_notif.html#howdy-email-notif-label"><span class="std std-ref">howdy_email_notif</span></a>, the Howdy one-off emailing command line interface; <a class="reference internal" href="gui-tools/howdy_email_gui.html#howdy-email-gui-label"><span class="std std-ref"> howdy_email_gui</span></a>, the Howdy one-off emailing and newslettering GUI; and <a class="reference internal" href="gui-tools/howdy_email_demo_gui.html#howdy-email-demo-gui-label"><span class="std std-ref"> howdy_email_demo_gui</span></a>, the Howdy test-bed demonstation email client, that sends out rich HTML email using <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a>; the <a class="reference internal" href="howdy_email_api.html#howdy-email-api"><span class="std std-ref">low level API</span></a>; and finally the <a class="reference internal" href="#howdy-email-todo"><span class="std std-ref">TODO</span></a>.</p>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Table of Contents</span></p>
+<p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="cli-tools/howdy_email_notif.html">8.1. <code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="gui-tools/howdy_email_gui.html">8.2.  <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code></a><ul>
@@ -207,7 +113,7 @@
 </ul>
 </div>
 <div class="section" id="howdy-email-todo">
-<h2><span class="section-number">8.5. </span>Howdy Email TODO<a class="headerlink" href="#howdy-email-todo" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">8.5. </span>Howdy Email TODO<a class="headerlink" href="#howdy-email-todo" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>Enhance <a class="reference internal" href="gui-tools/howdy_email_demo_gui.html#howdy-email-demo-gui-label"><span class="std std-ref"> howdy_email_demo_gui</span></a> to allow for the more versatile <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> to be converted into HTML documents and email out. ☑</p></li>
 </ul>
@@ -217,50 +123,33 @@
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="cli-tools/howdy_email_notif.html" class="btn btn-neutral float-right" title="8.1. howdy_email_notif" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../howdy-music/howdy_music_api.html" class="btn btn-neutral float-left" title="7.2. Howdy Music API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cli-tools/howdy_email_notif.html" class="btn btn-neutral float-right" title="8.1. howdy_email_notif" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021.
-
-    </p>
+    <p>&#169; Copyright 2021.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

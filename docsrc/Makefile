@@ -24,7 +24,6 @@ deploy:
 	touch ../docs/.nojekyll
 
 gitdeploy: deploy
-	echo "got here"
 	git pull
 	git commit -a -m "documentation fix."
 	git push

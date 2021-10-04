@@ -406,8 +406,8 @@ def main( ):
     parser.add_argument( '--noverify', dest='do_verify', action='store_false', default=True,
                          help = 'Do not verify SSL transactions if chosen.' )
     parser.add_argument(
-        '--level', dest='debug_level', action='store', type=str, default = 'NONE', choices = [ 'NONE', 'ERROR', 'INFO', 'DEBUG' ],
-        help = 'Level of logging level. Defauls is NONE.' )
+        '--debuglevel', dest='debug_level', action='store', type=str, default = 'NONE', choices = [ 'NONE', 'ERROR', 'INFO', 'DEBUG' ],
+        help = 'Choose the debug level for the system logger. Default is NONE (no logging). Can be one of NONE (no logging), ERROR, INFO, or DEBUG.' )
     parser.add_argument( '-D', '--direct', dest='do_direct', action='store_true', default=False,
                          help = 'Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.' )
     args = parser.parse_args( )

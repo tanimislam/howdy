@@ -206,8 +206,8 @@ howdy_music_songs
 The help output, when running ``howdy_music_songs -h``, produces the following.
 
 .. code-block:: console
-
-   usage: howdy_music_songs [-h] [-a ARTIST_NAME] [-s SONG_NAMES] [--maxnum MAXNUM] [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES] [-L] [-M] [--noverify] [--debug] [-D]
+		
+   usage: howdy_music_songs [-h] [-a ARTIST_NAME] [-s SONG_NAMES] [--maxnum MAXNUM] [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES] [-L] [-M] [--noverify] [--debuglevel {NONE,ERROR,INFO,DEBUG}] [-D]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -224,12 +224,9 @@ The help output, when running ``howdy_music_songs -h``, produces the following.
      -L, --lastfm          If chosen, then only use the LastFM API to get song metadata.
      -M, --musicbrainz     If chosen, use Musicbrainz to get the artist metadata. Note that this is expensive.
      --noverify            Do not verify SSL transactions if chosen.
-     --debug               Run with debug mode turned on.
+     --debuglevel {NONE,ERROR,INFO,DEBUG}
+			   Choose the debug level for the system logger. Default is NONE (no logging). Can be one of NONE (no logging), ERROR, INFO, or DEBUG.
      -D, --direct          Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.
-
-      usage: howdy_music_songs [-h] -a ARTIST_NAME -s SONG_NAMES [--maxnum MAXNUM]
-				 [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES]
-				 [--lastfm] [--musicbrainz] [--noverify] [--debug]
 
 In all three operations, here are required arguments or common flags,
 
@@ -239,7 +236,15 @@ In all three operations, here are required arguments or common flags,
 
 * ``--noverify`` does not verify SSL connections.
 
-* ``--debug`` prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
+* ``--debuglevel`` specifies the amount of system logging into STDOUT that you want to show. The default choice is ``NONE`` (no logging). Here are the loging levels.
+  
+  * ``ERROR``: :py:const:`ERROR <logging.ERROR>` level :py:mod:`logging` output.
+  
+  * ``INFO``: :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
+
+  * ``DEBUG``: :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
+
+* ``--level`` prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
 
 * ``-D`` or ``--direct`` only makes sense with the MusicBrainz_ operation. With the MusicBrainz_ API we perform an *indexed* search. The ``-D`` or ``--direct`` flag means to perform a *direct* search on an arist instead.
 

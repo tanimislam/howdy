@@ -22,3 +22,9 @@ help:
 deploy:
 	cp -rf build/html/* ../docs/
 	touch ../docs/.nojekyll
+
+gitdeploy: deploy
+	git pull
+        git stage ../docs ../docsrc
+        git commit -a -m "documentation update and deploy."
+        git push

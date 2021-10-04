@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.35-37-g3225905 documentation</title>
+  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.35-41-gb9050c7 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
@@ -270,7 +270,7 @@
 <div class="section" id="howdy-music-songs">
 <span id="howdy-music-songs-label"></span><h2><span class="section-number">7.1.3. </span>howdy_music_songs<a class="headerlink" href="#howdy-music-songs" title="Permalink to this headline"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_music_songs</span> <span class="pre">-h</span></code>, produces the following.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_music_songs [-h] [-a ARTIST_NAME] [-s SONG_NAMES] [--maxnum MAXNUM] [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES] [-L] [-M] [--noverify] [--debug] [-D]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_music_songs [-h] [-a ARTIST_NAME] [-s SONG_NAMES] [--maxnum MAXNUM] [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES] [-L] [-M] [--noverify] [--debuglevel {NONE,ERROR,INFO,DEBUG}] [-D]</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -287,12 +287,9 @@
 <span class="go">  -L, --lastfm          If chosen, then only use the LastFM API to get song metadata.</span>
 <span class="go">  -M, --musicbrainz     If chosen, use Musicbrainz to get the artist metadata. Note that this is expensive.</span>
 <span class="go">  --noverify            Do not verify SSL transactions if chosen.</span>
-<span class="go">  --debug               Run with debug mode turned on.</span>
+<span class="go">  --debuglevel {NONE,ERROR,INFO,DEBUG}</span>
+<span class="go">                        Choose the debug level for the system logger. Default is NONE (no logging). Can be one of NONE (no logging), ERROR, INFO, or DEBUG.</span>
 <span class="go">  -D, --direct          Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.</span>
-
-<span class="go">   usage: howdy_music_songs [-h] -a ARTIST_NAME -s SONG_NAMES [--maxnum MAXNUM]</span>
-<span class="go">                              [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES]</span>
-<span class="go">                              [--lastfm] [--musicbrainz] [--noverify] [--debug]</span>
 </pre></div>
 </div>
 <p>In all three operations, here are required arguments or common flags,</p>
@@ -300,7 +297,14 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">-a</span></code> or <code class="docutils literal notranslate"><span class="pre">--artist</span></code>: the artist must always be specified.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--maxnum</span></code> specifies the maximum number of <a class="reference external" href="https://www.youtube.com">YouTube</a> video clips from which to choose. This number must be <span class="math notranslate nohighlight">\(\ge 1\)</span>, and its default is <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--debug</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--debuglevel</span></code> specifies the amount of system logging into STDOUT that you want to show. The default choice is <code class="docutils literal notranslate"><span class="pre">NONE</span></code> (no logging). Here are the loging levels.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">ERROR</span></code>: <code class="xref py py-const docutils literal notranslate"><span class="pre">ERROR</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INFO</span></code>: <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>: <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--level</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-D</span></code> or <code class="docutils literal notranslate"><span class="pre">--direct</span></code> only makes sense with the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> operation. With the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API we perform an <em>indexed</em> search. The <code class="docutils literal notranslate"><span class="pre">-D</span></code> or <code class="docutils literal notranslate"><span class="pre">--direct</span></code> flag means to perform a <em>direct</em> search on an arist instead.</p></li>
 </ul>
 <p>Some example animated GIFs can be downloaded from here, and is mirrored in this project’s README:</p>

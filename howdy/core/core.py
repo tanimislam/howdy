@@ -1699,13 +1699,13 @@ def store_cloudconvert_credentials( clientID, clientTOKEN ):
     """
     datum = {
         'clientID'    : clientID,
-        'clientTOKEN' : clientToken
+        'clientTOKEN' : clientTOKEN
     }
     val = session.query( PlexConfig ).filter( PlexConfig.service == 'cloudconvert' ).first( )
     if val is not None:
         session.delete( val )
         session.commit( )
-    newval = PlexConfig( service == 'cloudconvert', data = datum )
+    newval = PlexConfig( service = 'cloudconvert', data = datum )
     session.add( newval )
     session.commit( )
     return 'SUCCESS'

@@ -403,15 +403,17 @@ def main( ):
                              'Note that this is expensive.' ] ) )
     parser.add_argument( '--noverify', dest='do_verify', action='store_false', default=True,
                          help = 'Do not verify SSL transactions if chosen.' )
-    parser.add_argument( '--debug', dest='do_debug', action='store_true', default=False,
-                         help = 'Run with debug mode turned on.' )
+    parser.add_argument(
+        '--level', dest='debug_level', action='store', type=str, default = 'NONE', choices = [ 'NONE', 'ERROR', 'INFO', 'DEBUG' ],
+        help = 'Level of logging level. Defauls is NONE.' )
     parser.add_argument( '-D', '--direct', dest='do_direct', action='store_true', default=False,
                          help = 'Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.' )
     args = parser.parse_args( )
     music.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
     music.MusicInfo.set_musicbrainz_verify( verify = args.do_verify )
     logger = logging.getLogger( )
-    if args.do_debug: logger.setLevel( logging.DEBUG )
+    logging_dict = { 'ERROR' : logging.ERROR, 'INFO' : logging.INFO, 'DEBUG' : logging.DEBUG }
+    if args.debug_level in logging_dict: logger.setLevel( logging_dict[ args.debug_level ] )
     #
     ## must set TRUE only ONE of --lastfm or --musicbrainz
     assert( len(list(filter(lambda tok: tok is True, ( args.do_lastfm, args.do_musicbrainz ) ) ) ) <= 1 ), "error, can do at most one of --lastfm or --musicbrainz"

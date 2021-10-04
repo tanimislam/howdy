@@ -8,6 +8,7 @@ from itertools import chain
 from PIL import Image
 from urllib.parse import urljoin
 from distutils.spawn import find_executable
+from rapidfuzz.fuzz import ratio
 #
 from howdy import resourceDir
 from howdy.core import core, baseConfDir, session, PlexConfig
@@ -409,11 +410,19 @@ class MusicInfo( object ):
 
         :rtype: tuple
         """
+        aname = album_name
+        #
+        ## only if score is less than 95%
         if album_name not in self.alltrackdata:
-            return return_error_raw(
-                'Could not find album = %s for artist = %s with Musicbrainz.' % (
-                    album_name, self.artist_name ) )
-        album_info = self.alltrackdata[ album_name ]
+            best_match_aname = max( self.alltrackdata, key = lambda a_name: ratio( a_name.lower( ).strip( ), album_name.lower( ).strip( ) ) )
+            score_best_match = ratio( best_match_aname.lower( ).strip( ), album_name.lower( ).strip( ) )
+            logging.info( 'MUSICBRAINZ: best_match = "%s", score = %0.1f.' % ( best_match_aname, score_best_match ) )
+            if score_best_match < 95.0:
+                return return_error_raw(
+                    'Could not find album = %s for artist = %s with Musicbrainz. Best match is "%s" with score = %0.1f' % (
+                        album_name, self.artist_name, best_match_aname, score_best_match ) )
+            aname = best_match_aname
+        album_info = self.alltrackdata[ aname ]
         album_data_dict = [ ]
         total_tracks = len( album_info[ 'tracks' ] )
         for trackno in sorted( album_info[ 'tracks' ] ):

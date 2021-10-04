@@ -1681,6 +1681,60 @@ def check_jackett_credentials( url, apikey, verify = True ):
     except Exception as e:
         return None, "ERROR, exception emitted: %s." % str( e )
 
+def store_cloudconvert_credentials( clientID, clientTOKEN ):
+    """
+    stores the CloudConvert_ API V2 credentials into the SQLite3_ configuration database.
+
+    :param str clientID: the CloudConvert_ API V2 client ID. This is the *name* on the CloudConvert_ dashboard's API V2 key name. For example, for myself it is named ``TanimIslamCloudConvert``.
+    :param str clientTOKEN: the CloudConvert_ API V2 client token.
+    :returns: the string ``"SUCCESS"`` if could store the new CloudConvert_ credentials. Otherwise, the string ``'ERROR, COULD NOT STORE CLOUDCONVERT API V2 CREDENTIALS.'``.
+    
+    :rtype: str
+
+    .. seealso::
+
+       * :py:meth:`get_cloudconvert_credentials <howdy.core.core.get_cloudconvert_credentials>`.
+
+    .. _CloudConvert: https://cloudconvert.com
+    """
+    datum = {
+        'clientID'    : clientID,
+        'clientTOKEN' : clientToken
+    }
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'cloudconvert' ).first( )
+    if val is not None:
+        session.delete( val )
+        session.commit( )
+    newval = PlexConfig( service == 'cloudconvert', data = datum )
+    session.add( newval )
+    session.commit( )
+    return 'SUCCESS'
+
+def get_cloudconvert_credentials( ):
+    """
+    retrieves the CloudConvert_ API V2 credentials from the SQLite3_ configuration database.
+
+    :returns: a :py:class:`dict` of the CloudConvert_ API V2 credentials. Its structure is,
+
+    .. code-block:: python
+    
+       { 'clientID': XXXX,
+         'clientSECRET': XXXX
+       }
+
+    :rtype: dict
+
+    .. seealso::
+
+       * :py:meth:`store_cloudconvert_credentials <howdy.core.core.store_cloudconvert_credentials>`.
+
+    """
+    val = session.query( PlexConfig ).filter( PlexConfig.service == 'cloudconvert' ).first( )
+    if val is None:
+        raise ValueError( "ERROR, COULD NOT FIND CLOUDCONVERT CREDENTIALS." )
+    data_cc = val.data
+    return data_cc
+
 def get_imgurl_credentials( ):
     """
     retrieves the Imgur_ API credentials from the SQLite3_ configuration database.

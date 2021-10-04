@@ -390,9 +390,10 @@ class MusicInfo( object ):
         logging.debug( 'processed %d albums for %s in %0.3f seconds.' % (
             len( self.alltrackdata ), artist_name, time.time( ) - time0 ) )
 
-    def get_music_metadatas_album( self, album_name ):
+    def get_music_metadatas_album( self, album_name, min_criterion_score = 95 ):
         """
         :param str album_name: a studio album released by this artist.
+        :param int min_criterion_score: the minimum score to accept for a string similarity comparison between ``album_name`` and any studio album created by this artist. ``70`` :math:`\le` ``min_criterion_score`` :math:`\le` ``100``, and the default is ``95``. The :py:meth:`get_maximum_matchval <howdy.core.get_maximum_matchval>` performs the string comparison. If no album matches ``album_name``, then return album data for the album whose name is closest (while having a similarity score :math:`\ge` ``min_criterion_score``) to ``album_name`` is returned.
         :returns: a two-element :py:class:`tuple`, whose first element is a :py:class:`list` of summary information on tracks for this album, and whose second element is the string ``"SUCCESS"``. The elements in this list are ordered by first song track to last song track. An example first song for the `Moon Safari`_ album released by Air_ is,
 
           .. code-block:: python
@@ -410,14 +411,15 @@ class MusicInfo( object ):
 
         :rtype: tuple
         """
+        assert( min_criterion_score >= 70 and min_criterion_score <= 100 )
         aname = album_name
         #
         ## only if score is less than 95%
         if album_name not in self.alltrackdata:
-            best_match_aname = max( self.alltrackdata, key = lambda a_name: ratio( a_name.lower( ).strip( ), album_name.lower( ).strip( ) ) )
-            score_best_match = ratio( best_match_aname.lower( ).strip( ), album_name.lower( ).strip( ) )
+            best_match_aname = max( self.alltrackdata, key = lambda a_name: get_maximum_matchval( a_name, album_name ) )
+            score_best_match = get_maximum_matchval( album_name, album_name )
             logging.info( 'MUSICBRAINZ: best_match = "%s", score = %0.1f.' % ( best_match_aname, score_best_match ) )
-            if score_best_match < 95.0:
+            if score_best_match < min_criterion_score:
                 return return_error_raw(
                     'Could not find album = %s for artist = %s with Musicbrainz. Best match is "%s" with score = %0.1f' % (
                         album_name, self.artist_name, best_match_aname, score_best_match ) )

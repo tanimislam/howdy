@@ -343,8 +343,10 @@ def _download_songs_oldformat( args ):
                                          image_data = image_data )
             #
             ##
-            os.chmod( filename, 0o644 )
-            all_songs_downloaded.append( ( artist_name, song_name, filename ) )
+            try:
+                os.chmod( filename, 0o644 )
+                all_songs_downloaded.append( ( artist_name, song_name, filename ) )
+            except: pass
     else: # use --artist= --songs=
         assert( args.song_names is not None )
         #0

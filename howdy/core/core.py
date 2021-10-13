@@ -1,4 +1,4 @@
-import os, glob, datetime, logging, numpy, urllib3
+import os, glob, datetime, logging, numpy, urllib3, datetime
 import uuid, requests, pytz, time, json, validators
 import pathos.multiprocessing as multiprocessing
 # oauth2 stuff
@@ -645,7 +645,7 @@ def _get_library_data_show(
             if tvdbID is not None: showdata[ 'tvdbid' ] = tvdbID
             if tmdbID is not None: showdata[ 'tmdbid' ] = tmdbID
             #
-            for idx, leafElem in enumerate(leafElems):
+            for leafElem in leafElems:
                 newURL = urljoin( fullURL, leafElem[ 'key' ] )
                 resp3 = sess.get( newURL, params = params, verify = False, timeout = timeout )
                 times_requests_given.append( time.time( ) - t0 )
@@ -1057,20 +1057,18 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
                      direlem in html.find_all('directory') }
     assert( title in library_dict )
     key, mediatype = library_dict[ title ]
-    if mediatype == 'movie':
-        _, data = _get_library_data_movie( key, token, fullURL = fullURL,
-                                           num_threads = num_threads, timeout = timeout )
-    elif mediatype == 'show':
-        _, data =  _get_library_data_show( key, token, fullURL = fullURL,
-                                           num_threads = num_threads, timeout = timeout )
-    elif mediatype == 'artist':
-        _, data = _get_library_data_artist( key, token, fullURL = fullURL,
-                                            num_threads = num_threads, timeout = timeout )
-    else:
+    func_dict = {
+        'movie' : _get_library_data_movie,
+        'show'  : _get_library_data_show,
+        'artist': _get_library_data_artist }
+    if mediatype not in func_dict:
         logging.error( "took %0.3f seconds to get here in get_library_data, library = %s." %
                       ( time.time( ) - time0, title ) )
         logging.error( "could not find a library with name = %s. Exiting..." % title )
         return None
+    _, data = func_dict[ mediatype ](
+        key, token, fullURL = fullURL,
+        num_threads = num_threads, timeout = timeout )
     logging.info( "took %0.3f seconds to gete here in get_library_data, library = %s." %
                   ( time.time( ) - time0, title ) )
     return data

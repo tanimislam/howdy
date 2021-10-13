@@ -8,7 +8,6 @@ from itertools import chain
 from PIL import Image
 from urllib.parse import urljoin
 from distutils.spawn import find_executable
-from rapidfuzz.fuzz import ratio
 #
 from howdy import resourceDir
 from howdy.core import core, baseConfDir, session, PlexConfig
@@ -903,22 +902,35 @@ def fill_m4a_metadata( filename, data_dict, verify = True, image_data = None ):
                                          mutagen.mp4.MP4Cover.FORMAT_JPEG ), ]
     mp4tags.save( )
 
-def get_youtube_file( youtube_URL, outputfile ):
+def get_youtube_file( youtube_URL, outputfile, use_aria2c = True ):
     """
     Uses youtube-dl_ programmatically to download into an M4A_ file.
 
     :param str youtube_URL: a valid YouTube_ URL for the song clip.
     :param str outputfile: the M4A_ music file name.
+    :param bool use_aria2c: use the aria2c_ downloader. *Implicitly* requires that aria2c_ exists on the server.
 
     .. _youtube-dl: https://ytdl-org.github.io/youtube-dl/index.html
     .. _YouTube: https://www.youtube.com
+    .. _aria2c: https://aria2.github.io
     """
     assert( os.path.basename( outputfile ).lower( ).endswith( '.m4a' ) )
     logging.info( 'URL: %s, outputfile: %s.' % (
         youtube_URL, outputfile ) )
     try:
-        ydl_opts = { 'format' : '140',
-                     'outtmpl' : outputfile }
+        ydl_opts = {
+            'format' : '140',
+            'outtmpl' : outputfile }
+
+        #
+        ## these options come from https://www.reddit.com/r/youtubedl/comments/fx2ifj/comment/fms2ej6/?utm_source=share&utm_medium=web2x&context=3
+        ## because come on why is youtube-dl so achingly slow?
+        ## only if aria2c exists on this server
+        ## also to get INFO logging level: https://aria2.github.io/manual/en/html/aria2c.html#cmdoption-log-level
+        aria2c_exec = find_executable['aria2c']
+        if aria2c_exec is not None and use_aria2c:        
+            ydl_opts['external-downloader'] = 'aria2c'
+            ydl_opts['external-downloader-args'] = "-j 16 -x 16 -s 16 -k 1M --log-level=info"
         with youtube_dl.YoutubeDL( ydl_opts ) as ydl:
             ydl.download([ youtube_URL ])
     except youtube_dl.DownloadError: # could not download the file to M4A format
@@ -932,12 +944,11 @@ def get_youtube_file( youtube_URL, outputfile ):
         tmpfile = ydl_opts[ 'outtmpl' ]
         with youtube_dl.YoutubeDL( ydl_opts ) as ydl:
             ydl.download( [ youtube_URL ] )
-            proc = subprocess.Popen(
+            stdout_val = subprocess.check_output(
                 [ ffmpeg_exec, '-i', tmpfile, '-vn',
                   '-strict', 'experimental', '-acodec',
                   'aac', '-ab', '128k', "file:%s" % outputfile ],
-                stdout = subprocess.PIPE, stderr = subprocess.STDOUT )
-            stdout_val, stderr_val = proc.communicate( )
+                stderr = subprocess.STDOUT )
             os.chmod( outputfile, 0o644 )
             os.remove( tmpfile )
                 

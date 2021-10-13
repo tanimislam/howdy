@@ -27,8 +27,8 @@ sys.path.insert( 0, _mainDir )
 is_in_readthedocs = ( os.environ.get( 'READTHEDOCS' ) is not None )
 
 logger = logging.getLogger( __name__ )
-logger.info( "mainDir = %s" % _mainDir)
-logger.info( 'READTHEDOCS: %s.' % os.environ.get('READTHEDOCS') )
+logger.debug( "mainDir = %s" % _mainDir)
+logger.debug( 'READTHEDOCS: %s.' % os.environ.get('READTHEDOCS') )
 
 #
 ## now don't verify the TLS if not in READTHEDOCS
@@ -70,7 +70,7 @@ extensions = [
 ## following instructions here (https://github.com/svenevs/exhale/tree/master/docs/_intersphinx) to fix beautifulsoup doc.
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'requests': ( 'https://docs.python-requests.org/en/master', None),
+    'requests': ( 'https://docs.python-requests.org/en/latest', None),
     'beautifulsoup' : ( 'https://www.crummy.com/software/BeautifulSoup/bs4/doc', "_intersphinx/bs4_objects.inv"),
     'geoip2' : ( 'https://geoip2.readthedocs.io/en/latest', None),
     'gmusicapi' : ( 'https://unofficial-google-music-api.readthedocs.io/en/latest', None ),
@@ -82,7 +82,7 @@ intersphinx_mapping = {
     'deluge' : ( 'https://deluge.readthedocs.io/en/latest', None ),
     'plexapi' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
     'sqlalchemy' : ( 'https://docs.sqlalchemy.org', None ),
-    'subliminal' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
+    'subliminal' : ( 'https://subliminal.readthedocs.io/en/latest/', None ),
     'musicbrainzngs' : ( 'https://python-musicbrainzngs.readthedocs.io/en/latest', None ),
     'pillow' : ( 'https://pillow.readthedocs.io/en/stable', None ),
 }

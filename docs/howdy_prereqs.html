@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>1. Prerequisites and Overall Design Philosophy &mdash; howdy! 1.35-41-gb9050c7 documentation</title>
+  <title>1. Prerequisites and Overall Design Philosophy &mdash; howdy! 1.35-45-g0c50afa documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="_static/howdy_icon_VECTA.svg"/>
@@ -117,7 +117,7 @@
 <div class="section" id="common-design-philosophies-and-features-for-command-line-and-guis">
 <h2><span class="section-number">1.3. </span>Common Design Philosophies and Features for Command Line and GUIs<a class="headerlink" href="#common-design-philosophies-and-features-for-command-line-and-guis" title="Permalink to this headline"></a></h2>
 <p>Since I am forced to use the tools I developed to manage my Plex server, my command line interfaces (CLIs) and GUIs share common features that I hope make these tools <em>discoverable</em> and more easily <em>debuggable</em>.</p>
-<p>The CLIs are programmed with <a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse's</span> <span class="pre">ArgumentParser(</span> <span class="pre">)</span></code></a> and have a comprehensive help that can be accessed via <code class="docutils literal notranslate"><span class="pre">&lt;cli_tool&gt;</span> <span class="pre">-h</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;cli_tool&gt;</span></code> refers to the the specific Python CLI.</p>
+<p>The CLIs are programmed with <a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse's</span> <span class="pre">ArgumentParser(</span> <span class="pre">)</span></code></a> and have a comprehensive help that can be accessed via <code class="docutils literal notranslate"><span class="pre">&lt;cli_tool&gt;</span> <span class="pre">-h</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;cli_tool&gt;</span></code> refers to the the specific Python CLI.</p>
 <p>The GUI tools all share common features. One can take a PNG screenshot of each widget and sub-widget with the <code class="docutils literal notranslate"><span class="pre">Shift+Ctrl+P</span></code> (or <code class="docutils literal notranslate"><span class="pre">Shift+Command+P</span></code> on Mac OS X computers) key combination. This helps to debug issues that may appear in the GUI, and helps to create useful documentation. I always try to put help screens into my GUIs, although not all the GUIs have working help dialogs.</p>
 <p>Many of the GUIs and CLIs can be run with  a <code class="docutils literal notranslate"><span class="pre">--noverify</span></code> option to access SSL protected URLs and services without verification, which is needed when running in more restricted environments.</p>
 <p>In fact, here is a summary of the 25 CLI’s and GUI’s currently in <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a>. The ☑ after the name (or name and icon) means that I have completed the documentation for that CLI or GUI.</p>

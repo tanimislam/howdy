@@ -1,5 +1,5 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2, json, logging, oauth2client.client
-import requests, youtube_dl, gmusicapi, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid
+import requests, yt_dlp, gmusicapi, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid
 import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
 from contextlib import contextmanager
@@ -927,22 +927,22 @@ def get_youtube_file( youtube_URL, outputfile, use_aria2c = True ):
         ## because come on why is youtube-dl so achingly slow?
         ## only if aria2c exists on this server
         ## also to get INFO logging level: https://aria2.github.io/manual/en/html/aria2c.html#cmdoption-log-level
-        aria2c_exec = find_executable['aria2c']
-        if aria2c_exec is not None and use_aria2c:        
+        aria2c_exec = find_executable('aria2c')
+        if aria2c_exec is not None and use_aria2c:
             ydl_opts['external-downloader'] = 'aria2c'
             ydl_opts['external-downloader-args'] = "-j 16 -x 16 -s 16 -k 1M --log-level=info"
-        with youtube_dl.YoutubeDL( ydl_opts ) as ydl:
+        with yt_dlp.YoutubeDL( ydl_opts ) as ydl:
             ydl.download([ youtube_URL ])
-    except youtube_dl.DownloadError: # could not download the file to M4A format
+    except yt_dlp.DownloadError: # could not download the file to M4A format
         ffmpeg_exec = find_executable( 'ffmpeg' )
         if ffmpeg_exec is None:
             raise ValueError("Error, no FFMPEG executable found." )
-        with youtube_dl.YoutubeDL( ) as ydl:
+        with yt_dlp.YoutubeDL( ) as ydl:
             info = ydl.extract_info( youtube_URL, download = False )
             extension = info[ 'ext' ]
         ydl_opts = { 'outtmpl' : '%s.%s' % ( str( uuid.uuid4( ) ), extension ) }
         tmpfile = ydl_opts[ 'outtmpl' ]
-        with youtube_dl.YoutubeDL( ydl_opts ) as ydl:
+        with yt_dlp.YoutubeDL( ydl_opts ) as ydl:
             ydl.download( [ youtube_URL ] )
             stdout_val = subprocess.check_output(
                 [ ffmpeg_exec, '-i', tmpfile, '-vn',

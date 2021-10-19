@@ -77,6 +77,7 @@ setup(
             'howdy_store_credentials = howdy.core.cli.howdy_store_credentials:main',
             'rsync_subproc = howdy.core.cli.rsync_subproc:main',
             'get_book_tor = howdy.core.cli.get_book_tor:main',
+            'howdy_core_plex_download = howdy.core.cli.howdy_core_plex_download:main',
             ## gui
             'howdy_config_gui = howdy.core.gui.howdy_config_gui:main',
             'howdy_core_gui = howdy.core.gui.howdy_core_gui:main',

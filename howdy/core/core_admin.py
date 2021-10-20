@@ -82,10 +82,11 @@ def plex_download_release( release, destination_dir = os.getcwd( ), do_progress 
     """
     Downloads the Plex_ update into a specific directory, with optional progress bar.
     
-    :param Release release: the :py:class:`Release <plexapi.server.Release>` containing the Plex_ update information.
+    :param release: the :py:class:`Release <plexapi.server.Release>` containing the Plex_ update information.
+    :type release: :py:class:`Release <plexapi.server.Release>`
     :pararm str destination_dir: the destination directory into which to download.
     :param bool do_progress: whether to show the progress bar or not. Default is ``False``.
-    :returns: a :py:class:`str`. If unsuccessful an error message. If successful, the full path of the downloaded file.
+    :returns: If unsuccessful an error message. If successful, the full path of the downloaded file.
     :rtype: str
     """
     downloadURL = release.downloadURL
@@ -114,5 +115,5 @@ def plex_download_release( release, destination_dir = os.getcwd( ), do_progress 
             progress_bar.update(len(chunk))
             openfile.write( chunk )
         if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
-            return return_error_raw( "ERROR, something went wrong" )
+            return "ERROR, something went wrong"
         return destination

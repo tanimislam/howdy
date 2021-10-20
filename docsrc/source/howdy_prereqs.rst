@@ -80,6 +80,9 @@ In fact, here is a summary of the 25 CLI's and GUI's currently in Howdy_. The |c
    * -
      - :ref:`rsync_subproc <rsync_subproc_label>` |cbox|
      -
+   * -
+     - :ref:`howdy_core_plex_download <howdy_core_plex_download_label>` |cbox|
+     - 
 
    * - ``tv``
      - :ref:`get_tv_batch <get_tv_batch_label>` |cbox|

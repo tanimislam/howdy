@@ -58,6 +58,14 @@ This is a newer module. It implements higher level interfaces to the Jackett_ to
 .. automodule:: howdy.core.core_torrents
    :members:
 
+howdy.core.core_admin module
+----------------------------------------------
+This is a newer module. It implements the low-level tooling to monitor the Tautulli_ server that looks at the Plex_ server, and to check for updates, and download updates to, the current Plex_ server.
+
+.. automodule:: howdy.core.core_admin
+   :members:
+
+
 .. these are some URLs
 
 .. _SQLite3: https://www.sqlite.org/index.html

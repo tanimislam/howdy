@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.1. Howdy Core Command Line Utilities &mdash; howdy! 1.35-47-g75c6aea documentation</title>
+  <title>4.1. Howdy Core Command Line Utilities &mdash; howdy! 1.35-50-g6b6fca5 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
@@ -48,22 +48,23 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../howdy_core.html">4. Howdy Core Functionality</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">4.1. Howdy Core Command Line Utilities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#howdy-core-cli">4.1.1. howdy_core_cli</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#howdy-deluge-console">4.1.2. howdy_deluge_console</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#torrent-info-info">4.1.2.1. torrent info (info)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#removing-torrents-rm-or-del">4.1.2.2. removing torrents (rm or del)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#adding-torrents-add">4.1.2.3. adding torrents (add)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pausing-and-resuming-torrents-pause-or-resume">4.1.2.4. pausing and resuming torrents (pause or resume)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pushing-credentials-push">4.1.2.5. pushing credentials (push)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-core-plex-download">4.1.2. howdy_core_plex_download</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-deluge-console">4.1.3. howdy_deluge_console</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#torrent-info-info">4.1.3.1. torrent info (info)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#removing-torrents-rm-or-del">4.1.3.2. removing torrents (rm or del)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adding-torrents-add">4.1.3.3. adding torrents (add)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pausing-and-resuming-torrents-pause-or-resume">4.1.3.4. pausing and resuming torrents (pause or resume)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pushing-credentials-push">4.1.3.5. pushing credentials (push)</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#howdy-resynclibs">4.1.3. howdy_resynclibs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#howdy-store-credentials">4.1.4. howdy_store_credentials</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#rsync-subproc">4.1.5. rsync_subproc</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#rsync-based-functionality">4.1.5.1. rsync based functionality</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#rsync-subproc-settings-with-push">4.1.5.2. rsync_subproc settings with push</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-resynclibs">4.1.4. howdy_resynclibs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-store-credentials">4.1.5. howdy_store_credentials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rsync-subproc">4.1.6. rsync_subproc</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#rsync-based-functionality">4.1.6.1. rsync based functionality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rsync-subproc-settings-with-push">4.1.6.2. rsync_subproc settings with push</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#get-book-tor">4.1.6. get_book_tor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-book-tor">4.1.7. get_book_tor</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../gui_tools/howdy_core_gui.html">4.2. Howdy Core GUIs</a></li>
@@ -214,8 +215,30 @@
 </li>
 </ul>
 </div>
+<div class="section" id="howdy-core-plex-download">
+<span id="howdy-core-plex-download-label"></span><h2><span class="section-number">4.1.2. </span>howdy_core_plex_download<a class="headerlink" href="#howdy-core-plex-download" title="Permalink to this headline"></a></h2>
+<p>This checks for updates to the <a class="reference external" href="https://plex.tv">Plex</a> server and, when available, downloads the updated <a class="reference external" href="https://plex.tv">Plex</a> installation file. The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_core_plex_download</span> <span class="pre">-h</span></code>, produces the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_core_plex_download [-h] [-d DESTINATION_DIR] [-s] [-p] [-i]</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -d DESTINATION_DIR, --dest DESTINATION_DIR</span>
+<span class="go">                        The directory into which to store the updated Plex server.</span>
+<span class="go">  -s, --status          If chosen, just print out details of the Plex release but do not download.</span>
+<span class="go">  -p, --progress        If chosen, then show download progress.</span>
+<span class="go">  -i, --info            If chosen, then show INFO logging.</span>
+</pre></div>
+</div>
+<p>Here are what the arguments mean.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-d</span></code> or <code class="docutils literal notranslate"><span class="pre">--dest</span></code> specifies the destination directory. By default it is the current working directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-i</span></code> or <code class="docutils literal notranslate"><span class="pre">--info</span></code> turns on the <code class="docutils literal notranslate"><span class="pre">INFO</span></code> level debug logging. By default logging is off.</p></li>
+</ul>
+<p>If you choose <code class="docutils literal notranslate"><span class="pre">-s</span></code> or <code class="docutils literal notranslate"><span class="pre">--status</span></code>, then this command line tool will print out the details of the <a class="reference external" href="https://plex.tv">Plex</a> update. If there are no updates, then running <code class="docutils literal notranslate"><span class="pre">howdy_core_plex_download</span> <span class="pre">-s</span></code> will produce the string <code class="docutils literal notranslate"><span class="pre">NO</span> <span class="pre">PLEX</span> <span class="pre">UPDATES</span> <span class="pre">NOW.</span></code></p>
+<p>Otherwise (not choosing <code class="docutils literal notranslate"><span class="pre">-s</span></code>) will download the <a class="reference external" href="https://plex.tv">Plex</a> update, if available. If you choose <code class="docutils literal notranslate"><span class="pre">-p</span></code> or <code class="docutils literal notranslate"><span class="pre">--progress</span></code>, then this tool will display the progress bar while downloading.</p>
+</div>
 <div class="section" id="howdy-deluge-console">
-<span id="howdy-deluge-console-label"></span><h2><span class="section-number">4.1.2. </span>howdy_deluge_console<a class="headerlink" href="#howdy-deluge-console" title="Permalink to this headline"></a></h2>
+<span id="howdy-deluge-console-label"></span><h2><span class="section-number">4.1.3. </span>howdy_deluge_console<a class="headerlink" href="#howdy-deluge-console" title="Permalink to this headline"></a></h2>
 <p>This is a much reduced Deluge command line console client. It does the following operations: <a class="reference internal" href="#torrent-info-info"><span class="std std-ref">torrent info (info)</span></a>, <a class="reference internal" href="#removing-torrents-rm-or-del"><span class="std std-ref">removing torrents (rm or del)</span></a>, <a class="reference internal" href="#adding-torrents-add"><span class="std std-ref">adding torrents (add)</span></a>, <a class="reference internal" href="#pausing-and-resuming-torrents-pause-or-resume"><span class="std std-ref">pausing and resuming torrents (pause or resume)</span></a>, and <a class="reference internal" href="#pushing-credentials-push"><span class="std std-ref">pushing credentials (push)</span></a>. Running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">-h</span></code> gives the following output.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_deluge_console [-h] {info,resume,pause,rm,del,add,push} ...</span>
 
@@ -243,7 +266,7 @@
 </pre></div>
 </div>
 <div class="section" id="torrent-info-info">
-<h3><span class="section-number">4.1.2.1. </span>torrent info (info)<a class="headerlink" href="#torrent-info-info" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.1.3.1. </span>torrent info (info)<a class="headerlink" href="#torrent-info-info" title="Permalink to this headline"></a></h3>
 <p>You can get nicely formatted information on a collection of torrents, or all torrents, through running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">info</span></code>. Running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">info</span> <span class="pre">-h</span></code> gives the following output.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_deluge_console info [-h] [-f] [torrent [torrent ...]]</span>
 
@@ -293,7 +316,7 @@
 <p>Furthermore, since this CLI does not have UNIX piping and redirect functionalities, running with the <code class="docutils literal notranslate"><span class="pre">-f</span></code> or <code class="docutils literal notranslate"><span class="pre">--file</span></code> flag will spit out a debug text output of torrent statuses, the same as spit out into the command line. The name of the debug output file is <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console.YYYYMMDD-HHMMSS.txt</span></code>: the middle text is the 4-digit year, 2-digit month, 2-digit-day, followed by hour-min-second, at the time when the info command was requested.</p>
 </div>
 <div class="section" id="removing-torrents-rm-or-del">
-<h3><span class="section-number">4.1.2.2. </span>removing torrents (rm or del)<a class="headerlink" href="#removing-torrents-rm-or-del" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.1.3.2. </span>removing torrents (rm or del)<a class="headerlink" href="#removing-torrents-rm-or-del" title="Permalink to this headline"></a></h3>
 <p>You can remove some or all torrents by running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">rm</span></code> or <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">del</span></code>. Running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">rm</span> <span class="pre">-h</span></code> gives the following output.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_deluge_console rm [-h] [-R] torrent [torrent ...]</span>
 
@@ -312,7 +335,7 @@
 </ul>
 </div>
 <div class="section" id="adding-torrents-add">
-<h3><span class="section-number">4.1.2.3. </span>adding torrents (add)<a class="headerlink" href="#adding-torrents-add" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.1.3.3. </span>adding torrents (add)<a class="headerlink" href="#adding-torrents-add" title="Permalink to this headline"></a></h3>
 <p>You can add torrents to the Deluge server by running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">add</span></code>. You can add a torrent file as URL, a torrent file on disk, and a <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">Magnet URI</a>. Running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">add</span> <span class="pre">-h</span></code> gives the following output.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_deluge_console add [-h] torrent</span>
 
@@ -343,7 +366,7 @@
 </div>
 </div>
 <div class="section" id="pausing-and-resuming-torrents-pause-or-resume">
-<h3><span class="section-number">4.1.2.4. </span>pausing and resuming torrents (pause or resume)<a class="headerlink" href="#pausing-and-resuming-torrents-pause-or-resume" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.1.3.4. </span>pausing and resuming torrents (pause or resume)<a class="headerlink" href="#pausing-and-resuming-torrents-pause-or-resume" title="Permalink to this headline"></a></h3>
 <p>You can pause torrents on the Deluge server by running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">pause</span></code>, and you can resume them by running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">resume</span></code>.</p>
 <ul class="simple">
 <li><p>You can pause/resume specific torrents by running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">pause</span> <span class="pre">md5trunc_1</span> <span class="pre">md5_trunc_2</span> <span class="pre">...</span></code> or <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">resume</span> <span class="pre">md5trunc_1</span> <span class="pre">md5_trunc_2</span> <span class="pre">...</span></code>.</p></li>
@@ -351,7 +374,7 @@
 </ul>
 </div>
 <div class="section" id="pushing-credentials-push">
-<h3><span class="section-number">4.1.2.5. </span>pushing credentials (push)<a class="headerlink" href="#pushing-credentials-push" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.1.3.5. </span>pushing credentials (push)<a class="headerlink" href="#pushing-credentials-push" title="Permalink to this headline"></a></h3>
 <p>You can push new Deluge server credentials (URL, port, username, and password) to the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database. Running <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span> <span class="pre">push</span> <span class="pre">-h</span></code> gives its help syntax,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_deluge_console push [-h] [--host url] [--port port] [--username username] [--password password]</span>
 
@@ -371,7 +394,7 @@
 </div>
 </div>
 <div class="section" id="howdy-resynclibs">
-<span id="howdy-resynclibs-label"></span><h2><span class="section-number">4.1.3. </span>howdy_resynclibs<a class="headerlink" href="#howdy-resynclibs" title="Permalink to this headline"></a></h2>
+<span id="howdy-resynclibs-label"></span><h2><span class="section-number">4.1.4. </span>howdy_resynclibs<a class="headerlink" href="#howdy-resynclibs" title="Permalink to this headline"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_resynclibs</span> <span class="pre">-h</span></code>, produces the following.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_resynclibs [-h] [--libraries] [--refresh] [--summary] [--library LIBRARY] [--servername SERVERNAME] [--servernames] [--noverify]</span>
 
@@ -469,7 +492,7 @@
 </ol>
 </div>
 <div class="section" id="howdy-store-credentials">
-<span id="howdy-store-credentials-label"></span><h2><span class="section-number">4.1.4. </span>howdy_store_credentials<a class="headerlink" href="#howdy-store-credentials" title="Permalink to this headline"></a></h2>
+<span id="howdy-store-credentials-label"></span><h2><span class="section-number">4.1.5. </span>howdy_store_credentials<a class="headerlink" href="#howdy-store-credentials" title="Permalink to this headline"></a></h2>
 <p><a class="reference internal" href="#howdy-core-command-line-utilities"><span class="std std-numref">Section 4.1</span></a> describes this executable’s functionality very well. Its help screen can be displayed by running <code class="docutils literal notranslate"><span class="pre">howdy_store_credentials</span> <span class="pre">-h</span></code>,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_store_credentials [-h] [--noverify]</span>
 
@@ -492,7 +515,7 @@
 </div>
 </div>
 <div class="section" id="rsync-subproc">
-<span id="rsync-subproc-label"></span><h2><span class="section-number">4.1.5. </span>rsync_subproc<a class="headerlink" href="#rsync-subproc" title="Permalink to this headline"></a></h2>
+<span id="rsync-subproc-label"></span><h2><span class="section-number">4.1.6. </span>rsync_subproc<a class="headerlink" href="#rsync-subproc" title="Permalink to this headline"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">rsync_subproc</span> <span class="pre">-h</span></code>, produces the following.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: rsync_subproc [-h] [-S STRING] [-N NUMTRIES] [-D] [-R] {-P} ...</span>
 
@@ -513,7 +536,7 @@
 <p>This executable provides a convenient higher-level command-line interface to <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> uploading and downloading that resumes on transfer failure, and deletes the origin files once the transfer is complete. One also does not need to execute this command in <code class="docutils literal notranslate"><span class="pre">LOCAL_DIR</span></code>.</p>
 <p>The main <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> based uploading and downloading is described in <a class="reference internal" href="#rsync-based-functionality"><span class="std std-ref">rsync based functionality</span></a>. Setting the SSH credentials, and local and remote locations, is described in <a class="reference internal" href="#rsync-subproc-settings-with-push"><span class="std std-ref">rsync_subproc settings with push</span></a>.</p>
 <div class="section" id="rsync-based-functionality">
-<h3><span class="section-number">4.1.5.1. </span><a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> based functionality<a class="headerlink" href="#rsync-based-functionality" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.1.6.1. </span><a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> based functionality<a class="headerlink" href="#rsync-based-functionality" title="Permalink to this headline"></a></h3>
 <p>One can either upload files and directories to, or download files and directories from, the remote location and the remote subdirectory (which we call <code class="docutils literal notranslate"><span class="pre">SUBDIR</span></code>). The local directory is called <code class="docutils literal notranslate"><span class="pre">LOCAL_DIR</span></code>. If the remote directory is not defined, it is <em>by default</em> the home directory of that account.</p>
 <p>The debug flag, <code class="docutils literal notranslate"><span class="pre">-D</span></code> or <code class="docutils literal notranslate"><span class="pre">--debug</span></code>, is extremely useful, as it displays the lower level shell command that is executed to get the <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> transfer going.</p>
 <p>The files or directories are selected with <code class="docutils literal notranslate"><span class="pre">-S</span> <span class="pre">STRING</span></code> or <code class="docutils literal notranslate"><span class="pre">--string=STRING</span></code> and follows the standard <a class="reference external" href="https://en.wikipedia.org/wiki/Glob_(programming)">POSIX globbing</a> convention. For instance, you can specify <code class="docutils literal notranslate"><span class="pre">-S</span> <span class="pre">&quot;The*&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">STRING</span></code> in quotations) to select the remote directory <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">Simpsons</span></code> to download. In order to simplify this CLI’s behavior,</p>
@@ -541,7 +564,7 @@
 </div>
 </div>
 <div class="section" id="rsync-subproc-settings-with-push">
-<h3><span class="section-number">4.1.5.2. </span>rsync_subproc settings with push<a class="headerlink" href="#rsync-subproc-settings-with-push" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.1.6.2. </span>rsync_subproc settings with push<a class="headerlink" href="#rsync-subproc-settings-with-push" title="Permalink to this headline"></a></h3>
 <p>Running <code class="docutils literal notranslate"><span class="pre">rsync_subproc</span> <span class="pre">push</span></code> will update or set the SSH settings for the remote server, and the local and remote subdirectories. <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#local-and-remote-seedhost-ssh-setup"><span class="std std-numref">Section 2.2.3</span></a> and <a class="reference internal" href="../../howdy-config/howdy_config_gui_usage.html#login-services"><span class="std std-numref">Section 2.3.1</span></a> (see the screen shot in <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#login-step02-settings"><span class="std std-numref">Fig. 2.17</span></a>) describe the form that these settings take. The help output, when running <code class="docutils literal notranslate"><span class="pre">rsync_subproc</span> <span class="pre">push</span> <span class="pre">-h</span></code>, produces the following.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: rsync_subproc push [-h] [-L LOCAL_DIR] [--ssh SSHPATH] [--subdir SUBDIR]</span>
 
@@ -561,11 +584,11 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">rsync_subproc push -L LOCAL_DIR --ssh=username@ssh_server --subdir=SUBDIR</span>
 </pre></div>
 </div>
-<p>Note that here, the SSH password is the same as the remote <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server’s password. See, e.g., <a class="reference internal" href="#howdy-deluge-console"><span class="std std-numref">Section 4.1.2</span></a> or <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#local-and-remote-seedhost-ssh-setup"><span class="std std-numref">Section 2.2.3</span></a> and figures therein.</p>
+<p>Note that here, the SSH password is the same as the remote <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server’s password. See, e.g., <a class="reference internal" href="#howdy-deluge-console"><span class="std std-numref">Section 4.1.3</span></a> or <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#local-and-remote-seedhost-ssh-setup"><span class="std std-numref">Section 2.2.3</span></a> and figures therein.</p>
 </div>
 </div>
 <div class="section" id="get-book-tor">
-<span id="get-book-tor-label"></span><h2><span class="section-number">4.1.6. </span>get_book_tor<a class="headerlink" href="#get-book-tor" title="Permalink to this headline"></a></h2>
+<span id="get-book-tor-label"></span><h2><span class="section-number">4.1.7. </span>get_book_tor<a class="headerlink" href="#get-book-tor" title="Permalink to this headline"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">get_book_tor</span> <span class="pre">-h</span></code>, produces the following.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: get_book_tor [-h] -n NAME [--maxnum MAXNUM] [-f FILENAME] [--add] [--info] [--noverify]</span>
 
@@ -600,7 +623,7 @@
 </pre></div>
 </div>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--add</span></code> adds the Magnet URI to the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server. The operation of <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span></code> is described in <a class="reference internal" href="#howdy-deluge-console"><span class="std std-numref">Section 4.1.2</span></a>.</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">--add</span></code> adds the Magnet URI to the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server. The operation of <code class="docutils literal notranslate"><span class="pre">howdy_deluge_console</span></code> is described in <a class="reference internal" href="#howdy-deluge-console"><span class="std std-numref">Section 4.1.3</span></a>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop: torrents $ get_book_tor -n &quot;Plagues and Peoples&quot; --add</span>
 <span class="go">Chosen book: Plagues and Peoples (2.1 MiB)</span>
 <span class="go">...</span>

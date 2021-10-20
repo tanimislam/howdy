@@ -23,7 +23,7 @@ This contains the low-level functionality that does three things.
 
      I checked on 15 OCTOBER 2021, and I see some disturbing things. The latest version of youtube-dl_ is 6 JUNE 2021. This `discussion on YCombinator <https://news.ycombinator.com/item?id=28289981>`_ says that ``YouTube is dead``. Also, when I used the youtube-dl_ command line or the YoutubeDL API, my download speeds are no faster than 80 kbp/s. This means using yt-dlp_.
 
-     From my cursory work, doing ``howdy_music_songs -M -a Air -s "All I Need"``, the old youtube-dl_ speeds that I loved and got used to seems to work again!
+     From my cursory work, doing ``howdy_music_songs -M -a Air -s "All I Need"``, the old youtube-dl_ speeds that I loved and got used to seem to work again!
 
 * Uploads music to one's own `Google Play Music`_ account using GMusicAPI_, and sets its credentials.
 

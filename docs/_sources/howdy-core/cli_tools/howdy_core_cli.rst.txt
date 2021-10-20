@@ -134,6 +134,34 @@ Here is how to do each of the three *operations*.
 
   Note that ``A@AA.com`` must be a friend email of the Plex_ server, otherwise this operation will not work.
 
+.. _howdy_core_plex_download_label:
+
+howdy_core_plex_download
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+This checks for updates to the Plex_ server and, when available, downloads the updated Plex_ installation file. The help output, when running ``howdy_core_plex_download -h``, produces the following.
+
+.. code-block:: console
+
+   usage: howdy_core_plex_download [-h] [-d DESTINATION_DIR] [-s] [-p] [-i]
+
+   optional arguments:
+     -h, --help            show this help message and exit
+     -d DESTINATION_DIR, --dest DESTINATION_DIR
+			   The directory into which to store the updated Plex server.
+     -s, --status          If chosen, just print out details of the Plex release but do not download.
+     -p, --progress        If chosen, then show download progress.
+     -i, --info            If chosen, then show INFO logging.
+
+Here are what the arguments mean.
+
+* ``-d`` or ``--dest`` specifies the destination directory. By default it is the current working directory.
+
+* ``-i`` or ``--info`` turns on the ``INFO`` level debug logging. By default logging is off.
+
+If you choose ``-s`` or ``--status``, then this command line tool will print out the details of the Plex_ update. If there are no updates, then running ``howdy_core_plex_download -s`` will produce the string ``NO PLEX UPDATES NOW.``
+
+Otherwise (not choosing ``-s``) will download the Plex_ update, if available. If you choose ``-p`` or ``--progress``, then this tool will display the progress bar while downloading.
+   
 .. _howdy_deluge_console_label:
 
 howdy_deluge_console

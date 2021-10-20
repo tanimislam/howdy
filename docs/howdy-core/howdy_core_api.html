@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.3. Howdy Core API &mdash; howdy! 1.35-47-g75c6aea documentation</title>
+  <title>4.3. Howdy Core API &mdash; howdy! 1.35-50-g6b6fca5 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
@@ -54,6 +54,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-deluge-module">4.3.3. howdy.core.core_deluge module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-rsync-module">4.3.4. howdy.core.core_rsync module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-torrents-module">4.3.5. howdy.core.core_torrents module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-admin-module">4.3.6. howdy.core.core_admin module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="howdy_core.html#howdy-core-todo">4.4. Howdy Core TODO</a></li>
@@ -474,7 +475,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.get_lastupdated_string">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2021,</span> <span class="pre">10,</span> <span class="pre">15,</span> <span class="pre">11,</span> <span class="pre">9,</span> <span class="pre">25,</span> <span class="pre">375063)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2021,</span> <span class="pre">10,</span> <span class="pre">20,</span> <span class="pre">10,</span> <span class="pre">29,</span> <span class="pre">59,</span> <span class="pre">121770)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a string representation of a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2147,6 +2148,88 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="howdy-core-core-admin-module">
+<h2><span class="section-number">4.3.6. </span>howdy.core.core_admin module<a class="headerlink" href="#howdy-core-core-admin-module" title="Permalink to this headline"></a></h2>
+<p>This is a newer module. It implements the low-level tooling to monitor the <a class="reference external" href="https://tautulli.com">Tautulli</a> server that looks at the <a class="reference external" href="https://plex.tv">Plex</a> server, and to check for updates, and download updates to, the current <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
+<span class="target" id="module-howdy.core.core_admin"></span><dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_admin.get_tautulli_activity">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_admin.</span></span><span class="sig-name descname"><span class="pre">get_tautulli_activity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_admin.get_tautulli_activity" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the activity on the <a class="reference external" href="https://plex.tv">Plex</a> server (using <a class="reference external" href="https://tautulli.com">Tautulli</a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>endpoint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the <a class="reference external" href="https://tautulli.com">Tautulli</a> server endpoint.</p></li>
+<li><p><strong>apikey</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the <a class="reference external" href="https://tautulli.com">Tautulli</a> API Key.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_admin.get_tautulli_apikey">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_admin.</span></span><span class="sig-name descname"><span class="pre">get_tautulli_apikey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_admin.get_tautulli_apikey" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the tautulli API key with provided <a class="reference external" href="https://tautulli.com">Tautulli</a> username and password.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the <a class="reference external" href="https://tautulli.com">Tautulli</a> username.</p></li>
+<li><p><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the <a class="reference external" href="https://tautulli.com">Tautulli</a> password.</p></li>
+<li><p><strong>endpoint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the <a class="reference external" href="https://tautulli.com">Tautulli</a> server endpoint.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the <a class="reference external" href="https://tautulli.com">Tautulli</a> API key.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_admin.plex_check_for_update">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_admin.</span></span><span class="sig-name descname"><span class="pre">plex_check_for_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_admin.plex_check_for_update" title="Permalink to this definition"></a></dt>
+<dd><p>Determines whether there are any new <a class="reference external" href="https://plex.tv">Plex</a> server releases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server access token.</p></li>
+<li><p><strong>fullURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server address.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> and “SUCCESS” if successful. Otherwise returns the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> returned by <a class="reference internal" href="#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_admin.plex_download_release">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_admin.</span></span><span class="sig-name descname"><span class="pre">plex_download_release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">release</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/mnt/software/sources/pythonics/howdy/docsrc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_admin.plex_download_release" title="Permalink to this definition"></a></dt>
+<dd><p>Downloads the <a class="reference external" href="https://plex.tv">Plex</a> update into a specific directory, with optional progress bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>release</strong> (<a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a>) – the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> containing the <a class="reference external" href="https://plex.tv">Plex</a> update information.</p></li>
+<li><p><strong>do_progress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – whether to show the progress bar or not. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Pararm str destination_dir</dt>
+<dd class="field-even"><p>the destination directory into which to download.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>If unsuccessful an error message. If successful, the full path of the downloaded file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
 </dd>
 </dl>
 </dd></dl>

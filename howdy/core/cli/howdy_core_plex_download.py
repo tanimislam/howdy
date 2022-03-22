@@ -36,9 +36,6 @@ def main( ):
         return
     fullURL, token = dat
     release, status = core_admin.plex_check_for_update( token, fullURL)
-    if status != 'SUCCESS':
-        print( 'NO PLEX UPDATES NOW.' )
-        return
     if release is None:
         print( 'NO PLEX UPDATES NOW.' )
         return        

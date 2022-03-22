@@ -871,21 +871,32 @@ def fill_m4a_metadata( filename, data_dict, verify = True, image_data = None ):
     if 'year' in data_dict: mp4tags[ '\xa9day' ] = [ str(data_dict[ 'year' ]), ]
     mp4tags[ 'trkn' ] = [ ( data_dict[ 'tracknumber' ],
                             data_dict[ 'total tracks' ] ), ]
-    if image_data is not None:
+
+    def _save_image_data( image_data, mp4tags ):
+        if image_data is None: return
         with io.BytesIO( ) as csio2:
-            img = Image.open( image_data )
+            try:
+                img = Image.open( image_data )
+            except Exception as e:
+                logging.info( 'problem with filename = %s, and error message = %s.' % (
+                    filename, str( e ) ) )
+                return str(e)
             try:
                 img.save( csio2, format = 'png' )
                 mp4tags[ 'covr' ] = [
                     mutagen.mp4.MP4Cover( csio2.getvalue( ),
                                         mutagen.mp4.MP4Cover.FORMAT_PNG ), ]
+                return 'SUCCESS'
             except:
                 #
                 ## had a CMYK colormap for the JPEG file, so just store the JPEG image into the M4A file
                 img.save( csio2, format = 'jpeg' )
                 mp4tags[ 'covr' ] = [
                     mutagen.mp4.MP4Cover( csio2.getvalue( ),
-                                         mutagen.mp4.MP4Cover.FORMAT_JPEG ), ]              
+                                         mutagen.mp4.MP4Cover.FORMAT_JPEG ), ]
+                return 'SUCCESS'
+        
+    if image_data is not None: val = _save_image_data( image_data, mp4tags )
     elif data_dict[ 'album url' ] != '':
         with io.BytesIO( requests.get(
                 data_dict[ 'album url' ], verify = verify ).content ) as csio, io.BytesIO( ) as csio2:

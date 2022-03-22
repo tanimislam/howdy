@@ -164,21 +164,21 @@ def get_rsync_command( data, mystr, do_download = True ):
         if data['subdir'] is not None:
             mainStr = os.path.join( data['subdir'], mystr.strip( ) )
         else: mainStr = mystr.strip( )
-        mycmd = 'rsync --remove-source-files -P -avz --rsh="%s %s ssh" -e ssh %s:%s %s/' % (
+        mycmd = 'rsync --remove-source-files -P -avz --info=progress2 --rsh="%s %s ssh" -e ssh %s:%s %s/' % (
             sshpass_exec, data[ 'password' ], data[ 'sshpath' ], mainStr, data['local_dir'] )
-        mxcmd = 'rsync --remove-source-files -P -avz --rsh="%s XXXX ssh" -e ssh %s:%s %s/' % (
+        mxcmd = 'rsync --remove-source-files -P -avz --info=progress2 --rsh="%s XXXX ssh" -e ssh %s:%s %s/' % (
             sshpass_exec, data[ 'sshpath' ], mainStr, data['local_dir'] )
     else:
         fullpath = os.path.join( data['local_dir'], mystr )
         if data['subdir'] is not None:
-            mycmd = 'rsync --remove-source-files -P --rsh="%s %s ssh" -avz -e ssh %s %s:%s/' % (
+            mycmd = 'rsync --remove-source-files -P --info=progress2 --rsh="%s %s ssh" -avz -e ssh %s %s:%s/' % (
                 sshpass_exec, data[ 'password' ], fullpath, data[ 'sshpath' ], data['subdir'] )
             mxcmd = 'rsync --remove-source-files -P --rsh="%s XXXX ssh" -avz -e ssh %s %s:%s/' % (
                 sshpass_exec, fullpath, data[ 'sshpath' ], data['subdir'] )
         else:
-            mycmd = 'rsync --remove-source-files -P -avz --rsh="%s %s ssh" -e ssh %s %s:' % (
+            mycmd = 'rsync --remove-source-files -P -avz --info=progress2 --rsh="%s %s ssh" -e ssh %s %s:' % (
                 sshpass_exec, data[ 'password' ], fullpath, data[ 'sshpath' ] )
-            mxcmd = 'rsync --remove-source-files -P -avz --rsh="%s XXXX ssh" -e ssh %s %s:' % (
+            mxcmd = 'rsync --remove-source-files -P -avz --info=progress2 --rsh="%s XXXX ssh" -e ssh %s %s:' % (
                 sshpass_exec, fullpath, data[ 'sshpath' ] )
     return mycmd, mxcmd
 
@@ -206,9 +206,8 @@ def download_upload_files( glob_string, numtries = 10, debug_string = False,
     time0 = time.time( )
     for idx in range( numtries ):
         time00 = time.time( )
-        proc = subprocess.Popen( shlex.split( mycmd ), stdout = subprocess.PIPE,
-                                 stderr = subprocess.STDOUT )
-        stdout_val, stderr_val = proc.communicate( )
+        stdout_val = subprocess.check_output(
+            shlex.split( mycmd ), stderr = subprocess.STDOUT )
         if not any(map(lambda line: 'dispatch_run_fatal' in line, stdout_val.decode('utf-8').split('\n'))):
             mystr_split.append(
                 'SUCCESSFUL ATTEMPT %d / %d IN %0.3f SECONDS.' % (

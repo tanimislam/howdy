@@ -85,7 +85,7 @@ def main( ):
         mystr = '\n'.join(map(lambda info: '%s\n' % info, infos))
         if args.info_do_filename:
             fname = 'plex_deluge_console.%s.txt' % (
-                datetime.datetime.now( ).strftime( '%Y%M%d-%H%M%s' ) )
+                datetime.datetime.now( ).strftime( '%Y%m%d-%H%M%s' ) )
             with open( fname, 'w' ) as openfile:
                 openfile.write( '%s\n' % mystr )
         else: print( '%s\n' % mystr )

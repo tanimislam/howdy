@@ -42,6 +42,8 @@ def main( ):
                       help = 'If chosen, do not restrict minimum size of downloaded file.' )
     parser.add_argument('--raw', dest='do_raw', action='store_true', default = False,
                       help = 'If chosen, then use the raw string to specify TV show torrents.' )    
+    parser.add_argument('--x265', dest='do_x265', action='store_true', default = False,
+                      help = 'If chosen, then use append "x265" (do explicit search for HEVC/H65 torrents) to torrent search. Only works with --raw flag set.' )
     args = parser.parse_args( )
     #
     logger = logging.getLogger( )
@@ -119,9 +121,9 @@ def main( ):
     ## now download these episodes
     tvTorUnits, newdirs = tv.create_tvTorUnits(
         toGet, restrictMaxSize = args.do_restrict_maxsize,
-        restrictMinSize = args.do_restrict_minsize, do_raw = args.do_raw )
+        restrictMinSize = args.do_restrict_minsize, do_raw = args.do_raw, do_x265 = args.do_x265 )
     print('%d, here are the %d episodes to get: %s.' % ( step,
-        len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname' ], tvTorUnits))))
+        len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname_disp' ], tvTorUnits))))
     step += 1
     tv.download_batched_tvtorrent_shows(
         tvTorUnits, newdirs = newdirs, maxtime_in_secs = args.maxtime_in_secs,

@@ -60,7 +60,7 @@ def send_email_localsmtp( msg ):
     :param MIMEMultiPart msg: the :py:class:`MIMEMultiPart <email.mime.multipart.MIMEMultiPart>` email message to send. At a high level, this is an email with body, sender, recipients, and optional attachments.
     
     .. _SMTP: https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol
-    .. _`This blog post`: https://tanimislamblog.wordpress.com/2018/11/19/sendmail-relay-setup-and-implementation
+    .. _`This blog post`: https://tanimislam.gitlab.io/blog/sendmail-relay-setup-and-implementation.html
     """
     smtp_conn = smtplib.SMTP('localhost', 25 )
     smtp_conn.ehlo( 'test' )

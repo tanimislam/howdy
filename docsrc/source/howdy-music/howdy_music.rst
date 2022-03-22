@@ -15,11 +15,11 @@ Howdy Music TODO
 
 * Create a comprehensive GUI for the Plex_ music library similar to what I have made for the TV library (:ref:`howdy_tv_gui_label`) and movie library (:ref:`howdy_movie_totgui_label`).
 
-* Fix the manner in which songs can be emailed to the recipient. Currently :ref:`howdy_music_songs` emails a collection of downloaded songs with the ``--email`` flag. I am turning off this functionality until such time as I can develop a way to do this for :ref:`howdy_music_songs` and :ref:`howdy_music_album`. There is a blog post, `Getting plex_music_songs to upload multiple songs <https://tanimislamblog.wordpress.com/2018/12/20/getting-plex_music_songs-to-upload-multiple-songs>`_, that describes this older and currently untested functionality.
+* Fix the manner in which songs can be emailed to the recipient. Currently :ref:`howdy_music_songs` emails a collection of downloaded songs with the ``--email`` flag. I am turning off this functionality until such time as I can develop a way to do this for :ref:`howdy_music_songs` and :ref:`howdy_music_album`. There is a blog post, `Getting plex_music_songs to upload multiple songs <https://tanimislam.gitlab.io/blog/getting-plex_music_songs-py-to-upload-multiple-songs.html>`_, that describes this older and currently untested functionality.
 
 * Design a better and more natural way to incorporate emailing song functionality, because emails require the following,
 
-  * a custom setup of an SMTP relay on the Plex_ server, which I describe in this blog post, `Sendmail Relay Setup and Implementation <https://tanimislamblog.wordpress.com/2018/11/19/sendmail-relay-setup-and-implementation>`_.
+  * a custom setup of an SMTP relay on the Plex_ server, which I describe in this blog post, `Sendmail Relay Setup and Implementation <https://tanimislam.gitlab.io/blog/sendmail-relay-setup-and-implementation.html>`_.
 
   * The sender is currently the owner of the Plex_ server. Perhaps make this more transparent?
 

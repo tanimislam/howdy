@@ -1586,7 +1586,7 @@ def get_shows_to_exclude( tvdata = None ):
     return showsToExcludeInDB
 
 def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
-                       do_raw = False ):
+                       do_raw = False, do_x265 = False ):
     """
     Used by, e.g., :ref:`get_tv_batch`, to download missing episodes on the Plex_ TV library. This returns a :py:class:`tuple` of a :py:class:`list` of missing episodes to (torrent) download from the remote Deluge_ torrent server, and a :py:class:`list` of new directories to create, given a set of missing episode information, ``toGet``, as produced by :py:meth:`get_remaining_episodes <howdy.tv.tv.get_remaining_episodes>`. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server.
 
@@ -1594,13 +1594,15 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
       
       * ``totFname`` is the destination prefix (without file extension) of the episode on the Plex_ server.
       * ``torFname`` is the search string to give to the Jackett_ server (see :numref:`The Jackett Server` on the Jackett_ server's setup) to search for and download this episode.
+      * ``torFname_disp`` is the logging output giving the *raw* name of the episode (show name, season, epno) used in, e.g., :ref:`get_tv_batch <get_tv_bartch_label>`.
       * ``minSize`` is the minimum size, in MB, of the H264_ encoded MP4 or MKV episode file to search for.
       * ``minSize_x265`` is the minimum size, in MB, of the `H265/HEVC`_ encoded MP4 or MKV episode file to search for. By default this is smaller than ``minSize``.
       * ``maxSize`` is the maximum size, in MB, of the H264_ encoded MP4 or MKV episode file to search for.
       * ``maxSize_x265`` is the maximum size, in MB, of the `H265/HEVC`_ encoded MP4 or MKV episode file to search for. By default this is smaller than ``maxSize``.
       * ``tvshow`` is the name of the TV show to which this missing episode belongs.
       * ``do_raw`` is a :py:class:`boolean <bool>` flag. If ``True``, then search for this missing episode through the Jackett_ server using available IMDb_ information. If ``False``, then do a raw text search on ``torFname`` to find episode Magnet links.
-
+      * ``do_x265`` is a :py:class:`boolean <bool>` flag. If ``True``, then append the ``x265`` to the torrent search sent to the Jackett_ server. Only works when ``do_raw`` is ``True``.
+      
       For example, here is a representation of a missing episode that will be fed to the Deluge_ server for download.
 
       .. code-block:: python
@@ -1608,12 +1610,13 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
          {
           'totFname': '$LIBRARY_DIR/The Great British Bake Off/Season 5/The Great British Bake Off - s05e12 - Masterclass 2',
            'torFname': 'The Great British Bake Off S05E12',
+           'torFname_disp': 'The Great British Bake Off S05E12',
            'minSize': 300,
            'maxSize': 800,
            'minSize_x265': 200,
            'maxSize_x265': 650,
            'tvshow': 'The Great British Bake Off',
-           'do_raw': False
+           'do_raw': False,
            }
 
     * The second element is a :py:class:`list` of new directories to create for missing episodes. In this example, there are new episodes for season 10 of `The Great British Bake Off`_, but no season 10 directory.
@@ -1626,6 +1629,7 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
     :param bool restrictMaxSize: if ``True``, then restrict the *maximum* size of H264_ or `H265/HEVC`_ videos to search for on the Jackett_ server. Default is ``True``.
     :param bool restrictMinSize: if ``True``, then restrict the *minimum* size of H264_ or `H265/HEVC`_ videos to search for on the Jackett_ server. Default is ``True``.
     :param bool do_raw: if ``False``, then search for Magnet links of missing episodes using their IMDb_ information. If ``True``, then search using the raw string. Default is ``False``.
+    :param bool do_x265: if ``False``, then search for Magnet links of missing episodes using their IMDb_ information. If ``True``, then search using the raw string. Default is ``False``.
 
     :returns: a :py:class:`tuple` of two elements. The first element is a :py:class:`list` of missing episodes to search on the Jackett_ server. The second element is a :py:class:`list` of new directories to create for the TV library.
     :rtype: tuple
@@ -1683,12 +1687,14 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
             fname = '%s - s%02de%s - %s' % ( showFileName, seasno, '%%%02dd' % episode_number_length % epno, actTitle )
             totFname = os.path.join( candDir, fname )
             torFname = '%s S%02dE%02d' % ( torTitle, seasno, epno )
-            dat = { 'totFname' : totFname, 'torFname' : torFname,
-                    'minSize' : minSize, 'maxSize' : maxSize,
-                    'minSize_x265' : minSize_x265, 'maxSize_x265' : maxSize_x265,
-                    'tvshow' : tvshow,
-                    'do_raw' : do_raw }
-                
+            if do_x265 and do_raw: torFname = '%s x265' % torFname
+            dat = {
+                'totFname' : totFname, 'torFname' : torFname, 'torFname_disp' : '%s S%02dE%02d' % ( torTitle, seasno, epno ),
+                'minSize' : minSize, 'maxSize' : maxSize,
+                'minSize_x265' : minSize_x265, 'maxSize_x265' : maxSize_x265,
+                'tvshow' : tvshow,
+                'do_raw' : do_raw, }
+            
             if not os.path.isdir( candDir ):
                 tv_torrent_gets[ 'newdirs' ].setdefault( candDir, [] )
                 tv_torrent_gets[ 'newdirs' ][ candDir ].append( dat )

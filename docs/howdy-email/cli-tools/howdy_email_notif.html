@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>8.1. howdy_email_notif &mdash; howdy! 1.35-50-g6b6fca5 documentation</title>
+  <title>8.1. howdy_email_notif &mdash; howdy! 1.35-53-gb5e01d0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
@@ -84,17 +85,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="howdy-email-notif">
+  <section id="howdy-email-notif">
 <span id="howdy-email-notif-label"></span><h1><span class="section-number">8.1. </span><code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span></code><a class="headerlink" href="#howdy-email-notif" title="Permalink to this headline"></a></h1>
 <p>This is documentation for the Howdy! one-off email announcement commnand line interface, <code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span></code>. You specify a simple email, with a simple text subject line a simple plaintext body, to email either to yourself at your <a class="reference external" href="https://plex.tv">Plex</a> account or also to friends of your <a class="reference external" href="https://plex.tv">Plex</a> server. The list of your <a class="reference external" href="https://plex.tv">Plex</a> server friends can be accessed using <a class="reference internal" href="../../howdy-core/cli_tools/howdy_core_cli.html#howdy-core-cli"><span class="std std-ref">howdy_core_cli</span></a>, and specifically this command,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">howdy_core_cli --friends</span>
 </pre></div>
 </div>
 <p>that produces a list of friends with and without associated names in your Google Contacts.</p>
-<div class="figure align-left" id="id1">
+<figure class="align-left" id="id1">
 <span id="howdy-core-cli-example"></span><a class="reference internal image-reference" href="../../_images/howdy_core_cli_example.png"><img alt="../../_images/howdy_core_cli_example.png" src="../../_images/howdy_core_cli_example.png" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 8.1 </span><span class="caption-text">For privacy reasons, I choose to blank out the names, emails, and total number of friends who have access to my <a class="reference external" href="https://plex.tv">Plex</a> server.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 8.1 </span><span class="caption-text">For privacy reasons, I choose to blank out the names, emails, and total number of friends who have access to my <a class="reference external" href="https://plex.tv">Plex</a> server.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span> <span class="pre">-h</span></code>, produces the following.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_email_notif [-h] [--debug] [--test] [--subject SUBJECT] [--body BODY]</span>
 
@@ -112,7 +115,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">--body</span></code> specifies the text body of the email. if it is not specified, then the default body is <code class="docutils literal notranslate"><span class="pre">&quot;This</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">test.&quot;</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--test</span></code> just sends the email to your <a class="reference external" href="https://plex.tv">Plex</a> email account. I find it useful to run with <code class="docutils literal notranslate"><span class="pre">--test</span></code> first, until the subject and the body of the email is correct. Without the <code class="docutils literal notranslate"><span class="pre">--test</span></code> flag, this email is sent to all the friends of youe <a class="reference external" href="https://plex.tv">Plex</a> server (see <a class="reference internal" href="#howdy-core-cli-example"><span class="std std-numref">Fig. 8.1</span></a>).</p></li>
 </ul>
-</div>
+</section>
 
 
            </div>
@@ -125,7 +128,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021.</p>
+    <p>&#169; Copyright 2022.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

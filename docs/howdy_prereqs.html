@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>1. Prerequisites and Overall Design Philosophy &mdash; howdy! 1.35-50-g6b6fca5 documentation</title>
+  <title>1. Prerequisites and Overall Design Philosophy &mdash; howdy! 1.35-53-gb5e01d0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="_static/howdy_icon_VECTA.svg"/>
@@ -81,10 +82,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="prerequisites-and-overall-design-philosophy">
+  <section id="prerequisites-and-overall-design-philosophy">
 <h1><span class="section-number">1. </span>Prerequisites and Overall Design Philosophy<a class="headerlink" href="#prerequisites-and-overall-design-philosophy" title="Permalink to this headline"></a></h1>
 <p>To get started, I assume you have your own <a class="reference external" href="https://plex.tv">Plex</a> server. In order to get started with Plex, start at the <a class="reference external" href="https://plex.tv">Plex website</a> and put your media into it. Next, follow the <a class="reference internal" href="#installation"><span class="std std-ref">Installation</span></a> instructions. Join or identify the music, television, and movie based services described in <a class="reference internal" href="howdy-config/howdy_services_config.html#howdy-services-configuration"><span class="std std-numref">Section 2.1</span></a>, and server settings described in <a class="reference internal" href="howdy-config/howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a>. Use <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code> to save your services and settings information, and then you will be good to go in using the ~25 or so command line and graphical user interface (GUI) tools to manage your Plex server.</p>
-<div class="section" id="prerequisites">
+<section id="prerequisites">
 <h2><span class="section-number">1.1. </span>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline"></a></h2>
 <p>You will need to have <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/index.html">PyQt5</a>, <a class="reference external" href="https://www.riverbankcomputing.com/software/pyqtwebengine">PyQtWebEngine</a>, and <a class="reference external" href="https://linux.die.net/man/1/sshpass">sshpass</a>. On Debian based systems (such as <a class="reference external" href="https://www.ubuntu.com">Ubuntu</a>. <a class="reference external" href="https://linuxmint.com">Mint</a>, or <a class="reference external" href="https://www.debian.org">Debian</a>), you can install <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/index.html">PyQt5</a> and <a class="reference external" href="https://linux.die.net/man/1/sshpass">sshpass</a> with the following command (as <a class="reference external" href="https://en.wikipedia.org/wiki/Sudo">sudo</a> or root).</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt install python3-pyqt5 python3-pyqt5.qtwebengine sshpass</span>
@@ -98,8 +99,8 @@
 <p class="admonition-title">Note</p>
 <p>The installation of <a class="reference external" href="https://www.riverbankcomputing.com/software/pyqtwebengine">PyQtWebEngine</a> is relatively difficult. On my Ubuntu 20.04 machine, I had to run <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">python3-pyqt5.qtwebengine</span></code> to get this to work. More portable and universal commands, such as <code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">--user</span> <span class="pre">pyqtwebengine</span></code>, will <em>install</em> <a class="reference external" href="https://www.riverbankcomputing.com/software/pyqtwebengine">PyQtWebEngine</a>, but imports <em>may not work</em>.</p>
 </div>
-</div>
-<div class="section" id="installation">
+</section>
+<section id="installation">
 <h2><span class="section-number">1.2. </span>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
 <p>Since this package has been setup-ified, installation is very easy. Just <code class="docutils literal notranslate"><span class="pre">cd</span></code> into the <code class="docutils literal notranslate"><span class="pre">howdy</span></code> directory, and run,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python3 setup.py install --user</span>
@@ -113,8 +114,8 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip3 install --user git+https://github.com/tanimislam/howdy.git#egg=howdy</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="common-design-philosophies-and-features-for-command-line-and-guis">
+</section>
+<section id="common-design-philosophies-and-features-for-command-line-and-guis">
 <h2><span class="section-number">1.3. </span>Common Design Philosophies and Features for Command Line and GUIs<a class="headerlink" href="#common-design-philosophies-and-features-for-command-line-and-guis" title="Permalink to this headline"></a></h2>
 <p>Since I am forced to use the tools I developed to manage my Plex server, my command line interfaces (CLIs) and GUIs share common features that I hope make these tools <em>discoverable</em> and more easily <em>debuggable</em>.</p>
 <p>The CLIs are programmed with <a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse's</span> <span class="pre">ArgumentParser(</span> <span class="pre">)</span></code></a> and have a comprehensive help that can be accessed via <code class="docutils literal notranslate"><span class="pre">&lt;cli_tool&gt;</span> <span class="pre">-h</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;cli_tool&gt;</span></code> refers to the the specific Python CLI.</p>
@@ -209,8 +210,8 @@
 </tr>
 </tbody>
 </table>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -223,7 +224,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021.</p>
+    <p>&#169; Copyright 2022.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

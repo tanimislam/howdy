@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6.3. Howdy Movie API &mdash; howdy! 1.35-50-g6b6fca5 documentation</title>
+  <title>6.3. Howdy Movie API &mdash; howdy! 1.35-53-gb5e01d0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
@@ -89,10 +90,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="howdy-movie-api">
+  <section id="howdy-movie-api">
 <h1><span class="section-number">6.3. </span>Howdy Movie API<a class="headerlink" href="#howdy-movie-api" title="Permalink to this headline"></a></h1>
 <p>This document describes the lower level Howdy TMDB API, upon which <a class="reference internal" href="get_mov_tor.html#get-mov-tor"><span class="std std-ref">get_mov_tor</span></a> and <a class="reference internal" href="howdy_movie_totgui.html#howdy-movie-totgui-label"><span class="std std-ref"> howdy_movie_totgui</span></a> are built. It lives in <code class="docutils literal notranslate"><span class="pre">howdy.movie</span></code>.</p>
-<div class="section" id="howdy-movie-module">
+<section id="howdy-movie-module">
 <h2><span class="section-number">6.3.1. </span>howdy.movie module<a class="headerlink" href="#howdy-movie-module" title="Permalink to this headline"></a></h2>
 <p>This module implements the lower-level functionality that does the following:</p>
 <blockquote>
@@ -103,7 +104,7 @@
 </div></blockquote>
 <span class="target" id="module-howdy.movie"></span><dl class="py class">
 <dt class="sig sig-object py" id="howdy.movie.TMDBEngine">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.movie.</span></span><span class="sig-name descname"><span class="pre">TMDBEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngine" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.movie.</span></span><span class="sig-name descname"><span class="pre">TMDBEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngine" title="Permalink to this definition"></a></dt>
 <dd><p>The singleton class that, once called, initializes movie genre information from the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database. This object can then be accessed to find <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database genre IDs from genres or vice-versa. This also loads in all TTF fonts located in the <code class="docutils literal notranslate"><span class="pre">resources</span></code> directory.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -111,7 +112,7 @@
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.movie.TMDBEngine.__TMDBEngine">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">__TMDBEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngine.__TMDBEngine" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__TMDBEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngine.__TMDBEngine" title="Permalink to this definition"></a></dt>
 <dd><p>This object is only instantiated once. It implements mappings between <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API genre IDs and genre names (horror, comedy, etc.)  and loads all TTF fonts from the <code class="docutils literal notranslate"><span class="pre">resources</span></code> subdirectory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -195,7 +196,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.movie.TMDBEngineSimple">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.movie.</span></span><span class="sig-name descname"><span class="pre">TMDBEngineSimple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngineSimple" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.movie.</span></span><span class="sig-name descname"><span class="pre">TMDBEngineSimple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngineSimple" title="Permalink to this definition"></a></dt>
 <dd><p>The singleton class that, once called, initializes movie genre information from the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database. This object can then be accessed to find <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database genre IDs from genres or vice-versa. Unlike <a class="reference internal" href="#howdy.movie.TMDBEngine" title="howdy.movie.TMDBEngine"><code class="xref py py-class docutils literal notranslate"><span class="pre">TMDBEngine</span></code></a>, this also does not contain the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API key.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -203,7 +204,7 @@
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.movie.TMDBEngineSimple.__TMDBEngine">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">__TMDBEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngineSimple.__TMDBEngine" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__TMDBEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngineSimple.__TMDBEngine" title="Permalink to this definition"></a></dt>
 <dd><p>This object is only instantiated once. It implements mappings between <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API genre IDs and genre names (horror, comedy, etc.).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -298,8 +299,8 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="howdy-movie-movie-module">
+</section>
+<section id="howdy-movie-movie-module">
 <h2><span class="section-number">6.3.2. </span>howdy.movie.movie module<a class="headerlink" href="#howdy-movie-movie-module" title="Permalink to this headline"></a></h2>
 <p>This module contains the main back-end functionality used by the <a class="reference internal" href="get_mov_tor.html#get-mov-tor"><span class="std std-ref">get_mov_tor</span></a> and <a class="reference internal" href="howdy_movie_totgui.html#howdy-movie-totgui-label"><span class="std std-ref"> howdy_movie_totgui</span></a>, and other functionalities that are used by methods in the <a class="reference internal" href="../howdy-tv/howdy_tv_api.html#howdy-tv-api"><span class="std std-ref">Howdy TV API</span></a>. Here are the main features of this module.</p>
 <blockquote>
@@ -796,8 +797,8 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="howdy-movie-movie-torrents-module">
+</section>
+<section id="howdy-movie-movie-torrents-module">
 <h2><span class="section-number">6.3.3. </span>howdy.movie.movie_torrents module<a class="headerlink" href="#howdy-movie-movie-torrents-module" title="Permalink to this headline"></a></h2>
 <p>This module implements higher level interfaces to the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching server, and functionality that allows for the automatic download of episodes missing from the <a class="reference external" href="https://plex.tv">Plex</a> Movie library. It is very similar to the <a class="reference internal" href="../howdy-tv/howdy_tv_api.html#howdy-tv-tv-torrents-module"><span class="std std-ref">tv.tv_torrents module</span></a>, except for the following differences.</p>
 <ul class="simple">
@@ -827,7 +828,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </li>
 </ul>
 <p>An extra method, <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent" title="howdy.movie.movie_torrents.get_movie_torrent"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent</span></code></a> uses the <a class="reference external" href="https://yts.ag/api">YTS API</a> to retrieve movie <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent files</a>.</p>
-<p>As of October 20, 2021, here are three movie torrent finding methods that work and don’t work when searching for <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Trek_Beyond">Star Trek Beyond</a>. See <a class="reference internal" href="../howdy-tv/howdy_tv_api.html#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a> for a description of what services or trackers work for downloading TV torrents.</p>
+<p>As of March 22, 2022, here are three movie torrent finding methods that work and don’t work when searching for <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Trek_Beyond">Star Trek Beyond</a>. See <a class="reference internal" href="../howdy-tv/howdy_tv_api.html#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a> for a description of what services or trackers work for downloading TV torrents.</p>
 <span id="table-working-movietorrents"></span><table class="colwidths-auto docutils align-default" id="id11">
 <caption><span class="caption-number">Table 6.1 </span><span class="caption-text">Which Movie Torrent Trackers or Services Work?</span><a class="headerlink" href="#id11" title="Permalink to this table"></a></caption>
 <tbody>
@@ -927,7 +928,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of October 20, 2021, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
+<p>As of March 22, 2022, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
 </div>
 </dd></dl>
 
@@ -997,7 +998,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of October 20, 2021, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
+<p>As of March 22, 2022, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
 </div>
 </dd></dl>
 
@@ -1032,7 +1033,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of October 20, 2021, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
+<p>As of March 22, 2022, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
 </div>
 </dd></dl>
 
@@ -1069,7 +1070,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of October 20, 2021, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
+<p>As of March 22, 2022, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
 </div>
 </dd></dl>
 
@@ -1106,8 +1107,8 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </dl>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -1120,7 +1121,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021.</p>
+    <p>&#169; Copyright 2022.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

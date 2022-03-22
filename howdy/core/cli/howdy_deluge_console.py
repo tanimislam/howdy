@@ -25,23 +25,23 @@ def main( ):
     parser_info.add_argument( 'info_torrent', metavar='torrent', type=str, nargs='*', # can be even ZERO arguments
                              help = ' '.join([
                                  'The hash ID, or identifying initial substring, of torrents for which to get information.',
-                                 'Example usage is "plex_deluge_console info ab1 bc2", where "ab1" and "bc2" are the first three digits of the MD5 hashes of torrents to examine.' ]))
+                                 'Example usage is "howdy_deluge_console info ab1 bc2", where "ab1" and "bc2" are the first three digits of the MD5 hashes of torrents to examine.' ]))
     parser_info.add_argument( '-f', '--file', dest='info_do_filename', action='store_true', default = False,
-                             help = 'If chosen, then spit out the torrent selections into a debug output file. Name of the file is given by plex_deluge_console.YYYYMMDD-HHMMSS.txt' )
+                             help = 'If chosen, then spit out the torrent selections into a debug output file. Name of the file is given by howdy_deluge_console.YYYYMMDD-HHMMSS.txt' )
     #
     ## resume
     parser_resume = subparser.add_parser( 'resume', help = 'Resume selected torrents, or all torrents.' )
     parser_resume.add_argument( 'resume_torrent', metavar='torrent', type=str, nargs='+',
                                help = ' '.join([
                                    'The hash ID, or identifying initial substring, of torrents to resume.',
-                                   'Example usage is "plex_deluge_console resume ab1 bc2", where "ab1" and "bc2" are the first three digits of the MD5 hashes of torrents to resume.' ]))
+                                   'Example usage is "howdy_deluge_console resume ab1 bc2", where "ab1" and "bc2" are the first three digits of the MD5 hashes of torrents to resume.' ]))
     #
     ## pause
     parser_pause = subparser.add_parser( 'pause', help = 'Pause selected torrents, or all torrents.' )
     parser_pause.add_argument( 'pause_torrent', metavar = 'torrent', type=str, nargs='+',
                               help = '\n'.join([
                                   'The hash ID, or identifying initial substring, of torrents to pause.',
-                                  'Example usage is "plex_deluge_console resume ab1 bc2", where "ab1" and "bc2" are the first three digits of the MD5 hashes of torrents to pause.' ]))
+                                  'Example usage is "howdy_deluge_console resume ab1 bc2", where "ab1" and "bc2" are the first three digits of the MD5 hashes of torrents to pause.' ]))
     #
     ## remove/delete
     parser_remove = subparser.add_parser( 'rm', aliases = [ 'del' ], help = 'Remove selected torrents, or all torrents.' )
@@ -84,7 +84,7 @@ def main( ):
         if len( infos ) == 0: return
         mystr = '\n'.join(map(lambda info: '%s\n' % info, infos))
         if args.info_do_filename:
-            fname = 'plex_deluge_console.%s.txt' % (
+            fname = 'howdy_deluge_console.%s.txt' % (
                 datetime.datetime.now( ).strftime( '%Y%m%d-%H%M%s' ) )
             with open( fname, 'w' ) as openfile:
                 openfile.write( '%s\n' % mystr )

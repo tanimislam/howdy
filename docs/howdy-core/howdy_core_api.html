@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.3. Howdy Core API &mdash; howdy! 1.35-50-g6b6fca5 documentation</title>
+  <title>4.3. Howdy Core API &mdash; howdy! 1.35-53-gb5e01d0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
@@ -92,10 +93,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="howdy-core-api">
+  <section id="howdy-core-api">
 <h1><span class="section-number">4.3. </span>Howdy Core API<a class="headerlink" href="#howdy-core-api" title="Permalink to this headline"></a></h1>
 <p>This document describes the lower level Plex core API, upon which all the command line and GUI tools are based. It lives in <code class="docutils literal notranslate"><span class="pre">howdy.core</span></code>.</p>
-<div class="section" id="howdy-core-module">
+<section id="howdy-core-module">
 <h2><span class="section-number">4.3.1. </span>howdy.core module<a class="headerlink" href="#howdy-core-module" title="Permalink to this headline"></a></h2>
 <p>This module implements the lower-level functionality that does or has the following:</p>
 <ul class="simple">
@@ -109,13 +110,13 @@
 </ul>
 <span class="target" id="module-howdy.core"></span><dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.HtmlView">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">HtmlView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">htmlString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.HtmlView" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">HtmlView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">htmlString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.HtmlView" title="Permalink to this definition"></a></dt>
 <dd><p>A convenient <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget that displays rich and interactive HTML (HTML with CSS and Javascript). This extends <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwebenginewidgets/qwebengineview.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QWebEngineView</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.LastNewsletterDate">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">LastNewsletterDate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.LastNewsletterDate" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">LastNewsletterDate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.LastNewsletterDate" title="Permalink to this definition"></a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains the date at which the last newsletter was sent. It is not used much, and now that <a class="reference external" href="https://tautulli.com">Tautulli</a> has newsletter functionality, I very likely won’t use this at all. Stored into the <code class="docutils literal notranslate"><span class="pre">lastnewsletterdate</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables</dt>
@@ -126,7 +127,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.PlexConfig">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexConfig" title="Permalink to this definition"></a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains the configuration data used for running all the <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a> tools. Stored into the <code class="docutils literal notranslate"><span class="pre">plexconfig</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables</dt>
@@ -146,7 +147,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.PlexGuestEmailMapping">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexGuestEmailMapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexGuestEmailMapping" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexGuestEmailMapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexGuestEmailMapping" title="Permalink to this definition"></a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains mapping of emails of <a class="reference external" href="https://plex.tv">Plex</a> server users, to other email addresses. This is used to determine other email addresses to which Howdy one-off or newsletter emails are delivered. Stored in the <code class="docutils literal notranslate"><span class="pre">plexguestemailmapping</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database. The structure of each row in this table is straightforward. Each column in the table is a member of the object in this ORM class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables</dt>
@@ -161,7 +162,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.ProgressDialog">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">ProgressDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windowTitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doQuit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">ProgressDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windowTitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doQuit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog" title="Permalink to this definition"></a></dt>
 <dd><p>A convenient <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget, inheriting from <a class="reference internal" href="#howdy.core.QDialogWithPrinting" title="howdy.core.QDialogWithPrinting"><code class="xref py py-class docutils literal notranslate"><span class="pre">QDialogWithPrinting</span></code></a>, that acts as a GUI blocking progress window for longer lasting operations. Like its parent class, this dialog widget is also resizable. This shows the passage of the underlying slow process in 5 second increments.</p>
 <p>This progress dialog exposes three methods – <a class="reference internal" href="#howdy.core.ProgressDialog.addText" title="howdy.core.ProgressDialog.addText"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addText</span></code></a>, <a class="reference internal" href="#howdy.core.ProgressDialog.stopDialog" title="howdy.core.ProgressDialog.stopDialog"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stopDialog</span></code></a>, and <a class="reference internal" href="#howdy.core.ProgressDialog.startDialog" title="howdy.core.ProgressDialog.startDialog"><code class="xref py py-meth docutils literal notranslate"><span class="pre">startDialog</span></code></a> – to which a custom <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtcore/qthread.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QThread</span></code></a> object can connect.</p>
 <ul class="simple">
@@ -225,7 +226,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.ProgressDialogThread">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">ProgressDialogThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialogThread" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">ProgressDialogThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialogThread" title="Permalink to this definition"></a></dt>
 <dd><p>This subclassing of <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtcore/qthread.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QThread</span></code></a> provides a convenient scaffolding to run, in a non-blocking fashion, some long-running processes with an asssociated <a class="reference internal" href="#howdy.core.ProgressDialog" title="howdy.core.ProgressDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressDialog</span></code></a> widget.</p>
 <p>Subclasses of this object need to have a particular structure for their <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method. The first three arguments MUST be <code class="docutils literal notranslate"><span class="pre">self</span></code>, <code class="docutils literal notranslate"><span class="pre">parent</span></code>, <code class="docutils literal notranslate"><span class="pre">self</span></code> is a reference to this object. <code class="docutils literal notranslate"><span class="pre">parent</span></code> is the parent <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qwidget.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></a> to which the <a class="reference internal" href="#howdy.core.ProgressDialog" title="howdy.core.ProgressDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressDialog</span></code></a> attribute, named <code class="docutils literal notranslate"><span class="pre">progress_dialog</span></code>, is the child. <code class="docutils literal notranslate"><span class="pre">title</span></code> is the title of <code class="docutils literal notranslate"><span class="pre">progress_dialog</span></code>. Here is an example, where an example class named <code class="docutils literal notranslate"><span class="pre">ProgressDialogThreadChildClass</span></code> inherits from  <a class="reference internal" href="#howdy.core.ProgressDialogThread" title="howdy.core.ProgressDialogThread"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressDialogThread</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
@@ -272,7 +273,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.QDialogWithPrinting">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">QDialogWithPrinting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isIsolated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doQuit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">QDialogWithPrinting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isIsolated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doQuit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting" title="Permalink to this definition"></a></dt>
 <dd><p>A convenient <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget, inheriting from <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qdialog.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></a>, that allows for screen grabs and keyboard shortcuts to either hide this dialog window or quit the underlying program. This <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget is also resizable, in relative increments of 5% larger or smaller, to a maximum of <span class="math notranslate nohighlight">\(1.05^5\)</span> times the initial size, and to a minimum of <span class="math notranslate nohighlight">\(1.05^{-5}\)</span> times the initial size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -328,7 +329,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.QLabelWithSave">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">QLabelWithSave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QLabelWithSave" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">QLabelWithSave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QLabelWithSave" title="Permalink to this definition"></a></dt>
 <dd><p>A convenient <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget that inherits from <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qlabel.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QLabel</span></code></a>, but allows screen shots.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.core.QLabelWithSave.contextMenuEvent">
@@ -403,8 +404,8 @@
 
 <dl class="py data">
 <dt class="sig sig-object py" id="howdy.core.geoip_reader">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">geoip_reader</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;geoip2.database.Reader</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#howdy.core.geoip_reader" title="Permalink to this definition"></a></dt>
-<dd><p>This contains an on-disk <a class="reference external" href="https://www.maxmind.com/en/geoip2-services-and-databases">MaxMind</a> database, of type <a class="reference external" href="https://geoip2.readthedocs.io/en/latest/index.html#geoip2.database.Reader" title="(in geoip2 v4.4.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">geoip2.database.Reader</span></code></a>, containing location information for IP addresses.</p>
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">geoip_reader</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;geoip2.database.Reader</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#howdy.core.geoip_reader" title="Permalink to this definition"></a></dt>
+<dd><p>This contains an on-disk <a class="reference external" href="https://www.maxmind.com/en/geoip2-services-and-databases">MaxMind</a> database, of type <a class="reference external" href="https://geoip2.readthedocs.io/en/latest/index.html#geoip2.database.Reader" title="(in geoip2 v4.5.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">geoip2.database.Reader</span></code></a>, containing location information for IP addresses.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -475,7 +476,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.get_lastupdated_string">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2021,</span> <span class="pre">10,</span> <span class="pre">20,</span> <span class="pre">10,</span> <span class="pre">29,</span> <span class="pre">59,</span> <span class="pre">121770)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2022,</span> <span class="pre">3,</span> <span class="pre">22,</span> <span class="pre">12,</span> <span class="pre">32,</span> <span class="pre">40,</span> <span class="pre">191897)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a string representation of a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -574,8 +575,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="howdy-core-core-module">
+</section>
+<section id="howdy-core-core-module">
 <h2><span class="section-number">4.3.2. </span>howdy.core.core module<a class="headerlink" href="#howdy-core-core-module" title="Permalink to this headline"></a></h2>
 <p>This module implements the functionality to do the following:</p>
 <ul class="simple">
@@ -1194,7 +1195,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.core.get_pic_data">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_pic_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plexPICURL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_pic_data" title="Permalink to this definition"></a></dt>
-<dd><p>Get the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> data as a <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Response" title="(in Requests v2.26.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a> object, from a movie picture URL on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
+<dd><p>Get the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> data as a <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Response" title="(in Requests v2.27.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a> object, from a movie picture URL on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1206,7 +1207,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dd class="field-even"><p>the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> data for the movie image.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Response" title="(in Requests v2.26.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python-requests.org/en/latest/api/#requests.Response" title="(in Requests v2.27.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1564,8 +1565,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="howdy-core-core-deluge-module">
+</section>
+<section id="howdy-core-core-deluge-module">
 <h2><span class="section-number">4.3.3. </span>howdy.core.core_deluge module<a class="headerlink" href="#howdy-core-core-deluge-module" title="Permalink to this headline"></a></h2>
 <p>This module implements the functionality to interact with a <a class="reference external" href="https://www.seedhost.eu">Seedhost</a> <a class="reference external" href="https://en.wikipedia.org/wiki/Seedbox">seedbox</a> <a class="reference external" href="https://deluge-torrent.org">Deluge torrent server</a>, by copying a minimal set of the functionality of a <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge torrent client</a>. The data formatting in this module is largely or wholly copied from the <a class="reference external" href="https://deluge.readthedocs.io/en/latest">Deluge SDK</a>. The much reduced Deluge torrent client, <a class="reference internal" href="cli_tools/howdy_core_cli.html#howdy-deluge-console"><span class="std std-ref">howdy_deluge_console</span></a>, is a CLI front-end to this module.</p>
 <span class="target" id="module-howdy.core.core_deluge"></span><dl class="py function">
@@ -1673,7 +1674,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_format_info">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_format_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_format_info" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a nicely formatted representation of the status of a torrent.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;</span>&gt;&gt; print<span class="o">(</span> <span class="s1">&#39;%s&#39;</span> % deluge_format_info<span class="o">(</span> status, <span class="s1">&#39;ed53ba61555cab24946ebf2f346752805601a7fb&#39;</span> <span class="o">)</span> <span class="o">)</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt; print( &#39;%s&#39; % deluge_format_info( status, &#39;ed53ba61555cab24946ebf2f346752805601a7fb&#39; ) )</span>
 
 <span class="go">Name: ubuntu-19.10-beta-desktop-amd64.iso</span>
 <span class="go">ID: ed53ba61555cab24946ebf2f346752805601a7fb</span>
@@ -1988,8 +1989,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="howdy-core-core-rsync-module">
+</section>
+<section id="howdy-core-core-rsync-module">
 <h2><span class="section-number">4.3.4. </span>howdy.core.core_rsync module<a class="headerlink" href="#howdy-core-core-rsync-module" title="Permalink to this headline"></a></h2>
 <p>This module implements the functionality to interact with a <a class="reference external" href="https://www.seedhost.eu">Seedhost</a> <a class="reference external" href="https://en.wikipedia.org/wiki/Seedbox">seedbox</a> SSH server to download or upload files and directories using the <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> protocol tunneled through SSH. <a class="reference internal" href="cli_tools/howdy_core_cli.html#rsync-subproc"><span class="std std-ref">rsync_subproc</span></a> is a CLI front-end to this module.</p>
 <span class="target" id="module-howdy.core.core_rsync"></span><dl class="py function">
@@ -2114,8 +2115,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="howdy-core-core-torrents-module">
+</section>
+<section id="howdy-core-core-torrents-module">
 <h2><span class="section-number">4.3.5. </span>howdy.core.core_torrents module<a class="headerlink" href="#howdy-core-core-torrents-module" title="Permalink to this headline"></a></h2>
 <p>This is a newer module. It implements higher level interfaces to the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching server to search for ebooks. <a class="reference internal" href="cli_tools/howdy_core_cli.html#get-book-tor"><span class="std std-ref">get_book_tor</span></a> is its only CLI front-end.</p>
 <span class="target" id="module-howdy.core.core_torrents"></span><dl class="py function">
@@ -2152,8 +2153,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="howdy-core-core-admin-module">
+</section>
+<section id="howdy-core-core-admin-module">
 <h2><span class="section-number">4.3.6. </span>howdy.core.core_admin module<a class="headerlink" href="#howdy-core-core-admin-module" title="Permalink to this headline"></a></h2>
 <p>This is a newer module. It implements the low-level tooling to monitor the <a class="reference external" href="https://tautulli.com">Tautulli</a> server that looks at the <a class="reference external" href="https://plex.tv">Plex</a> server, and to check for updates, and download updates to, the current <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 <span class="target" id="module-howdy.core.core_admin"></span><dl class="py function">
@@ -2203,7 +2204,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> and “SUCCESS” if successful. Otherwise returns the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> returned by <a class="reference internal" href="#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.10.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> and “SUCCESS” if successful. Otherwise returns the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> returned by <a class="reference internal" href="#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></p>
@@ -2218,7 +2219,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>release</strong> (<a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a>) – the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> containing the <a class="reference external" href="https://plex.tv">Plex</a> update information.</p></li>
+<li><p><strong>release</strong> (<a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.10.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a>) – the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.10.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> containing the <a class="reference external" href="https://plex.tv">Plex</a> update information.</p></li>
 <li><p><strong>do_progress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – whether to show the progress bar or not. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
@@ -2234,8 +2235,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dl>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -2248,7 +2249,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021.</p>
+    <p>&#169; Copyright 2022.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

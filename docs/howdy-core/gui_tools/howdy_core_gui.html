@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.2. Howdy Core GUIs &mdash; howdy! 1.35-50-g6b6fca5 documentation</title>
+  <title>4.2. Howdy Core GUIs &mdash; howdy! 1.35-53-gb5e01d0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
@@ -86,14 +87,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="howdy-core-guis">
+  <section id="howdy-core-guis">
 <h1><span class="section-number">4.2. </span>Howdy Core GUIs<a class="headerlink" href="#howdy-core-guis" title="Permalink to this headline"></a></h1>
 <p>These are the <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a> core GUIs.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../howdy-config/howdy_config_gui_usage.html#howdy-config-gui-label"><span class="std std-ref">howdy_config_gui</span></a> is the configuration tool used to get the full Howdy functionality.</p></li>
 <li><p><a class="reference internal" href="#howdy-core-gui-label"><span class="std std-ref"> howdy_core_gui</span></a> is a more archaic version of <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code>. This only provides a GUI to set up the correct <a class="reference external" href="https://plex.tv">Plex</a> server settings or to set up <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a>.</p></li>
 </ul>
-<div class="section" id="howdy-core-gui-icon-howdy-core-gui">
+<section id="howdy-core-gui-icon-howdy-core-gui">
 <span id="howdy-core-gui-label"></span><h2><span class="section-number">4.2.1. </span><a class="reference internal" href="../../_images/howdy_core_gui_SQUARE_VECTA.svg"><img alt="howdy_core_gui_icon" class="align-middle" src="../../_images/howdy_core_gui_SQUARE_VECTA.svg" width="50" /></a> <code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span></code><a class="headerlink" href="#howdy-core-gui-icon-howdy-core-gui" title="Permalink to this headline"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span></code> has two modes of operation: either return the <a class="reference external" href="https://plex.tv">Plex</a> server token and URL; or set up <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a>. <code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span> <span class="pre">-h</span></code> produces this help screen,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Usage: howdy_core_gui [-h] [--info] [--remote] {googleauth} ...</span>
@@ -131,10 +132,12 @@
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">--bypass</span></code> flag ignores any existing  <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a>.</p>
 <p>This GUI is launched when running <code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span> <span class="pre">googleauth</span></code>.</p>
-<div class="figure align-left" id="id1">
+<figure class="align-left" id="id1">
 <span id="howdy-core-gui-mainwindow"></span><a class="reference internal image-reference" href="../../_images/howdy_core_gui_mainwindow.png"><img alt="../../_images/howdy_core_gui_mainwindow.png" src="../../_images/howdy_core_gui_mainwindow.png" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 4.1 </span><span class="caption-text">Fill out the <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a> credentials in the text box in the same manner as done in <a class="reference internal" href="../../howdy-config/howdy_services_config.html#google-step04-oauthtokenstring"><span class="std std-numref">Fig. 2.12</span></a> in <a class="reference internal" href="../../howdy-config/howdy_services_config.html#summary-of-setting-up-google-credentials"><span class="std std-numref">Section 2.1.6</span></a> for <a class="reference internal" href="../../howdy-config/howdy_config_gui_usage.html#howdy-config-gui-label"><span class="std std-ref">howdy_config_gui</span></a>.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 4.1 </span><span class="caption-text">Fill out the <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a> credentials in the text box in the same manner as done in <a class="reference internal" href="../../howdy-config/howdy_services_config.html#google-step04-oauthtokenstring"><span class="std std-numref">Fig. 2.12</span></a> in <a class="reference internal" href="../../howdy-config/howdy_services_config.html#summary-of-setting-up-google-credentials"><span class="std std-numref">Section 2.1.6</span></a> for <a class="reference internal" href="../../howdy-config/howdy_config_gui_usage.html#howdy-config-gui-label"><span class="std std-ref">howdy_config_gui</span></a>.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
 <p>Here, a browser tab or new window is launched (see <a class="reference internal" href="../../howdy-config/howdy_services_config.html#google-step03-authorizeaccount"><span class="std std-numref">Fig. 2.11</span></a>).</p>
 <ol class="arabic simple">
 <li><p>You will see a scary dialog window in the browser window (see <a class="reference internal" href="../../howdy-config/howdy_services_config.html#google-step05-scaryscreen"><span class="std std-numref">Fig. 2.13</span></a>).</p></li>
@@ -142,8 +145,8 @@
 <li><p>The final browser window shows a text box with the <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a> token string (see <a class="reference internal" href="../../howdy-config/howdy_services_config.html#google-step07-oauthtokencopy"><span class="std std-numref">Fig. 2.15</span></a>). Copy that string into the GUI dialog widget in <a class="reference internal" href="#howdy-core-gui-mainwindow"><span class="std std-numref">Fig. 4.1</span></a>, and press return on the text box in this dialog window.</p></li>
 </ol>
 <p>If all goes well, then all the Google services needed by Howdy will have been authorized.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -156,7 +159,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021.</p>
+    <p>&#169; Copyright 2022.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

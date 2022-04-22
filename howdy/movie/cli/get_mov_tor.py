@@ -171,22 +171,22 @@ def main( ):
                         help = 'Name of the movie to get.', required = True )
     parser.add_argument('-y', '--year', dest='year', type=int, action='store',
                         help = 'Year to look for the movie to get.')
-    parser.add_argument('--maxnum', dest='maxnum', type=int, action='store', default = 10,
+    parser.add_argument('-M', '--maxnum', dest='maxnum', type=int, action='store', default = 10,
                         help = 'Maximum number of torrents to look through. Default is 10.')
-    parser.add_argument('--timeout', dest='timeout', type=int, action='store', default = 60,
-                        help = 'Timeout on when to quit searching for torrents (in seconds). Default is 60 seconds.' )
+    #parser.add_argument('-t', '--timeout', dest='timeout', type=int, action='store', default = 60,
+    #                    help = 'Timeout on when to quit searching for torrents (in seconds). Default is 60 seconds.' )
     #parser.add_argument('--any', dest='do_any', action='store_true', default = False,
     #                  help = 'If chosen, make no filter on movie format.')
     parser.add_argument('-f', '--filename', dest='filename', action='store', type=str,
                         help = 'If defined, put torrent or magnet file into filename.')
     parser.add_argument('--bypass', dest='do_bypass', action='store_true', default=False,
                         help = 'If chosen, bypass YTS.')
-    parser.add_argument('--nozooq', dest='do_nozooq', action='store_true', default=False,
-                        help = 'If chosen, bypass ZOOQLE.')
+    #parser.add_argument('--nozooq', dest='do_nozooq', action='store_true', default=False,
+    #                    help = 'If chosen, bypass ZOOQLE.')
     #parser.add_argument('--torrentz', dest='do_torrentz', action='store_true', default=False,
     #                  help = 'If chosen, also look through TORRENTZ to get magnet link.')
-    parser.add_argument('--info', dest='do_info', action='store_true', default = False,
-                        help = 'If chosen, run in info mode.' )
+    parser.add_argument('-L', '--level', dest='level', action='store', default = 'NONE', choices = ['DEBUG','INFO','ERROR','NONE'],
+                        help = 'Choose logging level. By default it is NONE. Choices are: [ DEBUG, INFO, ERROR, NONE ].' )
     parser.add_argument('--add', dest='do_add', action='store_true', default = False,
                         help = 'If chosen, push the magnet link or torrent file into the deluge server.' )  
     parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
@@ -194,8 +194,13 @@ def main( ):
     parser.add_argument('--raw', dest='do_raw', action='store_true', default = False,
                         help = 'If chosen, do not use IMDB matching for Jackett torrents.')
     args = parser.parse_args( )
-    assert( args.timeout >= 10 )
-    if args.do_info: logging.basicConfig( level = logging.INFO )
+    # assert( args.timeout >= 10 )
+    logging_dict = {
+        'DEBUG' : logging.DEBUG,
+        'INFO'  : logging.INFO,
+        'ERROR' : logging.ERROR }
+    if args.level != 'NONE':
+        logging.basicConfig( level = logging_dict[ args.level ] )
     #
     num_both = 0
     if args.filename is not None: num_both += 1
@@ -215,32 +220,38 @@ def main( ):
             return
         except ValueError: pass
 
-    pool = Pool( processes = 4 )
-    if not args.do_nozooq: jobs = [
-        pool.apply_async( get_items_zooqle, args = ( args.name, args.maxnum ) ) ]
-    else: jobs = [ ]
+    #pool = Pool( processes = 4 )
+    #if not args.do_nozooq: jobs = [
+    #    pool.apply_async( get_items_zooqle, args = ( args.name, args.maxnum ) ) ]
+    #else: jobs = [ ]
     #
     ## check for jackett
-    if get_jackett_credentials( ) is None:
-        jobs += list(map(lambda func: pool.apply_async( func, args = ( args.name, args.maxnum ) ),
-                         ( get_items_rarbg, get_items_tpb ) ) )
-        logging.info("JACKETT CREDS NONE, ADDED RARBG AND TPB")
-        #if args.do_torrentz:
-        #    jobs.append( pool.apply_async( get_items_torrentz, args = ( args.name, args.maxnum ) ) )
-    else:
-        jobs.append( pool.apply_async(
-            get_items_jackett, args = ( args.name, tmdb_id, args.maxnum, args.do_verify, args.do_raw ) ) )
-        jobs.append( pool.apply_async(
-            get_items_eztv_io, args = ( args.name, tmdb_id, args.maxnum, args.do_verify ) ) )
-        logging.info("ADDED JACKETT AND EZTV")
-    items_lists = [ ]
-    for job in jobs:
-        try:
-            items = job.get( args.timeout )   # 60 second timeout on process
-            if items is None: continue
-            items_lists.append( items )
-        except: pass
-    items = list( chain.from_iterable( items_lists ) )
+    # if get_jackett_credentials( ) is None:
+    #     jobs += list(map(lambda func: pool.apply_async( func, args = ( args.name, args.maxnum ) ),
+    #                      ( get_items_rarbg, get_items_tpb ) ) )
+    #     logging.info("JACKETT CREDS NONE, ADDED RARBG AND TPB")
+    #     #if args.do_torrentz:
+    #     #    jobs.append( pool.apply_async( get_items_torrentz, args = ( args.name, args.maxnum ) ) )
+    # else:
+    #     jobs.append( pool.apply_async(
+    #         get_items_jackett, args = ( args.name, tmdb_id, args.maxnum, args.do_verify, args.do_raw ) ) )
+    #     jobs.append( pool.apply_async(
+    #         get_items_eztv_io, args = ( args.name, tmdb_id, args.maxnum, args.do_verify ) ) )
+    #     logging.info("ADDED JACKETT AND EZTV")
+    # items_lists = [ ]
+    # print( 'GOT HERE, jobs = %s.' % jobs )
+    # for job in jobs:
+    #     try:
+    #         items = job.get( args.timeout )   # 60 second timeout on process by default
+    #         if items is None: continue
+    #         items_lists.append( items )
+    #     except: pass
+    #items = list( chain.from_iterable( items_lists ) )
+    if not get_jackett_credentials( ):
+        print( "ERROR, NEED JACKETT SERVER TO SEARCH FOR MAGNET LINKS. EXITING..." )
+        return
+    items = get_items_jackett( args.name, tmdb_id, args.maxnum, args.do_verify, args.do_raw )
+    if items is None: items = [ ]
     logging.info( 'search for %d torrents took %0.3f seconds.' % (
         len( items ), time.time( ) - time0 ) )    
     if len( items ) == 0: return

@@ -9,24 +9,24 @@ The help output, when running ``get_mov_tor -h``, produces the following.
 
 .. code-block:: console
 
-   usage: get_mov_tor [-h] -n NAME [-y YEAR] [--maxnum MAXNUM] [--timeout TIMEOUT] [-f FILENAME] [--bypass] [--nozooq] [--info] [--add] [--noverify] [--raw]
+   usage: get_mov_tor [-h] -n NAME [-y YEAR] [-M MAXNUM] [-f FILENAME] [--bypass] [-L {DEBUG,INFO,ERROR,NONE}] [--add] [--noverify] [--raw]
 
    optional arguments:
      -h, --help            show this help message and exit
      -n NAME, --name NAME  Name of the movie to get.
      -y YEAR, --year YEAR  Year to look for the movie to get.
-     --maxnum MAXNUM       Maximum number of torrents to look through. Default is 10.
-     --timeout TIMEOUT     Timeout on when to quit searching for torrents (in seconds). Default is 60 seconds.
+     -M MAXNUM, --maxnum MAXNUM
+			   Maximum number of torrents to look through. Default is 10.
      -f FILENAME, --filename FILENAME
 			   If defined, put torrent or magnet file into filename.
      --bypass              If chosen, bypass YTS.
-     --nozooq              If chosen, bypass ZOOQLE.
-     --info                If chosen, run in info mode.
+     -L {DEBUG,INFO,ERROR,NONE}, --level {DEBUG,INFO,ERROR,NONE}
+			   Choose logging level. By default it is NONE. Choices are: [ DEBUG, INFO, ERROR, NONE ].
      --add                 If chosen, push the magnet link or torrent file into the deluge server.
      --noverify            If chosen, do not verify SSL connections.
      --raw                 If chosen, do not use IMDB matching for Jackett torrents.
 
-There are 13 flags or command line settings, so it is useful to split the different functionalities into separate sections. This tool can operate in three ways: choose a `torrent file`_; choose a Magnet link (similar to what is done in :ref:`get_tv_tor`); and bypass the Jackett_ server to use a cocktail of torrent trackers for which I have developed some functionality (see :numref:`howdy.movie.movie_torrents module`). :numref:`Demonstration of Default Operation` demonstrates the default mode of operation for this tool. :numref:`Common Flags and Settings` describe those settings to ``get_mov_tor`` that are shared by all operations. Finally, :numref:`Choice of Torrent Search` describes how to change the search for `torrent files <torrent file_>`_.
+There are 10 flags or command line settings, so it is useful to split the different functionalities into separate sections. This tool can operate in three ways: choose a `torrent file`_; or choose a Magnet link (similar to what is done in :ref:`get_tv_tor`). :numref:`Demonstration of Default Operation` demonstrates the default mode of operation for this tool. :numref:`Common Flags and Settings` describe those settings to ``get_mov_tor`` that are shared by all operations. Finally, :numref:`Choice of Torrent Search` describes how to change the search for `torrent files <torrent file_>`_.
 
 Demonstration of Default Operation
 -----------------------------------
@@ -92,9 +92,7 @@ Separate from whether or not a `torrent file`_ or Magnet link is downloaded, or 
 
 * ``--maxnum`` is the maximum number of magnet links or torrent files to return. The default is 10, but it must be :math:`\ge 5`.
 
-* ``--timeout`` tells ``get_mov_tor`` to exit after this many seconds if no selection has been found. The default is 60 seconds, but it must be :math:`\ge 10` seconds.
-
-* ``--info`` prints out ``INFO`` level logging output.
+* ``-L`` or ``--level`` sets the logging level. By default it is ``NONE``, but can also be one of ``DEBUG``, ``INFO``, or ``ERROR``.
 
 * ``--noverify`` says to not verify SSL connections.
 
@@ -110,9 +108,9 @@ If ``--f`` is used, then the ``--add`` flag cannot be set. Consequently, if the 
 
 Choice of Torrent Search
 ------------------------------
-The default operation is `torrent file`_ search first, then Magnet link. Setting the ``--bypass`` flag stops the `torrent file`_ search to go directly to Magnet link; this can be useful if the file search does not work, or if the `torrent file`_ we choose never gets started (this often occurs with older and more stale torrents).
+The default operation is `torrent file`_ search first, then Magnet link. Setting the ``--bypass`` flag stops the `torrent file`_ search to go directly to Magnet link; this can be useful if the file search does not work, or if the `torrent file`_ we choose never gets started (this often occurs with older and more stale torrents). Right now, because of the unreliability of the API of other torrent trackers, *only* Jackett_ works. **This means that without a running Jackett server, this functionality will error out**.
 
-By default one parallel process searches for Magnet links using Jackett_, and the other parallel process uses Zooqle_. The ``--nozooq`` flag turns off the Zooqle_ Magnet link search.
+.. By default one parallel process searches for Magnet links using Jackett_, and the other parallel process uses Zooqle_. The ``--nozooq`` flag turns off the Zooqle_ Magnet link search.
 
 .. _`torrent file`: https://en.wikipedia.org/wiki/Torrent_file
 .. _Jackett: https://github.com/Jackett/Jackett

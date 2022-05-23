@@ -1040,7 +1040,7 @@ def worker_process_download_tvtorrent(
         shared_list.append( ( 'jackett', data, 'SUCCESS' ) )
     #
     def _process_eztv_io_items( tvTorUnit, shared_list ):
-        t0 = time.time( )
+        t0 = time.perf_counter( )
         torFileName = tvTorUnit[ 'torFname' ]
         totFname = tvTorUnit[ 'totFname' ]
         minSize = tvTorUnit[ 'minSize' ]
@@ -1051,10 +1051,14 @@ def worker_process_download_tvtorrent(
         mustHaveString = torFileName.split( )[ -1 ]
         logging.info( 'eztv.io start: %s' % torFileName )
         #
-        data, status = get_tv_torrent_eztv_io(
-            torFileName, maxnum = 100, series_name = series_name,
-            minsizes = [ minSize, minSize_x265],
-            maxsizes = [ maxSize, maxSize_x265] )
+        try:
+            data, status = get_tv_torrent_eztv_io(
+                torFileName, maxnum = 100, series_name = series_name,
+                minsizes = [ minSize, minSize_x265],
+                maxsizes = [ maxSize, maxSize_x265] )
+        except:
+            data = None
+            status = 'Error, could not get eztv io working on %s.' % torFileName
         if status != 'SUCCESS':
             shared_list.append(
                 ( 'eztv.io', _create_status_dict( 'FAILURE', status, time0 ), 'FAILURE' ) )

@@ -11,8 +11,12 @@ from howdy.tv import tv_torrents, tv
 
 def get_items_eztv_io( name, maxnum = 10, verify = True ):
     assert( maxnum >= 5 )
-    items, status = tv_torrents.get_tv_torrent_eztv_io(
-        name, maxnum = maxnum, verify = verify )
+    try: 
+        items, status = tv_torrents.get_tv_torrent_eztv_io(
+            name, maxnum = maxnum, verify = verify )
+    except:
+        items = None
+        status = 'Problem with EZTV.IO ON %s.' % name        
     if status != 'SUCCESS':
         logging.info( 'ERROR, EZTV.IO COULD NOT FIND %s.' % name )
         return None
@@ -114,7 +118,7 @@ def get_tv_torrent_items(
             openfile.write('%s\n' % magnet_link )
 
 def process_magnet_items( name, raw = False, verify = True, maxnum = 10 ):
-    time0 = time.time( )
+    time0 = time.perf_counter( )
     #
     ## check for jackett
     if core.get_jackett_credentials( ) is None:
@@ -132,9 +136,7 @@ def process_magnet_items( name, raw = False, verify = True, maxnum = 10 ):
             ( get_items_zooqle, get_items_eztv_io ) ) )
         jobs.append( pool.apply_async( get_items_jackett, args = ( name, maxnum, raw, verify ) ) )
     items_all = list( chain.from_iterable( filter( None, map(lambda job: job.get( ), jobs ) ) ) )
-    logging.info( 'search for torrents took %0.3f seconds.' % ( time.time( ) - time0 ) )
-    pool.close( )
-    pool.join( )
+    logging.info( 'search for torrents took %0.3f seconds.' % ( time.perf_counter( ) - time0 ) )
     if len( items_all ) != 0: return items_all
     return None
             
@@ -158,13 +160,13 @@ def main( ):
     logger = logging.getLogger( )
     if args.do_info: logger.setLevel( logging.INFO )
     #
-    time0 = time.time( )
+    time0 = time.perf_counter( )
     items = process_magnet_items(
         args.name, maxnum = args.maxnum,
         raw = args.do_raw, verify = args.do_verify )
 
     logging.info( 'took %0.3f seconds to get TV torrents for %s.' % (
-        time.time( ) - time0, args.name ) )
+        time.perf_counter( ) - time0, args.name ) )
     if items is not None:
         #
         ## sort from most seeders + leecher to least

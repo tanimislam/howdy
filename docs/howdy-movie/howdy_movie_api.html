@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6.3. Howdy Movie API &mdash; howdy! 1.35-54-g7b2b9b1 documentation</title>
+  <title>6.3. Howdy Movie API &mdash; howdy! 1.35-58-g59362f8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -91,10 +92,10 @@
            <div itemprop="articleBody">
              
   <section id="howdy-movie-api">
-<h1><span class="section-number">6.3. </span>Howdy Movie API<a class="headerlink" href="#howdy-movie-api" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.3. </span>Howdy Movie API<a class="headerlink" href="#howdy-movie-api" title="Permalink to this heading"></a></h1>
 <p>This document describes the lower level Howdy TMDB API, upon which <a class="reference internal" href="get_mov_tor.html#get-mov-tor"><span class="std std-ref">get_mov_tor</span></a> and <a class="reference internal" href="howdy_movie_totgui.html#howdy-movie-totgui-label"><span class="std std-ref"> howdy_movie_totgui</span></a> are built. It lives in <code class="docutils literal notranslate"><span class="pre">howdy.movie</span></code>.</p>
 <section id="howdy-movie-module">
-<h2><span class="section-number">6.3.1. </span>howdy.movie module<a class="headerlink" href="#howdy-movie-module" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.3.1. </span>howdy.movie module<a class="headerlink" href="#howdy-movie-module" title="Permalink to this heading"></a></h2>
 <p>This module implements the lower-level functionality that does the following:</p>
 <blockquote>
 <div><ul class="simple">
@@ -301,7 +302,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 
 </section>
 <section id="howdy-movie-movie-module">
-<h2><span class="section-number">6.3.2. </span>howdy.movie.movie module<a class="headerlink" href="#howdy-movie-movie-module" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.3.2. </span>howdy.movie.movie module<a class="headerlink" href="#howdy-movie-movie-module" title="Permalink to this heading"></a></h2>
 <p>This module contains the main back-end functionality used by the <a class="reference internal" href="get_mov_tor.html#get-mov-tor"><span class="std std-ref">get_mov_tor</span></a> and <a class="reference internal" href="howdy_movie_totgui.html#howdy-movie-totgui-label"><span class="std std-ref"> howdy_movie_totgui</span></a>, and other functionalities that are used by methods in the <a class="reference internal" href="../howdy-tv/howdy_tv_api.html#howdy-tv-api"><span class="std std-ref">Howdy TV API</span></a>. Here are the main features of this module.</p>
 <blockquote>
 <div><ul class="simple">
@@ -799,7 +800,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 
 </section>
 <section id="howdy-movie-movie-torrents-module">
-<h2><span class="section-number">6.3.3. </span>howdy.movie.movie_torrents module<a class="headerlink" href="#howdy-movie-movie-torrents-module" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.3.3. </span>howdy.movie.movie_torrents module<a class="headerlink" href="#howdy-movie-movie-torrents-module" title="Permalink to this heading"></a></h2>
 <p>This module implements higher level interfaces to the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching server, and functionality that allows for the automatic download of episodes missing from the <a class="reference external" href="https://plex.tv">Plex</a> Movie library. It is very similar to the <a class="reference internal" href="../howdy-tv/howdy_tv_api.html#howdy-tv-tv-torrents-module"><span class="std std-ref">tv.tv_torrents module</span></a>, except for the following differences.</p>
 <ul class="simple">
 <li><p>methods here are called with <code class="docutils literal notranslate"><span class="pre">movie_torrent_</span></code> instead of <code class="docutils literal notranslate"><span class="pre">tv_torrent_</span></code>.</p></li>
@@ -828,7 +829,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </li>
 </ul>
 <p>An extra method, <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent" title="howdy.movie.movie_torrents.get_movie_torrent"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent</span></code></a> uses the <a class="reference external" href="https://yts.ag/api">YTS API</a> to retrieve movie <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent files</a>.</p>
-<p>As of April 22, 2022, here are three movie torrent finding methods that work and don’t work when searching for <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Trek_Beyond">Star Trek Beyond</a>. See <a class="reference internal" href="../howdy-tv/howdy_tv_api.html#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a> for a description of what services or trackers work for downloading TV torrents.</p>
+<p>As of July 20, 2022, here are three movie torrent finding methods that work and don’t work when searching for <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Trek_Beyond">Star Trek Beyond</a>. See <a class="reference internal" href="../howdy-tv/howdy_tv_api.html#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a> for a description of what services or trackers work for downloading TV torrents.</p>
 <span id="table-working-movietorrents"></span><table class="colwidths-auto docutils align-default" id="id11">
 <caption><span class="caption-number">Table 6.1 </span><span class="caption-text">Which Movie Torrent Trackers or Services Work?</span><a class="headerlink" href="#id11" title="Permalink to this table"></a></caption>
 <tbody>
@@ -928,7 +929,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of April 22, 2022, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
+<p>As of July 20, 2022, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
 </div>
 </dd></dl>
 
@@ -998,7 +999,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of April 22, 2022, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
+<p>As of July 20, 2022, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
 </div>
 </dd></dl>
 
@@ -1033,7 +1034,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of April 22, 2022, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
+<p>As of July 20, 2022, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
 </div>
 </dd></dl>
 
@@ -1070,7 +1071,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of April 22, 2022, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
+<p>As of July 20, 2022, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
 </div>
 </dd></dl>
 

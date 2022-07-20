@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2.2. Howdy Settings Configuration &mdash; howdy! 1.35-54-g7b2b9b1 documentation</title>
+  <title>2.2. Howdy Settings Configuration &mdash; howdy! 1.35-58-g59362f8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -89,7 +90,7 @@
            <div itemprop="articleBody">
              
   <section id="howdy-settings-configuration">
-<h1><span class="section-number">2.2. </span>Howdy Settings Configuration<a class="headerlink" href="#howdy-settings-configuration" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">2.2. </span>Howdy Settings Configuration<a class="headerlink" href="#howdy-settings-configuration" title="Permalink to this heading"></a></h1>
 <p>This document contains all the needed information to get started on getting set up with all the <strong>Plex server settings</strong> one needs to get up and running with Howdy. This setup developed here uses the <a class="reference external" href="https://www.seedhost.eu">Seedhost</a>  <a class="reference external" href="https://en.wikipedia.org/wiki/Seedbox">seedbox</a> service to downloaded files, using the <a class="reference external" href="https://deluge-torrent.org">Deluge torrent server</a>, to download to one’s home machine.</p>
 <p>This configuration is handled through the <a class="reference internal" href="howdy_config_gui_usage.html#howdy-config-gui-label"><span class="std std-ref">howdy_config_gui</span></a>, and consists of the following elements. The <em>Plex Settings Configuration</em> document describes the Jackett server settings, where one may use either the Jackett server provided by Seedbox or one’s own server.</p>
 <ol class="arabic simple">
@@ -149,11 +150,11 @@
 <li><p><a class="reference internal" href="#local-and-remote-seedhost-ssh-setup"><span class="std std-ref">Local and Remote (Seedhost) SSH Setup</span></a>.</p></li>
 </ul>
 <section id="credentials-for-plex-account">
-<span id="id1"></span><h2><span class="section-number">2.2.1. </span>Credentials for <a class="reference external" href="https://plex.tv">Plex</a> Account<a class="headerlink" href="#credentials-for-plex-account" title="Permalink to this headline"></a></h2>
+<span id="id1"></span><h2><span class="section-number">2.2.1. </span>Credentials for <a class="reference external" href="https://plex.tv">Plex</a> Account<a class="headerlink" href="#credentials-for-plex-account" title="Permalink to this heading"></a></h2>
 <p>This assumes that you already have a <a class="reference external" href="https://plex.tv">Plex Account</a> with server already set up. If you don’t, and want to get started, a good place to start is a blog entry I have written, <a class="reference external" href="https://tanimislam.gitlab.io/blog/how-to-share-your-plex-media.html">How to share your Plex media</a>. Just record your username and password.</p>
 </section>
 <section id="seedhost-services-setup">
-<h2><span class="section-number">2.2.2. </span>Seedhost Services Setup<a class="headerlink" href="#seedhost-services-setup" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">2.2.2. </span>Seedhost Services Setup<a class="headerlink" href="#seedhost-services-setup" title="Permalink to this heading"></a></h2>
 <p>First, if you do not have an account, <a class="reference external" href="https://www.seedhost.eu/whmcs/register.php">register a Seedhost account</a>. The username and password you choose or have will be the username and password for the SSH and Deluge server accounts.</p>
 <p>Second, set up a Deluge server.</p>
 <ol class="arabic simple">
@@ -189,7 +190,7 @@
 </ul>
 </section>
 <section id="local-and-remote-seedhost-ssh-setup">
-<h2><span class="section-number">2.2.3. </span>Local and Remote (Seedhost) SSH Setup<a class="headerlink" href="#local-and-remote-seedhost-ssh-setup" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">2.2.3. </span>Local and Remote (Seedhost) SSH Setup<a class="headerlink" href="#local-and-remote-seedhost-ssh-setup" title="Permalink to this heading"></a></h2>
 <p>You have already set up your SSH account by registering a Seedhost account. Presumably you know enough to have a an SSH account on a server you own, and on which your Plex server runs. This is usually your login account on your home SSH server. All instructions refer to the login dialog widget shown in <a class="reference internal" href="#login-step02-settings"><span class="std std-numref">Fig. 2.17</span></a>.</p>
 <ul class="simple">
 <li><p>Put the full username and SSH server URL path into the <em>SSH Path</em> text box.</p></li>

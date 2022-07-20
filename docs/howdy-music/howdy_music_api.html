@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7.2. Howdy Music API &mdash; howdy! 1.35-54-g7b2b9b1 documentation</title>
+  <title>7.2. Howdy Music API &mdash; howdy! 1.35-58-g59362f8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -90,10 +91,10 @@
            <div itemprop="articleBody">
              
   <section id="howdy-music-api">
-<h1><span class="section-number">7.2. </span>Howdy Music API<a class="headerlink" href="#howdy-music-api" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">7.2. </span>Howdy Music API<a class="headerlink" href="#howdy-music-api" title="Permalink to this heading"></a></h1>
 <p>This document describes the lower level Howdy Music API, upon which the <a class="reference internal" href="cli_tools/howdy_music_cli.html#howdy-music-command-line-utilities"><span class="std std-ref">command line tools</span></a>  are built. It lives in <code class="docutils literal notranslate"><span class="pre">howdy.music</span></code>.</p>
 <section id="howdy-music-module">
-<h2><span class="section-number">7.2.1. </span>howdy.music module<a class="headerlink" href="#howdy-music-module" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">7.2.1. </span>howdy.music module<a class="headerlink" href="#howdy-music-module" title="Permalink to this heading"></a></h2>
 <p>This contains only three methods: two format durations strings for <a class="reference external" href="https://www.youtube.com">YouTube</a> clips, and a third is used to search for <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> music files that are missing artist or album information.</p>
 <span class="target" id="module-howdy.music"></span><dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.format_youtube_date">
@@ -154,7 +155,7 @@
 
 </section>
 <section id="howdy-music-music-module">
-<h2><span class="section-number">7.2.2. </span>howdy.music.music module<a class="headerlink" href="#howdy-music-music-module" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">7.2.2. </span>howdy.music.music module<a class="headerlink" href="#howdy-music-music-module" title="Permalink to this heading"></a></h2>
 <p>This contains the low-level functionality that does three things.</p>
 <ul>
 <li><p>Gets music metadata using either the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a>, <a class="reference external" href="https://www.last.fm/api">LastFM</a>, or <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> APIs.</p></li>
@@ -1218,13 +1219,13 @@
 
 </section>
 <section id="howdy-music-pygn-module">
-<h2><span class="section-number">7.2.3. </span>howdy.music.pygn module<a class="headerlink" href="#howdy-music-pygn-module" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">7.2.3. </span>howdy.music.pygn module<a class="headerlink" href="#howdy-music-pygn-module" title="Permalink to this heading"></a></h2>
 <p>This contains functionality used by the <a class="reference internal" href="#howdy.music.music.HowdyMusic" title="howdy.music.music.HowdyMusic"><code class="xref py py-class docutils literal notranslate"><span class="pre">HowdyMusic</span></code></a> higher level object interface to the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> API.</p>
 <span class="target" id="module-howdy.music.pygn"></span><p>pygn (pronounced “pigeon”) is a simple Python client for the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> Music Web API, which can retrieve Artist, Album and Track metadata with the most common options.</p>
 <p>You will need a <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> Client ID to use this module. Please contact <a class="reference external" href="mailto:developers&#37;&#52;&#48;gracenote&#46;com">developers<span>&#64;</span>gracenote<span>&#46;</span>com</a> to get one.</p>
 <p>This module has been enhanced in the following ways beyond the main version, that lives in <a class="reference external" href="https://github.com/cweichen/pygn">https://github.com/cweichen/pygn</a>.</p>
 <ul class="simple">
-<li><p>Uses the <a class="reference external" href="https://docs.python-requests.org/en/latest/api/#module-requests" title="(in Requests v2.27.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> module for HTTP processing.</p></li>
+<li><p>Uses the <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.28.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a> module for HTTP processing.</p></li>
 <li><p>debug logging is now handled through the <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> module in <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> mode.</p></li>
 <li><p>extensively fleshed out documentation.</p></li>
 </ul>

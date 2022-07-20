@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2.3. Consolidating Howdy Configuration With howdy_config_gui &mdash; howdy! 1.35-54-g7b2b9b1 documentation</title>
+  <title>2.3. Consolidating Howdy Configuration With howdy_config_gui &mdash; howdy! 1.35-58-g59362f8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -92,7 +93,7 @@
            <div itemprop="articleBody">
              
   <section id="howdy-config-gui-icon-consolidating-howdy-configuration-with-howdy-config-gui">
-<span id="howdy-config-gui-label"></span><h1><span class="section-number">2.3. </span><a class="reference internal" href="../_images/howdy_config_gui_SQUARE_VECTA.svg"><img alt="howdy_config_gui_icon" class="align-middle" src="../_images/howdy_config_gui_SQUARE_VECTA.svg" width="50" /></a> Consolidating Howdy Configuration With <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code><a class="headerlink" href="#howdy-config-gui-icon-consolidating-howdy-configuration-with-howdy-config-gui" title="Permalink to this headline"></a></h1>
+<span id="howdy-config-gui-label"></span><h1><span class="section-number">2.3. </span><a class="reference internal" href="../_images/howdy_config_gui_SQUARE_VECTA.svg"><img alt="howdy_config_gui_icon" class="align-middle" src="../_images/howdy_config_gui_SQUARE_VECTA.svg" width="50" /></a> Consolidating Howdy Configuration With <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code><a class="headerlink" href="#howdy-config-gui-icon-consolidating-howdy-configuration-with-howdy-config-gui" title="Permalink to this heading"></a></h1>
 <p>Although <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code> is part of <code class="docutils literal notranslate"><span class="pre">core</span></code>, and naturally lives in <a class="reference internal" href="../howdy-core/howdy_core.html#howdy-core-functionality"><span class="std std-numref">Section 4</span></a>, I suggest you use this configuration tool to naturally consolidate the services and settings. The final configuration data will live in an <a class="reference external" href="https://en.wikipedia.org/wiki/SQLite">sqlite version 3</a> database that is located in <code class="docutils literal notranslate"><span class="pre">~/.local/howdy/app.db</span></code> and is readable only by the user (and root).</p>
 <p>Some of the <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code> screenshots are found in <a class="reference internal" href="howdy_services_config.html#summary-of-setting-up-google-credentials"><span class="std std-numref">Section 2.1.6</span></a> (specifically <a class="reference internal" href="howdy_services_config.html#imgur-step04-credentials"><span class="std std-numref">Fig. 2.7</span></a>, <a class="reference internal" href="howdy_services_config.html#google-step02-refreshcredentials"><span class="std std-numref">Fig. 2.10</span></a>, and <a class="reference internal" href="howdy_services_config.html#google-step04-oauthtokenstring"><span class="std std-numref">Fig. 2.12</span></a>) and in <a class="reference internal" href="howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a> (specifically <a class="reference internal" href="howdy_settings_config.html#login-step01-login"><span class="std std-numref">Fig. 2.16</span></a> and <a class="reference internal" href="howdy_settings_config.html#login-step02-settings"><span class="std std-numref">Fig. 2.17</span></a>).</p>
 <p><a class="reference internal" href="#howdy-config-gui-serviceswidget"><span class="std std-numref">Fig. 2.18</span></a> describes the three initial sets of services and settings.</p>
@@ -109,7 +110,7 @@
 <li><p><a class="reference internal" href="#music-services"><span class="std std-ref">Music Services</span></a> describes the dialog window that applies the settings for music services.</p></li>
 </ul>
 <section id="login-services">
-<h2><span class="section-number">2.3.1. </span>Login Services<a class="headerlink" href="#login-services" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">2.3.1. </span>Login Services<a class="headerlink" href="#login-services" title="Permalink to this heading"></a></h2>
 <p>As described in <a class="reference internal" href="howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a>, right click on the <em>LOGIN</em> row in the main widget to launch the <em>PLEX LOGIN CONFIGURATION</em> widget. The relevant screen shot, <a class="reference internal" href="howdy_settings_config.html#login-step01-login"><span class="std std-ref">login window</span></a>, is shown below.</p>
 <figure class="align-center">
 <a class="reference internal image-reference" href="../_images/login_step01_login.png"><img alt="../_images/login_step01_login.png" src="../_images/login_step01_login.png" style="width: 100%;" /></a>
@@ -128,7 +129,7 @@
 <p>Use your <a class="reference external" href="https://plex.tv">Plex</a> email and password for <em>PLEXLOGIN</em>, as described in <a class="reference internal" href="howdy_settings_config.html#credentials-for-plex-account"><span class="std std-numref">Section 2.2.1</span></a>. Set up at least your Deluge server according to <a class="reference internal" href="howdy_settings_config.html#seedhost-services-setup"><span class="std std-numref">Section 2.2.2</span></a>. Set up <em>JACKETT</em> as described in <a class="reference internal" href="howdy_services_config.html#the-jackett-server"><span class="std std-numref">Section 2.1.5</span></a>, and more conveniently using a Jackett server provided by Seedhost (see <a class="reference internal" href="howdy_settings_config.html#seedhost-services-setup"><span class="std std-numref">Section 2.2.2</span></a> for more details). Finally, apply <em>RSYNC</em> settings according to <a class="reference internal" href="howdy_settings_config.html#local-and-remote-seedhost-ssh-setup"><span class="std std-numref">Section 2.2.3</span></a>.</p>
 </section>
 <section id="credentials-services">
-<h2><span class="section-number">2.3.2. </span>Credentials Services<a class="headerlink" href="#credentials-services" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">2.3.2. </span>Credentials Services<a class="headerlink" href="#credentials-services" title="Permalink to this heading"></a></h2>
 <p>As described in <a class="reference internal" href="howdy_services_config.html#summary-of-setting-up-google-credentials"><span class="std std-numref">Section 2.1.6</span></a>, right click on the <em>CREDENTIALS</em> row in the main widget to launch the <em>PLEX CREDENTIALS CONFIGURATION</em> widget. The relevant screen shot, <a class="reference internal" href="howdy_services_config.html#imgur-step04-credentials"><span class="std std-ref">credentials window</span></a>, is shown below.</p>
 <figure class="align-center">
 <a class="reference internal image-reference" href="../_images/google_step01_credentials.png"><img alt="../_images/google_step01_credentials.png" src="../_images/google_step01_credentials.png" style="width: 100%;" /></a>
@@ -142,7 +143,7 @@
 </figure>
 <p>Apply the <a class="reference external" href="https://www.themoviedb.org">TMDB</a> service settings according to <a class="reference internal" href="howdy_services_config.html#the-movie-database-api"><span class="std std-numref">Section 2.1.1</span></a>. Apply the <a class="reference external" href="https://www.thetvdb.com">TVDB</a> service settings according to <a class="reference internal" href="howdy_services_config.html#the-television-database-api"><span class="std std-numref">Section 2.1.2</span></a>. Apply the <a class="reference external" href="https://imgur.com">Imgur</a> settings according to <a class="reference internal" href="howdy_services_config.html#the-imgur-api"><span class="std std-numref">Section 2.1.3</span></a>. Finally, follow instructions in <a class="reference internal" href="howdy_services_config.html#summary-of-setting-up-google-credentials"><span class="std std-numref">Section 2.1.6</span></a> to set up all six of the Google and Google-related services that Howdy uses.</p>
 <section id="choosing-main-imgur-album">
-<h3><span class="section-number">2.3.2.1. </span>Choosing Main <a class="reference external" href="https://imgur.com">Imgur</a> Album<a class="headerlink" href="#choosing-main-imgur-album" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">2.3.2.1. </span>Choosing Main <a class="reference external" href="https://imgur.com">Imgur</a> Album<a class="headerlink" href="#choosing-main-imgur-album" title="Permalink to this heading"></a></h3>
 <p>The <em>IMGUR</em> panel in the <em>PLEX CREDENTIALS CONFIGURATION</em> widget has a row that shows the main <a class="reference external" href="https://imgur.com">Imgur</a> album – that contains the PNG images that can accessed, added, and removed – used by <a class="reference internal" href="../howdy-email/gui-tools/howdy_email_gui.html#howdy-email-gui-label"><span class="std std-ref"> howdy_email_gui</span></a> to insert images. The middle <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qlabel.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QLabel</span></code></a> says the name of the main <a class="reference external" href="https://imgur.com">Imgur</a> album that is being used; in <a class="reference internal" href="#howdy-credentials-mainfigure"><span class="std std-numref">Fig. 2.19</span></a> this is <code class="docutils literal notranslate"><span class="pre">MAIN</span> <span class="pre">IMGUR</span> <span class="pre">ALBUM</span></code>. The button labeled <code class="docutils literal notranslate"><span class="pre">MAIN</span> <span class="pre">ALBUMS</span></code> launches a GUI that allows us to choose, among other things, the main <a class="reference external" href="https://imgur.com">Imgur</a> album to use for choosing images. In this GUI, the album names are shown alphabetically.</p>
 <figure class="align-center">
 <a class="reference internal image-reference" href="../_images/howdy_imgurlchoosealbum_main.png"><img alt="../_images/howdy_imgurlchoosealbum_main.png" src="../_images/howdy_imgurlchoosealbum_main.png" style="width: 100%;" /></a>
@@ -191,7 +192,7 @@
 </section>
 </section>
 <section id="music-services">
-<h2><span class="section-number">2.3.3. </span>Music Services<a class="headerlink" href="#music-services" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">2.3.3. </span>Music Services<a class="headerlink" href="#music-services" title="Permalink to this heading"></a></h2>
 <p>Right click on the <em>MUSIC</em> row in the main widget to launch the <em>PLEX MUSIC CONFIGURATION WIDGET</em>. Here is a screen shot.</p>
 <figure class="align-center">
 <a class="reference internal image-reference" href="../_images/howdy_credentials_selectmusic.png"><img alt="../_images/howdy_credentials_selectmusic.png" src="../_images/howdy_credentials_selectmusic.png" style="width: 100%;" /></a>

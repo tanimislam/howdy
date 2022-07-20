@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>8.2. howdy_email_gui &mdash; howdy! 1.35-54-g7b2b9b1 documentation</title>
+  <title>8.2. howdy_email_gui &mdash; howdy! 1.35-58-g59362f8 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
@@ -15,6 +15,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -100,7 +101,7 @@
            <div itemprop="articleBody">
              
   <section id="howdy-email-gui-icon-howdy-email-gui">
-<span id="howdy-email-gui-label"></span><h1><span class="section-number">8.2. </span><a class="reference internal" href="../../_images/howdy_email_gui_SQUARE_VECTA.svg"><img alt="howdy_email_gui_icon" class="align-middle" src="../../_images/howdy_email_gui_SQUARE_VECTA.svg" width="50" /></a> <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code><a class="headerlink" href="#howdy-email-gui-icon-howdy-email-gui" title="Permalink to this headline"></a></h1>
+<span id="howdy-email-gui-label"></span><h1><span class="section-number">8.2. </span><a class="reference internal" href="../../_images/howdy_email_gui_SQUARE_VECTA.svg"><img alt="howdy_email_gui_icon" class="align-middle" src="../../_images/howdy_email_gui_SQUARE_VECTA.svg" width="50" /></a> <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code><a class="headerlink" href="#howdy-email-gui-icon-howdy-email-gui" title="Permalink to this heading"></a></h1>
 <p>This is documentation for the Howdy one-off and newslettering email announcement GUI, <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code>. The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span> <span class="pre">-h</span></code>, produces the following output,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_email_gui [-h] [--info] [--local] [--large] [--noverify]</span>
 <span class="go">                       [--extraemails EXTRAEMAILS] [--extranames EXTRANAMES]</span>
@@ -129,7 +130,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> is a standard option in many of the Howdy CLI and GUIs to ignore verification of SSL transactions. It is optional and will default to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 <section id="only-email-mode">
-<h2><span class="section-number">8.2.1. </span>Only Email Mode<a class="headerlink" href="#only-email-mode" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">8.2.1. </span>Only Email Mode<a class="headerlink" href="#only-email-mode" title="Permalink to this heading"></a></h2>
 <p>When running with the <code class="docutils literal notranslate"><span class="pre">(o)</span></code> choice, this GUI only sends a non-newsletter email to either yourself or to all the friends of your <a class="reference external" href="https://plex.tv">Plex</a> server. This GUI is launched when running <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span> <span class="pre">--noverify</span> <span class="pre">--local</span> <span class="pre">o</span></code>.</p>
 <figure class="align-left" id="id1">
 <span id="onlyemail-mainwindow-annotated"></span><a class="reference internal image-reference" href="../../_images/howdy_email_gui_onlyemail_mainwindow_ANNOTATED.png"><img alt="../../_images/howdy_email_gui_onlyemail_mainwindow_ANNOTATED.png" src="../../_images/howdy_email_gui_onlyemail_mainwindow_ANNOTATED.png" style="width: 100%;" /></a>
@@ -153,7 +154,7 @@
 <li><p><a class="reference internal" href="#send-email"><span class="std std-ref">Send email</span></a>.</p></li>
 </ol>
 <section id="write-and-test-email">
-<span id="write-and-test-email-label"></span><h3><span class="section-number">8.2.1.1. </span>Write and Test Email<a class="headerlink" href="#write-and-test-email" title="Permalink to this headline"></a></h3>
+<span id="write-and-test-email-label"></span><h3><span class="section-number">8.2.1.1. </span>Write and Test Email<a class="headerlink" href="#write-and-test-email" title="Permalink to this heading"></a></h3>
 <p>Here, we write an email that consists of some stylized text, some <a class="reference external" href="https://en.wikipedia.org/wiki/LaTeX">LaTeX</a> math, and an inset image with caption using our <a class="reference external" href="https://imgur.com">Imgur</a> library. The subject of the email is <code class="docutils literal notranslate"><span class="pre">test</span></code>. The body is <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a>, and is given by,</p>
 <div class="highlight-RST notranslate" id="example-email-body"><div class="highlight"><pre><span></span>I am showing some example code. Here is some <span class="ge">*bold*</span> code.
 
@@ -227,7 +228,7 @@ Finally, one can insert an image into here. Here is what I will do.
 <iframe allowfullscreen="true" id="onlyemail-write-test-email-showhtml" src="https://www.youtube.com/embed/yRzKNJ006dg" style="border: 0; height: 100%; left: 0; position: absolute; top: 0; width: 100%">
 </iframe></div></section>
 <section id="verify-plex-friends">
-<h3><span class="section-number">8.2.1.2. </span>Verify <a class="reference external" href="https://plex.tv">Plex</a> Friends<a class="headerlink" href="#verify-plex-friends" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">8.2.1.2. </span>Verify <a class="reference external" href="https://plex.tv">Plex</a> Friends<a class="headerlink" href="#verify-plex-friends" title="Permalink to this heading"></a></h3>
 <p>Once you verify that your email is valid, you should check that your list of friends on your <a class="reference external" href="https://plex.tv">Plex</a> server is valid. Just click on <code class="docutils literal notranslate"><span class="pre">PLEX</span> <span class="pre">GUESTS</span></code> to get the list of friends, one per row and ordered by name. First column is the full name, and the second column is the email address for their <a class="reference external" href="https://plex.tv">Plex</a> account.</p>
 <figure class="align-left" id="id7">
 <a class="reference internal image-reference" href="../../_images/onlyemail_show_plex_friends_ANNOTATED.png"><img alt="../../_images/onlyemail_show_plex_friends_ANNOTATED.png" src="../../_images/onlyemail_show_plex_friends_ANNOTATED.png" style="width: 100%;" /></a>
@@ -237,13 +238,13 @@ Finally, one can insert an image into here. Here is what I will do.
 </figure>
 </section>
 <section id="send-email">
-<h3><span class="section-number">8.2.1.3. </span>Send Email<a class="headerlink" href="#send-email" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">8.2.1.3. </span>Send Email<a class="headerlink" href="#send-email" title="Permalink to this heading"></a></h3>
 <p>Once your email body text is valid, and you are satisfied that you may want to send this email out to people who have access to your <a class="reference external" href="https://plex.tv">Plex</a> server, then you can click on either <code class="docutils literal notranslate"><span class="pre">SEND</span> <span class="pre">TEST</span> <span class="pre">EMAIL</span></code> (sends the email <em>only</em> to you) or <code class="docutils literal notranslate"><span class="pre">SEND</span> <span class="pre">ALL</span> <span class="pre">EMAIL</span></code> (sends the email to all your <a class="reference external" href="https://plex.tv">Plex</a> friends).</p>
 <p>I always verify that the email is valid, by clicking <code class="docutils literal notranslate"><span class="pre">SEND</span> <span class="pre">TEST</span> <span class="pre">EMAIL</span></code> first, before sending the email to everyone.</p>
 </section>
 </section>
 <section id="newsletter-mode">
-<h2><span class="section-number">8.2.2. </span>Newsletter Mode<a class="headerlink" href="#newsletter-mode" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">8.2.2. </span>Newsletter Mode<a class="headerlink" href="#newsletter-mode" title="Permalink to this heading"></a></h2>
 <p>When running with the <code class="docutils literal notranslate"><span class="pre">(n)</span></code> choice, this GUI only sends a non-newsletter email to either yourself or to all the friends of your <a class="reference external" href="https://plex.tv">Plex</a> server. The <a class="reference external" href="https://plex.tv">Plex</a> newsletter email has this format,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Hello &lt;name&gt;,</span>
 
@@ -276,7 +277,7 @@ Finally, one can insert an image into here. Here is what I will do.
 <li><p><a class="reference internal" href="#send-newsletter-email"><span class="std std-ref">Send email</span></a>.</p></li>
 </ol>
 <section id="setting-up-the-preamble-and-postamble-parts">
-<h3><span class="section-number">8.2.2.1. </span>Setting up the PREAMBLE and POSTAMBLE parts<a class="headerlink" href="#setting-up-the-preamble-and-postamble-parts" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">8.2.2.1. </span>Setting up the PREAMBLE and POSTAMBLE parts<a class="headerlink" href="#setting-up-the-preamble-and-postamble-parts" title="Permalink to this heading"></a></h3>
 <p>Click on the <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> button to write up an introductory section in the newsletter, and the <code class="docutils literal notranslate"><span class="pre">POSTAMBLE</span></code> button to write up a concluding section. The <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> and <code class="docutils literal notranslate"><span class="pre">POSTAMBLE</span></code> dialog windows are nearly identical, and differ <em>only</em> in where the text is placed in the newsletter. <a class="reference internal" href="#newsletter-preamble-postamble-window"><span class="std std-numref">Fig. 8.10</span></a> shows both together, but subsequent instructions focus only on describing the <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code>.</p>
 <figure class="align-left" id="id9">
 <span id="newsletter-preamble-postamble-window"></span><a class="reference internal image-reference" href="../../_images/newsletter_preamble_postamble_window.png"><img alt="../../_images/newsletter_preamble_postamble_window.png" src="../../_images/newsletter_preamble_postamble_window.png" style="width: 100%;" /></a>
@@ -309,7 +310,7 @@ Finally, one can insert an image into here. Here is what I will do.
 </figure>
 </section>
 <section id="checking-newsletter-email">
-<h3><span class="section-number">8.2.2.2. </span>Checking Newsletter Email<a class="headerlink" href="#checking-newsletter-email" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">8.2.2.2. </span>Checking Newsletter Email<a class="headerlink" href="#checking-newsletter-email" title="Permalink to this heading"></a></h3>
 <p>After choosing the form of the introductory (<a class="reference internal" href="#newsletter-preamble-showtext"><span class="std std-numref">Fig. 8.12</span></a>) and final (<a class="reference internal" href="#newsletter-postamble-showtext"><span class="std std-numref">Fig. 8.13</span></a>) sections, click on <code class="docutils literal notranslate"><span class="pre">CHECK</span> <span class="pre">EMAIL</span></code> to (<strong>wait a long time and</strong>)  show the rich HTML email of the <a class="reference external" href="https://plex.tv">Plex</a> newsletter.</p>
 <figure class="align-left" id="id13">
 <span id="newsletter-checkemail-annotated"></span><a class="reference internal image-reference" href="../../_images/newsletter_checkemail_ANNOTATED.png"><img alt="../../_images/newsletter_checkemail_ANNOTATED.png" src="../../_images/newsletter_checkemail_ANNOTATED.png" style="width: 100%;" /></a>
@@ -335,7 +336,7 @@ Finally, one can insert an image into here. Here is what I will do.
 <iframe allowfullscreen="true" src="https://www.youtube.com/embed/AgTGYA-bfI0" style="border: 0; height: 100%; left: 0; position: absolute; top: 0; width: 100%">
 </iframe></div></section>
 <section id="send-newsletter-email">
-<h3><span class="section-number">8.2.2.3. </span>Send Newsletter Email<a class="headerlink" href="#send-newsletter-email" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">8.2.2.3. </span>Send Newsletter Email<a class="headerlink" href="#send-newsletter-email" title="Permalink to this heading"></a></h3>
 <p>Once your email body is valid (it generated HTML), and you are satisfied, that you may want to send this email out to people who have access to your <a class="reference external" href="https://plex.tv">Plex</a> server, then you click on the <code class="docutils literal notranslate"><span class="pre">EMAIL</span> <span class="pre">DIALOG</span></code> button to launch an email dialog. This dialog allows you to send the email only to yourself, to specific <a class="reference external" href="https://plex.tv">Plex</a> friends, or to all your <a class="reference external" href="https://plex.tv">Plex</a> friends and yourself.</p>
 <figure class="align-left" id="id15">
 <span id="newsletter-sendemail-annotated"></span><a class="reference internal image-reference" href="../../_images/newsletter_sendemail_ANNOTATED.png"><img alt="../../_images/newsletter_sendemail_ANNOTATED.png" src="../../_images/newsletter_sendemail_ANNOTATED.png" style="width: 100%;" /></a>

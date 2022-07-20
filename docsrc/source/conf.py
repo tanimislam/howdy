@@ -70,11 +70,11 @@ extensions = [
 ## following instructions here (https://github.com/svenevs/exhale/tree/master/docs/_intersphinx) to fix beautifulsoup doc.
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'requests': ( 'https://docs.python-requests.org/en/latest', None),
+    'requests': ( 'https://requests.readthedocs.io/en/latest', None),
     'beautifulsoup' : ( 'https://www.crummy.com/software/BeautifulSoup/bs4/doc', "_intersphinx/bs4_objects.inv"),
     'geoip2' : ( 'https://geoip2.readthedocs.io/en/latest', None),
     'gmusicapi' : ( 'https://unofficial-google-music-api.readthedocs.io/en/latest', None ),
-    'imdbpy' : ( 'https://imdbpy.readthedocs.io/en/latest', None),
+    'cinemagoer' : ( 'https://cinemagoer.readthedocs.io/en/latest', None),
     'pyqt5' : ( 'https://www.riverbankcomputing.com/static/Docs/PyQt5', "_intersphinx/pyqt5_objects.inv" ),
     'requests_oauthlib' : ( 'https://requests-oauthlib.readthedocs.io/en/latest', None ),
     'oauth2client' : ( 'https://oauth2client.readthedocs.io/en/latest', None ),

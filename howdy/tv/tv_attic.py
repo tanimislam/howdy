@@ -2,7 +2,7 @@ import requests, os, sys, time, json, titlecase, re, copy
 import logging, datetime, rapidfuzz.fuzz
 from dateutil.relativedelta import relativedelta
 from pathos.multiprocessing import Pool, cpu_count
-from imdb import IMDb
+from imdb import Cinemagoer
 #
 from howdy.core import session
 from howdy.movie import tmdb_apiKey, movie
@@ -700,7 +700,7 @@ def get_series_updated_fromdate( date, token, verify = True ):
 
 def get_tot_epdict_imdb( showName, verify = True ):
     """
-    Returns a summary nested :py:class:`dict` of episode information for a given TV show, using :py:class:`IMDb <imdb.IMDb>` class in the `IMDB Python Package`_.
+    Returns a summary nested :py:class:`dict` of episode information for a given TV show, using :py:class:`Cinemagoer <imdb.Cinemagoer>` class in the `Cinemagoer Python Package`_.
 
     * The top level dictionary has keys that are the TV show's seasons. Each value is a second level dictionary of information about each season.
 
@@ -714,7 +714,7 @@ def get_tot_epdict_imdb( showName, verify = True ):
        * :py:meth:`get_tot_epdict_omdb <howdy.tv.tv_attic.get_tot_epdict_omdb>`.
        * :py:meth:`get_tot_epdict_tmdb <howdy.tv.tv_attic.get_tot_epdict_tmdb>`.
 
-    .. _`IMDB Python Package`: https://imdbpy.readthedocs.io/en/latest
+    .. _`Cinemagoer Python Package`: https://cinemagoer.readthedocs.io/en/latest
     """
     token = get_token( verify = verify )
     tvdb_id = tv.get_series_id( showName, token, verify = verify )
@@ -724,7 +724,7 @@ def get_tot_epdict_imdb( showName, verify = True ):
     #
     ## now run imdbpy
     time0 = time.time( )
-    ia = IMDb( )
+    ia = Cinemagoer( )
     imdbId = imdbId.replace('tt','').strip( )
     series = ia.get_movie( imdbId )
     ia.update( series, 'episodes' )

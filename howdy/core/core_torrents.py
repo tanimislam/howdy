@@ -1,12 +1,42 @@
-import requests, re, threading, cfscrape
+import requests, re, threading, cfscrape, logging
 import os, time, numpy, logging, datetime, pickle, gzip
 from itertools import chain
 from requests.compat import urljoin
 from multiprocessing import Process, Manager
 from pathos.multiprocessing import Pool
 from bs4 import BeautifulSoup
+from torf import Magnet
 #
 from howdy.core import core_deluge, get_formatted_size, get_maximum_matchval, return_error_raw, core
+
+def deconfuse_magnet_link( magnet_string, excluded_tracker_stubs = [ ] ):
+    """
+    First functional implementation that *returns* a magnet_ string given a :py:class:`list` of `torrent tracker`_ stubs to ignore. ``stealth.si`` -- I am looking at you!
+
+    If one has an *invalid* magnet_string, then return ``None``.
+
+    :param str magnet_string: the initial magnet string.
+    :param list excluded_tracker_stubs: the :py:class:`list` of `torrent tracker`_ stubs to ignore.
+    :returns a :py:class:`str` of a magnet_ string with the problematic `torrent tracker`_ stubs in ``excluded_tracker_stubs`` removed. If ``magnet_string`` is not a valid magnet_ string, return ``None``.
+    :rtype: str
+
+    .. _magnet: https://en.wikipedia.org/wiki/Magnet_URI_scheme
+    .. _`torrent tracker`: https://en.wikipedia.org/wiki/BitTorrent_tracker
+    """
+    try:
+        m = Magnet.from_string( magnet_string )
+        #
+        ## if NO excluded tracker stubs, just return initial valid magnet string
+        if len( excluded_tracker_stubs ) == 0: return str( m )
+        #
+        tr_sub = list( m.tr )
+        for tracker_stub in set( excluded_tracker_stubs ):
+            tr_sub = list(filter(lambda elem: tracker_stub not in elem, tr_sub ) )
+        m.tr = tr_sub
+        return str( m )
+    except Exception as e:
+        logging.error( str( e ) )
+        return None
 
 def get_book_torrent_jackett( name, maxnum = 10, keywords = [ ], verify = True ):
     """

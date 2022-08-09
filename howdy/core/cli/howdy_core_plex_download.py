@@ -48,5 +48,5 @@ def main( ):
     #
     ## otherwise download!
     time0 = time.time( )
-    full_path = core_admin.plex_download_release( release, args.destination_dir, do_progress = args.do_progress )
+    full_path = core_admin.plex_download_release( release, token, args.destination_dir, do_progress = args.do_progress )
     print( 'Downloaded to %s in %0.3f seconds.' % ( os.path.basename( full_path ), time.time( ) - time0 ) )

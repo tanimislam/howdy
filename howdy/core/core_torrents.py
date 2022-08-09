@@ -8,15 +8,62 @@ from bs4 import BeautifulSoup
 from torf import Magnet
 #
 from howdy.core import core_deluge, get_formatted_size, get_maximum_matchval, return_error_raw, core
+from howdy.core import PlexExcludedTrackerStubs, session
 
-def deconfuse_magnet_link( magnet_string, excluded_tracker_stubs = [ ] ):
+def get_trackers_to_exclude( ):
+    """
+    Returns the :py:class:`set` of `torrent tracker stubs <torrent_tracker_>`_ to exclude from the reconstruction of magnet_ links.
+
+    .. _torrent_tracker: https://en.wikipedia.org/wiki/BitTorrent_tracker
+    .. _magnet: https://en.wikipedia.org/wiki/Magnet_URI_scheme
+    """
+    tracker_stubs_to_exclude = sorted(set(map(
+        lambda val: val.trackerstub.strip( ).lower( ), session.query( PlexExcludedTrackerStubs ).all( ) ) ) )
+    return tracker_stubs_to_exclude
+
+def push_trackers_to_exclude( tracker_stubs ):
+    """
+    Adds a collection of *new* `torrent tracker stubs <torrent_tracker_>`_ to the :py:class:`PlexExcludedTrackerStubs <howdy.core.PlexExcludedTrackerStubs>` database.
+
+    :param list tracker_stubs: the collection of `torrent tracker stubs <torrent_tracker_>`_ to add to the database.
+    """
+    set_tracker_stubs = set(map(lambda tracker_stub: tracker_stub.strip( ).lower( ), tracker_stubs ) )
+    tracker_stubs_left = set_tracker_stubs - set( get_trackers_to_exclude( ) )
+    logging.debug( 'input trackers: %s, actual trackers to add: %s.' % (
+        tracker_stubs, tracker_stubs_left ) )
+    if len( tracker_stubs_left ) == 0: return
+    #
+    ## now add those tracker stubs
+    for tracker_stub in tracker_stubs_left:
+        session.add( PlexExcludedTrackerStubs( tracker_stub ) )
+    session.commit( )
+
+def delete_trackers_to_exclude( tracker_stubs ):
+    """
+    Removes a collection of candidate `torrent tracker stubs <torrent_tracker_>`_ to the :py:class:`PlexExcludedTrackerStubs <howdy.core.PlexExcludedTrackerStubs>` database.
+
+    :param list tracker_stubs: the collection of `torrent tracker stubs <torrent_tracker_>`_ to remove from the database.
+    """
+    set_tracker_stubs = set(map(lambda tracker_stub: tracker_stub.strip( ).lower( ), tracker_stubs ) )
+    tracker_stubs_rem = set_tracker_stubs & set( get_trackers_to_exclude( ) )
+    logging.debug( 'input trackers: %s, actual trackers to remove: %s.' % (
+        tracker_stubs, tracker_stubs_rem ) )
+    if len( tracker_stubs_rem ) == 0: return
+    #
+    ## now delete those tracker stubs
+    for tracker_stub in tracker_stubs_rem:
+        session.query( PlexExcludedTrackerStubs ).filter(
+            PlexExcludedTrackerStubs.trackerstub.strip( ).lower( ) == tracker_stub ).delete( )
+    session.commit( )
+    
+def deconfuse_magnet_link( magnet_string, excluded_tracker_stubs = get_trackers_to_exclude( ) ):
     """
     First functional implementation that *returns* a magnet_ string given a :py:class:`list` of `torrent tracker`_ stubs to ignore. ``stealth.si`` -- I am looking at you!
 
     If one has an *invalid* magnet_string, then return ``None``.
 
     :param str magnet_string: the initial magnet string.
-    :param list excluded_tracker_stubs: the :py:class:`list` of `torrent tracker`_ stubs to ignore.
+    :param list excluded_tracker_stubs: the :py:class:`list` of `torrent tracker`_ stubs to ignore. Default is :py:meth:`get_trackers_to_exclude <howdy.core.core_torrents.get_trackers_to_exclude>`.
     :returns a :py:class:`str` of a magnet_ string with the problematic `torrent tracker`_ stubs in ``excluded_tracker_stubs`` removed. If ``magnet_string`` is not a valid magnet_ string, return ``None``.
     :rtype: str
 

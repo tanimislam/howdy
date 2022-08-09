@@ -1,5 +1,6 @@
 import requests, os, sys, numpy, requests
 from plexapi.server import PlexServer
+from urllib.parse import urlparse, urlsplit, parse_qs
 from tqdm import tqdm
 #
 from howdy.core import core, return_error_raw
@@ -78,24 +79,34 @@ def plex_check_for_update( token, fullURL = 'http://localhost:32400' ):
     except Exception as e:
         return return_error_raw( str( e ) )
 
-def plex_download_release( release, destination_dir = os.getcwd( ), do_progress = False ):
+def _get_final_downloaded_URL_and_params( downloadURL, token ):
+    mysplitURL  = urlsplit( downloadURL )
+    #
+    mainURL = '%s://%s%s' % ( mysplitURL.scheme, mysplitURL.netloc, mysplitURL.path )
+    params = { k: v[0] for ( k,v ) in parse_qs( mysplitURL.query ).items( ) }
+    params[ 'X-Plex-Token' ] = token
+    return mainURL, params
+    
+def plex_download_release( release, token, destination_dir = os.getcwd( ), do_progress = False ):
     """
     Downloads the Plex_ update into a specific directory, with optional progress bar.
     
     :param release: the :py:class:`Release <plexapi.server.Release>` containing the Plex_ update information.
     :type release: :py:class:`Release <plexapi.server.Release>`
-    :pararm str destination_dir: the destination directory into which to download.
+    :param str token: the Plex_ server token.
+    :param str destination_dir: the destination directory into which to download.
     :param bool do_progress: whether to show the progress bar or not. Default is ``False``.
     :returns: If unsuccessful an error message. If successful, the full path of the downloaded file.
     :rtype: str
     """
     downloadURL = release.downloadURL
-    response = requests.get( downloadURL, stream = True )
+    mainURL, params = _get_final_downloaded_URL_and_params( downloadURL, token )
+    response = requests.get( mainURL, params = params, stream = True )
     if not response.ok:
         return "ERROR, %s IS NOT ACCESSIBLE" % downloadURL
     #
     ## destination of the PLEX download
-    r2 = requests.head( downloadURL )
+    r2 = requests.head( downloadURL, params = params )
     if not r2.ok:
         return "ERROR, %s IS NOT ACCESSIBLE WITH REQUESTS.HEAD" % downloadURL
     destination = os.path.join( destination_dir, os.path.basename( r2.headers['Location'] ) )

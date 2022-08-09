@@ -720,6 +720,22 @@ class PlexGuestEmailMapping( Base ):
     plexemail = Column( String( 256 ), index = True, unique = True, primary_key = True )
     plexmapping = Column( String( 65536 ) )
     plexreplaceexisting = Column( Boolean )
+
+class PlexExcludedTrackerStubs( Base ):
+    """
+    This SQLAlchemy_ ORM class contains all the excluded `trackers <torrent_tracker_>`_ (as of 7 AUGUST 2022 I am looking at ``stealth.si``) when reconstructing magnet_ links. Stored in the ``plexexcludedtrackerstubs`` table in the SQlite3_ configuration database.
+
+    :var trackerstub: the `torrent tracker <torrent_tracker_>`_ stub to exclude. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` object of size 65536.
+
+    .. _magnet: https://en.wikipedia.org/wiki/Magnet_URI_scheme
+    .. _torrent_tracker: https://en.wikipedia.org/wiki/BitTorrent_tracker
+    """
+    
+    #
+    ## create the table using Base.metadata.create_all( _engine )
+    __tablename__ = 'plexexcludedtrackertubs'
+    __table_args__ = { 'extend_existing': True }
+    trackerstub = Column( String( 65536 ), index = True, primary_key = True, unique = True )
     
 def create_all( ):
     """

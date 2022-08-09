@@ -20,6 +20,7 @@ from howdy.core import session, PlexConfig, LastNewsletterDate, PlexGuestEmailMa
 from howdy.movie import movie
 from howdy.tv import TMDBShowIds, tv_attic
 
+
 def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
     """
     Changes the mapping of one member of the Plex_ server's emails from an old set of emails to a new set of emails. The command line tool, :ref:`howdy_core_cli`, is a front end to the lower-level functionality implemented here.

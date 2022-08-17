@@ -65,6 +65,21 @@ This is a newer module. It implements the low-level tooling to monitor the Tautu
 .. automodule:: howdy.core.core_admin
    :members:
 
+howdy.core.deluge_client_tanim module
+-------------------------------------------
+This is a newer module. This is a copy of the `deluge-client`_ repository and module. Instead of creating a special branch, I had to modify its ``DelugeRPCClient`` object to work in a custom way, because of *much* stricter SSL policies in Python 3.10.
+
+The relevant code that I modify now lives in my :py:class:`DelugeRPCClient <howdy.core.deluge_client_tanim.client.DelugeRPCClient>`. I followed advice from `this StackOverflow article on how to set ciphers in SSL Python sockets <so_article_>`_. I created an SSL context, allowed *all* ciphers, and then passed the all-ciphers list into the low-level socket that performs RPC communications.
+
+.. automodule:: howdy.core.deluge_client_tanim.client
+   :members:
+
+howdy.core.deluge_client_tanim.rencode submodule
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: howdy.core.deluge_client_tanim.rencode
+   :members:
+
 
 .. these are some URLs
 
@@ -81,3 +96,5 @@ This is a newer module. It implements the low-level tooling to monitor the Tautu
 .. _`Deluge torrent client`: https://en.wikipedia.org/wiki/Deluge_(software)
 .. _rsync: https://en.wikipedia.org/wiki/Rsync
 .. _Plex: https://plex.tv
+.. _`deluge-client`: https://github.com/JohnDoee/deluge-client
+.. _so_article: https://stackoverflow.com/questions/49774366/how-to-set-ciphers-in-ssl-python-socket

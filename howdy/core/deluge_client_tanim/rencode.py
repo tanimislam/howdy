@@ -41,21 +41,18 @@
 """
 rencode -- Web safe object pickling/unpickling.
 
-Public domain, Connelly Barnes 2006-2007.
+Public domain, `Connelly Barnes <http://www.connellybarnes.com/work>`_ 2006-2007.
 
-The rencode module is a modified version of bencode from the
-BitTorrent project.  For complex, heterogeneous data structures with
-many small elements, r-encodings take up significantly less space than
-b-encodings:
+The rencode module is a modified version of `bencode <https://en.wikipedia.org/wiki/Bencode>`_ from the `BitTorrent <https://en.wikipedia.org/wiki/BitTorrent>`_ project.  For complex, heterogeneous data structures with many small elements, r-encodings take up significantly less space than b-encodings:
 
- >>> len(rencode.dumps({'a':0, 'b':[1,2], 'c':99}))
- 13
- >>> len(bencode.bencode({'a':0, 'b':[1,2], 'c':99}))
- 26
+.. code-block:: python
 
-The rencode format is not standardized, and may change with different
-rencode module versions, so you should check that you are using the
-same rencode version throughout your project.
+   >>> len(rencode.dumps({'a':0, 'b':[1,2], 'c':99}))
+   13
+   >>> len(bencode.bencode({'a':0, 'b':[1,2], 'c':99}))
+   26
+
+The rencode format is not standardized, and may change with different rencode module versions, so you should check that you are using the same rencode version throughout your project.
 """
 
 import struct

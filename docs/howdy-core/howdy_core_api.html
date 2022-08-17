@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.3. Howdy Core API &mdash; howdy! 1.35-58-g59362f8 documentation</title>
+  <title>4.3. Howdy Core API &mdash; howdy! 1.35-63-geb12d22 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
@@ -57,6 +57,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-rsync-module">4.3.4. howdy.core.core_rsync module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-torrents-module">4.3.5. howdy.core.core_torrents module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-admin-module">4.3.6. howdy.core.core_admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-core-deluge-client-tanim-module">4.3.7. howdy.core.deluge_client_tanim module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-howdy.core.deluge_client_tanim.rencode">4.3.7.1. howdy.core.deluge_client_tanim.rencode submodule</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="howdy_core.html#howdy-core-todo">4.4. Howdy Core TODO</a></li>
@@ -142,6 +146,17 @@
 <p>This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/type_basics.html#sqlalchemy.types.JSON" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">JSON</span></code></a> object.</p>
 </p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="howdy.core.PlexExcludedTrackerStubs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexExcludedTrackerStubs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexExcludedTrackerStubs" title="Permalink to this definition"></a></dt>
+<dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains all the excluded <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">trackers</a> (as of 7 AUGUST 2022 I am looking at <code class="docutils literal notranslate"><span class="pre">stealth.si</span></code>) when reconstructing <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet</a> links. Stored in the <code class="docutils literal notranslate"><span class="pre">plexexcludedtrackerstubs</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQlite3</a> configuration database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><p><strong>trackerstub</strong> – the <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">torrent tracker</a> stub to exclude. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/14/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a> object of size 65536.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -477,7 +492,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.get_lastupdated_string">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2022,</span> <span class="pre">7,</span> <span class="pre">20,</span> <span class="pre">11,</span> <span class="pre">6,</span> <span class="pre">21,</span> <span class="pre">821452)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2022,</span> <span class="pre">8,</span> <span class="pre">17,</span> <span class="pre">7,</span> <span class="pre">32,</span> <span class="pre">58,</span> <span class="pre">442477)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a string representation of a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1584,7 +1599,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a lightweight <a class="reference external" href="https://github.com/JohnDoee/deluge-client">Deluge RPC client</a>.</p>
+<dd class="field-even"><p>previously a lightweight <a class="reference external" href="https://github.com/JohnDoee/deluge-client">Deluge RPC client</a>, although now it is a <code class="xref py py-class docutils literal notranslate"><span class="pre">DelugeRPCClient</span></code>.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -2120,40 +2135,6 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <section id="howdy-core-core-torrents-module">
 <h2><span class="section-number">4.3.5. </span>howdy.core.core_torrents module<a class="headerlink" href="#howdy-core-core-torrents-module" title="Permalink to this heading"></a></h2>
 <p>This is a newer module. It implements higher level interfaces to the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching server to search for ebooks. <a class="reference internal" href="cli_tools/howdy_core_cli.html#get-book-tor"><span class="std std-ref">get_book_tor</span></a> is its only CLI front-end.</p>
-<span class="target" id="module-howdy.core.core_torrents"></span><dl class="py function">
-<dt class="sig sig-object py" id="howdy.core.core_torrents.get_book_torrent_jackett">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.core_torrents.</span></span><span class="sig-name descname"><span class="pre">get_book_torrent_jackett</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.get_book_torrent_jackett" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate book Magnet links found using the main <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the book to search for.</p></li>
-<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – optional argumeent, the maximum number of magnet links to return. Default is 10. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
-<li><p><strong>keywords</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – optional argument. If not empty, the title of the candidate element must have at least one of the keywords in <code class="docutils literal notranslate"><span class="pre">keywords</span></code>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched episode, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> is the name of the candidate book to download, and in parentheses the size of the candidate in MB or GB.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">rawtitle</span></code> also the name of the candidate episode to download.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">seeders</span></code> is the number of seeds for this Magnet link.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">leechers</span></code> is the number of leeches for this Magnet link.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">link</span></code> is the Magnet URI link.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">torrent_size</span></code> is the size of this torrent in Megabytes.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 <section id="howdy-core-core-admin-module">
 <h2><span class="section-number">4.3.6. </span>howdy.core.core_admin module<a class="headerlink" href="#howdy-core-core-admin-module" title="Permalink to this heading"></a></h2>
@@ -2205,7 +2186,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.11.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> and “SUCCESS” if successful. Otherwise returns the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> returned by <a class="reference internal" href="#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.12.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> and “SUCCESS” if successful. Otherwise returns the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> returned by <a class="reference internal" href="#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></p>
@@ -2215,27 +2196,88 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.core_admin.plex_download_release">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.core_admin.</span></span><span class="sig-name descname"><span class="pre">plex_download_release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">release</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/mnt/software/sources/pythonics/howdy/docsrc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_admin.plex_download_release" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_admin.</span></span><span class="sig-name descname"><span class="pre">plex_download_release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">release</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/mnt/software/sources/pythonics/howdy/docsrc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_admin.plex_download_release" title="Permalink to this definition"></a></dt>
 <dd><p>Downloads the <a class="reference external" href="https://plex.tv">Plex</a> update into a specific directory, with optional progress bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>release</strong> (<a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.11.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a>) – the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.11.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> containing the <a class="reference external" href="https://plex.tv">Plex</a> update information.</p></li>
+<li><p><strong>release</strong> (<a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.12.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a>) – the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.12.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> containing the <a class="reference external" href="https://plex.tv">Plex</a> update information.</p></li>
+<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server token.</p></li>
+<li><p><strong>destination_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the destination directory into which to download.</p></li>
 <li><p><strong>do_progress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – whether to show the progress bar or not. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Pararm str destination_dir</dt>
-<dd class="field-even"><p>the destination directory into which to download.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If unsuccessful an error message. If successful, the full path of the downloaded file.</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>If unsuccessful an error message. If successful, the full path of the downloaded file.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
 
+</section>
+<section id="howdy-core-deluge-client-tanim-module">
+<h2><span class="section-number">4.3.7. </span>howdy.core.deluge_client_tanim module<a class="headerlink" href="#howdy-core-deluge-client-tanim-module" title="Permalink to this heading"></a></h2>
+<p>This is a newer module. This is a copy of the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">deluge-client</a> repository and module. Instead of creating a special branch, I had to modify its <code class="docutils literal notranslate"><span class="pre">DelugeRPCClient</span></code> object to work in a custom way, because of <em>much</em> stricter SSL policies in Python 3.10.</p>
+<p>The relevant code that I modify now lives in my <code class="xref py py-class docutils literal notranslate"><span class="pre">DelugeRPCClient</span></code>. I followed advice from <a class="reference external" href="https://stackoverflow.com/questions/49774366/how-to-set-ciphers-in-ssl-python-socket">this StackOverflow article on how to set ciphers in SSL Python sockets</a>. I created an SSL context, allowed <em>all</em> ciphers, and then passed the all-ciphers list into the low-level socket that performs RPC communications.</p>
+<span class="target" id="module-howdy.core.deluge_client_tanim.client"></span><dl class="py exception">
+<dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.CallTimeoutException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">CallTimeoutException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.CallTimeoutException" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.ConnectionLostException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">ConnectionLostException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.ConnectionLostException" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.DelugeClientException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">DelugeClientException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.DelugeClientException" title="Permalink to this definition"></a></dt>
+<dd><p>Base exception for all deluge client exceptions</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.FailedToReconnectException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">FailedToReconnectException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.FailedToReconnectException" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.InvalidHeaderException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">InvalidHeaderException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.InvalidHeaderException" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.LocalDelugeRPCClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">LocalDelugeRPCClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'127.0.0.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">58846</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode_utf8</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_reconnect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.LocalDelugeRPCClient" title="Permalink to this definition"></a></dt>
+<dd><p>Client with auto discovery for the default local credentials</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.RemoteException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">RemoteException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.RemoteException" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<section id="module-howdy.core.deluge_client_tanim.rencode">
+<span id="howdy-core-deluge-client-tanim-rencode-submodule"></span><h3><span class="section-number">4.3.7.1. </span>howdy.core.deluge_client_tanim.rencode submodule<a class="headerlink" href="#module-howdy.core.deluge_client_tanim.rencode" title="Permalink to this heading"></a></h3>
+<p>rencode – Web safe object pickling/unpickling.</p>
+<p>Public domain, <a class="reference external" href="http://www.connellybarnes.com/work">Connelly Barnes</a> 2006-2007.</p>
+<p>The rencode module is a modified version of <a class="reference external" href="https://en.wikipedia.org/wiki/Bencode">bencode</a> from the <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent">BitTorrent</a> project.  For complex, heterogeneous data structures with many small elements, r-encodings take up significantly less space than b-encodings:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">rencode</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span><span class="mi">99</span><span class="p">}))</span>
+<span class="go">13</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">bencode</span><span class="o">.</span><span class="n">bencode</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span><span class="mi">99</span><span class="p">}))</span>
+<span class="go">26</span>
+</pre></div>
+</div>
+<p>The rencode format is not standardized, and may change with different rencode module versions, so you should check that you are using the same rencode version throughout your project.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.rencode.dumps">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.rencode.</span></span><span class="sig-name descname"><span class="pre">dumps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float_bits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.deluge_client_tanim.rencode.dumps" title="Permalink to this definition"></a></dt>
+<dd><p>Dump data structure to str.</p>
+<p>Here float_bits is either 32 or 64.</p>
+</dd></dl>
+
+</section>
 </section>
 </section>
 

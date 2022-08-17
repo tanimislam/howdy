@@ -1,5 +1,5 @@
 import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2, json, logging, oauth2client.client
-import requests, yt_dlp, gmusicapi, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid
+import requests, yt_dlp, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid
 import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
 from contextlib import contextmanager
@@ -619,6 +619,8 @@ def gmusicmanager_fixlogin( mmg ):
 
     .. seealso:: :py:meth:`get_gmusicmanager <howdy.music.music.get_gmusicmanager>`.
     """
+    import gmusicapi
+    
     assert( isinstance( mmg, gmusicapi.Mobileclient ) ), "error, music manager object must be a Mobileclient"
     assert( len( mmg.error_device_ids ) != 0 ), "error, did not find the right device_id previously."
     credentials = oauth_get_google_credentials( )
@@ -639,7 +641,9 @@ def get_gmusicmanager( useMobileclient = False, verify = True, device_id = None 
 
     .. seealso:: :py:meth:`gmusicmanager <howdy.music.music.gmusicmanager>`.
     """
-
+    import gmusicapi
+    
+    
     #
     ## first copy this code from gmusic.mobileclient
     ## because base method to determine device id by gmusicapi fails when cannot be found

@@ -1,7 +1,6 @@
 apiclient
 beautifulsoup4
 cfscrape
-deluge_client
 fabric
 gdata
 geoip2
@@ -26,6 +25,7 @@ pathos
 Pillow
 pyasn1
 pyasn1-modules
+plexapi
 pyqt5
 PyQtWebEngine
 python-geoip-geolite2
@@ -45,6 +45,7 @@ subliminal
 tabulate
 termcolor
 titlecase
+tqdm
 validators
 yt_dlp
 sphinxcontrib-youtube @ git+https://github.com/sphinx-contrib/youtube.git@master

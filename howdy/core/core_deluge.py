@@ -150,7 +150,7 @@ def create_deluge_client( url, port, username, password ):
     :param str username: server account username.
     :param str password: server account password.
 
-    :returns: a lightweight `Deluge RPC client`_.
+    :returns: previously a lightweight `Deluge RPC client`_, although now it is a :py:class:`DelugeRPCClient <howdy.core.deluge_client_tanim.client.DelugeRPCClient>`.
 
     .. seealso::
     
@@ -160,7 +160,7 @@ def create_deluge_client( url, port, username, password ):
 
     .. _`Deluge RPC client`: https://github.com/JohnDoee/deluge-client
     """
-    from deluge_client import DelugeRPCClient
+    from howdy.core.deluge_client_tanim import DelugeRPCClient
     client = DelugeRPCClient( url, port, username, password )
     client.connect( )
     assert( client.connected ) # make sure we can connect
@@ -196,8 +196,9 @@ def get_deluge_client( ):
     try:
         client = create_deluge_client( url, port, username, password )
         return client, 'SUCCESS'
-    except: # cannot connect to these settings
-        error_message = 'ERROR, INVALID SETTINGS FOR DELUGE CLIENT.'        
+    except Exception as e: # cannot connect to these settings
+        error_message = 'ERROR, INVALID SETTINGS FOR DELUGE CLIENT.'
+        logging.debug( str( e ) )
         return None, error_message
 
 def get_deluge_credentials( ):

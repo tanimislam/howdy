@@ -6,7 +6,7 @@ from itertools import chain
 from multiprocessing import Pool
 from argparse import ArgumentParser
 #
-from howdy.core import core_deluge, core
+from howdy.core import core_deluge, core, core_torrents
 from howdy.tv import tv_torrents, tv
 
 def get_items_eztv_io( name, maxnum = 10, verify = True ):
@@ -81,6 +81,7 @@ def get_items_kickass( name, maxnum = 10, verify = True ):
 
 def get_tv_torrent_items(
         items, filename = None, to_torrent_server = False ):
+    excluded_tracker_stubs = core_torrents.get_trackers_to_exclude( )
     if len( items ) != 1:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate(items) }
         bs = 'Choose TV episode or series:\n%s\n' % '\n'.join(
@@ -94,14 +95,18 @@ def get_tv_torrent_items(
             if iidx not in sortdict:
                 print('Error, need to choose one of the TV files. Exiting...')
                 return
-            magnet_link = sortdict[ iidx ][ 'link' ]
+            magnet_link = core_torrents.deconfuse_magnet_link(
+                sortdict[ iidx ][ 'link' ],
+                excluded_tracker_stubs = excluded_tracker_stubs )
             actmov = sortdict[ iidx ][ 'title' ]
         except Exception:
             print('Error, did not give a valid integer value. Exiting...')
             return
     else:
         actmov = max( items )[ 'title' ]
-        magnet_link = max( items )[ 'link' ]
+        magnet_link = core_torrents.deconfuse_magnet_link(
+            max( items )[ 'link' ],
+            excluded_tracker_stubs = excluded_tracker_stubs )
 
     print('Chosen TV show: %s' % actmov )
     if to_torrent_server: # upload to deluge server
@@ -130,10 +135,10 @@ def process_magnet_items( name, raw = False, verify = True, maxnum = 10 ):
         jobs.append( pool.apply_async( get_items_tpb, args = (
             name, maxnum, False, False ) ) ) # args.do_any = False
     else:
-        pool = Pool( processes = 3 )
+        pool = Pool( processes = 2 )
         jobs = list(map(
             lambda func: pool.apply_async( func, args = ( name, maxnum, verify ) ),
-            ( get_items_zooqle, get_items_eztv_io ) ) )
+            ( get_items_zooqle, ) ) ) # get_items_eztv_io ) ) )
         jobs.append( pool.apply_async( get_items_jackett, args = ( name, maxnum, raw, verify ) ) )
     items_all = list( chain.from_iterable( filter( None, map(lambda job: job.get( ), jobs ) ) ) )
     logging.info( 'search for torrents took %0.3f seconds.' % ( time.perf_counter( ) - time0 ) )

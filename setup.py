@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, subprocess
 from setuptools import setup, find_packages
 from distutils.spawn import find_executable
 #
@@ -19,7 +19,9 @@ if find_executable( 'sshpass' ) is None:
 ## now check the version number
 def get_version_number( ):
     try:
-        release = re.sub('^v', '', os.popen('git describe --tags').read().strip())
+        release = re.sub('^v', '', subprocess.check_output(
+            [ 'git', 'describe', '--tags' ], stderr = subprocess.PIPE ).decode('utf8').strip( ) )
+        #release = re.sub('^v', '', os.popen('git describe --tags').read().strip())
         version = release.split('-')[0].strip( )
         print( 'HERE IS THE VERSION NUMBER: %s.' % version )
         return version
@@ -78,6 +80,7 @@ setup(
             'rsync_subproc = howdy.core.cli.rsync_subproc:main',
             'get_book_tor = howdy.core.cli.get_book_tor:main',
             'howdy_core_plex_download = howdy.core.cli.howdy_core_plex_download:main',
+            'howdy_core_trackers_exclude = howdy.core.cli.howdy_core_trackers_exclude:main',
             ## gui
             'howdy_config_gui = howdy.core.gui.howdy_config_gui:main',
             'howdy_core_gui = howdy.core.gui.howdy_core_gui:main',

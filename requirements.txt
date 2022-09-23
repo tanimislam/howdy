@@ -45,6 +45,7 @@ subliminal
 tabulate
 termcolor
 titlecase
+torf
 tqdm
 validators
 yt_dlp

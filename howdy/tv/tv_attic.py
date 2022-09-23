@@ -738,11 +738,19 @@ def get_tot_epdict_imdb( showName, verify = True ):
         for epno in series['episodes'][season]:
             episode = series['episodes'][season][epno]
             title = episode[ 'title' ].strip( )
+            firstAired = None
             try:
                 firstAired_s = episode[ 'original air date' ]
                 firstAired = datetime.datetime.strptime(
                     firstAired_s, '%d %b. %Y' ).date( )
             except:
-                firstAired = tot_epdict_tvdb[ season ][ epno ][-1]
+                pass
+            if firstAired is None:
+                try:
+                    firstAired_s = episode[ 'original air date' ]
+                    firstAired = datetime.datetime.strptime( firstAired_s, '%Y' ).date( )
+                except:
+                    firstAired = datetime.datetime.strptime( '1900', '%Y' ).date( )
+            #firstAired = tot_epdict_tvdb[ season ][ epno ][-1]
             tot_epdict[ season ][ epno ] = ( title, firstAired )
     return tot_epdict

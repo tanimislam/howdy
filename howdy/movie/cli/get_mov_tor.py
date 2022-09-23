@@ -6,7 +6,7 @@ from itertools import chain
 from pathos.multiprocessing import Pool
 from argparse import ArgumentParser
 #
-from howdy.core import core_deluge
+from howdy.core import core_deluge, core_torrents
 from howdy.movie import movie_torrents, movie
 from howdy.tv import tv_torrents
 from howdy.core.core import get_jackett_credentials
@@ -73,7 +73,8 @@ def get_items_torrentz( name, maxnum = 100, verify = True ):
         return None
     return items
 
-def get_movie_torrent_items( items, filename = None, to_torrent = False ):    
+def get_movie_torrent_items( items, filename = None, to_torrent = False ):
+    excluded_tracker_stubs = core_torrents.get_trackers_to_exclude( )
     if len( items ) != 1:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate(items) }
         bs = 'Choose movie:\n%s\n' % '\n'.join(
@@ -88,14 +89,17 @@ def get_movie_torrent_items( items, filename = None, to_torrent = False ):
             if iidx not in sortdict:
                 print('Error, need to choose one of the movie names. Exiting...')
                 return
-            magnet_link = sortdict[ iidx ][ 'link' ]
+            magnet_link = core_torrents.deconfuse_magnet_link(
+                sortdict[ iidx ][ 'link' ], excluded_tracker_stubs = excluded_tracker_stubs )
             actmov = sortdict[ iidx ][ 'title' ]
         except Exception:
             print('Error, did not give a valid integer value. Exiting...')
             return
     else:
         actmov = max( items )[ 'title' ]
-        magnet_link = max( items )[ 'link' ]
+        magnet_link = core_torrents.deconfuse_magnet_link(
+            max( items )[ 'link' ],
+            excluded_tracker_stubs = excluded_tracker_stubs )
 
     print('Chosen movie %s' % actmov )
     if to_torrent: # upload to deluge server

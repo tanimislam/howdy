@@ -35,10 +35,10 @@ def push_trackers_to_exclude( tracker_stubs ):
     #
     ## now add those tracker stubs
     for tracker_stub in tracker_stubs_left:
-        session.add( PlexExcludedTrackerStubs( tracker_stub ) )
+        session.add( PlexExcludedTrackerStubs( trackerstub = tracker_stub ) )
     session.commit( )
 
-def delete_trackers_to_exclude( tracker_stubs ):
+def remove_trackers_to_exclude( tracker_stubs ):
     """
     Removes a collection of candidate `torrent tracker stubs <torrent_tracker_>`_ to the :py:class:`PlexExcludedTrackerStubs <howdy.core.PlexExcludedTrackerStubs>` database.
 

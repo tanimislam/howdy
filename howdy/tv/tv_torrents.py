@@ -7,7 +7,7 @@ from requests.compat import urljoin
 from multiprocessing import Process, Manager
 from pathos.multiprocessing import Pool
 #
-from howdy.core import core_deluge, get_formatted_size, get_maximum_matchval, return_error_raw, core, core_rsync
+from howdy.core import core_deluge, get_formatted_size, get_maximum_matchval, return_error_raw, core, core_rsync, core_torrents
 from howdy.tv import get_token, tv
 
 _num_to_quit = 10
@@ -883,12 +883,13 @@ def _create_status_dict( status, status_message, time0 ):
     return {
         'status' : status,
         'message' : status_message,
-        'time' : time.time( ) - time0
+        'time' : time.perf_counter( ) - time0
     }
     
 def _worker_process_tvtorrents( client, data, torFileName, totFname,
                                 maxtime_in_secs, num_iters, kill_if_fail ):
-    time0 = time.time( )
+    time0 = time.perf_counter( )
+    excluded_tracker_stubs = core_torrents.get_trackers_to_exclude( )
     failing_reasons = [ ]
     numiters, rem = divmod( maxtime_in_secs, 30 )
     if rem != 0: numiters += 1
@@ -899,7 +900,8 @@ def _worker_process_tvtorrents( client, data, torFileName, totFname,
 
     
     def process_single_iteration( data, idx ):
-        mag_link = data[ idx ]['link']
+        mag_link = core_torrents.deconfluse_magnet_link(
+            data[ idx ]['link'], ecluded_tracker_stubs = excluded_tracker_stubs )
         #
         ## download the top magnet link
         torrentId = core_deluge.deluge_add_magnet_file( client, mag_link )
@@ -908,7 +910,7 @@ def _worker_process_tvtorrents( client, data, torFileName, totFname,
                 'FAILURE',
                 'could not add idx = %s, magnet_link = %s, for candidate = %s' % (
                     idx, mag_link, torFileName ), time0 )
-        time00 = time.time( )
+        time00 = time.perf_counter( )
         progresses = [ ]
         for jdx in range( numiters ):
             time.sleep( 30 )
@@ -921,7 +923,7 @@ def _worker_process_tvtorrents( client, data, torFileName, totFname,
             status = tor_info[ b'state'].decode('utf-8').upper( )
             progress = tor_info[ b'progress']
             print( 'after %0.3f seconds, attempt #%d, for %s: status = %s, progress = %0.1f%%' % (
-                time.time( ) - time00, idx + 1, torFileName, status, progress ) )
+                time.perf_counter( ) - time00, idx + 1, torFileName, status, progress ) )
             progresses.append( progress )
             # quit after too many no-progress iterations?
             if len( progresses ) > _num_to_quit and numpy.allclose( progresses, [ 0.0 ] * len( progresses ) ):
@@ -946,7 +948,7 @@ def _worker_process_tvtorrents( client, data, torFileName, totFname,
         return None, _create_status_dict(
             'FAILURE',
             'failed to download idx = %d, %s after %0.3f seconds' % (
-                idx, torFileName, time.time( ) - time00 ), time00 )
+                idx, torFileName, time.perf_counter( ) - time00 ), time00 )
     for idx in range( min( len( data ), num_iters ) ):
         dat, status_dict = process_single_iteration( data, idx )
         if dat is not None:
@@ -993,7 +995,7 @@ def worker_process_download_tvtorrent(
     .. _Deluge: https://en.wikipedia.org/wiki/Deluge_(software)
     """
     
-    time0 = time.time( )
+    time0 = time.perf_counter( )
         
     assert( maxtime_in_secs > 0 )
     #
@@ -1005,7 +1007,7 @@ def worker_process_download_tvtorrent(
     #
     ## now get list of torrents, choose "top" one
     def _process_jackett_items( tvTorUnit, shared_list ):
-        t0 = time.time( )
+        t0 = time.perf_counter( )
         torFileName = tvTorUnit[ 'torFname' ]
         totFname = tvTorUnit[ 'totFname' ]
         minSize = tvTorUnit[ 'minSize' ]
@@ -1024,7 +1026,7 @@ def worker_process_download_tvtorrent(
         if torFileNameAlt != torFileName: torFileNames.append( torFileNameAlt )
         for tfn in torFileNames:
             logging.info( 'processing jackett from "%s", using "%s" now, at %0.3f seconds after start.' % (
-                torFileName, tfn, time.time( ) - time0 ) )
+                torFileName, tfn, time.perf_counter( ) - time0 ) )
             data, status = get_tv_torrent_jackett(
                 tfn, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
                 minsizes = [ minSize, minSize_x265 ],
@@ -1036,7 +1038,7 @@ def worker_process_download_tvtorrent(
             shared_list.append( ( 'jackett', _create_status_dict( 'FAILURE', status, t0 ), 'FAILURE' ) )
             return
         logging.info( 'successfully processed jackett on %s in %0.3f seconds.' % (
-            torFileName, time.time( ) - t0 ) )
+            torFileName, time.perf_counter( ) - t0 ) )
         shared_list.append( ( 'jackett', data, 'SUCCESS' ) )
     #
     def _process_eztv_io_items( tvTorUnit, shared_list ):
@@ -1073,11 +1075,11 @@ def worker_process_download_tvtorrent(
                     'FAILURE', 'ERROR, COULD NOT FIND %s IN EZTV.IO.' % torFileName, t0 ), 'FAILURE' ) )
             return
         logging.info( 'successfully processed eztv.io on %s in %0.3f seconds.' % (
-            torFileName, time.time( ) - t0 ) )
+            torFileName, time.perf_counter( ) - t0 ) )
         shared_list.append( ( 'eztv.io', data_filt, 'SUCCESS' ) )
     #
     def _process_zooqle_items( tvTorUnit, shared_list ):
-        t0 = time.time( )
+        t0 = time.perf_counter( )
         torFileName = tvTorUnit[ 'torFname' ]
         totFname = tvTorUnit[ 'totFname' ]
         minSize = tvTorUnit[ 'minSize' ]
@@ -1103,7 +1105,7 @@ def worker_process_download_tvtorrent(
                 ( 'zooqle', _create_status_dict(
                     'FAILURE', 'ERROR, COULD NOT FIND %s IN ZOOQLE.' % torFileName, t0 ), 'FAILURE' ) )
         logging.info( 'successfully processed zooqle on %s in %0.3f seconds.' % (
-            torFileName, time.time( ) - t0 ) )
+            torFileName, time.perf_counter( ) - t0 ) )
         shared_list.append( ( 'zooqle', data_filt, 'SUCCESS' ) )
 
     m = Manager( )
@@ -1130,7 +1132,7 @@ def worker_process_download_tvtorrent(
     if len( data ) == 0:
         return None, dict( error_tup )
     print( 'got %d candidates for %s in %0.3f seconds.' % (
-        len(data), torFileName, time.time( ) - time0 ) )
+        len(data), torFileName, time.perf_counter( ) - time0 ) )
     #
     ## wrapped away in another method
     return _worker_process_tvtorrents(

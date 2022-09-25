@@ -1,6 +1,7 @@
 import sys, signal
 from howdy import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
+#
 import re, codecs, requests, time, logging
 from itertools import chain
 from pathos.multiprocessing import Pool
@@ -141,7 +142,8 @@ def get_movie_yts( name, verify = True, raiseError = False, to_torrent = False )
                 print('Error, need to choose one of the movie names. Exiting...')
                 return
             actmov = movdict[ sortdict[ iidx ] ]
-        except Exception:
+        except Exception as e:
+            logging.debug( "ERROR MESSAGE = %s." % str( e ) )
             print('Error, did not give an integer value. Exiting...')
             return
     else:
@@ -177,18 +179,10 @@ def main( ):
                         help = 'Year to look for the movie to get.')
     parser.add_argument('-M', '--maxnum', dest='maxnum', type=int, action='store', default = 10,
                         help = 'Maximum number of torrents to look through. Default is 10.')
-    #parser.add_argument('-t', '--timeout', dest='timeout', type=int, action='store', default = 60,
-    #                    help = 'Timeout on when to quit searching for torrents (in seconds). Default is 60 seconds.' )
-    #parser.add_argument('--any', dest='do_any', action='store_true', default = False,
-    #                  help = 'If chosen, make no filter on movie format.')
     parser.add_argument('-f', '--filename', dest='filename', action='store', type=str,
                         help = 'If defined, put torrent or magnet file into filename.')
     parser.add_argument('--bypass', dest='do_bypass', action='store_true', default=False,
                         help = 'If chosen, bypass YTS.')
-    #parser.add_argument('--nozooq', dest='do_nozooq', action='store_true', default=False,
-    #                    help = 'If chosen, bypass ZOOQLE.')
-    #parser.add_argument('--torrentz', dest='do_torrentz', action='store_true', default=False,
-    #                  help = 'If chosen, also look through TORRENTZ to get magnet link.')
     parser.add_argument('-L', '--level', dest='level', action='store', default = 'NONE', choices = ['DEBUG','INFO','ERROR','NONE'],
                         help = 'Choose logging level. By default it is NONE. Choices are: [ DEBUG, INFO, ERROR, NONE ].' )
     parser.add_argument('--add', dest='do_add', action='store_true', default = False,
@@ -224,33 +218,6 @@ def main( ):
             return
         except ValueError: pass
 
-    #pool = Pool( processes = 4 )
-    #if not args.do_nozooq: jobs = [
-    #    pool.apply_async( get_items_zooqle, args = ( args.name, args.maxnum ) ) ]
-    #else: jobs = [ ]
-    #
-    ## check for jackett
-    # if get_jackett_credentials( ) is None:
-    #     jobs += list(map(lambda func: pool.apply_async( func, args = ( args.name, args.maxnum ) ),
-    #                      ( get_items_rarbg, get_items_tpb ) ) )
-    #     logging.info("JACKETT CREDS NONE, ADDED RARBG AND TPB")
-    #     #if args.do_torrentz:
-    #     #    jobs.append( pool.apply_async( get_items_torrentz, args = ( args.name, args.maxnum ) ) )
-    # else:
-    #     jobs.append( pool.apply_async(
-    #         get_items_jackett, args = ( args.name, tmdb_id, args.maxnum, args.do_verify, args.do_raw ) ) )
-    #     jobs.append( pool.apply_async(
-    #         get_items_eztv_io, args = ( args.name, tmdb_id, args.maxnum, args.do_verify ) ) )
-    #     logging.info("ADDED JACKETT AND EZTV")
-    # items_lists = [ ]
-    # print( 'GOT HERE, jobs = %s.' % jobs )
-    # for job in jobs:
-    #     try:
-    #         items = job.get( args.timeout )   # 60 second timeout on process by default
-    #         if items is None: continue
-    #         items_lists.append( items )
-    #     except: pass
-    #items = list( chain.from_iterable( items_lists ) )
     if not get_jackett_credentials( ):
         print( "ERROR, NEED JACKETT SERVER TO SEARCH FOR MAGNET LINKS. EXITING..." )
         return

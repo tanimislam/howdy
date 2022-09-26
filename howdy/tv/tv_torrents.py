@@ -900,8 +900,8 @@ def _worker_process_tvtorrents( client, data, torFileName, totFname,
 
     
     def process_single_iteration( data, idx ):
-        mag_link = core_torrents.deconfluse_magnet_link(
-            data[ idx ]['link'], ecluded_tracker_stubs = excluded_tracker_stubs )
+        mag_link = core_torrents.deconfuse_magnet_link(
+            data[ idx ]['link'], excluded_tracker_stubs = excluded_tracker_stubs )
         #
         ## download the top magnet link
         torrentId = core_deluge.deluge_add_magnet_file( client, mag_link )

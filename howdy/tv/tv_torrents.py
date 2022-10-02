@@ -554,6 +554,15 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
     for item in html('item'):
         title = item.find('title')
         if title is None: continue
+        #
+        ## check if the title lower case matches name lower case
+        ## CHECKME 20220929
+        title_first_elem = title.text.split( )[ 0 ].strip().lower( )
+        title_first_elem = title_first_elem.split('.')[0].strip().lower( )
+        name_first_elem = name.split()[0].strip().lower( )
+        if title_first_elem != name_first_elem: continue
+        #
+        ##
         title = title.text
         #
         ## now check if the sXXeYY in name
@@ -1111,7 +1120,8 @@ def worker_process_download_tvtorrent(
     m = Manager( )
     shared_list = m.list( )
     jobs = [ ]
-    for targ in ( _process_jackett_items, _process_eztv_io_items, _process_zooqle_items ):
+    # for targ in ( _process_jackett_items, _process_eztv_io_items, _process_zooqle_items ):
+    for targ in ( _process_jackett_items, _process_zooqle_items ): # because eztv.io is DEAD as of 20220928
         job = Process( target = targ, args = ( tvTorUnit, shared_list ) )
         job.daemon = False
         jobs.append( job )

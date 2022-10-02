@@ -698,7 +698,7 @@ def get_series_updated_fromdate( date, token, verify = True ):
         series_ids += response.json( )['data']
     return sorted( set( map(lambda elem: elem['id'], series_ids ) ) )
 
-def get_tot_epdict_imdb( showName, verify = True ):
+def get_tot_epdict_imdb( showName, firstAiredYear = None ):
     """
     Returns a summary nested :py:class:`dict` of episode information for a given TV show, using :py:class:`Cinemagoer <imdb.Cinemagoer>` class in the `Cinemagoer Python Package`_.
 
@@ -708,6 +708,12 @@ def get_tot_epdict_imdb( showName, verify = True ):
 
     An example of the structure of this dictionary can be found in :py:meth:`get_tot_epdict_tvdb <howdy.tv.tv.get_tot_epdict_tvdb>`.
 
+    :param str showName: the series name.
+    :param int firstAiredYear: optional argument. If provided, filter on TV shows that were first aired that year.
+
+    :returns: a summary nested :py:class:`dict` of episode information for a given TV show.
+    :rtype: dict
+
     .. seealso::
 
        * :py:meth:`get_tot_epdict_tvdb <howdy.tv.tv.get_tot_epdict_tvdb>`.
@@ -716,24 +722,23 @@ def get_tot_epdict_imdb( showName, verify = True ):
 
     .. _`Cinemagoer Python Package`: https://cinemagoer.readthedocs.io/en/latest
     """
-    token = get_token( verify = verify )
-    tvdb_id = tv.get_series_id( showName, token, verify = verify )
-    if tvdb_id is None: return None
-    imdbId = tv.get_imdb_id( tvdb_id, token, verify = verify )
-    if imdbId is None: return None
-    #
-    ## now run imdbpy
-    time0 = time.time( )
+    time0 = time.perf_counter( )
     ia = Cinemagoer( )
-    imdbId = imdbId.replace('tt','').strip( )
-    series = ia.get_movie( imdbId )
+    cand_series = list(filter(lambda entry: entry.data['kind'] == 'tv series', ia.search_movie( showName ) ) )
+    if len( cand_series ) == 0: return None # cannot find showName
+    if firstAiredYear is None:
+        series = cand_series[ 0 ]
+    else:
+        cand_series = list(filter(lambda entry: entry.data['year'] == firstAiredYear, cand_series))
+        if len( cand_series ) == 0: return None # cannot find showName
+        series = cand_series[ 0 ]
+    #
     ia.update( series, 'episodes' )
     logging.debug('took %0.3f seconds to get episodes for %s.' % (
-        time.time( ) - time0, showName ) )
+        time.perf_counter( ) - time0, showName ) )
     tot_epdict = { }
     seasons = sorted( set(filter(lambda seasno: seasno != -1, series['episodes'].keys( ) ) ) )
-    tot_epdict_tvdb = tv.get_tot_epdict_tvdb( showName, verify = verify )
-    for season in sorted( set( seasons ) & set( tot_epdict_tvdb ) ):
+    for season in seasons:
         tot_epdict.setdefault( season, { } )
         for epno in series['episodes'][season]:
             episode = series['episodes'][season][epno]

@@ -105,7 +105,7 @@ class DelugeRPCClient(object):
         self.connected = True
 
     def _connect(self):
-        logger.info('Connecting to %s:%s' % (self.host, self.port))
+        logger.debug('Connecting to %s:%s' % (self.host, self.port))
         try:
             # self._create_socket(ssl_version=ssl.PROTOCOL_SSLv23)
             self._socket.connect((self.host, self.port))

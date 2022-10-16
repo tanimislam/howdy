@@ -157,7 +157,7 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
             PlexConfig.service == 'plexlogin' ).first( )
         if val is None: return None
         
-        logging.info( 'IN checkServerCredentials( _get_stored_plexlogin): plexlogin data: %s.' % val.data )
+        logging.debug( 'IN checkServerCredentials( _get_stored_plexlogin): plexlogin data: %s.' % val.data )
         data = val.data
         token = data[ 'token' ]
         if doLocal: fullURL = 'http://localhost:32400'
@@ -176,9 +176,9 @@ def checkServerCredentials( doLocal = False, verify = True, checkWorkingServer =
         return fullURL, token
 
     dat = _get_stored_plexlogin( doLocal, verify )
-    logging.info( 'IN checkServerCredentials: doLOCAL? %s; verify? %s.' % (
+    logging.debug( 'IN checkServerCredentials: doLOCAL? %s; verify? %s.' % (
         doLocal, verify ) )
-    logging.info( 'IN checkServerCredentials: dat: %s; type of dat? %s.' % ( dat, type( dat ) ) )
+    logging.debug( 'IN checkServerCredentials: dat: %s; type of dat? %s.' % ( dat, type( dat ) ) )
     
     if dat is not None: return dat
 

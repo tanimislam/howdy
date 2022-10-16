@@ -1682,23 +1682,25 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
                               [ '', '', 'and', ',' ]),
                           showFileName)
         for seasno, epno, title in mydict[ 'episodes' ]:
+            must_have = [ ]
             actTitle = title.replace('/', ', ')
             candDir = os.path.join( prefix, 'Season %%%02dd' % min_inferred_length % seasno )
             fname = '%s - s%02de%s - %s' % ( showFileName, seasno, '%%%02dd' % episode_number_length % epno, actTitle )
             totFname = os.path.join( candDir, fname )
             torFname = '%s S%02dE%02d' % ( torTitle, seasno, epno )
-            if do_x265 and do_raw: torFname = '%s x265' % torFname
-            dat = {
+            if do_x265: must_have = [ 'x265', ]
+            tvTorUnit = {
                 'totFname' : totFname, 'torFname' : torFname, 'torFname_disp' : '%s S%02dE%02d' % ( torTitle, seasno, epno ),
                 'minSize' : minSize, 'maxSize' : maxSize,
                 'minSize_x265' : minSize_x265, 'maxSize_x265' : maxSize_x265,
                 'tvshow' : tvshow,
-                'do_raw' : do_raw, }
+                'do_raw' : do_raw,
+                'must_have' : must_have, }
             
             if not os.path.isdir( candDir ):
                 tv_torrent_gets[ 'newdirs' ].setdefault( candDir, [] )
-                tv_torrent_gets[ 'newdirs' ][ candDir ].append( dat )
-            else: tv_torrent_gets[ 'nonewdirs' ].append( dat )
+                tv_torrent_gets[ 'newdirs' ][ candDir ].append( tvTorUnit )
+            else: tv_torrent_gets[ 'nonewdirs' ].append( tvTorUnit )
 
     tvTorUnits = list(chain.from_iterable(
         [ tv_torrent_gets[ 'nonewdirs' ] ] +

@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 from howdy.core import core_deluge, core, core_torrents
 from howdy.tv import tv_torrents, tv
 
-def get_items_eztv_io( name, maxnum = 10, verify = True ):
+def get_items_eztv_io( name, maxnum = 10, verify = True, filtered = [ ] ):
     assert( maxnum >= 5 )
     try: 
         items, status = tv_torrents.get_tv_torrent_eztv_io(
@@ -22,11 +22,12 @@ def get_items_eztv_io( name, maxnum = 10, verify = True ):
         return None
     return items
 
-def get_items_jackett( name, maxnum = 1000, raw = False, verify = True ):
+def get_items_jackett( name, maxnum = 1000, raw = False, verify = True, filtered = [ ] ):
     assert( maxnum >= 5 )
     logging.info( 'started jackett %s.' % name )
     items, status = tv_torrents.get_tv_torrent_jackett(
-        name, maxnum = maxnum, raw = raw, verify = verify )
+        name, maxnum = maxnum, raw = raw, verify = verify,
+        must_have = filtered )
     if status != 'SUCCESS':
         logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
         return None
@@ -122,7 +123,7 @@ def get_tv_torrent_items(
         with open(filename, 'w') as openfile:
             openfile.write('%s\n' % magnet_link )
 
-def process_magnet_items( name, raw = False, verify = True, maxnum = 10 ):
+def process_magnet_items( name, raw = False, verify = True, maxnum = 10, filtered = [ ] ):
     time0 = time.perf_counter( )
     #
     ## check for jackett
@@ -139,7 +140,7 @@ def process_magnet_items( name, raw = False, verify = True, maxnum = 10 ):
         jobs = list(map(
             lambda func: pool.apply_async( func, args = ( name, maxnum, verify ) ),
             ( get_items_zooqle, ) ) ) # get_items_eztv_io ) ) )
-        jobs.append( pool.apply_async( get_items_jackett, args = ( name, maxnum, raw, verify ) ) )
+        jobs.append( pool.apply_async( get_items_jackett, args = ( name, maxnum, raw, verify, filtered ) ) )
     items_all = list( chain.from_iterable( filter( None, map(lambda job: job.get( ), jobs ) ) ) )
     logging.info( 'search for torrents took %0.3f seconds.' % ( time.perf_counter( ) - time0 ) )
     if len( items_all ) != 0: return items_all
@@ -161,14 +162,23 @@ def main( ):
                       help = 'If chosen, run in info mode.' )
     parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
                       help = 'If chosen, do not verify SSL connections.' )
+    #
+    ## now filter on these items
+    parser.add_argument('-F', '--filter', dest = 'filter', action = 'store', nargs = '*',
+                        help = 'List of strings on which to filter for the magnet link name.' )
+    #
     args = parser.parse_args( )
+    if args.filter is None: filtered = [ ]
+    else: filtered = sorted(set(map(lambda tok: tok.strip().lower(), args.filter)))
     logger = logging.getLogger( )
     if args.do_info: logger.setLevel( logging.INFO )
+    logging.info( 'FILTERED LIST = %s.' % filtered )
     #
     time0 = time.perf_counter( )
     items = process_magnet_items(
         args.name, maxnum = args.maxnum,
-        raw = args.do_raw, verify = args.do_verify )
+        raw = args.do_raw, verify = args.do_verify,
+        filtered = filtered )
 
     logging.info( 'took %0.3f seconds to get TV torrents for %s.' % (
         time.perf_counter( ) - time0, args.name ) )

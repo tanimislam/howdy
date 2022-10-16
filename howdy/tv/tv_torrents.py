@@ -519,7 +519,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
         params[ 'imdbid' ] = imdb_id
         return params
 
-    logging.info( 'URL ENDPOINT: %s, PARAMS = %s.' % (
+    logging.debug( 'URL ENDPOINT: %s, PARAMS = %s.' % (
         urljoin( url, endpoint ), _return_params( name ) ) )
     response = requests.get(
         urljoin( url, endpoint ),
@@ -630,9 +630,11 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
             minsize, minsize_x265, maxsize, maxsize_x265, item ), items ) )
     if len( keywords ) != 0:
         items = list(filter(lambda item: any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords ) ) and
-                            not any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords_exc ) ) and
-                            all(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), must_have ) ),
+                            not any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords_exc ) ),
                             items ) )
+    if len( must_have ) != 0:
+        items = list(filter(lambda item: all(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), must_have ) ), items ) )
+        
     if len( items ) == 0:
         return return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
         
@@ -1026,27 +1028,28 @@ def worker_process_download_tvtorrent(
         series_name = tvTorUnit[ 'tvshow' ]
         mustHaveString = torFileName.split( )[ -1 ]
         do_raw = tvTorUnit[ 'do_raw' ]
-        logging.info( 'jackett start: %s, %s, %s' % (
-            torFileName, mustHaveString, series_name ) )
+        must_have = tvTorUnit[ 'must_have' ]
+        logging.debug( 'jackett start: %s, %s, %s' % (
+            torFileName, must_have, series_name ) )
         #
         ## try this twice if it can
         torFileNameAlt = re.sub('\(([0-9]+)\)', '', torFileName ).strip( )
         torFileNames = [ torFileName, ]
         if torFileNameAlt != torFileName: torFileNames.append( torFileNameAlt )
         for tfn in torFileNames:
-            logging.info( 'processing jackett from "%s", using "%s" now, at %0.3f seconds after start.' % (
+            logging.debug( 'processing jackett from "%s", using "%s" now, at %0.3f seconds after start.' % (
                 torFileName, tfn, time.perf_counter( ) - time0 ) )
             data, status = get_tv_torrent_jackett(
                 tfn, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
                 minsizes = [ minSize, minSize_x265 ],
                 maxsizes = [ maxSize, maxSize_x265 ],
                 keywords_exc = [ 'xvid' ], raw = do_raw,
-                must_have = [ mustHaveString ] )
+                must_have = must_have )
             if status == 'SUCCESS': break
         if status != 'SUCCESS':
             shared_list.append( ( 'jackett', _create_status_dict( 'FAILURE', status, t0 ), 'FAILURE' ) )
             return
-        logging.info( 'successfully processed jackett on %s in %0.3f seconds.' % (
+        logging.debug( 'successfully processed jackett on %s in %0.3f seconds.' % (
             torFileName, time.perf_counter( ) - t0 ) )
         shared_list.append( ( 'jackett', data, 'SUCCESS' ) )
     #
@@ -1059,7 +1062,7 @@ def worker_process_download_tvtorrent(
         minSize_x265 = tvTorUnit[ 'minSize_x265' ]
         maxSize_x265 = tvTorUnit[ 'maxSize_x265' ]
         series_name = tvTorUnit[ 'tvshow' ]
-        mustHaveString = torFileName.split( )[ -1 ]
+        must_have = tvTorUnit[ 'must_have' ]
         logging.info( 'eztv.io start: %s' % torFileName )
         #
         try:
@@ -1096,7 +1099,7 @@ def worker_process_download_tvtorrent(
         minSize_x265 = tvTorUnit[ 'minSize_x265' ]
         maxSize_x265 = tvTorUnit[ 'maxSize_x265' ]
         series_name = tvTorUnit[ 'tvshow' ]
-        mustHaveString = torFileName.split( )[ -1 ]
+        must_have = tvTorUnit[ 'must_have' ]
         logging.info( 'zooqle start: %s' % torFileName )
         #
         data, status = get_tv_torrent_zooqle( torFileName, maxnum = 100 )

@@ -1545,7 +1545,7 @@ def oauth_generate_google_permission_url( ):
                   'https://www.googleapis.com/auth/spreadsheets', # google spreadsheet scope
                   'https://www.googleapis.com/auth/musicmanager',  # this is the gmusicapi one
                   'https://www.googleapis.com/auth/drive' ], # allow one to upload and download files to google drive
-        redirect_uri = "urn:ietf:wg:oauth:2.0:oob" )
+        redirect_uri = "http://localhost" )
     auth_uri = flow.step1_get_authorize_url( )
     return flow, auth_uri
 

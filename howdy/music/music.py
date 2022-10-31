@@ -7,7 +7,7 @@ from googleapiclient.discovery import build
 from itertools import chain
 from PIL import Image
 from urllib.parse import urljoin
-from distutils.spawn import find_executable
+from shutil import which
 #
 from howdy import resourceDir
 from howdy.core import core, baseConfDir, session, PlexConfig
@@ -942,14 +942,14 @@ def get_youtube_file( youtube_URL, outputfile, use_aria2c = True ):
         ## because come on why is youtube-dl so achingly slow?
         ## only if aria2c exists on this server
         ## also to get INFO logging level: https://aria2.github.io/manual/en/html/aria2c.html#cmdoption-log-level
-        aria2c_exec = find_executable('aria2c')
+        aria2c_exec = which('aria2c')
         if aria2c_exec is not None and use_aria2c:
             ydl_opts['external-downloader'] = 'aria2c'
             ydl_opts['external-downloader-args'] = "-j 16 -x 16 -s 16 -k 1M --log-level=info"
         with yt_dlp.YoutubeDL( ydl_opts ) as ydl:
             ydl.download([ youtube_URL ])
     except yt_dlp.DownloadError: # could not download the file to M4A format
-        ffmpeg_exec = find_executable( 'ffmpeg' )
+        ffmpeg_exec = which( 'ffmpeg' )
         if ffmpeg_exec is None:
             raise ValueError("Error, no FFMPEG executable found." )
         with yt_dlp.YoutubeDL( ) as ydl:

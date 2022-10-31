@@ -1,9 +1,9 @@
 import os, sys, numpy, logging, magic, base64, subprocess
 from urllib.parse import parse_qs
-from distutils.spawn import find_executable
+from shutil import which
 #
 from howdy.core import session, PlexConfig, get_formatted_size
-_deluge_exec = find_executable( 'deluge' )
+_deluge_exec = which( 'deluge' )
 
 #
 ## copied from deluge.common

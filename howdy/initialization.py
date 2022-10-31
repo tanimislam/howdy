@@ -1,6 +1,6 @@
 import imp, sys, os, pkg_resources, logging
 import subprocess, shlex, glob, socket
-from distutils.spawn import find_executable
+from shutil import which
 #
 from howdy import resourceDir
 
@@ -133,13 +133,13 @@ class HowdyInitialization( object ):
                     sys.exit( 0 )
                 #
                 ## now see if we have sshpass
-                sshpass = find_executable( 'sshpass' )
+                sshpass = which( 'sshpass' )
                 if sshpass is None:
                     print( 'ERROR, YOU NEED TO INSTALL sshpass ON YOUR MACHINE.' )
                     sys.exit( 0 )
                 #
                 ## now see if we have pandoc
-                pandoc = find_executable( 'pandoc' )
+                pandoc = which( 'pandoc' )
                 if pandoc is None:
                     print( 'ERROR, YOU NEED TO INSTALL pandoc ON YOUR MACHINE.' )
                     sys.exit( 0 )

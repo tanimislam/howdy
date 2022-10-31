@@ -1,5 +1,5 @@
 import os, subprocess, time, logging, shlex, sys
-from distutils.spawn import find_executable
+from shutil import which
 from fabric import Connection
 from patchwork.files import exists, directory
 #
@@ -158,7 +158,7 @@ def get_rsync_command( data, mystr, do_download = True ):
 
     .. _sshpass: https://linux.die.net/man/1/sshpass
     """    
-    sshpass_exec = find_executable( 'sshpass' )
+    sshpass_exec = which( 'sshpass' )
     assert( sshpass_exec is not None )
     if do_download:
         if data['subdir'] is not None:

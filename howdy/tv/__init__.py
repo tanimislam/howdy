@@ -132,9 +132,9 @@ def get_token( verify = True, data = None ):
         try: data = get_tvdb_api( )
         except: return None
     import shlex, subprocess
-    from distutils.spawn import find_executable
-
-    curl_exec = find_executable( 'curl' )
+    from shutil import which
+    
+    curl_exec = which( 'curl' )
     if curl_exec is None:
         logging.info( 'Cannot find curl executable.' )
         return None
@@ -145,10 +145,8 @@ def get_token( verify = True, data = None ):
     else:
         mystr = "%s -k -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"apikey\": \"%s\"}' 'https://api.thetvdb.com/login'" % (
             curl_exec, apikey )
-    proc = subprocess.Popen(
-        shlex.split( mystr ), stdout = subprocess.PIPE,
-        stderr = subprocess.STDOUT )
-    stdout_val, stderr_val = proc.communicate( )
+    stdout_val = subprocess.check_output(
+        shlex.split( mystr ), stderr = subprocess.STDOUT )
     try:
         data = json.loads( stdout_val.decode('utf-8' ).split('\n')[-1] )
         return data[ 'token' ]

@@ -8,7 +8,7 @@ from itertools import chain
 from functools import reduce
 from dateutil.relativedelta import relativedelta
 from rapidfuzz.fuzz import ratio
-from nprstuff.core import autocrop_image
+from iv_tanim.core import autocrop_image
 #
 from howdy.tv import get_token, tv_torrents, ShowsToExclude, tv_attic
 from howdy.core import core_rsync, splitall, session, return_error_raw

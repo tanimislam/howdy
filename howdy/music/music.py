@@ -1,4 +1,4 @@
-import os, sys, glob, numpy, titlecase, mutagen.mp4, httplib2, json, logging, oauth2client.client
+import os, sys, glob, numpy, titlecase, httplib2, json, logging, oauth2client.client
 import requests, yt_dlp, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid
 import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
@@ -12,7 +12,7 @@ from shutil import which
 from howdy import resourceDir
 from howdy.core import core, baseConfDir, session, PlexConfig
 from howdy.core import return_error_raw, get_maximum_matchval
-from howdy.music import pygn, parse_youtube_date, format_youtube_date
+from howdy.music import pygn, parse_youtube_date, format_youtube_date, fill_m4a_metadata
 
 def oauth_store_google_credentials( credentials ):
     """
@@ -851,71 +851,6 @@ def get_youtube_service( verify = True ):
     #youtube = build( "youtube", "v3", credentials = credentials,
     #                 cache_discovery = False ) 
     return youtube
-
-def fill_m4a_metadata( filename, data_dict, verify = True, image_data = None ):
-    """
-    Low level method that populates the metadata of an M4A_ music file.
-
-    :param str filename: a candidate M4A_ music file name.
-    :param dict data_dict: a dictionary of candidate music metadata with the following obligatory keys: ``song``, ``album``, ``artist``, ``year``, ``tracknumber``, and ``total tracks``. If the URL of the album image, ``album url``, is defined, then also provides the album image into the M4A_ file.
-    :param BytesIO image_data: optional argument. If defined, is a :py:class:`BytesIO <io.BytesIO>` binary data representation of *usually* a candidate PNG_ image file.
-    
-    .. _PNG: https://en.wikipedia.org/wiki/Portable_Network_Graphics
-    .. _M4A: https://en.wikipedia.org/wiki/MPEG-4_Part_14
-    """
-    assert( os.path.isfile( filename ) )
-    assert( os.path.basename( filename ).lower( ).endswith( '.m4a' ) )
-    #
-    ## now start it off
-    mp4tags = mutagen.mp4.MP4( filename )
-    mp4tags[ '\xa9nam' ] = [ data_dict[ 'song' ], ]
-    mp4tags[ '\xa9alb' ] = [ data_dict[ 'album' ], ]
-    mp4tags[ '\xa9ART' ] = [ data_dict[ 'artist' ], ]
-    mp4tags[ 'aART' ] = [ data_dict[ 'artist' ], ]
-    if 'year' in data_dict: mp4tags[ '\xa9day' ] = [ str(data_dict[ 'year' ]), ]
-    mp4tags[ 'trkn' ] = [ ( data_dict[ 'tracknumber' ],
-                            data_dict[ 'total tracks' ] ), ]
-
-    def _save_image_data( image_data, mp4tags ):
-        if image_data is None: return
-        with io.BytesIO( ) as csio2:
-            try:
-                img = Image.open( image_data )
-            except Exception as e:
-                logging.info( 'problem with filename = %s, and error message = %s.' % (
-                    filename, str( e ) ) )
-                return str(e)
-            try:
-                img.save( csio2, format = 'png' )
-                mp4tags[ 'covr' ] = [
-                    mutagen.mp4.MP4Cover( csio2.getvalue( ),
-                                        mutagen.mp4.MP4Cover.FORMAT_PNG ), ]
-                return 'SUCCESS'
-            except:
-                #
-                ## had a CMYK colormap for the JPEG file, so just store the JPEG image into the M4A file
-                img.save( csio2, format = 'jpeg' )
-                mp4tags[ 'covr' ] = [
-                    mutagen.mp4.MP4Cover( csio2.getvalue( ),
-                                         mutagen.mp4.MP4Cover.FORMAT_JPEG ), ]
-                return 'SUCCESS'
-        
-    if image_data is not None: val = _save_image_data( image_data, mp4tags )
-    elif data_dict[ 'album url' ] != '':
-        with io.BytesIO( requests.get(
-                data_dict[ 'album url' ], verify = verify ).content ) as csio, io.BytesIO( ) as csio2:
-            try:
-                mp4tags[ 'covr' ] = [
-                    mutagen.mp4.MP4Cover( csio2.getvalue( ),
-                                        mutagen.mp4.MP4Cover.FORMAT_PNG ), ]
-            except:
-                #
-                ## had a CMYK colormap for the JPEG file, so just store the JPEG image into the M4A file
-                img.save( csio2, format = 'jpeg' )
-                mp4tags[ 'covr' ] = [
-                    mutagen.mp4.MP4Cover( csio2.getvalue( ),
-                                         mutagen.mp4.MP4Cover.FORMAT_JPEG ), ]
-    mp4tags.save( )
 
 def get_youtube_file( youtube_URL, outputfile, use_aria2c = True ):
     """

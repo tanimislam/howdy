@@ -14,7 +14,8 @@ from jinja2 import Environment, FileSystemLoader, Template
 from howdy import resourceDir
 from howdy.core import session, core, get_lastupdated_string
 from howdy.core import get_formatted_size, get_formatted_duration
-from howdy.email import get_email_service, send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
+from howdy.email import get_email_service, send_email_lowlevel, emailAddress, emailName
+from iv_tanim.core.rst2html import send_email_localsmtp
 #
 def send_email_movie_torrent( movieName, data, isJackett = False, verify = True ):
     """

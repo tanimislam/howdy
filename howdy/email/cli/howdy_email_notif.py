@@ -3,14 +3,15 @@ from email.utils import formataddr
 from argparse import ArgumentParser
 #
 from howdy.core import core
-from howdy.email import email, get_email_contacts_dict, emailAddress, emailName, get_email_service
+from howdy.email import (
+    email, get_email_contacts_dict, emailAddress, emailName, get_email_service )
 
 def main( ):
     time0 = time.time( )
     date_now = datetime.datetime.now( ).date( )
     parser = ArgumentParser( )
-    parser.add_argument('--debug', dest='do_debug', action='store_true',
-                      default = False, help = 'Run debug mode if chosen.')
+    parser.add_argument('--info', dest='do_info', action='store_true',
+                      default = False, help = 'Run INFO logging mode if chosen.')
     parser.add_argument('--test', dest='do_test', action='store_true',
                       default = False, help = 'Send a test notification email if chosen.')
     parser.add_argument('--subject', dest='subject', action='store', type=str,
@@ -22,7 +23,7 @@ def main( ):
     
     args = parser.parse_args( )
     logger = logging.getLogger( )
-    if args.do_debug: logger.setLevel( level = logging.DEBUG )
+    if args.do_info: logger.setLevel( level = logging.INFO )
     status, _ = core.oauthCheckGoogleCredentials( )
     if not status:
         print( "Error, do not have correct Google credentials." )
@@ -51,20 +52,23 @@ def main( ):
     #
     ## now do the email sending out
     print( 'processed all checks in %0.3f seconds.' % ( time.time( ) - time0 ) )
-    time0 = time.time( )
+    time0 = time.perf_counter( )
     if args.do_test:
         email.send_individual_email_full(
             htmlString, args.subject, emailAddress, name = emailName, verify = False )
-        print( 'processed test email in %0.3f seconds.' % ( time.time( ) - time0 ) )
-    else:
-        email_service = get_email_service( verify = False )
-        def _send_email_perproc( input_tuple ):
-            name, fullEmail = input_tuple
-            email.send_individual_email_full(
-                htmlString, args.subject, fullEmail, name = name,
-                email_service = email_service )
-            return True
-        arrs = list( map(
-            _send_email_perproc, name_emails +
-            [ ( emailName, emailAddress ) ] ) )
-        print( 'processed %d emails in %0.3f seconds.' % ( len(arrs), time.time( ) - time0 ) )
+        logging.info( 'processed test email in %0.3f seconds.' %
+                     ( time.perf_counter( ) - time0 ) )
+        return
+    #
+    email_service = get_email_service( verify = False )
+    def _send_email_perproc( input_tuple ):
+        name, fullEmail = input_tuple
+        email.send_individual_email_full(
+            htmlString, args.subject, fullEmail, name = name,
+            email_service = email_service )
+        return True
+    arrs = list( map(
+        _send_email_perproc, name_emails +
+        [ ( emailName, emailAddress ) ] ) )
+    logging.info( 'processed %d emails in %0.3f seconds.' % (
+        len(arrs), time.perf_counter( ) - time0 ) )

@@ -339,6 +339,7 @@ def send_individual_email_full_withattachs(
     :raise AssertionError: if the current Plex_ account user's email address does not exist.
 
     .. _Base64: https://en.wikipedia.org/wiki/Base64
+    .. _SMTP: https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol
     """
     assert( emailAddress is not None ), "Error, email address must not be None"
     if emailName is None: fromEmail = emailAddress

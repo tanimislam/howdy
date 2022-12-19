@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5.1. Howdy TV Command Line Utilities &mdash; howdy! 1.35-63-geb12d22 documentation</title>
+  <title>5.1. Howdy TV Command Line Utilities &mdash; howdy! 1.35-77-gb41753fa documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
@@ -17,6 +17,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -66,7 +67,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../howdy-movie/howdy_movie.html">6. Howdy Movie Functionality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../howdy-music/howdy_music.html">7. Howdy Music Functionality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../howdy-email/howdy_email.html">8. Howdy Email Functionality</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">9. INDEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
 </ul>
 
         </div>
@@ -82,9 +83,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../howdy_tv.html"><span class="section-number">5. </span>Howdy TV Functionality</a> &raquo;</li>
-      <li><span class="section-number">5.1. </span>Howdy TV Command Line Utilities</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../howdy_tv.html"><span class="section-number">5. </span>Howdy TV Functionality</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">5.1. </span>Howdy TV Command Line Utilities</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/howdy-tv/cli_tools/howdy_tv_cli.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -100,7 +101,7 @@
 <ul class="simple">
 <li><p><a class="reference internal" href="#get-tv-batch"><span class="std std-ref">get_tv_batch</span></a> finds new episodes of TV shows that already exist on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
 <li><p><a class="reference internal" href="#get-tv-tor"><span class="std std-ref">get_tv_tor</span></a> finds <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">Magnet links</a> of television shows, and by default prints out the chosen magnet link. This executable uses the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> server to search for TV shows, and can optionally upload these links to the specified <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server (see <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a>).</p></li>
-<li><p><a class="reference internal" href="#howdy-tv-epinfo"><span class="std std-ref">howdy_tv_epinfo</span></a> creates a JSON file of the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of episodes associated with a TV show, and uploads this JSON episodes file to the SSH server, and remote subdirectory (see <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a>). This JSON file can be used to rename episodes in a season or TV show that has been downloaded by the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server.</p></li>
+<li><p><a class="reference internal" href="#howdy-tv-epinfo"><span class="std std-ref">howdy_tv_epinfo</span></a> creates a JSON file of the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of episodes associated with a TV show, and uploads this JSON episodes file to the SSH server, and remote subdirectory (see <a class="reference internal" href="../../howdy-config/howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a>). This JSON file can be used to rename episodes in a season or TV show that has been downloaded by the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server.</p></li>
 <li><p><a class="reference internal" href="#howdy-tv-epname"><span class="std std-ref">howdy_tv_epname</span></a> prints out information by season or by episode for a TV show.</p></li>
 <li><p><a class="reference internal" href="#howdy-tv-futureshows"><span class="std std-ref">howdy_tv_futureshows</span></a> summarizes information on those TV shows, that exist in the <a class="reference external" href="https://plex.tv">Plex</a> server, that will air new seasons.</p></li>
 <li><p><a class="reference internal" href="#howdy-tv-plots"><span class="std std-ref">howdy_tv_plots</span></a> creates eye chart summary plots, by calendar year, of TV shows that have aired in a given year. These plots are in <a class="reference external" href="https://en.wikipedia.org/wiki/Scalable_Vector_Graphics#Compression">SVGZ</a> format.</p></li>
@@ -139,7 +140,7 @@
 <p>Here are the common flags and command line inputs.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--token</span></code> allows you to explicitly set the <a class="reference external" href="https://plex.tv">Plex</a> access token for the server.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--debuglevel</span></code> specifies the amount of system logging into STDOUT that you want to show. The default choice is <code class="docutils literal notranslate"><span class="pre">None</span></code> (no logging). If <code class="docutils literal notranslate"><span class="pre">info</span></code>, then it prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output. If <code class="docutils literal notranslate"><span class="pre">debug</span></code>, then it prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--debuglevel</span></code> specifies the amount of system logging into STDOUT that you want to show. The default choice is <code class="docutils literal notranslate"><span class="pre">None</span></code> (no logging). If <code class="docutils literal notranslate"><span class="pre">info</span></code>, then it prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output. If <code class="docutils literal notranslate"><span class="pre">debug</span></code>, then it prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 </ul>
 <p>Here are the command line inputs that change the operation of this execution.</p>
 <ul class="simple">
@@ -193,7 +194,7 @@
 </div>
 <p>These are common flags used by all standard operations of this CLI.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
 </ul>
 <p>The <code class="docutils literal notranslate"><span class="pre">-n</span></code> or <code class="docutils literal notranslate"><span class="pre">--name</span></code> flag is used to specify the TV show and episode, for example <a class="reference external" href="https://en.wikipedia.org/wiki/'Tis_the_30th_Season">The Simpsons S30E10</a> (<a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons">The Simpsons</a>, season 30 and episode 10)</p>
@@ -291,7 +292,7 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">-s</span></code> or <code class="docutils literal notranslate"><span class="pre">--show</span></code> specifies the show whose information, as a JSON file, is uploaded to the remote SSH server.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-j</span></code> or <code class="docutils literal notranslate"><span class="pre">--jsonfile</span></code> specifies the name of the JSON file. The file’s name must end in <code class="docutils literal notranslate"><span class="pre">.json</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--debug</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--debug</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--showspecials</span></code> means to also record this TV show’s specials, as a dictionary under season <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
 </ul>
@@ -429,7 +430,7 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--local</span></code> specifies that we look for a local (<code class="docutils literal notranslate"><span class="pre">https://localhost:3400</span></code>) running <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 </ul>
 <p>This executable prints out summary information on TV shows, that exist on the <a class="reference external" href="https://plex.tv">Plex</a> server, excluding those shows that will not be searched. In this example, <a class="reference external" href="https://en.wikipedia.org/wiki/The_Great_British_Bake_Off">The Great British Bake-Off</a> is going to be ignored. The output format during evaluation is descriptive because the process can take more than a few seconds.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_tv_futureshows</span>

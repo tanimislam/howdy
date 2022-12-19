@@ -19,7 +19,7 @@ This section describes the six Howdy core command line utilities.
 
 howdy_core_cli
 ^^^^^^^^^^^^^^^^^^^^
-The help output, when running ``howdy_core_cli -h``, produces the following.
+This CLI shows the list of email addresses, and names, of Plex account holders who have access to your Plex server. It can also show emails and names of all people who can receive email notifications about your Plex server. One can also change the list of email addresses that are notified by email of the Plex server. The help output, when running ``howdy_core_cli -h``, produces the following.
 
 .. code-block:: console
 

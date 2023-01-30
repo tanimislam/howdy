@@ -12,7 +12,7 @@ gspread
 httplib2
 imdbpy
 isodate
-iv_tanim
+ive_tanim
 KickassAPI
 ThePirateBay
 lxml

@@ -1,6 +1,6 @@
 import os, sys, base64, httplib2, numpy, glob, traceback
 import hashlib, requests, io, datetime, logging
-import pathos.multiprocessing as multiprocessing
+from pathos.multiprocessing import Pool, cpu_count
 from googleapiclient.discovery import build
 from PIL import Image
 from PyQt5.QtWidgets import *
@@ -29,7 +29,8 @@ def send_email_lowlevel( msg, email_service = None, verify = True ):
     """
     Sends out an email using the `Google Contacts API`_. If process is unsuccessfull, prints out an error message, ``"problem with <TO-EMAIL>"``, where ``<TO-EMAIL>`` is the recipient's email address.
 
-    :param MIMEMultiPart msg: the :py:class:`MIMEMultiPart <email.mime.multipart.MIMEMultiPart>` email message to send. At a high level, this is an email with body, sender, recipients, and optional attachments.
+    :param msg: the email message object to send. At a high level, this is an email with body, sender, recipients, and optional attachments.
+    :type msg: :py:class:`MIMEMultipart <email.mime.multipart.MIMEMultipart>`
     :param email_service: optional argument, the :py:class:`Resource <googleapiclient.discovery.Resource>` representing the Google email service used to send and receive emails. If ``None``, then generated here.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
 
@@ -52,20 +53,6 @@ def send_email_lowlevel( msg, email_service = None, verify = True ):
         traceback.print_exc(file=sys.stdout)
         logging.error('here is exception: %s' % str( e ) )
         logging.error('problem with %s' % msg['To'] )
-    
-def send_email_localsmtp( msg ):
-    """
-    Sends the email using the :py:class:`SMTP <smtplib.SMTP>` Python functionality to send through a local SMTP_ server. `This blog post`_ describes how I set up a GMail relay using my local SMTP_ server on my Ubuntu_ machine.
-
-    :param MIMEMultiPart msg: the :py:class:`MIMEMultiPart <email.mime.multipart.MIMEMultiPart>` email message to send. At a high level, this is an email with body, sender, recipients, and optional attachments.
-    
-    .. _SMTP: https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol
-    .. _`This blog post`: https://tanimislam.gitlab.io/blog/sendmail-relay-setup-and-implementation.html
-    """
-    smtp_conn = smtplib.SMTP('localhost', 25 )
-    smtp_conn.ehlo( 'test' )
-    smtp_conn.sendmail( msg['From'], [ msg["To"], ], msg.as_string( ) )
-    smtp_conn.quit( )
 
 def get_all_email_contacts_dict( verify = True, pagesize = 4000 ):
     """
@@ -603,7 +590,7 @@ class PNGPicObject( object ):
                 return newObj
             except: return None
 
-        with multiprocessing.Pool( processes = multiprocessing.cpu_count( ) ) as pool:
+        with Pool( processes = cpu_count( ) ) as pool:
             pngPICObjects = list( filter(
                 None, map( _create_object, pImgClient.imghashes ) ) )
             return pngPICObjects

@@ -886,7 +886,9 @@ def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, t
             
         #
         ## now delete the deluge connection
-        core_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = True )
+        try:
+            core_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = True )
+        except: pass # maybe connection is broken now for some reason??
         return '%s.%s' % ( os.path.basename( totFname ), suffix ), 'SUCCESS'
 
 def _create_status_dict( status, status_message, time0 ):

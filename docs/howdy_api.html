@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3. Top Level Howdy API &mdash; howdy! 1.35-63-geb12d22 documentation</title>
+  <title>3. Top Level Howdy API &mdash; howdy! 1.35-77-gb41753fa documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="_static/howdy_icon_VECTA.svg"/>
@@ -17,6 +17,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -45,13 +46,18 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="howdy_prereqs.html">1. Prerequisites and Overall Design Philosophy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howdy-config/howdy_config.html">2. Howdy Configuration</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Top Level Howdy API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Top Level Howdy API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#howdy.baseConfDir"><code class="docutils literal notranslate"><span class="pre">baseConfDir</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#howdy.resourceDir"><code class="docutils literal notranslate"><span class="pre">resourceDir</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#howdy.signal_handler"><code class="docutils literal notranslate"><span class="pre">signal_handler()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="howdy-core/howdy_core.html">4. Howdy Core Functionality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howdy-tv/howdy_tv.html">5. Howdy TV Functionality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howdy-movie/howdy_movie.html">6. Howdy Movie Functionality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howdy-music/howdy_music.html">7. Howdy Music Functionality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howdy-email/howdy_email.html">8. Howdy Email Functionality</a></li>
-<li class="toctree-l1"><a class="reference internal" href="genindex.html">9. INDEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
 </ul>
 
         </div>
@@ -67,8 +73,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li><span class="section-number">3. </span>Top Level Howdy API</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">3. </span>Top Level Howdy API</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/howdy_api.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -105,7 +111,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>signal</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/POSIX">POSIX</a> signal to capture. See <a class="reference external" href="https://docs.python.org/3/library/signal.html">the Python 3 signal high level overview</a> to begin to understand what <a class="reference external" href="https://en.wikipedia.org/wiki/POSIX">POSIX</a> signals are, and how Python can expose functionality to interact with them.</p></li>
+<li><p><strong>signal</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/POSIX">POSIX</a> signal to capture. See <a class="reference external" href="https://docs.python.org/3/library/signal.html">the Python 3 signal high level overview</a> to begin to understand what <a class="reference external" href="https://en.wikipedia.org/wiki/POSIX">POSIX</a> signals are, and how Python can expose functionality to interact with them.</p></li>
 <li><p><strong>frame</strong> – the stack frame. I don’t know what it is, or why it’s necessary in this context, when trying to capture a <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code> and cleanly exit. It is of type <code class="xref py py-class docutils literal notranslate"><span class="pre">frame</span></code>.</p></li>
 </ul>
 </dd>

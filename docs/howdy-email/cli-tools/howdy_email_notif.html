@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>8.1. howdy_email_notif &mdash; howdy! 1.35-63-geb12d22 documentation</title>
+  <title>8.1. howdy_email_notif &mdash; howdy! 1.35-77-gb41753fa documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
@@ -17,6 +17,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -58,7 +59,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../howdy_email.html#howdy-email-todo">8.5. Howdy Email TODO</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">9. INDEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
 </ul>
 
         </div>
@@ -74,9 +75,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../howdy_email.html"><span class="section-number">8. </span>Howdy Email Functionality</a> &raquo;</li>
-      <li><span class="section-number">8.1. </span><code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span></code></li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../howdy_email.html"><span class="section-number">8. </span>Howdy Email Functionality</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">8.1. </span><code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/howdy-email/cli-tools/howdy_email_notif.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -111,7 +112,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">--debug</span></code> flag prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--debug</span></code> flag prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--subject</span></code> specifies the subject line. If it is not specified, then the subject is <code class="docutils literal notranslate"><span class="pre">&quot;Plex</span> <span class="pre">notification</span> <span class="pre">for</span> <span class="pre">&lt;DATE&gt;&quot;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;DATE&gt;</span></code> is the current date in <code class="docutils literal notranslate"><span class="pre">MONTH</span> <span class="pre">DAY,</span> <span class="pre">YEAR</span></code> format (such as January 01, 2019).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--body</span></code> specifies the text body of the email. if it is not specified, then the default body is <code class="docutils literal notranslate"><span class="pre">&quot;This</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">test.&quot;</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--test</span></code> just sends the email to your <a class="reference external" href="https://plex.tv">Plex</a> email account. I find it useful to run with <code class="docutils literal notranslate"><span class="pre">--test</span></code> first, until the subject and the body of the email is correct. Without the <code class="docutils literal notranslate"><span class="pre">--test</span></code> flag, this email is sent to all the friends of youe <a class="reference external" href="https://plex.tv">Plex</a> server (see <a class="reference internal" href="#howdy-core-cli-example"><span class="std std-numref">Fig. 8.1</span></a>).</p></li>

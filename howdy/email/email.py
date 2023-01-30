@@ -14,7 +14,8 @@ from jinja2 import Environment, FileSystemLoader, Template
 from howdy import resourceDir
 from howdy.core import session, core, get_lastupdated_string
 from howdy.core import get_formatted_size, get_formatted_duration
-from howdy.email import get_email_service, send_email_lowlevel, send_email_localsmtp, emailAddress, emailName
+from howdy.email import get_email_service, send_email_lowlevel, emailAddress, emailName
+from ive_tanim.core.rst2html import send_email_localsmtp
 #
 def send_email_movie_torrent( movieName, data, isJackett = False, verify = True ):
     """
@@ -338,6 +339,7 @@ def send_individual_email_full_withattachs(
     :raise AssertionError: if the current Plex_ account user's email address does not exist.
 
     .. _Base64: https://en.wikipedia.org/wiki/Base64
+    .. _SMTP: https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol
     """
     assert( emailAddress is not None ), "Error, email address must not be None"
     if emailName is None: fromEmail = emailAddress

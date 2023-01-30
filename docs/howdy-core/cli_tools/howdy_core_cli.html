@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.1. Howdy Core Command Line Utilities &mdash; howdy! 1.35-63-geb12d22 documentation</title>
+  <title>4.1. Howdy Core Command Line Utilities &mdash; howdy! 1.35-77-gb41753fa documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
@@ -17,6 +17,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -78,7 +79,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../howdy-movie/howdy_movie.html">6. Howdy Movie Functionality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../howdy-music/howdy_music.html">7. Howdy Music Functionality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../howdy-email/howdy_email.html">8. Howdy Email Functionality</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">9. INDEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
 </ul>
 
         </div>
@@ -94,9 +95,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../howdy_core.html"><span class="section-number">4. </span>Howdy Core Functionality</a> &raquo;</li>
-      <li><span class="section-number">4.1. </span>Howdy Core Command Line Utilities</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../howdy_core.html"><span class="section-number">4. </span>Howdy Core Functionality</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.1. </span>Howdy Core Command Line Utilities</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/howdy-core/cli_tools/howdy_core_cli.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -119,7 +120,7 @@
 </ul>
 <section id="howdy-core-cli">
 <span id="howdy-core-cli-label"></span><h2><span class="section-number">4.1.1. </span>howdy_core_cli<a class="headerlink" href="#howdy-core-cli" title="Permalink to this heading"></a></h2>
-<p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_core_cli</span> <span class="pre">-h</span></code>, produces the following.</p>
+<p>This CLI shows the list of email addresses, and names, of Plex account holders who have access to your Plex server. It can also show emails and names of all people who can receive email notifications about your Plex server. One can also change the list of email addresses that are notified by email of the Plex server. The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_core_cli</span> <span class="pre">-h</span></code>, produces the following.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_core_cli [-h] [--username USERNAME] [--password PASSWORD] [--friends] [--mappedfriends] [--addmapping] [--guestemail GUEST_EMAIL] [--newemails NEW_EMAILS] [--replace_existing]</span>
 
 <span class="go">optional arguments:</span>
@@ -607,7 +608,7 @@
 </div>
 <p>These are common flags used by all standard operations of this CLI.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
 </ul>
 <p>The <code class="docutils literal notranslate"><span class="pre">-n</span></code> or <code class="docutils literal notranslate"><span class="pre">--name</span></code> flag is used to specify the ebook, for example <a class="reference external" href="https://en.wikipedia.org/wiki/Plagues_and_Peoples">Plagues and Peoples</a> by <a class="reference external" href="https://en.wikipedia.org/wiki/William_H._McNeill_(historian)">William McNeill</a>.</p>

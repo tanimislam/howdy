@@ -1,5 +1,5 @@
 import os, sys, glob, numpy, titlecase, httplib2, json, logging, oauth2client.client
-import requests, yt_dlp, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid
+import requests, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid
 import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
 from contextlib import contextmanager
@@ -864,6 +864,7 @@ def get_youtube_file( youtube_URL, outputfile, use_aria2c = True ):
     .. _YouTube: https://www.youtube.com
     .. _aria2c: https://aria2.github.io
     """
+    import yt_dlp
     assert( os.path.basename( outputfile ).lower( ).endswith( '.m4a' ) )
     logging.info( 'URL: %s, outputfile: %s.' % (
         youtube_URL, outputfile ) )

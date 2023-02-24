@@ -136,7 +136,7 @@ author = u'Tanim Islam'
 
 # The full version, including alpha/beta/rc tags.
 # follow insructions from https://protips.readthedocs.io/git-tag-version.html#inferring-release-number-from-git-tags
-release = re.sub('^v', '', os.popen('git describe --tags').read().strip())
+release = re.sub('^v', '', os.popen('git describe --tags').read().strip()).split("-")[0].strip()
 # The short X.Y version.
 version = release.split('-')[0].strip( )
 
@@ -163,13 +163,16 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'piccolo_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+# html_thee_options = {}
+html_theme_options = {
+  "source_url": 'https://github.com/tanimislam/howdy'
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -186,11 +189,11 @@ html_static_path = ['_static']
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
 html_sidebars = {
     '**': [
-        'about.html',
-        'navigation.html',
-        'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html',
-        'donate.html',
+        # 'about.html',
+        # 'navigation.html',
+        #   'relations.html',  # needs 'show_related': True theme option to display
+        # 'searchbox.html',
+        #  'donate.html',
     ]
 }
 

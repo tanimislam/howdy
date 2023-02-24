@@ -13,7 +13,7 @@ def finish_statement( step ):
         '%B %d, %Y @ %I:%M:%S %p' ) )
 
 def main( ):
-    time0 = time.time( )
+    time0 = time.perf_counter( )
     default_time = 1000
     default_iters = 2
     default_num_threads = 2 * multiprocessing.cpu_count( )
@@ -60,7 +60,7 @@ def main( ):
     if dat is None:
         print('\n'.join([
             '%d, error, could not access local Plex server in %0.3f seconds. Exiting...' % (
-                step, time.time( ) - time0 ),
+                step, time.perf_counter( ) - time0 ),
             finish_statement( step )  ] ) )
         return
     fullURL, token = dat
@@ -72,7 +72,7 @@ def main( ):
     if library_dict is None:
         print('\n'.join([
             '%d, error, could not access libraries in plex server in %0.3f seconds. Exiting...' % (
-                step, time.time( ) - time0 ), finish_statement( step ) ]))
+                step, time.perf_counter( ) - time0 ), finish_statement( step ) ]))
         return
     #
     valid_keys = list(filter(lambda key: library_dict[ key ][ -1 ] ==
@@ -80,18 +80,18 @@ def main( ):
     if len( valid_keys ) == 0:
         print('\n'.join([
             '%d, Error, could not find a TV show library in %0.3f seconds. Exiting...' %
-            ( time.time( ) - time0, step ), finish_statement( step ) ]))
+            ( time.perf_counter( ) - time0, step ), finish_statement( step ) ]))
         return
     tvlib_title = library_dict[ max( valid_keys ) ][ 0 ]
     print( '%d, found TV library: %s.' % ( step, tvlib_title ) )
     step += 1
     #
     ## now get the TV shows
-    time0 = time.time( )
+    time0 = time.perf_counter( )
     tvdata = core.get_library_data(
         tvlib_title, token = token, num_threads = args.numthreads )
     print( '%d, found %d shows in the TV library, in %0.3f seconds.' % (
-        step, len( tvdata ), time.time( ) - time0 ) )
+        step, len( tvdata ), time.perf_counter( ) - time0 ) )
     step += 1
     showsToExclude = tv.get_shows_to_exclude( tvdata )
     if len( showsToExclude ) != 0:
@@ -102,7 +102,7 @@ def main( ):
     if tvdb_token is None:
         print( '\n'.join([
             '%d, error, could not access the TVDB API server in %0.3f seconds. Exiting...' % (
-                step, time.time( ) - time0 ) ] ) )
+                step, time.perf_counter( ) - time0 ) ] ) )
         return
     toGet = tv.get_remaining_episodes(
         tvdata, showSpecials = False,
@@ -111,10 +111,10 @@ def main( ):
     if len( toGet ) == 0:
         print('\n'.join([
             '%d, no episodes to download in %0.3f seconds. Exiting...' % (
-                step, time.time( ) - time0 ), finish_statement( step ) ]))
+                step, time.perf_counter( ) - time0 ), finish_statement( step ) ]))
         return
     print( '%d, took %0.3f seconds to get list of %d episodes to download.' % (
-        step, time.time( ) - time0, sum(
+        step, time.perf_counter( ) - time0, sum(
             map(lambda tvshow: len(toGet[tvshow]['episodes']), toGet ) ) ) )
     step += 1
     #
@@ -128,5 +128,5 @@ def main( ):
     tv.download_batched_tvtorrent_shows(
         tvTorUnits, newdirs = newdirs, maxtime_in_secs = args.maxtime_in_secs,
         num_iters = args.num_iters )
-    print( '\n'.join([ '%d, everything done in %0.3f seconds.' % ( step, time.time( ) - time0 ),
+    print( '\n'.join([ '%d, everything done in %0.3f seconds.' % ( step, time.perf_counter( ) - time0 ),
                        finish_statement( step ) ]))

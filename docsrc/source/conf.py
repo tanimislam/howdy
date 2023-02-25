@@ -179,6 +179,10 @@ html_static_path = ['_static']
 # dark mode if uncommented
 # html_css_files = [ 'rtd_dark.css' ]
 
+html_css_files = [
+    'custom.css',
+]
+
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #

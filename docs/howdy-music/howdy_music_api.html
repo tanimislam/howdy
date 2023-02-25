@@ -1,148 +1,141 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18: http://docutils.sourceforge.net/" />
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
-    <title>7.2. Howdy Music API &#8212; howdy! 1.35 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/basic_mod.css?v=0.7.0-1" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7.2. Howdy Music API &mdash; howdy! 1.35-87-g4381a2f documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
-    <script src="../_static/js/petite-vue.js"></script>
-    <link rel="icon" href="../_static/howdy_icon_VECTA.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="8. Howdy Email Functionality" href="../howdy-email/howdy_email.html" />
     <link rel="prev" title="7.1. Howdy Music Command Line Utilities" href="cli_tools/howdy_music_cli.html" /> 
-  </head><body data-dark_mode_code_blocks="true">
+</head>
 
-<div id="top_nav">
-    
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
 
-    <nav>
-        
-            
-        
-
-        <p id="toggle_sidebar">
-            <a href="#" title="Toggle sidebar">|||</a>
-        </p>
-        <h1><a href="../index.html" title="Go to homepage">howdy! 1.35 documentation</a></h1>
-            <a id="source_link" href="https://github.com/tanimislam/howdy">
-    
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
-            <path fill="white" d="M 244.8,8 C 106.1,8 0,113.3 0,252 c 0,110.9 69.8,205.8 169.5,239.2 12.8,2.3 17.3,-5.6 17.3,-12.1 0,-6.2 -0.3,-40.4 -0.3,-61.4 0,0 -70,15 -84.7,-29.8 0,0 -11.4,-29.1 -27.8,-36.6 0,0 -22.9,-15.7 1.6,-15.4 0,0 24.9,2 38.6,25.8 21.9,38.6 58.6,27.5 72.9,20.9 2.3,-16 8.8,-27.1 16,-33.7 -55.9,-6.2 -112.3,-14.3 -112.3,-110.5 0,-27.5 7.6,-41.3 23.6,-58.9 -2.6,-6.5 -11.1,-33.3 2.6,-67.9 20.9,-6.5 69,27 69,27 20,-5.6 41.5,-8.5 62.8,-8.5 21.3,0 42.8,2.9 62.8,8.5 0,0 48.1,-33.6 69,-27 13.7,34.7 5.2,61.4 2.6,67.9 16,17.7 25.8,31.5 25.8,58.9 0,96.5 -58.9,104.2 -114.8,110.5 9.2,7.9 17,22.9 17,46.4 0,33.7 -0.3,75.4 -0.3,83.6 0,6.5 4.6,14.4 17.3,12.1 C 428.2,457.8 496,362.9 496,252 496,113.3 383.5,8 244.8,8 Z"/>
-        </svg>
-    
-</a>
-        
-
-        <a id="mode_toggle" href="#" @click.prevent="handleClick" :title="mode">
-    <template v-if="mode == 'light'">
-        <svg width="100%" height="100%" viewBox="0 0 79 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><g id="mode_light"><rect id="Bounds" x="0" y="-0" width="78.623" height="79.049" style="fill:none;"/><circle cx="39.311" cy="39.524" r="15.734" style="fill:#fff;"/><g id="beams"><g id="beam"><path id="beam1" serif:id="beam" d="M44.212,4.901c0,-2.705 -2.196,-4.901 -4.901,-4.901c-2.704,-0 -4.9,2.196 -4.9,4.901l-0,9.614c-0,2.705 2.196,4.901 4.9,4.901c2.705,0 4.901,-2.196 4.901,-4.901l0,-9.614Z" style="fill:#fff;"/></g><g id="beam2" serif:id="beam"><path id="beam3" serif:id="beam" d="M67.48,18.073c1.913,-1.912 1.913,-5.018 0,-6.931c-1.912,-1.912 -5.018,-1.912 -6.931,0l-6.798,6.799c-1.912,1.912 -1.912,5.018 0,6.931c1.913,1.912 5.018,1.912 6.931,-0l6.798,-6.799Z" style="fill:#fff;"/></g><g id="beam4" serif:id="beam"><path id="beam5" serif:id="beam" d="M25.728,61.108c1.912,-1.913 1.912,-5.018 -0,-6.931c-1.913,-1.913 -5.019,-1.913 -6.931,-0l-6.799,6.798c-1.912,1.913 -1.912,5.019 0,6.931c1.913,1.913 5.019,1.913 6.931,0l6.799,-6.798Z" style="fill:#fff;"/></g><g id="beam6" serif:id="beam"><path id="beam7" serif:id="beam" d="M60.682,54.177c-1.913,-1.913 -5.018,-1.913 -6.931,-0c-1.912,1.913 -1.912,5.018 0,6.931l6.798,6.798c1.913,1.913 5.019,1.913 6.931,0c1.913,-1.912 1.913,-5.018 0,-6.931l-6.798,-6.798Z" style="fill:#fff;"/></g><g id="beam8" serif:id="beam"><path id="beam9" serif:id="beam" d="M4.901,34.623c-2.705,0 -4.901,2.196 -4.901,4.901c0,2.705 2.196,4.901 4.901,4.901l9.614,0c2.705,0 4.901,-2.196 4.901,-4.901c0,-2.705 -2.196,-4.901 -4.901,-4.901l-9.614,0Z" style="fill:#fff;"/></g><g id="beam10" serif:id="beam"><path id="beam11" serif:id="beam" d="M44.212,64.534c0,-2.705 -2.196,-4.901 -4.901,-4.901c-2.704,-0 -4.9,2.196 -4.9,4.901l-0,9.614c-0,2.705 2.196,4.901 4.9,4.901c2.705,-0 4.901,-2.196 4.901,-4.901l0,-9.614Z" style="fill:#fff;"/></g><g id="beam12" serif:id="beam"><path id="beam13" serif:id="beam" d="M18.929,11.142c-1.912,-1.912 -5.018,-1.912 -6.931,0c-1.912,1.913 -1.912,5.019 0,6.931l6.799,6.799c1.912,1.912 5.018,1.912 6.931,-0c1.912,-1.913 1.912,-5.019 -0,-6.931l-6.799,-6.799Z" style="fill:#fff;"/></g><g id="beam14" serif:id="beam"><path id="beam15" serif:id="beam" d="M64.108,34.623c-2.705,0 -4.901,2.196 -4.901,4.901c-0,2.705 2.196,4.901 4.901,4.901l9.614,0c2.705,0 4.901,-2.196 4.901,-4.901c-0,-2.705 -2.196,-4.901 -4.901,-4.901l-9.614,0Z" style="fill:#fff;"/></g></g></g></svg>
-    </template>
-
-    <template v-if="mode == 'dark'">
-        <svg width="100%" height="100%" viewBox="0 0 79 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><g id="mode_dark"><rect id="Bounds" x="0" y="-0" width="78.623" height="79.049" style="fill:none;"/><circle cx="39.311" cy="39.524" r="15.734" style="fill:#fff;"/><g id="beams"><g id="beam"><path id="beam1" serif:id="beam" d="M44.212,14.515c0,-2.705 -2.196,-4.901 -4.901,-4.901c-2.704,0 -4.901,2.196 -4.901,4.901c0,2.705 2.197,4.901 4.901,4.901c2.705,0 4.901,-2.196 4.901,-4.901Z" style="fill:#fff;"/></g><g id="beam2" serif:id="beam"><path id="beam3" serif:id="beam" d="M60.662,24.892c1.902,-1.902 1.902,-4.99 0,-6.892l-0.04,-0.039c-1.901,-1.902 -4.989,-1.902 -6.891,-0c-1.901,1.901 -1.901,4.989 0,6.891l0.04,0.04c1.902,1.901 4.989,1.901 6.891,-0Z" style="fill:#fff;"/></g><g id="beam4" serif:id="beam"><path id="beam5" serif:id="beam" d="M25.732,61.103c1.91,-1.91 1.91,-5.011 0,-6.921l-0.009,-0.01c-1.91,-1.91 -5.012,-1.91 -6.921,-0c-1.91,1.91 -1.91,5.011 -0,6.921l0.01,0.01c1.909,1.91 5.011,1.91 6.92,-0Z" style="fill:#fff;"/></g><g id="beam6" serif:id="beam"><path id="beam7" serif:id="beam" d="M60.672,54.167c-1.907,-1.907 -5.004,-1.907 -6.911,0l-0.02,0.02c-1.907,1.907 -1.907,5.004 0,6.911c1.907,1.907 5.004,1.907 6.911,-0l0.02,-0.02c1.907,-1.907 1.907,-5.004 0,-6.911Z" style="fill:#fff;"/></g><g id="beam8" serif:id="beam"><path id="beam9" serif:id="beam" d="M14.52,34.623c-2.702,0 -4.896,2.194 -4.896,4.896l0,0.01c0,2.702 2.194,4.896 4.896,4.896c2.702,0 4.896,-2.194 4.896,-4.896l-0,-0.01c-0,-2.702 -2.194,-4.896 -4.896,-4.896Z" style="fill:#fff;"/></g><g id="beam10" serif:id="beam"><path id="beam11" serif:id="beam" d="M44.212,64.534c0,-2.705 -2.196,-4.901 -4.901,-4.901c-2.704,-0 -4.901,2.196 -4.901,4.901c0,2.704 2.197,4.9 4.901,4.9c2.705,0 4.901,-2.196 4.901,-4.9Z" style="fill:#fff;"/></g><g id="beam12" serif:id="beam"><path id="beam13" serif:id="beam" d="M25.73,17.943c-1.911,-1.911 -5.015,-1.911 -6.926,0l-0.005,0.005c-1.911,1.911 -1.911,5.015 0,6.926c1.911,1.911 5.015,1.911 6.926,0l0.005,-0.005c1.911,-1.911 1.911,-5.014 -0,-6.926Z" style="fill:#fff;"/></g><g id="beam14" serif:id="beam"><path id="beam15" serif:id="beam" d="M64.098,34.623c-2.699,0 -4.891,2.192 -4.891,4.892l-0,0.019c-0,2.699 2.192,4.891 4.891,4.891c2.7,0 4.892,-2.192 4.892,-4.891l0,-0.019c0,-2.7 -2.192,-4.892 -4.892,-4.892Z" style="fill:#fff;"/></g></g></g></svg>
-    </template>
-
-    <template v-if="mode == 'darkest'">
-        <svg width="100%" height="100%" viewBox="0 0 79 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><g id="mode_darkest"><rect id="Bounds" x="0" y="-0" width="78.623" height="79.049" style="fill:none;"/><path d="M39.315,23.791c8.684,-0 15.734,7.05 15.734,15.733c0,8.684 -7.05,15.734 -15.734,15.734c-8.683,0 -15.733,-7.05 -15.733,-15.734c-0,-8.683 7.05,-15.733 15.733,-15.733Zm0,4.737c6.069,0 10.997,4.927 10.997,10.996c-0,6.069 -4.928,10.996 -10.997,10.996c-6.068,0 -10.996,-4.927 -10.996,-10.996c0,-6.069 4.928,-10.996 10.996,-10.996Z" style="fill:#fff;"/><g id="beams"><g id="beam"><path id="beam1" serif:id="beam" d="M44.216,14.515c0,-2.705 -2.196,-4.901 -4.901,-4.901c-2.704,0 -4.9,2.196 -4.9,4.901c-0,2.705 2.196,4.901 4.9,4.901c2.705,0 4.901,-2.196 4.901,-4.901Z" style="fill:#fff;"/></g><g id="beam2" serif:id="beam"><path id="beam3" serif:id="beam" d="M60.666,24.892c1.902,-1.902 1.902,-4.99 0,-6.892l-0.04,-0.039c-1.901,-1.902 -4.989,-1.902 -6.891,-0c-1.901,1.901 -1.901,4.989 0,6.891l0.04,0.04c1.902,1.901 4.99,1.901 6.891,-0Z" style="fill:#fff;"/></g><g id="beam4" serif:id="beam"><path id="beam5" serif:id="beam" d="M25.737,61.103c1.909,-1.91 1.909,-5.011 -0,-6.921l-0.01,-0.01c-1.91,-1.91 -5.011,-1.91 -6.921,-0c-1.91,1.91 -1.91,5.011 -0,6.921l0.01,0.01c1.91,1.91 5.011,1.91 6.921,-0Z" style="fill:#fff;"/></g><g id="beam6" serif:id="beam"><path id="beam7" serif:id="beam" d="M60.676,54.167c-1.907,-1.907 -5.004,-1.907 -6.911,0l-0.02,0.02c-1.907,1.907 -1.907,5.004 0,6.911c1.907,1.907 5.004,1.907 6.911,-0l0.02,-0.02c1.907,-1.907 1.907,-5.004 0,-6.911Z" style="fill:#fff;"/></g><g id="beam8" serif:id="beam"><path id="beam9" serif:id="beam" d="M14.524,34.623c-2.702,0 -4.896,2.194 -4.896,4.896l0,0.01c0,2.702 2.194,4.896 4.896,4.896c2.702,0 4.896,-2.194 4.896,-4.896l0,-0.01c0,-2.702 -2.194,-4.896 -4.896,-4.896Z" style="fill:#fff;"/></g><g id="beam10" serif:id="beam"><path id="beam11" serif:id="beam" d="M44.216,64.534c0,-2.705 -2.196,-4.901 -4.901,-4.901c-2.704,-0 -4.9,2.196 -4.9,4.901c-0,2.704 2.196,4.9 4.9,4.9c2.705,0 4.901,-2.196 4.901,-4.9Z" style="fill:#fff;"/></g><g id="beam12" serif:id="beam"><path id="beam13" serif:id="beam" d="M25.734,17.943c-1.911,-1.911 -5.015,-1.911 -6.926,0l-0.005,0.005c-1.911,1.911 -1.911,5.015 0,6.926c1.911,1.911 5.015,1.911 6.926,0l0.005,-0.005c1.911,-1.911 1.911,-5.014 0,-6.926Z" style="fill:#fff;"/></g><g id="beam14" serif:id="beam"><path id="beam15" serif:id="beam" d="M64.103,34.623c-2.7,0 -4.892,2.192 -4.892,4.892l-0,0.019c-0,2.699 2.192,4.891 4.892,4.891c2.699,0 4.891,-2.192 4.891,-4.891l0,-0.019c0,-2.7 -2.192,-4.892 -4.891,-4.892Z" style="fill:#fff;"/></g></g></g></svg>
-    </template>
-</a>
-
-<script>
-(function() {
-    const LOCAL_STORAGE_KEY = 'piccoloThemeMode'
-
-    var initialMode = localStorage.getItem(LOCAL_STORAGE_KEY)
-
-    if (initialMode) {
-        // Make sure the value in local storage is valid
-        if (['light', 'dark', 'darkest'].indexOf(initialMode) == -1) {
-            initialMode = 'light'
-            localStorage.setItem(LOCAL_STORAGE_KEY, initialMode)
-        }
-    } else {
-        // Check if the client prefers dark mode
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            initialMode = 'dark'
-        } else {
-            initialMode = 'light'
-        }
-        localStorage.setItem(LOCAL_STORAGE_KEY, initialMode)
-    }
-
-    document.documentElement.dataset.mode = initialMode
-
-    PetiteVue.createApp({
-        'mode': initialMode,
-        handleClick() {
-            let currentMode = this.mode
-
-            if (currentMode == 'light') {
-                this.mode = 'dark'
-            } else if (currentMode == 'dark') {
-                this.mode = 'darkest'
-            } else if (currentMode == 'darkest') {
-                this.mode = 'light'
-            }
-
-            document.documentElement.dataset.mode = this.mode
-            localStorage.setItem(LOCAL_STORAGE_KEY, this.mode)
-
-            console.log(this.mode)
-        }
-    }).mount('#mode_toggle')
-})()
-</script>
-            <p class="mobile_search_link">
-                <a href="../search.html" title="Search">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65 64" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
-                        <path d="M14.873 40.009c-2.315-3.943-3.642-8.532-3.642-13.429C11.231 11.91 23.141 0 37.811 0s26.58 11.91 26.58 26.58-11.91 26.58-26.58 26.58a26.44 26.44 0 0 1-14.277-4.161L9.739 62.794a3.12 3.12 0 0 1-4.413 0L.913 58.382c-1.217-1.218-1.217-3.196 0-4.413l13.96-13.96zM37.811 8.054c10.225 0 18.526 8.301 18.526 18.526s-8.301 18.526-18.526 18.526-18.526-8.301-18.526-18.526S27.586 8.054 37.811 8.054z" fill="#fff" />
-                    </svg>
-                </a>
-            </p>
-        
-
-        <div class="searchbox_wrapper">
-            
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            howdy!
+          </a>
+              <div class="version">
+                1.35
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../howdy_prereqs.html">1. Prerequisites and Overall Design Philosophy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-config/howdy_config.html">2. Howdy Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy_api.html">3. Top Level Howdy API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-core/howdy_core.html">4. Howdy Core Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-tv/howdy_tv.html">5. Howdy TV Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-movie/howdy_movie.html">6. Howdy Movie Functionality</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="howdy_music.html">7. Howdy Music Functionality</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cli_tools/howdy_music_cli.html">7.1. Howdy Music Command Line Utilities</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7.2. Howdy Music API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-music-module">7.2.1. howdy.music module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.fill_m4a_metadata"><code class="docutils literal notranslate"><span class="pre">fill_m4a_metadata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.format_youtube_date"><code class="docutils literal notranslate"><span class="pre">format_youtube_date()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.get_failing_artistalbum"><code class="docutils literal notranslate"><span class="pre">get_failing_artistalbum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.parse_youtube_date"><code class="docutils literal notranslate"><span class="pre">parse_youtube_date()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-music-music-module">7.2.2. howdy.music.music module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.HowdyLastFM"><code class="docutils literal notranslate"><span class="pre">HowdyLastFM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.HowdyMusic"><code class="docutils literal notranslate"><span class="pre">HowdyMusic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.MusicInfo"><code class="docutils literal notranslate"><span class="pre">MusicInfo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.download_best_song"><code class="docutils literal notranslate"><span class="pre">download_best_song()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.get_gmusic_all_songs"><code class="docutils literal notranslate"><span class="pre">get_gmusic_all_songs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.get_gmusicmanager"><code class="docutils literal notranslate"><span class="pre">get_gmusicmanager()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.get_youtube_file"><code class="docutils literal notranslate"><span class="pre">get_youtube_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.get_youtube_service"><code class="docutils literal notranslate"><span class="pre">get_youtube_service()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.gmusicmanager"><code class="docutils literal notranslate"><span class="pre">gmusicmanager()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.gmusicmanager_fixlogin"><code class="docutils literal notranslate"><span class="pre">gmusicmanager_fixlogin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.oauth_get_google_credentials"><code class="docutils literal notranslate"><span class="pre">oauth_get_google_credentials()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.oauth_store_google_credentials"><code class="docutils literal notranslate"><span class="pre">oauth_store_google_credentials()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.save_gmusic_creds"><code class="docutils literal notranslate"><span class="pre">save_gmusic_creds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.upload_to_gmusic"><code class="docutils literal notranslate"><span class="pre">upload_to_gmusic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.youtube_search"><code class="docutils literal notranslate"><span class="pre">youtube_search()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-music-pygn-module">7.2.3. howdy.music.pygn module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.pygn.createRadio"><code class="docutils literal notranslate"><span class="pre">createRadio()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.pygn.fetch"><code class="docutils literal notranslate"><span class="pre">fetch()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.pygn.get_discography"><code class="docutils literal notranslate"><span class="pre">get_discography()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.pygn.gnmetadata"><code class="docutils literal notranslate"><span class="pre">gnmetadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.pygn.radioEvent"><code class="docutils literal notranslate"><span class="pre">radioEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.pygn.register"><code class="docutils literal notranslate"><span class="pre">register()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.pygn.search"><code class="docutils literal notranslate"><span class="pre">search()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="howdy_music.html#howdy-music-todo">7.3. Howdy Music TODO</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../howdy-email/howdy_email.html">8. Howdy Email Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+</ul>
+
         </div>
+      </div>
     </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">howdy!</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="howdy_music.html"><span class="section-number">7. </span>Howdy Music Functionality</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">7.2. </span>Howdy Music API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/howdy-music/howdy_music_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
 </div>
-
-    
-
-
-    <div class="document">
-      <div class="documentwrapper">
-          <div class="body" role="main">
-            
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <section id="howdy-music-api">
-<h1><span class="section-number">7.2. </span>Howdy Music API<a class="headerlink" href="#howdy-music-api" title="Permalink to this heading">¶</a></h1>
+<h1><span class="section-number">7.2. </span>Howdy Music API<a class="headerlink" href="#howdy-music-api" title="Permalink to this heading"></a></h1>
 <p>This document describes the lower level Howdy Music API, upon which the <a class="reference internal" href="cli_tools/howdy_music_cli.html#howdy-music-command-line-utilities"><span class="std std-ref">command line tools</span></a>  are built. It lives in <code class="docutils literal notranslate"><span class="pre">howdy.music</span></code>.</p>
 <section id="howdy-music-module">
-<h2><span class="section-number">7.2.1. </span>howdy.music module<a class="headerlink" href="#howdy-music-module" title="Permalink to this heading">¶</a></h2>
+<h2><span class="section-number">7.2.1. </span>howdy.music module<a class="headerlink" href="#howdy-music-module" title="Permalink to this heading"></a></h2>
 <p>This contains only three methods: two format durations strings for <a class="reference external" href="https://www.youtube.com">YouTube</a> clips, and a third is used to search for <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> music files that are missing artist or album information.</p>
 <span class="target" id="module-howdy.music"></span><dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.fill_m4a_metadata">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.</span></span><span class="sig-name descname"><span class="pre">fill_m4a_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.fill_m4a_metadata" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.</span></span><span class="sig-name descname"><span class="pre">fill_m4a_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.fill_m4a_metadata" title="Permalink to this definition"></a></dt>
 <dd><p>Low level method that populates the metadata of an <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> music file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -157,7 +150,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.format_youtube_date">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.</span></span><span class="sig-name descname"><span class="pre">format_youtube_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt_duration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.format_youtube_date" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.</span></span><span class="sig-name descname"><span class="pre">format_youtube_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt_duration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.format_youtube_date" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>dt_duration</strong> (<em>datetime</em>) – the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a></p>
@@ -177,7 +170,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.get_failing_artistalbum">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.</span></span><span class="sig-name descname"><span class="pre">get_failing_artistalbum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.get_failing_artistalbum" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.</span></span><span class="sig-name descname"><span class="pre">get_failing_artistalbum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.get_failing_artistalbum" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – a candidate <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> music file name (file must also end in <code class="docutils literal notranslate"><span class="pre">&quot;.m4a&quot;</span></code>).</p>
@@ -193,7 +186,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.parse_youtube_date">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.</span></span><span class="sig-name descname"><span class="pre">parse_youtube_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration_string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.parse_youtube_date" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.</span></span><span class="sig-name descname"><span class="pre">parse_youtube_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration_string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.parse_youtube_date" title="Permalink to this definition"></a></dt>
 <dd><p>Parses a duration string that <code class="docutils literal notranslate"><span class="pre">isodate</span></code> can recognize, such as <code class="docutils literal notranslate"><span class="pre">PT4M33S</span></code>, into a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -214,7 +207,7 @@
 
 </section>
 <section id="howdy-music-music-module">
-<h2><span class="section-number">7.2.2. </span>howdy.music.music module<a class="headerlink" href="#howdy-music-music-module" title="Permalink to this heading">¶</a></h2>
+<h2><span class="section-number">7.2.2. </span>howdy.music.music module<a class="headerlink" href="#howdy-music-music-module" title="Permalink to this heading"></a></h2>
 <p>This contains the low-level functionality that does three things.</p>
 <ul>
 <li><p>Gets music metadata using either the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a>, <a class="reference external" href="https://www.last.fm/api">LastFM</a>, or <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> APIs.</p></li>
@@ -229,7 +222,7 @@
 </ul>
 <span class="target" id="module-howdy.music.music"></span><dl class="py class">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyLastFM">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">HowdyLastFM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">HowdyLastFM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM" title="Permalink to this definition"></a></dt>
 <dd><p>This object uses the <a class="reference external" href="https://www.last.fm/api">LastFM</a> API, through the higher level <a class="reference external" href="https://python-musicbrainzngs.readthedocs.io/en/latest/api/#module-musicbrainzngs" title="(in musicbrainzngs v0.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">musicbrainzngs</span></code></a> Python module, to get information on songs, albums, and artists. Where possible, this extracts additional song metadata using the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -251,7 +244,7 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyLastFM.get_album_image">
-<span class="sig-name descname"><span class="pre">get_album_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_album_image" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_album_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_album_image" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -270,7 +263,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyLastFM.get_album_info">
-<span class="sig-name descname"><span class="pre">get_album_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_album_info" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_album_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_album_info" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -289,7 +282,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyLastFM.get_album_url">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_album_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">album_url_entries</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_album_url" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_album_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">album_url_entries</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_album_url" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the album URL of the largest album image provided.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -306,7 +299,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyLastFM.get_collection_album_info">
-<span class="sig-name descname"><span class="pre">get_collection_album_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_collection_album_info" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_collection_album_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_collection_album_info" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>album_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the name of a compilation album (consisting of multiple artists).</p>
@@ -322,7 +315,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyLastFM.get_lastfm_credentials">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_lastfm_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_lastfm_credentials" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_lastfm_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_lastfm_credentials" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of <a class="reference external" href="https://www.last.fm/api">LastFM</a> API configuration information from the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database: <code class="docutils literal notranslate"><span class="pre">api_key</span></code>, <code class="docutils literal notranslate"><span class="pre">api_secret</span></code>, <code class="docutils literal notranslate"><span class="pre">application_name</span></code>, and <code class="docutils literal notranslate"><span class="pre">username</span></code>.</p>
@@ -338,7 +331,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyLastFM.get_mb_album_year">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_mb_album_year</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year_string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_mb_album_year" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_mb_album_year</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year_string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_mb_album_year" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a year of release given a <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> style date string, can be either of the form “2000-12-23” (YYYY-MM-DD)” or just four-digit year.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -355,7 +348,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyLastFM.get_music_metadata">
-<span class="sig-name descname"><span class="pre">get_music_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">song_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_music_metadata" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_music_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">song_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_music_metadata" title="Permalink to this definition"></a></dt>
 <dd><p>Uses the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API to fill out as much metadata as possible for a given song. Before running this method, one should first set the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API header data with <a class="reference internal" href="#howdy.music.music.MusicInfo.get_set_musicbrainz_useragent" title="howdy.music.music.MusicInfo.get_set_musicbrainz_useragent"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MusicInfo.get_set_musicbrainz_useragent</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -393,7 +386,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyLastFM.get_music_metadatas_album">
-<span class="sig-name descname"><span class="pre">get_music_metadatas_album</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_music_metadatas_album" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_music_metadatas_album</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_music_metadatas_album" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -425,7 +418,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyLastFM.get_song_listing">
-<span class="sig-name descname"><span class="pre">get_song_listing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_song_listing" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_song_listing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.get_song_listing" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -459,7 +452,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyLastFM.push_lastfm_credentials">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">push_lastfm_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.push_lastfm_credentials" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">push_lastfm_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyLastFM.push_lastfm_credentials" title="Permalink to this definition"></a></dt>
 <dd><p>Pushes the <a class="reference external" href="https://www.last.fm/api">LastFM</a> API configuration into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -472,7 +465,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyMusic">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">HowdyMusic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">HowdyMusic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic" title="Permalink to this definition"></a></dt>
 <dd><p>This object uses the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> API to get information on songs, albums, and artists. Uses <a class="reference internal" href="#howdy.music.music.HowdyMusic.get_gracenote_credentials" title="howdy.music.music.HowdyMusic.get_gracenote_credentials"><code class="xref py py-meth docutils literal notranslate"><span class="pre">HowdyMusic.get_gracenote_credentials</span></code></a> to get the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> API configuration data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -495,7 +488,7 @@
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyMusic.get_album_image">
-<span class="sig-name descname"><span class="pre">get_album_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.get_album_image" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_album_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.get_album_image" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -514,7 +507,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyMusic.get_gracenote_credentials">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_gracenote_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.get_gracenote_credentials" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_gracenote_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.get_gracenote_credentials" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> API clientID and userID from the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
@@ -527,7 +520,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyMusic.get_music_metadata">
-<span class="sig-name descname"><span class="pre">get_music_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">song_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.get_music_metadata" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_music_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">song_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.get_music_metadata" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -559,7 +552,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyMusic.get_music_metadata_lowlevel">
-<span class="sig-name descname"><span class="pre">get_music_metadata_lowlevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_song</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.get_music_metadata_lowlevel" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_music_metadata_lowlevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_song</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.get_music_metadata_lowlevel" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -578,7 +571,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyMusic.get_music_metadatas_album">
-<span class="sig-name descname"><span class="pre">get_music_metadatas_album</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.get_music_metadatas_album" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_music_metadatas_album</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.get_music_metadatas_album" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -610,7 +603,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyMusic.get_song_listing">
-<span class="sig-name descname"><span class="pre">get_song_listing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.get_song_listing" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_song_listing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.get_song_listing" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -642,7 +635,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.HowdyMusic.push_gracenote_credentials">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">push_gracenote_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_ID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.push_gracenote_credentials" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">push_gracenote_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_ID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.HowdyMusic.push_gracenote_credentials" title="Permalink to this definition"></a></dt>
 <dd><p>Pushes the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> API configuration into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -661,7 +654,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">MusicInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_mbid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_direct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">MusicInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_mbid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_direct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo" title="Permalink to this definition"></a></dt>
 <dd><p>This object uses the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API, through the higher level <a class="reference external" href="https://python-musicbrainzngs.readthedocs.io/en/latest/api/#module-musicbrainzngs" title="(in musicbrainzngs v0.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">musicbrainzngs</span></code></a> Python module, to get information on songs, albums, and artists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -751,7 +744,7 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.get_album_image">
-<span class="sig-name descname"><span class="pre">get_album_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_album_image" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_album_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_album_image" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>album_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – album_name.</p>
@@ -767,7 +760,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.get_album_info">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_album_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">album</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_album_info" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_album_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">album</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_album_info" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>album</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – a dictionary of low-level album info returned by <a class="reference external" href="https://python-musicbrainzngs.readthedocs.io/en/latest/api/#module-musicbrainzngs" title="(in musicbrainzngs v0.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">musicbrainzngs</span></code></a> associated with this studio album.</p>
@@ -783,7 +776,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.get_albums_lowlevel">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_albums_lowlevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ambid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_albums_lowlevel" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_albums_lowlevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ambid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_albums_lowlevel" title="Permalink to this definition"></a></dt>
 <dd><p>Used by the constructor to get the collection of studio albums released by this artist.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -819,7 +812,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.get_artist_datas_LL">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_artist_datas_LL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_mbid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_direct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_artist_datas_LL" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_artist_datas_LL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_mbid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_direct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_artist_datas_LL" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -841,7 +834,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.get_artist_direct_search_MBID">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_artist_direct_search_MBID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_artist_direct_search_MBID" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_artist_direct_search_MBID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_artist_direct_search_MBID" title="Permalink to this definition"></a></dt>
 <dd><p>Sometimes the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> server does not update. Fixes-when-broken of the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> server do not happen on a schedule, or even a quickness. In such an instance, you can specify the <em>specific</em> artist using direct search rather than indexed search. This method returns the artist’s MBID of the artist one queries. <em>If there is more than one match</em>, then returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -855,7 +848,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.get_music_metadata">
-<span class="sig-name descname"><span class="pre">get_music_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">song_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_criterion_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">85</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_music_metadata" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_music_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">song_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_criterion_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">85</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_music_metadata" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -886,7 +879,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.get_music_metadatas_album">
-<span class="sig-name descname"><span class="pre">get_music_metadatas_album</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_criterion_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">95</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_music_metadatas_album" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_music_metadatas_album</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_criterion_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">95</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_music_metadatas_album" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -917,7 +910,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.get_set_musicbrainz_useragent">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_set_musicbrainz_useragent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_address</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_set_musicbrainz_useragent" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_set_musicbrainz_useragent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_address</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_set_musicbrainz_useragent" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>email_address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – a valid email address to provide to provide to the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API’s user agent.</p>
@@ -942,7 +935,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.get_song_listing">
-<span class="sig-name descname"><span class="pre">get_song_listing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_song_listing" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_song_listing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">album_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_song_listing" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>album_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – album_name.</p>
@@ -972,7 +965,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.print_format_album_names">
-<span class="sig-name descname"><span class="pre">print_format_album_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.print_format_album_names" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">print_format_album_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.print_format_album_names" title="Permalink to this definition"></a></dt>
 <dd><p>Pretty-prints summary table of studio albums released by the artist, ordered by album release date. For example, for <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a>,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Air has 7 studio albums.</span>
 
@@ -991,7 +984,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.push_musicbrainz_useragent">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">push_musicbrainz_useragent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">appname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.push_musicbrainz_useragent" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">push_musicbrainz_useragent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">appname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.push_musicbrainz_useragent" title="Permalink to this definition"></a></dt>
 <dd><p>Pushes the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API configuration into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1005,7 +998,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.music.music.MusicInfo.set_musicbrainz_verify">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_musicbrainz_verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.set_musicbrainz_verify" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_musicbrainz_verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.set_musicbrainz_verify" title="Permalink to this definition"></a></dt>
 <dd><p>Makes the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API to use either HTTPS (if verifying traffic) or HTTP (if not verifying traffic)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1018,7 +1011,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.download_best_song">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">download_best_song</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">youtube</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.download_best_song" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">download_best_song</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">youtube</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.download_best_song" title="Permalink to this definition"></a></dt>
 <dd><p>If successful, downloads the most likely <a class="reference external" href="https://www.youtube.com">YouTube</a> clip into an <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> file, whose name is <code class="docutils literal notranslate"><span class="pre">&quot;artist_name&quot;.&quot;song_name&quot;.m4a</span></code>. Uses the <a class="reference external" href="https://www.last.fm/api">LastFM</a> API functionality, through <a class="reference internal" href="#howdy.music.music.HowdyLastFM" title="howdy.music.music.HowdyLastFM"><code class="xref py py-class docutils literal notranslate"><span class="pre">HowdyLastFM</span></code></a>, to get the music metadata.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1037,7 +1030,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.get_gmusic_all_songs">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">get_gmusic_all_songs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.get_gmusic_all_songs" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">get_gmusic_all_songs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.get_gmusic_all_songs" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of all songs stored on one’s <a class="reference external" href="https://play.google.com/music/listen">Google Play Music</a> account. Each key is an unique song ID, and each value is summary information for that song. Example element output looks like,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;kind&#39;</span><span class="p">:</span> <span class="s1">&#39;sj#track&#39;</span><span class="p">,</span>
  <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;fe65be9b-5e0d-39f8-a104-34579cac7d25&#39;</span><span class="p">,</span>
@@ -1087,7 +1080,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.get_gmusicmanager">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">get_gmusicmanager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">useMobileclient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.get_gmusicmanager" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">get_gmusicmanager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">useMobileclient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.get_gmusicmanager" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a <a class="reference external" href="https://unofficial-google-music-api.readthedocs.io">GmusicAPI</a> manager used to perform operations on one’s <a class="reference external" href="https://play.google.com/music/listen">Google Play Music</a> account. If the Musicmanager is instantiated but cannot find the device (hence properly authorize for operation), then the attribute <code class="docutils literal notranslate"><span class="pre">error_device_ids</span></code> is a non-empty <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> of valid device IDs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1112,7 +1105,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.get_youtube_file">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">get_youtube_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">youtube_URL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_aria2c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.get_youtube_file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">get_youtube_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">youtube_URL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_aria2c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.get_youtube_file" title="Permalink to this definition"></a></dt>
 <dd><p>Uses <a class="reference external" href="https://ytdl-org.github.io/youtube-dl/index.html">youtube-dl</a> programmatically to download into an <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1127,7 +1120,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.get_youtube_service">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">get_youtube_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.get_youtube_service" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">get_youtube_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.get_youtube_service" title="Permalink to this definition"></a></dt>
 <dd><p>Gets the <a class="reference external" href="https://developers.google.com/youtube/v3">YouTube Google API</a> service from the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google OAuth2</a> credentials stored in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1141,7 +1134,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.gmusicmanager">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">gmusicmanager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">useMobileclient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.gmusicmanager" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">gmusicmanager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">useMobileclient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.gmusicmanager" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">contextmanager</span></code> wrapped <a class="reference external" href="https://unofficial-google-music-api.readthedocs.io">GmusicAPI</a> manager used to perform operations on one’s <a class="reference external" href="https://play.google.com/music/listen">Google Play Music</a> account.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1160,7 +1153,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.gmusicmanager_fixlogin">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">gmusicmanager_fixlogin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mmg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.gmusicmanager_fixlogin" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">gmusicmanager_fixlogin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mmg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.gmusicmanager_fixlogin" title="Permalink to this definition"></a></dt>
 <dd><p>Workaround to deal with following problem: cannot create an authorized GmusicAPI <code class="xref py py-class docutils literal notranslate"><span class="pre">Mobileclient</span></code> because the device ID automatically found is not one of the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> of authorized device IDs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1181,7 +1174,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.oauth_get_google_credentials">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">oauth_get_google_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.oauth_get_google_credentials" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">oauth_get_google_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.oauth_get_google_credentials" title="Permalink to this definition"></a></dt>
 <dd><p>Gets the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google Oauth2</a> credentials, stored in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database, in the form of a refreshed <a class="reference external" href="https://oauth2client.readthedocs.io/en/latest/source/oauth2client.client.html#oauth2client.client.AccessTokenCredentials" title="(in oauth2client v4.1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccessTokenCredentials</span></code></a> object. This OAuth2 authentication method IS used only for the GMusicAPI Mobileclient manager.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1199,7 +1192,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.oauth_store_google_credentials">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">oauth_store_google_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.oauth_store_google_credentials" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">oauth_store_google_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.oauth_store_google_credentials" title="Permalink to this definition"></a></dt>
 <dd><p>Stores the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google OAuth2</a> credentials, in the form of a <a class="reference external" href="https://oauth2client.readthedocs.io/en/latest/source/oauth2client.client.html#oauth2client.client.AccessTokenCredentials" title="(in oauth2client v4.1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccessTokenCredentials</span></code></a> object, into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database for the <code class="xref py py-class docutils literal notranslate"><span class="pre">MobileClient</span></code> manager.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1214,7 +1207,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.save_gmusic_creds">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">save_gmusic_creds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.save_gmusic_creds" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">save_gmusic_creds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.save_gmusic_creds" title="Permalink to this definition"></a></dt>
 <dd><p>Pushes one’s Google account email and password into the <code class="docutils literal notranslate"><span class="pre">gmusic</span></code> configuration stored in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1228,7 +1221,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.upload_to_gmusic">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">upload_to_gmusic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filenames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.upload_to_gmusic" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">upload_to_gmusic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filenames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.upload_to_gmusic" title="Permalink to this definition"></a></dt>
 <dd><p>Uploads a collection of music files to the Google Play Music account.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1242,7 +1235,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.youtube_search">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">youtube_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">youtube</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.youtube_search" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">youtube_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">youtube</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.youtube_search" title="Permalink to this definition"></a></dt>
 <dd><p>Performs a string query to search through <a class="reference external" href="https://www.youtube.com">YouTube</a> clips, and returns list of valid <a class="reference external" href="https://www.youtube.com">YouTube</a> URLs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1263,7 +1256,7 @@
 
 </section>
 <section id="howdy-music-pygn-module">
-<h2><span class="section-number">7.2.3. </span>howdy.music.pygn module<a class="headerlink" href="#howdy-music-pygn-module" title="Permalink to this heading">¶</a></h2>
+<h2><span class="section-number">7.2.3. </span>howdy.music.pygn module<a class="headerlink" href="#howdy-music-pygn-module" title="Permalink to this heading"></a></h2>
 <p>This contains functionality used by the <a class="reference internal" href="#howdy.music.music.HowdyMusic" title="howdy.music.music.HowdyMusic"><code class="xref py py-class docutils literal notranslate"><span class="pre">HowdyMusic</span></code></a> higher level object interface to the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> API.</p>
 <span class="target" id="module-howdy.music.pygn"></span><p>pygn (pronounced “pigeon”) is a simple Python client for the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> Music Web API, which can retrieve Artist, Album and Track metadata with the most common options.</p>
 <p>You will need a <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> Client ID to use this module. Please contact <a class="reference external" href="mailto:developers&#37;&#52;&#48;gracenote&#46;com">developers<span>&#64;</span>gracenote<span>&#46;</span>com</a> to get one.</p>
@@ -1275,7 +1268,7 @@
 </ul>
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.pygn.createRadio">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">createRadio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">era</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.pygn.createRadio" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">createRadio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">era</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.pygn.createRadio" title="Permalink to this definition"></a></dt>
 <dd><p>Queries a set of radio stations on <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> to create, and returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="#howdy.music.pygn.gnmetadata" title="howdy.music.pygn.gnmetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">gnmetadata</span></code></a> dictionaries corresponding to those radio stations that have been created. This was created by the <a class="reference external" href="https://github.com">GitHub</a> user <a class="reference external" href="https://github.com/fabian1811">Fabian</a> to cover the <a class="reference external" href="https://developer.gracenote.com/rhythm-api">Gracenote Rhythm</a> API.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1310,7 +1303,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.pygn.fetch">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">fetch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GNID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.pygn.fetch" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">fetch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GNID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.pygn.fetch" title="Permalink to this definition"></a></dt>
 <dd><p>Fetches a track or album by their <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> API ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1331,7 +1324,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.pygn.get_discography">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">get_discography</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rangeStart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rangeEnd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.pygn.get_discography" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">get_discography</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rangeStart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rangeEnd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.pygn.get_discography" title="Permalink to this definition"></a></dt>
 <dd><p>Queries the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> API service for all albums containing an artist.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1355,13 +1348,13 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.music.pygn.gnmetadata">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">gnmetadata</span></span><a class="headerlink" href="#howdy.music.pygn.gnmetadata" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">gnmetadata</span></span><a class="headerlink" href="#howdy.music.pygn.gnmetadata" title="Permalink to this definition"></a></dt>
 <dd><p>This class is a dictionary containing metadata fields that are available for the queried item.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.pygn.radioEvent">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">radioEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radioID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GNID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TRACK_PLAYED'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.pygn.radioEvent" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">radioEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radioID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GNID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TRACK_PLAYED'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.pygn.radioEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Queries a set of radio stations on <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> to find based on certain queries, and returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="#howdy.music.pygn.gnmetadata" title="howdy.music.pygn.gnmetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">gnmetadata</span></code></a> dictionaries corresponding to those radio stations that have been found. This was created by the <a class="reference external" href="https://github.com">GitHub</a> user <a class="reference external" href="https://github.com/fabian1811">Fabian</a> to cover the <a class="reference external" href="https://developer.gracenote.com/rhythm-api">Gracenote Rhythm</a> API.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1391,7 +1384,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.pygn.register">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.pygn.register" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.pygn.register" title="Permalink to this definition"></a></dt>
 <dd><p>This function registers an application as a user of the Gracenote service.</p>
 <p>It takes as a parameter a clientID string in the form of “NNNNNNN-NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN” and returns a userID in a similar format.</p>
 <p>As the quota of number of users (installed applications or devices) is typically much lower than the number of queries, best practices are for a given installed application to call this only once, store the UserID in persistent storage (e.g. filesystem), and then use these IDs for all subsequent calls to the service.</p>
@@ -1413,7 +1406,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.pygn.search">
-<span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">toc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.pygn.search" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.music.pygn.</span></span><span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clientID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">toc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.pygn.search" title="Permalink to this definition"></a></dt>
 <dd><p>Queries the Gracenote service for a track, album, artist, or TOC entry. TOC is a string of offsets in the format, <code class="docutils literal notranslate"><span class="pre">150</span> <span class="pre">20512</span> <span class="pre">30837</span> <span class="pre">50912</span> <span class="pre">64107</span> <span class="pre">78357</span> <span class="pre">...</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1443,122 +1436,34 @@
 </section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cli_tools/howdy_music_cli.html" class="btn btn-neutral float-left" title="7.1. Howdy Music Command Line Utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../howdy-email/howdy_email.html" class="btn btn-neutral float-right" title="8. Howdy Email Functionality" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
       </div>
-    
-        <div id="show_right_sidebar">
-            <p><a class="toggle_right_sidebar" href="#"><span class="icon"><</span><span>Page contents<span></a></p>
-        </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-        <div id="right_sidebar">
-            <p><a class="toggle_right_sidebar" href="#"><span class="icon">></span><span>Page contents:<span></a></p>
-            <div class="page_toc">
-                <ul>
-<li><a class="reference internal" href="#">7.2. Howdy Music API</a><ul>
-<li><a class="reference internal" href="#howdy-music-module">7.2.1. howdy.music module</a><ul>
-<li><a class="reference internal" href="#howdy.music.fill_m4a_metadata"><code class="docutils literal notranslate"><span class="pre">fill_m4a_metadata()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.format_youtube_date"><code class="docutils literal notranslate"><span class="pre">format_youtube_date()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.get_failing_artistalbum"><code class="docutils literal notranslate"><span class="pre">get_failing_artistalbum()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.parse_youtube_date"><code class="docutils literal notranslate"><span class="pre">parse_youtube_date()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#howdy-music-music-module">7.2.2. howdy.music.music module</a><ul>
-<li><a class="reference internal" href="#howdy.music.music.HowdyLastFM"><code class="docutils literal notranslate"><span class="pre">HowdyLastFM</span></code></a><ul>
-<li><a class="reference internal" href="#howdy.music.music.HowdyLastFM.get_album_image"><code class="docutils literal notranslate"><span class="pre">HowdyLastFM.get_album_image()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyLastFM.get_album_info"><code class="docutils literal notranslate"><span class="pre">HowdyLastFM.get_album_info()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyLastFM.get_album_url"><code class="docutils literal notranslate"><span class="pre">HowdyLastFM.get_album_url()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyLastFM.get_collection_album_info"><code class="docutils literal notranslate"><span class="pre">HowdyLastFM.get_collection_album_info()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyLastFM.get_lastfm_credentials"><code class="docutils literal notranslate"><span class="pre">HowdyLastFM.get_lastfm_credentials()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyLastFM.get_mb_album_year"><code class="docutils literal notranslate"><span class="pre">HowdyLastFM.get_mb_album_year()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyLastFM.get_music_metadata"><code class="docutils literal notranslate"><span class="pre">HowdyLastFM.get_music_metadata()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyLastFM.get_music_metadatas_album"><code class="docutils literal notranslate"><span class="pre">HowdyLastFM.get_music_metadatas_album()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyLastFM.get_song_listing"><code class="docutils literal notranslate"><span class="pre">HowdyLastFM.get_song_listing()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyLastFM.push_lastfm_credentials"><code class="docutils literal notranslate"><span class="pre">HowdyLastFM.push_lastfm_credentials()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyMusic"><code class="docutils literal notranslate"><span class="pre">HowdyMusic</span></code></a><ul>
-<li><a class="reference internal" href="#howdy.music.music.HowdyMusic.get_album_image"><code class="docutils literal notranslate"><span class="pre">HowdyMusic.get_album_image()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyMusic.get_gracenote_credentials"><code class="docutils literal notranslate"><span class="pre">HowdyMusic.get_gracenote_credentials()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyMusic.get_music_metadata"><code class="docutils literal notranslate"><span class="pre">HowdyMusic.get_music_metadata()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyMusic.get_music_metadata_lowlevel"><code class="docutils literal notranslate"><span class="pre">HowdyMusic.get_music_metadata_lowlevel()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyMusic.get_music_metadatas_album"><code class="docutils literal notranslate"><span class="pre">HowdyMusic.get_music_metadatas_album()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyMusic.get_song_listing"><code class="docutils literal notranslate"><span class="pre">HowdyMusic.get_song_listing()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.HowdyMusic.push_gracenote_credentials"><code class="docutils literal notranslate"><span class="pre">HowdyMusic.push_gracenote_credentials()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo"><code class="docutils literal notranslate"><span class="pre">MusicInfo</span></code></a><ul>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo.get_album_image"><code class="docutils literal notranslate"><span class="pre">MusicInfo.get_album_image()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo.get_album_info"><code class="docutils literal notranslate"><span class="pre">MusicInfo.get_album_info()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo.get_albums_lowlevel"><code class="docutils literal notranslate"><span class="pre">MusicInfo.get_albums_lowlevel()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo.get_artist_datas_LL"><code class="docutils literal notranslate"><span class="pre">MusicInfo.get_artist_datas_LL()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo.get_artist_direct_search_MBID"><code class="docutils literal notranslate"><span class="pre">MusicInfo.get_artist_direct_search_MBID()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo.get_music_metadata"><code class="docutils literal notranslate"><span class="pre">MusicInfo.get_music_metadata()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo.get_music_metadatas_album"><code class="docutils literal notranslate"><span class="pre">MusicInfo.get_music_metadatas_album()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo.get_set_musicbrainz_useragent"><code class="docutils literal notranslate"><span class="pre">MusicInfo.get_set_musicbrainz_useragent()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo.get_song_listing"><code class="docutils literal notranslate"><span class="pre">MusicInfo.get_song_listing()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo.print_format_album_names"><code class="docutils literal notranslate"><span class="pre">MusicInfo.print_format_album_names()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo.push_musicbrainz_useragent"><code class="docutils literal notranslate"><span class="pre">MusicInfo.push_musicbrainz_useragent()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.MusicInfo.set_musicbrainz_verify"><code class="docutils literal notranslate"><span class="pre">MusicInfo.set_musicbrainz_verify()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#howdy.music.music.download_best_song"><code class="docutils literal notranslate"><span class="pre">download_best_song()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.get_gmusic_all_songs"><code class="docutils literal notranslate"><span class="pre">get_gmusic_all_songs()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.get_gmusicmanager"><code class="docutils literal notranslate"><span class="pre">get_gmusicmanager()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.get_youtube_file"><code class="docutils literal notranslate"><span class="pre">get_youtube_file()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.get_youtube_service"><code class="docutils literal notranslate"><span class="pre">get_youtube_service()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.gmusicmanager"><code class="docutils literal notranslate"><span class="pre">gmusicmanager()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.gmusicmanager_fixlogin"><code class="docutils literal notranslate"><span class="pre">gmusicmanager_fixlogin()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.oauth_get_google_credentials"><code class="docutils literal notranslate"><span class="pre">oauth_get_google_credentials()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.oauth_store_google_credentials"><code class="docutils literal notranslate"><span class="pre">oauth_store_google_credentials()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.save_gmusic_creds"><code class="docutils literal notranslate"><span class="pre">save_gmusic_creds()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.upload_to_gmusic"><code class="docutils literal notranslate"><span class="pre">upload_to_gmusic()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.music.youtube_search"><code class="docutils literal notranslate"><span class="pre">youtube_search()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#howdy-music-pygn-module">7.2.3. howdy.music.pygn module</a><ul>
-<li><a class="reference internal" href="#howdy.music.pygn.createRadio"><code class="docutils literal notranslate"><span class="pre">createRadio()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.pygn.fetch"><code class="docutils literal notranslate"><span class="pre">fetch()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.pygn.get_discography"><code class="docutils literal notranslate"><span class="pre">get_discography()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.pygn.gnmetadata"><code class="docutils literal notranslate"><span class="pre">gnmetadata</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.pygn.radioEvent"><code class="docutils literal notranslate"><span class="pre">radioEvent()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.pygn.register"><code class="docutils literal notranslate"><span class="pre">register()</span></code></a></li>
-<li><a class="reference internal" href="#howdy.music.pygn.search"><code class="docutils literal notranslate"><span class="pre">search()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-            </div>
-        </div>
-    
-
-      <div class="clearer"></div>
-    </div>
-    <div class="button_nav_wrapper">
-        <div class="button_nav">
-            <div class="left">
-                
-                <a href="cli_tools/howdy_music_cli.html">
-                    <span class="icon"><</span><span><span class="section-number">7.1. </span>Howdy Music Command Line Utilities</span></a>
-                
-            </div>
-
-            <div class="right">
-                
-                    <a href="../howdy-email/howdy_email.html"><span><span class="section-number">8. </span>Howdy Email Functionality</span><span class="icon">></span></a>
-                
-            </div>
-        </div>
-    </div>
-
-
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
-    </div>
-
-<p id="theme_credit">Styled using the <a href="https://github.com/piccolo-orm/piccolo_theme">Piccolo Theme</a></p>
-  </body>
+</body>
 </html>

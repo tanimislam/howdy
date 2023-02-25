@@ -1625,7 +1625,6 @@ def get_jackett_credentials( ):
     
     .. _Jackett: https://github.com/Jackett/Jackett
     """
-    
     query = session.query( PlexConfig ).filter( PlexConfig.service == 'jackett' )
     val = query.first( )
     if val is None: return None
@@ -1637,7 +1636,7 @@ def get_jackett_credentials( ):
 def check_jackett_credentials( url, apikey, verify = True ):
     """
     validate the Jackett_ server credentials with the provided URL and API key.
-
+    
     :param str url: the Jackett_ server's URL.
     :param str apikey: the Jackett_ server's API key.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.

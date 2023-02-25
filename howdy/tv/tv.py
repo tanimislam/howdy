@@ -1594,7 +1594,7 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
       
       * ``totFname`` is the destination prefix (without file extension) of the episode on the Plex_ server.
       * ``torFname`` is the search string to give to the Jackett_ server (see :numref:`The Jackett Server` on the Jackett_ server's setup) to search for and download this episode.
-      * ``torFname_disp`` is the logging output giving the *raw* name of the episode (show name, season, epno) used in, e.g., :ref:`get_tv_batch <get_tv_bartch_label>`.
+      * ``torFname_disp`` is the logging output giving the *raw* name of the episode (show name, season, epno) used in, e.g., :ref:`get_tv_batch <get_tv_batch_label>`.
       * ``minSize`` is the minimum size, in MB, of the H264_ encoded MP4 or MKV episode file to search for.
       * ``minSize_x265`` is the minimum size, in MB, of the `H265/HEVC`_ encoded MP4 or MKV episode file to search for. By default this is smaller than ``minSize``.
       * ``maxSize`` is the maximum size, in MB, of the H264_ encoded MP4 or MKV episode file to search for.

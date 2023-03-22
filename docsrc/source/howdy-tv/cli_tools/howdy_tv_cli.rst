@@ -111,22 +111,24 @@ The help output, when running ``get_tv_tor -h``, produces the following.
 
 .. code-block:: console
 
-   usage: get_tv_tor [-h] -n NAME [--maxnum MAXNUM] [--raw] [-f FILENAME] [--add] [--info] [--noverify] [--timing]
+   usage: get_tv_tor [-h] -n NAME [--maxnum MAXNUM] [-r] [-f FILENAME] [-a] [-i] [--noverify] [-F [FILTER ...]]
 
-   optional arguments:
+   options:
      -h, --help            show this help message and exit
      -n NAME, --name NAME  Name of the TV show to get.
      --maxnum MAXNUM       Maximum number of torrents to look through. Default is 10.
-     --raw                 If chosen, then use the raw string (for jackett) to download the torrent.
+     -r, --raw             If chosen, then use the raw string (for jackett) to download the torrent.
      -f FILENAME, --filename FILENAME
 			   If defined, put torrent or magnet link into filename.
-     --add                 If chosen, push the magnet link into the deluge server.
-     --info                If chosen, run in info mode.
+     -a, --add             If chosen, push the magnet link into the deluge server.
+     -i, --info            If chosen, run in info mode.
      --noverify            If chosen, do not verify SSL connections.
+     -F [FILTER ...], --filter [FILTER ...]
+			   List of strings on which to filter for the magnet link name.
 
 These are common flags used by all standard operations of this CLI.
 
-* ``--info`` prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
+* ``-i`` or ``--info`` prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
 
 * ``--noverify`` does not verify SSL connections.
 
@@ -174,7 +176,7 @@ We can modify this command with the following.
      1
      Chosen TV show: The Simpsons s30e10 720p WEB x264-300M
 
-* ``--add`` adds the Magnet URI to the Deluge_ server. The operation of ``howdy_deluge_console`` is described in :numref:`howdy_deluge_console`.
+* ``-a`` or ``--add`` adds the Magnet URI to the Deluge_ server. The operation of ``howdy_deluge_console`` is described in :numref:`howdy_deluge_console`.
 
   .. code-block:: console
 
@@ -191,7 +193,7 @@ We can modify this command with the following.
      Tracker status: opentrackr.org: Announce OK
      Progress: 0.00% [~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
 
-* The ``--raw`` flag does not use the default IMDB_ information to search for the torrent. Instead it uses the full string (here ``"The Simpsons S30E10"``) to search for the episode. Here is an example,
+* The ``-r`` or ``--raw`` flag does not use the default IMDB_ information to search for the torrent. Instead it uses the full string (here ``"The Simpsons S30E10"``) to search for the episode. Here is an example,
 
   .. code-block:: console
 
@@ -212,6 +214,28 @@ We can modify this command with the following.
 
   Notice the differences in these links from the ones before (using the IMDb_ information).
 
+* Finally, the ``-F`` is relatively new functionality. It allows us to *filter* on types of TV show files we want to download. **We can use multiple filters on top of each other**.
+
+  For example, conventionally (as of a few years ago from ``22 March 2023``) we can filter on HEVC_ files using the ``x265`` flag.
+
+  .. code-block:: console
+
+     tanim-desktop $ get_tv_tor -n "The Simpsons S33E10" --raw -F x265
+
+     Choose TV episode or series:
+     1: The.Simpsons.S33E10.720p.WEB.x265-MiNX[TGx] (122.8 MiB) (202 SE, 216 LE)
+     2: The Simpsons S33E10 720p WEB x265-MiNX TGx (122.8 MiB) (51 SE, 57 LE)
+     3: The.Simpsons.S33E10.1080p.x265-ZMNT (339.3 MiB) (30 SE, 40 LE)
+     4: The Simpsons S33E10 720p WEB x265 (122.8 MiB) (29 SE, 33 LE)
+     5: The.Simpsons.S33E10.720p.WEB.x265-MiNX[TGx] (122.8 MiB) (27 SE, 30 LE)
+     6: The.Simpsons.S33E10.720p.WEB.x265-MiNX[TGx] (122.8 MiB) (27 SE, 30 LE)
+     7: The Simpsons S33E10 1080p HEVC x265-MeGusta TGx (277.8 MiB) (25 SE, 31 LE)
+     8: The.Simpsons.S33E10.720p.x265-ZMNT (170.9 MiB) (16 SE, 22 LE)
+     9: The Simpsons S33E10 720p HEVC x265-MeGusta (161.5 MiB) (15 SE, 17 LE)
+     10: The.Simpsons.S33E10.1080p.HEVC.x265-MeGusta[TGx] (277.8 MiB) (13 SE, 17 LE)
+
+  Notice here that all the magnet link options are HEVC_ encoded.
+     
 .. _howdy_tv_epinfo_label:
 
 howdy_tv_epinfo
@@ -562,3 +586,4 @@ Running ``howdy_tv_excludes show`` will display, in this instance, those three s
 .. _`Lip Sync Battle`: https://www.imdb.com/title/tt4335742
 .. _`SpongeBob SquarePants`: https://www.imdb.com/title/tt0206512
 .. _`Reno 911!`: https://www.imdb.com/title/tt0370194
+.. _HEVC: https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding

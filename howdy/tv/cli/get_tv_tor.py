@@ -152,13 +152,13 @@ def main( ):
                       help = 'Name of the TV show to get.')
     parser.add_argument('--maxnum', dest='maxnum', type=int, action='store', default = 10,
                       help = 'Maximum number of torrents to look through. Default is 10.')
-    parser.add_argument('--raw', dest='do_raw', action='store_true', default = False,
+    parser.add_argument('-r', '--raw', dest='do_raw', action='store_true', default = False,
                       help = 'If chosen, then use the raw string (for jackett) to download the torrent.' )
     parser.add_argument('-f', '--filename', dest='filename', action='store', type=str,
                       help = 'If defined, put torrent or magnet link into filename.')
-    parser.add_argument('--add', dest='do_add', action='store_true', default = False,
+    parser.add_argument('-a', '--add', dest='do_add', action='store_true', default = False,
                       help = 'If chosen, push the magnet link into the deluge server.' )
-    parser.add_argument('--info', dest='do_info', action='store_true', default = False,
+    parser.add_argument('-i', '--info', dest='do_info', action='store_true', default = False,
                       help = 'If chosen, run in info mode.' )
     parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
                       help = 'If chosen, do not verify SSL connections.' )

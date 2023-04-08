@@ -185,11 +185,11 @@ def main( ):
                         help = 'If chosen, bypass YTS.')
     parser.add_argument('-L', '--level', dest='level', action='store', default = 'NONE', choices = ['DEBUG','INFO','ERROR','NONE'],
                         help = 'Choose logging level. By default it is NONE. Choices are: [ DEBUG, INFO, ERROR, NONE ].' )
-    parser.add_argument('--add', dest='do_add', action='store_true', default = False,
+    parser.add_argument('-a', '--add', dest='do_add', action='store_true', default = False,
                         help = 'If chosen, push the magnet link or torrent file into the deluge server.' )  
     parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
                         help = 'If chosen, do not verify SSL connections.' )
-    parser.add_argument('--raw', dest='do_raw', action='store_true', default = False,
+    parser.add_argument('-r', '--raw', dest='do_raw', action='store_true', default = False,
                         help = 'If chosen, do not use IMDB matching for Jackett torrents.')
     args = parser.parse_args( )
     # assert( args.timeout >= 10 )

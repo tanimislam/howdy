@@ -9,9 +9,9 @@ The help output, when running ``get_mov_tor -h``, produces the following.
 
 .. code-block:: console
 
-   usage: get_mov_tor [-h] -n NAME [-y YEAR] [-M MAXNUM] [-f FILENAME] [--bypass] [-L {DEBUG,INFO,ERROR,NONE}] [--add] [--noverify] [--raw]
+   usage: get_mov_tor [-h] -n NAME [-y YEAR] [-M MAXNUM] [-f FILENAME] [--bypass] [-L {DEBUG,INFO,ERROR,NONE}] [-a] [--noverify] [-r]
 
-   optional arguments:
+   options:
      -h, --help            show this help message and exit
      -n NAME, --name NAME  Name of the movie to get.
      -y YEAR, --year YEAR  Year to look for the movie to get.
@@ -22,9 +22,9 @@ The help output, when running ``get_mov_tor -h``, produces the following.
      --bypass              If chosen, bypass YTS.
      -L {DEBUG,INFO,ERROR,NONE}, --level {DEBUG,INFO,ERROR,NONE}
 			   Choose logging level. By default it is NONE. Choices are: [ DEBUG, INFO, ERROR, NONE ].
-     --add                 If chosen, push the magnet link or torrent file into the deluge server.
+     -a, --add             If chosen, push the magnet link or torrent file into the deluge server.
      --noverify            If chosen, do not verify SSL connections.
-     --raw                 If chosen, do not use IMDB matching for Jackett torrents.
+     -r, --raw             If chosen, do not use IMDB matching for Jackett torrents.
 
 There are 10 flags or command line settings, so it is useful to split the different functionalities into separate sections. This tool can operate in three ways: choose a `torrent file`_; or choose a Magnet link (similar to what is done in :ref:`get_tv_tor`). :numref:`Demonstration of Default Operation` demonstrates the default mode of operation for this tool. :numref:`Common Flags and Settings` describe those settings to ``get_mov_tor`` that are shared by all operations. Finally, :numref:`Choice of Torrent Search` describes how to change the search for `torrent files <torrent file_>`_.
 
@@ -96,7 +96,7 @@ Separate from whether or not a `torrent file`_ or Magnet link is downloaded, or 
 
 * ``--noverify`` says to not verify SSL connections.
 
-* ``--raw`` says to only use the search string in ``-n`` or ``--name`` to search for Magnet links. If a collection of `torrent files <torrent file_>`_ are found, then this flag is ignored.
+* ``-r`` or ``--raw`` says to only use the search string in ``-n`` or ``--name`` to search for Magnet links. If a collection of `torrent files <torrent file_>`_ are found, then this flag is ignored.
 
 These two flags change what happens to the magnet link or `torrent file`_.
 

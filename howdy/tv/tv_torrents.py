@@ -532,23 +532,26 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
     items = [ ]
     
     def _get_magnet_url( item ):
-        magnet_url = item.find( 'torznab:attr', { 'name' : 'magneturl' } )
-        if magnet_url is not None and 'magnet' in magnet_url['value']:
-            return magnet_url['value']
-        #
-        ## not found it here, must go into URL
-        url2 = item.find('guid')
-        if url2 is None: return None
-        url2 = url2.text
-        if not validators.url( url2 ): return None
-        resp2 = requests.get( url2, verify = verify )
-        if resp2.status_code != 200: return None
-        h2 = BeautifulSoup( resp2.content, 'lxml' )
-        valid_magnet_links = set(map(lambda elem: elem['href'],
-                                     filter(lambda elem: 'href' in elem.attrs and 'magnet' in elem['href'],
-                                            h2.find_all('a'))))
-        if len( valid_magnet_links ) == 0: return None
-        return max( valid_magnet_links )
+        try:
+            magnet_url = item.find( 'torznab:attr', { 'name' : 'magneturl' } )
+            if magnet_url is not None and 'magnet' in magnet_url['value']:
+                return magnet_url['value']
+            #
+            ## not found it here, must go into URL
+            url2 = item.find('guid')
+            if url2 is None: return None
+            url2 = url2.text
+            if not validators.url( url2 ): return None
+            resp2 = requests.get( url2, verify = verify )
+            if resp2.status_code != 200: return None
+            h2 = BeautifulSoup( resp2.content, 'lxml' )
+            valid_magnet_links = set(map(lambda elem: elem['href'],
+                                         filter(lambda elem: 'href' in elem.attrs and 'magnet' in elem['href'],
+                                                h2.find_all('a'))))
+            if len( valid_magnet_links ) == 0: return None
+            return max( valid_magnet_links )
+        except: # guard-code-istan 2023-04-04
+            return None
 
     if status is None: last_tok = None
     for item in html('item'):

@@ -1,7 +1,7 @@
 apiclient
 beautifulsoup4
 cfscrape
-fabric
+fabric<3.0.0
 gdata
 geoip2
 gmusicapi
@@ -15,7 +15,6 @@ isodate
 ive_tanim
 KickassAPI
 ThePirateBay
-lxml
 matplotlib
 musicbrainzngs
 mutagen
@@ -36,8 +35,6 @@ qtmodern
 rapidfuzz
 requests
 requests_oauthlib
-rsa
-six
 sphinx-argparse
 sphinx-issues
 SQLAlchemy
@@ -49,5 +46,5 @@ torf
 tqdm
 validators
 yt_dlp
-sphinxcontrib-youtube @ git+https://github.com/sphinx-contrib/youtube.git@master
-sphinxcontrib-svg2pdfconverter @ git+https://github.com/missinglinkelectronics/sphinxcontrib-svg2pdfconverter.git@master
+sphinxcontrib-youtube
+sphinxcontrib-svg2pdfconverter

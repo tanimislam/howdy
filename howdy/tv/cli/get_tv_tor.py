@@ -1,13 +1,17 @@
 import signal
 from howdy import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
-import logging, os, re, time
+import logging, os, re, time, warnings
 from itertools import chain
 from multiprocessing import Pool
 from argparse import ArgumentParser
 #
 from howdy.core import core_deluge, core, core_torrents
 from howdy.tv import tv_torrents, tv
+#
+## now remove the XMLParsedAsHTMLWarning warning. GUARD CODE UNTIL SINGLETON-IZED SOLUTION!
+from bs4 import XMLParsedAsHTMLWarning
+warnings.filterwarnings('ignore', category = XMLParsedAsHTMLWarning )
 
 def get_items_eztv_io( name, maxnum = 10, verify = True, filtered = [ ] ):
     assert( maxnum >= 5 )

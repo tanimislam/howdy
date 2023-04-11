@@ -2,7 +2,7 @@ import sys, signal
 from howdy import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
 #
-import re, codecs, requests, time, logging
+import re, codecs, requests, time, logging, warnings
 from itertools import chain
 from pathos.multiprocessing import Pool
 from argparse import ArgumentParser
@@ -11,6 +11,10 @@ from howdy.core import core_deluge, core_torrents
 from howdy.movie import movie_torrents, movie
 from howdy.tv import tv_torrents
 from howdy.core.core import get_jackett_credentials
+#
+## now remove the XMLParsedAsHTMLWarning warning. GUARD CODE UNTIL SINGLETON-IZED SOLUTION!
+from bs4 import XMLParsedAsHTMLWarning
+warnings.filterwarnings('ignore', category = XMLParsedAsHTMLWarning )
 
 def get_items_jackett( name, tmdb_id = None, maxnum = 1000, verify = True, doRaw = False ):
     assert( maxnum >= 5 )

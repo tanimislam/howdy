@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5.1. Howdy TV Command Line Utilities &mdash; howdy! 1.35-97-gf9b62762 documentation</title>
+  <title>5.1. Howdy TV Command Line Utilities &mdash; howdy! 1.50-2-ga74b1eb2 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -36,7 +36,7 @@
             howdy!
           </a>
               <div class="version">
-                1.35
+                1.50
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -113,21 +113,26 @@
 <section id="get-tv-batch">
 <span id="get-tv-batch-label"></span><h2><span class="section-number">5.1.1. </span>get_tv_batch<a class="headerlink" href="#get-tv-batch" title="Permalink to this heading"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">get_tv_batch</span> <span class="pre">-h</span></code>, produces the following. Here, <code class="docutils literal notranslate"><span class="pre">$(num_cores)</span></code> is <em>TWICE</em> the number of CPUs on the <a class="reference external" href="https://plex.tv">Plex</a> server. This code is currently designed to be run <em>ONLY</em> on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: get_tv_batch [-h] [--maxtime MAXTIME_IN_SECS] [--num NUM_ITERS] [--token TOKEN] [--debuglevel {None,info,debug}] [--numthreads NUMTHREADS] [--nomax] [--nomin] [--raw]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: get_tv_batch [-h] [--maxtime MAXTIME_IN_SECS] [--num NUM_ITERS] [--token TOKEN] [-D {None,info,debug}] [--numthreads NUMTHREADS]</span>
+<span class="go">                    [--nomax] [--nomin] [-r] [-F [FILTER ...]]</span>
 
-<span class="go">optional arguments:</span>
+<span class="go">options:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
 <span class="go">  --maxtime MAXTIME_IN_SECS</span>
-<span class="go">                        The maximum amount of time to spend (in seconds), per candidate magnet link, trying to download a TV show. Default is 1000 seconds.</span>
+<span class="go">                        The maximum amount of time to spend (in seconds), per candidate magnet link, trying to download a TV show. Default is</span>
+<span class="go">                        1000 seconds.</span>
 <span class="go">  --num NUM_ITERS       The maximum number of different magnet links to try before giving up. Default is 2.</span>
 <span class="go">  --token TOKEN         Optional argument. If chosen, user provided Plex access token.</span>
-<span class="go">  --debuglevel {None,info,debug}</span>
-<span class="go">                        Choose the debug level for the system logger. Default is None (no logging). Can be one of None (no logging), info, or debug.</span>
+<span class="go">  -D {None,info,debug}, --debuglevel {None,info,debug}</span>
+<span class="go">                        Choose the debug level for the system logger. Default is None (no logging). Can be one of None (no logging), info, or</span>
+<span class="go">                        debug.</span>
 <span class="go">  --numthreads NUMTHREADS</span>
 <span class="go">                        Number of threads over which to search for TV shows in my library. Default is 16.</span>
 <span class="go">  --nomax               If chosen, do not restrict maximum size of downloaded file.</span>
 <span class="go">  --nomin               If chosen, do not restrict minimum size of downloaded file.</span>
-<span class="go">  --raw                 If chosen, then use the raw string to specify TV show torrents.</span>
+<span class="go">  -r, --raw             If chosen, then use the raw string to specify TV show torrents.</span>
+<span class="go">  -F [FILTER ...], --filter [FILTER ...]</span>
+<span class="go">                        List of strings on which to filter for the magnet link name.</span>
 </pre></div>
 </div>
 <p>To better understand the command line switches (flags and inputs), we describe how the this executable, which searches for new episodes of TV shows on the <a class="reference external" href="https://plex.tv">Plex</a> server on a given day, works.</p>
@@ -143,7 +148,7 @@
 <p>Here are the common flags and command line inputs.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--token</span></code> allows you to explicitly set the <a class="reference external" href="https://plex.tv">Plex</a> access token for the server.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--debuglevel</span></code> specifies the amount of system logging into STDOUT that you want to show. The default choice is <code class="docutils literal notranslate"><span class="pre">None</span></code> (no logging). If <code class="docutils literal notranslate"><span class="pre">info</span></code>, then it prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output. If <code class="docutils literal notranslate"><span class="pre">debug</span></code>, then it prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-D</span></code> or <code class="docutils literal notranslate"><span class="pre">--debuglevel</span></code> specifies the amount of system logging into STDOUT that you want to show. The default choice is <code class="docutils literal notranslate"><span class="pre">None</span></code> (no logging). If <code class="docutils literal notranslate"><span class="pre">info</span></code>, then it prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output. If <code class="docutils literal notranslate"><span class="pre">debug</span></code>, then it prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 </ul>
 <p>Here are the command line inputs that change the operation of this execution.</p>
 <ul class="simple">
@@ -152,7 +157,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">--numthreads</span></code> sets the number of threads used for downloading new episodes onto the <a class="reference external" href="https://plex.tv">Plex</a> server (see <a class="reference internal" href="#get-tv-batch-point2label"><span class="std std-ref">point #2</span></a>).</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">--nomin</span></code> flag means that there is no <em>lower</em> limit to the size of episode files to be downloaded onto the <a class="reference external" href="https://plex.tv">Plex</a> server (see <a class="reference internal" href="#get-tv-batch-point1label"><span class="std std-ref">point #1</span></a>).</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">--nomax</span></code> flag means that there is no <em>upper</em> limit to the size of episode files to be downloaded onto the <a class="reference external" href="https://plex.tv">Plex</a> server (see <a class="reference internal" href="#get-tv-batch-point1label"><span class="std std-ref">point #1</span></a>).</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">--raw</span></code> flag does not use the default <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDB</a> information to search for the torrent. Instead it uses the full string to search for the episode (see <a class="reference internal" href="#get-tv-batch-point1label"><span class="std std-ref">point #1</span></a>).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">-r</span></code> or <code class="docutils literal notranslate"><span class="pre">--raw</span></code> flag does not use the default <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDB</a> information to search for the torrent. Instead it uses the full string to search for the episode (see <a class="reference internal" href="#get-tv-batch-point1label"><span class="std std-ref">point #1</span></a>).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">-F</span></code> or <code class="docutils literal notranslate"><span class="pre">--filter</span></code> is relatively new functionality. It allows us to <em>filter</em> on types of TV show files we want to download, which looks for magnet files with those strings in them. <strong>We can use multiple filters on top of each other</strong>.</p></li>
 </ul>
 <p>Here is a demonstration of its operation, searching for new episodes to download on the <a class="reference external" href="https://plex.tv">Plex</a> server on <code class="docutils literal notranslate"><span class="pre">Sunday,</span> <span class="pre">20</span> <span class="pre">October</span> <span class="pre">2019</span></code>. <a class="reference external" href="https://en.wikipedia.org/wiki/The_Great_British_Bake_Off">The Great British Bake-Off</a> is going to be ignored because this show has been excluded for identification and searches. The output format during evaluation is descriptive because the process can take more than a few seconds.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_tv_batch</span>

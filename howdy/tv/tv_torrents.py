@@ -449,30 +449,23 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     items = items[:maxnum]
     return items, 'SUCCESS'
 
-def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None, keywords = [ ],
+def get_tv_torrent_jackett( name, maxnum = 10, minSize = 0, maxSize = numpy.inf, keywords = [ ],
                             keywords_exc = [ ], must_have = [ ], verify = True, series_name = None,
-                            raw = False ):
+                            raw = False, debug_mode = False ):
     """
     Returns a :py:class:`tuple` of candidate episode Magnet links found using the main Jackett_ torrent searching service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the episode string on which to search.
-    :param int maxnum: optional argumeent, the maximum number of magnet links to return. Default is 10. Must be :math:`\ge 5`.
-    :param list minsizes: optional :py:class:`list` or :py:class:`tuple` of size at least 2. Here is its meaning if it is not ``None``:
-
-        * if its size is 1, then the minimum size of H264_ and `H265/HEVC`_ encoded videos, in MB, is ``minsizes[ 0 ]``.
-        * if its size is :math:`\ge 2`, then the minimum size of H264_ encoded video, in MB, is ``minsizes[ 0 ]``. The minimum size of `H265/HEVC`_ encoded video, in MB, is ``minsizes[ 1 ]``.
-
-    :param list maxsizes: optional :py:class:`list` or :py:class:`tuple` of size at least 2. Here is its meaning if it is not ``None``:
-
-        * if its size is 1, then the maximum size of H264_ and `H265/HEVC`_ encoded videos, in MB, is ``maxsizes[ 0 ]``.
-        * if its size is :math:`\ge 2`, then the maximum size of H264_ encoded video, in MB, is ``maxsizes[ 0 ]``. The maximum size of `H265/HEVC`_ encoded video, in MB, is ``maxsizes[ 1 ]``.
-
+    :param int maxnum: optional argument, the maximum number of magnet links to return. Default is 10. Must be :math:`\ge 5`.
+    :param int minSize: minimum size of the candidate file, in MiB. Default is 0.
+    :param int maxsize: minimum size of the candidate file, in MiB. Default is infinity.
     :param list keywords: optional argument. If not empty, the title of the candidate element must have at least one of the keywords in ``keywords``.
     :param list kewods_exc: optional argument. If not empty, then reject candidate element if title has any keyword in ``keywords_exc``.
     :param list must_have: optional argument. If not empty, then title of the candidate element must have *all* the keywords in ``must_have``.    
     :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
     :param str series_name: optional argument. the TV show for this episode.
     :param bool raw: if ``True``, uses the IMDb_ information to search for the episode. Otherwise, uses the full string in ``name`` to search for the episode.
+    :param bool debug_mode: if ``True``, then dumps out information on the elements that it has found into a (hopefully useful) file name. Default is ``False``.
     
     :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of elements that match the searched episode, ordered from *most* seeds and leechers to least. The second element is the string ``"SUCCESS"``. The keys in each element of the list are,
        
@@ -481,7 +474,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
       * ``seeders`` is the number of seeds for this Magnet link.
       * ``leechers`` is the number of leeches for this Magnet link.
       * ``link`` is the Magnet URI link.
-      * ``torrent_size`` is the size of this torrent in bytes.
+      * ``torrent_size`` is the size of this torrent in MiB.
     
     If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
     
@@ -526,9 +519,10 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
         params = _return_params( name ), verify = verify ) # tv shows
     if response.status_code != 200:
         return return_error_raw( 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url )
-    html = BeautifulSoup( response.content, 'lxml' )
+    html = BeautifulSoup( response.content, 'html.parser' )
     if len( html.find_all('item') ) == 0:
         return return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
+    logging.debug( 'name = %s, num items = %s.' % (name, len( html.find_all( 'item' ) ) ) )
     items = [ ]
     
     def _get_magnet_url( item ):
@@ -604,42 +598,30 @@ def get_tv_torrent_jackett( name, maxnum = 10, minsizes = None, maxsizes = None,
         items.append( myitem )
 
     items = sorted(items, key = lambda elem: elem['seeders'] + elem['leechers' ] )[::-1]
+    logging.debug( 'name = %s, num items pass #2 = %s.' % (name, len( items ) ) )
+    if debug_mode:
+      date_now = datetime.datetime.now( ).date( )
+      pickle.dump( items, gzip.open( '%s-%s.pkl.gz' % ( name, date_now.strftime('%Y%M%d' ) ), 'wb' ) )
     #
     ## now perform the filtering
-    def _filter_minmax_size( minSize, minSize_x265, maxSize, maxSize_x265, item ):
-        if minSize is not None and 'x265' not in item['rawtitle'].lower( ) and item['torrent_size'] <= minSize:
-            return False
-        if minSize_x265 is not None and 'x265' in item['rawtitle'].lower( ) and item['torrent_size'] <= minSize_x265:
-            return False
-        if maxSize is not None and 'x265' not in item['rawtitle'].lower( ) and item['torrent_size'] >= maxSize:
-            return False
-        if maxSize_x265 is not None and 'x265' in item['rawtitle'].lower( ) and item['torrent_size'] >= minSize_x265:
-            return False
-        return True
+    def _filter_minmax_size( minSize, maxSize, item ):
+      if item['torrent_size'] <= minSize:
+        return False
+      if item['torrent_size'] >= maxSize:
+        return False
+      return True
+    items = list(filter(lambda item: _filter_minmax_size( minSize, maxSize, item ), items ) )
     
-    if any(map(lambda tok: tok is not None, [ minsizes, maxsizes ])):
-        items = list(filter(lambda item: 'torrent_size' in item, items ))
-        minsize = None
-        minsize_x265 = None
-        maxsize = None
-        maxsize_x265 = None
-        if minsizes is not None:
-            if len( minsizes ) >= 2: minsize, minsize_x265 = minsizes[:2]
-            else: minsize, minsize_x265 = 2 * [ minsizes[0] ]
-        if maxsizes is not None:
-            if len( maxsizes ) >= 2: maxsize, maxsize_x265 = maxsizes[:2]
-            else: maxsize, maxsize_x265 = 2 * [ maxsizes[0] ]
-        items = list(filter(lambda item: _filter_minmax_size(
-            minsize, minsize_x265, maxsize, maxsize_x265, item ), items ) )
     if len( keywords ) != 0:
-        items = list(filter(lambda item: any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords ) ) and
-                            not any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords_exc ) ),
-                            items ) )
+      items = list(filter(
+        lambda item: any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords ) ) and
+        not any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords_exc ) ), items ) )
     if len( must_have ) != 0:
-        items = list(filter(lambda item: all(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), must_have ) ), items ) )
-        
+      items = list(filter(lambda item: all(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), must_have ) ), items ) )
+
+    logging.debug( 'name = %s, num items pass final = %s.' % (name, len( items ) ) )
     if len( items ) == 0:
-        return return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
+      return return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
         
     return items[:maxnum], 'SUCCESS'
 
@@ -1028,8 +1010,6 @@ def worker_process_download_tvtorrent(
         totFname = tvTorUnit[ 'totFname' ]
         minSize = tvTorUnit[ 'minSize' ]
         maxSize = tvTorUnit[ 'maxSize' ]
-        minSize_x265 = tvTorUnit[ 'minSize_x265' ]
-        maxSize_x265 = tvTorUnit[ 'maxSize_x265' ]
         series_name = tvTorUnit[ 'tvshow' ]
         mustHaveString = torFileName.split( )[ -1 ]
         do_raw = tvTorUnit[ 'do_raw' ]
@@ -1038,18 +1018,17 @@ def worker_process_download_tvtorrent(
             torFileName, must_have, series_name ) )
         #
         ## try this twice if it can
-        torFileNameAlt = re.sub('\(([0-9]+)\)', '', torFileName ).strip( )
+        torFileNameAlt = ' '.join( re.sub('\(([0-9]+)\)', '', torFileName ).strip( ).split( ) )
         torFileNames = [ torFileName, ]
         if torFileNameAlt != torFileName: torFileNames.append( torFileNameAlt )
         for tfn in torFileNames:
             logging.debug( 'processing jackett from "%s", using "%s" now, at %0.3f seconds after start.' % (
                 torFileName, tfn, time.perf_counter( ) - time0 ) )
             data, status = get_tv_torrent_jackett(
-                tfn, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
-                minsizes = [ minSize, minSize_x265 ],
-                maxsizes = [ maxSize, maxSize_x265 ],
-                keywords_exc = [ 'xvid' ], raw = do_raw,
-                must_have = must_have )
+              tfn, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
+              minSize = minSize, maxSize = maxSize,
+              keywords_exc = [ 'xvid' ], raw = do_raw,
+              must_have = must_have )
             if status == 'SUCCESS': break
         if status != 'SUCCESS':
             shared_list.append( ( 'jackett', _create_status_dict( 'FAILURE', status, t0 ), 'FAILURE' ) )
@@ -1064,17 +1043,15 @@ def worker_process_download_tvtorrent(
         totFname = tvTorUnit[ 'totFname' ]
         minSize = tvTorUnit[ 'minSize' ]
         maxSize = tvTorUnit[ 'maxSize' ]
-        minSize_x265 = tvTorUnit[ 'minSize_x265' ]
-        maxSize_x265 = tvTorUnit[ 'maxSize_x265' ]
         series_name = tvTorUnit[ 'tvshow' ]
         must_have = tvTorUnit[ 'must_have' ]
-        logging.info( 'eztv.io start: %s' % torFileName )
+        logging.debug( 'eztv.io start: %s' % torFileName )
         #
         try:
             data, status = get_tv_torrent_eztv_io(
                 torFileName, maxnum = 100, series_name = series_name,
-                minsizes = [ minSize, minSize_x265],
-                maxsizes = [ maxSize, maxSize_x265] )
+                minsizes = [ minSize, ],
+                maxsizes = [ maxSize, ] )
         except:
             data = None
             status = 'Error, could not get eztv io working on %s.' % torFileName
@@ -1091,7 +1068,7 @@ def worker_process_download_tvtorrent(
                 ( 'eztv.io', _create_status_dict(
                     'FAILURE', 'ERROR, COULD NOT FIND %s IN EZTV.IO.' % torFileName, t0 ), 'FAILURE' ) )
             return
-        logging.info( 'successfully processed eztv.io on %s in %0.3f seconds.' % (
+        logging.debug( 'successfully processed eztv.io on %s in %0.3f seconds.' % (
             torFileName, time.perf_counter( ) - t0 ) )
         shared_list.append( ( 'eztv.io', data_filt, 'SUCCESS' ) )
     #
@@ -1101,11 +1078,9 @@ def worker_process_download_tvtorrent(
         totFname = tvTorUnit[ 'totFname' ]
         minSize = tvTorUnit[ 'minSize' ]
         maxSize = tvTorUnit[ 'maxSize' ]
-        minSize_x265 = tvTorUnit[ 'minSize_x265' ]
-        maxSize_x265 = tvTorUnit[ 'maxSize_x265' ]
         series_name = tvTorUnit[ 'tvshow' ]
         must_have = tvTorUnit[ 'must_have' ]
-        logging.info( 'zooqle start: %s' % torFileName )
+        logging.debug( 'zooqle start: %s' % torFileName )
         #
         data, status = get_tv_torrent_zooqle( torFileName, maxnum = 100 )
         if status != 'SUCCESS':
@@ -1121,7 +1096,7 @@ def worker_process_download_tvtorrent(
             shared_list.append(
                 ( 'zooqle', _create_status_dict(
                     'FAILURE', 'ERROR, COULD NOT FIND %s IN ZOOQLE.' % torFileName, t0 ), 'FAILURE' ) )
-        logging.info( 'successfully processed zooqle on %s in %0.3f seconds.' % (
+        logging.debug( 'successfully processed zooqle on %s in %0.3f seconds.' % (
             torFileName, time.perf_counter( ) - t0 ) )
         shared_list.append( ( 'zooqle', data_filt, 'SUCCESS' ) )
 

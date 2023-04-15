@@ -25,21 +25,26 @@ The help output, when running ``get_tv_batch -h``, produces the following. Here,
 
 .. code-block:: console
 
-   usage: get_tv_batch [-h] [--maxtime MAXTIME_IN_SECS] [--num NUM_ITERS] [--token TOKEN] [--debuglevel {None,info,debug}] [--numthreads NUMTHREADS] [--nomax] [--nomin] [--raw]
+   usage: get_tv_batch [-h] [--maxtime MAXTIME_IN_SECS] [--num NUM_ITERS] [--token TOKEN] [-D {None,info,debug}] [--numthreads NUMTHREADS]
+		       [--nomax] [--nomin] [-r] [-F [FILTER ...]]
 
-   optional arguments:
+   options:
      -h, --help            show this help message and exit
      --maxtime MAXTIME_IN_SECS
-			   The maximum amount of time to spend (in seconds), per candidate magnet link, trying to download a TV show. Default is 1000 seconds.
+			   The maximum amount of time to spend (in seconds), per candidate magnet link, trying to download a TV show. Default is
+			   1000 seconds.
      --num NUM_ITERS       The maximum number of different magnet links to try before giving up. Default is 2.
      --token TOKEN         Optional argument. If chosen, user provided Plex access token.
-     --debuglevel {None,info,debug}
-			   Choose the debug level for the system logger. Default is None (no logging). Can be one of None (no logging), info, or debug.
+     -D {None,info,debug}, --debuglevel {None,info,debug}
+			   Choose the debug level for the system logger. Default is None (no logging). Can be one of None (no logging), info, or
+			   debug.
      --numthreads NUMTHREADS
 			   Number of threads over which to search for TV shows in my library. Default is 16.
      --nomax               If chosen, do not restrict maximum size of downloaded file.
      --nomin               If chosen, do not restrict minimum size of downloaded file.
-     --raw                 If chosen, then use the raw string to specify TV show torrents.
+     -r, --raw             If chosen, then use the raw string to specify TV show torrents.
+     -F [FILTER ...], --filter [FILTER ...]
+			   List of strings on which to filter for the magnet link name.
 
 To better understand the command line switches (flags and inputs), we describe how the this executable, which searches for new episodes of TV shows on the Plex_ server on a given day, works.
 
@@ -59,7 +64,7 @@ Here are the common flags and command line inputs.
 
 * ``--token`` allows you to explicitly set the Plex_ access token for the server.
 
-* ``--debuglevel`` specifies the amount of system logging into STDOUT that you want to show. The default choice is ``None`` (no logging). If ``info``, then it prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output. If ``debug``, then it prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
+* ``-D`` or ``--debuglevel`` specifies the amount of system logging into STDOUT that you want to show. The default choice is ``None`` (no logging). If ``info``, then it prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output. If ``debug``, then it prints out :py:const:`DEBUG <logging.DEBUG>` level :py:mod:`logging` output.
 
 Here are the command line inputs that change the operation of this execution.
 
@@ -73,7 +78,9 @@ Here are the command line inputs that change the operation of this execution.
 
 * The ``--nomax`` flag means that there is no *upper* limit to the size of episode files to be downloaded onto the Plex_ server (see :ref:`point #1 <get_tv_batch_point1label>`).
 
-* The ``--raw`` flag does not use the default IMDB_ information to search for the torrent. Instead it uses the full string to search for the episode (see :ref:`point #1 <get_tv_batch_point1label>`).
+* The ``-r`` or ``--raw`` flag does not use the default IMDB_ information to search for the torrent. Instead it uses the full string to search for the episode (see :ref:`point #1 <get_tv_batch_point1label>`).
+
+* The ``-F`` or ``--filter`` is relatively new functionality. It allows us to *filter* on types of TV show files we want to download, which looks for magnet files with those strings in them. **We can use multiple filters on top of each other**.
 
 Here is a demonstration of its operation, searching for new episodes to download on the Plex_ server on ``Sunday, 20 October 2019``. `The Great British Bake-Off <https://en.wikipedia.org/wiki/The_Great_British_Bake_Off>`_ is going to be ignored because this show has been excluded for identification and searches. The output format during evaluation is descriptive because the process can take more than a few seconds.
 

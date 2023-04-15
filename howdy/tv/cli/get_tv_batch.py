@@ -1,16 +1,24 @@
 import sys, signal
 from howdy import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
-import os, numpy, glob, time, datetime
+import os, numpy, glob, time, datetime, warnings
 import multiprocessing, logging
 from argparse import ArgumentParser
 #
 from howdy.core import core
 from howdy.tv import tv, get_token
+#
+## now remove the XMLParsedAsHTMLWarning warning. GUARD CODE UNTIL SINGLETON-IZED SOLUTION!
+from bs4 import XMLParsedAsHTMLWarning
+warnings.filterwarnings('ignore', category = XMLParsedAsHTMLWarning )
 
 def finish_statement( step ):
     return '%d, finished on %s.' % ( step + 1, datetime.datetime.now( ).strftime(
         '%B %d, %Y @ %I:%M:%S %p' ) )
+
+_debug_level_dict = {
+    'info'  : logging.INFO,
+    'debug' : logging.DEBUG, }
 
 def main( ):
     time0 = time.perf_counter( )
@@ -19,36 +27,46 @@ def main( ):
     default_num_threads = 2 * multiprocessing.cpu_count( )
     #
     parser = ArgumentParser( )
-    parser.add_argument('--maxtime', dest='maxtime_in_secs', type=int, action='store', default = default_time,
-                      help = ' '.join([
-                          'The maximum amount of time to spend (in seconds),',
-                          'per candidate magnet link,',
-                          'trying to download a TV show.',
-                          'Default is %d seconds.' % default_time ] ) )
-    parser.add_argument('--num', dest='num_iters', type=int, action='store', default = default_iters,
-                      help = ' '.join([ 
-                          'The maximum number of different magnet links to try',
-                          'before giving up. Default is %d.' % default_iters ]) )
-    parser.add_argument('--token', dest='token', type=str, action='store',
-                      help = 'Optional argument. If chosen, user provided Plex access token.')
-    parser.add_argument('--debuglevel', dest='debug_level', action='store', type=str, default = 'None',
-                    choices = [ 'None', 'info', 'debug' ], help = 'Choose the debug level for the system logger. Default is None (no logging). Can be one of None (no logging), info, or debug.' )
-    parser.add_argument('--numthreads', dest='numthreads', type=int, action='store', default = default_num_threads,
-                      help = 'Number of threads over which to search for TV shows in my library. Default is %d.' %
-                      default_num_threads )
-    parser.add_argument('--nomax', dest='do_restrict_maxsize', action='store_false', default=True,
-                      help = 'If chosen, do not restrict maximum size of downloaded file.' )
-    parser.add_argument('--nomin', dest='do_restrict_minsize', action='store_false', default=True,
-                      help = 'If chosen, do not restrict minimum size of downloaded file.' )
-    parser.add_argument('--raw', dest='do_raw', action='store_true', default = False,
-                      help = 'If chosen, then use the raw string to specify TV show torrents.' )    
-    parser.add_argument('--x265', dest='do_x265', action='store_true', default = False,
-                      help = 'If chosen, then use append "x265" (do explicit search for HEVC/H65 torrents) to torrent search. Only works with --raw flag set.' )
+    parser.add_argument(
+        '--maxtime', dest='maxtime_in_secs', type=int, action='store', default = default_time,
+        help = ' '.join([
+            'The maximum amount of time to spend (in seconds),',
+            'per candidate magnet link,',
+            'trying to download a TV show.',
+            'Default is %d seconds.' % default_time ] ) )
+    parser.add_argument(
+        '--num', dest='num_iters', type=int, action='store', default = default_iters,
+        help = ' '.join([ 
+            'The maximum number of different magnet links to try',
+            'before giving up. Default is %d.' % default_iters ]) )
+    parser.add_argument(
+        '--token', dest='token', type=str, action='store',
+        help = 'Optional argument. If chosen, user provided Plex access token.')
+    parser.add_argument(
+        '-D', '--debuglevel', dest='debug_level', action='store', type=str, default = 'None',
+        choices = [ 'None', 'info', 'debug' ], help = 'Choose the debug level for the system logger. Default is None (no logging). Can be one of None (no logging), info, or debug.' )
+    parser.add_argument(
+        '--numthreads', dest='numthreads', type=int, action='store', default = default_num_threads,
+        help = 'Number of threads over which to search for TV shows in my library. Default is %d.' %
+        default_num_threads )
+    parser.add_argument(
+        '--nomax', dest='do_restrict_maxsize', action='store_false', default=True,
+        help = 'If chosen, do not restrict maximum size of downloaded file.' )
+    parser.add_argument(
+        '--nomin', dest='do_restrict_minsize', action='store_false', default=True,
+        help = 'If chosen, do not restrict minimum size of downloaded file.' )
+    parser.add_argument(
+        '-r', '--raw', dest='do_raw', action='store_true', default = False,
+        help = 'If chosen, then use the raw string to specify TV show torrents.' )
+    #
+    ## now filter on these items
+    parser.add_argument('-F', '--filter', dest = 'filter', action = 'store', nargs = '*',
+                        help = 'List of strings on which to filter for the magnet link name.' )
     args = parser.parse_args( )
     #
     logger = logging.getLogger( )
-    if args.debug_level == 'info':  logger.setLevel( logging.INFO )
-    if args.debug_level == 'debug': logger.setLevel( logging.DEBUG )
+    if args.debug_level.lower( ) in _debug_level_dict:
+        logger.setLevel( _debug_level_dict[ args.debug_level.lower( ) ] )
     assert( args.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
     assert( args.num_iters >= 1 ), 'error, must have a positive number of maximum iterations.'
     step = 0
@@ -119,9 +137,14 @@ def main( ):
     step += 1
     #
     ## now download these episodes
+    must_have = set([])
+    if args.filter is not None:
+        must_have = set(
+            filter(lambda tok: len( tok ) > 0, map(lambda tok: tok.strip( ).lower( ), args.filter ) ) )
+    logging.info( 'must_have = %s.' % must_have )
     tvTorUnits, newdirs = tv.create_tvTorUnits(
         toGet, restrictMaxSize = args.do_restrict_maxsize,
-        restrictMinSize = args.do_restrict_minsize, do_raw = args.do_raw, do_x265 = args.do_x265 )
+        restrictMinSize = args.do_restrict_minsize, do_raw = args.do_raw, must_have = must_have )
     print('%d, here are the %d episodes to get: %s.' % ( step,
         len( tvTorUnits ), ', '.join(map(lambda tvTorUnit: tvTorUnit[ 'torFname_disp' ], tvTorUnits))))
     step += 1

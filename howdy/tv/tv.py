@@ -52,7 +52,7 @@ class TVShow( object ):
         :returns: a :py:class:`dict`, whose keys are the TV show names and whose values are the :py:class:`TVShow <howdy.tv.tv.TVShow>` associated with that TV show.
         :rtype: dict
         """
-        time0 = time.time( )
+        time0 = time.perf_counter( )
         assert( num_threads > 0 )
         if token is None: token = get_token( verify = verify )
         def _create_tvshow( seriesName ):
@@ -63,7 +63,7 @@ class TVShow( object ):
         with Pool( processes = max( num_threads, cpu_count( ) ) ) as pool:
             tvshow_dict = dict(filter(None, pool.map(_create_tvshow, sorted( tvdata )[:60] ) ) )
             mystr = 'took %0.3f seconds to get a dictionary of %d / %d TV Shows.' % (
-                time.time( ) - time0, len( tvshow_dict ), len( tvdata ) )
+                time.perf_counter( ) - time0, len( tvshow_dict ), len( tvdata ) )
             logging.debug( mystr )
             if debug: print( mystr )
             return tvshow_dict
@@ -1201,7 +1201,7 @@ def get_all_series_didend(
     :returns: the :py:class:`dict` of TV shows on the Plex_ server and whether each has ended or not.
     :type: dict
     """
-    time0 = time.time( )
+    time0 = time.perf_counter( )
     if tvdb_token is None: tvdb_token = get_token( verify = verify )
     with Pool( processes = max(num_threads, cpu_count( ) ) ) as pool:
         date_now = datetime.datetime.now( ).date( )
@@ -1225,13 +1225,13 @@ def get_all_series_didend(
         for seriesName in tvshows_notfound:
             didend_map[ seriesName ] = True
         logging.debug( 'processed %d series to check if they ended, in %0.3f seconds.' % (
-            len( tvdata ), time.time( ) - time0 ) )
+            len( tvdata ), time.perf_counter( ) - time0 ) )
         return didend_map
     
 def _get_remaining_eps_perproc( input_tuple ):
     #
     ## now use TMDB functionality instead
-    time0 = time.time( )
+    time0 = time.perf_counter( )
     name = input_tuple[ 'name' ]
     series_id = input_tuple[ 'series_id' ]
     epsForShow = input_tuple[ 'epsForShow' ]
@@ -1262,7 +1262,7 @@ def _get_remaining_eps_perproc( input_tuple ):
     tuples_to_get = tmdb_eps - here_eps
     if len( tuples_to_get ) == 0: return None
     tuples_to_get_act = list(map(lambda tup: tmdb_eps_dict[ tup ], tuples_to_get ) )
-    logging.debug( 'finished processing %s in %0.3f seconds.' % ( name, time.time( ) - time0 ) )
+    logging.debug( 'finished processing %s in %0.3f seconds.' % ( name, time.perf_counter( ) - time0 ) )
     return name, sorted( tuples_to_get_act, key = lambda tup: (tup[0], tup[1]))
 
 def _get_series_id_perproc( input_tuple ):
@@ -1586,7 +1586,7 @@ def get_shows_to_exclude( tvdata = None ):
     return showsToExcludeInDB
 
 def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
-                       do_raw = False, do_x265 = False ):
+                       do_raw = False, must_have = set([ ]) ):
     """
     Used by, e.g., :ref:`get_tv_batch`, to download missing episodes on the Plex_ TV library. This returns a :py:class:`tuple` of a :py:class:`list` of missing episodes to (torrent) download from the remote Deluge_ torrent server, and a :py:class:`list` of new directories to create, given a set of missing episode information, ``toGet``, as produced by :py:meth:`get_remaining_episodes <howdy.tv.tv.get_remaining_episodes>`. ``$LIBRARY_DIR`` is the TV library's location on the Plex_ server.
 
@@ -1596,12 +1596,10 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
       * ``torFname`` is the search string to give to the Jackett_ server (see :numref:`The Jackett Server` on the Jackett_ server's setup) to search for and download this episode.
       * ``torFname_disp`` is the logging output giving the *raw* name of the episode (show name, season, epno) used in, e.g., :ref:`get_tv_batch <get_tv_batch_label>`.
       * ``minSize`` is the minimum size, in MB, of the H264_ encoded MP4 or MKV episode file to search for.
-      * ``minSize_x265`` is the minimum size, in MB, of the `H265/HEVC`_ encoded MP4 or MKV episode file to search for. By default this is smaller than ``minSize``.
       * ``maxSize`` is the maximum size, in MB, of the H264_ encoded MP4 or MKV episode file to search for.
-      * ``maxSize_x265`` is the maximum size, in MB, of the `H265/HEVC`_ encoded MP4 or MKV episode file to search for. By default this is smaller than ``maxSize``.
       * ``tvshow`` is the name of the TV show to which this missing episode belongs.
       * ``do_raw`` is a :py:class:`boolean <bool>` flag. If ``True``, then search for this missing episode through the Jackett_ server using available IMDb_ information. If ``False``, then do a raw text search on ``torFname`` to find episode Magnet links.
-      * ``do_x265`` is a :py:class:`boolean <bool>` flag. If ``True``, then append the ``x265`` to the torrent search sent to the Jackett_ server. Only works when ``do_raw`` is ``True``.
+      * ``must_have`` is a :py:class:`set` of strings over which to filter the search for Magnet links to download. By default it is an empty :py:class:`set`.
       
       For example, here is a representation of a missing episode that will be fed to the Deluge_ server for download.
 
@@ -1613,10 +1611,9 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
            'torFname_disp': 'The Great British Bake Off S05E12',
            'minSize': 300,
            'maxSize': 800,
-           'minSize_x265': 200,
-           'maxSize_x265': 650,
            'tvshow': 'The Great British Bake Off',
            'do_raw': False,
+           'must_have' : {},
            }
 
     * The second element is a :py:class:`list` of new directories to create for missing episodes. In this example, there are new episodes for season 10 of `The Great British Bake Off`_, but no season 10 directory.
@@ -1629,7 +1626,7 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
     :param bool restrictMaxSize: if ``True``, then restrict the *maximum* size of H264_ or `H265/HEVC`_ videos to search for on the Jackett_ server. Default is ``True``.
     :param bool restrictMinSize: if ``True``, then restrict the *minimum* size of H264_ or `H265/HEVC`_ videos to search for on the Jackett_ server. Default is ``True``.
     :param bool do_raw: if ``False``, then search for Magnet links of missing episodes using their IMDb_ information. If ``True``, then search using the raw string. Default is ``False``.
-    :param bool do_x265: if ``False``, then search for Magnet links of missing episodes using their IMDb_ information. If ``True``, then search using the raw string. Default is ``False``.
+    :param set must_have: the :py:class:`set` of strings over which to filter the search for Magnet links to download. By default it is an empty :py:class:`set`.
 
     :returns: a :py:class:`tuple` of two elements. The first element is a :py:class:`list` of missing episodes to search on the Jackett_ server. The second element is a :py:class:`list` of new directories to create for the TV library.
     :rtype: tuple
@@ -1657,45 +1654,44 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
         episode_number_length = mydict[ 'episode_number_length' ]
         avg_length_mins = mydict[ 'avg_length_mins']
         #
-        ## calc minsize from avg_length_mins
-        num_in_50 = int( avg_length_mins * 60.0 * 700 / 8.0 / 1024 / 50 + 1)
+        ## calc minsize from avg_length_mins, minbitrate = 300 kbps
+        num_in_50 = int( avg_length_mins * 60.0 * 300 / 8.0 / 1024 / 50 + 1)
         minSize = 50 * num_in_50
-        num_in_50 = int( avg_length_mins * 60.0 * 500 / 8.0 / 1024 / 50 + 1)
-        minSize_x265 = 50 * num_in_50
+        #num_in_50 = int( avg_length_mins * 60.0 * 500 / 8.0 / 1024 / 50 + 1)
+        #minSize_x265 = 50 * num_in_50
         ##
-        ## calc maxsize from avg_length_mins
+        ## calc maxsize from avg_length_mins, maxbitrate = 2000 kbps
         num_in_50 = int( avg_length_mins * 60.0 * 2000 / 8.0 / 1024 / 50 + 1 )
         maxSize = 50 * num_in_50
-        num_in_50 = int( avg_length_mins * 60.0 * 1600 / 8.0 / 1024 / 50 + 1 )
-        maxSize_x265 = 50 * num_in_50
+        #num_in_50 = int( avg_length_mins * 60.0 * 1600 / 8.0 / 1024 / 50 + 1 )
+        #maxSize_x265 = 50 * num_in_50
         if not restrictMaxSize:
             maxSize *= 10
-            maxSize_x265 *= 10
+            #maxSize_x265 *= 10
         if not restrictMinSize:
             minSize /= 10
-            minSize_x265 /= 10
+            #minSize_x265 /= 10
         #
         ## being too clever
         ## doing torTitle = showFileName.replace("'",'').replace(':','').replace('&', 'and').replace('/', '-')
         torTitle = reduce(lambda x,y: x.replace(y[0], y[1]),
-                          zip([ ":", "&", "/" ], # do not replace apostrophe
-                              [ '', '', 'and', ',' ]),
+                          zip([ ":", "&", "/", "!", "'" ], # do not replace apostrophe
+                              [ '', '', 'and', ',', '', '' ]),
                           showFileName)
         for seasno, epno, title in mydict[ 'episodes' ]:
-            must_have = [ ]
+            must_have_here = set(map(lambda elem: elem.strip( ).lower( ), must_have))
             actTitle = title.replace('/', ', ')
             candDir = os.path.join( prefix, 'Season %%%02dd' % min_inferred_length % seasno )
             fname = '%s - s%02de%s - %s' % ( showFileName, seasno, '%%%02dd' % episode_number_length % epno, actTitle )
             totFname = os.path.join( candDir, fname )
             torFname = '%s S%02dE%02d' % ( torTitle, seasno, epno )
-            if do_x265: must_have = [ 'x265', ]
             tvTorUnit = {
                 'totFname' : totFname, 'torFname' : torFname, 'torFname_disp' : '%s S%02dE%02d' % ( torTitle, seasno, epno ),
                 'minSize' : minSize, 'maxSize' : maxSize,
-                'minSize_x265' : minSize_x265, 'maxSize_x265' : maxSize_x265,
+                # 'minSize_x265' : minSize_x265, 'maxSize_x265' : maxSize_x265,
                 'tvshow' : tvshow,
                 'do_raw' : do_raw,
-                'must_have' : must_have, }
+                'must_have' : must_have_here, }
             
             if not os.path.isdir( candDir ):
                 tv_torrent_gets[ 'newdirs' ].setdefault( candDir, [] )
@@ -1726,7 +1722,7 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
        * :py:meth:`create_tvTorUnits <howdy.tv.tv.create_tvTorUnits>`.
        * :py:meth:`worker_process_download_tvtorrent <howdy.tv.tv_torrents.worker_process_download_tvtorrent>`.
     """
-    time0 = time.time( )
+    time0 = time.perf_counter( )
     data = core_rsync.get_credentials( )
     assert( data is not None ), "error, could not get rsync download settings."
     assert( maxtime_in_secs >= 60 ), "error, max time to download each torrent >= 60 seconds."
@@ -1767,18 +1763,18 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
     if len( could_not_download ) != 0:
         print( '\n'.join([
             'successfully processed %d / %d episodes in %0.3f seconds.' % (
-                len( successfulTvTorUnits ), len( tvTorUnits ), time.time( ) - time0 ),
+                len( successfulTvTorUnits ), len( tvTorUnits ), time.perf_counter( ) - time0 ),
             'could not download %s.' % ', '.join( sorted( could_not_download ) ) ] ) )
     else:
         print( 'successfully processed %d / %d episodes in %0.3f seconds.' % (
-            len( successfulTvTorUnits ), len( tvTorUnits ), time.time( ) - time0 ) )
+            len( successfulTvTorUnits ), len( tvTorUnits ), time.perf_counter( ) - time0 ) )
         
     #
     ## now rsync those files over
     if len( successfulTvTorUnits ) == 0:
-        print( 'processed from start to finish in %0.3f seconds.' % ( time.time( ) - time0 ) )
+        print( 'processed from start to finish in %0.3f seconds.' % ( time.perf_counter( ) - time0 ) )
         return
-    time1 = time.time( )
+    time1 = time.perf_counter( )
     suffixes = set(map(lambda tvTorUnit: tvTorUnit[ 'remoteFileName' ].split('.')[-1].strip( ),
                        successfulTvTorUnits ) )
     all_glob_strings = list(map(lambda suffix: '*.%s' % suffix, suffixes ) )
@@ -1798,16 +1794,16 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
         return True
     successfulTvTorUnits = list(filter( did_cleanly_download, successfulTvTorUnits ) )
     print( 'these %d / %d tv torrents cleanly downloaded in %0.3f seconds.' % (
-        len( successfulTvTorUnits ), len( tvTorUnits ), time.time( ) - time1 ) )
+        len( successfulTvTorUnits ), len( tvTorUnits ), time.perf_counter( ) - time1 ) )
     #
     ## now move those files that have successfully downloaded into their final destinations
-    time2 = time.time( )
+    time2 = time.perf_counter( )
     for tvTorUnit in successfulTvTorUnits:
         shutil.move( os.path.join( local_dir, tvTorUnit[ 'remoteFileName' ] ),
                      tvTorUnit[ 'totFname' ] )
     print( 'these %d files moved to correct destinations in %0.3f seconds.' % (
-        len( successfulTvTorUnits ), time.time( ) - time2 ) )
-    print( 'processed from start to finish in %0.3f seconds.' % ( time.time( ) - time0 ) )
+        len( successfulTvTorUnits ), time.perf_counter( ) - time2 ) )
+    print( 'processed from start to finish in %0.3f seconds.' % ( time.perf_counter( ) - time0 ) )
     
 def get_tot_epdict_tvdb(
     showName, verify = True, showSpecials = False,

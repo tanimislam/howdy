@@ -52,7 +52,7 @@ def get_subtitles_yts( title ):
     response = requests.get('http://www.yifysubtitles.com/movie-imdb/%s' % imdbid )
     if response.status_code != 200:
         return None
-    html = BeautifulSoup( response.content, 'lxml' )
+    html = BeautifulSoup( response.content, 'html.parser' )
     def is_english_subtitle( elem ):
         if 'data-id' not in elem.attrs:
             return False
@@ -85,7 +85,7 @@ def get_subtitles_yts( title ):
         resp2 = requests.get( pageurl )
         if resp2.status_code != 200:
             continue
-        html2 = BeautifulSoup( resp2.content, 'lxml' )
+        html2 = BeautifulSoup( resp2.content, 'html.parser' )
         button_elem = list(
             filter(lambda elm: 'href' in elm.attrs and elm.attrs['href'].endswith('.zip'), html2.find_all('a')))
         if len( button_elem ) != 1: continue

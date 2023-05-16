@@ -82,7 +82,7 @@ def check_valid_RST( myString ):
     .. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
     """
     body = html_parts( myString)[ 'body' ]
-    html = BeautifulSoup( body, 'lxml' )
+    html = BeautifulSoup( body, 'html.parser' )
     error_messages = html.find_all('p', { 'class' : 'system-message-title' } )
     return len( error_messages) == 0
 
@@ -100,7 +100,7 @@ def convert_string_RST( myString ):
         logging.error( "Error, could not convert %s into RST." % myString )
         return None
     html_body = html_parts( myString )[ 'whole' ]
-    html = BeautifulSoup( html_body, 'lxml' )
+    html = BeautifulSoup( html_body, 'html.parser' )
     return html.prettify( )
 
 class HtmlView( QWebEngineView ):
@@ -421,7 +421,7 @@ class ProgressDialog( QDialogWithPrinting ):
         <html>
         <body>
         </body>
-        </html>""", 'lxml' )
+        </html>""", 'html.parser' )
         self.mainDialog.setHtml( self.parsedHTML.prettify( ) )
         self.mainDialog.setReadOnly( True )
         self.mainDialog.setStyleSheet("""
@@ -484,7 +484,7 @@ class ProgressDialog( QDialogWithPrinting ):
         <html>
         <body>
         </body>
-        </html>""", 'lxml' )
+        </html>""", 'html.parser' )
         self.mainDialog.setHtml( self.parsedHTML.prettify( ) )
         if len( initString ) != 0:
             self.addText( initString )

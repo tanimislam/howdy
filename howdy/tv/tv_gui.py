@@ -195,13 +195,13 @@ class HowdyTVGUI( QDialogWithPrinting ):
         </html>""" % ( seriesName, show_status,
                        num_total, num_missing,
                        minDate.strftime( '%B %d, %Y' ),
-                       maxDate.strftime( '%B %d, %Y' ) ), 'lxml' )
+                       maxDate.strftime( '%B %d, %Y' ) ), 'html.parser' )
         body_elem = html.find_all('body')[0]
         html2 = BeautifulSoup("""
         <html>
         <body>
         </body>
-        </html>""", 'lxml' )
+        </html>""", 'html.parser' )
         body2_elem = html2.find_all('body')[0]
         if len( overview ) != 0:
             summary_tag = html2.new_tag("p")

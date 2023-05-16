@@ -603,7 +603,7 @@ def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):
 
     .. _Wikipedia: https://en.wikipedia.org
     """
-    import lxml.html, titlecase
+    import html.parser.html, titlecase
     assert(seasnums >= 1)
     assert(isinstance(seasnums, int))
     #
@@ -621,7 +621,7 @@ def get_tot_epdict_singlewikipage(epURL, seasnums = 1, verify = True):
             return True
         return False
     #
-    tree = lxml.html.fromstring(requests.get(epURL, verify=verify).content )    
+    tree = html.parser.html.fromstring(requests.get(epURL, verify=verify).content )    
     epelems = filter(is_epelem, tree.iter())
     #
     ## splitting by seasons

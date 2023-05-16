@@ -67,7 +67,7 @@ def rstToHTML( rstString ):
     """
     try:
         html_body = html_parts( rstString )[ 'whole' ]
-        return BeautifulSoup( html_body, 'lxml' ).prettify( )
+        return BeautifulSoup( html_body, 'html.parser' ).prettify( )
     except RuntimeError as e:
         logging.debug( '%s' % e )
         return None
@@ -86,7 +86,7 @@ def processValidHTMLWithPNG( html, pngDataDict, doEmbed = False ):
     .. _`Base 64 encoded`: https://en.wikipedia.org/wiki/Base64
     .. _PNG: https://en.wikipedia.org/wiki/Portable_Network_Graphics
     """
-    htmlData = BeautifulSoup( html, 'lxml' )
+    htmlData = BeautifulSoup( html, 'html.parser' )
     pngNames = set(filter(
         lambda name: name.endswith('.png'),
         map(lambda img: img['src'], htmlData.find_all('img'))))
@@ -311,7 +311,7 @@ def get_all_servers( token, verify = True ):
                              verify = verify )
     if response.status_code != 200:
         return None
-    myxml = BeautifulSoup( response.content, 'lxml' )
+    myxml = BeautifulSoup( response.content, 'html.parser' )
     server_dict = { }
     for server_elem in filter(lambda se: len(set([ 'product', 'publicaddress', 'owned', 'accesstoken' ]) - set( se.attrs ) ) == 0 and
                               se['product'] == 'Plex Media Server', myxml.find_all('device') ):
@@ -361,7 +361,7 @@ def get_updated_at( token, fullURL = 'https://localhost:32400' ):
         logging.error( 'Error, could not get updated at status with token = %s, URL = %s.' % (
             token, fullURL ) )
         return None
-    myxml = BeautifulSoup( response.content, 'lxml' )
+    myxml = BeautifulSoup( response.content, 'html.parser' )
     media_elem = max( myxml.find_all( 'mediacontainer' ) )
     assert( 'updatedat' in media_elem.attrs )
     return datetime.datetime.fromtimestamp( int( media_elem['updatedat'] ) )
@@ -382,7 +382,7 @@ def get_email_contacts( token, verify = True ):
                              headers = { 'X-Plex-Token' : token },
                              verify = verify )
     if response.status_code != 200: return None
-    myxml = BeautifulSoup( response.content, 'lxml' )
+    myxml = BeautifulSoup( response.content, 'html.parser' )
     return sorted(set(map(lambda elem: elem['email'],
                           filter(lambda elem: 'email' in elem.attrs,
                                  myxml.find_all( 'user' ) ) ) ) )
@@ -477,7 +477,7 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
     #
     def _get_movie_data( input_tuple ):
         cont, indices = input_tuple
-        html = BeautifulSoup( cont, 'lxml' )
+        html = BeautifulSoup( cont, 'html.parser' )
         movie_elems = html.find_all('video' )
         movie_data_sub = [ ]
         for idx in indices:
@@ -531,7 +531,7 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
         return movie_data_sub
 
     act_num_threads = max( num_threads, multiprocessing.cpu_count( ) )
-    len_movie_elems = len( BeautifulSoup( response.content, 'lxml' ).find_all('video') )
+    len_movie_elems = len( BeautifulSoup( response.content, 'html.parser' ).find_all('video') )
     with multiprocessing.Pool( processes = act_num_threads ) as pool:
         input_tuples = list(
             map(lambda idx: ( response.content, list(
@@ -601,7 +601,7 @@ def _get_library_data_show(
         timeout = input_data[ 'timeout' ]
         indices = input_data[ 'indices' ]
         #
-        html = BeautifulSoup( cont, 'lxml' )
+        html = BeautifulSoup( cont, 'html.parser' )
         direlems = html.find_all('directory')
         tvdata_tup = [ ]
         for idx in indices:
@@ -615,7 +615,7 @@ def _get_library_data_show(
             resp2 = sess.get( newURL, params = params, verify = False, timeout = timeout )
             times_requests_given.append( time.time( ) - t0 )
             if resp2.status_code != 200: continue
-            h2 = BeautifulSoup( resp2.content, 'lxml' )
+            h2 = BeautifulSoup( resp2.content, 'html.parser' )
             leafElems = list( filter(lambda le: 'allLeaves' not in le['key'], h2.find_all('directory') ) )
             if len(leafElems) == 0: continue
             seasons = { }
@@ -650,7 +650,7 @@ def _get_library_data_show(
                 newURL = urljoin( fullURL, leafElem[ 'key' ] )
                 resp3 = sess.get( newURL, params = params, verify = False, timeout = timeout )
                 times_requests_given.append( time.time( ) - t0 )
-                h3 = BeautifulSoup( resp3.content, 'lxml' )
+                h3 = BeautifulSoup( resp3.content, 'html.parser' )
                 for videlem in h3.find_all( _valid_videlem ):
                     if datetime.datetime.fromtimestamp( float( videlem['addedat'] ) ).date() < sinceDate:
                         continue
@@ -707,7 +707,7 @@ def _get_library_data_show(
         slist.append( times_requests_given )
         return tvdata_tup
     
-    num_direlems = len( BeautifulSoup( response.content, 'lxml' ).find_all('directory' ) )
+    num_direlems = len( BeautifulSoup( response.content, 'html.parser' ).find_all('directory' ) )
     max_of_num_vals = max( num_direlems, multiprocessing.cpu_count( ) )
     act_num_threads = min( num_threads, max_of_num_vals )
     with multiprocessing.Pool( processes = act_num_threads ) as pool:
@@ -851,7 +851,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
         timeout = input_data[ 'timeout' ]
         indices = input_data[ 'indices' ]
         #
-        html = BeautifulSoup( cont, 'lxml' )
+        html = BeautifulSoup( cont, 'html.parser' )
         artist_elems = html.find_all('directory')
         song_data_sub = [ ]
         for idx in indices:
@@ -859,7 +859,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
             newURL = '%s%s' % ( fullURL, artist_elem.get('key') )
             resp2 = session.get( newURL, params = params, verify = False, timeout = timeout )        
             if resp2.status_code != 200: continue
-            h2 = BeautifulSoup( resp2.content, 'lxml' )
+            h2 = BeautifulSoup( resp2.content, 'html.parser' )
             album_elems = list( h2.find_all('directory') )
             artist_name = artist_elem[ 'title' ]
             artist_data = { }
@@ -867,7 +867,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                 newURL = '%s%s' % ( fullURL, album_elem.get('key') )
                 resp3 = session.get( newURL, params = params, verify = False, timeout = timeout )
                 if resp3.status_code != 200: continue
-                h3 = BeautifulSoup( resp3.content, 'lxml' )
+                h3 = BeautifulSoup( resp3.content, 'html.parser' )
                 track_elems = list( filter(valid_track, h3.find_all( 'track' ) ) )
                 album_name = album_elem[ 'title' ]
                 artist_data.setdefault( album_name, [ ] )
@@ -906,7 +906,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
         return song_data_sub
 
     act_num_threads = max( num_threads, multiprocessing.cpu_count( ) )
-    len_artistelems = len( BeautifulSoup( response.content, 'lxml' ).find_all('directory') )
+    len_artistelems = len( BeautifulSoup( response.content, 'html.parser' ).find_all('directory') )
     
     s = requests.Session( )
     s.mount( 'https://', requests.adapters.HTTPAdapter(
@@ -954,7 +954,7 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
         '%s/library/sections' % fullURL, params = params,
         verify = False )
     if response.status_code != 200: return None
-    html = BeautifulSoup( response.content, 'lxml' )
+    html = BeautifulSoup( response.content, 'html.parser' )
     library_dict = { int( direlem['key'] ) : ( direlem['title'], direlem['type'] ) for
                      direlem in html.find_all('directory') }
     return sorted(set(filter(lambda key: library_dict[ key ][1] == 'movie',
@@ -1053,7 +1053,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
                       ( time.time( ) - time0, title ) )
         logging.error( "no data found. Exiting..." )
         return None
-    html = BeautifulSoup( response.content, 'lxml' )
+    html = BeautifulSoup( response.content, 'html.parser' )
     library_dict = { direlem[ 'title' ] : ( int( direlem['key'] ), direlem['type'] ) for
                      direlem in html.find_all('directory') }
     assert( title in library_dict )
@@ -1217,7 +1217,7 @@ def get_libraries( token, fullURL = 'http://localhost:32400', do_full = False, t
         logging.error( "error, got status code = %d." %
                        response.status_code )
         return None
-    html = BeautifulSoup( response.content, 'lxml' )
+    html = BeautifulSoup( response.content, 'html.parser' )
     if not do_full:
         return dict( map( lambda direlem: ( int( direlem['key'] ), direlem['title'] ),
                           html.find_all('directory') ) )
@@ -1354,7 +1354,7 @@ def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
         response = requests.get('%s/library/sections/%d/recentlyAdded' % ( fullURL, keynum ),
                                 params = params, verify = False )
         if response.status_code != 200: return None
-        html = BeautifulSoup( response.content, 'lxml' )
+        html = BeautifulSoup( response.content, 'html.parser' )
         valid_video_elems = sorted(filter(lambda elem: len( set([ 'addedat', 'title', 'year' ]) -
                                                             set( elem.attrs ) ) == 0,
                                           html.find_all('video') ),
@@ -1671,7 +1671,7 @@ def check_jackett_credentials( url, apikey, verify = True ):
         if response.status_code != 200:
             return None, "ERROR, invalid jackett credentials"
 
-        html = BeautifulSoup( response.content, 'lxml' )
+        html = BeautifulSoup( response.content, 'html.parser' )
         error_items = html.find_all('error')
         if len( error_items ) != 0:
             return "ERROR, invalid API key"

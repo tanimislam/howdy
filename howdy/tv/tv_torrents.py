@@ -219,7 +219,7 @@ def get_tv_torrent_zooqle( name, maxnum = 100, verify = True ):
     if response.status_code != 200:
         return return_error_raw(
             'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname)
-    myxml = BeautifulSoup( response.content, 'lxml' )
+    myxml = BeautifulSoup( response.content, 'html.parser' )
     def is_valid_elem( elem ):
         names = set(map(lambda elm: elm.name, elem.find_all( ) ) )
         return len( names & set([ 'torrent:infohash',
@@ -426,7 +426,7 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
         return return_error_raw( 'FAILURE, request for %s did not work.' % name )
     if not response.content.startswith(b'<?xml'):
         return return_error_raw( 'ERROR, request content is not a valid XML block.' )
-    html = BeautifulSoup( response.content, 'lxml' )
+    html = BeautifulSoup( response.content, 'html.parser' )
     items = []
     for item in html('item'):
         if item.category and 'tv' not in item.category.get_text(strip=True).lower():
@@ -538,7 +538,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minSize = 0, maxSize = numpy.inf,
             if not validators.url( url2 ): return None
             resp2 = requests.get( url2, verify = verify )
             if resp2.status_code != 200: return None
-            h2 = BeautifulSoup( resp2.content, 'lxml' )
+            h2 = BeautifulSoup( resp2.content, 'html.parser' )
             valid_magnet_links = set(map(lambda elem: elem['href'],
                                          filter(lambda elem: 'href' in elem.attrs and 'magnet' in elem['href'],
                                                 h2.find_all('a'))))
@@ -787,7 +787,7 @@ def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
         except (ValueError, TypeError):
             return default_value
 
-    html = BeautifulSoup( response.content, 'lxml' )
+    html = BeautifulSoup( response.content, 'html.parser' )
     torrent_table = html.find("table", id="searchResult")
     torrent_rows = torrent_table("tr") if torrent_table else []
     if len( torrent_rows ) < 2:

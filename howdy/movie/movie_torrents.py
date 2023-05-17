@@ -83,7 +83,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
                            response.status_code, response.content ) ] ) )
     logging.info( 'processed jackett torrents for %s in %0.3f seconds.' % (
         name, time.time( ) - time0 ) )
-    html = BeautifulSoup( response.content, 'html.parser' )
+    html = BeautifulSoup( response.content, 'lxml' )
     if len( html.find_all('item') ) == 0:
         return return_error_raw(
             'failure, could not find movie %s with jackett.' % name )
@@ -102,7 +102,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
            if not validators.url( url2 ): return None
            resp2 = requests.get( url2, verify = verify )
            if resp2.status_code != 200: return None
-           h2 = BeautifulSoup( resp2.content, 'html.parser' )
+           h2 = BeautifulSoup( resp2.content, 'lxml' )
            valid_magnet_links = set(map(lambda elem: elem['href'],
                                         filter(lambda elem: 'href' in elem.attrs and
                                                'magnet' in elem['href'], h2.find_all('a'))))
@@ -272,7 +272,7 @@ def get_movie_torrent_zooqle( name, maxnum = 10, verify = True ):
     response = requests.get( fullurl, verify = verify )
     if response.status_code != 200:
         return return_error_raw( 'ERROR, COULD NOT FIND ZOOQLE TORRENTS FOR %s' % candname )
-    myxml = BeautifulSoup( response.content, 'html.parser' )
+    myxml = BeautifulSoup( response.content, 'lxml' )
     def is_valid_elem( elem ):
         names = set(map(lambda elm: elm.name, elem.find_all( ) ) )
         return len( names & set([ 'torrent:infohash',
@@ -497,7 +497,7 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
         except (ValueError, TypeError):
             return default_value
 
-    html = BeautifulSoup( response.content, 'html.parser' )
+    html = BeautifulSoup( response.content, 'lxml' )
     torrent_table = html.find("table", id="searchResult")
     torrent_rows = torrent_table("tr") if torrent_table else []
     if len( torrent_rows ) < 2:

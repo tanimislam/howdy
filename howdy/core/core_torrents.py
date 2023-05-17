@@ -134,7 +134,7 @@ def get_book_torrent_jackett( name, maxnum = 10, keywords = [ ], verify = True )
         verify = verify ) # tv shows
     if response.status_code != 200:
         return return_error_raw( 'FAILURE, PROBLEM WITH JACKETT SERVER ACCESSIBLE AT %s.' % url )
-    html = BeautifulSoup( response.content, 'html.parser' )
+    html = BeautifulSoup( response.content, 'lxml' )
     if len( html.find_all('item') ) == 0:
         return return_error_raw( 'FAILURE, NO BOOKS SATISFYING CRITERIA FOR GETTING %s' % name )
     items = [ ]
@@ -151,7 +151,7 @@ def get_book_torrent_jackett( name, maxnum = 10, keywords = [ ], verify = True )
         if not validators.url( url2 ): return None
         resp2 = requests.get( url2, verify = verify )
         if resp2.status_code != 200: return None
-        h2 = BeautifulSoup( resp2.content, 'html.parser' )
+        h2 = BeautifulSoup( resp2.content, 'lxml' )
         valid_magnet_links = set(map(lambda elem: elem['href'],
                                      filter(lambda elem: 'href' in elem.attrs and 'magnet' in elem['href'],
                                             h2.find_all('a'))))

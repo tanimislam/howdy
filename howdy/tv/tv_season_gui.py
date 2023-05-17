@@ -35,7 +35,7 @@ class HowdyTVSeasonGUI( QDialogWithPrinting ):
           <p>last episode aired on %s.</p>
         </html>""" % ( len( episodes ), season, len( eps_exist ), season,
                        minDate.strftime( '%B %d, %Y' ),
-                       maxDate.strftime( '%B %d, %Y' ) ), "html.parser" )
+                       maxDate.strftime( '%B %d, %Y' ) ), "lxml" )
         body_elem = html.find_all('body')[0]        
         if len( eps_exist ) != 0:
             average_duration_season_in_secs = numpy.array(
@@ -229,7 +229,7 @@ class HowdyTVSeasonGUI( QDialogWithPrinting ):
         </html>""" % (
             seriesName, season, epno, title,
             dateAired.strftime( '%d/%m/%Y' ),
-            overview ), 'html.parser' )
+            overview ), 'lxml' )
         body_elem = html.find_all('body')[0]
         if 'duration' in episode:
             dur_tag = html.new_tag( "p" )

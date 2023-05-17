@@ -38,7 +38,7 @@ _scraper = cfscrape.create_scraper( )
 def soup_for(url, params):
     response = _scraper.get( url, headers = HEADERS, params = params )
     html = response.content.decode("utf-8")
-    return BeautifulSoup(html, "html.parser")
+    return BeautifulSoup(html, "lxml")
 
 def get_subscene_zipped_content( suburl ):
     html = soup_for( suburl, params = { } )

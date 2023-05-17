@@ -66,5 +66,5 @@ def get_movie_titles_by_year(
                              params = params, verify = False )                             
     if response.status_code != 200: return None
     movie_elems = filter( lambda elem: 'title' in elem.attrs,
-                          BeautifulSoup( response.content, 'html.parser' ).find_all('video') )
+                          BeautifulSoup( response.content, 'lxml' ).find_all('video') )
     return sorted(set(map( lambda movie_elem: movie_elem['title'], movie_elems ) ) )

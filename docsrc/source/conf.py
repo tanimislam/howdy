@@ -32,7 +32,8 @@ logger.debug( 'READTHEDOCS: %s.' % os.environ.get('READTHEDOCS') )
 
 #
 ## now don't verify the TLS if not in READTHEDOCS
-tls_verify = is_in_readthedocs
+#tls_verify = is_in_readthedocs
+tls_verify = True
 
 #
 ## following instructions on https://docs.readthedocs.io/en/latest/faq.html#i-get-import-errors-on-libraries-that-depend-on-c-modules

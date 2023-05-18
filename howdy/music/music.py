@@ -158,7 +158,7 @@ class MusicInfo( object ):
             'method' : 'direct' }, verify = False )
         if response.status_code != 200:
             return None
-        html = BeautifulSoup( response.content, 'lxml' )
+        html = BeautifulSoup( response.content, 'html.parser' )
         table = html.find_all('table', { 'class' : 'tbl'})
         if len( table ) != 1:
             return None

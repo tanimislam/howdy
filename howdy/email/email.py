@@ -444,7 +444,7 @@ def get_summary_html(
     wholestr = open( os.path.join( resourceDir, 'howdy_template.rst' ), 'r' ).read( )
     wholestr = wholestr % tup_formatting
     htmlString = html_parts( wholestr )[ 'whole' ]
-    html = BeautifulSoup( htmlString, 'lxml' )
+    html = BeautifulSoup( htmlString, 'html.parser' )
     return html.prettify( ), wholestr
 
 def _get_itemized_string( stringtup ):

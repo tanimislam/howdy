@@ -128,7 +128,7 @@ def getTokenForUsernamePassword( username, password, verify = True ):
         verify = verify )
     if response.status_code != 201:
         logging.debug( 'status code = %d' % response.status_code )
-        logging.debug( 'content = %s' %  response.content )
+        logging.debug( 'content = %s' %  response.text )
         return None
     return response.json()['user']['authentication_token']
     
@@ -531,10 +531,10 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
         return movie_data_sub
 
     act_num_threads = max( num_threads, multiprocessing.cpu_count( ) )
-    len_movie_elems = len( BeautifulSoup( response.content, 'html.parser' ).find_all('video') )
+    len_movie_elems = len( BeautifulSoup( response.text, 'html.parser' ).find_all('video') )
     with multiprocessing.Pool( processes = act_num_threads ) as pool:
         input_tuples = list(
-            map(lambda idx: ( response.content, list(
+            map(lambda idx: ( response.text, list(
                 range(idx, len_movie_elems, act_num_threads ) ) ),
                 range( act_num_threads ) ) )
         movie_data = { }
@@ -613,9 +613,9 @@ def _get_library_data_show(
             else: picurl = None
             newURL = urljoin( fullURL, direlem['key'] )
             resp2 = sess.get( newURL, params = params, verify = False, timeout = timeout )
-            times_requests_given.append( time.time( ) - t0 )
+            times_requests_given.append( time.perf_counter( ) - t0 )
             if resp2.status_code != 200: continue
-            h2 = BeautifulSoup( resp2.content, 'html.parser' )
+            h2 = BeautifulSoup( resp2.text, 'html.parser' )
             leafElems = list( filter(lambda le: 'allLeaves' not in le['key'], h2.find_all('directory') ) )
             if len(leafElems) == 0: continue
             seasons = { }
@@ -649,8 +649,8 @@ def _get_library_data_show(
             for leafElem in leafElems:
                 newURL = urljoin( fullURL, leafElem[ 'key' ] )
                 resp3 = sess.get( newURL, params = params, verify = False, timeout = timeout )
-                times_requests_given.append( time.time( ) - t0 )
-                h3 = BeautifulSoup( resp3.content, 'html.parser' )
+                times_requests_given.append( time.perf_counter( ) - t0 )
+                h3 = BeautifulSoup( resp3.text, 'html.parser' )
                 for videlem in h3.find_all( _valid_videlem ):
                     if datetime.datetime.fromtimestamp( float( videlem['addedat'] ) ).date() < sinceDate:
                         continue
@@ -707,7 +707,7 @@ def _get_library_data_show(
         slist.append( times_requests_given )
         return tvdata_tup
     
-    num_direlems = len( BeautifulSoup( response.content, 'html.parser' ).find_all('directory' ) )
+    num_direlems = len( BeautifulSoup( response.text, 'html.parser' ).find_all('directory' ) )
     max_of_num_vals = max( num_direlems, multiprocessing.cpu_count( ) )
     act_num_threads = min( num_threads, max_of_num_vals )
     with multiprocessing.Pool( processes = act_num_threads ) as pool:
@@ -726,10 +726,10 @@ def _get_library_data_show(
             pool_maxsize = act_num_threads ) )
         #
         ## multiprocess chunking of input data among act_num_threads processes
-        time0 = time.time( )
+        time0 = time.perf_counter( )
         input_tuples = list(
             map(lambda idx: {
-                'cont'    : response.content,
+                'cont'    : response.text,
                 'session' : sess,
                 'slist'   : shared_list,
                 't0'      : time0,
@@ -859,7 +859,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
             newURL = '%s%s' % ( fullURL, artist_elem.get('key') )
             resp2 = session.get( newURL, params = params, verify = False, timeout = timeout )        
             if resp2.status_code != 200: continue
-            h2 = BeautifulSoup( resp2.content, 'html.parser' )
+            h2 = BeautifulSoup( resp2.text, 'html.parser' )
             album_elems = list( h2.find_all('directory') )
             artist_name = artist_elem[ 'title' ]
             artist_data = { }
@@ -867,7 +867,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                 newURL = '%s%s' % ( fullURL, album_elem.get('key') )
                 resp3 = session.get( newURL, params = params, verify = False, timeout = timeout )
                 if resp3.status_code != 200: continue
-                h3 = BeautifulSoup( resp3.content, 'html.parser' )
+                h3 = BeautifulSoup( resp3.text, 'html.parser' )
                 track_elems = list( filter(valid_track, h3.find_all( 'track' ) ) )
                 album_name = album_elem[ 'title' ]
                 artist_data.setdefault( album_name, [ ] )
@@ -906,7 +906,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
         return song_data_sub
 
     act_num_threads = max( num_threads, multiprocessing.cpu_count( ) )
-    len_artistelems = len( BeautifulSoup( response.content, 'html.parser' ).find_all('directory') )
+    len_artistelems = len( BeautifulSoup( response.text, 'html.parser' ).find_all('directory') )
     
     s = requests.Session( )
     s.mount( 'https://', requests.adapters.HTTPAdapter(
@@ -919,7 +919,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
     with multiprocessing.Pool( processes = act_num_threads ) as pool:
         input_tuples = list(
             map(lambda idx: {
-                'cont'    : response.content,
+                'cont'    : response.text,
                 'session' : s,
                 'timeout' : timeout,
                 'indices' : list(range( idx, len_artistelems, act_num_threads ) ) },
@@ -954,7 +954,7 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
         '%s/library/sections' % fullURL, params = params,
         verify = False )
     if response.status_code != 200: return None
-    html = BeautifulSoup( response.content, 'html.parser' )
+    html = BeautifulSoup( response.text, 'html.parser' )
     library_dict = { int( direlem['key'] ) : ( direlem['title'], direlem['type'] ) for
                      direlem in html.find_all('directory') }
     return sorted(set(filter(lambda key: library_dict[ key ][1] == 'movie',
@@ -1044,16 +1044,16 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
     .. _`The Brink`: https://en.wikipedia.org/wiki/The_Brink_(TV_series)
     .. _`The Beatles`: https://en.wikipedia.org/wiki/The_Beatles
     """
-    time0 = time.time( )
+    time0 = time.perf_counter( )
     params = { 'X-Plex-Token' : token }
     response = requests.get( '%s/library/sections' % fullURL, params = params,
                              verify = False, timeout = timeout )
     if response.status_code != 200:
         logging.error( "took %0.3f seconds to get here in get_library_data, library = %s." %
-                      ( time.time( ) - time0, title ) )
+                      ( time.perf_counter( ) - time0, title ) )
         logging.error( "no data found. Exiting..." )
         return None
-    html = BeautifulSoup( response.content, 'html.parser' )
+    html = BeautifulSoup( response.text, 'html.parser' )
     library_dict = { direlem[ 'title' ] : ( int( direlem['key'] ), direlem['type'] ) for
                      direlem in html.find_all('directory') }
     assert( title in library_dict )
@@ -1064,14 +1064,14 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
         'artist': _get_library_data_artist }
     if mediatype not in func_dict:
         logging.error( "took %0.3f seconds to get here in get_library_data, library = %s." %
-                      ( time.time( ) - time0, title ) )
+                      ( time.perf_counter( ) - time0, title ) )
         logging.error( "could not find a library with name = %s. Exiting..." % title )
         return None
     _, data = func_dict[ mediatype ](
         key, token, fullURL = fullURL,
         num_threads = num_threads, timeout = timeout )
     logging.info( "took %0.3f seconds to gete here in get_library_data, library = %s." %
-                  ( time.time( ) - time0, title ) )
+                  ( time.perf_counter( ) - time0, title ) )
     return data
 
 def get_library_stats( key, token, fullURL = 'http://localhost:32400', sinceDate = None ):

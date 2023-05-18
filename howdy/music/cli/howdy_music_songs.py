@@ -183,8 +183,8 @@ def _download_actual_song(
     if youtubeURL is None: return None
     #
     ## now download the song into the given filename
-    ## replace '/' in artist and song name with '-'
-    filename = '%s.%s.m4a' % ( artist_name.replace( '/', '-' ), song_name.replace('/', '-' ) )
+    ## replace '/' in artist and song name with ';'
+    filename = '%s.%s.m4a' % ( artist_name.replace( '/', '-' ), '; '.join(map(lambda tok: tok.strip( ), song_name.split('/') ) ) )
     music.get_youtube_file( youtubeURL, filename )
     #
     ## now fill out the metadata
@@ -335,7 +335,7 @@ def _download_songs_oldformat( args ):
                 continue
             #
             ## now download the song into the given filename
-            filename = '%s.%s.m4a' % ( artist_name, song_name )
+            filename = '%s.%s.m4a' % ( artist_name, '; '.join(map(lambda tok: tok.strip( ), song_name.split('/') ) ) )
             music.get_youtube_file( youtubeURL, filename )
             #
             ## now fill out the metadata

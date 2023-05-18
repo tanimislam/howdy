@@ -823,7 +823,7 @@ def download_best_song( artist_name, song_name, youtube = None,
     if len( videos ) == 0:
         return None
     _, youtubeURL = videos[0]
-    filename = '%s.%s.m4a' % ( artist_name, song_name )
+    filename = '%s.%s.m4a' % ( artist_name, '; '.join( map(lambda tok: tok.strip( ), song_name.split('/') ) ) )
     get_youtube_file( youtubeURL, filename )
     fill_m4a_metadata( filename, data_dict )
     return filename

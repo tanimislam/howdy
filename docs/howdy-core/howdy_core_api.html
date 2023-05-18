@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.3. Howdy Core API &mdash; howdy! 1.50-2-ga74b1eb2 documentation</title>
+  <title>4.3. Howdy Core API &mdash; howdy! 1.55-6-g298e8113 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -13,7 +13,8 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
@@ -37,7 +38,7 @@
             howdy!
           </a>
               <div class="version">
-                1.50
+                1.55
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -535,7 +536,7 @@
 <dl class="py data">
 <dt class="sig sig-object py" id="howdy.core.geoip_reader">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">geoip_reader</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;geoip2.database.Reader</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#howdy.core.geoip_reader" title="Permalink to this definition"></a></dt>
-<dd><p>This contains an on-disk <a class="reference external" href="https://www.maxmind.com/en/geoip2-services-and-databases">MaxMind</a> database, of type <a class="reference external" href="https://geoip2.readthedocs.io/en/latest/index.html#geoip2.database.Reader" title="(in geoip2 v4.6.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">geoip2.database.Reader</span></code></a>, containing location information for IP addresses.</p>
+<dd><p>This contains an on-disk <a class="reference external" href="https://www.maxmind.com/en/geoip2-services-and-databases">MaxMind</a> database, of type <code class="xref py py-class docutils literal notranslate"><span class="pre">geoip2.database.Reader</span></code>, containing location information for IP addresses.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -606,7 +607,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.get_lastupdated_string">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2023,</span> <span class="pre">4,</span> <span class="pre">15,</span> <span class="pre">15,</span> <span class="pre">15,</span> <span class="pre">34,</span> <span class="pre">637792)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2023,</span> <span class="pre">5,</span> <span class="pre">18,</span> <span class="pre">10,</span> <span class="pre">37,</span> <span class="pre">1,</span> <span class="pre">922210)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a string representation of a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1325,7 +1326,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.core.get_pic_data">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_pic_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plexPICURL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_pic_data" title="Permalink to this definition"></a></dt>
-<dd><p>Get the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> data as a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.28.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a> object, from a movie picture URL on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
+<dd><p>Get the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> data as a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.30.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a> object, from a movie picture URL on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1337,7 +1338,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dd class="field-even"><p>the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> data for the movie image.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.28.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.30.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>

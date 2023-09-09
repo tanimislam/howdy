@@ -1,4 +1,4 @@
-import os, glob, datetime, logging, numpy, urllib3, datetime
+import os, glob, datetime, logging, numpy, urllib3, datetime, warnings
 import uuid, requests, pytz, time, json, validators
 import pathos.multiprocessing as multiprocessing
 # oauth2 stuff
@@ -9,7 +9,7 @@ from google.oauth2.credentials import Credentials
 #
 from docutils.examples import html_parts
 from html import unescape
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
 from urllib.request import urlopen
 from urllib.parse import urlencode, urljoin, urlparse
 from itertools import chain
@@ -19,7 +19,8 @@ from howdy import resourceDir
 from howdy.core import session, PlexConfig, LastNewsletterDate, PlexGuestEmailMapping
 from howdy.movie import movie
 from howdy.tv import TMDBShowIds, tv_attic
-
+# warnings suppress stuff
+warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning, module='bs4')
 
 def add_mapping( plex_email, plex_emails, new_emails, replace_existing ):
     """
@@ -310,7 +311,7 @@ def get_all_servers( token, verify = True ):
                              params = { 'X-Plex-Token' : token },
                              verify = verify )
     if response.status_code != 200:
-        return None
+        return None    
     myxml = BeautifulSoup( response.content, 'lxml' )
     server_dict = { }
     for server_elem in filter(lambda se: len(set([ 'product', 'publicaddress', 'owned', 'accesstoken' ]) - set( se.attrs ) ) == 0 and

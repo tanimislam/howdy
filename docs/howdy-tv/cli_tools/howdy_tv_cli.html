@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5.1. Howdy TV Command Line Utilities &mdash; howdy! 1.55-6-g298e8113 documentation</title>
+  <title>5.1. Howdy TV Command Line Utilities &mdash; howdy! 1.55-9-g1aca230e documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -13,11 +13,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=0ed2ffa6"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -100,7 +100,7 @@
            <div itemprop="articleBody">
              
   <section id="howdy-tv-command-line-utilities">
-<h1><span class="section-number">5.1. </span>Howdy TV Command Line Utilities<a class="headerlink" href="#howdy-tv-command-line-utilities" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">5.1. </span>Howdy TV Command Line Utilities<a class="headerlink" href="#howdy-tv-command-line-utilities" title="Link to this heading"></a></h1>
 <p>This section describes the seven Howdy Howdy TV command line utilities.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#get-tv-batch"><span class="std std-ref">get_tv_batch</span></a> finds new episodes of TV shows that already exist on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
@@ -112,7 +112,7 @@
 <li><p><a class="reference internal" href="#howdy-tv-excludes"><span class="std std-ref">howdy_tv_excludes</span></a> administers selects those TV shows, that exist on the <a class="reference external" href="https://plex.tv">Plex</a> server, that we want to exclude from automatic update.</p></li>
 </ul>
 <section id="get-tv-batch">
-<span id="get-tv-batch-label"></span><h2><span class="section-number">5.1.1. </span>get_tv_batch<a class="headerlink" href="#get-tv-batch" title="Permalink to this heading"></a></h2>
+<span id="get-tv-batch-label"></span><h2><span class="section-number">5.1.1. </span>get_tv_batch<a class="headerlink" href="#get-tv-batch" title="Link to this heading"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">get_tv_batch</span> <span class="pre">-h</span></code>, produces the following. Here, <code class="docutils literal notranslate"><span class="pre">$(num_cores)</span></code> is <em>TWICE</em> the number of CPUs on the <a class="reference external" href="https://plex.tv">Plex</a> server. This code is currently designed to be run <em>ONLY</em> on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: get_tv_batch [-h] [--maxtime MAXTIME_IN_SECS] [--num NUM_ITERS] [--token TOKEN] [-D {None,info,debug}] [--numthreads NUMTHREADS]</span>
 <span class="go">                    [--nomax] [--nomin] [-r] [-F [FILTER ...]]</span>
@@ -186,7 +186,7 @@
 </ul>
 </section>
 <section id="get-tv-tor">
-<span id="get-tv-tor-label"></span><h2><span class="section-number">5.1.2. </span>get_tv_tor<a class="headerlink" href="#get-tv-tor" title="Permalink to this heading"></a></h2>
+<span id="get-tv-tor-label"></span><h2><span class="section-number">5.1.2. </span>get_tv_tor<a class="headerlink" href="#get-tv-tor" title="Link to this heading"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">get_tv_tor</span> <span class="pre">-h</span></code>, produces the following.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: get_tv_tor [-h] -n NAME [--maxnum MAXNUM] [-r] [-f FILENAME] [-a] [-i] [--noverify] [-F [FILTER ...]]</span>
 
@@ -306,7 +306,7 @@
 </ul>
 </section>
 <section id="howdy-tv-epinfo">
-<span id="howdy-tv-epinfo-label"></span><h2><span class="section-number">5.1.3. </span>howdy_tv_epinfo<a class="headerlink" href="#howdy-tv-epinfo" title="Permalink to this heading"></a></h2>
+<span id="howdy-tv-epinfo-label"></span><h2><span class="section-number">5.1.3. </span>howdy_tv_epinfo<a class="headerlink" href="#howdy-tv-epinfo" title="Link to this heading"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_tv_epinfo</span> <span class="pre">-h</span></code>, produces the following.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_tv_epinfo [-h] [-s SHOW] [-j JSONFILE] [--showspecials] [--debug] [--noverify]</span>
 
@@ -355,7 +355,7 @@
 </div>
 </section>
 <section id="howdy-tv-epname">
-<span id="howdy-tv-epname-label"></span><h2><span class="section-number">5.1.4. </span>howdy_tv_epname<a class="headerlink" href="#howdy-tv-epname" title="Permalink to this heading"></a></h2>
+<span id="howdy-tv-epname-label"></span><h2><span class="section-number">5.1.4. </span>howdy_tv_epname<a class="headerlink" href="#howdy-tv-epname" title="Link to this heading"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_tv_epname</span> <span class="pre">-h</span></code>, produces the following.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_tv_epname [-h] -s SERIES [-e EPSTRING] [--summary] [-S SEASON] [--noverify]</span>
 
@@ -447,7 +447,7 @@
 </ul>
 </section>
 <section id="howdy-tv-futureshows">
-<span id="howdy-tv-futureshows-label"></span><h2><span class="section-number">5.1.5. </span>howdy_tv_futureshows<a class="headerlink" href="#howdy-tv-futureshows" title="Permalink to this heading"></a></h2>
+<span id="howdy-tv-futureshows-label"></span><h2><span class="section-number">5.1.5. </span>howdy_tv_futureshows<a class="headerlink" href="#howdy-tv-futureshows" title="Link to this heading"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_tv_futureshows</span> <span class="pre">-h</span></code>, produces the following.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_tv_futureshows [-h] [--noverify] [--local] [--info]</span>
 
@@ -490,7 +490,7 @@
 </div>
 </section>
 <section id="howdy-tv-plots">
-<span id="howdy-tv-plots-label"></span><h2><span class="section-number">5.1.6. </span>howdy_tv_plots<a class="headerlink" href="#howdy-tv-plots" title="Permalink to this heading"></a></h2>
+<span id="howdy-tv-plots-label"></span><h2><span class="section-number">5.1.6. </span>howdy_tv_plots<a class="headerlink" href="#howdy-tv-plots" title="Link to this heading"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_tv_plots</span> <span class="pre">-h</span></code>, produces the following. <code class="docutils literal notranslate"><span class="pre">$(cwd)</span></code> refers to the current working directory in which this CLI is run.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_tv_plots [-h] [--years S_YEARS] [--local] [--dirname DIRNAME] [--noverify]</span>
 
@@ -532,26 +532,26 @@
 <figure class="align-left" id="id3">
 <span id="howdy-tv-cli-figures-plots-tvdata-2000"></span><a class="reference internal image-reference" href="../../_images/tvdata.2000.svg"><img alt="../../_images/tvdata.2000.svg" src="../../_images/tvdata.2000.svg" width="100%" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 5.1 </span><span class="caption-text">A summary plot of the TV shows on the Plex server, that have aired in 2000.</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+<p><span class="caption-number">Fig. 5.1 </span><span class="caption-text">A summary plot of the TV shows on the Plex server, that have aired in 2000.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
 <section id="howdy-tv-excludes">
-<span id="howdy-tv-excludes-label"></span><h2><span class="section-number">5.1.7. </span>howdy_tv_excludes<a class="headerlink" href="#howdy-tv-excludes" title="Permalink to this heading"></a></h2>
+<span id="howdy-tv-excludes-label"></span><h2><span class="section-number">5.1.7. </span>howdy_tv_excludes<a class="headerlink" href="#howdy-tv-excludes" title="Link to this heading"></a></h2>
 <p>This CLI can determine, and change, the set of TV shows to exclude from regular update (using the CLI, <a class="reference internal" href="#get-tv-batch"><span class="std std-ref">get_tv_batch</span></a>). This can only include TV shows that exist on the <a class="reference external" href="https://plex.tv">Plex</a> server. The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_tv_excludes</span> <span class="pre">-h</span></code>, produces the top level help. It has two operations: <code class="docutils literal notranslate"><span class="pre">show</span></code> (which shows the TV shows to be excluded), and <code class="docutils literal notranslate"><span class="pre">exclude</span></code> (where the user specifies which shows to exclude).</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage: howdy_tv_excludes <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--remote<span class="o">]</span> <span class="o">[</span>--noverify<span class="o">]</span> <span class="o">[</span>-L LIBRARY<span class="o">]</span> <span class="o">{</span>show,exclude<span class="o">}</span> ...
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>howdy_tv_excludes<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">[</span>--remote<span class="o">]</span><span class="w"> </span><span class="o">[</span>--noverify<span class="o">]</span><span class="w"> </span><span class="o">[</span>-L<span class="w"> </span>LIBRARY<span class="o">]</span><span class="w"> </span><span class="o">{</span>show,exclude<span class="o">}</span><span class="w"> </span>...
 
-positional arguments:
-  <span class="o">{</span>show,exclude<span class="o">}</span>        Either show or exclude shows.
-    show                Show those TV shows that have been excluded.
-    exclude             Exclude a new list of TV shows.
+positional<span class="w"> </span>arguments:
+<span class="w">  </span><span class="o">{</span>show,exclude<span class="o">}</span><span class="w">        </span>Either<span class="w"> </span>show<span class="w"> </span>or<span class="w"> </span>exclude<span class="w"> </span>shows.
+<span class="w">    </span>show<span class="w">                </span>Show<span class="w"> </span>those<span class="w"> </span>TV<span class="w"> </span>shows<span class="w"> </span>that<span class="w"> </span>have<span class="w"> </span>been<span class="w"> </span>excluded.
+<span class="w">    </span>exclude<span class="w">             </span>Exclude<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>TV<span class="w"> </span>shows.
 
-optional arguments:
-  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
-  --remote              If chosen, <span class="k">do</span> not check localhost <span class="k">for</span> running plex server.
-  --noverify            If chosen, <span class="k">do</span> not verify SSL connections.
-  -L LIBRARY, --library LIBRARY
-                        If named, <span class="k">then</span> choose this as the TV library through which to look. Otherwise, look <span class="k">for</span> first TV library found on Plex server.
+optional<span class="w"> </span>arguments:
+<span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+<span class="w">  </span>--remote<span class="w">              </span>If<span class="w"> </span>chosen,<span class="w"> </span><span class="k">do</span><span class="w"> </span>not<span class="w"> </span>check<span class="w"> </span>localhost<span class="w"> </span><span class="k">for</span><span class="w"> </span>running<span class="w"> </span>plex<span class="w"> </span>server.
+<span class="w">  </span>--noverify<span class="w">            </span>If<span class="w"> </span>chosen,<span class="w"> </span><span class="k">do</span><span class="w"> </span>not<span class="w"> </span>verify<span class="w"> </span>SSL<span class="w"> </span>connections.
+<span class="w">  </span>-L<span class="w"> </span>LIBRARY,<span class="w"> </span>--library<span class="w"> </span>LIBRARY
+<span class="w">                        </span>If<span class="w"> </span>named,<span class="w"> </span><span class="k">then</span><span class="w"> </span>choose<span class="w"> </span>this<span class="w"> </span>as<span class="w"> </span>the<span class="w"> </span>TV<span class="w"> </span>library<span class="w"> </span>through<span class="w"> </span>which<span class="w"> </span>to<span class="w"> </span>look.<span class="w"> </span>Otherwise,<span class="w"> </span>look<span class="w"> </span><span class="k">for</span><span class="w"> </span>first<span class="w"> </span>TV<span class="w"> </span>library<span class="w"> </span>found<span class="w"> </span>on<span class="w"> </span>Plex<span class="w"> </span>server.
 </pre></div>
 </div>
 <p>Default flags are the following:</p>
@@ -561,32 +561,32 @@ optional arguments:
 <li><p><code class="docutils literal notranslate"><span class="pre">-L</span></code> or <code class="docutils literal notranslate"><span class="pre">--library</span></code> is used to explicitly specify the TV library. If not chosen, then first available TV library is chosen in the <a class="reference external" href="https://plex.tv">Plex</a> server. If a TV library cannot be found, then <strong>exit</strong>.</p></li>
 </ul>
 <p>In <code class="docutils literal notranslate"><span class="pre">show</span></code> mode, for example, this is how it looks. Here, we use the default TV library.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tanim-desktop: torrents $ plex_config_excludes show
-found <span class="m">256</span> TV shows <span class="k">in</span> Plex server.
-found <span class="m">2</span> / <span class="m">256</span> TV shows that are excluded from update.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tanim-desktop:<span class="w"> </span>torrents<span class="w"> </span>$<span class="w"> </span>plex_config_excludes<span class="w"> </span>show
+found<span class="w"> </span><span class="m">256</span><span class="w"> </span>TV<span class="w"> </span>shows<span class="w"> </span><span class="k">in</span><span class="w"> </span>Plex<span class="w"> </span>server.
+found<span class="w"> </span><span class="m">2</span><span class="w"> </span>/<span class="w"> </span><span class="m">256</span><span class="w"> </span>TV<span class="w"> </span>shows<span class="w"> </span>that<span class="w"> </span>are<span class="w"> </span>excluded<span class="w"> </span>from<span class="w"> </span>update.
 
 SHOW
 ---------------------
-Lip Sync Battle
-SpongeBob SquarePants
+Lip<span class="w"> </span>Sync<span class="w"> </span>Battle
+SpongeBob<span class="w"> </span>SquarePants
 </pre></div>
 </div>
 <p>In <code class="docutils literal notranslate"><span class="pre">exclude</span></code> mode, for example, this is how it looks when we choose to exclude <a class="reference external" href="https://www.imdb.com/title/tt4335742">Lip Sync Battle</a>, <a class="reference external" href="https://www.imdb.com/title/tt0206512">SpongeBob SquarePants</a>, and <a class="reference external" href="https://www.imdb.com/title/tt0370194">Reno 911!</a> from update. Here, we use the default TV library.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tanim-desktop: torrents $ plex_config_excludes exclude <span class="s2">&quot;Lip Sync Battle&quot;</span> <span class="s2">&quot;SpongeBob SquarePants&quot;</span> <span class="s2">&quot;Reno 911!&quot;</span>
-found <span class="m">256</span> TV shows <span class="k">in</span> Plex server.
-Originally <span class="m">2</span> shows to exclude. Now <span class="m">3</span> shows to exclude.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tanim-desktop:<span class="w"> </span>torrents<span class="w"> </span>$<span class="w"> </span>plex_config_excludes<span class="w"> </span>exclude<span class="w"> </span><span class="s2">&quot;Lip Sync Battle&quot;</span><span class="w"> </span><span class="s2">&quot;SpongeBob SquarePants&quot;</span><span class="w"> </span><span class="s2">&quot;Reno 911!&quot;</span>
+found<span class="w"> </span><span class="m">256</span><span class="w"> </span>TV<span class="w"> </span>shows<span class="w"> </span><span class="k">in</span><span class="w"> </span>Plex<span class="w"> </span>server.
+Originally<span class="w"> </span><span class="m">2</span><span class="w"> </span>shows<span class="w"> </span>to<span class="w"> </span>exclude.<span class="w"> </span>Now<span class="w"> </span><span class="m">3</span><span class="w"> </span>shows<span class="w"> </span>to<span class="w"> </span>exclude.
 
-ORIGINAL               NEW
----------------------  ---------------------
-Lip Sync Battle        Lip Sync Battle
-SpongeBob SquarePants  Reno <span class="m">911</span>!
-                       SpongeBob SquarePants
+ORIGINAL<span class="w">               </span>NEW
+---------------------<span class="w">  </span>---------------------
+Lip<span class="w"> </span>Sync<span class="w"> </span>Battle<span class="w">        </span>Lip<span class="w"> </span>Sync<span class="w"> </span>Battle
+SpongeBob<span class="w"> </span>SquarePants<span class="w">  </span>Reno<span class="w"> </span><span class="m">911</span>!
+<span class="w">                       </span>SpongeBob<span class="w"> </span>SquarePants
 
-PERFORM OPERATION <span class="o">(</span>must choose one<span class="o">)</span> <span class="o">[</span>y/n<span class="o">]</span>:y
-found <span class="m">3</span> shows to exclude from TV database.
-had to remove <span class="m">2</span> excluded shows from DB that were not <span class="k">in</span> TV library.
-adding <span class="m">3</span> extra shows to exclusion database.
-NEW EXCLUDED SHOWS ADDED
+PERFORM<span class="w"> </span>OPERATION<span class="w"> </span><span class="o">(</span>must<span class="w"> </span>choose<span class="w"> </span>one<span class="o">)</span><span class="w"> </span><span class="o">[</span>y/n<span class="o">]</span>:y
+found<span class="w"> </span><span class="m">3</span><span class="w"> </span>shows<span class="w"> </span>to<span class="w"> </span>exclude<span class="w"> </span>from<span class="w"> </span>TV<span class="w"> </span>database.
+had<span class="w"> </span>to<span class="w"> </span>remove<span class="w"> </span><span class="m">2</span><span class="w"> </span>excluded<span class="w"> </span>shows<span class="w"> </span>from<span class="w"> </span>DB<span class="w"> </span>that<span class="w"> </span>were<span class="w"> </span>not<span class="w"> </span><span class="k">in</span><span class="w"> </span>TV<span class="w"> </span>library.
+adding<span class="w"> </span><span class="m">3</span><span class="w"> </span>extra<span class="w"> </span>shows<span class="w"> </span>to<span class="w"> </span>exclusion<span class="w"> </span>database.
+NEW<span class="w"> </span>EXCLUDED<span class="w"> </span>SHOWS<span class="w"> </span>ADDED
 </pre></div>
 </div>
 <p>Running <code class="docutils literal notranslate"><span class="pre">howdy_tv_excludes</span> <span class="pre">show</span></code> will display, in this instance, those three shows instead of the original two.</p>

@@ -1,6 +1,6 @@
 import os, sys, subprocess
 from setuptools import setup, find_packages
-from distutils.spawn import find_executable
+from shutil import which
 #
 ## requirements are in "requirements.txt"
 
@@ -11,7 +11,7 @@ reqs = sorted(set(map(lambda line: line.strip(),
                              open( 'requirements.txt', 'r').readlines()))))
 #
 ## need sshpass
-if find_executable( 'sshpass' ) is None:
+if which( 'sshpass' ) is None:
     print( "Error, cannot find sshpass executable. Exiting..." )
     sys.exit( 0 )
 

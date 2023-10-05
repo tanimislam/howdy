@@ -927,7 +927,8 @@ def youtube_search(youtube, query, max_results = 10):
 
     search_videos = list( map(lambda search_result:
                               search_result['id']['videoId'],
-                              search_response.get('items', []) ) )
+                              filter(lambda search_result: 'videoId' in search_result['id'],
+                                     search_response.get('items', []) ) ) )
     # Merge video ids
     video_ids = ",".join(search_videos)
     if len( search_videos ) == 0:

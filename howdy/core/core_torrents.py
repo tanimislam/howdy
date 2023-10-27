@@ -51,9 +51,9 @@ def remove_trackers_to_exclude( tracker_stubs ):
     if len( tracker_stubs_rem ) == 0: return
     #
     ## now delete those tracker stubs
-    for tracker_stub in tracker_stubs_rem:
-        session.query( PlexExcludedTrackerStubs ).filter(
-            PlexExcludedTrackerStubs.trackerstub.strip( ).lower( ) == tracker_stub ).delete( )
+    for row in session.query( PlexExcludedTrackerStubs ).all( ):
+        if row.trackerstub not in tracker_stubs_rem: continue
+        session.delete( row )
     session.commit( )
     
 def deconfuse_magnet_link( magnet_string, excluded_tracker_stubs = get_trackers_to_exclude( ) ):

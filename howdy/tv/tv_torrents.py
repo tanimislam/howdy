@@ -1,4 +1,4 @@
-import requests, re, threading, cfscrape
+import requests, re, threading
 import os, time, numpy, logging, datetime, pickle, gzip
 from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS

@@ -110,7 +110,6 @@ class DelugeRPCClient(object):
             # self._create_socket(ssl_version=ssl.PROTOCOL_SSLv23)
             self._socket.connect((self.host, self.port))
         except Exception as e:
-            print( 'got here TANIM' )
             # Note: have not verified that we actually get errno 258 for this error
             if (hasattr(ssl, 'PROTOCOL_TLSv1_2') and
                     (getattr(e, 'reason', None) == 'UNSUPPORTED_PROTOCOL' or e.errno == 258)):

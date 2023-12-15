@@ -1,4 +1,4 @@
-import os, datetime, logging, time
+import os, datetime, logging, time, json, sys
 from email.utils import formataddr
 from argparse import ArgumentParser
 from jinja2 import Environment, FileSystemLoader, Template
@@ -11,9 +11,9 @@ from ive_tanim.core import rst2html
 
 def return_nameemail_string( name, email ):
     if name is None:
-        return rst2html.create_rfc2047_email({
+        return rst2html.create_rfc5322_email({
             'email' : email })
-    return rst2html.create_rfc2047_email({
+    return rst2html.create_rfc5322_email({
         'email' : email,
         'full name' : name })
 
@@ -30,6 +30,17 @@ def create_final_restructuredtext_body( bodyString, name = None ):
         logging.error("COULD NOT BE PARSED.")
         return None
     return finalString
+
+def exclude_name_emails( excl_set, name_emails ):
+    if len( excl_set ) == 0: return name_emails
+    #
+    ##
+    def is_excluded_match( name_email ):
+        name, email = name_email
+        if any(map(lambda excl: excl in name.lower( ), excl_set ) ): return True
+        if any(map(lambda excl: excl in email.lower( ), excl_set ) ): return True
+        return False
+    return list(filter(lambda name_email: not is_excluded_match( name_email ), name_emails) )
 
 def main( ):
     time0 = time.perf_counter( )
@@ -49,6 +60,9 @@ def main( ):
     parser.add_argument(
         '-B', '--body', dest='body', action='store', type=str, default = 'This is a test.',
         help = 'Body of the email to be sent. Default is "This is a test."')
+    parser.add_argument(
+        '-E', '--exclude', dest = 'excluded_contact_fragments', action='store', default = [ ], nargs = "*",
+        help = 'The name or email contacts to exclude. Needs to only be first few characters that match.' )
     #
     args = parser.parse_args( )
     logger = logging.getLogger( )
@@ -73,6 +87,10 @@ def main( ):
         print( 'Error, %s could not be converted into email.' % args.body )
         return
 
+    excl_set = set( map(lambda elem: elem.lower().strip(), args.excluded_contact_fragments ) )
+    logging.info( 'excluded contact fragments = %s.' % excl_set )
+    name_emails = exclude_name_emails( excl_set, name_emails )
+    logging.info( 'LIST OF NAME_EMAILS: %s.' % name_emails )
     #
     ## now do the email sending out
     print( 'processed all checks in %0.3f seconds.' % ( time.time( ) - time0 ) )
@@ -88,16 +106,16 @@ def main( ):
         logging.info( 'processed test email in %0.3f seconds.' %
                      ( time.perf_counter( ) - time0 ) )
         return
-    #
-    # email_service = get_email_service( verify = False )
-    # def _send_email_perproc( input_tuple ):
-    #     name, fullEmail = input_tuple
-    #     email.send_individual_email_full(
-    #         htmlString, args.subject, fullEmail, name = name,
-    #         email_service = email_service )
-    #     return True
-    # arrs = list( map(
-    #     _send_email_perproc, name_emails +
-    #     [ ( emailName, emailAddress ) ] ) )
-    # logging.info( 'processed %d emails in %0.3f seconds.' % (
-    #     len(arrs), time.perf_counter( ) - time0 ) )
+    
+    email_service = get_email_service( verify = False )
+    def _send_email_perproc( input_tuple ):
+        name, fullEmail = input_tuple
+        msg = rst2html.create_collective_email_full(
+            rst2html.convert_string_RST( finalString ),
+            args.subject,
+            { 'email' : emailAddress, 'full name' : emailName },
+            [ { 'email' : fullEmail, 'full name' : name }, ] )
+        send_email_lowlevel( msg, email_service = email_service, verify = False )
+    arrs = list( map( _send_email_perproc, name_emails + [ ( emailName, emailAddress ), ] ) )
+    logging.info( 'processed %d emails in %0.3f seconds.' % (
+        len(arrs), time.perf_counter( ) - time0 ) )

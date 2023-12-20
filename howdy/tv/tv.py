@@ -1133,6 +1133,7 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
             map(lambda epno: get_main_file_name( os.path.basename(
                 seasons_info[seasno]['episodes'][epno]['path'] ) ),
                 seasons_info[ seasno ]['episodes'])), seasons_info)))
+    logging.debug( 'tvshow = %s, main_file_name = %s.' % ( tvshow, main_file_name ) )
     assert(len(main_file_name) == 1), 'error with %s, main_file_names = %s' % ( tvshow, sorted(main_file_name) )
     main_file_name = max( main_file_name )
     season_prefix_dict = { }
@@ -1676,7 +1677,7 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
         ## doing torTitle = showFileName.replace("'",'').replace(':','').replace('&', 'and').replace('/', '-')
         torTitle = reduce(lambda x,y: x.replace(y[0], y[1]),
                           zip([ ":", "&", "/", "!", "'" ], # do not replace apostrophe
-                              [ '', '', 'and', '!', '', '' ]),
+                              [ '', '', 'and', '', '', '' ]),
                           showFileName)
         for seasno, epno, title in mydict[ 'episodes' ]:
             must_have_here = set(map(lambda elem: elem.strip( ).lower( ), must_have))

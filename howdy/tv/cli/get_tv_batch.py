@@ -59,6 +59,17 @@ def main( ):
         '-r', '--raw', dest='do_raw', action='store_true', default = False,
         help = 'If chosen, then use the raw string to specify TV show torrents.' )
     #
+    ##
+    parser.add_argument(
+        '-R', '--remote', dest = 'do_local', action = 'store_false', default = True,
+        help = 'If chosen, then use a REMOTE Plex server location.' )
+    parser.add_argument(
+        '-M', '--mainPath', dest = 'mainPath', type = str, action = 'store', default = None,
+        help = 'Optional argument fix, sometimes needed to add proper prefix path to files in Plex_ tv libraries. Otherwise do not add.' )
+    parser.add_argument(
+        '-L', '--localRSYNC', dest = 'do_local_rsync', action = 'store_true', default = False,
+        help = 'Optional argument. If chosen, then do move command from local server where episodes downloaded instead of rsync ssh from remote server.' )
+    #
     ## now filter on these items
     parser.add_argument('-F', '--filter', dest = 'filter', action = 'store', nargs = '*',
                         help = 'List of strings on which to filter for the magnet link name.' )
@@ -74,7 +85,7 @@ def main( ):
     step += 1
     #
     ## get plex server token
-    dat = core.checkServerCredentials( doLocal = True )
+    dat = core.checkServerCredentials( doLocal = args.do_local )
     if dat is None:
         print('\n'.join([
             '%d, error, could not access local Plex server in %0.3f seconds. Exiting...' % (
@@ -107,7 +118,8 @@ def main( ):
     ## now get the TV shows
     time0 = time.perf_counter( )
     tvdata = core.get_library_data(
-        tvlib_title, token = token, num_threads = args.numthreads )
+        tvlib_title, token = token, fullURL = fullURL, num_threads = args.numthreads,
+        mainPath = args.mainPath )
     print( '%d, found %d shows in the TV library, in %0.3f seconds.' % (
         step, len( tvdata ), time.perf_counter( ) - time0 ) )
     step += 1
@@ -150,6 +162,6 @@ def main( ):
     step += 1
     tv.download_batched_tvtorrent_shows(
         tvTorUnits, newdirs = newdirs, maxtime_in_secs = args.maxtime_in_secs,
-        num_iters = args.num_iters )
+        num_iters = args.num_iters, do_local_rsync = args.do_local_rsync )
     print( '\n'.join([ '%d, everything done in %0.3f seconds.' % ( step, time.perf_counter( ) - time0 ),
                        finish_statement( step ) ]))

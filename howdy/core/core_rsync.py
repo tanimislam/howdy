@@ -144,7 +144,7 @@ def get_credentials( ):
     else: datan['subdir'] = subdir.strip( )
     return datan
 
-def get_rsync_command( data, mystr, do_download = True ):
+def get_rsync_command( data, mystr, do_download = True, do_local_rsync = False ):
     """
     Returns a :py:class:`tuple` of the actual rsync_ command, and the command with password information obscured, to download from or upload to the remote SSH server from the Plex_ server. *We require that sshpass_ exists and is accessible on this system*.
     
@@ -153,11 +153,23 @@ def get_rsync_command( data, mystr, do_download = True ):
 
     :param bool do_download: if ``True``, then download from remote SSH server. If ``False``, then upload to remote SSH server.
 
+    :param bool do_local_rsync: if ``True``, then instead of SSH-ing do an effectively move command from path = ``os.path.expanduser( os.path.join( "~", data[ 'subdir' ], mystr ) )`` into ``data['local_dir']`` via rsync. This *requires* that data['subdir'] is *not* ``None``.
+
     :returns: a :py:class:`tuple` of the actual rsync_ command, and the command with password information obscured, to download from or upload to the remote SSH server from the Plex_ server.
     :rtype: tuple
 
     .. _sshpass: https://linux.die.net/man/1/sshpass
-    """    
+    """
+    #
+    ## do local_rsync, return simplified command command, data[ 'subdir' ] must NOT be None
+    if do_local_rsync:
+        assert( data[ 'subdir' ] is not None )
+        mainStr = os.path.expanduser( os.path.join( '~', data[ 'subdir' ], mystr ) )
+        mycmd = 'mv %s %s/' % (
+            mainStr, data[ 'local_dir' ] )
+        return mycmd, mycmd    
+    #
+    ## now do remote instead
     sshpass_exec = which( 'sshpass' )
     assert( sshpass_exec is not None )
     if do_download:
@@ -183,7 +195,7 @@ def get_rsync_command( data, mystr, do_download = True ):
     return mycmd, mxcmd
 
 def download_upload_files( glob_string, numtries = 10, debug_string = False,
-                           do_reverse = False ):
+                           do_reverse = False, do_local_rsync = False ):
     """
     Run the system process, using rsync_, to download files and directories from, or upload to, the remote SSH server. *On completion, the source files are all deleted*.
 
@@ -191,6 +203,10 @@ def download_upload_files( glob_string, numtries = 10, debug_string = False,
     :param int numtries: the number of attempts to run rsync_ before giving up on uploading or downloading.
     :param bool debug_string: if ``True``, then print out the password-stripped rsync_ command that is being run.
     :param bool do_reverse: if ``True``, then upload files to remote SSH server. If ``False`` (the default), then download files from the SSH server.
+    :param bool do_local_rsync: if ``True``, then instead of SSH-ing do an effectively move command from path = ``os.path.expanduser( "~", data[ 'subdir' ], mystr )`` into ``data['local_dir']`` via rsync. This *requires* that data['subdir'] is *not* ``None``.
+
+    :returns: a :py:class:`tuple` of "SUCCESS" and the log of rsync_ command, otherwise "FAILURE" and specific reason for failure.
+    :rtype: tuple
     """
     assert( numtries > 0 )
     data = get_credentials( )
@@ -198,7 +214,8 @@ def download_upload_files( glob_string, numtries = 10, debug_string = False,
         return "FAILURE", "could not get credentials for performing rsync operation"
     local_dir = data[ 'local_dir' ].strip( )
     sshpath = data[ 'sshpath' ].strip( )
-    mycmd, mxcmd = get_rsync_command( data, glob_string, do_download = not do_reverse )
+    mycmd, mxcmd = get_rsync_command( data, glob_string, do_download = not do_reverse, do_local_rsync = do_local_rsync )
+    #mycmd, mxcmd = get_rsync_command( data, glob_string, do_download = not do_reverse ) # not working for now...
     mystr_split = [ 'STARTING THIS RSYNC CMD: %s' % mxcmd ]
     if debug_string:
         print( mystr_split[-1] )

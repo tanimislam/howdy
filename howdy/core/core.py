@@ -1,5 +1,5 @@
 import os, glob, datetime, logging, numpy, urllib3, datetime, warnings
-import uuid, requests, pytz, time, json, validators
+import uuid, requests, pytz, time, json, validators, re
 import pathos.multiprocessing as multiprocessing
 # oauth2 stuff
 import oauth2client.client
@@ -455,7 +455,7 @@ def _get_main_genre_movie( movie_elem ):
     return genres[ 0 ]                             
 
 def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sinceDate = None,
-                             num_threads = 2 * multiprocessing.cpu_count( ), timeout = None ):
+                             num_threads = 2 * multiprocessing.cpu_count( ), timeout = None, mainPath = None ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
@@ -545,8 +545,8 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
             movie_data.setdefault( first_genre, [ ] ).append( data )
         return key, movie_data
         
-def _get_library_stats_movie( key, token, fullURL ='http://localhost:32400', sinceDate = None ):
-    tup = _get_library_data_movie( key, token, fullURL = fullURL, sinceDate = sinceDate )
+def _get_library_stats_movie( key, token, fullURL ='http://localhost:32400', sinceDate = None, mainPath = None ):
+    tup = _get_library_data_movie( key, token, fullURL = fullURL, sinceDate = sinceDate, mainPath = mainPath )
     if tup is None: return None
     _, movie_data = tup
     sorted_by_genres = {
@@ -562,7 +562,7 @@ def _get_library_stats_movie( key, token, fullURL ='http://localhost:32400', sin
 def _get_library_data_show(
         key, token, fullURL = 'http://localhost:32400',
         sinceDate = None, num_threads = 2 * multiprocessing.cpu_count( ),
-        timeout = None ):
+        timeout = None, mainPath = None ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
@@ -673,6 +673,7 @@ def _get_library_data_show(
                     bitrate = int( media_elem[ 'bitrate' ] ) * 1e3 / 8.0
                     part_elem = media_elem.find('part')
                     filename = part_elem[ 'file' ]
+                    if mainPath is not None: filename = os.path.join( mainPath, re.sub( '^/', '', filename ) )
                     size = int( part_elem[ 'size' ] )
                     seasons.setdefault( seasno, { } )
                     if 'episodes' not in seasons[ seasno ]:
@@ -711,6 +712,18 @@ def _get_library_data_show(
     num_direlems = len( BeautifulSoup( response.text, 'html.parser' ).find_all('directory' ) )
     max_of_num_vals = max( num_direlems, multiprocessing.cpu_count( ) )
     act_num_threads = min( num_threads, max_of_num_vals )
+
+    #
+    ## check that all the paths in a tvdata key exist
+    def _check_exists_all_paths( tvdata, key ):
+        all_states = set(chain.from_iterable(
+            map(lambda seasno: map(lambda epno: os.path.exists(
+                tvdata[key]['seasons'][seasno]['episodes'][epno]['path'] ),
+                                   tvdata[key]['seasons'][seasno]['episodes'] ),
+                tvdata[key]['seasons'] ) ) )
+        if len( all_states ) == 2: return False
+        return max( all_states )
+    
     with multiprocessing.Pool( processes = act_num_threads ) as pool:
         #
         ## manager with shared memory objects
@@ -759,14 +772,19 @@ def _get_library_data_show(
             tvdata[newname] = tvdata[name]
         for name in whats_in_name:
             tvdata.pop(name)
-            
+        #
+        ## now ensure that all the file paths exist
+        check_all_exists = set(map(lambda key: _check_exists_all_paths( tvdata, key ), tvdata ) )
+        assert( len( check_all_exists ) == 1 )
+        assert( max( check_all_exists ) )            
         return key,  tv_attic.populate_out_tmdbshowids_and_fix( tvdata ) # maybe try this out...?
 
 def _get_library_stats_show(
         key, token, fullURL = 'http://localhost:32400',
-        sinceDate = None ):
-    _, tvdata = _get_library_data_show( key, token, fullURL = fullURL,
-                                        sinceDate = sinceDate )
+        sinceDate = None, mainPath = None ):
+    _, tvdata = _get_library_data_show(
+        key, token, fullURL = fullURL,
+        sinceDate = sinceDate, mainPath = mainPath )
     numTVshows = len( tvdata )
     numTVeps = sum(list(
         map(lambda show:
@@ -824,7 +842,7 @@ def _get_library_stats_artist( key, token, fullURL = 'http://localhost:32400',
 
 def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                               sinceDate = None, num_threads = 2 * multiprocessing.cpu_count( ),
-                              timeout = None ):
+                              timeout = None, mainPath = None ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
@@ -888,6 +906,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                     track_name = track_elem[ 'title' ]
                     part_elem = max( track_elem.find_all( 'part' ) )
                     fname = part_elem[ 'file' ]
+                    if mainPath is not None: fname = os.path.join( mainPath, re.sub( '^/', '', fname ) )
                     if 'index' in track_elem.attrs: track = int( track_elem.get('index'))
                     else: track = 0
                     tracks.append(
@@ -962,7 +981,8 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
                              library_dict ) ) )
 
 def get_library_data( title, token, fullURL = 'http://localhost:32400',
-                      num_threads = 2 * multiprocessing.cpu_count( ), timeout = None ):
+                      num_threads = 2 * multiprocessing.cpu_count( ), timeout = None,
+                      mainPath = None ):
     """
     Returns the data on the specific Plex library, as a :py:class:`dict`. This lower level functionality lives in the same space as `PlexAPI <https://python-plexapi.readthedocs.io/en/latest>`_. Three types of library data can be returned: movies, TV shows, and music.
     
@@ -1038,6 +1058,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
     :param str fullURL: the Plex_ server address.
     :param int num_threads: the number of concurrent threads used to access the Plex_ server and get the library data.
     :param int timeout: optional time, in seconds, to wait for an HTTP conection to the Plex_ server.
+    :param str mainPath: optional prefix directory to put in front of all the file paths on the Plex_ server.
     
     :returns: a :py:class:`dict` of library data on the Plex_ server.
     :rtype: dict
@@ -1070,7 +1091,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
         return None
     _, data = func_dict[ mediatype ](
         key, token, fullURL = fullURL,
-        num_threads = num_threads, timeout = timeout )
+        num_threads = num_threads, timeout = timeout, mainPath = mainPath )
     logging.info( "took %0.3f seconds to gete here in get_library_data, library = %s." %
                   ( time.perf_counter( ) - time0, title ) )
     return data

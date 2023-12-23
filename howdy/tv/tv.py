@@ -1706,7 +1706,7 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
     return tvTorUnits, sorted( tv_torrent_gets[ 'newdirs' ].keys( ) )
 
 def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs = 240, num_iters = 10,
-                                      do_raw = False ):
+                                      do_raw = False, do_local_rsync = False ):
     """
     Engine backend code, used by :ref:`get_tv_batch`, that searches for Magnet links for missing episodes on the Jackett_ server, downloads the Magnet links using the Deluge_ server, and finally copies the downloaded missing episodes to the appropriate locations in the Plex_ TV library. This expects the :py:class:`tuple` input returned by :py:meth:`create_tvTorUnits <howdy.tv.tv.create_tvTorUnits>` to run.
 
@@ -1715,6 +1715,7 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
     :param int maxtime_in_secs: optional argument, the maximum time to wait for a Magnet link found by the Jackett_ server to fully download through the Deluge_ server. Must be :math:`\ge 60` seconds. Default is 240 seconds.
     :param int num_iters: optional argument, the maximum number of Magnet links to try and fully download before giving up. The list of Magnet links to try for each missing episode is ordered from *most* seeders + leechers to *least*. Must be :math:`\ge 1`. Default is 10.
     :param bool do_raw: if ``False``, then search for Magnet links of missing episodes using their IMDb_ information. If ``True``, then search using the raw string. Default is ``False``.
+    :param bool do_local_rsync: if ``False``, then do remote ssh rsync download into local directory. Otherwise do a move from "local" origin directory. Default is ``False``.
 
     .. seealso::
     
@@ -1781,7 +1782,7 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
     all_glob_strings = list(map(lambda suffix: '*.%s' % suffix, suffixes ) )
     for glob_string in all_glob_strings:
         core_rsync.download_upload_files(
-            glob_string, numtries = 100, debug_string = True )
+            glob_string, numtries = 100, debug_string = True, do_local_rsync = do_local_rsync )
     #
     ## now check all the files downloaded
     local_dir = data[ 'local_dir' ].strip( )

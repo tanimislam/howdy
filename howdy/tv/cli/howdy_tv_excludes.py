@@ -15,7 +15,7 @@ def try_continue( ):
         return False
     return val_map[ val ]
 
-def get_tvdata( tvlibraryname, fullURL, token, doCheck = True ):
+def get_tvdata( tvlibraryname, fullURL, token, doCheck = True, mainPath = None ):
     if doCheck:
         try:
             all_libraries = core.get_libraries( token = token, fullURL = fullURL, do_full = True )
@@ -27,7 +27,7 @@ def get_tvdata( tvlibraryname, fullURL, token, doCheck = True ):
             return return_error_raw( "Error, %s library is not a TV library." % tvlibraryname )
     #
     ## now get data
-    tvdata = core.get_library_data( tvlibraryname, token = token, fullURL = fullURL )
+    tvdata = core.get_library_data( tvlibraryname, token = token, fullURL = fullURL, mainPath = mainPath )
     return tvdata, 'SUCCESS'
 
 def show_excluded_shows( tvdata ):
@@ -68,12 +68,14 @@ def process_excluded_shows( tvdata,
 
 def main( ):
     parser = ArgumentParser( )
-    parser.add_argument( '--remote', dest='do_local', action = 'store_false', default = True,
+    parser.add_argument( '-R', '--remote', dest='do_local', action = 'store_false', default = True,
                         help = 'If chosen, do not check localhost for running plex server.')
     parser.add_argument( '--noverify', dest='do_verify', action='store_false', default = True,
                         help = 'If chosen, do not verify SSL connections.' )
     parser.add_argument( '-L', '--library', dest='library', type=str, action='store',
-                        help = 'If named, then choose this as the TV library through which to look. Otherwise, look for first TV library found on Plex server.' )
+                        help = 'If named, then choose this as the TV library through which to look. Otherwise, look for first TV library found on Plex server.' )    
+    parser.add_argument( '-M', '--mainPath', dest = 'mainPath', type = str, action = 'store', default = None,
+        help = 'Optional argument fix, sometimes needed to add proper prefix path to files in Plex_ tv libraries. Otherwise do not add.' )
     #
     ##
     subparser = parser.add_subparsers( help = 'Either show, exclude, add, or remove shows.', dest = 'choose_option' )
@@ -115,7 +117,7 @@ def main( ):
             return
     #
     ## now get tvdata
-    tvdata, status = get_tvdata( tvlibrary, fullURL, token, doCheck = False )
+    tvdata, status = get_tvdata( tvlibrary, fullURL, token, doCheck = False, mainPath = args.mainPath )
     if status != 'SUCCESS':
         print( status )
         return

@@ -1,4 +1,5 @@
 import os, datetime, logging, time, json, sys
+from pathlib import Path
 from email.utils import formataddr
 from argparse import ArgumentParser
 from jinja2 import Environment, FileSystemLoader, Template
@@ -59,7 +60,10 @@ def main( ):
         ( 'Plex notification for %s.' % date_now.strftime( '%B %d, %Y' ) ) )
     parser.add_argument(
         '-B', '--body', dest='body', action='store', type=str, default = 'This is a test.',
-        help = 'Body of the email to be sent. Default is "This is a test."')
+        help = 'Body of the email to be sent, in reStructuredText format. Default is "This is a test."')
+    parser.add_argument(
+        '-F', '--bodyFile', dest='bodyFile', action='store', type=str, default = 'This is a test.',
+        help = 'Body of the email to be sent, in reStructuredText format. Default is "This is a test."')
     parser.add_argument(
         '-E', '--exclude', dest = 'excluded_contact_fragments', action='store', default = [ ], nargs = "*",
         help = 'The name or email contacts to exclude. Needs to only be first few characters that match.' )
@@ -82,9 +86,22 @@ def main( ):
     name_emails = get_email_contacts_dict( emails, verify = False )
     items = sorted(list(map(lambda name_email: return_nameemail_string( name_email[0], name_email[1] ),
                             name_emails)))
-    finalString = create_final_restructuredtext_body( args.body )
+    #
+    ## do we get the reStructuredText email body as a body string -B or as an -F
+    if args.bodyFile is not None and os.path.exists( os.path.expanduser( args.bodyFile ) ):
+        bodyFile = os.path.expanduser( args.bodyFile )
+        try:
+            bodyString = open( bodyFile, 'r' ).read( )
+        except Exception as e:
+            print( "Error trying to read input reStructuredText file = %s. Reason = %s." % (
+                bodyFile, str( e ) ) )
+            return
+    else:
+        bodyString = args.body
+    
+    finalString = create_final_restructuredtext_body( bodyString )
     if finalString is None:
-        print( 'Error, %s could not be converted into email.' % args.body )
+        print( 'Error, %s could not be converted into email.' % bodyString )
         return
 
     excl_set = set( map(lambda elem: elem.lower().strip(), args.excluded_contact_fragments ) )
@@ -93,10 +110,10 @@ def main( ):
     logging.info( 'LIST OF NAME_EMAILS: %s.' % name_emails )
     #
     ## now do the email sending out
-    print( 'processed all checks in %0.3f seconds.' % ( time.time( ) - time0 ) )
+    print( 'processed all checks in %0.3f seconds.' % ( time.perf_counter( ) - time0 ) )
     time0 = time.perf_counter( )
     if args.do_test:
-        finalString = create_final_restructuredtext_body( args.body, name = emailName )
+        finalString = create_final_restructuredtext_body( bodyString, name = emailName )
         msg = rst2html.create_collective_email_full(
             rst2html.convert_string_RST( finalString ),
             args.subject,
@@ -110,6 +127,7 @@ def main( ):
     email_service = get_email_service( verify = False )
     def _send_email_perproc( input_tuple ):
         name, fullEmail = input_tuple
+        finalString = create_final_restructuredtext_body( args.body, name = name )
         msg = rst2html.create_collective_email_full(
             rst2html.convert_string_RST( finalString ),
             args.subject,

@@ -127,7 +127,7 @@ def main( ):
     email_service = get_email_service( verify = False )
     def _send_email_perproc( input_tuple ):
         name, fullEmail = input_tuple
-        finalString = create_final_restructuredtext_body( args.body, name = name )
+        finalString = create_final_restructuredtext_body( bodyString, name = name )
         msg = rst2html.create_collective_email_full(
             rst2html.convert_string_RST( finalString ),
             args.subject,

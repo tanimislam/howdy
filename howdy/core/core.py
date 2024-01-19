@@ -464,7 +464,7 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
     response = requests.get( '%s/library/sections/%d/all' % ( fullURL, key ),
                              params = params, verify = False, timeout = timeout )
     if response.status_code != 200: return None
-    def _get_bitrate_size( movie_elem ):
+    def _get_bitrate_size_filename( movie_elem ):
         bitrate_elem = list(filter(lambda elem: 'bitrate' in elem.attrs, movie_elem.find_all('media')))
         if len( bitrate_elem ) != 0: bitrate = int( bitrate_elem[0]['bitrate'] ) * 1e3 / 8.0
         else: bitrate = -1
@@ -474,7 +474,14 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
         size_elem = list(filter(lambda elem: 'size' in elem.attrs, size_elem) )
         if len(size_elem) != 0: totsize = int( size_elem[0]['size'] ) * 1.0
         else: totsize = -1
-        return bitrate, totsize
+        filename_elem = list( chain.from_iterable(
+            map(lambda media_elem: media_elem.find_all('part'),
+                movie_elem.find_all('media'))))
+        filename_elem = list(filter(lambda elem: 'file' in elem.attrs, size_elem) )
+        assert( len( filename_elem ) != 0 )
+        filename = filename_elem[ 0 ][ 'file' ]
+        if mainPath is not None: filename = os.path.join( mainPath, re.sub( '^/', '', filename ) )
+        return bitrate, totsize, filename
     #
     def _get_movie_data( input_tuple ):
         cont, indices = input_tuple
@@ -508,7 +515,7 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
                 contentrating = movie_elem.get('contentrating')
             else: contentrating = 'NR'
             duration = 1e-3 * int( movie_elem[ 'duration' ] )
-            bitrate, totsize = _get_bitrate_size( movie_elem )
+            bitrate, totsize, filename = _get_bitrate_size_filename( movie_elem )
             if bitrate == -1 and totsize != -1: bitrate = 1.0 * totsize / duration
             imdb_id = None
             if 'guid' in movie_elem.attrs:
@@ -526,10 +533,21 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
                 'duration' : duration,
                 'totsize' : totsize,
                 'localpic' : True,
-                'imdb_id' : imdb_id }
+                'imdb_id' : imdb_id,
+                'path' : filename }
             
             movie_data_sub.append( ( first_genre, data ) )
         return movie_data_sub
+
+    #
+    ## check that all the paths in a tvdata key exist
+    def _check_exists_all_paths( movie_data ):
+        all_states = set(chain.from_iterable(
+            map(lambda genre: map(lambda entry: os.path.exists(
+                entry[ 'path' ] ), movie_data[genre] ), movie_data ) ) )
+        if len( all_states ) == 2: return False
+        return max( all_states )
+    
 
     act_num_threads = max( num_threads, multiprocessing.cpu_count( ) )
     len_movie_elems = len( BeautifulSoup( response.text, 'html.parser' ).find_all('video') )
@@ -540,9 +558,11 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
                 range( act_num_threads ) ) )
         movie_data = { }
         movie_data_list = list( chain.from_iterable(
-            map( _get_movie_data, input_tuples ) ) ) # change back to pool.map
+            pool.map( _get_movie_data, input_tuples ) ) ) # change back to pool.map
         for first_genre, data in movie_data_list:
             movie_data.setdefault( first_genre, [ ] ).append( data )
+
+        assert( _check_exists_all_paths( movie_data ) )
         return key, movie_data
         
 def _get_library_stats_movie( key, token, fullURL ='http://localhost:32400', sinceDate = None, mainPath = None ):

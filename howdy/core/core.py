@@ -741,6 +741,7 @@ def _get_library_data_show(
                 tvdata[key]['seasons'][seasno]['episodes'][epno]['path'] ),
                                    tvdata[key]['seasons'][seasno]['episodes'] ),
                 tvdata[key]['seasons'] ) ) )
+        if len( all_states ) == 0: return True # actually nothing there
         if len( all_states ) == 2: return False
         return max( all_states )
     
@@ -875,10 +876,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                       ( fullURL, key ) )
         return None
     
-    def valid_track( track_elem ):
-        if len(list(track_elem.find_all('media'))) != 1:
-            return False
-        media_elem = max( track_elem.find_all('media') )
+    def valid_track( media_elem ):
         if len(set([ 'bitrate', 'duration' ]) -
                set(media_elem.attrs)) != 0:
             return False
@@ -907,7 +905,9 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                 resp3 = session.get( newURL, params = params, verify = False, timeout = timeout )
                 if resp3.status_code != 200: continue
                 h3 = BeautifulSoup( resp3.text, 'html.parser' )
-                track_elems = list( filter(valid_track, h3.find_all( 'track' ) ) )
+                #track_elems = list( filter(valid_track, h3.find_all( 'track' ) ) )
+                track_elems = h3.find_all( 'track' )
+                media_elems = h3.find_all( 'media' )
                 album_name = album_elem[ 'title' ]
                 artist_data.setdefault( album_name, [ ] )
                 tracks = [ ]
@@ -915,16 +915,16 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                 else: picurl = None
                 if 'year' in album_elem.attrs: year = int( album_elem.get('year'))
                 else: year = 1900
-                for track_elem in track_elems:
+                for track_elem, media_elem in zip( track_elems, media_elems ):
                     if datetime.datetime.fromtimestamp( float(
                             track_elem.get('addedat') ) ).date() < sinceDate:
                         continue
-                    media_elem = max(track_elem.find_all('media'))
+                    if not valid_track( media_elem ): continue
                     duration = 1e-3 * int( media_elem[ 'duration' ] )
                     bitrate = int( media_elem[ 'bitrate' ] ) * 1e3 / 8.0
                     curdate = datetime.datetime.fromtimestamp( float( track_elem[ 'addedat' ] ) ).date( )
                     track_name = track_elem[ 'title' ]
-                    part_elem = max( track_elem.find_all( 'part' ) )
+                    part_elem = max( media_elem.find_all( 'part' ) )
                     fname = part_elem[ 'file' ]
                     if mainPath is not None: fname = os.path.join( mainPath, re.sub( '^/', '', fname ) )
                     if 'index' in track_elem.attrs: track = int( track_elem.get('index'))
@@ -933,7 +933,7 @@ def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
                         { 'track_name' : track_name,
                           'curdate' : curdate,
                           'duration' : duration,
-                          'size' : bitrate * duration,
+                          'size' : bitrate * duration, # this is NOT the file size!
                           'track' : track,
                           'file' : fname } )
                 if len( tracks ) == 0: continue

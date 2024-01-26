@@ -61,7 +61,7 @@ def main( ):
                              help = 'URL of the deluge server. Default is localhost.' )
     parser_push.add_argument('--port', dest='push_port', metavar = 'port', action='store', type=int, default = 12345,
                              help = 'Port for the deluge server. Default is 12345.' )
-    parser_push.add_argument('--username', dest='port_username', metavar = 'username', action='store', type=str, default = 'admin',
+    parser_push.add_argument('--username', dest='push_username', metavar = 'username', action='store', type=str, default = 'admin',
                              help = 'Username to login to the deluge server. Default is admin.' )
     parser_push.add_argument('--password', dest='push_password', metavar = 'password', action='store', type=str, default = 'admin',
                             help = 'Password to login to the deluge server. Default is admin.' )

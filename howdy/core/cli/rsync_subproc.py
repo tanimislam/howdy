@@ -25,6 +25,9 @@ def main( ):
     parser_push.add_argument('-L', dest='local_dir', action='store', type=str, default = os.path.abspath( os.getcwd( ) ),
                             help = 'Name of the local directory into which we download files and directory. Default is %s.' %
                             ( os.path.abspath( os.getcwd( ) ) ) )
+    parser_push.add_argument('-p', '--password', dest='password', type=str,
+                             action='store',  required = True,
+                             help = "password to the remote SSH server from which to download files." )
     parser_push.add_argument('--ssh', dest='sshpath', action='store', type=str,
                             help = 'SSH path from which to get files.' )
     parser_push.add_argument('--subdir', dest='subdir', action='store', type=str,
@@ -36,7 +39,7 @@ def main( ):
     if args.choose_option == 'push':
         assert( all(map(lambda tok: tok is not None, ( args.local_dir, args.sshpath ) ) ) )
         assert( os.path.isdir( os.path.abspath( args.local_dir ) ) )
-        core_rsync.push_credentials( args.local_dir, args.sshpath, subdir = args.subdir )
+        core_rsync.push_credentials( args.local_dir, args.sshpath, args.password, subdir = args.subdir )
         return
     #
     ## otherwise run

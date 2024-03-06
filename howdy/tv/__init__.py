@@ -1,3 +1,4 @@
+
 import os, requests, json, sys, logging
 from sqlalchemy import Column, String, Integer
 #
@@ -145,26 +146,27 @@ def get_token( verify = True, data = None ):
     else:
         mystr = "%s -k -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"apikey\": \"%s\"}' 'https://api.thetvdb.com/login'" % (
             curl_exec, apikey )
-    stdout_val = subprocess.check_output(
+
+    try:    
+      stdout_val = subprocess.check_output(
         shlex.split( mystr ), stderr = subprocess.STDOUT )
-    try:
-        data = json.loads( stdout_val.decode('utf-8' ).split('\n')[-1] )
-        return data[ 'token' ]
+      data = json.loads( stdout_val.decode('utf-8' ).split('\n')[-1] )
+      return data[ 'token' ]
     except Exception as e:
-        logging.info( 'Error, TVDB API key = %s does not work. Error reason is %s.' % (
-            apikey, str( e ) ) )
-        return None
+      logging.info( 'Error, TVDB API key = %s does not work. Error reason is %s.' % (
+        apikey, str( e ) ) )
+      pass
     
-    #headers = { 'Content-Type' : 'application/json' }
-    # response = requests.post( 'https://api.thetvdb.com/login',
-    #                           data = json.dumps( data ),
-    #                           verify = verify, headers = headers )
-    # if response.status_code != 200:
-    #     logging.debug( ' '.join([
-    #         'Error, bad response: %s.' % response.status_code,
-    #         'here is content: %s.' % response.content ]))
-    #     return None
-    #return response.json( )[ 'token' ]
+    headers = { 'Content-Type' : 'application/json' }
+    response = requests.post( 'https://api.thetvdb.com/login',
+                              data = json.dumps( data ),
+                              verify = verify, headers = headers )
+    if response.status_code != 200:
+      logging.debug( ' '.join([
+        'Error, bad response: %s.' % response.status_code,
+        'here is content: %s.' % response.content ]))
+      return None
+    return response.json( )[ 'token' ]
 
 def refresh_token( token, verify = True ):
     """

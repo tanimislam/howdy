@@ -43,7 +43,7 @@ def get_tvdata_toGet_didend( request, get_token_fullURL, get_libraries_dict ):
         tvdata = pickle.load(
             gzip.open( os.path.join( testDir, 'tvdata.pkl.gz' ), 'rb' ) )
         toGet = pickle.load( gzip.open(
-            gzip.open( os.path.join( testDir, 'toGet.pkl.gz' ), 'rb' ) )
+            gzip.open( os.path.join( testDir, 'toGet.pkl.gz' ), 'rb' ) ) )
         didend = pickle.load( gzip.open(
             os.path.join( testDir, 'didend.pkl.gz'), 'rb' ) )
     yield tvdata, toGet, didend

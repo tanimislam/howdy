@@ -1,6 +1,7 @@
 import os, sys, datetime, re, isodate, mutagen.mp4, io, requests
 from dateutil.relativedelta import relativedelta
 from PIL import Image
+from io import BytesIO
 #
 from howdy.core import core
 
@@ -59,6 +60,69 @@ def get_failing_artistalbum( filename ):
         return filename
 
     return None
+
+def get_m4a_metadata( filename ):
+    """
+    Low level method that returns the metadata of an M4A_ music file.
+
+    :param str filename: the M4A_ music file name.
+    
+    :returns: a :py:class:`dict` of the music metadata that contains as many of these keys: ``song``, ``album``, ``artist``, ``year``, ``tracknumber``, ``total tracks``, ``album url``.
+    :rtype: dict
+    """
+    #
+    ## now start it off
+    naming_dict = {
+        '\xa9nam' : 'song',
+        '\xa9alb' : 'album',
+        '\xa9ART' : 'artist',
+        '\xa9day' : 'date',
+        'aART'    : 'album artist',
+        'covr'    : 'album cover',
+        'trkn'    : 'trkn' }
+    data_dict = dict()
+    #
+    ##
+    assert( os.path.isfile( filename ) )
+    assert( os.path.basename( filename ).lower( ).endswith( '.m4a' ) )
+    #
+    ## open file see what keys we have
+    mp4tags = mutagen.mp4.MP4( filename )
+    set_of_keys_intersect = set( naming_dict ) & set( mp4tags.keys( ) )
+    for key in set_of_keys_intersect:
+        if key == 'covr':
+            continue
+        if key == 'trkn':
+            continue
+        if key == '\xa9day':
+            continue
+        data_dict[ naming_dict[ key ] ] = mp4tags[ key ][ 0 ]
+    #
+    ## now if we have a covr
+    if 'covr' in set_of_keys_intersect:
+        data_dict[ 'cover' ] = Image.open(
+            BytesIO( mp4tags['covr'][0][:-1] ) )
+    #
+    ## if we have the track number and total number of tracks
+    if 'trkn' in set_of_keys_intersect:
+        trackno, tottracks = mp4tags[ 'trkn' ][ 0 ][:2]
+        data_dict[ 'tracknumber'  ] = trackno
+        data_dict[ 'total tracks' ] = tottracks
+    #
+    ## if have isodate string
+    if '\xa9day' in set_of_keys_intersect:
+        dstring = mp4tags[ '\xa9day' ][ 0 ].strip( )
+        num_dashes = len( dstring.split('-') ) - 1
+        assert( num_dashes <= 2 )
+        if num_dashes == 0: # just year
+            mydate = datetime.datetime.strptime( dstring, '%Y' ).date( )
+        elif num_dashes == 1:
+            mydate = datetmie.datetime.strptime( dstring, '%Y-%m' ).date( )
+        else:
+            mydate = datetime.datetime.strptime( dstring, '%Y-%m-%d' ).date( )
+        data_dict[ 'date' ] = mydate
+    #
+    return data_dict    
 
 
 def fill_m4a_metadata( filename, data_dict, verify = True, image_data = None ):

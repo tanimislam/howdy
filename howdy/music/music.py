@@ -138,6 +138,7 @@ class MusicInfo( object ):
            10: ('Le Voyage De Pénélope', 190.866)}}
 
     .. _MusicBrainz: https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2
+    .. _Spotify: https://open.spotify.com
     .. _SQLite3: https://www.sqlite.org/index.html
     .. _Air: https://en.wikipedia.org/wiki/Air_(band)
     .. _`Moon Safari`: https://en.wikipedia.org/wiki/Moon_Safari
@@ -251,7 +252,48 @@ class MusicInfo( object ):
         
         :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
         """
-        musicbrainzngs.set_hostname( 'musicbrainz.org', use_https = verify )        
+        musicbrainzngs.set_hostname( 'musicbrainz.org', use_https = verify )
+
+    @classmethod
+    def push_spotify_credentials( cls, client_id, client_secret, verify = True ):
+        """
+        Pushes the Spotify_ API configuration into the SQLite3_ configuration database. Take a look at `this blog article on the Spotify API <https://tanimislam.gitlab.io/blog/spotify-web-api.html>`_ for some more information on setting up your Spotify_ web API client.
+        :param str client_id: the Spotify_ client ID.
+        :param str client_secret: the Spotify_ client secret.
+        :param bool verify: if ``True``, then use HTTPS authentication. Otherwise do not. Default is ``True``.
+        """
+        #
+        ## first check that it is a valid Spotify credential
+        response = requests.post(
+            "https://accounts.spotify.com/api/token",
+            headers = { 'Content-Type' : 'application/x-www-form-urlencoded' },
+            data = {
+                'grant_type'    : 'client_credentials',
+                'client_id'     : client_id,
+                'client_secret' : client_secret }, verify = verify )
+        if not response.ok:
+            raise ValueError("ERROR, INVALID SPOTIFY CREDENTIALS" )
+        val = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'spotify' ).first( )
+        if val is not None:
+            session.delete( val )
+            session.commit( )
+        session.add(
+            PlexConfig( service = 'spotify',
+                       data = { 'client_id' : client_id,
+                               'client_secret' : client_secret } ) )
+
+    @classmethod
+    def get_spotify_credentials( cls ):
+        """
+        :returns: a :py:class:`dict` whose two keys and values are the ``client_id`` and the ``client_secret`` for the Spotify_ web API client in the SQLite3_ configuration database.
+        :rtype: dict
+        """
+        val = session.query( PlexConfig ).filter(
+            PlexConfig.service == 'spotify' ).first( )
+        if val is None:
+            raise ValueError( "ERROR, SPOTIFY WEB API CLIENT CREDENTIALS NOT FOUND OR SET" )
+        return val.data
 
     #
     ## now get all the albums of this artist.

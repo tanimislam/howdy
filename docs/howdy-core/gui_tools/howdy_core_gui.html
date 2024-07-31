@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.2. Howdy Core GUIs &mdash; howdy! 1.55-9-g1aca230e documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
+  <title>4.2. Howdy Core GUIs &mdash; howdy! 1.55-28-gab0db6e1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=7dc6ce7e" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=0ed2ffa6"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/documentation_options.js?v=b90cce33"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -101,7 +102,7 @@
 <li><p><a class="reference internal" href="#howdy-core-gui-label"><span class="std std-ref"> howdy_core_gui</span></a> is a more archaic version of <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code>. This only provides a GUI to set up the correct <a class="reference external" href="https://plex.tv">Plex</a> server settings or to set up <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a>.</p></li>
 </ul>
 <section id="howdy-core-gui-icon-howdy-core-gui">
-<span id="howdy-core-gui-label"></span><h2><span class="section-number">4.2.1. </span><a class="reference internal" href="../../_images/howdy_core_gui_SQUARE_VECTA.svg"><img alt="howdy_core_gui_icon" class="align-middle" src="../../_images/howdy_core_gui_SQUARE_VECTA.svg" width="50" /></a> <code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span></code><a class="headerlink" href="#howdy-core-gui-icon-howdy-core-gui" title="Link to this heading"></a></h2>
+<span id="howdy-core-gui-label"></span><h2><span class="section-number">4.2.1. </span><a class="reference internal" href="howdy-core/gui_tools/gui-tools-figures/howdy_core_gui_SQUARE_VECTA.svg"><img alt="howdy_core_gui_icon" class="align-middle" src="howdy-core/gui_tools/gui-tools-figures/howdy_core_gui_SQUARE_VECTA.svg" style="width: 50px;" /></a> <code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span></code><a class="headerlink" href="#howdy-core-gui-icon-howdy-core-gui" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span></code> has two modes of operation: either return the <a class="reference external" href="https://plex.tv">Plex</a> server token and URL; or set up <a class="reference external" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth2 authentication</a>. <code class="docutils literal notranslate"><span class="pre">howdy_core_gui</span> <span class="pre">-h</span></code> produces this help screen,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Usage: howdy_core_gui [-h] [--info] [--remote] {googleauth} ...</span>
 
@@ -117,7 +118,7 @@
 </div>
 <p>At the top level, here are the options.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code>: print out the <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code>: print out the <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--remote</span></code>: If chosen, do not check localhost for a running <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
 </ul>
 <p>When running in standard mode, this tool prints out the current <a class="reference external" href="https://plex.tv">Plex</a> server and token URL.</p>
@@ -165,7 +166,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023.</p>
+    <p>&#169; Copyright 2024.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

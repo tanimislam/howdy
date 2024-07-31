@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2.3. Consolidating Howdy Configuration With howdy_config_gui &mdash; howdy! 1.55-9-g1aca230e documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
+  <title>2.3. Consolidating Howdy Configuration With howdy_config_gui &mdash; howdy! 1.55-28-gab0db6e1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7dc6ce7e" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=0ed2ffa6"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/documentation_options.js?v=b90cce33"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -98,7 +99,7 @@
            <div itemprop="articleBody">
              
   <section id="howdy-config-gui-icon-consolidating-howdy-configuration-with-howdy-config-gui">
-<span id="howdy-config-gui-label"></span><h1><span class="section-number">2.3. </span><a class="reference internal" href="../_images/howdy_config_gui_SQUARE_VECTA.svg"><img alt="howdy_config_gui_icon" class="align-middle" src="../_images/howdy_config_gui_SQUARE_VECTA.svg" width="50" /></a> Consolidating Howdy Configuration With <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code><a class="headerlink" href="#howdy-config-gui-icon-consolidating-howdy-configuration-with-howdy-config-gui" title="Link to this heading"></a></h1>
+<span id="howdy-config-gui-label"></span><h1><span class="section-number">2.3. </span><a class="reference internal" href="howdy-config/howdy-config-gui-figures/howdy_config_gui_SQUARE_VECTA.svg"><img alt="howdy_config_gui_icon" class="align-middle" src="howdy-config/howdy-config-gui-figures/howdy_config_gui_SQUARE_VECTA.svg" style="width: 50px;" /></a> Consolidating Howdy Configuration With <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code><a class="headerlink" href="#howdy-config-gui-icon-consolidating-howdy-configuration-with-howdy-config-gui" title="Link to this heading"></a></h1>
 <p>Although <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code> is part of <code class="docutils literal notranslate"><span class="pre">core</span></code>, and naturally lives in <a class="reference internal" href="../howdy-core/howdy_core.html#howdy-core-functionality"><span class="std std-numref">Section 4</span></a>, I suggest you use this configuration tool to naturally consolidate the services and settings. The final configuration data will live in an <a class="reference external" href="https://en.wikipedia.org/wiki/SQLite">sqlite version 3</a> database that is located in <code class="docutils literal notranslate"><span class="pre">~/.local/howdy/app.db</span></code> and is readable only by the user (and root).</p>
 <p>Some of the <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code> screenshots are found in <a class="reference internal" href="howdy_services_config.html#summary-of-setting-up-google-credentials"><span class="std std-numref">Section 2.1.6</span></a> (specifically <a class="reference internal" href="howdy_services_config.html#imgur-step04-credentials"><span class="std std-numref">Fig. 2.7</span></a>, <a class="reference internal" href="howdy_services_config.html#google-step02-refreshcredentials"><span class="std std-numref">Fig. 2.10</span></a>, and <a class="reference internal" href="howdy_services_config.html#google-step04-oauthtokenstring"><span class="std std-numref">Fig. 2.12</span></a>) and in <a class="reference internal" href="howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a> (specifically <a class="reference internal" href="howdy_settings_config.html#login-step01-login"><span class="std std-numref">Fig. 2.16</span></a> and <a class="reference internal" href="howdy_settings_config.html#login-step02-settings"><span class="std std-numref">Fig. 2.17</span></a>).</p>
 <p><a class="reference internal" href="#howdy-config-gui-serviceswidget"><span class="std std-numref">Fig. 2.18</span></a> describes the three initial sets of services and settings.</p>
@@ -137,7 +138,7 @@
 <h2><span class="section-number">2.3.2. </span>Credentials Services<a class="headerlink" href="#credentials-services" title="Link to this heading"></a></h2>
 <p>As described in <a class="reference internal" href="howdy_services_config.html#summary-of-setting-up-google-credentials"><span class="std std-numref">Section 2.1.6</span></a>, right click on the <em>CREDENTIALS</em> row in the main widget to launch the <em>PLEX CREDENTIALS CONFIGURATION</em> widget. The relevant screen shot, <a class="reference internal" href="howdy_services_config.html#imgur-step04-credentials"><span class="std std-ref">credentials window</span></a>, is shown below.</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../_images/google_step01_credentials.png"><img alt="../_images/google_step01_credentials.png" src="../_images/google_step01_credentials.png" style="width: 100%;" /></a>
+<a class="reference internal image-reference" href="howdy-config/howdy-config-services-figures/google_step01_credentials.png"><img alt="howdy-config/howdy-config-services-figures/google_step01_credentials.png" src="howdy-config/howdy-config-services-figures/google_step01_credentials.png" style="width: 100%;" /></a>
 </figure>
 <p><a class="reference internal" href="#howdy-credentials-mainfigure"><span class="std std-numref">Fig. 2.19</span></a>: is a screen shot of the <em>PLEX CREDENTIALS CONFIGURATION</em> widget.</p>
 <figure class="align-left" id="id2">
@@ -228,7 +229,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023.</p>
+    <p>&#169; Copyright 2024.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

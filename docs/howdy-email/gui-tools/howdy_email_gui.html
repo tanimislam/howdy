@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>8.2. howdy_email_gui &mdash; howdy! 1.55-9-g1aca230e documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
+  <title>8.2. howdy_email_gui &mdash; howdy! 1.55-28-gab0db6e1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=7dc6ce7e" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=0ed2ffa6"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/documentation_options.js?v=b90cce33"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -106,7 +107,7 @@
            <div itemprop="articleBody">
              
   <section id="howdy-email-gui-icon-howdy-email-gui">
-<span id="howdy-email-gui-label"></span><h1><span class="section-number">8.2. </span><a class="reference internal" href="../../_images/howdy_email_gui_SQUARE_VECTA.svg"><img alt="howdy_email_gui_icon" class="align-middle" src="../../_images/howdy_email_gui_SQUARE_VECTA.svg" width="50" /></a> <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code><a class="headerlink" href="#howdy-email-gui-icon-howdy-email-gui" title="Link to this heading"></a></h1>
+<span id="howdy-email-gui-label"></span><h1><span class="section-number">8.2. </span><a class="reference internal" href="howdy-email/gui-tools/howdy-email-gui-figures/howdy_email_gui_SQUARE_VECTA.svg"><img alt="howdy_email_gui_icon" class="align-middle" src="howdy-email/gui-tools/howdy-email-gui-figures/howdy_email_gui_SQUARE_VECTA.svg" style="width: 50px;" /></a> <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code><a class="headerlink" href="#howdy-email-gui-icon-howdy-email-gui" title="Link to this heading"></a></h1>
 <p>This is documentation for the Howdy one-off and newslettering email announcement GUI, <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code>. The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span> <span class="pre">-h</span></code>, produces the following output,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_email_gui [-h] [--info] [--local] [--large] [--noverify]</span>
 <span class="go">                       [--extraemails EXTRAEMAILS] [--extranames EXTRANAMES]</span>
@@ -129,7 +130,7 @@
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">(n)</span></code> choice means do a <a class="reference internal" href="#newsletter-mode"><span class="std std-ref">newsletter</span></a>, while the <code class="docutils literal notranslate"><span class="pre">(o)</span></code> choice means do <a class="reference internal" href="#only-email-mode"><span class="std std-ref">only the email</span></a>. Here are the common arguments.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--local</span></code> specifies that we look for a local (<code class="docutils literal notranslate"><span class="pre">https://localhost:3400</span></code>) running <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--large</span></code> specifies that one should make the GUI (widgets and fonts) <em>LARGER</em> to aid in readibility.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> is a standard option in many of the Howdy CLI and GUIs to ignore verification of SSL transactions. It is optional and will default to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
@@ -366,7 +367,7 @@ Finally, one can insert an image into here. Here is what I will do.
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023.</p>
+    <p>&#169; Copyright 2024.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

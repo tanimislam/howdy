@@ -258,6 +258,7 @@ class MusicInfo( object ):
     def push_spotify_credentials( cls, client_id, client_secret, verify = True ):
         """
         Pushes the Spotify_ API configuration into the SQLite3_ configuration database. Take a look at `this blog article on the Spotify API <https://tanimislam.gitlab.io/blog/spotify-web-api.html>`_ for some more information on setting up your Spotify_ web API client.
+        
         :param str client_id: the Spotify_ client ID.
         :param str client_secret: the Spotify_ client secret.
         :param bool verify: if ``True``, then use HTTPS authentication. Otherwise do not. Default is ``True``.

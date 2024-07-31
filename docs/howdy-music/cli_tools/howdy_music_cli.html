@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.55-9-g1aca230e documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
+  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.55-28-gab0db6e1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=7dc6ce7e" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=0ed2ffa6"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/documentation_options.js?v=b90cce33"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -107,7 +108,7 @@
 <ul class="simple">
 <li><p><a class="reference internal" href="#howdy-music-album"><span class="std std-ref">howdy_music_album</span></a> can do three possible things: download an album image given an artist name and album name; pretty-print out all the studio albums released by an artist; and print out all the songs released on an album by an artist. It uses either the <a class="reference external" href="https://www.last.fm/api">LastFM</a> or <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> APIs.</p></li>
 <li><p><a class="reference internal" href="#howdy-music-metafill"><span class="std std-ref">howdy_music_metafill</span></a> is an older <a class="reference external" href="https://plex.tv">Plex</a> Music executable. It gets choices and song clips from <a class="reference external" href="https://www.youtube.com">YouTube</a> and music metadata using the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> API. This was an earlier trial to improve the functionality of <a class="reference internal" href="#howdy-music-songs"><span class="std std-ref">howdy_music_songs</span></a>.</p></li>
-<li><p><a class="reference internal" href="#howdy-music-songs"><span class="std std-ref">howdy_music_songs</span></a> is a work-horse CLI that can do three things (<a class="reference internal" href="#download-by-artist-songs"><span class="std std-ref">download songs with artist and song list</span></a>, <a class="reference internal" href="#download-by-artist-album"><span class="std std-ref">download songs with artist and album</span></a>, or <a class="reference internal" href="#download-by-artists-songs-list"><span class="std std-ref">download a list of songs with a list of corresponding artists</span></a>) using the three music metadata services: <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> (<a class="reference external" href="https://developer.gracenote.com/web-api"><img alt="gracenote_image" class="align-middle" src="../../_images/gracenote_logo.svg" width="100" /></a>), <a class="reference external" href="https://www.last.fm/api">LastFM</a> (<a class="reference external" href="https://www.last.fm/api"><img alt="lastfm_image" class="align-middle" src="../../_images/Lastfm_logo.svg" width="75" /></a>), or <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> (<a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2"><img alt="musicbrainz_image" class="align-middle" src="../../_images/musicbrainz_logo.svg" width="25" /></a>).</p></li>
+<li><p><a class="reference internal" href="#howdy-music-songs"><span class="std std-ref">howdy_music_songs</span></a> is a work-horse CLI that can do three things (<a class="reference internal" href="#download-by-artist-songs"><span class="std std-ref">download songs with artist and song list</span></a>, <a class="reference internal" href="#download-by-artist-album"><span class="std std-ref">download songs with artist and album</span></a>, or <a class="reference internal" href="#download-by-artists-songs-list"><span class="std std-ref">download a list of songs with a list of corresponding artists</span></a>) using the three music metadata services: <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> (<a class="reference external" href="https://developer.gracenote.com/web-api"><img alt="gracenote_image" class="align-middle" src="../../_images/gracenote_logo.svg" style="width: 100px;" /></a>), <a class="reference external" href="https://www.last.fm/api">LastFM</a> (<a class="reference external" href="https://www.last.fm/api"><img alt="lastfm_image" class="align-middle" src="../../_images/Lastfm_logo.svg" style="width: 75px;" /></a>), or <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> (<a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2"><img alt="musicbrainz_image" class="align-middle" src="../../_images/musicbrainz_logo.svg" style="width: 25px;" /></a>).</p></li>
 <li><p><a class="reference internal" href="#upload-to-gmusic"><span class="std std-ref">upload_to_gmusic</span></a> uploads <a class="reference external" href="https://en.wikipedia.org/wiki/MP3">MP3</a> or <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> music files to one’s <a class="reference external" href="https://play.google.com/music/listen">Google Play Music</a> account, or pushes the appropriate <code class="xref py py-mod docutils literal notranslate"><span class="pre">gmusicapi</span></code> <code class="xref py py-class docutils literal notranslate"><span class="pre">Mobileclient</span></code> credentials into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p></li>
 </ul>
 <section id="howdy-music-album">
@@ -133,7 +134,7 @@
 </div>
 <p>These are the common operational flags,</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--debug</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--debug</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
 <li><p>By default, this executable uses the <a class="reference external" href="https://www.last.fm/api">LastFM</a> API to get music metadata. The <code class="docutils literal notranslate"><span class="pre">-M</span></code> or <code class="docutils literal notranslate"><span class="pre">--musicbrainz</span></code> flag then means the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API is used.</p></li>
 <li><p>By default (with <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a>) we perform an <em>indexed</em> search. The <code class="docutils literal notranslate"><span class="pre">-D</span></code> or <code class="docutils literal notranslate"><span class="pre">--direct</span></code> flag means to perform a <em>direct</em> search on an arist with the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API.</p></li>
@@ -306,12 +307,12 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> does not verify SSL connections.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--debuglevel</span></code> specifies the amount of system logging into STDOUT that you want to show. The default choice is <code class="docutils literal notranslate"><span class="pre">NONE</span></code> (no logging). Here are the loging levels.</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">ERROR</span></code>: <code class="xref py py-const docutils literal notranslate"><span class="pre">ERROR</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">INFO</span></code>: <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>: <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ERROR</span></code>: <code class="xref py py-const docutils literal notranslate"><span class="pre">ERROR</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INFO</span></code>: <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>: <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 </ul>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--level</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--level</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-D</span></code> or <code class="docutils literal notranslate"><span class="pre">--direct</span></code> only makes sense with the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> operation. With the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> API we perform an <em>indexed</em> search. The <code class="docutils literal notranslate"><span class="pre">-D</span></code> or <code class="docutils literal notranslate"><span class="pre">--direct</span></code> flag means to perform a <em>direct</em> search on an arist instead.</p></li>
 </ul>
 <p>Some example animated GIFs can be downloaded from here, and is mirrored in this project’s README:</p>
@@ -347,9 +348,9 @@
 <caption><span class="caption-number">Table 7.1 </span><span class="caption-text">a summary of the music services chosen in <em>progressive</em> selection mode</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
 <tbody>
 <tr class="row-odd"><td><p>metadata flag</p></td>
-<td><p><a class="reference external" href="https://developer.gracenote.com/web-api"><img alt="gracenote_image_big" class="align-middle" src="../../_images/gracenote_logo.svg" width="100%" /></a></p></td>
-<td><p><a class="reference external" href="https://www.last.fm/api"><img alt="lastfm_image_big" class="align-middle" src="../../_images/Lastfm_logo.svg" width="100%" /></a></p></td>
-<td><p><a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2"><img alt="musicbrainz_image_big" class="align-middle" src="../../_images/musicbrainz_logo.svg" width="100%" /></a></p></td>
+<td><p><a class="reference external" href="https://developer.gracenote.com/web-api"><img alt="gracenote_image_big" class="align-middle" src="../../_images/gracenote_logo.svg" style="width: 100%;" /></a></p></td>
+<td><p><a class="reference external" href="https://www.last.fm/api"><img alt="lastfm_image_big" class="align-middle" src="../../_images/Lastfm_logo.svg" style="width: 100%;" /></a></p></td>
+<td><p><a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2"><img alt="musicbrainz_image_big" class="align-middle" src="../../_images/musicbrainz_logo.svg" style="width: 100%;" /></a></p></td>
 </tr>
 <tr class="row-even"><td><p>default (no flag)</p></td>
 <td><p>1</p></td>
@@ -377,9 +378,9 @@
 <caption><span class="caption-number">Table 7.2 </span><span class="caption-text">a summary of the music services chosen in <em>exclusive</em> selection mode</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
 <tbody>
 <tr class="row-odd"><td><p>metadata flag</p></td>
-<td><p><a class="reference external" href="https://developer.gracenote.com/web-api"><img alt="gracenote_image_big" class="align-middle" src="../../_images/gracenote_logo.svg" width="100%" /></a></p></td>
-<td><p><a class="reference external" href="https://www.last.fm/api"><img alt="lastfm_image_big" class="align-middle" src="../../_images/Lastfm_logo.svg" width="100%" /></a></p></td>
-<td><p><a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2"><img alt="musicbrainz_image_big" class="align-middle" src="../../_images/musicbrainz_logo.svg" width="100%" /></a></p></td>
+<td><p><a class="reference external" href="https://developer.gracenote.com/web-api"><img alt="gracenote_image_big" class="align-middle" src="../../_images/gracenote_logo.svg" style="width: 100%;" /></a></p></td>
+<td><p><a class="reference external" href="https://www.last.fm/api"><img alt="lastfm_image_big" class="align-middle" src="../../_images/Lastfm_logo.svg" style="width: 100%;" /></a></p></td>
+<td><p><a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2"><img alt="musicbrainz_image_big" class="align-middle" src="../../_images/musicbrainz_logo.svg" style="width: 100%;" /></a></p></td>
 </tr>
 <tr class="row-even"><td><p>default (no flag)</p></td>
 <td><p>1</p></td>
@@ -539,7 +540,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023.</p>
+    <p>&#169; Copyright 2024.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

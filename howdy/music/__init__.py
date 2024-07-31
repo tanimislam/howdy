@@ -67,7 +67,7 @@ def get_m4a_metadata( filename ):
 
     :param str filename: the M4A_ music file name.
     
-    :returns: a :py:class:`dict` of the music metadata that contains as many of these keys: ``song``, ``album``, ``artist``, ``year``, ``tracknumber``, ``total tracks``, ``album url``.
+    :returns: a :py:class:`dict` of the music metadata that contains as many of these keys: ``song``, ``album``, ``artist``, ``date``, ``tracknumber``, ``total tracks``, ``album cover``.
     :rtype: dict
     """
     #

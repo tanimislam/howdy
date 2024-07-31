@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7.2. Howdy Music API &mdash; howdy! 1.55-28-gab0db6e1 documentation</title>
+  <title>7.2. Howdy Music API &mdash; howdy! 1.55-30-g0cd94b82 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7dc6ce7e" />
@@ -16,7 +16,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=b90cce33"></script>
+        <script src="../_static/documentation_options.js?v=55dd48d6"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -63,6 +63,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#howdy.music.fill_m4a_metadata"><code class="docutils literal notranslate"><span class="pre">fill_m4a_metadata()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.music.format_youtube_date"><code class="docutils literal notranslate"><span class="pre">format_youtube_date()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.music.get_failing_artistalbum"><code class="docutils literal notranslate"><span class="pre">get_failing_artistalbum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.get_m4a_metadata"><code class="docutils literal notranslate"><span class="pre">get_m4a_metadata()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.music.parse_youtube_date"><code class="docutils literal notranslate"><span class="pre">parse_youtube_date()</span></code></a></li>
 </ul>
 </li>
@@ -181,6 +182,23 @@
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.get_m4a_metadata">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.</span></span><span class="sig-name descname"><span class="pre">get_m4a_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.get_m4a_metadata" title="Link to this definition"></a></dt>
+<dd><p>Low level method that returns the metadata of an <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> music file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> music file name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of the music metadata that contains as many of these keys: <code class="docutils literal notranslate"><span class="pre">song</span></code>, <code class="docutils literal notranslate"><span class="pre">album</span></code>, <code class="docutils literal notranslate"><span class="pre">artist</span></code>, <code class="docutils literal notranslate"><span class="pre">date</span></code>, <code class="docutils literal notranslate"><span class="pre">tracknumber</span></code>, <code class="docutils literal notranslate"><span class="pre">total</span> <span class="pre">tracks</span></code>, <code class="docutils literal notranslate"><span class="pre">album</span> <span class="pre">cover</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>

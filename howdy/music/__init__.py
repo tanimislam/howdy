@@ -77,6 +77,7 @@ def get_m4a_metadata( filename ):
         '\xa9alb' : 'album',
         '\xa9ART' : 'artist',
         '\xa9day' : 'date',
+        '\xa9cmt' : 'comment',
         'aART'    : 'album artist',
         'covr'    : 'album cover',
         'trkn'    : 'trkn' }
@@ -90,18 +91,16 @@ def get_m4a_metadata( filename ):
     mp4tags = mutagen.mp4.MP4( filename )
     set_of_keys_intersect = set( naming_dict ) & set( mp4tags.keys( ) )
     for key in set_of_keys_intersect:
-        if key == 'covr':
-            continue
-        if key == 'trkn':
-            continue
-        if key == '\xa9day':
+        if key in ( 'covr', 'trkn', '\xa9day', '\xa9cmt' ):
             continue
         data_dict[ naming_dict[ key ] ] = mp4tags[ key ][ 0 ]
     #
     ## now if we have a covr
-    if 'covr' in set_of_keys_intersect:
-        data_dict[ 'cover' ] = Image.open(
-            BytesIO( mp4tags['covr'][0][:-1] ) )
+    try:
+        if 'covr' in set_of_keys_intersect:
+            data_dict[ 'cover' ] = Image.open(
+                BytesIO( mp4tags['covr'][0][:-1] ) )
+    except: pass
     #
     ## if we have the track number and total number of tracks
     if 'trkn' in set_of_keys_intersect:
@@ -121,6 +120,10 @@ def get_m4a_metadata( filename ):
         else:
             mydate = datetime.datetime.strptime( dstring, '%Y-%m-%d' ).date( )
         data_dict[ 'date' ] = mydate
+    #
+    ## if we have a comment
+    if '\xa9cmt' in set_of_keys_intersect:
+        data_dict[ 'comment' ] = list( mp4tags[ '\xa9cmt' ] )        
     #
     return data_dict    
 

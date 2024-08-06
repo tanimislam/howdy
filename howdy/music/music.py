@@ -1,5 +1,5 @@
-import os, sys, glob, numpy, titlecase, httplib2, json, logging, oauth2client.client
-import requests, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid
+import os, sys, glob, numpy, titlecase, httplib2, json, logging, oauth2client.client, mutagen.mp4
+import requests, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid, re
 import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
 from contextlib import contextmanager
@@ -8,11 +8,12 @@ from itertools import chain
 from PIL import Image
 from urllib.parse import urljoin
 from shutil import which
+from rapidfuzz.fuzz import partial_ratio
 #
 from howdy import resourceDir
 from howdy.core import core, baseConfDir, session, PlexConfig
 from howdy.core import return_error_raw, get_maximum_matchval
-from howdy.music import pygn, parse_youtube_date, format_youtube_date, fill_m4a_metadata
+from howdy.music import pygn, parse_youtube_date, format_youtube_date, fill_m4a_metadata, get_m4a_metadata
 
 def oauth_store_google_credentials( credentials ):
     """
@@ -283,6 +284,7 @@ class MusicInfo( object ):
             PlexConfig( service = 'spotify',
                        data = { 'client_id' : client_id,
                                'client_secret' : client_secret } ) )
+        session.commit( )
 
     @classmethod
     def get_spotify_credentials( cls ):
@@ -295,6 +297,24 @@ class MusicInfo( object ):
         if val is None:
             raise ValueError( "ERROR, SPOTIFY WEB API CLIENT CREDENTIALS NOT FOUND OR SET" )
         return val.data
+
+    @classmethod
+    def get_spotify_session( cls ):
+        """
+        Returns the session token from a valid Spotify_ API account.
+        :rtype: str
+        """
+        data = MusicInfo.get_spotify_credentials( )
+        response = requests.post(
+            "https://accounts.spotify.com/api/token",
+            headers = { 'Content-Type' : 'application/x-www-form-urlencoded' },
+            data = {
+                'grant_type'    : 'client_credentials',
+                'client_id'     : data['client_id'],
+                'client_secret' : data['client_secret'] } )
+        assert( response.ok )
+        data_auth = response.json( )
+        return data_auth[ 'access_token' ]
 
     #
     ## now get all the albums of this artist.
@@ -944,9 +964,7 @@ def get_youtube_file( youtube_URL, outputfile, use_aria2c = True ):
                   'aac', '-ab', '128k', "file:%s" % outputfile ],
                 stderr = subprocess.STDOUT )
             os.chmod( outputfile, 0o644 )
-            os.remove( tmpfile )
-                
-        
+            os.remove( tmpfile )        
             
 def youtube_search(youtube, query, max_results = 10):
     """
@@ -997,6 +1015,119 @@ def youtube_search(youtube, query, max_results = 10):
             print( e )
             pass
     return videos
+
+def push_spotify_song_id_to_file( spotify_id, filename ):
+    _error_expired_token = 'The access token expired'
+    if spotify_id.strip( ) == _error_expired_token:
+        logging.debug( 'ACTUAL MESSAGE IS EXPIRED TOKEN. DOING NOTHING.' )
+        return
+
+    #
+    ## final comments list has no SPOTIFY: things in it
+    song_metadata_dict = get_m4a_metadata( filename )
+    if 'comment' not in song_metadata_dict:
+        comments = list(filter(lambda cmnt: not cmnt.startswith('SPOTIFY: '), [ ] ) )
+    else:
+        comments = list(filter(lambda cmnt: not cmnt.startswith('SPOTIFY: '), song_metadata_dict[ 'comment' ] ) )
+
+    comments.append( 'SPOTIFY: %s' % spotify_id )
+
+    mp4tags = mutagen.mp4.MP4( filename )
+    mp4tags[ '\xa9cmt' ] = comments
+    mp4tags.save( )
+    
+def get_spotify_song_id_filename( filename ):
+    song_metadata_dict = get_m4a_metadata( filename )
+    if 'comment' not in song_metadata_dict:
+        logging.debug( 'ERROR, NO COMMENTS IN %s.' % os.path.abspath( filename ) )
+        return None
+    comments = list(filter(lambda cmnt: cmnt.startswith('SPOTIFY: '), song_metadata_dict[ 'comment' ] ) )
+    if len( comments ) != 1:
+        logging.debug( 'ERROR, NOT JUST ONE SPOTIFY: ENTRY IN COMMENTS IN %s.' % os.path.abspath( filename ) )
+        return None
+
+    spotify_id = re.sub('^SPOTIFY:', '', comments[0] ).strip( )
+    return spotify_id
+    
+
+def get_spotify_song_id( spotify_access_token, song_metadata_dict, song_limit = 5, market = 'us' ):
+    assert( song_limit > 0 )
+    #
+    def _get_track_query_string( song_metadata_dict ):
+        assert( 'song' in song_metadata_dict )
+        return 'track:%s' % song_metadata_dict[ 'song' ]
+    def _get_artist_query_string( song_metadata_dict ):
+        assert( 'artist' in song_metadata_dict )
+        return 'artist:%s' % song_metadata_dict[ 'artist' ]
+    def _get_year_query_string( song_metadata_dict ):
+        assert( 'date' in song_metadata_dict )
+        return 'year:%d' % song_metadata_dict[ 'date' ].year
+    def _get_album_query_string( song_metadata_dict ):
+        assert( 'album' in song_metadata_dict )
+        return 'album:%s' % song_metadata_dict[ 'album' ]
+
+    #
+    ## now create a dictionary of song metadata keys (4) to above methods
+    query_dict = {
+        'song'   : _get_track_query_string,
+        'artist' : _get_artist_query_string,
+        'date'   : _get_year_query_string,
+        'album'  : _get_album_query_string }
+    
+    def _get_info_track_elem( track_elem ):
+        track_album = track_elem['album']['name']
+        track_date = datetime.datetime.strptime( track_elem[ 'album' ][ 'release_date' ], '%Y-%m-%d' ).date( )
+        track_name = track_elem[ 'name' ]
+        track_artist = track_elem[ 'artists' ][ 0 ][ 'name' ]
+        return {
+            'song'   : track_name,
+            'artist' : track_artist,
+            'date'   : track_date,
+            'album'  : track_album }
+    
+    def _get_spotify_query( song_dict, query_keys ):
+        spotify_query = ' '.join(map(lambda key: query_dict[ key ]( song_dict ), query_keys ) )
+        logging.debug( 'SPOTIFY QUERY FOR SONG = %s.' % spotify_query )
+        return spotify_query
+
+    def _get_comparative_score( track_elem ):
+        query_keys = sorted(set( song_metadata_dict ) & set( query_dict ) )
+        initial_query = _get_spotify_query( song_metadata_dict, query_keys )
+        track_query = _get_spotify_query(
+            _get_info_track_elem( track_elem ),
+            query_keys )
+        return partial_ratio( initial_query, track_query )
+    #
+    ## now essential keys in song_metadata_dict
+    essential_keys = set([ 'song', 'artist' ] )
+    assert( len( essential_keys - set( song_metadata_dict ) ) == 0 ) # must have AT LEAST these two
+    #
+    ## now the final query
+    query_keys = sorted(set( song_metadata_dict ) & set( query_dict ) )
+    spotify_query = _get_spotify_query( song_metadata_dict, query_keys )
+    logging.debug( 'SPOTIFY QUERY FOR SONG = %s.' % spotify_query )
+    #
+    ## now get the track query
+    resp_track = requests.get(
+        "https://api.spotify.com/v1/search",
+        headers = { 'Authorization' : 'Bearer %s' % spotify_access_token },
+        params = {
+            'q' : spotify_query,
+            'type' : 'track',
+            'market' : market,
+            'limit'  : song_limit } )
+    #
+    ## check that we have a good response
+    if not resp_track.ok:
+        error_json = resp_track.json( )
+        return error_json[ 'error' ][ 'message' ]
+    #
+    ## now get the best track
+    data_track = resp_track.json( )
+    best_elem = max( data_track['tracks']['items'], key = lambda track_elem: _get_comparative_score( track_elem ) )
+    logging.debug( 'BEST SCORE TRACK_ELEM = %0.1f' % _get_comparative_score( best_elem ) )
+    return best_elem['uri']
+    
 
 class HowdyLastFM( object ):
     """

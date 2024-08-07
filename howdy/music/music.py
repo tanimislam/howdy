@@ -1132,6 +1132,7 @@ def plexapi_music_playlist_info( plex_playlist ):
     """
     This creates a :py:class:`Pandas DataFrame <pandas.DataFrame>` out of the :py:class:`PlexAPI Playlist <plexapi.playlist.Playlist>`. This DataFrame has the following columns:
 
+    * ``order in playlist``
     * ``filename``
     * ``added date``
     * ``song name``
@@ -1141,8 +1142,6 @@ def plexapi_music_playlist_info( plex_playlist ):
     * ``album number of tracks``
     * ``album year``
 
-    This DataFrame is ordered by ``added date``.
-
     :param plex_playist: the :py:class:`PlexAPI Playlist <plexapi.playlist.Playlist>`, which must be an audio playlist.
     :returns: a :py:class:`Pandas DataFrame <pandas.DataFrame>` of useful track information for the playlist.
     :rtype: :py:class:`Pandas DataFrame <pandas.DataFrame>`
@@ -1150,18 +1149,20 @@ def plexapi_music_playlist_info( plex_playlist ):
     assert( plex_playlist.playlistType == 'audio' )
     time0 = time.perf_counter( )
     #
-    def _get_info_playlist_item( item ):
+    def _get_info_playlist_item( tup ):
+        idx, item = tup
         try:
             info = {
+                'order in playlist'      : idx + 1,
                 'filename'               : max(item._data.iter('Part')).attrib['file'],
                 'added date'             : item.addedAt,
                 'song name'              : item.title,
                 'artist'                 : item.artist( ).title,
                 'track number'           : item.trackNumber,
                 'album'                  : item.album( ).title,
-                'album number of tracks' : max(alb.tracks(), key = lambda track: track.trackNumber ).trackNumber, # not perfect I know
-                'album year'             : alb.year }
-            if not os.path.isfile( info[ 'filename' ] )
+                'album number of tracks' : max(item.album( ).tracks(), key = lambda track: track.trackNumber ).trackNumber, # not perfect I know
+                'album year'             : item.album( ).year }
+            if not os.path.isfile( info[ 'filename' ] ):
                 raise ValueError("ERROR, %s is not a valid file" % info[ 'filename' ] )
             return info
         except Exception as e:
@@ -1169,11 +1170,18 @@ def plexapi_music_playlist_info( plex_playlist ):
             return None
     #
     all_valid_tracks = sorted(
-        filter( None, map( _get_info_playlist_item, plex_playlist.items( ) ),
-        key = lambda entry: entry[ 'added date' ] ) )
+        filter( None, map( _get_info_playlist_item, enumerate( plex_playlist.items( ) ) ) ),
+        key = lambda entry: entry[ 'order in playlist' ] )
+    valid_columns = [
+        'order in playlist', 'filename', 'added date', 'song name',
+        'artist', 'track number', 'album', 'album number of tracks', 'album year' ]
+    df = pandas.DataFrame(
+        dict(map(lambda column: ( column, list(map(lambda entry: entry[ column ], all_valid_tracks ) ) ),
+                valid_columns ) ) )
     logging.info( 'FOUND %d / %d VALID TRACKS IN PLAYLIST = %s IN %0.3f SECONDS.' % (
-        len( all_valid_tracks ), len( plex_playlist.items( ) ), time.perf_counter( ) - time0 ) )
-    return all_valid_tracks
+        len( all_valid_tracks ), len( plex_playlist.items( ) ), plex_playlist.title, time.perf_counter( ) - time0 ) )
+    #return df.sort_values( 'added date' )
+    return df
     
 
 

@@ -92,6 +92,7 @@ setup(
             'howdy_music_album = howdy.music.cli.howdy_music_album:main',
             'howdy_music_metafill = howdy.music.cli.howdy_music_metafill:main',
             'howdy_music_songs = howdy.music.cli.howdy_music_songs:main',
+            'howdy_music_process_playlists = howdy.music.cli.howdy_music_process_playlists:main_actual',
             'upload_to_gmusic = howdy.music.cli.upload_to_gmusic:main',
             # tv stuff
             ## cli
@@ -103,7 +104,7 @@ setup(
             'howdy_tv_plots = howdy.tv.cli.howdy_tv_plots:main',
             'howdy_tv_excludes = howdy.tv.cli.howdy_tv_excludes:main',
             ## gui
-            'howdy_tv_gui = howdy.tv.gui.howdy_tv_gui:main',
+            'howdy_tv_gui = howdy.tv.gui.howdy_tv_gui:main_actual',
             ]
     },
     #

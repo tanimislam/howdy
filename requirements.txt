@@ -2,6 +2,7 @@ apiclient
 beautifulsoup4
 cfscrape
 fabric<3.0.0
+ffmpeg_normalize
 gdata
 geoip2
 gmusicapi

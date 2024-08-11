@@ -5,6 +5,7 @@ from pathos.multiprocessing import Pool, cpu_count
 from pathos.threading import ThreadPool
 from ffmpeg_normalize import FFmpegNormalize
 from howdy.core import core
+from howdy.music import music
 from plexapi.server import PlexServer
 #
 from argparse import ArgumentParser
@@ -203,19 +204,21 @@ def main_actual( ):
                         help = 'If chosen, then just do dry run and no heavy processing.' )
     subparsers = parser.add_subparsers(
         help = ' '.join([
-            'Choose one of two options: (json) or (norm)' ]), dest = 'choose_option' )
+            'Optionally do (pandas) to dump chosen playlist into an HDF5 Pandas DataFrame' ]), dest = 'choose_option' )
     #
-    ## dump out as JSON a chosen playlist
-    parser_json = subparsers.add_parser( 'json', help = 'If chosen, dumps out info for the chosen AUDIO playlist into a JSON file. MAY TAKE A LONG TIME!' )
-    parser_json.add_argument( '-p', '--playlist', dest='json_playlist', metavar = 'playlist', action='store', type=str, required = True,
-                        help = 'Name of the playlist to summarize or normalize. Must be of type AUDIO.' )
+    ## dump out as HDF5 PANDAS DATAFRAME a chosen playlist
+    parser_pandas = subparsers.add_parser( 'pandas', help = 'If chosen, dumps out info for the chosen AUDIO playlist into a HDF5 PANDAS DATAFRAME. MAY TAKE A LONG TIME!' )
+    parser_pandas.add_argument( '-p', '--playlist', dest='playlist', action='store', type=str, required = True,
+                        help = 'Name of the playlist. Must be of type AUDIO.' )
+    parser_pandas.add_argument( '-f', '--filename', dest='filename', action='store', type=str, required = True,
+                        help = 'File name. Suffix must end in h5.' )
     #
     ## normalizes files in the JSON playlist
-    parser_norm = subparsers.add_parser( 'norm', help = 'If chosen, normalizes the audio in the chosen AUDIO playlist JSON file whose peak loudness is below some threshold. MAY TAKE A LONG TIME!' )
-    parser_norm.add_argument('-j', '--json', dest='norm_jsonfile', action='store', metavar = 'jsonfile', type=str, required = True,
-                             help = 'Name of the input JSON file that contains the song filenames, and the input peak loudness (in dB).' )
-    parser_norm.add_argument('-p', '--peak', dest='norm_peakloud', action='store', metavar = 'peak', type=float, default = -1,
-                             help = 'Peak loudness value of song for processing. If peak loudness is less than this value, perform normalization.' )
+    #parser_norm = subparsers.add_parser( 'norm', help = 'If chosen, normalizes the audio in the chosen AUDIO playlist JSON file whose peak loudness is below some threshold. MAY TAKE A LONG TIME!' )
+    #parser_norm.add_argument('-j', '--json', dest='norm_jsonfile', action='store', metavar = 'jsonfile', type=str, required = True,
+    #                         help = 'Name of the input JSON file that contains the song filenames, and the input peak loudness (in dB).' )
+    #parser_norm.add_argument('-p', '--peak', dest='norm_peakloud', action='store', metavar = 'peak', type=float, default = -1,
+    #                         help = 'Peak loudness value of song for processing. If peak loudness is less than this value, perform normalization.' )
     #
     ##
     args = parser.parse_args( )
@@ -228,14 +231,23 @@ def main_actual( ):
         _print_playlists( _get_playlists( ) )
         return
     #
-    ## choose_option must be one of "json" or "norm", and playlist must NOT be none
-    assert( args.choose_option.lower( ) in ( 'json', 'norm' ) )
-    if args.choose_option.lower( ) == 'json':
-        main_json( args.json_playlist, do_dryrun = args.do_dryrun )
-        return
-    if args.choose_option.lower( ) == 'norm':
-        main_norm( args.norm_jsonfile, args.norm_peakloud, do_dryrun = args.do_dryrun )
-        return
+    ## choose_option must be one of "pandas" or "norm", and playlist must NOT be none
+    assert( args.choose_option.lower( ) in ( 'pandas', ) )
+    if args.choose_option.lower( ) == 'pandas':
+        filename = os.path.realpath( os.path.expanduser( args.filename ) )
+        if not os.path.basename( filename ).endswith( '.h5' ):
+            print( "ERROR, PLAYLIST FILENAME OUTPUT = %s DOES NOT END IN h5. EXITING..." % os.path.basename( filename ) )
+            return
+        fullURL, token = core.checkServerCredentials( doLocal= True )
+        plex = PlexServer( fullURL, token )
+        playlists = list( filter(lambda playlist: playlist.title == args.playlist.strip( ) and
+                                 playlist.playlistType == 'audio', plex.playlists()))
+        if len( playlists ) == 0:
+            print( "ERROR, COULD FIND NO AUDIO PLAYLISTS = %s. EXITING..." % args.playlist.strip( ) )
+            return
+        playlist = playlists[ 0 ]
+        df_playlist = music.plexapi_music_playlist_info( playlist, use_internal_metadata=True )
+        df_playlist.to_hdf( filename, key = 'data' )
     
 def main_json( playlist_name, do_dryrun = False ):
     #

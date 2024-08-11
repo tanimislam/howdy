@@ -1,5 +1,5 @@
 import os, sys, glob, numpy, titlecase, httplib2, json, logging, oauth2client.client, mutagen.mp4
-import requests, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid, re
+import requests, datetime, musicbrainzngs, time, io, tabulate, validators, subprocess, uuid, re, pandas
 import pathos.multiprocessing as multiprocessing
 from bs4 import BeautifulSoup
 from contextlib import contextmanager
@@ -1128,7 +1128,7 @@ def get_spotify_song_id( spotify_access_token, song_metadata_dict, song_limit = 
     logging.debug( 'BEST SCORE TRACK_ELEM = %0.1f' % _get_comparative_score( best_elem ) )
     return best_elem['uri']
     
-def plexapi_music_playlist_info( plex_playlist ):
+def plexapi_music_playlist_info( plex_playlist, use_internal_metadata = False ):
     """
     This creates a :py:class:`Pandas DataFrame <pandas.DataFrame>` out of the :py:class:`PlexAPI Playlist <plexapi.playlist.Playlist>`. This DataFrame has the following columns:
 
@@ -1143,30 +1143,66 @@ def plexapi_music_playlist_info( plex_playlist ):
     * ``album year``
 
     :param plex_playist: the :py:class:`PlexAPI Playlist <plexapi.playlist.Playlist>`, which must be an audio playlist.
+    :type: plexapi.playlist.Playlist
+    :param bool use_internal_metadata: if ``True``, then fill out columns using the M4A_ metadata from the file, otherwise fill out the columns using information in ``plex_playlist``. Default is ``False``.
     :returns: a :py:class:`Pandas DataFrame <pandas.DataFrame>` of useful track information for the playlist.
     :rtype: :py:class:`Pandas DataFrame <pandas.DataFrame>`
     """
     assert( plex_playlist.playlistType == 'audio' )
     time0 = time.perf_counter( )
     #
-    def _get_info_playlist_item( tup ):
-        idx, item = tup
-        try:
-            info = {
-                'order in playlist'      : idx + 1,
-                'filename'               : max(item._data.iter('Part')).attrib['file'],
-                'added date'             : item.addedAt,
+    def _get_info_rem( item, filename ):
+        if not use_internal_metadata:
+            info_rem = {
                 'song name'              : item.title,
                 'artist'                 : item.artist( ).title,
                 'track number'           : item.trackNumber,
                 'album'                  : item.album( ).title,
                 'album number of tracks' : max(item.album( ).tracks(), key = lambda track: track.trackNumber ).trackNumber, # not perfect I know
                 'album year'             : item.album( ).year }
-            if not os.path.isfile( info[ 'filename' ] ):
+            return info_rem
+
+        data_dict = get_m4a_metadata( filename )
+        info_rem = dict()
+        #
+        if 'song' in data_dict: info_rem[ 'song name' ] = data_dict[ 'song' ]
+        else: info_rem[ 'song name' ] = item.title
+        #
+        if 'artist' in data_dict: info_rem[ 'artist' ] = data_dict[ 'artist' ]
+        else: info_rem[ 'artist' ] = item.title
+        #
+        if 'tracknumber' in data_dict: info_rem[ 'track number' ] = data_dict[ 'tracknumber' ]
+        else: info_rem[ 'track number' ] = item.trackNumber
+        #
+        if 'album' in data_dict: info_rem[ 'album' ] = data_dict[ 'album' ]
+        else: info_rem[ 'album' ] = item.album( ).title
+        #
+        if 'total tracks' in data_dict: info_rem[ 'album number of tracks' ] = data_dict[ 'total tracks' ]
+        else: info_rem[ 'album number of tracks' ] = max(item.album( ).tracks(), key = lambda track: track.trackNumber ).trackNumber
+        #
+        if 'date' in data_dict: info_rem[ 'album year' ] = data_dict[ 'date' ].year
+        else: info_rem[ 'album year' ] = item.album( ).year
+        #
+        return info_rem
+
+    #
+    def _get_info_playlist_item( tup ):
+        idx, item = tup
+        filename = max( item._data.iter( 'Part' ) ).attrib[ 'file' ]
+        try:
+            if not os.path.isfile( filename ):
                 raise ValueError("ERROR, %s is not a valid file" % info[ 'filename' ] )
+            info = {
+                'order in playlist'      : idx + 1,
+                'filename'               : filename,
+                'added date'             : item.addedAt,
+            }
+            info_rem = _get_info_rem( item, filename )
+            info = dict( list( info.items( ) ) + list( info_rem.items( ) ) )
             return info
         except Exception as e:
-            logging.error( "ERROR ON ITEM, REASON = %s." % str( e ) )
+            logging.error( "ERROR ON ITEM %s, REASON = %s." % (
+                filename, str( e ) ) )
             return None
     #
     all_valid_tracks = sorted(

@@ -116,7 +116,7 @@ def get_m4a_metadata( filename ):
         if num_dashes == 0: # just year
             mydate = datetime.datetime.strptime( dstring, '%Y' ).date( )
         elif num_dashes == 1:
-            mydate = datetmie.datetime.strptime( dstring, '%Y-%m' ).date( )
+            mydate = datetime.datetime.strptime( dstring, '%Y-%m' ).date( )
         else:
             mydate = datetime.datetime.strptime( dstring, '%Y-%m-%d' ).date( )
         data_dict[ 'date' ] = mydate

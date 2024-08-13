@@ -9,6 +9,8 @@ from PIL import Image
 from urllib.parse import urljoin
 from shutil import which
 from rapidfuzz.fuzz import partial_ratio
+from authlib.integrations.requests_client import OAuth2Session
+from requests.auth import HTTPBasicAuth
 #
 from howdy import resourceDir
 from howdy.core import core, baseConfDir, session, PlexConfig
@@ -315,6 +317,77 @@ class MusicInfo( object ):
         assert( response.ok )
         data_auth = response.json( )
         return data_auth[ 'access_token' ]
+
+    @classmethod
+    def get_or_push_spotify_oauth2_token( cls ):
+        """
+        This tool allows you 
+        
+        :returns: the Spotify_ API token that allows you to add, delete, and modify Spotify_ playlists.
+        :rtype: dict
+        """
+        scope = ["user-read-private", "user-read-email", "playlist-modify-public" ]
+        redirect_uri = 'http://localhost' # for my app, probably should put it in the 'spotify' configs
+        #
+        ## from https://requests-oauthlib.readthedocs.io/en/latest/examples/spotify.html
+        authorization_base_url = "https://accounts.spotify.com/authorize"
+        token_url = "https://accounts.spotify.com/api/token"
+        #
+        def _get_spotify_token( spotify_client_id, spotify_client_secret ):
+            spotify = OAuth2Session( spotify_client_id, scope = scope, redirect_uri=redirect_uri)
+            #
+            authorization_url, state = spotify.create_authorization_url(authorization_base_url)
+            #
+            redirect_response = input( 'Please put in the URL when you visit this website: %s' % authorization_url )
+            redirect_response = re.sub( '^http:', 'https:', redirect_response )
+            logging.info( 'REDIRECT RESPONSE FOR SPOTIFY TOKEN = %s,' % redirect_response )
+            #
+            token = spotify.fetch_token(
+                token_url,
+                auth = HTTPBasicAuth( spotify_client_id, spotify_client_secret ),
+                authorization_response = redirect_response )
+            return token
+
+        def _get_refreshed_spotify_token( spotify_client_id, spotify_client_secret, token ):
+            
+            spotify = OAuth2Session( spotify_client_id, token = token )
+            new_token = spotify.refresh_token(
+                token_url, client_id = spotify_client_id,
+                client_secret = spotify_client_secret )
+            return new_token
+        
+        try:
+            #
+            ## first get the credentials
+            client_data = MusicInfo.get_spotify_credentials( )
+            #
+            ## now search for the token
+            val = session.query( PlexConfig ).filter(
+                PlexConfig.service == 'spotify oauth2 token' ).first( )
+            #
+            ## now recover the token
+            if val is None:
+                token = _get_spotify_token( client_data[ 'client_id' ], client_data[ 'client_secret' ] )
+            else:
+                old_token = val.data
+                #
+                ## if timestamp < 0.0 then use OLD token
+                seconds_left = time.time( ) - old_token[ 'expires_at' ]
+                if seconds_left < 0: return old_token
+                token = _get_refreshed_spotify_token( client_data[ 'client_id' ], client_data[ 'client_secret' ], old_token )
+                session.delete( val )
+                session.commit( )
+            #
+            ## now put the token into the 'spotify oauth2 token' service
+            newval = PlexConfig(
+                service = 'spotify oauth2 token',
+                data = token )
+            session.add( newval )
+            session.commit( )
+            return token
+        except Exception as e:
+            logging.error( str( e ) )
+            return None            
 
     #
     ## now get all the albums of this artist.
@@ -1050,7 +1123,9 @@ def get_spotify_song_id_filename( filename ):
     return spotify_id
     
 
-def get_spotify_song_id( spotify_access_token, song_metadata_dict, song_limit = 5, market = 'us' ):
+def get_spotify_song_id(
+    spotify_access_token, song_metadata_dict, song_limit = 5, market = 'us', dump_response = False,
+    response_file = 'foo.json' ):
     assert( song_limit > 0 )
     #
     def _get_track_query_string( song_metadata_dict ):
@@ -1124,9 +1199,13 @@ def get_spotify_song_id( spotify_access_token, song_metadata_dict, song_limit = 
     #
     ## now get the best track
     data_track = resp_track.json( )
-    best_elem = max( data_track['tracks']['items'], key = lambda track_elem: _get_comparative_score( track_elem ) )
-    logging.debug( 'BEST SCORE TRACK_ELEM = %0.1f' % _get_comparative_score( best_elem ) )
-    return best_elem['uri']
+    if dump_response: json.dump( data_track, open( response_file, 'w' ), indent = 1 )
+    try:
+        best_elem = max( data_track['tracks']['items'], key = lambda track_elem: _get_comparative_score( track_elem ) )
+        logging.debug( 'BEST SCORE TRACK_ELEM = %0.1f' % _get_comparative_score( best_elem ) )
+        return best_elem['uri']
+    except Exception as e:
+        return "CANNOT FIND SPOTIFY TRACK ID FOR %s." % spotify_query
     
 def plexapi_music_playlist_info( plex_playlist, use_internal_metadata = False ):
     """

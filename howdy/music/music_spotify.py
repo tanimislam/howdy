@@ -1,5 +1,5 @@
-import requests, datetime, time, io, re, pandas, mutagen.mp4, logging, json
-import pathos.multiprocessing as multiprocessing
+import os, requests, datetime, time, io, re, pandas, mutagen.mp4, logging, json
+from pathos.multiprocessing import Pool, cpu_count
 from authlib.integrations.requests_client import OAuth2Session
 from requests.auth import HTTPBasicAuth
 from rapidfuzz.fuzz import partial_ratio
@@ -281,7 +281,7 @@ def process_dataframe_playlist_spotify_bads( df_playlist_spotify, spotify_access
     def _get_process_spotify_id_entry( df_list_entry, access_token ):
         filename = df_list_entry['filename']
         order = df_list_entry['order']
-        #spotify_id_fname = music_spotify.get_spotify_song_id_filename( filename )
+        #spotify_id_fname = get_spotify_song_id_filename( filename )
         #if spotify_id_fname is not None:
         #    return ( order, spotify_id_fname )
         #
@@ -361,8 +361,7 @@ def get_existing_track_ids_in_spotify_playlist(
         len( spotify_ids ), spotify_playlist_id, time.perf_counter( ) - time0 ) )
     return spotify_ids
 
-def create_public_playlist(
-    oauth2_access_token, name, description ):
+def get_public_playlists( oauth2_access_token ):
     #
     ## get the userID of ME
     resp_userid = requests.get(
@@ -378,14 +377,46 @@ def create_public_playlist(
         headers = { 'Authorization' : 'Bearer %s' % oauth2_access_token['access_token'] } )
     assert( resp_playlists.ok )
     data_playlists = resp_playlists.json( )
+    def _get_number_tracks( spotify_playlist_id ):
+        resp_num_in_playlist = requests.get(
+            'https://api.spotify.com/v1/playlists/%s/tracks' % spotify_playlist_id,
+            headers = { 'Authorization' : 'Bearer %s' % oauth2_access_token['access_token'] },
+            params = { 'fields' : 'total' } )
+        assert( resp_num_in_playlist.ok )
+        tot_num_in_playlist = resp_num_in_playlist.json( )['total']
+        return tot_num_in_playlist
     #
-    ## now get the STEREOLAB playlist
+    ## now get the actual playlists and number of tracks
+    actual_playlists = sorted(
+        map(lambda entry: {
+            'name' : entry['name'],
+            'description' : entry['description'],
+            'id' : entry['id'],
+            'number of tracks' : _get_number_tracks( entry[ 'id' ] ) },
+        filter(lambda entry: entry['public'] is True, data_playlists['items'] ) ),
+        key = lambda entry: -entry['number of tracks' ] )
+    return actual_playlists
+
+def create_public_playlist(
+    oauth2_access_token, name, description ):
+    #
+    ## get the userID of ME
+    resp_userid = requests.get(
+        'https://api.spotify.com/v1/me',
+        headers  = { 'Authorization' : 'Bearer %s' % oauth2_access_token['access_token'] } )
+    assert( resp_userid.ok )
+    userid_data = resp_userid.json( )
+    my_userid = userid_data['id']
+    #
+    ## now get my playlists
+    spotify_data_playlists = get_public_playlists( oauth2_access_token )
+    #
+    ## now CREATE the playlist
     actual_playlist = list(
-        filter(lambda entry: entry['name'] == name,
-            filter(lambda entry: entry['public'] is True, data_playlists['items'])))
+        filter(lambda entry: entry['name'] == name, spotify_data_playlists))
     if len( actual_playlist ) != 0:
         logging.error( "ERROR, PUBLIC PLAYLIST WITH NAME = %s ALREADY EXISTS. JUST USE THAT ONE!" % name )
-        return
+        return False
     #
     ## otherwise create the playlist
     resp_create_playlist = requests.post(
@@ -397,7 +428,86 @@ def create_public_playlist(
             'description' : description,
             'public' : True } )
     assert( resp_create_playlist.ok )
-    
+    return True
+
+def process_dataframe_playlist_spotify_multiproc(
+    df_playlist, spotify_access_token, numprocs = cpu_count( ) ):
+    assert( numprocs >= 1 )
+    with Pool( processes = numprocs ) as pool: 
+        df_playlist_spotify = pandas.concat( list(
+            pool.map(
+              lambda idx: process_dataframe_playlist_spotify( df_playlist[idx::numprocs], spotify_access_token ),
+              range( numprocs ) ) ) ).sort_values( 'order in playlist' )
+        return df_playlist_spotify
+
+def process_dataframe_playlist_spotify( df_playlist, spotify_access_token ):
+    time0 = time.perf_counter( )
+    df_dict = df_playlist.to_dict( orient = 'list' )
+    #
+    ## df_list_proc is the list of dictionaries to process in order with SPOTIFY API
+    ## SPOTIFY API process: 1) if SPOTIFY ID in music file, return that; 2) if SPOTIFY ID not in music file, find it out and push into file then return that.
+    df_list_proc = list(map(lambda tup: {
+        'order' : tup[0], 'filename' : tup[1], 'song' : tup[2], 'artist' : tup[3], 'album' : tup[4], 'year' : tup[5] },
+                            zip(
+                                df_dict['order in playlist'], df_dict['filename'],
+                                df_dict['song name'], df_dict[ 'artist' ], df_dict[ 'album' ],
+                                df_dict['album year'] ) ) )
+
+    def _get_process_spotify_id_entry( df_list_entry, access_token ):
+        filename = df_list_entry['filename']
+        order = df_list_entry['order']
+        spotify_id_fname = get_spotify_song_id_filename( filename )
+        if spotify_id_fname is not None:
+            return ( order, spotify_id_fname )
+        #
+        ## otherwise get spotify ID and push into file
+        song_metadata_dict = {
+            'song'   : df_list_entry[ 'song'   ],
+            'artist' : df_list_entry[ 'artist' ],
+            'date'   : datetime.datetime.strptime( '%04d' % df_list_entry[ 'year' ], '%Y' ).date( ),
+            'album'  : df_list_entry[ 'album' ]
+        }
+        spotify_id = get_spotify_song_id( access_token, song_metadata_dict )
+        if spotify_id.startswith( 'spotify:track:'):
+            push_spotify_song_id_to_file( spotify_id, filename )
+            return ( order, spotify_id )
+        #
+        artist_replace = re.sub( '[fF]eat.*', '', df_list_entry[ 'artist' ] ).strip( )
+        artist_replace = re.sub( '[fF]eat.*', '', artist_replace ).strip( )
+        song_metadata_dict[ 'artist' ] = artist_replace
+        spotify_id = get_spotify_song_id( access_token, song_metadata_dict )
+        if spotify_id.startswith( 'spotify:track:'):
+            push_spotify_song_id_to_file( spotify_id, filename )
+            return ( order, spotify_id )
+        #
+        song_metadata_dict.pop( 'date' )
+        spotify_id = get_spotify_song_id( access_token, song_metadata_dict )
+        if spotify_id.startswith( 'spotify:track:'):
+            push_spotify_song_id_to_file( spotify_id, filename )
+            return ( order, spotify_id )
+        #
+        song_metadata_dict.pop( 'album' )
+        spotify_id = get_spotify_song_id( access_token, song_metadata_dict )
+        push_spotify_song_id_to_file( spotify_id, filename )
+        return ( order, spotify_id )
+
+    spotify_ids_list = sorted(
+        map(lambda df_list_entry: _get_process_spotify_id_entry( df_list_entry, spotify_access_token), df_list_proc ),
+        key = lambda tup: tup[0] )
+    #
+    ## number of good SPOTIFY IDs
+    ngoods = len(list(filter(lambda tup: tup[1].startswith('spotify:track:'), spotify_ids_list ) ) )
+    #
+    df_playlist_out = df_playlist.copy( ).sort_values( 'order in playlist' )
+    nrows = df_playlist_out.shape[ 0 ]
+    ncols = df_playlist_out.shape[ 1 ]
+    df_playlist_out.insert( ncols, "SPOTIFY ID", list(zip(*spotify_ids_list ))[1] )
+    #
+    ##
+    logging.info( 'found %02d / %02d good SPOTIFY IDs in playlist dataframe in %0.3f seconds.' % (
+        ngoods, nrows, time.perf_counter( ) - time0 ) )
+    return df_playlist_out    
+
 
 def modify_existing_playlist_with_new_tracks(
     spotify_playlist_id, oauth2_access_token, spotify_ids_list,
@@ -446,3 +556,4 @@ def modify_existing_playlist_with_new_tracks(
     #
     ## then do the add
     _add_playlist( track_ids_to_add )
+

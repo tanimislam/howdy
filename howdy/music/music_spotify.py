@@ -361,15 +361,16 @@ def get_existing_track_ids_in_spotify_playlist(
         len( spotify_ids ), spotify_playlist_id, time.perf_counter( ) - time0 ) )
     return spotify_ids
 
-def get_public_playlists( oauth2_access_token ):
+def get_public_playlists( oauth2_access_token, my_userid = None ):
     #
     ## get the userID of ME
-    resp_userid = requests.get(
-        'https://api.spotify.com/v1/me',
-        headers  = { 'Authorization' : 'Bearer %s' % oauth2_access_token['access_token'] } )
-    assert( resp_userid.ok )
-    userid_data = resp_userid.json( )
-    my_userid = userid_data['id']
+    if my_userid is None:
+        resp_userid = requests.get(
+            'https://api.spotify.com/v1/me',
+            headers  = { 'Authorization' : 'Bearer %s' % oauth2_access_token['access_token'] } )
+        assert( resp_userid.ok )
+        userid_data = resp_userid.json( )
+        my_userid = userid_data['id']
     #
     ## now get my playlists
     resp_playlists = requests.get(
@@ -392,24 +393,27 @@ def get_public_playlists( oauth2_access_token ):
             'name' : entry['name'],
             'description' : entry['description'],
             'id' : entry['id'],
+            'user id' : my_userid,
             'number of tracks' : _get_number_tracks( entry[ 'id' ] ) },
         filter(lambda entry: entry['public'] is True, data_playlists['items'] ) ),
         key = lambda entry: -entry['number of tracks' ] )
     return actual_playlists
 
 def create_public_playlist(
-    oauth2_access_token, name, description ):
+    oauth2_access_token, name, description, my_userid = None ):
     #
     ## get the userID of ME
-    resp_userid = requests.get(
-        'https://api.spotify.com/v1/me',
-        headers  = { 'Authorization' : 'Bearer %s' % oauth2_access_token['access_token'] } )
-    assert( resp_userid.ok )
-    userid_data = resp_userid.json( )
-    my_userid = userid_data['id']
+    if my_userid is None:
+        resp_userid = requests.get(
+            'https://api.spotify.com/v1/me',
+            headers  = { 'Authorization' : 'Bearer %s' % oauth2_access_token['access_token'] } )
+        assert( resp_userid.ok )
+        userid_data = resp_userid.json( )
+        my_userid = userid_data['id']
     #
     ## now get my playlists
-    spotify_data_playlists = get_public_playlists( oauth2_access_token )
+    spotify_data_playlists = get_public_playlists(
+        oauth2_access_token, my_userid = my_userid )
     #
     ## now CREATE the playlist
     actual_playlist = list(

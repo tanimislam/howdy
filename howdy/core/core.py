@@ -7,6 +7,7 @@ from google_auth_oauthlib.flow import Flow # does not yet work
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 #
+from plexapi.server import PlexServer
 from docutils.examples import html_parts
 from html import unescape
 from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
@@ -367,10 +368,11 @@ def get_updated_at( token, fullURL = 'https://localhost:32400' ):
     assert( 'updatedat' in media_elem.attrs )
     return datetime.datetime.fromtimestamp( int( media_elem['updatedat'] ) )
 
-def get_email_contacts( token, verify = True ):
+def get_email_contacts( token, fullURL = 'https://localhost:32400', verify = True ):
     """list of all email addresses of friends who have stream access to your Plex_ server.
 
     :param str token: Plex_ access token.
+    :param str fullURL: the Plex_ server URL.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :returns: list of email addresses of Plex_ friends.
     :rtype: list 
@@ -378,27 +380,36 @@ def get_email_contacts( token, verify = True ):
     .. seealso: :py:method:`get_mapped_email_contacts <howdy.core.core.get_mapped_email_contacts>`.
 
     """
+    #
+    ## this has been deprecated
+    # response = requests.get( 'https://plex.tv/pms/friends/all',
+    #                          headers = { 'X-Plex-Token' : token },
+    #                          verify = verify )
+    # if response.status_code != 200: return None
+    # myxml = BeautifulSoup( response.content, 'lxml' )
+    # return sorted(set(map(lambda elem: elem['email'],
+    #                       filter(lambda elem: 'email' in elem.attrs,
+    #                              myxml.find_all( 'user' ) ) ) ) )
     
-    response = requests.get( 'https://plex.tv/pms/friends/all',
-                             headers = { 'X-Plex-Token' : token },
-                             verify = verify )
-    if response.status_code != 200: return None
-    myxml = BeautifulSoup( response.content, 'lxml' )
-    return sorted(set(map(lambda elem: elem['email'],
-                          filter(lambda elem: 'email' in elem.attrs,
-                                 myxml.find_all( 'user' ) ) ) ) )
+    #
+    ## follow instructions I found here: https://www.reddit.com/r/PleX/comments/eysme9/comment/fgj648a/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+    session = requests.Session( )
+    session.verify = verify
+    plex = PlexServer( fullURL, token, session = session )
+    return sorted( set( map(lambda user: user.email.strip( ), plex.myPlexAccount( ).users( ) ) ) )
 
-def get_mapped_email_contacts( token, verify = True ):
+def get_mapped_email_contacts( token, fullURL = 'https://localhost:32400', verify = True ):
     """list of all email addresses (including Plex_ server friends and mapped emails) to send Howdy_ related emails.
 
     :param str token: Plex_ access token.
+    :param str fullURL: the Plex_ server URL.
     :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
     :returns: a list of email addresses for Howdy_ emails.
     :rtype: list
 
     .. seealso: :py:method:`get_email_contacts <howdy.core.core.get_email_contacts>`.
     """
-    emails = get_email_contacts( token, verify = verify )
+    emails = get_email_contacts( token, fullURL = fullURL, verify = verify )
     query = session.query( PlexGuestEmailMapping )
     subtracts = [ ]
     extraemails = [ ]

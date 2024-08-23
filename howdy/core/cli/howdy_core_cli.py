@@ -64,10 +64,11 @@ def main( ):
     if any(map(lambda tok: tok is None, ( args.username, args.password ) ) ):
         var = core.checkServerCredentials(
             doLocal = False, verify = False, checkWorkingServer = False )
+        # var = core.checkServerCredentials( doLocal = True ) # seems to now only work with local
         if var is None:
             print( 'COULD NOT FIND PLEX SERVER CREDENTIALS OR INVALID USERNAME/PASSWORD COMBO' )
             return
-        _, token = var
+        fullURL, token = var
     else:
         assert(all(map(lambda tok: tok is not None, ( args.username, args.password ) ) ) ), "must have both username and password"
         token = core.getTokenForUsernamePassword( args.username, args.password, verify = False )
@@ -76,11 +77,11 @@ def main( ):
             return
         
     if args.do_friends:
-        plex_emails = sorted( set( core.get_email_contacts( token, verify = False ) ) )
+        plex_emails = sorted( set( core.get_email_contacts( token, fullURL = fullURL, verify = False ) ) )
         _print_format_names( plex_emails, header_name = 'PLEX' )
 
     elif args.do_mapped_friends:
-        mapped_emails = sorted( set( core.get_mapped_email_contacts( token, verify = True ) ) )
+        mapped_emails = sorted( set( core.get_mapped_email_contacts( token, fullURL = fullURL, verify = False ) ) )
         _print_format_names( mapped_emails, header_name = 'MAPPED PLEX' )
 
     elif args.do_addmapping:

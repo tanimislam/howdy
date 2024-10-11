@@ -86,6 +86,7 @@ intersphinx_mapping = {
     'subliminal' : ( 'https://subliminal.readthedocs.io/en/latest/', None ),
     'musicbrainzngs' : ( 'https://python-musicbrainzngs.readthedocs.io/en/latest', None ),
     'pillow' : ( 'https://pillow.readthedocs.io/en/stable', None ),
+    'pandas' : ( 'http://pandas.pydata.org/pandas-docs/stable', None ),
 }
 
 #
@@ -120,7 +121,8 @@ templates_path = [ '_templates' ]
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = {
+    '.rst' : 'restructuredtext' }
 
 # The master toctree document.
 master_doc = 'index'

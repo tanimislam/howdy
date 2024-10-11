@@ -71,8 +71,8 @@ def get_spotify_session( ):
 
 def get_or_push_spotify_oauth2_token( ):
     """
-    :returns: the Spotify_ API token that allows you to add, delete, and modify Spotify_ playlists.
-    :rtype: dict
+    :returns: the Spotify_ API OAuth2 token that allows you to access, add, delete, and modify Spotify_ playlists.
+    :rtype: str
     """
     scope = ["user-read-private", "user-read-email", "playlist-modify-public" ]
     redirect_uri = 'http://localhost' # for my app, probably should put it in the 'spotify' configs
@@ -141,7 +141,7 @@ def push_spotify_song_id_to_file( spotify_id, filename ):
     """
     This *copies* the Spotify_ ID of a song to a given M4A_ file. This puts the Spotify_ ID into the comments tags in the M4A_ file.
 
-    :param str spotify_id: The Spotify_ ID of a song. For example, the song `All I Need <https://en.wikipedia.org/wiki/All_I_Need_(Air_song)>`_ by `Air <https://en.wikipedia.org/wiki/Air_(French_band)>`_ has a Spotify_ ID = ``spotify:track:6T10XPeC9X5xEaD6tMcK6M``. It can be found on Spotify_ at `this link <https://open.spotify.com/track/6T10XPeC9X5xEaD6tMcK6M>`_.
+    :param str spotify_id: The Spotify_ ID of a song.
     :param str filename: the M4A_ song file name.
     """
     _error_expired_token = 'The access token expired'
@@ -163,6 +163,14 @@ def push_spotify_song_id_to_file( spotify_id, filename ):
     mp4tags.save( )
     
 def get_spotify_song_id_filename( filename ):
+    """
+    Returns the Spotify_ ID found in the M4A_ file.
+
+    :param str filename: the M4A_ song file name.
+
+    :returns: the Spotify_ ID of the song if it could be found. Otherwise returns ``None``.
+    :rtype: str
+    """
     song_metadata_dict = get_m4a_metadata( filename )
     if 'comment' not in song_metadata_dict:
         logging.debug( 'ERROR, NO COMMENTS IN %s.' % os.path.abspath( filename ) )
@@ -178,6 +186,33 @@ def get_spotify_song_id_filename( filename ):
 def get_spotify_song_id(
     spotify_access_token, song_metadata_dict, song_limit = 5, market = 'us', dump_response = False,
     response_file = 'foo.json' ):
+    """
+    Heavily-instrumented lower-level method that attempts to find the Spotify_ ID of a song given its metadata.
+
+    :param str spotify_access_token: the session's current Spotify_ access token for the non-authenticated Spotify_ API.
+    :param dict song_metadata_dict: the dictionary of a song's metadata, which has *at least* the following fields:
+
+    * ``song`` is the song title.
+    * ``artist`` is the song's artist.
+    * ``date`` is the album's release date, of type :py:class:`date <datetime.date>`.
+    * ``album`` is the song's album.
+
+    :param bool dump_response: by default it is ``False``. If ``True``, then dump interesting information into a JSON_ file.
+    :param str response_file: by default it is ``foo.json``. This is the name of the JSON_ file to dump interesting debugging information on this method call used to find a song's Spotify_ ID.
+
+    :returns: a :py:class:`str` of various types.
+
+    * If the underlying Spotify_ API call fails, then returns the Spotify_ API error message.
+    * If the Spotify_ API call is successful, but for some reason cannot find the Spotify_ ID, returns a message that states.
+
+         CANNOT FIND SPOTIFY TRACK ID FOR <SPOTIFY_QUERY>
+
+      Where ``<SPOTIFY_QUERY>`` is the low-level Spotify_ API query used to search for that song's Spotify_ ID.
+
+    * In the best, nominal operation case, returns the Spotify_ ID.
+
+    :rtype: str
+    """
     assert( song_limit > 0 )
     #
     def _get_track_query_string( song_metadata_dict ):
@@ -268,6 +303,18 @@ def get_spotify_song_id(
         return "CANNOT FIND SPOTIFY TRACK ID FOR %s." % spotify_query
     
 def process_dataframe_playlist_spotify_bads( df_playlist_spotify, spotify_access_token ):
+    """
+    Necessary method to *purify* the collection of songs for which we do not have Spotify_ IDs. For those songs that do *not* have valid Spotify_ IDs, it uses the Spotify_ API to *try* to find valid Spotify_ IDs. For each song it tries, if it *does* find a valid ID, it pushes that ID into the song file (using :py:meth:`push_spotify_song_id_to_file <howdy.music.music_spotify.push_spotify_song_id_to_file>`).
+
+    :param df_playlist_spotify: the :py:class:`DataFrame <pandas.DataFrame>` of songs. This consists of songs that have *valid* Spotify_ IDs and those that do *not* have valid Spotify_ IDs.
+    :type df_playlist_spotify: :py:class:`DataFrame <pandas.DataFrame>`
+    
+    :param spotify_access_token: the session's current Spotify_ access token for the non-authenticated Spotify_ API.
+    :type spotify_access_token: str
+    
+    :return: a 2-element :py:class:`tuple`: the first element is the number of songs for which it found a Spotify_ ID; the second element is the number of *bad* (initially did not have Spotify_ ID) songs it processed.
+    :rtype: tuple
+    """
     time0 = time.perf_counter( )
     #
     ## first ONLY THE ONES with non-good spotify IDs
@@ -336,6 +383,15 @@ def process_dataframe_playlist_spotify_bads( df_playlist_spotify, spotify_access
 
 def get_existing_track_ids_in_spotify_playlist(
     spotify_playlist_id, oauth2_access_token ):
+    """
+    Low-level method that returns the :py:class:`list` of Spotify_ IDs in a public Spotify_ playlist. Spotify_ API quirk: can only get the Spotify_ IDs in units of 100 at most per Spotify_ API query.
+
+    :param str spotify_playlist_id: the Spotify_ public playlist ID.
+    :param str oauth2_access_token: the Spotify_ access token for the OAuth2-authenticated Spotify_ API. One needs this token to access, add, delete, and modify Spotify_ playlists.
+
+    :returns: the :py:class:`list` of Spotify_ IDs in a public Spotify_ playlist. Each Spotify_ ID is a :py:class:`string <str>`.
+    :rtype: list.
+    """
     #
     ## first get the number of tracks
     resp_num_in_playlist = requests.get(
@@ -368,6 +424,15 @@ def get_existing_track_ids_in_spotify_playlist(
     return spotify_ids
 
 def get_public_playlists( oauth2_access_token, my_userid = None ):
+    """
+    Returns all the Spotify_ public playlists for the current user.
+
+    :param str oauth2_access_token: the Spotify_ access token for the OAuth2-authenticated Spotify_ API. One needs this token to access, add, delete, and modify Spotify_ playlists.
+    :param str my_userid: Optional argument, which is the Spotify_ current user ID. If not specified, then determines the current user ID using the OAuth2-authenticated Spotify_ API.
+
+    :returns: a :py:class:`list` of summary information on the current user's public Spotify_ playlists. Each entry is a :py:class:`dict` with the following attributes: its name, description, the Spotify_ ID of the playlist, the Spotify_ ID of the user who owns the playlist, and the number of songs in the playlist.
+    :rtype: list
+    """
     #
     ## get the userID of ME
     if my_userid is None:
@@ -407,6 +472,17 @@ def get_public_playlists( oauth2_access_token, my_userid = None ):
 
 def create_public_playlist(
     oauth2_access_token, name, description, my_userid = None ):
+    """
+    Creates a *new* public Spotify_ playlist for the current user.
+
+    :param str oauth2_access_token: the Spotify_ access token for the OAuth2-authenticated Spotify_ API. One needs this token to access, add, delete, and modify Spotify_ playlists.
+    :param str name: name of the new playlist.
+    :param str description: the new playlist's description.
+    :param str my_userid: Optional argument, which is the Spotify_ current user ID. If not specified, then determines the current user ID using the OAuth2-authenticated Spotify_ API.
+
+    :returns: status on whether it can create the playlist. If a playlist, with the *same* name exists, does nothing and returns ``False``. Otherwise, if no other public playlist (owned by the current user) exists, creates the playlist and returns ``True``.
+    :rtype: bool
+    """
     #
     ## get the userID of ME
     if my_userid is None:
@@ -442,6 +518,18 @@ def create_public_playlist(
 
 def process_dataframe_playlist_spotify_multiproc(
     df_playlist, spotify_access_token, numprocs = cpu_count( ) ):
+    """
+    Method that chunks out the identification of Spotify_ IDs from a Plex_ playlist among multiple processors. It uses :py:meth:`process_dataframe_playlist_spotify <howdy.music.music_spotify.process_dataframe_playlist_spotify>` on each processor chunk of the input Plex_ music playlist :py:class:`DataFrame <pandas.DataFrame>`.
+
+    :param df_playlist: the input Plex_ playlist whose DataFrame schema is described in :py:meth:`plexapi_music_playlist_info <howdy.music.music.plexapi_music_playlist_info>`.
+    :type df_playlist: :py:class:`DataFrame <pandas.DataFrame>`
+    :param str spotify_access_token: the session's current Spotify_ access token for the non-authenticated Spotify_ API.
+
+    :returns: the DataFrame with an extra :py:class:`string <str>` column, named ``SPOTIFY ID``. Its value is either a valid Spotify_ ID or other error message.
+    :rtype: :py:class:`DataFrame <pandas.DataFrame>`
+
+    .. seealso:: :py:meth:`process_dataframe_playlist_spotify <howdy.music.music_spotify.process_dataframe_playlist_spotify>`
+    """
     assert( numprocs >= 1 )
     with Pool( processes = numprocs ) as pool: 
         df_playlist_spotify = pandas.concat( list(
@@ -451,6 +539,31 @@ def process_dataframe_playlist_spotify_multiproc(
         return df_playlist_spotify
 
 def process_dataframe_playlist_spotify( df_playlist, spotify_access_token ):
+    """
+    Low-level method that takes a :py:class:`DataFrame <pandas.DataFrame>` representing a Plex_ playlist (its schema is described in :py:meth:`plexapi_music_playlist_info <howdy.music.music.plexapi_music_playlist_info>`) and converts it into a :py:class:`DataFrame <pandas.DataFrame>`. This returned :py:class:`DataFrame <pandas.DataFrame>` has a column representing Spotify_ ID.
+    
+    For each song it finds in the input playlist, ``df_playlist``, it tries to find the Spotify_ ID.
+    
+    #. If it finds the Spotify_ ID in the M4A_ file's metadata, returns that.
+    #. If not, it queries the song's title, artist, album, and year. If it finds the Spotify_ ID then it returns it.
+    #. If not, it queries on a modified song title -- replacing mentions of "feat" or "Feat" or variations of "featuring", title, album, and year. If it finds the Spotify_ ID then it returns it.
+    #. If not, it queries on the modified song title, artist, and album. If it find the Spotify_ ID then it returns it.
+    #. If not, it queries on the modified song title and artist. If it finds the Spotify_ ID then it returns it.
+    #. Finally, if not, returns the error message associated with the *above query* or other Spotify_ API error message.
+    
+    :param df_playlist: the input Plex_ playlist whose DataFrame schema is described in :py:meth:`plexapi_music_playlist_info <howdy.music.music.plexapi_music_playlist_info>`.
+    :type df_playlist: :py:class:`DataFrame <pandas.DataFrame>`
+    :param str spotify_access_token: the session's current Spotify_ access token for the non-authenticated Spotify_ API.
+
+    :returns: the DataFrame with an extra :py:class:`string <str>` column, named ``SPOTIFY ID``. Its value is either a valid Spotify_ ID or other error message.
+    :rtype: :py:class:`DataFrame <pandas.DataFrame>`
+
+    .. seealso::
+
+       * :py:meth:`get_spotify_song_id_filename <howdy.music.music_spotify.get_spotify_song_id_filename>`.
+       * :py:meth:`get_spotify_song_id <howdy.music.music_spotify.get_spotify_song_id>`.
+    
+    """
     time0 = time.perf_counter( )
     df_dict = df_playlist.to_dict( orient = 'list' )
     #
@@ -522,6 +635,14 @@ def process_dataframe_playlist_spotify( df_playlist, spotify_access_token ):
 def modify_existing_playlist_with_new_tracks(
     spotify_playlist_id, oauth2_access_token, spotify_ids_list,
     spotify_ids_in_playlist = None ):
+    """
+    Lower-level method that *replaces* the collection of songs in Spotify_ playlist, identified by ``spotify_playlist_id``, with a new collection of Spotify_ IDs in ``spotify_ids_list``. Interesting Spotify_ API wrinkle: one can use the Spotify_ API to *remove* as many songs from a playlist as possible; one can use the Spotify_ API to *add* songs to a playlist in chunks of *at most* 100 songs.
+
+    :param str spotify_playlist_id: the Spotify_ public playlist ID.
+    :param str oauth2_access_token: the Spotify_ access token for the OAuth2-authenticated Spotify_ API. One needs this token to access, add, delete, and modify Spotify_ playlists.
+    :param list spotify_ids_list: the new :py:class:`list` of Spotify_ IDs corresponding to an *updated* Spotify_ playlist.
+    :param list spotify_ids_in_playlist: optional argument. If not specified, then uses :py:meth:`get_existing_track_ids_in_spotify_playlist <howdy.music.music_spotify.get_existing_track_ids_in_spotify_playlist>` to get the list of Spotify_ IDs for the playlist specified by ``spotify_playlist_id``. If this is specified, then method *assumes* that this is the list of Spotify_ IDs for this playlist.
+    """
     #
     if spotify_ids_in_playlist is None:
         spot_ids_in_pl = get_existing_track_ids_in_spotify_playlist(

@@ -58,12 +58,13 @@ def remove_trackers_to_exclude( tracker_stubs ):
     
 def deconfuse_magnet_link( magnet_string, excluded_tracker_stubs = get_trackers_to_exclude( ) ):
     """
-    First functional implementation that *returns* a magnet_ string given a :py:class:`list` of `torrent tracker`_ stubs to ignore. ``stealth.si`` -- I am looking at you!
-
+    First functional implementation that *returns* a magnet_ string given a :py:class:`list` of `torrent tracker`_ stubs to ignore.
+    
     If one has an *invalid* magnet_string, then return ``None``.
-
+    
     :param str magnet_string: the initial magnet string.
     :param list excluded_tracker_stubs: the :py:class:`list` of `torrent tracker`_ stubs to ignore. Default is :py:meth:`get_trackers_to_exclude <howdy.core.core_torrents.get_trackers_to_exclude>`.
+    
     :returns a :py:class:`str` of a magnet_ string with the problematic `torrent tracker`_ stubs in ``excluded_tracker_stubs`` removed. If ``magnet_string`` is not a valid magnet_ string, return ``None``.
     :rtype: str
 

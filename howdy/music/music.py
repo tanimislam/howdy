@@ -65,7 +65,7 @@ class MusicInfo( object ):
     :param str artist_mbid: optional argument. If not ``None``, then information on this artist uses this MusicBrainz_ artist ID to get its info. Default is ``None``.
     :param bool do_direct: optional argument. If ``True``, then perform a *direct* search on the artist rather than using the default indexed search at a low lebvel. Default is ``False``. See :py:meth`get_artist_direct_search_MBID <howdy.music.music.MusicInfo.get_artist_direct_search_MBID>` for the low-level functionality.
     
-    :var dict artist: the low level information on a specific artist, returned by :py:mod:`musicbrainzngs`. For example, for the artist _Air, this looks like,
+    :var dict artist: the low level information on a specific artist, returned by :py:mod:`musicbrainzngs`. For example, for the artist Air_, this looks like,
 
       .. code-block:: python
 
@@ -145,6 +145,8 @@ class MusicInfo( object ):
     .. _SQLite3: https://www.sqlite.org/index.html
     .. _Air: https://en.wikipedia.org/wiki/Air_(band)
     .. _`Moon Safari`: https://en.wikipedia.org/wiki/Moon_Safari
+    .. _JSON: https://en.wikipedia.org/wiki/JSON
+    .. _Plex: https://plex.tv
     """
 
     @classmethod

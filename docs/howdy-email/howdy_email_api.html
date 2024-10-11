@@ -1,25 +1,23 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>8.4. Howdy Email API &mdash; howdy! 1.55-30-g0cd94b82 documentation</title>
+  <title>8.4. Howdy Email API &mdash; howdy! 1.55-41-g97424aa0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7dc6ce7e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=55dd48d6"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=dd34c8e1"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -38,9 +36,6 @@
           <a href="../index.html" class="icon icon-home">
             howdy!
           </a>
-              <div class="version">
-                1.55
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -126,13 +121,13 @@
 <p>This document describes the lower level Plex emailing API, upon which the <a class="reference internal" href="cli-tools/howdy_email_notif.html#howdy-email-notif-label"><span class="std std-ref">command line tol</span></a> and  the <a class="reference internal" href="gui-tools/howdy_email_gui.html#howdy-email-gui-label"><span class="std std-ref">GUI tool</span></a> are built. It lives in <code class="docutils literal notranslate"><span class="pre">howdy.email</span></code>.</p>
 <section id="howdy-email-module">
 <h2><span class="section-number">8.4.1. </span>howdy.email module<a class="headerlink" href="#howdy-email-module" title="Link to this heading"></a></h2>
-<p>This contains the lowest level methods to send email using either the <a class="reference external" href="https://developers.google.com/contacts/v3">Google Contacts API</a> or through Python’s <a class="reference external" href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMTP</span></code></a> functionality, and to find the Google contact names of friend emails on the <a class="reference external" href="https://plex.tv">Plex</a> server. <a class="reference internal" href="#howdy.email.HowdyIMGClient" title="howdy.email.HowdyIMGClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">HowdyIMGClient</span></code></a> and <a class="reference internal" href="#howdy.email.PNGPicObject" title="howdy.email.PNGPicObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">PNGPicObject</span></code></a> allow one to add or remove images from one’s <a class="reference external" href="https://imgur.com">Imgur</a> acount.</p>
+<p>This contains the lowest level methods to send email using either the <a class="reference external" href="https://developers.google.com/contacts/v3">Google Contacts API</a> or through Python’s <a class="reference external" href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMTP</span></code></a> functionality, and to find the Google contact names of friend emails on the <a class="reference external" href="https://plex.tv">Plex</a> server. <a class="reference internal" href="#howdy.email.HowdyIMGClient" title="howdy.email.HowdyIMGClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">HowdyIMGClient</span></code></a> and <a class="reference internal" href="#howdy.email.PNGPicObject" title="howdy.email.PNGPicObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">PNGPicObject</span></code></a> allow one to add or remove images from one’s <a class="reference external" href="https://imgur.com">Imgur</a> acount.</p>
 <dl class="py class" id="module-howdy.email">
 <dt class="sig sig-object py" id="howdy.email.HowdyIMGClient">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.email.</span></span><span class="sig-name descname"><span class="pre">HowdyIMGClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_imgurl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient" title="Link to this definition"></a></dt>
 <dd><p>This object contains and implements the collection of images located in a single main album in the <a class="reference external" href="https://imgur.com">Imgur</a> account. This uses the <a class="reference external" href="https://imgur.com">Imgur</a> API to peform all operations. This object is constructed using <a class="reference external" href="https://imgur.com">Imgur</a> credentials – the client ID, secret, and refresh token – stored in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database, and stores the following attributes: the client ID, secret, refresh token, and the <em>access token</em> used for API access to your <a class="reference external" href="https://imgur.com">Imgur</a> album and images.</p>
-<p>If the <a class="reference external" href="https://imgur.com">Imgur</a> albums cannot be accessed, or there are no albums, then <code class="docutils literal notranslate"><span class="pre">self.albumID</span> <span class="pre">=</span> <span class="pre">None</span></code>, the <code class="docutils literal notranslate"><span class="pre">self.imgHashes</span></code> is an empty <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.</p>
-<p>The main album ID is stored as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> in the <a class="reference external" href="https://imgur.com">Imgur</a> configuration under the <code class="docutils literal notranslate"><span class="pre">mainALBUMID</span></code> key, if it exists; otherwise the <a class="reference external" href="https://imgur.com">Imgur</a> configuration dictionary does not have a <code class="docutils literal notranslate"><span class="pre">mainALBUMID</span></code> key.</p>
+<p>If the <a class="reference external" href="https://imgur.com">Imgur</a> albums cannot be accessed, or there are no albums, then <code class="docutils literal notranslate"><span class="pre">self.albumID</span> <span class="pre">=</span> <span class="pre">None</span></code>, the <code class="docutils literal notranslate"><span class="pre">self.imgHashes</span></code> is an empty <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.</p>
+<p>The main album ID is stored as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> in the <a class="reference external" href="https://imgur.com">Imgur</a> configuration under the <code class="docutils literal notranslate"><span class="pre">mainALBUMID</span></code> key, if it exists; otherwise the <a class="reference external" href="https://imgur.com">Imgur</a> configuration dictionary does not have a <code class="docutils literal notranslate"><span class="pre">mainALBUMID</span></code> key.</p>
 <ul class="simple">
 <li><p>If there is no main album ID defined, or if there is no album with that ID, then we choose the first album found, and reset the <a class="reference external" href="https://imgur.com">Imgur</a> configuration data into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> database with this album ID and name.</p></li>
 <li><p>If the configured album exists in our <a class="reference external" href="https://imgur.com">Imgur</a> library, then continue with this the main album.</p></li>
@@ -140,27 +135,27 @@
 <p>Once the main album is found, populate <code class="docutils literal notranslate"><span class="pre">self.imghashes</span></code> with all the pictures in this album. The pictures in an album in our <a class="reference external" href="https://imgur.com">Imgur</a> account are expected to be filled through methods in this object.</p>
 <ul class="simple">
 <li><p>The key is the <a class="reference external" href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash of the image in that library.</p></li>
-<li><p>The value is a four element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>: image name, image ID, the URL link to this image, and the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> at which the image was uploaded.</p></li>
+<li><p>The value is a four element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>: image name, image ID, the URL link to this image, and the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> at which the image was uploaded.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>data_imgurl</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – optional argument. If defined, must have the following keys: <code class="docutils literal notranslate"><span class="pre">clientID</span></code>, <code class="docutils literal notranslate"><span class="pre">clientSECRET</span></code>, and <code class="docutils literal notranslate"><span class="pre">clientREFRESHTOKEN</span></code>. Must be consistent with <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_imgurl_credentials</span></code>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>data_imgurl</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – optional argument. If defined, must have the following keys: <code class="docutils literal notranslate"><span class="pre">clientID</span></code>, <code class="docutils literal notranslate"><span class="pre">clientSECRET</span></code>, and <code class="docutils literal notranslate"><span class="pre">clientREFRESHTOKEN</span></code>. Must be consistent with <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_imgurl_credentials</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Variables<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – whether to verify SSL connections.</p></li>
-<li><p><strong>access_token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the persistent API access token to the user’s <a class="reference external" href="https://imgur.com">Imgur</a> account.</p></li>
-<li><p><strong>clientID</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://imgur.com">Imgur</a> client ID.</p></li>
-<li><p><strong>clientSECRET</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://imgur.com">Imgur</a> client secret.</p></li>
-<li><p><strong>albumID</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the hashed name of the main album.</p></li>
-<li><p><strong>imghashes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – the structure of images stored in the main album.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether to verify SSL connections.</p></li>
+<li><p><strong>access_token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the persistent API access token to the user’s <a class="reference external" href="https://imgur.com">Imgur</a> account.</p></li>
+<li><p><strong>clientID</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://imgur.com">Imgur</a> client ID.</p></li>
+<li><p><strong>clientSECRET</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://imgur.com">Imgur</a> client secret.</p></li>
+<li><p><strong>albumID</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the hashed name of the main album.</p></li>
+<li><p><strong>imghashes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – the structure of images stored in the main album.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if images in the new album cannot be accessed.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if images in the new album cannot be accessed.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -173,7 +168,7 @@
 <dd><p>Changes the main album name to a new name, only if the new name is different from the old name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>new_album_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the new name to change the main <a class="reference external" href="https://imgur.com">Imgur</a> album.</p>
+<dd class="field-odd"><p><strong>new_album_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the new name to change the main <a class="reference external" href="https://imgur.com">Imgur</a> album.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -189,15 +184,15 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>imgMD5</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – this is the <a class="reference external" href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash of the image in the main <a class="reference external" href="https://imgur.com">Imgur</a> library.</p></li>
-<li><p><strong>new_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the new name to give this image.</p></li>
+<li><p><strong>imgMD5</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – this is the <a class="reference external" href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash of the image in the main <a class="reference external" href="https://imgur.com">Imgur</a> library.</p></li>
+<li><p><strong>new_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the new name to give this image.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if image could be found and its name changed. Otherwise returns <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -215,7 +210,7 @@
 <dd><p>This deletes the candidate album from the <a class="reference external" href="https://imgur.com">Imgur</a> account. This album with that name must exist in the <a class="reference external" href="https://imgur.com">Imgur</a> account.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>candidate_album_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the name of the album to remove, with its underlying images.</p>
+<dd class="field-odd"><p><strong>candidate_album_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the name of the album to remove, with its underlying images.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -231,15 +226,15 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>b64img</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> representation of the image.</p></li>
-<li><p><strong>imgMD5</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. This is the <a class="reference external" href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash of the image. If not provided, this is calculated for that image represented by <code class="docutils literal notranslate"><span class="pre">b64img</span></code>.</p></li>
+<li><p><strong>b64img</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> representation of the image.</p></li>
+<li><p><strong>imgMD5</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. This is the <a class="reference external" href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash of the image. If not provided, this is calculated for that image represented by <code class="docutils literal notranslate"><span class="pre">b64img</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if image can be found and returned. Otherwise returns <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -256,7 +251,7 @@
 <span class="sig-name descname"><span class="pre">get_candidate_album_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.get_candidate_album_names" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of album names in the <a class="reference external" href="https://imgur.com">Imgur</a> account. <code class="xref py py-meth docutils literal notranslate"><span class="pre">set_main_album</span></code> can use this method to determine the valid album name to choose.</p>
+<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of album names in the <a class="reference external" href="https://imgur.com">Imgur</a> account. <code class="xref py py-meth docutils literal notranslate"><span class="pre">set_main_album</span></code> can use this method to determine the valid album name to choose.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -270,7 +265,7 @@
 <span class="sig-name descname"><span class="pre">get_candidate_albums</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.HowdyIMGClient.get_candidate_albums" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of album information, organized by album name. Each key in the top-level dictionary is the album name. Each value is a lower level dictionary: the <code class="docutils literal notranslate"><span class="pre">id</span></code> key is the album ID, and the <code class="docutils literal notranslate"><span class="pre">images</span></code> key is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of low-level <a class="reference external" href="https://imgur.com">Imgur</a> image information.</p>
+<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of album information, organized by album name. Each key in the top-level dictionary is the album name. Each value is a lower level dictionary: the <code class="docutils literal notranslate"><span class="pre">id</span></code> key is the album ID, and the <code class="docutils literal notranslate"><span class="pre">images</span></code> key is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of low-level <a class="reference external" href="https://imgur.com">Imgur</a> image information.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -296,7 +291,7 @@
 <dd class="field-odd"><p>the name of the main <a class="reference external" href="https://imgur.com">Imgur</a> album, if albums exist on this account. Otherwise returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -307,7 +302,7 @@
 <dd><p>Refreshes the collection of images in the main <a class="reference external" href="https://imgur.com">Imgur</a> album, by filling out <code class="docutils literal notranslate"><span class="pre">self.imghashes</span></code>. The pictures in an album in our <a class="reference external" href="https://imgur.com">Imgur</a> account are expected to be filled through methods in this object.</p>
 <ul class="simple">
 <li><p>The key is the <a class="reference external" href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash of the image in that library.</p></li>
-<li><p>The value is a four element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>: image name, image ID, the URL link to this image, and the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> at which the image was uploaded.</p></li>
+<li><p>The value is a four element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>: image name, image ID, the URL link to this image, and the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> at which the image was uploaded.</p></li>
 </ul>
 </dd></dl>
 
@@ -318,14 +313,14 @@
 <p>Once this album is set or created,</p>
 <ul class="simple">
 <li><p>sets the new <a class="reference external" href="https://imgur.com">Imgur</a> credentials using <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.core.store_imgurl_credentials" title="howdy.core.core.store_imgurl_credentials"><code class="xref py py-meth docutils literal notranslate"><span class="pre">store_imgur_credentials</span></code></a>.</p></li>
-<li><p>populates <code class="docutils literal notranslate"><span class="pre">self.imghashes</span></code> with all the images found in this library. Of course, if the album does not exist, then <code class="docutils literal notranslate"><span class="pre">self.imghashes</span></code> is an empty <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.</p></li>
+<li><p>populates <code class="docutils literal notranslate"><span class="pre">self.imghashes</span></code> with all the images found in this library. Of course, if the album does not exist, then <code class="docutils literal notranslate"><span class="pre">self.imghashes</span></code> is an empty <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>new_album_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the new name of the <a class="reference external" href="https://imgur.com">Imgur</a> album to use for images.</p>
+<dd class="field-odd"><p><strong>new_album_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the new name of the <a class="reference external" href="https://imgur.com">Imgur</a> album to use for images.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if images in the new album cannot be accessed.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if images in the new album cannot be accessed.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -341,16 +336,16 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>b64img</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> representation of the image.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – name of the image.</p></li>
-<li><p><strong>imgMD5</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. This is the <a class="reference external" href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash of the image. If not provided, this is calculated for that image represented by <code class="docutils literal notranslate"><span class="pre">b64img</span></code>.</p></li>
+<li><p><strong>b64img</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> representation of the image.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – name of the image.</p></li>
+<li><p><strong>imgMD5</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. This is the <a class="reference external" href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash of the image. If not provided, this is calculated for that image represented by <code class="docutils literal notranslate"><span class="pre">b64img</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a 4-element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>: image name, image ID, the URL link to this image, and the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> at which the image was uploaded.</p>
+<dd class="field-even"><p>a 4-element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>: image name, image ID, the URL link to this image, and the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> at which the image was uploaded.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -372,7 +367,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>initdata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – <p>the low-level dictionary that contains important information on the image, located in a file, that will either be uploaded into the main <a class="reference external" href="https://imgur.com">Imgur</a> album or merely kept in memory. The main key that determines operation is <code class="docutils literal notranslate"><span class="pre">initialization</span></code>. It can be one of <code class="docutils literal notranslate"><span class="pre">&quot;FILE&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;SERVER&quot;</span></code>.</p>
+<li><p><strong>initdata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – <p>the low-level dictionary that contains important information on the image, located in a file, that will either be uploaded into the main <a class="reference external" href="https://imgur.com">Imgur</a> album or merely kept in memory. The main key that determines operation is <code class="docutils literal notranslate"><span class="pre">initialization</span></code>. It can be one of <code class="docutils literal notranslate"><span class="pre">&quot;FILE&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;SERVER&quot;</span></code>.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">initialization</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;FILE&quot;</span></code>, then upload the the image to the main album in the <a class="reference external" href="https://imgur.com">Imgur</a> account. Here are the required keys in <code class="docutils literal notranslate"><span class="pre">initdata</span></code>.</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">filename</span></code> is the location of the image file on disk.</p></li>
@@ -383,7 +378,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">imgurlink</span></code> is the URL link to the image.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">imgName</span></code> is the name of the image.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">imgMD5</span></code> is the <a class="reference external" href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash of the image.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">imgDateTime</span></code> is the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> at which the image was initially uploaded into the main <a class="reference external" href="https://imgur.com">Imgur</a> album.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">imgDateTime</span></code> is the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> at which the image was initially uploaded into the main <a class="reference external" href="https://imgur.com">Imgur</a> album.</p></li>
 </ul>
 </p></li>
 <li><p><strong>pImgClient</strong> (<em>PlexIMGClient</em>) – the <a class="reference internal" href="#howdy.email.HowdyIMGClient" title="howdy.email.HowdyIMGClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexIMGClient</span></code></a> used to access and manipulate (add, delete, rename) images in the main <a class="reference external" href="https://imgur.com">Imgur</a> album.</p></li>
@@ -391,18 +386,18 @@
 </dd>
 <dt class="field-even">Variables<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>actName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the file name without full path, which must end in <code class="docutils literal notranslate"><span class="pre">png</span></code>.</p></li>
+<li><p><strong>actName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the file name without full path, which must end in <code class="docutils literal notranslate"><span class="pre">png</span></code>.</p></li>
 <li><p><strong>img</strong> (<em>QImage</em>) – the <code class="xref py py-class docutils literal notranslate"><span class="pre">QImage</span></code> representation of this image.</p></li>
 <li><p><strong>originalImage</strong> (<em>Image</em>) – the <code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code> representation of this image.</p></li>
-<li><p><strong>originalWidth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – the inferred width in cm.</p></li>
-<li><p><strong>currentWidth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – the current image width in cm. It starts off as equal to <code class="docutils literal notranslate"><span class="pre">originalWidth</span></code></p></li>
-<li><p><strong>b64string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> encoded representation of this image as a PNG file.</p></li>
-<li><p><strong>imgurlLink</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the URL link to the image.</p></li>
-<li><p><strong>imgDateTime</strong> (<em>datetime</em>) – the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> at which this image was first uploaded to the main album in the <a class="reference external" href="https://imgur.com">Imgur</a> account.</p></li>
+<li><p><strong>originalWidth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – the inferred width in cm.</p></li>
+<li><p><strong>currentWidth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – the current image width in cm. It starts off as equal to <code class="docutils literal notranslate"><span class="pre">originalWidth</span></code></p></li>
+<li><p><strong>b64string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> encoded representation of this image as a PNG file.</p></li>
+<li><p><strong>imgurlLink</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the URL link to the image.</p></li>
+<li><p><strong>imgDateTime</strong> (<em>datetime</em>) – the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> at which this image was first uploaded to the main album in the <a class="reference external" href="https://imgur.com">Imgur</a> account.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">initdata['initialization']</span></code> is neither <code class="docutils literal notranslate"><span class="pre">&quot;FILE&quot;</span></code> nor <code class="docutils literal notranslate"><span class="pre">&quot;SERVER&quot;</span></code>.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">initdata['initialization']</span></code> is neither <code class="docutils literal notranslate"><span class="pre">&quot;FILE&quot;</span></code> nor <code class="docutils literal notranslate"><span class="pre">&quot;SERVER&quot;</span></code>.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -410,10 +405,10 @@
 <span class="sig-name descname"><span class="pre">b64String</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.PNGPicObject.b64String" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a 3-element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> on the image incorporated into this object: its <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> string, its width in pixels, and the <a class="reference external" href="https://imgur.com">Imgur</a> link.</p>
+<dd class="field-odd"><p>a 3-element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> on the image incorporated into this object: its <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> string, its width in pixels, and the <a class="reference external" href="https://imgur.com">Imgur</a> link.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -425,7 +420,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>new_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the new name of the image file to be changed in the main album on the <a class="reference external" href="https://imgur.com">Imgur</a> account. This must end in <code class="docutils literal notranslate"><span class="pre">png</span></code>.</p></li>
+<li><p><strong>new_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the new name of the image file to be changed in the main album on the <a class="reference external" href="https://imgur.com">Imgur</a> account. This must end in <code class="docutils literal notranslate"><span class="pre">png</span></code>.</p></li>
 <li><p><strong>hImgClient</strong> (<a class="reference internal" href="#howdy.email.HowdyIMGClient" title="howdy.email.HowdyIMGClient"><em>HowdyIMGClient</em></a>) – the <a class="reference internal" href="#howdy.email.HowdyIMGClient" title="howdy.email.HowdyIMGClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">HowdyIMGClient</span></code></a> used to access and manipulate (add, delete, rename) images in the main <a class="reference external" href="https://imgur.com">Imgur</a> album.</p></li>
 </ul>
 </dd>
@@ -440,10 +435,10 @@
 <dd class="field-odd"><p><strong>pImgClient</strong> (<em>PlexIMGClient</em>) – the <a class="reference internal" href="#howdy.email.HowdyIMGClient" title="howdy.email.HowdyIMGClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexIMGClient</span></code></a> used to access and manipulate (add, delete, rename) images in the main <a class="reference external" href="https://imgur.com">Imgur</a> album.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="#howdy.email.PNGPicObject" title="howdy.email.PNGPicObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">PNGPicObject</span></code></a> representing the images in the main <a class="reference external" href="https://imgur.com">Imgur</a> album.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="#howdy.email.PNGPicObject" title="howdy.email.PNGPicObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">PNGPicObject</span></code></a> representing the images in the main <a class="reference external" href="https://imgur.com">Imgur</a> album.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -453,7 +448,8 @@
 <span class="sig-name descname"><span class="pre">getInfoGUI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.PNGPicObject.getInfoGUI" title="Link to this definition"></a></dt>
 <dd><p>Launches a <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qdialog.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></a> that contains the underlying image and some other labels: <code class="docutils literal notranslate"><span class="pre">ACTNAME</span></code> is the actual PNG file name, <code class="docutils literal notranslate"><span class="pre">URL</span></code> is the image’s <a class="reference external" href="https://imgur.com">Imgur</a> link, and <code class="docutils literal notranslate"><span class="pre">UPLOADED</span> <span class="pre">AT</span></code> is the date and time at which the file was uploaded. An example image is shown below,</p>
 <figure class="align-left" id="id5">
-<a class="reference internal image-reference" href="../_images/email_pngpicobject_infogui.png"><img alt="../_images/email_pngpicobject_infogui.png" src="../_images/email_pngpicobject_infogui.png" style="width: 100%;" /></a>
+<a class="reference internal image-reference" href="../_images/email_pngpicobject_infogui.png"><img alt="../_images/email_pngpicobject_infogui.png" src="../_images/email_pngpicobject_infogui.png" style="width: 100%;" />
+</a>
 <figcaption>
 <p><span class="caption-number">Fig. 8.36 </span><span class="caption-text">An example <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> image that can be stored in the main <a class="reference external" href="https://imgur.com">Imgur</a> library. Note the three rows above the image: the <em>name</em> of the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> image; its URL; and the date and time it was uploaded.</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
 </figcaption>
@@ -474,15 +470,15 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>pagesize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – optional argument, the <em>maximum</em> number of candidate contacts to search through. Must be <span class="math notranslate nohighlight">\(\ge 1\)</span>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>pagesize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argument, the <em>maximum</em> number of candidate contacts to search through. Must be <span class="math notranslate nohighlight">\(\ge 1\)</span>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of contacts. The key is the contact name, and the value is the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> of email addresses for that contact.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of contacts. The key is the contact name, and the value is the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> of email addresses for that contact.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -494,15 +490,15 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>emailList</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of emails, used to determine to whom it belongs.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>emailList</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of emails, used to determine to whom it belongs.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of two-element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. The first element is the Google conatct name. The second element is a primary email associated with that contact.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of two-element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. The first element is the Google conatct name. The second element is a primary email associated with that contact.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -517,7 +513,7 @@
 <dd><p>This returns a working <code class="xref py py-class docutils literal notranslate"><span class="pre">Resource</span></code> representing the Google email service used to send and receive emails.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<dd class="field-odd"><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the <code class="xref py py-class docutils literal notranslate"><span class="pre">Resource</span></code> representing the Google email service used to send and receive emails. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then generated here.</p>
@@ -535,9 +531,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/email.mime.html#email.mime.multipart.MIMEMultipart" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MIMEMultipart</span></code></a>) – the email message object to send. At a high level, this is an email with body, sender, recipients, and optional attachments.</p></li>
+<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/email.mime.html#email.mime.multipart.MIMEMultipart" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MIMEMultipart</span></code></a>) – the email message object to send. At a high level, this is an email with body, sender, recipients, and optional attachments.</p></li>
 <li><p><strong>email_service</strong> – optional argument, the <code class="xref py py-class docutils literal notranslate"><span class="pre">Resource</span></code> representing the Google email service used to send and receive emails. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then generated here.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -558,17 +554,17 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> access token.</p></li>
-<li><p><strong>nameSection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, then include this summary in its own section called <code class="docutils literal notranslate"><span class="pre">&quot;Summary&quot;</span></code>. If not, then return as a stand-alone <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> document.</p></li>
-<li><p><strong>fullURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server URL.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> access token.</p></li>
+<li><p><strong>nameSection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, then include this summary in its own section called <code class="docutils literal notranslate"><span class="pre">&quot;Summary&quot;</span></code>. If not, then return as a stand-alone <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> document.</p></li>
+<li><p><strong>fullURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server URL.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> document representing the summary of the media on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -584,19 +580,19 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.email.email.get_summary_data_movies_remote">
 <span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">get_summary_data_movies_remote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullURL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:32400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sinceDate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.date(2020,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.get_summary_data_movies_remote" title="Link to this definition"></a></dt>
-<dd><p>This returns summary information on movie media from all movie libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server, for use as part of the <a class="reference external" href="https://plex.tv">Plex</a> newsletter sent out to one’s <a class="reference external" href="https://plex.tv">Plex</a> server friends. The email first summarizes ALL the movie data, and then summarizes the movie data uploaded and processed since the last newsletter’s date. Unlike <a class="reference internal" href="#howdy.email.email.get_summary_data_music_remote" title="howdy.email.email.get_summary_data_music_remote"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_summary_data_music_remote</span></code></a> and <a class="reference internal" href="#howdy.email.email.get_summary_data_television_remote" title="howdy.email.email.get_summary_data_television_remote"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_summary_data_television_remote</span></code></a>, this returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of strings rather than a string.</p>
+<dd><p>This returns summary information on movie media from all movie libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server, for use as part of the <a class="reference external" href="https://plex.tv">Plex</a> newsletter sent out to one’s <a class="reference external" href="https://plex.tv">Plex</a> server friends. The email first summarizes ALL the movie data, and then summarizes the movie data uploaded and processed since the last newsletter’s date. Unlike <a class="reference internal" href="#howdy.email.email.get_summary_data_music_remote" title="howdy.email.email.get_summary_data_music_remote"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_summary_data_music_remote</span></code></a> and <a class="reference internal" href="#howdy.email.email.get_summary_data_television_remote" title="howdy.email.email.get_summary_data_television_remote"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_summary_data_television_remote</span></code></a>, this returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of strings rather than a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> access token.</p></li>
-<li><p><strong>fullURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server URL.</p></li>
+<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> access token.</p></li>
+<li><p><strong>fullURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server URL.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> description of TV media in all TV libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server. If there is no <a class="reference external" href="https://plex.tv">Plex</a> server or TV library, returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> description of TV media in all TV libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server. If there is no <a class="reference external" href="https://plex.tv">Plex</a> server or TV library, returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -616,16 +612,16 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> access token.</p></li>
-<li><p><strong>fullURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server URL.</p></li>
-<li><p><strong>sinceDate</strong> (<em>date</em>) – the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> from which we have added songs. Default is <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> corresponding to <code class="docutils literal notranslate"><span class="pre">January</span> <span class="pre">1,</span> <span class="pre">2020</span></code>.</p></li>
+<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> access token.</p></li>
+<li><p><strong>fullURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server URL.</p></li>
+<li><p><strong>sinceDate</strong> (<em>date</em>) – the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> from which we have added songs. Default is <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> corresponding to <code class="docutils literal notranslate"><span class="pre">January</span> <span class="pre">1,</span> <span class="pre">2020</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> description of music media in all music libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server. If there is no <a class="reference external" href="https://plex.tv">Plex</a> server or music library, returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> description of music media in all music libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server. If there is no <a class="reference external" href="https://plex.tv">Plex</a> server or music library, returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -645,16 +641,16 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> access token.</p></li>
-<li><p><strong>fullURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server URL.</p></li>
-<li><p><strong>sinceDate</strong> (<em>date</em>) – the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> from which we have added songs. Default is <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> corresponding to <code class="docutils literal notranslate"><span class="pre">January</span> <span class="pre">1,</span> <span class="pre">2020</span></code>.</p></li>
+<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> access token.</p></li>
+<li><p><strong>fullURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server URL.</p></li>
+<li><p><strong>sinceDate</strong> (<em>date</em>) – the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> from which we have added songs. Default is <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> corresponding to <code class="docutils literal notranslate"><span class="pre">January</span> <span class="pre">1,</span> <span class="pre">2020</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> description of TV media in all TV libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server. If there is no <a class="reference external" href="https://plex.tv">Plex</a> server or TV library, returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> description of TV media in all TV libraries on the <a class="reference external" href="https://plex.tv">Plex</a> server. If there is no <a class="reference external" href="https://plex.tv">Plex</a> server or TV library, returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -670,18 +666,18 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> access token.</p></li>
-<li><p><strong>fullURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server URL.</p></li>
-<li><p><strong>preambleText</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. The <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> formatted preamble text (text section <em>before</em> summary), if non-empty. Default is <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>.</p></li>
-<li><p><strong>postambleText</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. The <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> formatted text, in a section <em>after</em> the summary. if non-empty. Default is <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. If given, the recipient’s name.</p></li>
+<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> access token.</p></li>
+<li><p><strong>fullURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server URL.</p></li>
+<li><p><strong>preambleText</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. The <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> formatted preamble text (text section <em>before</em> summary), if non-empty. Default is <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>.</p></li>
+<li><p><strong>postambleText</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. The <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> formatted text, in a section <em>after</em> the summary. if non-empty. Default is <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. If given, the recipient’s name.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a two-element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. The first element is an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> document of the <a class="reference external" href="https://plex.tv">Plex</a> newletter email. The second element is the full <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a>.</p>
+<dd class="field-even"><p>a two-element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. The first element is an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> document of the <a class="reference external" href="https://plex.tv">Plex</a> newletter email. The second element is the full <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -697,13 +693,13 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mainHTML</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the email body as an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> document.</p></li>
-<li><p><strong>subject</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the email subject.</p></li>
-<li><p><strong>fromEmail</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://tools.ietf.org/html/rfc2047.html">RFC 2047</a> sender’s email with name.</p></li>
-<li><p><strong>to_emails</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><em>set</em></a>) – the <a class="reference external" href="https://tools.ietf.org/html/rfc2047.html">RFC 2047</a> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> of <code class="docutils literal notranslate"><span class="pre">TO</span></code> recipients.</p></li>
-<li><p><strong>cc_emails</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><em>set</em></a>) – the <a class="reference external" href="https://tools.ietf.org/html/rfc2047.html">RFC 2047</a> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> of <code class="docutils literal notranslate"><span class="pre">CC</span></code> recipients.</p></li>
-<li><p><strong>bcc_emails</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><em>set</em></a>) – the <a class="reference external" href="https://tools.ietf.org/html/rfc2047.html">RFC 2047</a> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> of <code class="docutils literal notranslate"><span class="pre">BCC</span></code> recipients.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>mainHTML</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the email body as an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> document.</p></li>
+<li><p><strong>subject</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the email subject.</p></li>
+<li><p><strong>fromEmail</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://tools.ietf.org/html/rfc2047.html">RFC 2047</a> sender’s email with name.</p></li>
+<li><p><strong>to_emails</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.13)"><em>set</em></a>) – the <a class="reference external" href="https://tools.ietf.org/html/rfc2047.html">RFC 2047</a> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> of <code class="docutils literal notranslate"><span class="pre">TO</span></code> recipients.</p></li>
+<li><p><strong>cc_emails</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.13)"><em>set</em></a>) – the <a class="reference external" href="https://tools.ietf.org/html/rfc2047.html">RFC 2047</a> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> of <code class="docutils literal notranslate"><span class="pre">CC</span></code> recipients.</p></li>
+<li><p><strong>bcc_emails</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.13)"><em>set</em></a>) – the <a class="reference external" href="https://tools.ietf.org/html/rfc2047.html">RFC 2047</a> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> of <code class="docutils literal notranslate"><span class="pre">BCC</span></code> recipients.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>email_service</strong> – optional argument, the <code class="xref py py-class docutils literal notranslate"><span class="pre">Resource</span></code> representing the Google email service used to send and receive emails. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then generated here.</p></li>
 </ul>
 </dd>
@@ -717,18 +713,18 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>movieName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the name of the movie.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>movieName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the name of the movie.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code> if nothing goes wrong.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.12)"><strong>AssertionError</strong></a> – if the current <a class="reference external" href="https://plex.tv">Plex</a> account user’s email address does not exist.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.13)"><strong>AssertionError</strong></a> – if the current <a class="reference external" href="https://plex.tv">Plex</a> account user’s email address does not exist.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -740,41 +736,41 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>movieName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the name of the movie.</p></li>
-<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> encoded file, if torrent file. Otherwise the magnet URI link if magnet link.</p></li>
-<li><p><strong>isJackett</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code></a> flag used to determine whether <code class="docutils literal notranslate"><span class="pre">data</span></code> is a torrent file or magnet link. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, then expects a torrent file. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then expects a magnet link. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>movieName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the name of the movie.</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> encoded file, if torrent file. Otherwise the magnet URI link if magnet link.</p></li>
+<li><p><strong>isJackett</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code></a> flag used to determine whether <code class="docutils literal notranslate"><span class="pre">data</span></code> is a torrent file or magnet link. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, then expects a torrent file. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then expects a magnet link. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code> if nothing goes wrong.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.12)"><strong>AssertionError</strong></a> – if the current <a class="reference external" href="https://plex.tv">Plex</a> account user’s email address does not exist.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.13)"><strong>AssertionError</strong></a> – if the current <a class="reference external" href="https://plex.tv">Plex</a> account user’s email address does not exist.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.email.email.send_individual_email">
-<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">send_individual_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mainHTML</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mydate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.date(2024,</span> <span class="pre">7,</span> <span class="pre">30)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email_service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">send_individual_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mainHTML</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mydate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.date(2024,</span> <span class="pre">10,</span> <span class="pre">11)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email_service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email" title="Link to this definition"></a></dt>
 <dd><p>sends the HTML email to a single recipient email address using the <a class="reference external" href="https://developers.google.com/gmail/api">GMail API</a>. The subject is <code class="docutils literal notranslate"><span class="pre">&quot;Plex</span> <span class="pre">Email</span> <span class="pre">Newsletter</span> <span class="pre">for</span> <span class="pre">&lt;MONTH&gt;</span> <span class="pre">&lt;YEAR&gt;&quot;</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mainHTML</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the email body as an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> document.</p></li>
-<li><p><strong>email</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the recipient email address.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. If given, the recipient’s name.</p></li>
-<li><p><strong>mydate</strong> (<em>date</em>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> at which the email is sent. Default is <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="(in Python v3.12)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">now(</span> <span class="pre">)</span></code></a>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>mainHTML</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the email body as an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> document.</p></li>
+<li><p><strong>email</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the recipient email address.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. If given, the recipient’s name.</p></li>
+<li><p><strong>mydate</strong> (<em>date</em>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> at which the email is sent. Default is <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="(in Python v3.13)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">now(</span> <span class="pre">)</span></code></a>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>email_service</strong> – optional argument, the <code class="xref py py-class docutils literal notranslate"><span class="pre">Resource</span></code> representing the Google email service used to send and receive emails. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then generated here.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.12)"><strong>AssertionError</strong></a> – if the current <a class="reference external" href="https://plex.tv">Plex</a> account user’s email address does not exist.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.13)"><strong>AssertionError</strong></a> – if the current <a class="reference external" href="https://plex.tv">Plex</a> account user’s email address does not exist.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -786,20 +782,20 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mainHTML</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the email body as an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> document.</p></li>
-<li><p><strong>subject</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the email subject.</p></li>
-<li><p><strong>emailAddress</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the recipient email address.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. If given, the recipient’s name.</p></li>
-<li><p><strong>mydate</strong> (<em>date</em>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> at which the email is sent. Default is <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="(in Python v3.12)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">now(</span> <span class="pre">)</span></code></a>.</p></li>
-<li><p><strong>attach</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. If defined, the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> encoded attachment.</p></li>
-<li><p><strong>attachName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of attachment names, if there is an attachment. If defined, then <code class="docutils literal notranslate"><span class="pre">attachData</span></code> must also be defined.</p></li>
-<li><p><strong>attachType</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the attachment type. Default is <code class="docutils literal notranslate"><span class="pre">txt</span></code>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>mainHTML</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the email body as an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> document.</p></li>
+<li><p><strong>subject</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the email subject.</p></li>
+<li><p><strong>emailAddress</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the recipient email address.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. If given, the recipient’s name.</p></li>
+<li><p><strong>mydate</strong> (<em>date</em>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> at which the email is sent. Default is <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="(in Python v3.13)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">now(</span> <span class="pre">)</span></code></a>.</p></li>
+<li><p><strong>attach</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. If defined, the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> encoded attachment.</p></li>
+<li><p><strong>attachName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of attachment names, if there is an attachment. If defined, then <code class="docutils literal notranslate"><span class="pre">attachData</span></code> must also be defined.</p></li>
+<li><p><strong>attachType</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the attachment type. Default is <code class="docutils literal notranslate"><span class="pre">txt</span></code>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>email_service</strong> – optional argument, the <code class="xref py py-class docutils literal notranslate"><span class="pre">Resource</span></code> representing the Google email service used to send and receive emails. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then generated here.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.12)"><strong>AssertionError</strong></a> – if the current <a class="reference external" href="https://plex.tv">Plex</a> account user’s email address does not exist.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.13)"><strong>AssertionError</strong></a> – if the current <a class="reference external" href="https://plex.tv">Plex</a> account user’s email address does not exist.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -807,21 +803,21 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.email.email.send_individual_email_full_withattachs">
 <span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">send_individual_email_full_withattachs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mainHTML</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachDatas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email_full_withattachs" title="Link to this definition"></a></dt>
-<dd><p>Sends the HTML email, with optional attachments, to a single recipient email address. This uses the <a class="reference external" href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMTP</span></code></a> Python functionality to send through a local <a class="reference external" href="https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol">SMTP</a> server (see <code class="xref py py-meth docutils literal notranslate"><span class="pre">send_email_localsmtp</span></code>).</p>
+<dd><p>Sends the HTML email, with optional attachments, to a single recipient email address. This uses the <a class="reference external" href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMTP</span></code></a> Python functionality to send through a local <a class="reference external" href="https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol">SMTP</a> server (see <code class="xref py py-meth docutils literal notranslate"><span class="pre">send_email_localsmtp</span></code>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mainHTML</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the email body as an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> document.</p></li>
-<li><p><strong>subject</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the email subject.</p></li>
-<li><p><strong>email</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the recipient email address.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. If given, the recipient’s name.</p></li>
-<li><p><strong>mydate</strong> (<em>date</em>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> at which the email is sent. Default is <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="(in Python v3.12)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">now(</span> <span class="pre">)</span></code></a>.</p></li>
-<li><p><strong>attachNames</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of attachment names, if attachments are used. If defined, then <code class="docutils literal notranslate"><span class="pre">attachDatas</span></code> must also be defined.</p></li>
-<li><p><strong>attachDatas</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – optional argument. If defined, the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of attachments with corresponding name described in <code class="docutils literal notranslate"><span class="pre">attachNames</span></code>. Each entry is a <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> encoded attachment.</p></li>
+<li><p><strong>mainHTML</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the email body as an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> document.</p></li>
+<li><p><strong>subject</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the email subject.</p></li>
+<li><p><strong>email</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the recipient email address.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. If given, the recipient’s name.</p></li>
+<li><p><strong>mydate</strong> (<em>date</em>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> at which the email is sent. Default is <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="(in Python v3.13)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">now(</span> <span class="pre">)</span></code></a>.</p></li>
+<li><p><strong>attachNames</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of attachment names, if attachments are used. If defined, then <code class="docutils literal notranslate"><span class="pre">attachDatas</span></code> must also be defined.</p></li>
+<li><p><strong>attachDatas</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – optional argument. If defined, the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of attachments with corresponding name described in <code class="docutils literal notranslate"><span class="pre">attachNames</span></code>. Each entry is a <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> encoded attachment.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.12)"><strong>AssertionError</strong></a> – if the current <a class="reference external" href="https://plex.tv">Plex</a> account user’s email address does not exist.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.13)"><strong>AssertionError</strong></a> – if the current <a class="reference external" href="https://plex.tv">Plex</a> account user’s email address does not exist.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -833,19 +829,19 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mainHTML</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the email body as an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> document.</p></li>
-<li><p><strong>subject</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the email subject.</p></li>
-<li><p><strong>email</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the recipient email address.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. If given, the recipient’s name.</p></li>
-<li><p><strong>mydate</strong> (<em>date</em>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> at which the email is sent. Default is <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="(in Python v3.12)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">now(</span> <span class="pre">)</span></code></a>.</p></li>
-<li><p><strong>attachData</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. If defined, the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> encoded attachment.</p></li>
-<li><p><strong>attachName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of attachment names, if there is an attachment. If defined, then <code class="docutils literal notranslate"><span class="pre">attachData</span></code> must also be defined.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>mainHTML</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the email body as an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> document.</p></li>
+<li><p><strong>subject</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the email subject.</p></li>
+<li><p><strong>email</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the recipient email address.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. If given, the recipient’s name.</p></li>
+<li><p><strong>mydate</strong> (<em>date</em>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a> at which the email is sent. Default is <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="(in Python v3.13)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">now(</span> <span class="pre">)</span></code></a>.</p></li>
+<li><p><strong>attachData</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. If defined, the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> encoded attachment.</p></li>
+<li><p><strong>attachName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. The <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of attachment names, if there is an attachment. If defined, then <code class="docutils literal notranslate"><span class="pre">attachData</span></code> must also be defined.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>email_service</strong> – optional argument, the <code class="xref py py-class docutils literal notranslate"><span class="pre">Resource</span></code> representing the Google email service used to send and receive emails. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then generated here.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.12)"><strong>AssertionError</strong></a> – if the current <a class="reference external" href="https://plex.tv">Plex</a> account user’s email address does not exist.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.13)"><strong>AssertionError</strong></a> – if the current <a class="reference external" href="https://plex.tv">Plex</a> account user’s email address does not exist.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -853,10 +849,10 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.email.email.send_individual_email_perproc">
 <span class="sig-prename descclassname"><span class="pre">howdy.email.email.</span></span><span class="sig-name descname"><span class="pre">send_individual_email_perproc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.email.email.send_individual_email_perproc" title="Link to this definition"></a></dt>
-<dd><p>A tuple-ized version of <a class="reference internal" href="#howdy.email.email.send_individual_email" title="howdy.email.email.send_individual_email"><code class="xref py py-meth docutils literal notranslate"><span class="pre">send_individual_email</span></code></a> used by the <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> module to send out emails.</p>
+<dd><p>A tuple-ized version of <a class="reference internal" href="#howdy.email.email.send_individual_email" title="howdy.email.email.send_individual_email"><code class="xref py py-meth docutils literal notranslate"><span class="pre">send_individual_email</span></code></a> used by the <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> module to send out emails.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>input_tuple</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – an expected four-element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>: the HTML email body, the recipient’s email, the recipient’s name, and the <code class="xref py py-class docutils literal notranslate"><span class="pre">email</span> <span class="pre">service</span> <span class="pre">resource</span></code>.</p>
+<dd class="field-odd"><p><strong>input_tuple</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – an expected four-element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>: the HTML email body, the recipient’s email, the recipient’s name, and the <code class="xref py py-class docutils literal notranslate"><span class="pre">email</span> <span class="pre">service</span> <span class="pre">resource</span></code>.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -872,9 +868,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>subject</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. The email subject. If not defined, the subject is <code class="docutils literal notranslate"><span class="pre">&quot;Plex</span> <span class="pre">Email</span> <span class="pre">Newsletter</span> <span class="pre">for</span> <span class="pre">&lt;MONTH&gt;</span> <span class="pre">&lt;YEAR&gt;&quot;</span></code>.</p></li>
-<li><p><strong>htmlstring</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – optional argument. The email body as an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> document. If not defined, the body is <code class="docutils literal notranslate"><span class="pre">&quot;This</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">test.&quot;</span></code>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>subject</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. The email subject. If not defined, the subject is <code class="docutils literal notranslate"><span class="pre">&quot;Plex</span> <span class="pre">Email</span> <span class="pre">Newsletter</span> <span class="pre">for</span> <span class="pre">&lt;MONTH&gt;</span> <span class="pre">&lt;YEAR&gt;&quot;</span></code>.</p></li>
+<li><p><strong>htmlstring</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. The email body as an HTML <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> document. If not defined, the body is <code class="docutils literal notranslate"><span class="pre">&quot;This</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">test.&quot;</span></code>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 </dl>

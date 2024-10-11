@@ -20,6 +20,7 @@ help:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 deploy:
+	rm -rf ../docs/*
 	cp -rf build/html/* ../docs/
 	touch ../docs/.nojekyll
 

@@ -138,6 +138,12 @@ def get_or_push_spotify_oauth2_token( ):
 
 
 def push_spotify_song_id_to_file( spotify_id, filename ):
+    """
+    This *copies* the Spotify_ ID of a song to a given M4A_ file. This puts the Spotify_ ID into the comments tags in the M4A_ file.
+
+    :param str spotify_id: The Spotify_ ID of a song. For example, the song `All I Need <https://en.wikipedia.org/wiki/All_I_Need_(Air_song)>`_ by `Air <https://en.wikipedia.org/wiki/Air_(French_band)>`_ has a Spotify_ ID = ``spotify:track:6T10XPeC9X5xEaD6tMcK6M``. It can be found on Spotify_ at `this link <https://open.spotify.com/track/6T10XPeC9X5xEaD6tMcK6M>`_.
+    :param str filename: the M4A_ song file name.
+    """
     _error_expired_token = 'The access token expired'
     if spotify_id.strip( ) == _error_expired_token:
         logging.debug( 'ACTUAL MESSAGE IS EXPIRED TOKEN. DOING NOTHING.' )

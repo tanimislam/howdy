@@ -30,6 +30,26 @@ This contains the low-level functionality that does three things.
 .. automodule:: howdy.music.music
    :members:
 
+howdy.music.music_spotify module
+---------------------------------------
+These module handles integration with the Spotify_ RESTful API that does the following things:
+
+* Methods to handle authentication to the Spotify_ API. See `this blog article on the Spotify Web API <https://tanimislam.gitlab.io/blog/spotify-web-api.html>`_ on how to set up a Spotify_ Web API client, and to acquire your client ID and client secret.
+
+* Methods to copy the Spotify_ song ID into an M4A_ song file's metadata, and to get the Spotify_ song ID of the song.
+
+* Methods that returns the Spotify_ ID based on a song's metadata.
+
+* Methods that show, create, modify the current user's Spotify_ public playlists.
+
+* Methods that convert a :py:class:`DataFrame <pandas.DataFrame>` representing a Plex_ music playlist *into* a :py:class:`DataFrame <pandas.DataFrame>` representing a data structure that can be converted into a Spotify_ public playlist.
+
+In this API I refer to the Spotify_ ID of a song, which has format ``:spotify:track:<STRING>``. For example, the song `All I Need <https://en.wikipedia.org/wiki/All_I_Need_(Air_song)>`_ by `Air the French band <https://en.wikipedia.org/wiki/Air_(French_band)>`_ has a Spotify_ ID = ``spotify:track:6T10XPeC9X5xEaD6tMcK6M``. It can be found at https://open.spotify.com/track/6T10XPeC9X5xEaD6tMcK6M.
+
+
+.. automodule:: howdy.music.music_spotify
+   :members:
+
 howdy.music.pygn module
 ----------------------------------
 
@@ -44,8 +64,10 @@ This contains functionality used by the :py:class:`HowdyMusic <howdy.music.music
 .. _Gracenote: https://developer.gracenote.com/web-api
 .. _LastFM: https://www.last.fm/api
 .. _MusicBrainz: https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2
+.. _Spotify: https://open.spotify.com
 .. _`YouTube Google API`: https://developers.google.com/youtube/v3
 .. _yt-dlp: https://github.com/yt-dlp/yt-dlp
 .. _youtube-dl: https://ytdl-org.github.io/youtube-dl/index.html
 .. _GMusicAPI: https://unofficial-google-music-api.readthedocs.io
 .. _`Google Play Music`: https://play.google.com/music/listen
+

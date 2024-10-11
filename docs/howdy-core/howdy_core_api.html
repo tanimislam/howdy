@@ -6,15 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.3. Howdy Core API &mdash; howdy! 1.55-41-g97424aa0 documentation</title>
+  <title>4.3. Howdy Core API &mdash; howdy! 1.55-43-g38568661 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7dc6ce7e" />
 
   
+    <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=dd34c8e1"></script>
+      <script src="../_static/documentation_options.js?v=dd22a189"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -603,7 +604,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.get_lastupdated_string">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2024,</span> <span class="pre">10,</span> <span class="pre">11,</span> <span class="pre">14,</span> <span class="pre">4,</span> <span class="pre">35,</span> <span class="pre">301228)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2024,</span> <span class="pre">10,</span> <span class="pre">11,</span> <span class="pre">16,</span> <span class="pre">10,</span> <span class="pre">16,</span> <span class="pre">55357)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Link to this definition"></a></dt>
 <dd><p>Returns a string representation of a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2260,7 +2261,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dl class="py function" id="module-howdy.core.core_torrents">
 <dt class="sig sig-object py" id="howdy.core.core_torrents.deconfuse_magnet_link">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.core_torrents.</span></span><span class="sig-name descname"><span class="pre">deconfuse_magnet_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">magnet_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_tracker_stubs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['stealth.si']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.deconfuse_magnet_link" title="Link to this definition"></a></dt>
-<dd><p>First functional implementation that <em>returns</em> a <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet</a> string given a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">torrent tracker</a> stubs to ignore. <code class="docutils literal notranslate"><span class="pre">stealth.si</span></code> – I am looking at you!</p>
+<dd><p>First functional implementation that <em>returns</em> a <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet</a> string given a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">torrent tracker</a> stubs to ignore.</p>
 <p>If one has an <em>invalid</em> magnet_string, then return <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

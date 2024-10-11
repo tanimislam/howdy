@@ -6,15 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7.2. Howdy Music API &mdash; howdy! 1.55-41-g97424aa0 documentation</title>
+  <title>7.2. Howdy Music API &mdash; howdy! 1.55-43-g38568661 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7dc6ce7e" />
 
   
+    <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=dd34c8e1"></script>
+      <script src="../_static/documentation_options.js?v=dd22a189"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -81,7 +82,24 @@
 <li class="toctree-l4"><a class="reference internal" href="#howdy.music.music.youtube_search"><code class="docutils literal notranslate"><span class="pre">youtube_search()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#howdy-music-pygn-module">7.2.3. howdy.music.pygn module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-music-music-spotify-module">7.2.3. howdy.music.music_spotify module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.create_public_playlist"><code class="docutils literal notranslate"><span class="pre">create_public_playlist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.get_existing_track_ids_in_spotify_playlist"><code class="docutils literal notranslate"><span class="pre">get_existing_track_ids_in_spotify_playlist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.get_or_push_spotify_oauth2_token"><code class="docutils literal notranslate"><span class="pre">get_or_push_spotify_oauth2_token()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.get_public_playlists"><code class="docutils literal notranslate"><span class="pre">get_public_playlists()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.get_spotify_credentials"><code class="docutils literal notranslate"><span class="pre">get_spotify_credentials()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.get_spotify_session"><code class="docutils literal notranslate"><span class="pre">get_spotify_session()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.get_spotify_song_id"><code class="docutils literal notranslate"><span class="pre">get_spotify_song_id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.get_spotify_song_id_filename"><code class="docutils literal notranslate"><span class="pre">get_spotify_song_id_filename()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.modify_existing_playlist_with_new_tracks"><code class="docutils literal notranslate"><span class="pre">modify_existing_playlist_with_new_tracks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.process_dataframe_playlist_spotify"><code class="docutils literal notranslate"><span class="pre">process_dataframe_playlist_spotify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.process_dataframe_playlist_spotify_bads"><code class="docutils literal notranslate"><span class="pre">process_dataframe_playlist_spotify_bads()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.process_dataframe_playlist_spotify_multiproc"><code class="docutils literal notranslate"><span class="pre">process_dataframe_playlist_spotify_multiproc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.push_spotify_credentials"><code class="docutils literal notranslate"><span class="pre">push_spotify_credentials()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.music.music_spotify.push_spotify_song_id_to_file"><code class="docutils literal notranslate"><span class="pre">push_spotify_song_id_to_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-music-pygn-module">7.2.4. howdy.music.pygn module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.music.pygn.createRadio"><code class="docutils literal notranslate"><span class="pre">createRadio()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.music.pygn.fetch"><code class="docutils literal notranslate"><span class="pre">fetch()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.music.pygn.get_discography"><code class="docutils literal notranslate"><span class="pre">get_discography()</span></code></a></li>
@@ -681,7 +699,7 @@
 </dd>
 <dt class="field-even">Variables<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>artist</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – <p>the low level information on a specific artist, returned by <a class="reference external" href="https://python-musicbrainzngs.readthedocs.io/en/latest/api/#module-musicbrainzngs" title="(in musicbrainzngs v0.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">musicbrainzngs</span></code></a>. For example, for the artist _Air, this looks like,</p>
+<li><p><strong>artist</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – <p>the low level information on a specific artist, returned by <a class="reference external" href="https://python-musicbrainzngs.readthedocs.io/en/latest/api/#module-musicbrainzngs" title="(in musicbrainzngs v0.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">musicbrainzngs</span></code></a>. For example, for the artist <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a>, this looks like,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;cb67438a-7f50-4f2b-a6f1-2bb2729fd538&#39;</span><span class="p">,</span>
  <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Group&#39;</span><span class="p">,</span>
  <span class="s1">&#39;ext:score&#39;</span><span class="p">:</span> <span class="s1">&#39;100&#39;</span><span class="p">,</span>
@@ -1223,7 +1241,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.plexapi_music_playlist_info">
 <span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">plexapi_music_playlist_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plex_playlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_internal_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.plexapi_music_playlist_info" title="Link to this definition"></a></dt>
-<dd><p>This creates a <code class="xref py py-class docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">DataFrame</span></code> out of the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/playlist.html#plexapi.playlist.Playlist" title="(in Python PlexAPI v4.15.16)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexAPI</span> <span class="pre">Playlist</span></code></a>. This DataFrame has the following columns:</p>
+<dd><p>This creates a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">DataFrame</span></code></a> out of the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/playlist.html#plexapi.playlist.Playlist" title="(in Python PlexAPI v4.15.16)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexAPI</span> <span class="pre">Playlist</span></code></a>. This DataFrame has the following columns:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">order</span> <span class="pre">in</span> <span class="pre">playlist</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">filename</span></code></p></li>
@@ -1246,10 +1264,10 @@
 <dd class="field-even"><p><a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/playlist.html#plexapi.playlist.Playlist" title="(in Python PlexAPI v4.15.16)">plexapi.playlist.Playlist</a></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">DataFrame</span></code> of useful track information for the playlist.</p>
+<dd class="field-odd"><p>a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">DataFrame</span></code></a> of useful track information for the playlist.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">DataFrame</span></code></p>
+<dd class="field-even"><p><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">DataFrame</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1304,8 +1322,303 @@
 </dd></dl>
 
 </section>
+<section id="howdy-music-music-spotify-module">
+<h2><span class="section-number">7.2.3. </span>howdy.music.music_spotify module<a class="headerlink" href="#howdy-music-music-spotify-module" title="Link to this heading"></a></h2>
+<p>These module handles integration with the <a class="reference external" href="https://open.spotify.com">Spotify</a> RESTful API that does the following things:</p>
+<ul class="simple">
+<li><p>Methods to handle authentication to the <a class="reference external" href="https://open.spotify.com">Spotify</a> API. See <a class="reference external" href="https://tanimislam.gitlab.io/blog/spotify-web-api.html">this blog article on the Spotify Web API</a> on how to set up a <a class="reference external" href="https://open.spotify.com">Spotify</a> Web API client, and to acquire your client ID and client secret.</p></li>
+<li><p>Methods to copy the <a class="reference external" href="https://open.spotify.com">Spotify</a> song ID into an <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> song file’s metadata, and to get the <a class="reference external" href="https://open.spotify.com">Spotify</a> song ID of the song.</p></li>
+<li><p>Methods that returns the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID based on a song’s metadata.</p></li>
+<li><p>Methods that show, create, modify the current user’s <a class="reference external" href="https://open.spotify.com">Spotify</a> public playlists.</p></li>
+<li><p>Methods that convert a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> representing a <a class="reference external" href="https://plex.tv">Plex</a> music playlist <em>into</em> a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> representing a data structure that can be converted into a <a class="reference external" href="https://open.spotify.com">Spotify</a> public playlist.</p></li>
+</ul>
+<p>In this API I refer to the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID of a song, which has format <code class="docutils literal notranslate"><span class="pre">:spotify:track:&lt;STRING&gt;</span></code>. For example, the song <a class="reference external" href="https://en.wikipedia.org/wiki/All_I_Need_(Air_song)">All I Need</a> by <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(French_band)">Air the French band</a> has a <a class="reference external" href="https://open.spotify.com">Spotify</a> ID = <code class="docutils literal notranslate"><span class="pre">spotify:track:6T10XPeC9X5xEaD6tMcK6M</span></code>. It can be found at <a class="reference external" href="https://open.spotify.com/track/6T10XPeC9X5xEaD6tMcK6M">https://open.spotify.com/track/6T10XPeC9X5xEaD6tMcK6M</a>.</p>
+<dl class="py function" id="module-howdy.music.music_spotify">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.create_public_playlist">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">create_public_playlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oauth2_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_userid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.create_public_playlist" title="Link to this definition"></a></dt>
+<dd><p>Creates a <em>new</em> public <a class="reference external" href="https://open.spotify.com">Spotify</a> playlist for the current user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>oauth2_access_token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://open.spotify.com">Spotify</a> access token for the OAuth2-authenticated <a class="reference external" href="https://open.spotify.com">Spotify</a> API. One needs this token to access, add, delete, and modify <a class="reference external" href="https://open.spotify.com">Spotify</a> playlists.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – name of the new playlist.</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the new playlist’s description.</p></li>
+<li><p><strong>my_userid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Optional argument, which is the <a class="reference external" href="https://open.spotify.com">Spotify</a> current user ID. If not specified, then determines the current user ID using the OAuth2-authenticated <a class="reference external" href="https://open.spotify.com">Spotify</a> API.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>status on whether it can create the playlist. If a playlist, with the <em>same</em> name exists, does nothing and returns <code class="docutils literal notranslate"><span class="pre">False</span></code>. Otherwise, if no other public playlist (owned by the current user) exists, creates the playlist and returns <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.get_existing_track_ids_in_spotify_playlist">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">get_existing_track_ids_in_spotify_playlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spotify_playlist_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oauth2_access_token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.get_existing_track_ids_in_spotify_playlist" title="Link to this definition"></a></dt>
+<dd><p>Low-level method that returns the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs in a public <a class="reference external" href="https://open.spotify.com">Spotify</a> playlist. <a class="reference external" href="https://open.spotify.com">Spotify</a> API quirk: can only get the <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs in units of 100 at most per <a class="reference external" href="https://open.spotify.com">Spotify</a> API query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spotify_playlist_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://open.spotify.com">Spotify</a> public playlist ID.</p></li>
+<li><p><strong>oauth2_access_token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://open.spotify.com">Spotify</a> access token for the OAuth2-authenticated <a class="reference external" href="https://open.spotify.com">Spotify</a> API. One needs this token to access, add, delete, and modify <a class="reference external" href="https://open.spotify.com">Spotify</a> playlists.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs in a public <a class="reference external" href="https://open.spotify.com">Spotify</a> playlist. Each <a class="reference external" href="https://open.spotify.com">Spotify</a> ID is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.get_or_push_spotify_oauth2_token">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">get_or_push_spotify_oauth2_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.get_or_push_spotify_oauth2_token" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the <a class="reference external" href="https://open.spotify.com">Spotify</a> API OAuth2 token that allows you to access, add, delete, and modify <a class="reference external" href="https://open.spotify.com">Spotify</a> playlists.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.get_public_playlists">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">get_public_playlists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oauth2_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_userid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.get_public_playlists" title="Link to this definition"></a></dt>
+<dd><p>Returns all the <a class="reference external" href="https://open.spotify.com">Spotify</a> public playlists for the current user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>oauth2_access_token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://open.spotify.com">Spotify</a> access token for the OAuth2-authenticated <a class="reference external" href="https://open.spotify.com">Spotify</a> API. One needs this token to access, add, delete, and modify <a class="reference external" href="https://open.spotify.com">Spotify</a> playlists.</p></li>
+<li><p><strong>my_userid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Optional argument, which is the <a class="reference external" href="https://open.spotify.com">Spotify</a> current user ID. If not specified, then determines the current user ID using the OAuth2-authenticated <a class="reference external" href="https://open.spotify.com">Spotify</a> API.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of summary information on the current user’s public <a class="reference external" href="https://open.spotify.com">Spotify</a> playlists. Each entry is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> with the following attributes: its name, description, the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID of the playlist, the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID of the user who owns the playlist, and the number of songs in the playlist.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.get_spotify_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">get_spotify_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.get_spotify_credentials" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> whose two keys and values are the <code class="docutils literal notranslate"><span class="pre">client_id</span></code> and the <code class="docutils literal notranslate"><span class="pre">client_secret</span></code> for the <a class="reference external" href="https://open.spotify.com">Spotify</a> web API client in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.get_spotify_session">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">get_spotify_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.get_spotify_session" title="Link to this definition"></a></dt>
+<dd><p>Returns the session token from a valid <a class="reference external" href="https://open.spotify.com">Spotify</a> API account.
+:rtype: str</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.get_spotify_song_id">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">get_spotify_song_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spotify_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_metadata_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">market</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'us'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_response</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'foo.json'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.get_spotify_song_id" title="Link to this definition"></a></dt>
+<dd><p>Heavily-instrumented lower-level method that attempts to find the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID of a song given its metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spotify_access_token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the session’s current <a class="reference external" href="https://open.spotify.com">Spotify</a> access token for the non-authenticated <a class="reference external" href="https://open.spotify.com">Spotify</a> API.</p></li>
+<li><p><strong>song_metadata_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – the dictionary of a song’s metadata, which has <em>at least</em> the following fields:</p></li>
+</ul>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">song</span></code> is the song title.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">artist</span></code> is the song’s artist.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date</span></code> is the album’s release date, of type <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">album</span></code> is the song’s album.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dump_response</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – by default it is <code class="docutils literal notranslate"><span class="pre">False</span></code>. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then dump interesting information into a <a class="reference external" href="https://en.wikipedia.org/wiki/JSON">JSON</a> file.</p></li>
+<li><p><strong>response_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – by default it is <code class="docutils literal notranslate"><span class="pre">foo.json</span></code>. This is the name of the <a class="reference external" href="https://en.wikipedia.org/wiki/JSON">JSON</a> file to dump interesting debugging information on this method call used to find a song’s <a class="reference external" href="https://open.spotify.com">Spotify</a> ID.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of various types.</p>
+</dd>
+</dl>
+<ul>
+<li><p>If the underlying <a class="reference external" href="https://open.spotify.com">Spotify</a> API call fails, then returns the <a class="reference external" href="https://open.spotify.com">Spotify</a> API error message.</p></li>
+<li><p>If the <a class="reference external" href="https://open.spotify.com">Spotify</a> API call is successful, but for some reason cannot find the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID, returns a message that states.</p>
+<blockquote>
+<div><p>CANNOT FIND SPOTIFY TRACK ID FOR &lt;SPOTIFY_QUERY&gt;</p>
+</div></blockquote>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;SPOTIFY_QUERY&gt;</span></code> is the low-level <a class="reference external" href="https://open.spotify.com">Spotify</a> API query used to search for that song’s <a class="reference external" href="https://open.spotify.com">Spotify</a> ID.</p>
+</li>
+<li><p>In the best, nominal operation case, returns the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.get_spotify_song_id_filename">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">get_spotify_song_id_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.get_spotify_song_id_filename" title="Link to this definition"></a></dt>
+<dd><p>Returns the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID found in the <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> song file name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID of the song if it could be found. Otherwise returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.modify_existing_playlist_with_new_tracks">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">modify_existing_playlist_with_new_tracks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spotify_playlist_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oauth2_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spotify_ids_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spotify_ids_in_playlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.modify_existing_playlist_with_new_tracks" title="Link to this definition"></a></dt>
+<dd><p>Lower-level method that <em>replaces</em> the collection of songs in <a class="reference external" href="https://open.spotify.com">Spotify</a> playlist, identified by <code class="docutils literal notranslate"><span class="pre">spotify_playlist_id</span></code>, with a new collection of <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs in <code class="docutils literal notranslate"><span class="pre">spotify_ids_list</span></code>. Interesting <a class="reference external" href="https://open.spotify.com">Spotify</a> API wrinkle: one can use the <a class="reference external" href="https://open.spotify.com">Spotify</a> API to <em>remove</em> as many songs from a playlist as possible; one can use the <a class="reference external" href="https://open.spotify.com">Spotify</a> API to <em>add</em> songs to a playlist in chunks of <em>at most</em> 100 songs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spotify_playlist_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://open.spotify.com">Spotify</a> public playlist ID.</p></li>
+<li><p><strong>oauth2_access_token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://open.spotify.com">Spotify</a> access token for the OAuth2-authenticated <a class="reference external" href="https://open.spotify.com">Spotify</a> API. One needs this token to access, add, delete, and modify <a class="reference external" href="https://open.spotify.com">Spotify</a> playlists.</p></li>
+<li><p><strong>spotify_ids_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – the new <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs corresponding to an <em>updated</em> <a class="reference external" href="https://open.spotify.com">Spotify</a> playlist.</p></li>
+<li><p><strong>spotify_ids_in_playlist</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – optional argument. If not specified, then uses <a class="reference internal" href="#howdy.music.music_spotify.get_existing_track_ids_in_spotify_playlist" title="howdy.music.music_spotify.get_existing_track_ids_in_spotify_playlist"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_existing_track_ids_in_spotify_playlist</span></code></a> to get the list of <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs for the playlist specified by <code class="docutils literal notranslate"><span class="pre">spotify_playlist_id</span></code>. If this is specified, then method <em>assumes</em> that this is the list of <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs for this playlist.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.process_dataframe_playlist_spotify">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">process_dataframe_playlist_spotify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_playlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spotify_access_token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.process_dataframe_playlist_spotify" title="Link to this definition"></a></dt>
+<dd><p>Low-level method that takes a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> representing a <a class="reference external" href="https://plex.tv">Plex</a> playlist (its schema is described in <a class="reference internal" href="#howdy.music.music.plexapi_music_playlist_info" title="howdy.music.music.plexapi_music_playlist_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plexapi_music_playlist_info</span></code></a>) and converts it into a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>. This returned <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> has a column representing <a class="reference external" href="https://open.spotify.com">Spotify</a> ID.</p>
+<p>For each song it finds in the input playlist, <code class="docutils literal notranslate"><span class="pre">df_playlist</span></code>, it tries to find the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID.</p>
+<ol class="arabic simple">
+<li><p>If it finds the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID in the <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> file’s metadata, returns that.</p></li>
+<li><p>If not, it queries the song’s title, artist, album, and year. If it finds the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID then it returns it.</p></li>
+<li><p>If not, it queries on a modified song title – replacing mentions of “feat” or “Feat” or variations of “featuring”, title, album, and year. If it finds the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID then it returns it.</p></li>
+<li><p>If not, it queries on the modified song title, artist, and album. If it find the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID then it returns it.</p></li>
+<li><p>If not, it queries on the modified song title and artist. If it finds the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID then it returns it.</p></li>
+<li><p>Finally, if not, returns the error message associated with the <em>above query</em> or other <a class="reference external" href="https://open.spotify.com">Spotify</a> API error message.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_playlist</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – the input <a class="reference external" href="https://plex.tv">Plex</a> playlist whose DataFrame schema is described in <a class="reference internal" href="#howdy.music.music.plexapi_music_playlist_info" title="howdy.music.music.plexapi_music_playlist_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plexapi_music_playlist_info</span></code></a>.</p></li>
+<li><p><strong>spotify_access_token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the session’s current <a class="reference external" href="https://open.spotify.com">Spotify</a> access token for the non-authenticated <a class="reference external" href="https://open.spotify.com">Spotify</a> API.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the DataFrame with an extra <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> column, named <code class="docutils literal notranslate"><span class="pre">SPOTIFY</span> <span class="pre">ID</span></code>. Its value is either a valid <a class="reference external" href="https://open.spotify.com">Spotify</a> ID or other error message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#howdy.music.music_spotify.get_spotify_song_id_filename" title="howdy.music.music_spotify.get_spotify_song_id_filename"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_spotify_song_id_filename</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="#howdy.music.music_spotify.get_spotify_song_id" title="howdy.music.music_spotify.get_spotify_song_id"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_spotify_song_id</span></code></a>.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.process_dataframe_playlist_spotify_bads">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">process_dataframe_playlist_spotify_bads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_playlist_spotify</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spotify_access_token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.process_dataframe_playlist_spotify_bads" title="Link to this definition"></a></dt>
+<dd><p>Necessary method to <em>purify</em> the collection of songs for which we do not have <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs. For those songs that do <em>not</em> have valid <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs, it uses the <a class="reference external" href="https://open.spotify.com">Spotify</a> API to <em>try</em> to find valid <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs. For each song it tries, if it <em>does</em> find a valid ID, it pushes that ID into the song file (using <a class="reference internal" href="#howdy.music.music_spotify.push_spotify_song_id_to_file" title="howdy.music.music_spotify.push_spotify_song_id_to_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push_spotify_song_id_to_file</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_playlist_spotify</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – the <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> of songs. This consists of songs that have <em>valid</em> <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs and those that do <em>not</em> have valid <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs.</p></li>
+<li><p><strong>spotify_access_token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the session’s current <a class="reference external" href="https://open.spotify.com">Spotify</a> access token for the non-authenticated <a class="reference external" href="https://open.spotify.com">Spotify</a> API.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a 2-element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>: the first element is the number of songs for which it found a <a class="reference external" href="https://open.spotify.com">Spotify</a> ID; the second element is the number of <em>bad</em> (initially did not have <a class="reference external" href="https://open.spotify.com">Spotify</a> ID) songs it processed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.process_dataframe_playlist_spotify_multiproc">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">process_dataframe_playlist_spotify_multiproc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_playlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spotify_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numprocs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.process_dataframe_playlist_spotify_multiproc" title="Link to this definition"></a></dt>
+<dd><p>Method that chunks out the identification of <a class="reference external" href="https://open.spotify.com">Spotify</a> IDs from a <a class="reference external" href="https://plex.tv">Plex</a> playlist among multiple processors. It uses <a class="reference internal" href="#howdy.music.music_spotify.process_dataframe_playlist_spotify" title="howdy.music.music_spotify.process_dataframe_playlist_spotify"><code class="xref py py-meth docutils literal notranslate"><span class="pre">process_dataframe_playlist_spotify</span></code></a> on each processor chunk of the input <a class="reference external" href="https://plex.tv">Plex</a> music playlist <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_playlist</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – the input <a class="reference external" href="https://plex.tv">Plex</a> playlist whose DataFrame schema is described in <a class="reference internal" href="#howdy.music.music.plexapi_music_playlist_info" title="howdy.music.music.plexapi_music_playlist_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plexapi_music_playlist_info</span></code></a>.</p></li>
+<li><p><strong>spotify_access_token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the session’s current <a class="reference external" href="https://open.spotify.com">Spotify</a> access token for the non-authenticated <a class="reference external" href="https://open.spotify.com">Spotify</a> API.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the DataFrame with an extra <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a> column, named <code class="docutils literal notranslate"><span class="pre">SPOTIFY</span> <span class="pre">ID</span></code>. Its value is either a valid <a class="reference external" href="https://open.spotify.com">Spotify</a> ID or other error message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#howdy.music.music_spotify.process_dataframe_playlist_spotify" title="howdy.music.music_spotify.process_dataframe_playlist_spotify"><code class="xref py py-meth docutils literal notranslate"><span class="pre">process_dataframe_playlist_spotify</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.push_spotify_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">push_spotify_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.push_spotify_credentials" title="Link to this definition"></a></dt>
+<dd><p>Pushes the <a class="reference external" href="https://open.spotify.com">Spotify</a> API configuration into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database. Take a look at <a class="reference external" href="https://tanimislam.gitlab.io/blog/spotify-web-api.html">this blog article on the Spotify API</a> for some more information on setting up your <a class="reference external" href="https://open.spotify.com">Spotify</a> web API client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://open.spotify.com">Spotify</a> client ID.</p></li>
+<li><p><strong>client_secret</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://open.spotify.com">Spotify</a> client secret.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, then use HTTPS authentication. Otherwise do not. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.music.music_spotify.push_spotify_song_id_to_file">
+<span class="sig-prename descclassname"><span class="pre">howdy.music.music_spotify.</span></span><span class="sig-name descname"><span class="pre">push_spotify_song_id_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spotify_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music_spotify.push_spotify_song_id_to_file" title="Link to this definition"></a></dt>
+<dd><p>This <em>copies</em> the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID of a song to a given <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> file. This puts the <a class="reference external" href="https://open.spotify.com">Spotify</a> ID into the comments tags in the <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spotify_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The <a class="reference external" href="https://open.spotify.com">Spotify</a> ID of a song.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> song file name.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="howdy-music-pygn-module">
-<h2><span class="section-number">7.2.3. </span>howdy.music.pygn module<a class="headerlink" href="#howdy-music-pygn-module" title="Link to this heading"></a></h2>
+<h2><span class="section-number">7.2.4. </span>howdy.music.pygn module<a class="headerlink" href="#howdy-music-pygn-module" title="Link to this heading"></a></h2>
 <p>This contains functionality used by the <a class="reference internal" href="#howdy.music.music.HowdyMusic" title="howdy.music.music.HowdyMusic"><code class="xref py py-class docutils literal notranslate"><span class="pre">HowdyMusic</span></code></a> higher level object interface to the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> API.</p>
 <p id="module-howdy.music.pygn">pygn (pronounced “pigeon”) is a simple Python client for the <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> Music Web API, which can retrieve Artist, Album and Track metadata with the most common options.</p>
 <p>You will need a <a class="reference external" href="https://developer.gracenote.com/web-api">Gracenote</a> Client ID to use this module. Please contact <a class="reference external" href="mailto:developers&#37;&#52;&#48;gracenote&#46;com">developers<span>&#64;</span>gracenote<span>&#46;</span>com</a> to get one.</p>

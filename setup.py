@@ -93,6 +93,7 @@ setup(
             'howdy_music_metafill = howdy.music.cli.howdy_music_metafill:main',
             'howdy_music_songs = howdy.music.cli.howdy_music_songs:main',
             'howdy_music_process_playlists = howdy.music.cli.howdy_music_process_playlists:main_actual',
+            'howdy_music_spotify_push_from_plex = howdy.music.cli.howdy_music_spotify_push_from_plex:main',
             'upload_to_gmusic = howdy.music.cli.upload_to_gmusic:main',
             # tv stuff
             ## cli

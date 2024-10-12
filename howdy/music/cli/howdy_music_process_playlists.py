@@ -198,27 +198,19 @@ def main_actual( ):
     parser = ArgumentParser( )
     parser.add_argument( '-d', '--debug', dest='do_debug', action='store_true', default = False,
                         help = 'If chosen, then print out debug info.' )
-    parser.add_argument( '-P', '--playlists', dest='do_playlists', action='store_true', default = False,
-                        help = 'If chosen, then print out summary of all the playlists.' )
-    parser.add_argument( '-D', '--dryrun', dest='do_dryrun', action='store_true', default = False,
-                        help = 'If chosen, then just do dry run and no heavy processing.' )
     subparsers = parser.add_subparsers(
         help = ' '.join([
             'Optionally do (pandas) to dump chosen playlist into an HDF5 Pandas DataFrame' ]), dest = 'choose_option' )
     #
+    ## just list all the Plex playlists
+    parser_playlists = subparsers.add_parser( 'playlists', help = 'If chosen, then print out summary of all the Plex playlists.' )
+    #
     ## dump out as HDF5 PANDAS DATAFRAME a chosen playlist
-    parser_pandas = subparsers.add_parser( 'pandas', help = 'If chosen, dumps out info for the chosen AUDIO playlist into a HDF5 PANDAS DATAFRAME. MAY TAKE A LONG TIME!' )
+    parser_pandas = subparsers.add_parser( 'pandas', help = 'If chosen, dumps out info for the chosen AUDIO playlist into a HDF5 PANDAS DATAFRAME.' )
     parser_pandas.add_argument( '-p', '--playlist', dest='playlist', action='store', type=str, required = True,
                         help = 'Name of the playlist. Must be of type AUDIO.' )
     parser_pandas.add_argument( '-f', '--filename', dest='filename', action='store', type=str, required = True,
                         help = 'File name. Suffix must end in h5.' )
-    #
-    ## normalizes files in the JSON playlist
-    #parser_norm = subparsers.add_parser( 'norm', help = 'If chosen, normalizes the audio in the chosen AUDIO playlist JSON file whose peak loudness is below some threshold. MAY TAKE A LONG TIME!' )
-    #parser_norm.add_argument('-j', '--json', dest='norm_jsonfile', action='store', metavar = 'jsonfile', type=str, required = True,
-    #                         help = 'Name of the input JSON file that contains the song filenames, and the input peak loudness (in dB).' )
-    #parser_norm.add_argument('-p', '--peak', dest='norm_peakloud', action='store', metavar = 'peak', type=float, default = -1,
-    #                         help = 'Peak loudness value of song for processing. If peak loudness is less than this value, perform normalization.' )
     #
     ##
     args = parser.parse_args( )
@@ -227,12 +219,11 @@ def main_actual( ):
     if args.do_debug: logger.setLevel( logging.WARNING )
     #
     ## if just get the playlists
-    if args.do_playlists:
+    if args.choose_option.lower( ) == 'playlists':
         _print_playlists( _get_playlists( ) )
         return
     #
     ## choose_option must be one of "pandas" or "norm", and playlist must NOT be none
-    assert( args.choose_option.lower( ) in ( 'pandas', ) )
     if args.choose_option.lower( ) == 'pandas':
         filename = os.path.realpath( os.path.expanduser( args.filename ) )
         if not os.path.basename( filename ).endswith( '.h5' ):

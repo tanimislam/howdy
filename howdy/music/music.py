@@ -961,7 +961,7 @@ def youtube_search(youtube, query, max_results = 10):
 
 def plexapi_music_playlist_info( plex_playlist, use_internal_metadata = False ):
     """
-    This creates a :py:class:`Pandas DataFrame <pandas.DataFrame>` out of the :py:class:`PlexAPI Playlist <plexapi.playlist.Playlist>`. This DataFrame has the following columns:
+    This creates a :py:class:`DataFrame <pandas.DataFrame>` out of the :py:class:`PlexAPI Playlist <plexapi.playlist.Playlist>`. This DataFrame has the following columns:
 
     * ``order in playlist``
     * ``filename``
@@ -973,11 +973,11 @@ def plexapi_music_playlist_info( plex_playlist, use_internal_metadata = False ):
     * ``album number of tracks``
     * ``album year``
 
-    :param plex_playist: the :py:class:`PlexAPI Playlist <plexapi.playlist.Playlist>`, which must be an audio playlist.
-    :type: plexapi.playlist.Playlist
+    :param plex_playlist: the :py:class:`PlexAPI Playlist <plexapi.playlist.Playlist>`, which must be an audio playlist.
+    :type plex_playlist: :py:class:`PlexAPI PlayList <plexapi.playlist.Playlist>`
     :param bool use_internal_metadata: if ``True``, then fill out columns using the M4A_ metadata from the file, otherwise fill out the columns using information in ``plex_playlist``. Default is ``False``.
-    :returns: a :py:class:`Pandas DataFrame <pandas.DataFrame>` of useful track information for the playlist.
-    :rtype: :py:class:`Pandas DataFrame <pandas.DataFrame>`
+    :returns: a DataFrame of useful track information for the playlist.
+    :rtype: :py:class:`DataFrame <pandas.DataFrame>`
     """
     assert( plex_playlist.playlistType == 'audio' )
     time0 = time.perf_counter( )

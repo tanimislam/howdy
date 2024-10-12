@@ -9,6 +9,8 @@ This section describes the four Howdy music command line utilities.
 
 * :ref:`howdy_music_songs` is a work-horse CLI that can do three things (:ref:`download songs with artist and song list <download_by_artist_songs>`, :ref:`download songs with artist and album <download_by_artist_album>`, or :ref:`download a list of songs with a list of corresponding artists <download_by_artists_songs_list>`) using the three music metadata services: Gracenote_ (|gracenote_image|), LastFM_ (|lastfm_image|), or MusicBrainz_ (|musicbrainz_image|).
 
+* :ref:`howdy_music_process_playlists` can do various operations on Plex_ playlists associated with your user account; it can list the Plex_ playlists that exist for your account, *and* it can dump a *specific* Plex_ audio playlist you specify into an HDF5_ :py:class:`Pandas DataFrame <pandas.DataFrame>` file.
+  
 * :ref:`upload_to_gmusic` uploads MP3_ or M4A_ music files to one's `Google Play Music`_ account, or pushes the appropriate :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` credentials into the SQLite3_ configuration database.
 
 .. _howdy_music_album_label:
@@ -464,6 +466,109 @@ whose video is shown below,
 .. youtube:: 11rOnEDfMos
    :width: 100%
 
+
+.. _howdy_music_process_playlists_label:
+	   
+howdy_music_process_playlists
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The help output, when running ``howdy_music_process_playlists -h``, mainly illuminates its two functionalities.
+
+.. code-block:: bash
+
+   usage: howdy_music_process_playlists [-h] [-d] {playlists,pandas} ...
+
+   positional arguments:
+     {playlists,pandas}  Optionally do (pandas) to dump chosen playlist into an HDF5 Pandas DataFrame
+       playlists         If chosen, then print out summary of all the Plex playlists.
+       pandas            If chosen, dumps out info for the chosen AUDIO playlist into a HDF5 PANDAS DATAFRAME.
+
+   options:
+     -h, --help          show this help message and exit
+     -d, --debug         If chosen, then print out debug info.
+
+There is one common operational flag,
+
+* ``--debug`` prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
+
+.. _playlists_mode_label:
+  
+playlists mode
+------------------
+Running ``howdy_music_process_playlists playlists`` prints out summary information for *all* the Plex_ playlists associated with your account. For example,
+
+.. code-block:: bash
+
+   $ howdy_music_process_playlists playlists
+
+   summary info for 15 playlists.
+
+   name                             type      number of items  created           updated
+   -------------------------------  ------  -----------------  ----------------  -----------------
+   All Music                        audio               32831  03 January 2021   28 September 2024
+   ❤️  Tracks                       audio                2921  03 January 2021   28 September 2024
+   Fresh ❤️                         audio                2859  03 January 2021   28 September 2024
+   Stereolabish                     audio                1629  22 June 2019      11 October 2024
+   All Music                        audio                 843  17 December 2023  28 September 2024
+   Recently Added                   audio                 608  13 March 2021     28 September 2024
+   Old School Hip-Hop               audio                 293  29 April 2020     23 August 2024
+   ❤️  Tracks                       audio                  70  17 December 2023  28 September 2024
+   Recently Played                  audio                  70  03 January 2021   28 September 2024
+   Fresh ❤️                         audio                  54  17 December 2023  28 September 2024
+   Recently Played                  audio                  42  17 December 2023  28 September 2024
+   Simpsons Halloween Episodes      video                  31  20 January 2021   13 December 2023
+   Simpsons Christmas Episodes      video                  17  16 December 2019  14 December 2023
+   Liz Phair Before She Was Famous  audio                   9  11 October 2024   11 October 2024
+   Recently Added                   audio                   0  17 December 2023  28 September 2024
+
+For each playlist, it shows the name, the type, number of entries, when it was created, and when it was last modified.
+
+pandas mode
+---------------
+Running ``howdy_music_process_playlists pandas`` dumps the summary information for an *audio only* Plex_ playlist into an HDF5_ :py:class:`Pandas DataFrame` file. If the playlist is not *audio only* (look at the ``type`` in the table shown in :numref:`playlists mode`), or does not exist, this will error out.
+
+The help output ``howdy_music_process_playlists pandas -h``, produces the following,
+
+.. code-block:: bash
+
+   usage: howdy_music_process_playlists pandas [-h] -p PLAYLIST -f FILENAME
+
+   options:
+     -h, --help            show this help message and exit
+     -p PLAYLIST, --playlist PLAYLIST
+			   Name of the playlist. Must be of type AUDIO.
+     -f FILENAME, --filename FILENAME
+			   File name. Suffix must end in h5.
+
+Here are the arguments,
+
+* ``-p`` or ``--playlist`` is the name of the Plex_ *audio only* playlist.
+
+* ``-f`` or ``--filename`` is the name of the HDF5_ :py:class:`Pandas DataFrame` file. It *must* end in ``.h5``.
+
+Here is its example operation, here ``howdy_music_process_playlists -d pandas -p Stereolabish -f stereolabish_playlist_20241011.h5`` generates the serialized :py:class:`Pandas DataFrame` file which we have included here, :download:`stereolabish_playlist_20241011.h5 </_static/stereolabish_playlist_20241011.h5>`. Here's what it looks like,
+
+.. code-block:: python
+
+   import pandas
+
+   df = pandas.read_hdf( 'stereolabish_playlist_20241011.h5' )
+   df.head( 10 )
+
+      order in playlist                                           filename          added date              song name                      artist  track number                 album  album number of tracks  album year
+   0                  1  /mnt/media/aacmusic/Aloe Blacc/Good Things (20... 2018-07-09 20:53:10        I Need a Dollar                  Aloe Blacc             1           Good Things                      13        2010
+   1                  2  /mnt/media/aacmusic/Stereolab/Chemical Chords ... 2017-11-18 08:47:48            Three Women                   Stereolab             2       Chemical Chords                      17        2008
+   2                  3  /mnt/media/aacmusic/Erlend Øye/Unrest (2003)/E... 2019-07-30 07:11:05         Sheltered Life     Erlend Øye feat. Soviet             2                Unrest                      10        2003
+   3                  4  /mnt/media/aacmusic/Morcheeba/Head Up High (20... 2015-02-12 11:37:00             Hypnotized  Morcheeba feat. Ana Tijoux             9          Head Up High                      12        2013
+   4                  5  /mnt/media/aacmusic/Stereolab/Fab Four Suture ... 2014-03-17 10:15:18              Interlock                   Stereolab             2       Fab Four Suture                      12        2006
+   5                  6  /mnt/media/aacmusic/Morcheeba/The Antidote (20... 2016-02-27 10:40:04  God Bless and Goodbye                   Morcheeba            10          The Antidote                      10        2005
+   6                  7  /mnt/media/aacmusic/The Cardigans/Super Extra ... 2018-02-05 23:23:33           In the Round               The Cardigans             8   Super Extra Gravity                      14        2005
+   7                  8  /mnt/media/aacmusic/Bitter:Sweet/Drama (2008)/... 2020-03-09 23:33:56                Trouble                Bitter:Sweet             9                 Drama                      13        2008
+   8                  9  /mnt/media/aacmusic/Cake/Prolonging the Magic ... 2020-03-20 19:45:40            Never There                        CAKE             3  Prolonging the Magic                      13        1998
+   9                 10  /mnt/media/aacmusic/Morcheeba/The Antidote (20... 2020-03-10 14:48:29               Antidote                   Morcheeba             9          The Antidote                      10        2005
+
+This contains the following columns, as described in :py:meth:`plexapi_music_playlist_info <howdy.music.music.plexapi_music_playlist_info>`: order in playlist, filename, added date, song name, artist, track number in the album, alnum name, number of tracks in the album, and album year.
+   
+			   
 .. _upload_to_gmusic_label:
 
 upload_to_gmusic
@@ -568,3 +673,4 @@ Third, paste the code similar to as described in :ref:`Step #7 <google_step07_oa
 .. _Remember: https://youtu.be/D7umgkNX8NM
 .. _`Don't be Light`: https://youtu.be/ysk_dQ39ctE
 .. _`Mer du Japon`: https://youtu.be/Sjq4_sHy06U
+.. _HDF5: https://en.wikipedia.org/wiki/Hierarchical_Data_Format

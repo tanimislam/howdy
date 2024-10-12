@@ -1,4 +1,8 @@
-import os, sys, numpy, glob, pandas, time, datetime, logging, tabulate
+import sys, signal
+from howdy import signal_handler
+signal.signal( signal.SIGINT, signal_handler )
+#
+import os, numpy, glob, pandas, time, datetime, logging, tabulate
 from pathos.multiprocessing import Pool, cpu_count
 from plexapi.server import PlexServer
 #

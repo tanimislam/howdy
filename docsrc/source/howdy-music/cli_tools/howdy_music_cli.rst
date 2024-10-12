@@ -10,6 +10,16 @@ This section describes the four Howdy music command line utilities.
 * :ref:`howdy_music_songs` is a work-horse CLI that can do three things (:ref:`download songs with artist and song list <download_by_artist_songs>`, :ref:`download songs with artist and album <download_by_artist_album>`, or :ref:`download a list of songs with a list of corresponding artists <download_by_artists_songs_list>`) using the three music metadata services: Gracenote_ (|gracenote_image|), LastFM_ (|lastfm_image|), or MusicBrainz_ (|musicbrainz_image|).
 
 * :ref:`howdy_music_process_playlists` can do various operations on Plex_ playlists associated with your user account; it can list the Plex_ playlists that exist for your account, *and* it can dump a *specific* Plex_ audio playlist you specify into an HDF5_ :py:class:`Pandas DataFrame <pandas.DataFrame>` file.
+
+* :ref:`howdy_music_spotify_push_from_plex` can do these four things:
+
+  #. Summarize the audio-only Plex_ playlists on your account.
+
+  #. Summarize the public Spotify_ playlists on your Spotify_ account.
+     
+  #. Create a public Spotify_ playlist on your Spotify_ account.
+
+  #. Push an audio-ony Plex_ playlist into one of your public Spotify_ playlists.
   
 * :ref:`upload_to_gmusic` uploads MP3_ or M4A_ music files to one's `Google Play Music`_ account, or pushes the appropriate :py:mod:`gmusicapi` :py:class:`Mobileclient <gmusicapi.Mobileclient>` credentials into the SQLite3_ configuration database.
 
@@ -488,7 +498,7 @@ The help output, when running ``howdy_music_process_playlists -h``, mainly illum
 
 There is one common operational flag,
 
-* ``--debug`` prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
+* ``-d`` or ``--debug`` prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
 
 .. _playlists_mode_label:
   
@@ -521,6 +531,8 @@ Running ``howdy_music_process_playlists playlists`` prints out summary informati
    Recently Added                   audio                   0  17 December 2023  28 September 2024
 
 For each playlist, it shows the name, the type, number of entries, when it was created, and when it was last modified.
+
+.. _pandas_mode_label:
 
 pandas mode
 ---------------
@@ -568,7 +580,191 @@ Here is its example operation, here ``howdy_music_process_playlists -d pandas -p
 
 This contains the following columns, as described in :py:meth:`plexapi_music_playlist_info <howdy.music.music.plexapi_music_playlist_info>`: order in playlist, filename, added date, song name, artist, track number in the album, alnum name, number of tracks in the album, and album year.
    
-			   
+.. _howdy_music_spotify_push_from_plex_label:
+
+howdy_music_spotify_push_from_plex
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The help output, when running ``howdy_music_spotify_push_from_plex -h``, mainly illuminates its *four* functionalities.
+
+.. code-block:: bash
+
+   usage: howdy_music_spotify_push_from_plex [-h] [-I] {plex,spotify_list,spotify_create,push} ...
+
+   positional arguments:
+     {plex,spotify_list,spotify_create,push}
+       plex                list all the PLEX audio playlists on the local Plex server.
+       spotify_list        List the public SPOTIFY playlists on your SPOTIFY account.
+       spotify_create      Create a public SPOTIFY playlist on your SPOTIFY account.
+       push                make the collection of songs on a specific SPOTIFY playlist match the SPOTIFY-identified songs on the specific PLEX AUDIO playlist.
+
+   options:
+     -h, --help            show this help message and exit
+     -I, --info            If chosen, then print out INFO level logging statements.
+
+There is one common operational flag,
+
+* ``-I`` or ``--info`` prints out :py:const:`INFO <logging.INFO>` level :py:mod:`logging` output.
+
+.. _plex_mode_label:
+
+plex mode
+----------
+Running ``howdy_music_spotify_push_from_plex plex`` prints out summary information for *all* the *audio only* Plex_ playlists associated with your account. For example,
+
+.. code-block:: bash
+
+   $ howdy_music_spotify_push_from_plex plex
+
+   summary info for 13 plex audio playlists.
+
+   name                               number of items  created           updated
+   -------------------------------  -----------------  ----------------  -----------------
+   All Music                                    32831  03 January 2021   28 September 2024
+   ❤️  Tracks                                      2922  03 January 2021   28 September 2024
+   Fresh ❤️                                        2859  03 January 2021   28 September 2024
+   Stereolabish                                  1630  22 June 2019      11 October 2024
+   All Music                                      843  17 December 2023  28 September 2024
+   Recently Added                                 608  13 March 2021     28 September 2024
+   Old School Hip-Hop                             293  29 April 2020     23 August 2024
+   Recently Played                                 76  03 January 2021   28 September 2024
+   ❤️  Tracks                                        70  17 December 2023  28 September 2024
+   Fresh ❤️                                          54  17 December 2023  28 September 2024
+   Recently Played                                 42  17 December 2023  28 September 2024
+   Liz Phair Before She Was Famous                  9  11 October 2024   11 October 2024
+   Recently Added                                   0  17 December 2023  28 September 2024
+
+For each playlist, it shows the name, the number of entries, when it was created, and when it was last modified. It is similar to :ref:`playlists mode in howdy_music_process_playlists <playlists mode>`, but it only shows the *audio only* Plex_ playlists.
+
+.. _spotify_list_label:
+
+spotify_list mode
+-------------------
+This lists summary information on the *public* Spotify_ playlists associated with your account. For example,
+
+.. code-block:: bash
+
+   $ public Spotify audio playlists
+
+   summary info for 8 public Spotify audio playlists.
+
+   name                                      number of items  description
+   --------------------------------------  -----------------  -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   STEREOLABISH                                         1550  MY EVERYTHING POP PLAYLIST
+   Svenska låtar & klassiker alla kan! 🇸🇪                426  Sveriges största och bästa svenska klassiker, sånger och hits genom tiderna. Sommarhits och klassiska favoriter – svensk musik sommaren 2023.
+   OLD SCHOOL HIP-HOP                                    272  MY EVERYTHING OLD-SCHOOL HIP-HOP PLAYLIST
+   Rock Hits ⚡️                                          233  Världens bästa och mest tidlösa rockmusik i en mix av klassiska &amp; nya rockhits från Judas Priest, Ozzy Osbourne, AC/DC, Scorpions, Bruce Springsteen med flera.
+   Beach Vibes 🌴 Summertime Hits 2024                   198  Summer chill beach vibes playlist all genres 2000s - 2023 - 2024.
+   Bollywood Desi Party                                   46
+   Frank Ocean – channel ORANGE                           17
+   Bon Iver - Bon Iver                                    10
+
+   took 5.551 seconds to process.
+
+For each playlist, it shows the name, the number of items, and description (if any).
+
+.. _spotify_create_label:
+
+spotify_create mode
+---------------------
+Running ``howdy_music_spotify_push_from_plex spotify_create`` creates a public Spotify_ playlist with your account.
+
+The help output ``howdy_music_spotify_push_from_plex spotify_create -h``, produces the following,
+
+.. code-block:: bash
+
+   usage: howdy_music_spotify_push_from_plex spotify_create [-h] [-n NAME] [-d DESCRIPTION]
+
+   options:
+     -h, --help            show this help message and exit
+     -n NAME, --name NAME  Name of the public SPOTIFY playlist.
+     -d DESCRIPTION, --description DESCRIPTION
+			   Description of the public SPOTIFY playlist.
+
+Here are the arguments,
+
+* ``-n`` or ``--name`` is the name of the public Spotify_ playlist.
+
+* ``-d`` or ``--description`` is the description of the Spotify_ playlist.
+
+Here is its example operation,
+
+.. code-block:: bash
+
+   $ howdy_music_spotify_push_from_plex spotify_create -n EXAMPLE_20241011 -d "example description 20241011"
+
+   SUCCESSFULLY CREATED SPOTIFY PUBLIC PLAYLIST WITH NAME = EXAMPLE_20241011.
+   took 4.775 seconds to process.
+
+You'll have to take my word for it, but when I go to my Spotify_ account through my browser, I can see that I have created an *empty* public Spotify_ playlist with the name and description I have described.
+
+.. _howdy_music_spotify_push_from_plex_spotify_create_20241011_ANNOTATED:
+
+.. figure:: howdy-music-cli-figures/howdy_music_spotify_push_from_plex_spotify_create_20241011_ANNOTATED.png
+   :width: 100%
+   :align: left
+
+   Here I have programmatically created an empty public Spotify_ playlist. Its name is "EXAMPLE_20241011" and its descrition is "example description 20241011".
+   
+.. _push_label:
+
+push mode
+-----------
+This is the *workhorse* functionality in ``howdy_music_spotify_push_from_plex``, that ports (as much as is possible) the audio Plex_ playlist into the public Spotify_ playlist.
+
+The help output ``howdy_music_spotify_push_from_plex push -h``, produces the following,
+
+.. code-block:: bash
+
+   usage: howdy_music_spotify_push_from_plex push [-h] [-i PLEX_INPUT] [-o SPOTIFY_OUTPUT] [-N NUMPROCS] [-M NPURIFY]
+
+   options:
+     -h, --help            show this help message and exit
+     -i PLEX_INPUT, --input PLEX_INPUT
+			   The input PLEX AUDIO playlist to push into a public SPOTIFY playlist.
+     -o SPOTIFY_OUTPUT, --output SPOTIFY_OUTPUT
+			   The output public SPOTIFY playlist. Intent = the public SPOTIFY playlist's songs will MATCH the PLEX AUDIO playlist's collection of SPOTIFY identified songs.
+     -N NUMPROCS, --nprocs NUMPROCS
+			   The number of processors used to perform the calculations. Must be >= 1. Default = 12.
+     -M NPURIFY, --npurify NPURIFY
+			   The number of times to PURIFY the finding-spotify-ids in our Plex audio playlist. Must be >= 0.Default is 0.
+
+Here are the arguments,
+
+* ``-i`` or ``--input`` is the *input* audio-only Plex_ playlist to copy over to . You can find a valid Plex_ audio playlist by running :ref:`howdy_music_spotify_push_from_plex plex <plex mode>`.
+
+* ``-o`` or ``--output`` is the name of the public Spotify_ playlist into which to put in songs identified from the Plex_ audio playlist. **NOTE THAT THIS SPOTIFY PLAYLIST MUST EXIST OR THIS METHOD WILL NOT WORK**. You can find out the list of public Spotify_ playlists you have by running :ref:`howdy_music_spotify_push_from_plex spotify_list <spotify_list mode>`.
+
+* ``-N`` or ``--nprocs`` specifies the number of processors used to chunk out the Plex_ playlist, in order to modify the public Spotify_ playlist. The default are the number of cores on your machine.
+
+* ``-M`` -r ``--npurify`` specifies the number of extra iterations used to run the songs in your Plex_ playlist, in order to identify missing Spotify_ IDs. The Spotify_ API does not identify songs with complete accuracy; sometimes it takes 3-5 tries (for a given song) to identify its Spotify_ ID.
+
+Finally, here is some example output when trying to update the Spotify_ playlist named ``STEREOLABISH`` with the Plex_ playlist ``Stereolabish`` and purify it three times.
+
+.. code-block:: bash
+
+   $ howdy_music_spotify_push_from_plex push -i Stereolabish -o STEREOLABISH -M 3
+
+   in iteration 1 / 3 fixed total of 0 / 73 bad SPOTIFY IDs in Plex audio playlist = Stereolabish.
+   in iteration 2 / 3 fixed total of 0 / 73 bad SPOTIFY IDs in Plex audio playlist = Stereolabish.
+   in iteration 3 / 3 fixed total of 0 / 73 bad SPOTIFY IDs in Plex audio playlist = Stereolabish.
+   found 1561 / 1634 good SPOTIFY IDs in Plex audio playlist = Stereolabish.
+   found 1550 tracks in public Spotify audio playlist = STEREOLABISH.
+   SUBTRACTING 0 TRACKS FROM SPOTIFY PLAYLIST = STEREOLABISH.
+   ADDING 9 TRACKS TO SPOTIFY PLAYLIST = STEREOLABISH.
+   took 41.112 seconds to process.
+
+Here are some important details
+
+* The whole process took about 41.1 seconds of wallclock time from start to finish.
+
+* We ran the purification process three times. There were 73 songs in the Plex_ playlist, ``Stereolabish``, where a first pass could *not* identify Spotify_ IDs. At each pass through the Spotify_ API, we could not identify *any* new Spotify_ IDs among those songs.
+
+* In the end, we found 1561 songs in the Plex_ playlist that have valid Spotify_ IDs.
+
+* Initially, there are 1550 tracks in the Spotify_ playlist ``STEREOLABISH``.
+
+* It turns out there are *no* tracks to remove from ``STEREOLABISH``, and we added *nine* tracks to ``STEREOLABISH``.
+  
 .. _upload_to_gmusic_label:
 
 upload_to_gmusic
@@ -674,3 +870,4 @@ Third, paste the code similar to as described in :ref:`Step #7 <google_step07_oa
 .. _`Don't be Light`: https://youtu.be/ysk_dQ39ctE
 .. _`Mer du Japon`: https://youtu.be/Sjq4_sHy06U
 .. _HDF5: https://en.wikipedia.org/wiki/Hierarchical_Data_Format
+.. _Spotify: https://open.spotify.com

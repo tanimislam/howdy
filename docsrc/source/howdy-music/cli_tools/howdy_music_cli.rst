@@ -79,21 +79,21 @@ Here are the three operations,
 	
 * The ``--albums`` flag gets a formatted, pretty-printed list of albums released by an artist.  Here, the ``-a`` or ``--artist`` (artist) need to be specified. For example, for Air_,
 
-   .. code-block:: console
+  .. code-block:: console
 
-      tanim-desktop $ howdy_music_albums -a Air --albums
+     tanim-desktop $ howdy_music_albums -a Air --albums
 
-      Air has 7 studio albums.
+     Air has 7 studio albums.
 
-      Studio Album                         Year    # Tracks
-      ---------------------------------  ------  ----------
-      Moon Safari                          1998          10
-      10 000 Hz Legend                     2001          12
-      City Reading (Tre Storie Western)    2003          19
-      Talkie Walkie                        2004          11
-      Pocket Symphony                      2006          12
-      Love 2                               2009          12
-      Music for Museum                     2014           9
+     Studio Album                         Year    # Tracks
+     ---------------------------------  ------  ----------
+     Moon Safari                          1998          10
+     10 000 Hz Legend                     2001          12
+     City Reading (Tre Storie Western)    2003          19
+     Talkie Walkie                        2004          11
+     Pocket Symphony                      2006          12
+     Love 2                               2009          12
+     Music for Museum                     2014           9
 
 * The ``--song`` flag returns a list of songs released on a specific album by the artist. Here, the ``-a`` or ``--artist`` (artist) and ``-A`` or ``--album`` (album) need to be specified.
 

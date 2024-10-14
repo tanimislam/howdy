@@ -161,7 +161,7 @@ Here are the common elements of its operation,
 
 This executable has two modes of operation. In each mode, for each song in the collection, this tool finds that song, finds that clip, and asks the user to select a clip with a number from ``1`` to at most ``maxnum``. For convenience, each YouTube_ clip also shows its duration in MM:SS format. For example, here I choose YouTube_ clip #1 for the first track in the `Moon Safari`_ album released by Air_,
 
-.. code-block:: console
+.. code-block:: bash
 
    ACTUAL ARTIST: Air
    ACTUAL ALBUM: Moon Safari
@@ -217,7 +217,7 @@ howdy_music_songs
 ^^^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``howdy_music_songs -h``, produces the following.
 
-.. code-block:: console
+.. code-block:: bash
 		
    usage: howdy_music_songs [-h] [-a ARTIST_NAME] [-s SONG_NAMES] [--maxnum MAXNUM] [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES] [-L] [-M] [--noverify] [--debuglevel {NONE,ERROR,INFO,DEBUG}] [-D]
 

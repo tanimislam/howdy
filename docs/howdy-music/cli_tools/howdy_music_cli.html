@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.55-52-ge56e494c documentation</title>
+  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.55-56-gbccd97ea documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=7dc6ce7e" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=cd12bdb7"></script>
+      <script src="../../_static/documentation_options.js?v=1d58b94d"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -172,8 +172,7 @@
 </ul>
 <ul id="howdy-music-album-get-albums">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">--albums</span></code> flag gets a formatted, pretty-printed list of albums released by an artist.  Here, the <code class="docutils literal notranslate"><span class="pre">-a</span></code> or <code class="docutils literal notranslate"><span class="pre">--artist</span></code> (artist) need to be specified. For example, for <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a>,</p>
-<blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_music_albums -a Air --albums</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ howdy_music_albums -a Air --albums</span>
 
 <span class="go">Air has 7 studio albums.</span>
 
@@ -188,7 +187,6 @@
 <span class="go">Music for Museum                     2014           9</span>
 </pre></div>
 </div>
-</div></blockquote>
 </li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">--song</span></code> flag returns a list of songs released on a specific album by the artist. Here, the <code class="docutils literal notranslate"><span class="pre">-a</span></code> or <code class="docutils literal notranslate"><span class="pre">--artist</span></code> (artist) and <code class="docutils literal notranslate"><span class="pre">-A</span></code> or <code class="docutils literal notranslate"><span class="pre">--album</span></code> (album) need to be specified.</p>
 <ul>
@@ -251,29 +249,29 @@
 <li><p>the artist must always be specified with the <code class="docutils literal notranslate"><span class="pre">-a</span></code> or <code class="docutils literal notranslate"><span class="pre">--artist</span></code> setting.</p></li>
 </ul>
 <p>This executable has two modes of operation. In each mode, for each song in the collection, this tool finds that song, finds that clip, and asks the user to select a clip with a number from <code class="docutils literal notranslate"><span class="pre">1</span></code> to at most <code class="docutils literal notranslate"><span class="pre">maxnum</span></code>. For convenience, each <a class="reference external" href="https://www.youtube.com">YouTube</a> clip also shows its duration in MM:SS format. For example, here I choose <a class="reference external" href="https://www.youtube.com">YouTube</a> clip #1 for the first track in the <a class="reference external" href="https://en.wikipedia.org/wiki/Moon_Safari">Moon Safari</a> album released by <a class="reference external" href="https://en.wikipedia.org/wiki/Air_(band)">Air</a>,</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ACTUAL ARTIST: Air</span>
-<span class="go">ACTUAL ALBUM: Moon Safari</span>
-<span class="go">ACTUAL YEAR: 1998</span>
-<span class="go">ACTUAL NUM TRACKS: 10</span>
-<span class="go">ACTUAL SONG: La Femme d&#39;Argent</span>
-<span class="go">Choose YouTube video:</span>
-<span class="go">1: Air - La Femme d&#39;Argent (07:12)</span>
-<span class="go">2: Air - La Femme D&#39;Argent (07:11)</span>
-<span class="go">3: Air - La Femme D&#39;Argent (05:55)</span>
-<span class="go">4: La Femme D&#39;Argent Extended - 26 Seamless Minutes (26:37)</span>
-<span class="go">5: La femme d&#39;argent (07:07)</span>
-<span class="go">6: Air - La Femme d&#39;Argent (Live at Canal+ 17.06.2016) HD (08:39)</span>
-<span class="go">7: AIR - La Femme D&#39;Argent (Live in France, 2007) (10:13)</span>
-<span class="go">8: Air - La Femme D&#39;Argent (EXTENDED 1H47) (01:47:42)</span>
-<span class="go">9: Air - La femme d&#39;argent 432hz (07:11)</span>
-<span class="go">10: San Francisco 1906 with music by Air - La Femme D&#39;Argent (07:06)</span>
-<span class="go">1</span>
-<span class="go">[youtube] U4U19zwFENs: Downloading webpage</span>
-<span class="go">[youtube] U4U19zwFENs: Downloading video info webpage</span>
-<span class="go">WARNING: Unable to extract video title</span>
-<span class="go">[download] Air.La Femme d&#39;Argent.m4a has already been downloaded</span>
-<span class="go">[download] 100% of 6.90MiB</span>
-<span class="go">[ffmpeg] Correcting container in &quot;Air.La Femme d&#39;Argent.m4a&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ACTUAL<span class="w"> </span>ARTIST:<span class="w"> </span>Air
+ACTUAL<span class="w"> </span>ALBUM:<span class="w"> </span>Moon<span class="w"> </span>Safari
+ACTUAL<span class="w"> </span>YEAR:<span class="w"> </span><span class="m">1998</span>
+ACTUAL<span class="w"> </span>NUM<span class="w"> </span>TRACKS:<span class="w"> </span><span class="m">10</span>
+ACTUAL<span class="w"> </span>SONG:<span class="w"> </span>La<span class="w"> </span>Femme<span class="w"> </span>d<span class="s1">&#39;Argent</span>
+<span class="s1">Choose YouTube video:</span>
+<span class="s1">1: Air - La Femme d&#39;</span>Argent<span class="w"> </span><span class="o">(</span><span class="m">07</span>:12<span class="o">)</span>
+<span class="m">2</span>:<span class="w"> </span>Air<span class="w"> </span>-<span class="w"> </span>La<span class="w"> </span>Femme<span class="w"> </span>D<span class="s1">&#39;Argent (07:11)</span>
+<span class="s1">3: Air - La Femme D&#39;</span>Argent<span class="w"> </span><span class="o">(</span><span class="m">05</span>:55<span class="o">)</span>
+<span class="m">4</span>:<span class="w"> </span>La<span class="w"> </span>Femme<span class="w"> </span>D<span class="s1">&#39;Argent Extended - 26 Seamless Minutes (26:37)</span>
+<span class="s1">5: La femme d&#39;</span>argent<span class="w"> </span><span class="o">(</span><span class="m">07</span>:07<span class="o">)</span>
+<span class="m">6</span>:<span class="w"> </span>Air<span class="w"> </span>-<span class="w"> </span>La<span class="w"> </span>Femme<span class="w"> </span>d<span class="s1">&#39;Argent (Live at Canal+ 17.06.2016) HD (08:39)</span>
+<span class="s1">7: AIR - La Femme D&#39;</span>Argent<span class="w"> </span><span class="o">(</span>Live<span class="w"> </span><span class="k">in</span><span class="w"> </span>France,<span class="w"> </span><span class="m">2007</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="m">10</span>:13<span class="o">)</span>
+<span class="m">8</span>:<span class="w"> </span>Air<span class="w"> </span>-<span class="w"> </span>La<span class="w"> </span>Femme<span class="w"> </span>D<span class="s1">&#39;Argent (EXTENDED 1H47) (01:47:42)</span>
+<span class="s1">9: Air - La femme d&#39;</span>argent<span class="w"> </span>432hz<span class="w"> </span><span class="o">(</span><span class="m">07</span>:11<span class="o">)</span>
+<span class="m">10</span>:<span class="w"> </span>San<span class="w"> </span>Francisco<span class="w"> </span><span class="m">1906</span><span class="w"> </span>with<span class="w"> </span>music<span class="w"> </span>by<span class="w"> </span>Air<span class="w"> </span>-<span class="w"> </span>La<span class="w"> </span>Femme<span class="w"> </span>D<span class="s1">&#39;Argent (07:06)</span>
+<span class="s1">1</span>
+<span class="s1">[youtube] U4U19zwFENs: Downloading webpage</span>
+<span class="s1">[youtube] U4U19zwFENs: Downloading video info webpage</span>
+<span class="s1">WARNING: Unable to extract video title</span>
+<span class="s1">[download] Air.La Femme d&#39;</span>Argent.m4a<span class="w"> </span>has<span class="w"> </span>already<span class="w"> </span>been<span class="w"> </span>downloaded
+<span class="o">[</span>download<span class="o">]</span><span class="w"> </span><span class="m">100</span>%<span class="w"> </span>of<span class="w"> </span><span class="m">6</span>.90MiB
+<span class="o">[</span>ffmpeg<span class="o">]</span><span class="w"> </span>Correcting<span class="w"> </span>container<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;Air.La Femme d&#39;Argent.m4a&quot;</span>
 </pre></div>
 </div>
 <ul>
@@ -296,26 +294,26 @@
 <section id="howdy-music-songs">
 <span id="howdy-music-songs-label"></span><h2><span class="section-number">7.1.3. </span>howdy_music_songs<a class="headerlink" href="#howdy-music-songs" title="Link to this heading"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_music_songs</span> <span class="pre">-h</span></code>, produces the following.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_music_songs [-h] [-a ARTIST_NAME] [-s SONG_NAMES] [--maxnum MAXNUM] [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES] [-L] [-M] [--noverify] [--debuglevel {NONE,ERROR,INFO,DEBUG}] [-D]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>howdy_music_songs<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">[</span>-a<span class="w"> </span>ARTIST_NAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>SONG_NAMES<span class="o">]</span><span class="w"> </span><span class="o">[</span>--maxnum<span class="w"> </span>MAXNUM<span class="o">]</span><span class="w"> </span><span class="o">[</span>-A<span class="w"> </span>ALBUM_NAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>--new<span class="o">]</span><span class="w"> </span><span class="o">[</span>--artists<span class="w"> </span>ARTIST_NAMES<span class="o">]</span><span class="w"> </span><span class="o">[</span>-L<span class="o">]</span><span class="w"> </span><span class="o">[</span>-M<span class="o">]</span><span class="w"> </span><span class="o">[</span>--noverify<span class="o">]</span><span class="w"> </span><span class="o">[</span>--debuglevel<span class="w"> </span><span class="o">{</span>NONE,ERROR,INFO,DEBUG<span class="o">}]</span><span class="w"> </span><span class="o">[</span>-D<span class="o">]</span>
 
-<span class="go">optional arguments:</span>
-<span class="go">  -h, --help            show this help message and exit</span>
-<span class="go">  -a ARTIST_NAME, --artist ARTIST_NAME</span>
-<span class="go">                        Name of the artist to put into the M4A file.</span>
-<span class="go">  -s SONG_NAMES, --songs SONG_NAMES</span>
-<span class="go">                        Names of the song to put into M4A files. Separated by ;</span>
-<span class="go">  --maxnum MAXNUM       Number of YouTube video choices to choose for each of your songs.Default is 10.</span>
-<span class="go">  -A ALBUM_NAME, --album ALBUM_NAME</span>
-<span class="go">                        If defined, then get all the songs in order from the album.</span>
-<span class="go">  --new                 If chosen, use the new format for getting the song list. Instead of -a or --artist, will look for --artists. Each artist is separated by a &#39;;&#39;.</span>
-<span class="go">  --artists ARTIST_NAMES</span>
-<span class="go">                        List of artists. Each artist is separated by a &#39;;&#39;.</span>
-<span class="go">  -L, --lastfm          If chosen, then only use the LastFM API to get song metadata.</span>
-<span class="go">  -M, --musicbrainz     If chosen, use Musicbrainz to get the artist metadata. Note that this is expensive.</span>
-<span class="go">  --noverify            Do not verify SSL transactions if chosen.</span>
-<span class="go">  --debuglevel {NONE,ERROR,INFO,DEBUG}</span>
-<span class="go">                        Choose the debug level for the system logger. Default is NONE (no logging). Can be one of NONE (no logging), ERROR, INFO, or DEBUG.</span>
-<span class="go">  -D, --direct          Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.</span>
+optional<span class="w"> </span>arguments:
+<span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+<span class="w">  </span>-a<span class="w"> </span>ARTIST_NAME,<span class="w"> </span>--artist<span class="w"> </span>ARTIST_NAME
+<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>artist<span class="w"> </span>to<span class="w"> </span>put<span class="w"> </span>into<span class="w"> </span>the<span class="w"> </span>M4A<span class="w"> </span>file.
+<span class="w">  </span>-s<span class="w"> </span>SONG_NAMES,<span class="w"> </span>--songs<span class="w"> </span>SONG_NAMES
+<span class="w">                        </span>Names<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>song<span class="w"> </span>to<span class="w"> </span>put<span class="w"> </span>into<span class="w"> </span>M4A<span class="w"> </span>files.<span class="w"> </span>Separated<span class="w"> </span>by<span class="w"> </span><span class="p">;</span>
+<span class="w">  </span>--maxnum<span class="w"> </span>MAXNUM<span class="w">       </span>Number<span class="w"> </span>of<span class="w"> </span>YouTube<span class="w"> </span>video<span class="w"> </span>choices<span class="w"> </span>to<span class="w"> </span>choose<span class="w"> </span><span class="k">for</span><span class="w"> </span>each<span class="w"> </span>of<span class="w"> </span>your<span class="w"> </span>songs.Default<span class="w"> </span>is<span class="w"> </span><span class="m">10</span>.
+<span class="w">  </span>-A<span class="w"> </span>ALBUM_NAME,<span class="w"> </span>--album<span class="w"> </span>ALBUM_NAME
+<span class="w">                        </span>If<span class="w"> </span>defined,<span class="w"> </span><span class="k">then</span><span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>the<span class="w"> </span>songs<span class="w"> </span><span class="k">in</span><span class="w"> </span>order<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>album.
+<span class="w">  </span>--new<span class="w">                 </span>If<span class="w"> </span>chosen,<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span>new<span class="w"> </span>format<span class="w"> </span><span class="k">for</span><span class="w"> </span>getting<span class="w"> </span>the<span class="w"> </span>song<span class="w"> </span>list.<span class="w"> </span>Instead<span class="w"> </span>of<span class="w"> </span>-a<span class="w"> </span>or<span class="w"> </span>--artist,<span class="w"> </span>will<span class="w"> </span>look<span class="w"> </span><span class="k">for</span><span class="w"> </span>--artists.<span class="w"> </span>Each<span class="w"> </span>artist<span class="w"> </span>is<span class="w"> </span>separated<span class="w"> </span>by<span class="w"> </span>a<span class="w"> </span><span class="s1">&#39;;&#39;</span>.
+<span class="w">  </span>--artists<span class="w"> </span>ARTIST_NAMES
+<span class="w">                        </span>List<span class="w"> </span>of<span class="w"> </span>artists.<span class="w"> </span>Each<span class="w"> </span>artist<span class="w"> </span>is<span class="w"> </span>separated<span class="w"> </span>by<span class="w"> </span>a<span class="w"> </span><span class="s1">&#39;;&#39;</span>.
+<span class="w">  </span>-L,<span class="w"> </span>--lastfm<span class="w">          </span>If<span class="w"> </span>chosen,<span class="w"> </span><span class="k">then</span><span class="w"> </span>only<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span>LastFM<span class="w"> </span>API<span class="w"> </span>to<span class="w"> </span>get<span class="w"> </span>song<span class="w"> </span>metadata.
+<span class="w">  </span>-M,<span class="w"> </span>--musicbrainz<span class="w">     </span>If<span class="w"> </span>chosen,<span class="w"> </span>use<span class="w"> </span>Musicbrainz<span class="w"> </span>to<span class="w"> </span>get<span class="w"> </span>the<span class="w"> </span>artist<span class="w"> </span>metadata.<span class="w"> </span>Note<span class="w"> </span>that<span class="w"> </span>this<span class="w"> </span>is<span class="w"> </span>expensive.
+<span class="w">  </span>--noverify<span class="w">            </span>Do<span class="w"> </span>not<span class="w"> </span>verify<span class="w"> </span>SSL<span class="w"> </span>transactions<span class="w"> </span><span class="k">if</span><span class="w"> </span>chosen.
+<span class="w">  </span>--debuglevel<span class="w"> </span><span class="o">{</span>NONE,ERROR,INFO,DEBUG<span class="o">}</span>
+<span class="w">                        </span>Choose<span class="w"> </span>the<span class="w"> </span>debug<span class="w"> </span>level<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>system<span class="w"> </span>logger.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>NONE<span class="w"> </span><span class="o">(</span>no<span class="w"> </span>logging<span class="o">)</span>.<span class="w"> </span>Can<span class="w"> </span>be<span class="w"> </span>one<span class="w"> </span>of<span class="w"> </span>NONE<span class="w"> </span><span class="o">(</span>no<span class="w"> </span>logging<span class="o">)</span>,<span class="w"> </span>ERROR,<span class="w"> </span>INFO,<span class="w"> </span>or<span class="w"> </span>DEBUG.
+<span class="w">  </span>-D,<span class="w"> </span>--direct<span class="w">          </span>Only<span class="w"> </span>makes<span class="w"> </span>sense<span class="w"> </span>when<span class="w"> </span>running<span class="w"> </span>with<span class="w"> </span>MusicBrainz.<span class="w"> </span>Option<span class="w"> </span>of<span class="w"> </span>using<span class="w"> </span>direct<span class="w"> </span>instead<span class="w"> </span>of<span class="w"> </span>indexed<span class="w"> </span>search<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>artist.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>False.
 </pre></div>
 </div>
 <p>In all three operations, here are required arguments or common flags,</p>

@@ -842,6 +842,11 @@ Third, paste the code similar to as described in :ref:`Step #7 <google_step07_oa
    :width: 100%
    :align: middle
    :target: MusicBrainz_
+
+.. |spotify_logo_big| image:: howdy-music-cli-figures/spotify_logo.svg
+   :width: 100%
+   :align: middle
+   :target: Spotify_
    
 	    
 .. links for the youtube clips in table for howdy_music_songs section

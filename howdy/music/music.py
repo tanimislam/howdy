@@ -156,6 +156,7 @@ class MusicInfo( object ):
 
         :param str artist_name: the artist over which to perform a search.
         :returns: the MBID of the artist. If more than one matching artist is found, or *no* matching artists, then returns ``None``.
+        :rtype: str
         """
         response = requests.get( 'https://musicbrainz.org/search', params = {
             'query' : '+'.join( artist_name.split()),
@@ -175,6 +176,36 @@ class MusicInfo( object ):
         ## success
         elem = all_elems[ 0 ]
         return os.path.basename( elem['href'] )
+
+    @classmethod
+    def get_artist_direct_search_MBID_ALL( cls, artist_name ):
+        """
+        Sometimes the MusicBrainz_ server does not update. Fixes-when-broken of the MusicBrainz_ server do not happen on a schedule, or even a quickness. In such an instance, you can specify the *specific* artist using direct search rather than indexed search. This method returns the artist's MBID of the artist one queries. *If there is more than one match*, then returns ``None``.
+
+        :param str artist_name: the artist over which to perform a search.
+        :returns: a :py:class:`list` of :py:class:`dict` of entries of matching artists.
+
+        The :py:class:`dict` has two keys: the ``mbid`` is the MusicBrainz_ ID, and ``description`` is the description of the artist.
+        
+        If *no* matching artists, then returns ``None``.
+        :rtype: list
+        """
+        response = requests.get( 'https://musicbrainz.org/search', params = {
+            'query' : '+'.join( artist_name.split()),
+            'type' : 'artist',
+            'limit' : 25,
+            'method' : 'direct' }, verify = False )
+        if response.status_code != 200:
+            return None
+        html = BeautifulSoup( response.content, 'html.parser' )
+        table = html.find_all('table', { 'class' : 'tbl'})
+        if len( table ) != 1:
+            return None
+        table = table[ 0 ]
+        all_elems = list(filter(lambda elem: 'href' in elem.attrs and '/artist/' in elem['href'] and elem.text.strip( ) == artist_name, table.find_all('a')))
+        #
+        ## success
+        return list( map(lambda elem: { 'mbid' : os.path.basename( elem['href' ] ), 'description' : elem[ 'title' ].strip( ) }, all_elems ) )
     
     @classmethod
     def get_artist_datas_LL(
@@ -313,7 +344,7 @@ class MusicInfo( object ):
         :returns: a two-element :py:class:`tuple` if successful, otherwise returns ``None``. The first is the studio album name, and each second element is a :py:class:`dict` containing summary album info of that album. See the ``altrackdata`` dictionary in :py:class:`MusicInfo <howdy.music.music.MusicInfo>` to understand the description of summary album information.
         :rtype: tuple
         """
-        time0 = time.time( )
+        time0 = time.perf_counter( )
         rgid = album['id']
         rgdate = album['first-release-date']
         rtitle = album['title']
@@ -372,11 +403,11 @@ class MusicInfo( object ):
                 else: length = None
                 albumdata[ 'tracks' ][ act_counts[ idx ] + number ] = ( title, length )
         assert( set( albumdata[ 'tracks' ] ) == alltracknos )
-        logging.debug( 'processed %s in %0.3f seconds.' % ( rtitle, time.time( ) - time0 ) )
+        logging.debug( 'processed %s in %0.3f seconds.' % ( rtitle, time.perf_counter( ) - time0 ) )
         return titlecase.titlecase( rtitle ), albumdata
     
     def __init__( self, artist_name, artist_mbid = None, do_direct = False ):
-        time0 = time.time( )
+        time0 = time.perf_counter( )
         #
         ## first get out artist MBID, called ambid, with score = 100
         adata = MusicInfo.get_artist_datas_LL( artist_name, min_score = 100, artist_mbid = artist_mbid, do_direct = do_direct )
@@ -393,7 +424,7 @@ class MusicInfo( object ):
             self.alltrackdata = dict( filter(None, 
                 pool.map( MusicInfo.get_album_info, albums  ) ) )
         logging.debug( 'processed %d albums for %s in %0.3f seconds.' % (
-            len( self.alltrackdata ), artist_name, time.time( ) - time0 ) )
+            len( self.alltrackdata ), artist_name, time.perf_counter( ) - time0 ) )
 
     def get_music_metadatas_album( self, album_name, min_criterion_score = 95 ):
         """

@@ -292,7 +292,7 @@ def _download_songs_oldformat( args ):
             do_whichone = 'LASTFM'
         elif args.do_musicbrainz:
             do_whichone = 'MUSICBRAINZ'
-            mi = music.MusicInfo( args.artist_name, do_direct = args.do_direct )
+            mi = music.MusicInfo( args.artist_name, do_direct = args.do_direct, artist_mbid = args.artist_mbid )
         else: do_whichone = 'GRACENOTE'
         album_data_dict, status = _process_data_album_dict(
             hm, lastfm, args.album_name.strip( ), args.artist_name,
@@ -399,12 +399,19 @@ def main( ):
                          help = "List of artists. Each artist is separated by a ';'.")
     parser.add_argument( '-L', '--lastfm', dest='do_lastfm', action='store_true', default = False,
                          help = 'If chosen, then only use the LastFM API to get song metadata.' )
-    parser.add_argument( '-M', '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
-                         help = ' '.join( [
-                             'If chosen, use Musicbrainz to get the artist metadata.',
-                             'Note that this is expensive.' ] ) )
-    parser.add_argument( '--noverify', dest='do_verify', action='store_false', default=True,
-                         help = 'Do not verify SSL transactions if chosen.' )
+    parser.add_argument(
+        '-M', '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
+        help = ' '.join( [
+            'If chosen, use Musicbrainz to get the artist metadata.',
+            'Note that this is expensive.' ] ) )
+    parser.add_argument(
+        '-m', '--mbid', dest='artist_mbid', action = 'store', type = str, default = None,
+        help = ' '.join([
+            'Optional argument, the ARTIST MusicBrainz ID to use to select on artist (in addition to the -a flag).',
+            'Only makes sense and is used when running with MusicBrainz.' ] ) )
+    parser.add_argument(
+        '--noverify', dest='do_verify', action='store_false', default=True,
+        help = 'Do not verify SSL transactions if chosen.' )
     parser.add_argument(
         '--debuglevel', dest='debug_level', action='store', type=str, default = 'NONE', choices = [ 'NONE', 'ERROR', 'INFO', 'DEBUG' ],
         help = 'Choose the debug level for the system logger. Default is NONE (no logging). Can be one of NONE (no logging), ERROR, INFO, or DEBUG.' )

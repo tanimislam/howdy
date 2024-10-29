@@ -33,6 +33,10 @@ def main( ):
                         help = ' '.join([ 'Only makes sense when running with MusicBrainz.',
                                          'Option of using direct instead of indexed search on the artist.',
                                          'Default is False.' ]) )
+    parser.add_argument( '-m', '--mbid', dest='artist_mbid', action = 'store', type = str, default = None,
+                        help = ' '.join([
+                            'Optional argument, the ARTIST MusicBrainz ID to use to select on artist (in addition to the -a flag).',
+                            'Only makes sense and is used when running with MusicBrainz.' ] ) )
                                          
     args = parser.parse_args( )
     music.MusicInfo.get_set_musicbrainz_useragent( emailAddress )
@@ -45,13 +49,13 @@ def main( ):
     ##
     hlastfm = music.HowdyLastFM( verify = args.do_verify )
     if args.do_albums:
-        mi = music.MusicInfo( args.artist_name.strip( ), do_direct = args.do_direct )
+        mi = music.MusicInfo( args.artist_name.strip( ), do_direct = args.do_direct, artist_mbid = args.artist_mbid )
         mi.print_format_album_names( )
         return
     
-    if not args.do_songs: # just get the song image
+    if not args.do_songs: # just get the song image        
         if args.do_musicbrainz:
-            mi = music.MusicInfo( args.artist_name.strip( ), do_direct = args.do_direct )
+            mi = music.MusicInfo( args.artist_name.strip( ), do_direct = args.do_direct, artist_mbid = args.artist_mbid )
             _, status = mi.get_album_image( args.album_name )
         else:
             _, status = hlastfm.get_album_image( args.artist_name, args.album_name )
@@ -62,7 +66,7 @@ def main( ):
     #
     ## now get song listing, --songs is chosen
     if args.do_musicbrainz:
-        mi = music.MusicInfo( args.artist_name.strip( ), do_direct = args.do_direct )
+        mi = music.MusicInfo( args.artist_name.strip( ), do_direct = args.do_direct, artist_mbid = args.artist_mbid )
         track_listing, status = mi.get_song_listing(
             args.album_name )
     else:

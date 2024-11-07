@@ -174,6 +174,28 @@ def push_plex_to_spotify_playlist(
     music_spotify.modify_existing_playlist_with_new_tracks(
         spotify_playlist_id, oauth2_access_token, spotify_ids_list,
         spotify_ids_in_playlist = spotify_ids_in_playlist )
+
+    #
+    ## NOW PRINT OUT ALL THE TRACKS IT COULD NOT FIND ON SPOTIFY
+    ## HACK SOLUTION ASD OF 20241106
+    df_plex_playlist_FINAL = music.plexapi_music_playlist_info( playlist, use_internal_metadata=True )
+    df_plex_playlist_SPOTIFY = music_spotify.process_dataframe_playlist_spotify(
+      df_plex_playlist_FINAL, spotify_access_token )
+    df_rem = df_plex_playlist_SPOTIFY[ -df_plex_playlist_SPOTIFY['SPOTIFY ID'].str.startswith('spotify:') ]
+    if df_rem.shape[ 0 ] != 0:
+      files_could_not_find   = list(map(os.path.basename, list(df_rem[ 'filename' ] )))
+      artists_could_not_find = list(df_rem[ 'artist' ] )
+      song_could_not_find    = list(df_rem[ 'song name' ] )
+      album_could_not_find   = list(df_rem[ 'album' ] )
+      print( 'COULD NOT FIND %d SONGS IN PLEX PLAYLIST ON SPOTIFY' % len( files_could_not_find ) )
+      all_data = list(zip(
+        artists_could_not_find,
+        song_could_not_find,
+        album_could_not_find,
+        files_could_not_find ) )
+      print( '%s\n' % tabulate.tabulate(
+        all_data, headers = [ 'ARTIST', 'SONG', 'ALBUM', 'FILENAME' ] ) )
+    
     return True
           
     

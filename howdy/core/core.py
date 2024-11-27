@@ -1073,7 +1073,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
           * ``picurl``: the URL of album cover on the Plex_server.
           * ``tracks``L contains the :py:class:`list` of songs associated with this artist and album on the Plex_ server.
 
-        * ``musicdata[<artistname>][<albumname>]['tracks']`` is a :py:class:`list` of :py:class:`dict`\ s representing each song that is on the Plex_ server. Each song :py:class:`dict` has the following keys and values.
+        * ``musicdata[<artistname>][<albumname>]['tracks']`` is a :py:class:`list` of :py:class:`dict`s representing each song that is on the Plex_ server. Each song :py:class:`dict` has the following keys and values.
 
           * ``track_name``: the song name.
           * ``curdate``: the :py:class:`date <datetime.date>` on which this song was added to the Plex_ music library.
@@ -1088,7 +1088,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
     :param str token: the Plex_ server access token.
     :param str fullURL: the Plex_ server address.
     :param int num_threads: the number of concurrent threads used to access the Plex_ server and get the library data.
-    :param int timeout: optional time, in seconds, to wait for an HTTP conection to the Plex_ server.
+    :param int timeout: optional time, in seconds, to wait for an HTTP connection to the Plex_ server.
     :param str mainPath: optional prefix directory to put in front of all the file paths on the Plex_ server.
     
     :returns: a :py:class:`dict` of library data on the Plex_ server.
@@ -1374,7 +1374,7 @@ def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400', verify = T
 
 def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
                       useLastNewsletterDate = True ):
-    """
+    r"""
     Returns the last :math:`N` movies that were uploaded to the Plex_ server, either after the last date at which a newsletter was sent out or not.
     
     :param int lastN: the last :math:`N` movies to be sent out. Must be :math:`\ge 1`.

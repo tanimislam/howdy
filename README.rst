@@ -33,7 +33,7 @@ The comprehensive documentation lives in HTML created with Sphinx_, and now in t
 
 Quick and Dirty -- How Do I Get It Working?
 --------------------------------------------
-Although discussed in the `Sphinx documentation <Howdy_>`_, to get everything working you need sshpass_ and PyQt5_. Getting all this on Linux machines is probably more straightforward than on Macs and Windows machines.
+Although discussed in the `documentation <Howdy_>`_, to get everything working you need sshpass_ and PyQt5_. Getting all this on Linux machines is probably more straightforward than on Macs and Windows machines.
 
 To be able to use all the CLIs, GUIs, and API functionality, there are ``12`` sets of configurations that need to work: four for login, four for credentials, and four for music.
 

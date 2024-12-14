@@ -385,7 +385,7 @@ class MusicInfo( object ):
         #
         ## collapse multiple discs into single disk with more tracknumbers
         track_counts = list(map(lambda cd_for_track: cd_for_track['track-count'], trackinfo))
-        act_counts = numpy.concatenate([ [ 0, ], numpy.cumsum( track_counts ) ])
+        act_counts = numpy.array( numpy.concatenate([ [ 0, ], numpy.cumsum( track_counts ) ]), dtype = int )
         albumdata = { 'release-date' : rgdate_date }
         albumdata[ 'album url' ] = album_url
         albumdata[ 'tracks' ] = { }

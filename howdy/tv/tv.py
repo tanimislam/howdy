@@ -1676,8 +1676,8 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
         ## being too clever
         ## doing torTitle = showFileName.replace("'",'').replace(':','').replace('&', 'and').replace('/', '-')
         torTitle = reduce(lambda x,y: x.replace(y[0], y[1]),
-                          zip([ ":", "&", "/", "!", "'" ], # do not replace apostrophe
-                              [ '', '', 'and', '', '', '' ]),
+                          zip([ ":", "&", "/", "!", "'", "." ], # do not replace apostrophe
+                              [ '', '', 'and', '', '', '', '' ]),
                           showFileName)
         for seasno, epno, title in mydict[ 'episodes' ]:
             must_have_here = set(map(lambda elem: elem.strip( ).lower( ), must_have))

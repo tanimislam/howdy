@@ -38,8 +38,10 @@ def exclude_name_emails( excl_set, name_emails ):
     ##
     def is_excluded_match( name_email ):
         name, email = name_email
-        if any(map(lambda excl: excl in name.lower( ), excl_set ) ): return True
-        if any(map(lambda excl: excl in email.lower( ), excl_set ) ): return True
+        if name is not None:
+          if any(map(lambda excl: excl in name.lower( ), excl_set ) ): return True
+        if email is not None:
+          if any(map(lambda excl: excl in email.lower( ), excl_set ) ): return True
         return False
     return list(filter(lambda name_email: not is_excluded_match( name_email ), name_emails) )
 

@@ -7,7 +7,9 @@ from requests.compat import urljoin
 from multiprocessing import Process, Manager
 from pathos.multiprocessing import Pool
 #
-from howdy.core import core_deluge, get_formatted_size, get_maximum_matchval, return_error_raw, core, core_rsync, core_torrents
+from howdy.core import (
+    core_deluge, core_transmission, get_formatted_size, get_maximum_matchval,
+    return_error_raw, core, core_rsync, core_torrents )
 from howdy.tv import get_token, tv
 
 _num_to_quit = 10
@@ -834,13 +836,18 @@ def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, t
     mainDir = 'downloads'
     data = core_rsync.get_credentials( )
     if 'subdir' in data: mainDir = data['subdir']
-    media_file = max(tor_info[b'files'], key = lambda elem: elem[b'size'] )
-    file_name = os.path.join( 'downloads', media_file[b'path'].decode('utf-8') )
+    media_file = max(tor_info['files'], key = lambda elem: elem['size'] )
+    file_name = os.path.join( 'downloads', media_file['path'] )
     suffix = os.path.basename( file_name ).split('.')[-1].strip( )
     new_file = os.path.join( mainDir, '%s.%s' % ( os.path.basename( totFname ), suffix ) )
-    uname = client.username
-    password = client.password
-    host = client.host    
+    #
+    uname    = data[ 'sshpath'  ].split('@')[0].strip( )
+    password = data[ 'password' ]
+    host     = data[ 'sshpath'  ].split('@')[1].strip( )
+    # uname = client.username
+    # password = client.password
+    # host = client.host
+    #
     with Connection( host, user = uname, connect_kwargs =
                      { 'password' : password } ) as conn:
         if 'key_filename' in conn.connect_kwargs:
@@ -870,7 +877,7 @@ def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, t
             # 4) remove the temporary 'defaultXXXX.mkv' file
             
         #
-        ## now delete the deluge connection
+        ## now delete the torrent and erase underlying data
         try:
             core_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = True )
         except: pass # maybe connection is broken now for some reason??
@@ -916,10 +923,10 @@ def _worker_process_tvtorrents( client, data, torFileName, totFname,
             if torrentId not in torrent_info:
                 kill_failing( torrentId )
                 return None, _create_status_dict( 'FAILURE', 'ERROR, COULD NOT GET IDX = %d, TORRENT ID = %s.' % (
-                    idx, torrentId.decode('utf-8').lower()[:6] ), time00 )
+                    idx, torrentId.lower()[:6] ), time00 )
             tor_info = torrent_info[ torrentId ]
-            status = tor_info[ b'state'].decode('utf-8').upper( )
-            progress = tor_info[ b'progress']
+            status = tor_info[ 'state'].upper( )
+            progress = tor_info[ 'progress']
             print( 'after %0.3f seconds, attempt #%d, for %s: status = %s, progress = %0.1f%%' % (
                 time.perf_counter( ) - time00, idx + 1, torFileName, status, progress ) )
             progresses.append( progress )

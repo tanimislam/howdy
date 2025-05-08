@@ -281,7 +281,38 @@ def deluge_get_torrents_info( client ):
     """
     torrent_dict = client.call('core.get_torrents_status', {},
                         _status_keys )
-    return dict(map(lambda entry: ( entry[0].decode('utf8').lower( ), entry[1] ), torrent_dict.items( ) ) )
+    torrent_dict_final = dict()
+    for torrentId_b in torrent_dict:
+        torrentId = torrentId_b.decode('utf8').lower( )
+        status = torrent_dict[ torrentId_b ]
+        torrent_dict_final[ torrentId ] = {
+            'name'                  : status[ b'name'  ].decode('utf8'),
+            'state'                 : status[ b'state' ].decode('utf8'),
+            'download_payload_rate' : status[ b'download_payload_rate' ],
+            'upload_payload_rate'   : status[ b'upload_payload_rate' ],
+            'eta'                   : status[ b'eta'],
+            'num_seeds'             : status[ b'num_seeds' ],
+            'total_seeds'           : status[ b'total_seeds' ],
+            'num_peers'             : status[ b'num_peers' ],
+            'total_peers'           : status[ b'total_peers' ],
+            'distributed_copies'    : status[ b'distributed_copies' ],
+            'total_done'            : status[ b'total_done' ],
+            'total_size'            : status[ b'total_size' ],
+            'ratio'                 : status[ b'ratio' ],
+            'seeding_time'          : status[ b'seeding_time' ],
+            'active_time'           : status[ b'active_time' ],
+            'tracker_status'        : status[ b'tracker_status' ].decode( 'utf8' ),
+            'is_finished'           : status[ b'is_finished' ],
+            'progress'              : status[ b'progress' ],
+        }
+        if b'files' in status:
+            torrent_dict_final[ torrentId ][ 'files' ] = list(
+                map(lambda entry: {
+                    'path' : entry[ b'path' ].decode( 'utf8' ),
+                    'size' : entry[ b'size' ] }, status[ b'files' ] ) )
+            
+    #return dict(map(lambda entry: ( entry[0].decode('utf8').lower( ), entry[1] ), torrent_dict.items( ) ) )
+    return torrent_dict_final
 
 def deluge_is_torrent_file( torrent_file_name ):
     """
@@ -484,50 +515,51 @@ def deluge_format_info( status, torrent_id ):
     .. seealso:: :py:meth:`deluge_get_torrents_info <howdy.core.core_deluge.deluge_get_torrents_info>`.
     """
     cols, _ = os.get_terminal_size( )
+
     mystr_split = [
-        "Name: %s" % status[ b'name' ].decode('utf-8'),
+        "Name: %s" % status[ 'name' ],
         "ID: %s" % torrent_id,
-        "State: %s" % status[ b'state' ].decode('utf-8') ]
-    if status[ b'state' ] in ( b'Seeding', b'Downloading' ):
+        "State: %s" % status[ 'state' ] ]
+    if status[ 'state' ] in ( 'Seeding', 'Downloading' ):
         line_split = [ ]
-        if status[b'state'] != b'Seeding':
+        if status[ 'state'] != 'Seeding':
             line_split.append(
                 "Down Speed: %s" % format_speed(
-                    status[ b'download_payload_rate' ] ) )
+                    status[ 'download_payload_rate' ] ) )
         line_split.append(
             "Up Speed: %s" % format_speed(
-                status[ b'upload_payload_rate' ] ) )
-        if status[ b'eta' ]:
+                status[ 'upload_payload_rate' ] ) )
+        if status[ 'eta' ]:
             line_split.append(
-                "ETA: %s" % format_time( status[ b'eta' ] ) )
+                "ETA: %s" % format_time( status[ 'eta' ] ) )
         mystr_split.append( ' '.join( line_split ) )
     #
-    if status[ b'state' ] in ( b'Seeding', b'Downloading', b'Queued' ):
+    if status[ 'state' ] in ( 'Seeding', 'Downloading', 'Queued' ):
         line_split = [ 
             "Seeds: %s (%s)" % (
-                status[ b'num_seeds' ],
-                status[ b'total_seeds' ] ),
+                status[ 'num_seeds' ],
+                status[ 'total_seeds' ] ),
             "Peers: %s (%s)" % (
-                status[ b'num_peers' ],
-                status[ b'total_peers' ] ),
-            "Availability: %0.2f" % status[ b'distributed_copies' ] ]
+                status[ 'num_peers' ],
+                status[ 'total_peers' ] ),
+            "Availability: %0.2f" % status[ 'distributed_copies' ] ]
         mystr_split.append( ' '.join( line_split ) )
     #
-    total_done = format_size( status[ b'total_done' ] )
-    total_size = format_size( status[ b'total_size' ] )
+    total_done = format_size( status[ 'total_done' ] )
+    total_size = format_size( status[ 'total_size' ] )
     mystr_split.append(
         "Size: %s/%s Ratio: %0.3f" % ( total_done, total_size,
-                                       status[ b'ratio' ] ) )
+                                       status[ 'ratio' ] ) )
     #
     mystr_split.append(
-        "Seed time: %s Active: %s" % ( format_time( status[ b'seeding_time' ] ),
-                                       format_time( status[ b'active_time' ] ) ) )
+        "Seed time: %s Active: %s" % ( format_time( status[ 'seeding_time' ] ),
+                                       format_time( status[ 'active_time' ] ) ) )
     #
     mystr_split.append(
-        "Tracker status: %s" % status[ b'tracker_status' ].decode('utf-8' ) )
+        "Tracker status: %s" % status[ 'tracker_status' ] )
     #
-    if not status[ b'is_finished' ]:
-        pbar = format_progressbar( status[ b'progress' ],
-                                    cols - (13 + len('%0.2f%%' % status[ b'progress'] ) ) )
-        mystr_split.append( "Progress: %0.2f%% %s" % ( status[ b'progress' ], pbar ) )
+    if not status[ 'is_finished' ]:
+        pbar = format_progressbar( status[ 'progress' ],
+                                    cols - (13 + len('%0.2f%%' % status[ 'progress'] ) ) )
+        mystr_split.append( "Progress: %0.2f%% %s" % ( status[ 'progress' ], pbar ) )
     return '\n'.join( mystr_split )

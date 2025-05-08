@@ -11,7 +11,7 @@ from howdy.core import core_deluge
 def _get_matching_torrents( client, list_of_torrents, operation_if_size_1 = False ):
     if any(map(lambda tok: tok == "*", list_of_torrents ) ):
         return core_deluge.deluge_get_matching_torrents( client, [ "*" ] )
-    if operation_if_size_1 and len( list_of_torrents ) <= 1:
+    if operation_if_size_1 and len( list_of_torrents ) == 0:
         return core_deluge.deluge_get_matching_torrents( client, [ "*" ] )
     return core_deluge.deluge_get_matching_torrents( client, list_of_torrents )
 
@@ -102,7 +102,7 @@ def main( ):
         return
     if args.choose_option in ( 'rm', 'del' ):
         remove_torrents = args.remove_torrent
-        torrentIds = _get_matching_torrents( client, remove_torrents )
+        torrentIds = core_deluge.deluge_get_matching_torrents( client, remove_torrents )
         core_deluge.deluge_remove_torrent( client, torrentIds, remove_data = args.remove_data )
         return
     if args.choose_option == 'push':

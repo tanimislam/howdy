@@ -279,8 +279,9 @@ def deluge_get_torrents_info( client ):
     :returns: a :py:class:`dict` of status :py:class:`dict` for each torrent on the Deluge server.
     :rtype: dict
     """
-    return client.call('core.get_torrents_status', {},
-                       _status_keys )
+    torrent_dict = client.call('core.get_torrents_status', {},
+                        _status_keys )
+    return dict(map(lambda entry: ( entry[0].decode('utf8').lower( ), entry[1] ), torrent_dict.items( ) ) )
 
 def deluge_is_torrent_file( torrent_file_name ):
     """
@@ -345,17 +346,19 @@ def deluge_add_magnet_file( client, magnet_uri ):
     
     .. _`Magnet URI`: https://en.wikipedia.org/wiki/Magnet_URI_scheme
     """
-    torrentId = client.call(
-        'core.add_torrent_magnet', magnet_uri, {} )
     #
     ## check if the magnet link is in there already
     ## this is an obvious failure mode that I had not considered
-    if torrentId is not None: return torrentId
-
-    torrentIds = set(map(lambda torId: torId.lower( ),
-                         deluge_get_matching_torrents( client, ['*'] ) ) )
-    cand_torr_id = parse_qs( magnet_uri )['magnet:?xt'][0].split(':')[-1].strip( )
+    torrentIds = set( deluge_get_matching_torrents( client, ['*'] ) )
+    cand_torr_id = parse_qs( magnet_uri )['magnet:?xt'][0].split(':')[-1].strip( ).lower( )
     if cand_torr_id in torrentIds: return cand_torr_id
+    #
+    ## otherwise NEW torrent
+    torrentId = client.call(
+        'core.add_torrent_magnet', magnet_uri, {} )
+    if torrentId is not None: return torrentId.decode( 'utf8' ).lower( )
+    #
+    ## cannot find, exit
     return None
 
 def deluge_is_url( torrent_url ):
@@ -394,20 +397,19 @@ def deluge_get_matching_torrents( client, torrent_id_strings ):
     :rtype: list
     
     """
-    torrentIds = list( deluge_get_torrents_info( client ).keys( ) )
+    torrentIds = set( deluge_get_torrents_info( client ) )
     if torrent_id_strings == [ "*" ]: return torrentIds
     act_torrentIds = [ ]
-    torrentIdDicts = dict(map(lambda torrentId: (
-        torrentId.decode('utf-8').lower( ), torrentId ), torrentIds ) )
-    torrent_id_strings_lower = set(map(lambda tid_s:
-                                       tid_s.strip( ).lower( ), torrent_id_strings ) )
+    torrent_id_strings_lower = set(
+        map(lambda tid_s: tid_s.strip( ).lower( ), torrent_id_strings ) )
+    sizes = set(map(lambda tid_s: len( tid_s ), torrent_id_strings_lower ) )
+    torrentId_dict_tot = dict(map(lambda siz: ( siz, dict(map(lambda torrentId: ( torrentId[:siz], torrentId ), torrentIds ) ) ),
+                                  sizes ) )
     for tid_s in torrent_id_strings_lower:
         size = len( tid_s )
-        for torrentId_s in torrentIdDicts:
-            if tid_s == torrentId_s[:size]:
-                act_torrentIds.append( torrentIdDicts[ torrentId_s ] )
-                break
-    return act_torrentIds
+        if tid_s in torrentId_dict_tot[ size ]:
+            act_torrentIds.append( torrentId_dict_tot[ size ][ tid_s ] )
+    return set( act_torrentIds )
 
 def deluge_remove_torrent( client, torrent_ids, remove_data = False ):
     """
@@ -417,7 +419,8 @@ def deluge_remove_torrent( client, torrent_ids, remove_data = False ):
     :param torrent_ids: :py:class:`list` of MD5 hashes on the Deluge server.
     :param bool remove_data: if ``True``, remove the torrent and delete all data associated with the torrent on disk. If ``False``, just remove the torrent.
     """
-    for torrentId in torrent_ids:
+    act_torrentIds = deluge_get_matching_torrents( client, torrent_ids )
+    for torrentId in act_torrentIds:
         client.call( 'core.remove_torrent', torrentId, remove_data )
 
 def deluge_pause_torrent( client, torrent_ids ):
@@ -433,7 +436,7 @@ def deluge_pause_torrent( client, torrent_ids ):
     port = client.port
     url = client.host
     torrentId_strings = ' '.join(
-        list(map(lambda torrentId: torrentId.decode('utf-8').lower( ), torrent_ids ) ) )
+        set(map(lambda torrentId: torrentId.lower( ), torrent_ids ) ) )
     retval = os.system(  '%s "connect %s:%d %s %s; pause %s; exit"' % (
         _deluge_exec, url, port, username, password, torrentId_strings ) )
 
@@ -450,7 +453,7 @@ def deluge_resume_torrent( client, torrent_ids ):
     port = client.port
     url = client.host
     torrentId_strings = ' '.join(
-        list(map(lambda torrentId: torrentId.decode('utf-8').lower( ), torrent_ids ) ) )
+        set(map(lambda torrentId: torrentId.lower( ), torrent_ids ) ) )
     retval = os.system(  '%s "connect %s:%d %s %s; resume %s; exit"' % (
         _deluge_exec, url, port, username, password, torrentId_strings ) )
     
@@ -483,7 +486,7 @@ def deluge_format_info( status, torrent_id ):
     cols, _ = os.get_terminal_size( )
     mystr_split = [
         "Name: %s" % status[ b'name' ].decode('utf-8'),
-        "ID: %s" % torrent_id.decode('utf-8').lower( ),
+        "ID: %s" % torrent_id,
         "State: %s" % status[ b'state' ].decode('utf-8') ]
     if status[ b'state' ] in ( b'Seeding', b'Downloading' ):
         line_split = [ ]

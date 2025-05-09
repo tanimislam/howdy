@@ -844,9 +844,6 @@ def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, t
     uname    = data[ 'sshpath'  ].split('@')[0].strip( )
     password = data[ 'password' ]
     host     = data[ 'sshpath'  ].split('@')[1].strip( )
-    # uname = client.username
-    # password = client.password
-    # host = client.host
     #
     with Connection( host, user = uname, connect_kwargs =
                      { 'password' : password } ) as conn:
@@ -879,7 +876,8 @@ def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, t
         #
         ## now delete the torrent and erase underlying data
         try:
-            core_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = True )
+            #core_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = True )
+            core_transmission.transmission_remove_torrent( client, [ torrentId ], remove_data = True )
         except: pass # maybe connection is broken now for some reason??
         return '%s.%s' % ( os.path.basename( totFname ), suffix ), 'SUCCESS'
 
@@ -901,15 +899,16 @@ def _worker_process_tvtorrents( client, data, torFileName, totFname,
 
     def kill_failing( torrentId ):
         if not kill_if_fail: return
-        core_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = kill_if_fail )
-
+        #core_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = kill_if_fail )
+        core_transmission.transmission_remove_torrent( client, [ torrentId ], remove_data = kill_if_fail )
     
     def process_single_iteration( data, idx ):
         mag_link = core_torrents.deconfuse_magnet_link(
             data[ idx ]['link'], excluded_tracker_stubs = excluded_tracker_stubs )
         #
         ## download the top magnet link
-        torrentId = core_deluge.deluge_add_magnet_file( client, mag_link )
+        #torrentId = core_deluge.deluge_add_magnet_file( client, mag_link )
+        torrentId = core_transmission.transmission_add_magnet_file( client, mag_link )
         if torrentId is None:
             return None, _create_status_dict(
                 'FAILURE',
@@ -919,7 +918,8 @@ def _worker_process_tvtorrents( client, data, torFileName, totFname,
         progresses = [ ]
         for jdx in range( numiters ):
             time.sleep( 30 )
-            torrent_info = core_deluge.deluge_get_torrents_info( client )
+            #torrent_info = core_deluge.deluge_get_torrents_info( client )
+            torrent_info = core_transmission.transmission_get_torrents_info( client )
             if torrentId not in torrent_info:
                 kill_failing( torrentId )
                 return None, _create_status_dict( 'FAILURE', 'ERROR, COULD NOT GET IDX = %d, TORRENT ID = %s.' % (
@@ -970,7 +970,7 @@ def worker_process_download_tvtorrent(
     Used by, e.g., :ref:`get_tv_batch`, to download missing episodes on the Plex_ TV library. Attempts to use the Deluge_ server, specified in :numref:`Seedhost Services Setup`, to download an episode. If successful then uploads the finished episode from the remote SSH server to the Plex_ server and local directory, specified in :numref:`Local and Remote (Seedhost) SSH Setup`.
 
     :param dict tvTorUnit: a :py:class:`dict` representing a summarized magnet link searching operation on an episode. The format and meaning of this data structure is described in :py:meth:`create_tvTorUnits <howdy.tv.tv.create_tvTorUnits>`.
-    :param DelugeRPC client: optional argument, the `DelugeRPCClient <Deluge RPC client_>`_ object that at a low level uses the Deluge_ server to download the Magnet link at the remote SSH server. If ``None``, then this client is created using :py:meth:`get_deluge_client <howdy.core.core_deluge.get_deluge_client>`.
+    :param DelugeRPC client: optional argument, the `DelugeRPCClient <Deluge RPC client_>`_ object that at a low level uses the Deluge_ server to download the Magnet link at the remote SSH server. If ``None``, then this client is created using :py:meth:`get_transmission_client <howdy.core.core_transmission.get_transmission_client>`.
     :param int maxtime_in_secs: optional argument, the maximum time to wait for a Magnet link found by the Jackett_ server to fully download through the Deluge_ server. Must be :math:`\ge 60` seconds. Default is 14400 seconds.
     :param int num_iters: optional argument, the maximum number of Magnet links to try and fully download before giving up. The list of Magnet links to try for each missing episode is ordered from *most* seeders + leechers to *least*. Must be :math:`\ge 1`. Default is 1.
     :param bool kill_if_fail: optional argument. If ``True``, then on failing operation kill the torrent download on the Deluge_ server and delete any files associated with it. If ``False``, then keep the torrent download on failure.
@@ -1005,10 +1005,16 @@ def worker_process_download_tvtorrent(
     assert( maxtime_in_secs > 0 )
     #
     if client is None:
-        client, status = core_deluge.get_deluge_client( )
+        #
+        ## 2025-05-09 use transmission instead, comment this code
+        client, status = core_transmission.get_transmission_client( )
         if client is None:
             return None, _create_status_dict(
-                'FAILURE', 'cannot create or run a valid deluge RPC client.', time0 )
+                'FAILURE', 'cannot create or run a valid transmission RPC client.', time0 )
+        # client, status = core_deluge.get_deluge_client( )
+        # if client is None:
+        #     return None, _create_status_dict(
+        #        'FAILURE', 'cannot create or run a valid deluge RPC client.', time0 )
     #
     ## now get list of torrents, choose "top" one
     def _process_jackett_items( tvTorUnit, shared_list ):

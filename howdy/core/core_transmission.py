@@ -1,10 +1,12 @@
 import os, sys, numpy, logging, magic, base64, subprocess, titlecase
-from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlparse
 from pathlib import Path
 from shutil import which
 #
 from howdy.core import session, PlexConfig, get_formatted_size
-from howdy.core.core_deluge import format_size, format_time, format_progressbar, deluge_is_torrent_file
+from howdy.core.core_deluge import (
+    format_size, format_time, format_progressbar,
+    deluge_is_torrent_file, deluge_is_url, deluge_format_info )
 
 
 def push_transmission_credentials( url, username, password ):
@@ -100,6 +102,40 @@ def create_transmission_client( url, username, password ):
                      username = username, password = password )
     return client
 
+def get_transmission_client( ):
+    """
+    Using a minimal Transmission torrent client from server credentials stored in the SQLite3_ configuration database.
+
+    :returns: a :py:class:`tuple`. If successful, the first element is a lightweight `Transmission RPC client`_ and the second element is the string ``'SUCCESS'``. If unsuccessful, the first element is ``None`` and the second element is an error string.
+    :rtype: tuple
+
+    .. seealso::
+    
+       * :py:meth:`create_transmission_client <howdy.core.core_transmission.create_transmission_client>`.
+       * :py:meth:`get_transmission_credentials <howdy.core.core_transmission.get_transmission_credentials>`.
+       * :py:meth:`push_transmission_credentials <howdy.core.core_transmission.push_transmission_credentials>`.
+    """
+    query = session.query( PlexConfig ).filter(
+        PlexConfig.service == 'transmission' )
+    val = query.first( )
+    if val is None:
+        error_message = "ERROR, TRANSMISSION CLIENT SETTINGS NOT DEFINED."
+        logging.debug( error_message )
+        return None, error_message
+    data = val.data
+    url = data['url']
+    username = data['username']
+    password = data['password']
+    #
+    ## now check that we have the correct info
+    try:
+        client = create_transmission_client( url, username, password )
+        return client, 'SUCCESS'
+    except Exception as e: # cannot connect to these settings
+        error_message = 'ERROR, INVALID SETTINGS FOR TRANSMISSION CLIENT.'
+        logging.debug( str( e ) )
+        return None, error_message
+
 def transmission_get_torrents_info( client ):
     """
     Returns a :py:class:`dict` of status info for every torrent on the Transmission server through the Transmission RPC client.
@@ -113,34 +149,45 @@ def transmission_get_torrents_info( client ):
     :rtype: dict
     """
     all_torrents = client.get_torrents( )
-    torrent_info_dict = dict()
+    torrent_dict_final = dict()
     for torrent in all_torrents:
         tracker_status = ""
+        is_finished = False
+        eta = -1
         if len( torrent.tracker_stats ) > 0: # take first tracker
             tracker_name = torrent.tracker_stats[0].announce
             announce     = torrent.tracker_stats[0].last_announce_result
-            tracker_status = "%s: Announce %s" % ( tracker_name, announce )            
-        torrent_hash = torrent.info_hash
-        torrent_info_dict[ torrent_hash ] = {
-            'name'           : torrent.name,
-            'state'          : titlecase.titlecase( str( torrent.status ) ),
-            'download rate'  : torrent.rate_download,
-            'upload rate'    : torrent.rate_upload,
-            'eta'            : torrent.eta, # warning may be None if not started
-            'num seeds'      : sum(map(lambda tstat: max( 0, tstat.seeder_count ), torrent.tracker_stats ) ),
-            'total seeds'    : sum(map(lambda tstat: max( 0, tstat.seeder_count ), torrent.tracker_stats ) ) + torrent.webseeds_sending_to_us,
-            'num peers'      : torrent.peers_connected,
-            'total peers'    : sum( torrent.peers_from.values( ) ),
-            'availability'   : torrent.available,
-            'total done'     : sum(map(lambda fstat: fstat.bytesCompleted, torrent.file_stats ) ),
-            'total size'     : torrent.size_when_done,
-            'ratio'          : torrent.ratio,
-            'seed time'      : torrent.seconds_seeding,
-            'active time'    : torrent.seconds_downloading,
-            'tracker status' : tracker_status,
-            'progress'       : torrent.progress,
+            tracker_status = "%s: Announce %s" % ( tracker_name, announce )
+            if torrent.left_until_done == 0: is_finished = True
+            if torrent.eta is not None: eta = torrent.eta.seconds
+        torrentId = torrent.info_hash
+        torrent_dict_final[ torrentId ] = {
+            'name'                   : torrent.name,
+            'state'                  : titlecase.titlecase( str( torrent.status ) ),
+            'download_payload_rate'  : torrent.rate_download,
+            'upload_payload_rate'    : torrent.rate_upload,
+            'eta'                    : eta,
+            'num_seeds'              : sum(map(lambda tstat: max( 0, tstat.seeder_count ), torrent.tracker_stats ) ),
+            'total_seeds'            : sum(map(lambda tstat: max( 0, tstat.seeder_count ), torrent.tracker_stats ) ) + torrent.webseeds_sending_to_us,
+            'num_peers'              : torrent.peers_connected,
+            'total_peers'            : sum( torrent.peers_from.values( ) ),
+            'distributed_copies'     : torrent.available,
+            'total_done'             : sum(map(lambda fstat: fstat.bytesCompleted, torrent.file_stats ) ),
+            'total_size'             : torrent.size_when_done,
+            'ratio'                  : torrent.ratio,
+            'seeding_time'           : torrent.seconds_seeding,
+            'active_time'            : torrent.seconds_downloading,
+            'tracker_status'         : tracker_status,
+            'is_finished'            : is_finished,
+            'progress'               : torrent.progress,
         }
-    return torrent_info_dict
+        if len( torrent.get_files( ) ) > 0:
+            torrent_dict_final[ torrentId ][ 'files' ] = list(
+                map(lambda file_entry: {
+                    'path' : file_entry.name,
+                    'size' : file_entry.size }, torrent.get_files( ) ) )
+        
+    return torrent_dict_final
 
 def transmission_add_torrent_file( client, torrent_file_name ):
     """
@@ -178,3 +225,91 @@ def transmission_add_torrent_file_as_data(
     ## check if the magnet link is in there already
     ## this is an obvious failure mode that I had not considered
     return torrentId
+
+def transmission_add_magnet_file( client, magnet_uri ):
+    """
+    Uploads a `Magnet URI`_ to the Transmission server through the `Transmission RPC client`_.
+
+    :param client: the `Transmission RPC client`_.
+    :param str magnet_uri: the Magnet URI to upload.
+
+    :returns: if successful, returns the MD5 hash of the uploaded torrent as a :py:class:`str`. If unsuccessful, returns ``None``.
+    
+    .. _`Magnet URI`: https://en.wikipedia.org/wiki/Magnet_URI_scheme
+    """
+    #
+    ## check if the magnet link is in there already
+    ## this is an obvious failure mode that I had not considered
+    torrentIds = set( transmission_get_torrents_info( client ) )
+    cand_torr_id = parse_qs( magnet_uri )['magnet:?xt'][0].split(':')[-1].strip( ).lower( )
+    if cand_torr_id in torrentIds: return cand_torr_id
+    #
+    ## otherwise NEW torrent
+    torr = client.add_torrent( magnet_uri )
+    return torr.info_hash
+
+def transmission_add_url( client, torrent_url ):
+    """
+    Adds a torrent file via URL to the Transmission server through the `Transmission RPC client`_. If the URL is valid, then added. If the URL is invalid, then nothing happens.
+
+    :param client: the `Transmission RPC client`_.
+    :param str torrent_url: candidate URL.
+    """
+    if deluge_is_url( torrent_url ): client.add_torrent( torrent_url )
+
+def transmission_get_matching_torrents( client, torrent_id_strings ):
+    """
+    Given a :py:class:`list` of possibly truncated MD5 hashes of candidate torrents on the Transmission server, returns a :py:class:`list` of MD5 sums of torrents that match what was provided.
+
+    :param client: the `Transmission RPC client`_.
+    
+    :param torrent_id_strings: the candidate :py:class:`list` of truncated MD5 hashes on the Transmission server. The ``[ '*' ]`` input means to look for all torrents on the Transmission server.
+
+    :returns: a :py:class:`list` of candidate torrents, as their MD5 hash, tat match ``torrent_id_strings``. If ``torrent_id_strings == ['*']``, then return all the torrents (as MD5 hashes) on the Transmission server.
+    :rtype: list
+    
+    """
+    torrentIds = set( transmission_get_torrents_info( client ) )
+    if torrent_id_strings == [ "*" ]: return torrentIds
+    act_torrentIds = [ ]
+    torrent_id_strings_lower = set(
+        map(lambda tid_s: tid_s.strip( ).lower( ), torrent_id_strings ) )
+    sizes = set(map(lambda tid_s: len( tid_s ), torrent_id_strings_lower ) )
+    torrentId_dict_tot = dict(map(lambda siz: ( siz, dict(map(lambda torrentId: ( torrentId[:siz], torrentId ), torrentIds ) ) ),
+                                  sizes ) )
+    for tid_s in torrent_id_strings_lower:
+        size = len( tid_s )
+        if tid_s in torrentId_dict_tot[ size ]:
+            act_torrentIds.append( torrentId_dict_tot[ size ][ tid_s ] )
+    return set( act_torrentIds )
+
+def transmission_remove_torrent( client, torrent_ids, remove_data = False ):
+    """
+    Remove torrents from the Transmission server through the `Transmission RPC client`_.
+
+    :param client: the `Transmission RPC client`_.
+    :param torrent_ids: :py:class:`list` of MD5 hashes on the Transmission server.
+    :param bool remove_data: if ``True``, remove the torrent and delete all data associated with the torrent on disk. If ``False``, just remove the torrent.
+    """
+    act_torrentIds = list( transmission_get_matching_torrents( client, torrent_ids ) )
+    client.remove_torrent( act_torrentIds, delete_data = remove_data )
+
+def transmission_pause_torrent( client, torrent_ids ):
+    """
+    Pauses torrents on the Transmission server.
+
+    :param client: the `Transmission RPC client`_.
+    :param torrent_ids: :py:class:`list` of MD5 hashes on the Transmission server.
+    """
+    act_torrentIds = list( transmission_get_matching_torrents( client, torrent_ids ) )
+    client.stop_torrent( act_torrentIds )
+
+def transmission_resume_torrent( client, torrent_ids ):
+    """
+    Resumes torrents on the Transmission server.
+
+    :param client: the `Transmission RPC client`_. In this case, only the configuration info (username, password, URL, and port) are used.
+    :param torrent_ids: :py:class:`list` of MD5 hashes on the Transmission server.
+    """
+    act_torrentIds = list( transmission_get_matching_torrents( client, torrent_ids ) )
+    client.start_torrent( act_torrentIds )

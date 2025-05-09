@@ -49,3 +49,4 @@ validators
 yt_dlp
 sphinxcontrib-youtube
 sphinxcontrib-svg2pdfconverter
+transmission-rpc

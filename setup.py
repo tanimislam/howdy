@@ -27,7 +27,7 @@ def get_version_number( ):
         return version
     except Exception as e:
         print( "what happened here?" )
-        return '1.2'
+        return '1.5'
 
 setup(
     name = 'howdy',
@@ -75,6 +75,7 @@ setup(
             ## cli
             'howdy_core_cli = howdy.core.cli.howdy_core_cli:main',
             'howdy_deluge_console = howdy.core.cli.howdy_deluge_console:main',
+            'howdy_transmission_console = howdy.core.cli.howdy_transmission_console:main',
             'howdy_resynclibs = howdy.core.cli.howdy_resynclibs:main',
             'howdy_store_credentials = howdy.core.cli.howdy_store_credentials:main',
             'rsync_subproc = howdy.core.cli.rsync_subproc:main',

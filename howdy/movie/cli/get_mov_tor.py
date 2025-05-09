@@ -7,7 +7,7 @@ from itertools import chain
 from pathos.multiprocessing import Pool
 from argparse import ArgumentParser
 #
-from howdy.core import core_deluge, core_torrents
+from howdy.core import core_deluge, core_torrents, core_transmission
 from howdy.movie import movie_torrents, movie
 from howdy.tv import tv_torrents
 from howdy.core.core import get_jackett_credentials
@@ -168,12 +168,13 @@ def get_movie_yts( name, verify = True, raiseError = False, to_torrent = False )
             openfile.write( resp.content )
     else:
         import base64
-        client, status = core_deluge.get_deluge_client( )
+        #client, status = core_deluge.get_deluge_client( )
+        client, status = core_transmission.get_transmission_client( )
         if status != 'SUCCESS':
             print( status )
             return
-        core_deluge.deluge_add_torrent_file_as_data(
-            client, filename, resp.content )
+        core_transmission.transmission_add_torrent_file_as_data(
+            client, resp.content )
 
 def main( ):
     parser = ArgumentParser( )

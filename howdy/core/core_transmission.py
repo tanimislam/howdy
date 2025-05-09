@@ -1,13 +1,11 @@
-import os, sys, numpy, logging, magic, base64, subprocess, titlecase
+import os, sys, numpy, logging, magic, subprocess, titlecase
 from urllib.parse import parse_qs, urlparse
 from pathlib import Path
 from shutil import which
 #
-from howdy.core import session, PlexConfig, get_formatted_size
+from howdy.core import session, PlexConfig
 from howdy.core.core_deluge import (
-    format_size, format_time, format_progressbar,
     deluge_is_torrent_file, deluge_is_url, deluge_format_info )
-
 
 def push_transmission_credentials( url, username, password ):
     """
@@ -205,26 +203,22 @@ def transmission_add_torrent_file( client, torrent_file_name ):
     return tor.info_hash
 
 def transmission_add_torrent_file_as_data(
-        client, torrent_file_name, torrent_file_data ):
+        client, torrent_file_data ):
     """
     Higher level method that takes a torrent file name, and its byte data representation, and uploads to the Transmission server through the `Transmission RPC client`_.
 
     :param client: the `Transmission RPC client`_.
-    :param str torrent_file_name: name of the candidate file.
     :param byte torrent_file_data: byte representation of the torrent file data.
     
     :returns: if successful, returns the MD5 hash of the uploaded torrent as a :py:class:`str`. If unsuccessful, returns ``None``.
 
     .. seealso:: :py:meth:`transmission_add_torrent_file <howdy.core.core_transmission.transmission_add_torrent_file>`.
     """
-    baseName = os.path.basename( torrent_file_name )
-    torrentId = client.call(
-        'core.add_torrent_file', baseName,
-        base64.b64encode( torrent_file_data ), {} )
+    tor = client.add_torrent( torrent_file_data )
     #
     ## check if the magnet link is in there already
     ## this is an obvious failure mode that I had not considered
-    return torrentId
+    return tor.info_hash
 
 def transmission_add_magnet_file( client, magnet_uri ):
     """

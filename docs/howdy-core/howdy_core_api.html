@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.3. Howdy Core API &mdash; howdy! 1.55-58-g11f3fc4f documentation</title>
+  <title>4.3. Howdy Core API &mdash; howdy! 1.55-72-g24e5644a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7dc6ce7e" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9316aefb"></script>
+      <script src="../_static/documentation_options.js?v=b1c4c9a2"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -139,7 +139,23 @@
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.push_deluge_credentials"><code class="docutils literal notranslate"><span class="pre">push_deluge_credentials()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-rsync-module">4.3.4. howdy.core.core_rsync module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-transmission-module">4.3.4. howdy.core.core_transmission module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.create_transmission_client"><code class="docutils literal notranslate"><span class="pre">create_transmission_client()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.get_transmission_client"><code class="docutils literal notranslate"><span class="pre">get_transmission_client()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.get_transmission_credentials"><code class="docutils literal notranslate"><span class="pre">get_transmission_credentials()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.push_transmission_credentials"><code class="docutils literal notranslate"><span class="pre">push_transmission_credentials()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.transmission_add_magnet_file"><code class="docutils literal notranslate"><span class="pre">transmission_add_magnet_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.transmission_add_torrent_file"><code class="docutils literal notranslate"><span class="pre">transmission_add_torrent_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.transmission_add_torrent_file_as_data"><code class="docutils literal notranslate"><span class="pre">transmission_add_torrent_file_as_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.transmission_add_url"><code class="docutils literal notranslate"><span class="pre">transmission_add_url()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.transmission_get_matching_torrents"><code class="docutils literal notranslate"><span class="pre">transmission_get_matching_torrents()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.transmission_get_torrents_info"><code class="docutils literal notranslate"><span class="pre">transmission_get_torrents_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.transmission_pause_torrent"><code class="docutils literal notranslate"><span class="pre">transmission_pause_torrent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.transmission_remove_torrent"><code class="docutils literal notranslate"><span class="pre">transmission_remove_torrent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_transmission.transmission_resume_torrent"><code class="docutils literal notranslate"><span class="pre">transmission_resume_torrent()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-rsync-module">4.3.5. howdy.core.core_rsync module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_rsync.check_credentials"><code class="docutils literal notranslate"><span class="pre">check_credentials()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_rsync.download_upload_files"><code class="docutils literal notranslate"><span class="pre">download_upload_files()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_rsync.get_credentials"><code class="docutils literal notranslate"><span class="pre">get_credentials()</span></code></a></li>
@@ -147,7 +163,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_rsync.push_credentials"><code class="docutils literal notranslate"><span class="pre">push_credentials()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-torrents-module">4.3.5. howdy.core.core_torrents module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-torrents-module">4.3.6. howdy.core.core_torrents module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.deconfuse_magnet_link"><code class="docutils literal notranslate"><span class="pre">deconfuse_magnet_link()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.get_book_torrent_jackett"><code class="docutils literal notranslate"><span class="pre">get_book_torrent_jackett()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.get_trackers_to_exclude"><code class="docutils literal notranslate"><span class="pre">get_trackers_to_exclude()</span></code></a></li>
@@ -155,14 +171,14 @@
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.remove_trackers_to_exclude"><code class="docutils literal notranslate"><span class="pre">remove_trackers_to_exclude()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-admin-module">4.3.6. howdy.core.core_admin module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-admin-module">4.3.7. howdy.core.core_admin module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_admin.get_tautulli_activity"><code class="docutils literal notranslate"><span class="pre">get_tautulli_activity()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_admin.get_tautulli_apikey"><code class="docutils literal notranslate"><span class="pre">get_tautulli_apikey()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_admin.plex_check_for_update"><code class="docutils literal notranslate"><span class="pre">plex_check_for_update()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_admin.plex_download_release"><code class="docutils literal notranslate"><span class="pre">plex_download_release()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#howdy-core-deluge-client-tanim-module">4.3.7. howdy.core.deluge_client_tanim module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-core-deluge-client-tanim-module">4.3.8. howdy.core.deluge_client_tanim module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.deluge_client_tanim.client.CallTimeoutException"><code class="docutils literal notranslate"><span class="pre">CallTimeoutException</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.deluge_client_tanim.client.ConnectionLostException"><code class="docutils literal notranslate"><span class="pre">ConnectionLostException</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.deluge_client_tanim.client.DelugeClientException"><code class="docutils literal notranslate"><span class="pre">DelugeClientException</span></code></a></li>
@@ -170,7 +186,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.deluge_client_tanim.client.InvalidHeaderException"><code class="docutils literal notranslate"><span class="pre">InvalidHeaderException</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.deluge_client_tanim.client.LocalDelugeRPCClient"><code class="docutils literal notranslate"><span class="pre">LocalDelugeRPCClient</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.deluge_client_tanim.client.RemoteException"><code class="docutils literal notranslate"><span class="pre">RemoteException</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-howdy.core.deluge_client_tanim.rencode">4.3.7.1. howdy.core.deluge_client_tanim.rencode submodule</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-howdy.core.deluge_client_tanim.rencode">4.3.8.1. howdy.core.deluge_client_tanim.rencode submodule</a></li>
 </ul>
 </li>
 </ul>
@@ -533,7 +549,7 @@
 <dl class="py data">
 <dt class="sig sig-object py" id="howdy.core.geoip_reader">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">geoip_reader</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;geoip2.database.Reader</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#howdy.core.geoip_reader" title="Link to this definition"></a></dt>
-<dd><p>This contains an on-disk <a class="reference external" href="https://www.maxmind.com/en/geoip2-services-and-databases">MaxMind</a> database, of type <a class="reference external" href="https://geoip2.readthedocs.io/en/latest/index.html#geoip2.database.Reader" title="(in geoip2 v4.8.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">geoip2.database.Reader</span></code></a>, containing location information for IP addresses.</p>
+<dd><p>This contains an on-disk <a class="reference external" href="https://www.maxmind.com/en/geoip2-services-and-databases">MaxMind</a> database, of type <a class="reference external" href="https://geoip2.readthedocs.io/en/latest/index.html#geoip2.database.Reader" title="(in geoip2 v5.1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">geoip2.database.Reader</span></code></a>, containing location information for IP addresses.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -604,7 +620,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.get_lastupdated_string">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2024,</span> <span class="pre">10,</span> <span class="pre">14,</span> <span class="pre">14,</span> <span class="pre">50,</span> <span class="pre">18,</span> <span class="pre">538250)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2025,</span> <span class="pre">5,</span> <span class="pre">10,</span> <span class="pre">12,</span> <span class="pre">54,</span> <span class="pre">41,</span> <span class="pre">889493)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Link to this definition"></a></dt>
 <dd><p>Returns a string representation of a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1419,16 +1435,16 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.core.oauthGetGoogleCredentials">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">oauthGetGoogleCredentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.oauthGetGoogleCredentials" title="Link to this definition"></a></dt>
-<dd><p>Gets the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google Oauth2</a> credentials, stored in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database, in the form of a refreshed <a class="reference external" href="https://google-auth.readthedocs.io/en/latest/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials" title="(in google-auth v1.30.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Credentials</span></code></a> object. This OAuth2 authentication method is used for ALL the services accessed by <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a>.</p>
+<dd><p>Gets the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google Oauth2</a> credentials, stored in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database, in the form of a refreshed <a class="reference external" href="https://google-auth.readthedocs.io/en/latest/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials" title="(in google-auth v2.38.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Credentials</span></code></a> object. This OAuth2 authentication method is used for ALL the services accessed by <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://google-auth.readthedocs.io/en/latest/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials" title="(in google-auth v1.30.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Credentials</span></code></a> form of the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google Oauth2</a> credentials for various Oauth2 services.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://google-auth.readthedocs.io/en/latest/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials" title="(in google-auth v2.38.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Credentials</span></code></a> form of the <a class="reference external" href="https://developers.google.com/identity/protocols/OAuth2">Google Oauth2</a> credentials for various Oauth2 services.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://google-auth.readthedocs.io/en/latest/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials" title="(in google-auth v1.30.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Credentials</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://google-auth.readthedocs.io/en/latest/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials" title="(in google-auth v2.38.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Credentials</span></code></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1699,7 +1715,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </section>
 <section id="howdy-core-core-deluge-module">
 <h2><span class="section-number">4.3.3. </span>howdy.core.core_deluge module<a class="headerlink" href="#howdy-core-core-deluge-module" title="Link to this heading"></a></h2>
-<p>This module implements the functionality to interact with a <a class="reference external" href="https://www.seedhost.eu">Seedhost</a> <a class="reference external" href="https://en.wikipedia.org/wiki/Seedbox">seedbox</a> <a class="reference external" href="https://deluge-torrent.org">Deluge torrent server</a>, by copying a minimal set of the functionality of a <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge torrent client</a>. The data formatting in this module is largely or wholly copied from the <a class="reference external" href="https://deluge.readthedocs.io/en/latest">Deluge SDK</a>. The much reduced Deluge torrent client, <a class="reference internal" href="cli_tools/howdy_core_cli.html#howdy-deluge-console"><span class="std std-ref">howdy_deluge_console</span></a>, is a CLI front-end to this module.</p>
+<p>This module implements the functionality to interact with a <a class="reference external" href="https://www.seedhost.eu">Seedhost</a>  <a class="reference external" href="https://en.wikipedia.org/wiki/Seedbox">seedbox</a>  <a class="reference external" href="https://deluge-torrent.org">Deluge torrent server</a>, by copying a minimal set of the functionality of a <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge torrent client</a>. The data formatting in this module is largely or wholly copied from the <a class="reference external" href="https://deluge.readthedocs.io/en/latest">Deluge SDK</a>. The much reduced Deluge torrent client, <a class="reference internal" href="cli_tools/howdy_core_cli.html#howdy-deluge-console"><span class="std std-ref">howdy_deluge_console</span></a>, is a CLI front-end to this module.</p>
 <dl class="py function" id="module-howdy.core.core_deluge">
 <dt class="sig sig-object py" id="howdy.core.core_deluge.create_deluge_client">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">create_deluge_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.create_deluge_client" title="Link to this definition"></a></dt>
@@ -2121,9 +2137,273 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 </section>
+<section id="howdy-core-core-transmission-module">
+<h2><span class="section-number">4.3.4. </span>howdy.core.core_transmission module<a class="headerlink" href="#howdy-core-core-transmission-module" title="Link to this heading"></a></h2>
+<p>This module implements the functionality to interact with a <a class="reference external" href="https://www.seedhost.eu">Seedhost</a>  <a class="reference external" href="https://en.wikipedia.org/wiki/Seedbox">seedbox</a>  <a class="reference external" href="https://transmissionbt.com">Transmission torrent server</a>. The custom <a class="reference external" href="https://transmissionbt.com">Transmission</a> torrent client, <a class="reference internal" href="cli_tools/howdy_core_cli.html#howdy-transmission-console"><span class="std std-ref">howdy_transmission_console</span></a>, is a CLI front-end to this module, which uses the lower level <a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#module-transmission_rpc" title="(in transmission-rpc)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">transmission_rpc</span></code></a> module functionality.</p>
+<dl class="py function" id="module-howdy.core.core_transmission">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.create_transmission_client">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">create_transmission_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.create_transmission_client" title="Link to this definition"></a></dt>
+<dd><p>Creates a minimal <a class="reference external" href="https://transmissionbt.com">Transmission</a> torrent client to the Transmission seedbox server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – URL of the Transmission server.</p></li>
+<li><p><strong>username</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – server account username.</p></li>
+<li><p><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – server account password.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>previously a lightweight <a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#howdy.core.core_transmission.get_transmission_client" title="howdy.core.core_transmission.get_transmission_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_transmission_client</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="#howdy.core.core_transmission.get_transmission_credentials" title="howdy.core.core_transmission.get_transmission_credentials"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_transmission_credentials</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="#howdy.core.core_transmission.push_transmission_credentials" title="howdy.core.core_transmission.push_transmission_credentials"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push_transmission_credentials</span></code></a>.</p></li>
+</ul>
+</div>
+<span class="target" id="transmission-rpc-client"></span></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.get_transmission_client">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">get_transmission_client</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.get_transmission_client" title="Link to this definition"></a></dt>
+<dd><p>Returns a minimal <a class="reference external" href="https://transmissionbt.com">Transmission</a> torrent client from server credentials stored in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. If successful, the first element is a lightweight <a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>, and the second element is the string <code class="docutils literal notranslate"><span class="pre">'SUCCESS'</span></code>. If unsuccessful, the first element is <code class="docutils literal notranslate"><span class="pre">None</span></code> and the second element is an error string.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#howdy.core.core_transmission.create_transmission_client" title="howdy.core.core_transmission.create_transmission_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">create_transmission_client</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="#howdy.core.core_transmission.get_transmission_credentials" title="howdy.core.core_transmission.get_transmission_credentials"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_transmission_credentials</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="#howdy.core.core_transmission.push_transmission_credentials" title="howdy.core.core_transmission.push_transmission_credentials"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push_transmission_credentials</span></code></a>.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.get_transmission_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">get_transmission_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.get_transmission_credentials" title="Link to this definition"></a></dt>
+<dd><p>Gets the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server credentials from the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database. The data looks like this.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">XXXX</span><span class="p">,</span>
+  <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="n">AAAA</span><span class="p">,</span>
+  <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="n">BBBB</span> <span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary of <a class="reference external" href="https://transmissionbt.com">Transmission</a> server settings.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#howdy.core.core_transmission.create_transmission_client" title="howdy.core.core_transmission.create_transmission_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">create_transmission_client</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="#howdy.core.core_transmission.get_transmission_client" title="howdy.core.core_transmission.get_transmission_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_transmission_client</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="#howdy.core.core_transmission.push_transmission_credentials" title="howdy.core.core_transmission.push_transmission_credentials"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push_transmission_credentials</span></code></a>.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.push_transmission_credentials">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">push_transmission_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.push_transmission_credentials" title="Link to this definition"></a></dt>
+<dd><p>Stores the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server credentials into the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – URL of the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server.</p></li>
+<li><p><strong>username</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – server account username.</p></li>
+<li><p><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – server account password.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>if successful (due to correct <a class="reference external" href="https://transmissionbt.com">Transmission</a> server settings), returns <code class="docutils literal notranslate"><span class="pre">'SUCCESS'</span></code>. If unsuccessful, returns <code class="docutils literal notranslate"><span class="pre">'ERROR,</span> <span class="pre">INVALID</span> <span class="pre">SETTINGS</span> <span class="pre">FOR</span> <span class="pre">TRANSMISSION</span> <span class="pre">CLIENT.'</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#howdy.core.core_transmission.create_transmission_client" title="howdy.core.core_transmission.create_transmission_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">create_transmission_client</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="#howdy.core.core_transmission.get_transmission_client" title="howdy.core.core_transmission.get_transmission_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_transmission_client</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="#howdy.core.core_transmission.get_transmission_credentials" title="howdy.core.core_transmission.get_transmission_credentials"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_transmission_credentials</span></code></a>.</p></li>
+</ul>
+</div>
+<p>_Transmission: <a class="reference external" href="https://transmissionbt.com">https://transmissionbt.com</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.transmission_add_magnet_file">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">transmission_add_magnet_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnet_uri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.transmission_add_magnet_file" title="Link to this definition"></a></dt>
+<dd><p>Uploads a <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">Magnet URI</a> to the Transmission server through the <a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>) – the Transmission RPC client.</p></li>
+<li><p><strong>magnet_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the Magnet URI to upload.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>if successful, returns the MD5 hash of the uploaded torrent as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>. If unsuccessful, returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.transmission_add_torrent_file">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">transmission_add_torrent_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.transmission_add_torrent_file" title="Link to this definition"></a></dt>
+<dd><p>Higher level method that takes a torrent file on disk and uploads to the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server through the <a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>) – the Transmission RPC client.</p></li>
+<li><p><strong>torrent_file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – name of the candidate file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>if successful, returns the MD5 hash of the uploaded torrent as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>. If unsuccessful, returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#howdy.core.core_transmission.transmission_add_torrent_file_as_data" title="howdy.core.core_transmission.transmission_add_torrent_file_as_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">transmission_add_torrent_file_as_data</span></code></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.transmission_add_torrent_file_as_data">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">transmission_add_torrent_file_as_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_file_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.transmission_add_torrent_file_as_data" title="Link to this definition"></a></dt>
+<dd><p>Higher level method that takes a torrent file name, and its byte data representation, and uploads to the Transmission server through the <a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>) – the Transmission RPC client.</p></li>
+<li><p><strong>torrent_file_data</strong> (<em>byte</em>) – byte representation of the torrent file data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>if successful, returns the MD5 hash of the uploaded torrent as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>. If unsuccessful, returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#howdy.core.core_transmission.transmission_add_torrent_file" title="howdy.core.core_transmission.transmission_add_torrent_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">transmission_add_torrent_file</span></code></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.transmission_add_url">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">transmission_add_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.transmission_add_url" title="Link to this definition"></a></dt>
+<dd><p>Adds a torrent file via URL to the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server through the <a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>. If the URL is valid, then added. If the URL is invalid, then nothing happens.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>) – the Transmission RPC client.</p></li>
+<li><p><strong>torrent_url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – candidate URL.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.transmission_get_matching_torrents">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">transmission_get_matching_torrents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_id_strings</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.transmission_get_matching_torrents" title="Link to this definition"></a></dt>
+<dd><p>Given a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of possibly truncated MD5 hashes of candidate torrents on the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server, returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of MD5 sums of torrents that match what was provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>) – the Transmission RPC client.</p></li>
+<li><p><strong>torrent_id_strings</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – the candidate <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of truncated MD5 hashes on the Transmission server. The <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">'*'</span> <span class="pre">]</span></code> input means to look for all torrents on the Transmission server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of candidate torrents, as their MD5 hash, tat match <code class="docutils literal notranslate"><span class="pre">torrent_id_strings</span></code>. If <code class="docutils literal notranslate"><span class="pre">torrent_id_strings</span> <span class="pre">==</span> <span class="pre">['*']</span></code>, then return all the torrents (as MD5 hashes) on the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.transmission_get_torrents_info">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">transmission_get_torrents_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.transmission_get_torrents_info" title="Link to this definition"></a></dt>
+<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of status info for every torrent on the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server through the <a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>.</p>
+<p>The key in this <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> is the MD5 hash of the torrent, and its value is a status <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.</p>
+<p>For each torrent, here are the keys in the status <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>: <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">state</span></code>, <code class="docutils literal notranslate"><span class="pre">download</span> <span class="pre">rate</span></code>, <code class="docutils literal notranslate"><span class="pre">upload</span> <span class="pre">rate</span></code>, <code class="docutils literal notranslate"><span class="pre">eta</span></code> (which may be <code class="docutils literal notranslate"><span class="pre">None</span></code> if download has <em>not</em> started), <code class="docutils literal notranslate"><span class="pre">num</span> <span class="pre">seeds</span></code>, <code class="docutils literal notranslate"><span class="pre">total</span> <span class="pre">seeds</span></code>, <code class="docutils literal notranslate"><span class="pre">num</span> <span class="pre">peers</span></code>, <code class="docutils literal notranslate"><span class="pre">total</span> <span class="pre">peers</span></code>, <code class="docutils literal notranslate"><span class="pre">availability</span></code>, <code class="docutils literal notranslate"><span class="pre">total</span> <span class="pre">done</span></code>, <code class="docutils literal notranslate"><span class="pre">total</span> <span class="pre">size</span></code>, <code class="docutils literal notranslate"><span class="pre">ratio</span></code>, <code class="docutils literal notranslate"><span class="pre">seed</span> <span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">active</span> <span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">tracker</span> <span class="pre">status</span></code>, and <code class="docutils literal notranslate"><span class="pre">progress</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>client</strong> (<a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>) – the Transmission RPC client.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of status <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> for each torrent on the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.transmission_pause_torrent">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">transmission_pause_torrent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_ids</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.transmission_pause_torrent" title="Link to this definition"></a></dt>
+<dd><p>Pauses torrents on the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>) – the Transmission RPC client.</p></li>
+<li><p><strong>torrent_ids</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of MD5 hashes on the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.transmission_remove_torrent">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">transmission_remove_torrent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.transmission_remove_torrent" title="Link to this definition"></a></dt>
+<dd><p>Remove torrents from the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server through the <a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>) – the Transmission RPC client.</p></li>
+<li><p><strong>torrent_ids</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of MD5 hashes on the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server.</p></li>
+<li><p><strong>remove_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, remove the torrent and delete all data associated with the torrent on disk. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, just remove the torrent.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_transmission.transmission_resume_torrent">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_transmission.</span></span><span class="sig-name descname"><span class="pre">transmission_resume_torrent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_ids</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_transmission.transmission_resume_torrent" title="Link to this definition"></a></dt>
+<dd><p>Resumes torrents on the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference external" href="https://transmission-rpc.readthedocs.io/en/stable/client.html#transmission_rpc.Client" title="(in transmission-rpc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransmissionRPCClient</span></code></a>) – the Transmission RPC client.</p></li>
+<li><p><strong>torrent_ids</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of MD5 hashes on the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="howdy-core-core-rsync-module">
-<h2><span class="section-number">4.3.4. </span>howdy.core.core_rsync module<a class="headerlink" href="#howdy-core-core-rsync-module" title="Link to this heading"></a></h2>
-<p>This module implements the functionality to interact with a <a class="reference external" href="https://www.seedhost.eu">Seedhost</a> <a class="reference external" href="https://en.wikipedia.org/wiki/Seedbox">seedbox</a> SSH server to download or upload files and directories using the <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> protocol tunneled through SSH. <a class="reference internal" href="cli_tools/howdy_core_cli.html#rsync-subproc"><span class="std std-ref">rsync_subproc</span></a> is a CLI front-end to this module.</p>
+<h2><span class="section-number">4.3.5. </span>howdy.core.core_rsync module<a class="headerlink" href="#howdy-core-core-rsync-module" title="Link to this heading"></a></h2>
+<p>This module implements the functionality to interact with a <a class="reference external" href="https://www.seedhost.eu">Seedhost</a>  <a class="reference external" href="https://en.wikipedia.org/wiki/Seedbox">seedbox</a> SSH server to download or upload files and directories using the <a class="reference external" href="https://en.wikipedia.org/wiki/Rsync">rsync</a> protocol tunneled through SSH. <a class="reference internal" href="cli_tools/howdy_core_cli.html#rsync-subproc"><span class="std std-ref">rsync_subproc</span></a> is a CLI front-end to this module.</p>
 <dl class="py function" id="module-howdy.core.core_rsync">
 <dt class="sig sig-object py" id="howdy.core.core_rsync.check_credentials">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.core_rsync.</span></span><span class="sig-name descname"><span class="pre">check_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sshpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_rsync.check_credentials" title="Link to this definition"></a></dt>
@@ -2256,7 +2536,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 
 </section>
 <section id="howdy-core-core-torrents-module">
-<h2><span class="section-number">4.3.5. </span>howdy.core.core_torrents module<a class="headerlink" href="#howdy-core-core-torrents-module" title="Link to this heading"></a></h2>
+<h2><span class="section-number">4.3.6. </span>howdy.core.core_torrents module<a class="headerlink" href="#howdy-core-core-torrents-module" title="Link to this heading"></a></h2>
 <p>This is a newer module. It implements higher level interfaces to the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching server to search for ebooks. <a class="reference internal" href="cli_tools/howdy_core_cli.html#get-book-tor"><span class="std std-ref">get_book_tor</span></a> is its only CLI front-end.</p>
 <dl class="py function" id="module-howdy.core.core_torrents">
 <dt class="sig sig-object py" id="howdy.core.core_torrents.deconfuse_magnet_link">
@@ -2339,7 +2619,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 
 </section>
 <section id="howdy-core-core-admin-module">
-<h2><span class="section-number">4.3.6. </span>howdy.core.core_admin module<a class="headerlink" href="#howdy-core-core-admin-module" title="Link to this heading"></a></h2>
+<h2><span class="section-number">4.3.7. </span>howdy.core.core_admin module<a class="headerlink" href="#howdy-core-core-admin-module" title="Link to this heading"></a></h2>
 <p>This is a newer module. It implements the low-level tooling to monitor the <a class="reference external" href="https://tautulli.com">Tautulli</a> server that looks at the <a class="reference external" href="https://plex.tv">Plex</a> server, and to check for updates, and download updates to, the current <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 <dl class="py function" id="module-howdy.core.core_admin">
 <dt class="sig sig-object py" id="howdy.core.core_admin.get_tautulli_activity">
@@ -2388,7 +2668,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.15.16)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> and “SUCCESS” if successful. Otherwise returns the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> returned by <a class="reference internal" href="#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.17.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> and “SUCCESS” if successful. Otherwise returns the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> returned by <a class="reference internal" href="#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
@@ -2403,7 +2683,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>release</strong> (<a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.15.16)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a>) – the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.15.16)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> containing the <a class="reference external" href="https://plex.tv">Plex</a> update information.</p></li>
+<li><p><strong>release</strong> (<a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.17.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a>) – the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.17.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> containing the <a class="reference external" href="https://plex.tv">Plex</a> update information.</p></li>
 <li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server token.</p></li>
 <li><p><strong>destination_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the destination directory into which to download.</p></li>
 <li><p><strong>do_progress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether to show the progress bar or not. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
@@ -2420,7 +2700,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 
 </section>
 <section id="howdy-core-deluge-client-tanim-module">
-<h2><span class="section-number">4.3.7. </span>howdy.core.deluge_client_tanim module<a class="headerlink" href="#howdy-core-deluge-client-tanim-module" title="Link to this heading"></a></h2>
+<h2><span class="section-number">4.3.8. </span>howdy.core.deluge_client_tanim module<a class="headerlink" href="#howdy-core-deluge-client-tanim-module" title="Link to this heading"></a></h2>
 <p>This is a newer module. This is a copy of the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">deluge-client</a> repository and module. Instead of creating a special branch, I had to modify its <code class="docutils literal notranslate"><span class="pre">DelugeRPCClient</span></code> object to work in a custom way, because of <em>much</em> stricter SSL policies in Python 3.10.</p>
 <p>The relevant code that I modify now lives in my <code class="xref py py-class docutils literal notranslate"><span class="pre">DelugeRPCClient</span></code>. I followed advice from <a class="reference external" href="https://stackoverflow.com/questions/49774366/how-to-set-ciphers-in-ssl-python-socket">this StackOverflow article on how to set ciphers in SSL Python sockets</a>. I created an SSL context, allowed <em>all</em> ciphers, and then passed the all-ciphers list into the low-level socket that performs RPC communications.</p>
 <dl class="py exception" id="module-howdy.core.deluge_client_tanim.client">
@@ -2461,7 +2741,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dd></dd></dl>
 
 <section id="module-howdy.core.deluge_client_tanim.rencode">
-<span id="howdy-core-deluge-client-tanim-rencode-submodule"></span><h3><span class="section-number">4.3.7.1. </span>howdy.core.deluge_client_tanim.rencode submodule<a class="headerlink" href="#module-howdy.core.deluge_client_tanim.rencode" title="Link to this heading"></a></h3>
+<span id="howdy-core-deluge-client-tanim-rencode-submodule"></span><h3><span class="section-number">4.3.8.1. </span>howdy.core.deluge_client_tanim.rencode submodule<a class="headerlink" href="#module-howdy.core.deluge_client_tanim.rencode" title="Link to this heading"></a></h3>
 <p>rencode – Web safe object pickling/unpickling.</p>
 <p>Public domain, <a class="reference external" href="http://www.connellybarnes.com/work">Connelly Barnes</a> 2006-2007.</p>
 <p>The rencode module is a modified version of <a class="reference external" href="https://en.wikipedia.org/wiki/Bencode">bencode</a> from the <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent">BitTorrent</a> project.  For complex, heterogeneous data structures with many small elements, r-encodings take up significantly less space than b-encodings:</p>
@@ -2494,7 +2774,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024.</p>
+    <p>&#169; Copyright 2025.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

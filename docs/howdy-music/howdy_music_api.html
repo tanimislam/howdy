@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7.2. Howdy Music API &mdash; howdy! 1.55-58-g11f3fc4f documentation</title>
+  <title>7.2. Howdy Music API &mdash; howdy! 1.55-72-g24e5644a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7dc6ce7e" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9316aefb"></script>
+      <script src="../_static/documentation_options.js?v=b1c4c9a2"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -876,7 +876,27 @@
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the MBID of the artist. If more than one matching artist is found, or <em>no</em> matching artists, then returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="howdy.music.music.MusicInfo.get_artist_direct_search_MBID_ALL">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_artist_direct_search_MBID_ALL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.MusicInfo.get_artist_direct_search_MBID_ALL" title="Link to this definition"></a></dt>
+<dd><p>Sometimes the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> server does not update. Fixes-when-broken of the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> server do not happen on a schedule, or even a quickness. In such an instance, you can specify the <em>specific</em> artist using direct search rather than indexed search. This method returns the artist’s MBID of the artist one queries. <em>If there is more than one match</em>, then returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>artist_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the artist over which to perform a search.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of entries of matching artists.</p>
+</dd>
+</dl>
+<p>The <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> has two keys: the <code class="docutils literal notranslate"><span class="pre">mbid</span></code> is the <a class="reference external" href="https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2">MusicBrainz</a> ID, and <code class="docutils literal notranslate"><span class="pre">description</span></code> is the description of the artist.</p>
+<p>If <em>no</em> matching artists, then returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+:rtype: list</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1241,7 +1261,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.music.music.plexapi_music_playlist_info">
 <span class="sig-prename descclassname"><span class="pre">howdy.music.music.</span></span><span class="sig-name descname"><span class="pre">plexapi_music_playlist_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plex_playlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_internal_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.music.music.plexapi_music_playlist_info" title="Link to this definition"></a></dt>
-<dd><p>This creates a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> out of the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/playlist.html#plexapi.playlist.Playlist" title="(in Python PlexAPI v4.15.16)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexAPI</span> <span class="pre">Playlist</span></code></a>. This DataFrame has the following columns:</p>
+<dd><p>This creates a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> out of the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/playlist.html#plexapi.playlist.Playlist" title="(in Python PlexAPI v4.17.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexAPI</span> <span class="pre">Playlist</span></code></a>. This DataFrame has the following columns:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">order</span> <span class="pre">in</span> <span class="pre">playlist</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">filename</span></code></p></li>
@@ -1256,7 +1276,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>plex_playlist</strong> (<a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/playlist.html#plexapi.playlist.Playlist" title="(in Python PlexAPI v4.15.16)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexAPI</span> <span class="pre">PlayList</span></code></a>) – the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/playlist.html#plexapi.playlist.Playlist" title="(in Python PlexAPI v4.15.16)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexAPI</span> <span class="pre">Playlist</span></code></a>, which must be an audio playlist.</p></li>
+<li><p><strong>plex_playlist</strong> (<a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/playlist.html#plexapi.playlist.Playlist" title="(in Python PlexAPI v4.17.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexAPI</span> <span class="pre">PlayList</span></code></a>) – the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/playlist.html#plexapi.playlist.Playlist" title="(in Python PlexAPI v4.17.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexAPI</span> <span class="pre">Playlist</span></code></a>, which must be an audio playlist.</p></li>
 <li><p><strong>use_internal_metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, then fill out columns using the <a class="reference external" href="https://en.wikipedia.org/wiki/MPEG-4_Part_14">M4A</a> metadata from the file, otherwise fill out the columns using information in <code class="docutils literal notranslate"><span class="pre">plex_playlist</span></code>. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
@@ -1805,7 +1825,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024.</p>
+    <p>&#169; Copyright 2025.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

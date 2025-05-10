@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5.3. Howdy TV API &mdash; howdy! 1.55-58-g11f3fc4f documentation</title>
+  <title>5.3. Howdy TV API &mdash; howdy! 1.55-72-g24e5644a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7dc6ce7e" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9316aefb"></script>
+      <script src="../_static/documentation_options.js?v=b1c4c9a2"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -341,7 +341,7 @@
 <li><p><strong>seriesId</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> series ID.</p></li>
 <li><p><strong>seasno</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the season number. If this is a TV special, then the season number is <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
 <li><p><strong>imageURL</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> URL of the season poster.</p></li>
-<li><p><strong>img</strong> (<em>Image</em>) – the <a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image" title="(in Pillow (PIL Fork) v10.4.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object associated with this season poster, if found. Otherwise <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>img</strong> (<em>Image</em>) – the <a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image" title="(in Pillow (PIL Fork) v11.2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object associated with this season poster, if found. Otherwise <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>episodes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – <p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of episode data. Each key is the episode number. Each value is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> summary of that episode.</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">airedEpisodeNumber</span></code> is the episode number in the season.</p></li>
@@ -1269,7 +1269,7 @@
 </li>
 <li><p>If unsuccesful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p></li>
 </ul>
-<p>As of October 14, 2024, here are the magnet link methods that work and don’t work when searching for <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>.</p>
+<p>As of May 10, 2025, here are the magnet link methods that work and don’t work when searching for <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>.</p>
 <span id="table-working-tvtorrents"></span><table class="docutils align-default" id="id17">
 <caption><span class="caption-number">Table 5.1 </span><span class="caption-text">Which TV Torrent Trackers or Services Work?</span><a class="headerlink" href="#id17" title="Link to this table"></a></caption>
 <tbody>
@@ -1434,7 +1434,7 @@
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of October 14, 2024, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
+<p>As of May 10, 2025, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
 </div>
 </dd></dl>
 
@@ -1469,7 +1469,7 @@
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of October 14, 2024, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
+<p>As of May 10, 2025, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
 </div>
 </dd></dl>
 
@@ -1504,7 +1504,7 @@
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of October 14, 2024, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
+<p>As of May 10, 2025, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
 </div>
 </dd></dl>
 
@@ -1541,7 +1541,7 @@
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of October 14, 2024, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
+<p>As of May 10, 2025, I cannot get it to work when giving it valid episode searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>. See <a class="reference internal" href="#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a>.</p>
 </div>
 </dd></dl>
 
@@ -1606,7 +1606,7 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tvTorUnit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> representing a summarized magnet link searching operation on an episode. The format and meaning of this data structure is described in <a class="reference internal" href="#howdy.tv.tv.create_tvTorUnits" title="howdy.tv.tv.create_tvTorUnits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">create_tvTorUnits</span></code></a>.</p></li>
-<li><p><strong>client</strong> (<em>DelugeRPC</em>) – optional argument, the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">DelugeRPCClient</a> object that at a low level uses the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server to download the Magnet link at the remote SSH server. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then this client is created using <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.core_deluge.get_deluge_client" title="howdy.core.core_deluge.get_deluge_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_deluge_client</span></code></a>.</p></li>
+<li><p><strong>client</strong> (<em>DelugeRPC</em>) – optional argument, the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">DelugeRPCClient</a> object that at a low level uses the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server to download the Magnet link at the remote SSH server. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then this client is created using <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.core_transmission.get_transmission_client" title="howdy.core.core_transmission.get_transmission_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_transmission_client</span></code></a>.</p></li>
 <li><p><strong>maxtime_in_secs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argument, the maximum time to wait for a Magnet link found by the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> server to fully download through the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server. Must be <span class="math notranslate nohighlight">\(\ge 60\)</span> seconds. Default is 14400 seconds.</p></li>
 <li><p><strong>num_iters</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argument, the maximum number of Magnet links to try and fully download before giving up. The list of Magnet links to try for each missing episode is ordered from <em>most</em> seeders + leechers to <em>least</em>. Must be <span class="math notranslate nohighlight">\(\ge 1\)</span>. Default is 1.</p></li>
 <li><p><strong>kill_if_fail</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then on failing operation kill the torrent download on the <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> server and delete any files associated with it. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, then keep the torrent download on failure.</p></li>
@@ -2101,7 +2101,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024.</p>
+    <p>&#169; Copyright 2025.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

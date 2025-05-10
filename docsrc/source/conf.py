@@ -81,7 +81,7 @@ intersphinx_mapping = {
     'oauth2client' : ( 'https://oauth2client.readthedocs.io/en/latest', None ),
     'google-auth' : ( 'https://google-auth.readthedocs.io/en/latest', None ),
     'deluge' : ( 'https://deluge.readthedocs.io/en/latest', None ),
-    'transmission_rpc' : ( 'https://transmission-rpc.readthedocs.io/en/latest', None ),
+    'transmission_rpc' : ( 'https://transmission-rpc.readthedocs.io/en/stable', None ),
     'plexapi' : ( 'https://python-plexapi.readthedocs.io/en/latest', None ),
     'sqlalchemy' : ( 'https://docs.sqlalchemy.org', None ),
     'subliminal' : ( 'https://subliminal.readthedocs.io/en/latest/', None ),

@@ -39,21 +39,21 @@ This module implements the functionality to do the following:
 
 howdy.core.core_deluge module
 --------------------------------------------
-This module implements the functionality to interact with a Seedhost_\ seedbox_ `Deluge torrent server`_, by copying a minimal set of the functionality of a `Deluge torrent client`_. The data formatting in this module is largely or wholly copied from the `Deluge SDK <https://deluge.readthedocs.io/en/latest>`_. The much reduced Deluge torrent client, :ref:`howdy_deluge_console`, is a CLI front-end to this module.
+This module implements the functionality to interact with a Seedhost_  seedbox_  `Deluge torrent server`_, by copying a minimal set of the functionality of a `Deluge torrent client`_. The data formatting in this module is largely or wholly copied from the `Deluge SDK <https://deluge.readthedocs.io/en/latest>`_. The much reduced Deluge torrent client, :ref:`howdy_deluge_console`, is a CLI front-end to this module.
 
 .. automodule:: howdy.core.core_deluge
    :members:
 
 howdy.core.core_transmission module
 --------------------------------------------
-This module implements the functionality to interact with a Seedhost_\ seedbox_ `Transmission torrent server`_. The custom `Transmission <Transmission torrent server_>`_ torrent client, :ref:`howdy_transmission_console`, is a CLI front-end to this module, which uses the lower level :py:mod:`transmission_rpc <transmission_rpc>` module functionality.
+This module implements the functionality to interact with a Seedhost_  seedbox_  `Transmission torrent server`_. The custom `Transmission <Transmission torrent server_>`_ torrent client, :ref:`howdy_transmission_console`, is a CLI front-end to this module, which uses the lower level :py:mod:`transmission_rpc <transmission_rpc>` module functionality.
 
 .. automodule:: howdy.core.core_transmission
    :members:
       
 howdy.core.core_rsync module
 --------------------------------------------
-This module implements the functionality to interact with a Seedhost_ seedbox_ SSH server to download or upload files and directories using the rsync_ protocol tunneled through SSH. :ref:`rsync_subproc` is a CLI front-end to this module.
+This module implements the functionality to interact with a Seedhost_  seedbox_ SSH server to download or upload files and directories using the rsync_ protocol tunneled through SSH. :ref:`rsync_subproc` is a CLI front-end to this module.
 
 .. automodule:: howdy.core.core_rsync
    :members:

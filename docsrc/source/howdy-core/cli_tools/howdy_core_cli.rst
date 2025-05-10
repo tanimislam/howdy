@@ -350,7 +350,7 @@ If those are valid settings, nothing more happens. If these are invalid settings
 
 howdy_transmission_console
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-This is a much reduced Transmission_ command line console client. It does the following operations: :ref:`torrent info (info)`, :ref:`removing torrents (rm or del)`, :ref:`adding torrents (add)`, :ref:`pausing and resuming torrents (pause or resume)`, and :ref:`pushing credentials (push)`. Running ``transmission_deluge_console -h`` gives the following output.
+This is a much reduced Transmission_ command line console client. It does the following operations: :ref:`torrent info (info) <transmission torrent info (info)>`, :ref:`removing torrents (rm or del) <transmission removing torrents (rm or del)>`, :ref:`adding torrents (add) <transmission adding torrents (add)>`, :ref:`pausing and resuming torrents (pause or resume) <transmission pausing and resuming torrents (pause or resume)>`, and :ref:`pushing credentials (push) <transmission pushing credentials (push)>`. Running ``transmission_deluge_console -h`` gives the following output.
 
 .. code-block:: console
 

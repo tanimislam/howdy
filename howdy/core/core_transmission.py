@@ -80,7 +80,7 @@ def create_transmission_client( url, username, password ):
     """
     Creates a minimal Transmission_ torrent client to the Transmission_ seedbox server.
 
-    :param str url: URL of the Transmission server.
+    :param str url: URL of the Transmission_ server.
     :param str username: server account username.
     :param str password: server account password.
 

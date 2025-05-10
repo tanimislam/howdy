@@ -78,13 +78,14 @@ def get_transmission_credentials( ):
 
 def create_transmission_client( url, username, password ):
     """
-    Creates a minimal Transmission_ torrent client to the Transmission seedbox server.
+    Creates a minimal Transmission_ torrent client to the Transmission_ seedbox server.
 
     :param str url: URL of the Transmission server.
     :param str username: server account username.
     :param str password: server account password.
 
-    :returns: previously a lightweight :py:class:`TransmissionRPCClient <transmission_rpc.Client>`.
+    :returns: the seedbox server's Transmission_ RPC client.
+    :rtype: :py:class:`TransmissionRPCClient <transmission_rpc.Client>`
 
     .. seealso::
     
@@ -92,7 +93,6 @@ def create_transmission_client( url, username, password ):
        * :py:meth:`get_transmission_credentials <howdy.core.core_transmission.get_transmission_credentials>`.
        * :py:meth:`push_transmission_credentials <howdy.core.core_transmission.push_transmission_credentials>`.
 
-    .. _`Transmission RPC client`: 
     """
     from transmission_rpc import Client
     client = Client( protocol='https', host = url, port = 443,

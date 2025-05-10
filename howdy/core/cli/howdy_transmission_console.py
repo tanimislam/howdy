@@ -53,7 +53,7 @@ def main( ):
     ## add a SINGLE torrent
     parser_add = subparser.add_parser( 'add', help = 'Add a single torrent, as a magnet link or a file.' )
     parser_add.add_argument( 'add_torrent', metavar = 'torrent', type=str,
-                            help = 'The fully realized magnet link, or file, to add to the torrent server.' )
+                            help = 'The fully realized magnet link, torrent file, or URL to torrent file, to add to the torrent server.' )
     #
     ## push settings for new deluge server
     parser_push = subparser.add_parser( 'push', help = 'Push settings for a new transmission server to configuration.' )
@@ -113,10 +113,10 @@ def main( ):
         if candidate_add.startswith( 'magnet' ): # is magnet
             core_transmission.transmission_add_magnet_file( client, candidate_add )
             return
-        if core_transmission.transmission_is_url( candidate_add ): # is an URL
+        if core_deluge.deluge_is_url( candidate_add ): # is an URL
             core_transmission.transmission_add_url( client, candidate_add )
             return
-        if core_transmission.transmission_is_torrent_file( candidate_add ): # is a torrent file
+        if core_deluge.deluge_is_torrent_file( candidate_add ): # is a torrent file
             core_transmission.transmission_add_torrent_file( client, candidate_add )
             return
         return

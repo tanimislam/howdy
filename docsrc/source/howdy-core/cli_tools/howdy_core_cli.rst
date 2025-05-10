@@ -6,6 +6,12 @@ This section describes the six Howdy core command line utilities.
 * :ref:`howdy_core_cli` shows the list of email addresses, and names, of Plex account holders who have access to your Plex server. It can also show emails and names of all people who can receive email notifications about your Plex server. One can also change the list of email addresses that are notified by email of the Plex server.
 
 * :ref:`howdy_deluge_console` is a mocked up Deluge_ client, whose operation is very similar to the `deluge-console <deluge_console_>`_ command line interface. It is designed for the most common operations of `deluge-console <deluge_console_>`_, using Deluge_ server settings that are described in :numref:`Howdy Settings Configuration` and :numref:`Login Services`.
+  
+* :ref:`howdy_transmission_console` is a mocked up Transmission_ client, using Transmission_ server settings.
+
+  .. note::
+
+     We plan to document how to set the Transmission_ server settings in :numref:`Howdy Settings Configuration` and :numref:`Login Services` *any day now*.
 
 * :ref:`howdy_resynclibs` summarizes information about the Plex_ servers to which you have access, summarizes the Plex_ library information for those Plex_ servers which you own, and can also refresh those libraries in your owned servers.
 
@@ -191,11 +197,11 @@ It may be convenient to have some useful BASH shortcuts for ``howdy_deluge_conso
 
 .. code-block:: console
 
-   alias pdci='howdy_deluge_console info'
-   alias pdcr='howdy_deluge_console rm'
-   alias pdca='howdy_deluge_console add'
-   alias pdcp='howdy_deluge_console pause'
-   alias pdcres='howdy_deluge_console resume'
+   alias hdci='howdy_deluge_console info'
+   alias hdcr='howdy_deluge_console rm'
+   alias hdca='howdy_deluge_console add'
+   alias hdcp='howdy_deluge_console pause'
+   alias hdcres='howdy_deluge_console resume'
 
 torrent info (info)
 --------------------
@@ -290,21 +296,21 @@ You can add torrents to the Deluge server by running ``howdy_deluge_console add`
 
 * torrent file as remote URL:
 
-.. code-block:: console
+  .. code-block:: console
 
-   howdy_deluge_console add http://releases.ubuntu.com/19.10/ubuntu-19.10-beta-live-server-amd64.iso.torrent
+     howdy_deluge_console add http://releases.ubuntu.com/19.10/ubuntu-19.10-beta-live-server-amd64.iso.torrent
 
 * torrent file on disk:
 
-.. code-block:: console
+  .. code-block:: console
 
-   howdy_deluge_console add ubuntu-19.10-beta-desktop-amd64.iso.torrent
+     howdy_deluge_console add ubuntu-19.10-beta-desktop-amd64.iso.torrent
 
 * `Magnet URI`_:
 
-.. code-block:: console
+  .. code-block:: console
 
-   howdy_deluge_console add "magnet:?xt=urn:btih:49efb5fdd274abb26c5ea6361d1d9be28e4db2d3&dn=archlinux-2019.09.01-x86_64.iso&tr=udp://tracker.archlinux.org:6969&tr=http://tracker.archlinux.org:6969/announce"
+     howdy_deluge_console add "magnet:?xt=urn:btih:49efb5fdd274abb26c5ea6361d1d9be28e4db2d3&dn=archlinux-2019.09.01-x86_64.iso&tr=udp://tracker.archlinux.org:6969&tr=http://tracker.archlinux.org:6969/announce"
 
 pausing and resuming torrents (pause or resume)
 -------------------------------------------------
@@ -336,6 +342,233 @@ Push new Deluge server settings into the configuration database by running,
 .. code-block:: console
 
    howdy_deluge_console push --host=HOST --port=PORT --username=USERNAME --password=PASSWORD
+
+If those are valid settings, nothing more happens. If these are invalid settings, then specific error messages will print to the screen.
+
+
+.. _howdy_transmission_console_label:
+
+howdy_transmission_console
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This is a much reduced Transmission_ command line console client. It does the following operations: :ref:`torrent info (info)`, :ref:`removing torrents (rm or del)`, :ref:`adding torrents (add)`, :ref:`pausing and resuming torrents (pause or resume)`, and :ref:`pushing credentials (push)`. Running ``transmission_deluge_console -h`` gives the following output.
+
+.. code-block:: console
+
+   usage: howdy_transmission_console [-h] {info,resume,pause,rm,del,add,push} ...
+
+   positional arguments:
+     {info,resume,pause,rm,del,add,push}
+			   Choose one of these three modes of operation: rm, add, pause, resume, or push.
+       info                Print summary info on a specific torrent, or all torrents.
+       resume              Resume selected torrents, or all torrents.
+       pause               Pause selected torrents, or all torrents.
+       rm (del)            Remove selected torrents, or all torrents.
+       add                 Add a single torrent, as a magnet link or a file.
+       push                Push settings for a new transmission server to configuration.
+
+   options:
+     -h, --help            show this help message and exit
+
+By convention, the variable ``md5_trunc`` refers to a truncated initial substring of the full torrent's MD5 hash. For example, given an MD5 hash of a torrent, such as ``ed53ba61555cab24946ebf2f346752805601a7fb``, a possible ``md5_trunc`` is ``ed5``. One can specify a collection of multiple ``md5_trunc`` as long as they are valid and unique (such as ``md5_trunc_1, md5_trunc_2, ...``).
+
+It may be convenient to have some useful BASH shortcuts for ``howdy_transmission_console``, which you can store in ``~/.bashrc``. Here is a snippet of self-explanatory aliases I find useful.
+
+.. code-block:: console
+   
+   alias htci='howdy_transmission_console info'
+   alias htcr='howdy_transmission_console rm'
+   alias htca='howdy_transmission_console add'
+   alias htcp='howdy_transmission_console pause'
+   alias htcres='howdy_transmission_console resume'
+
+.. _howdy_transmission_info:
+   
+transmission torrent info (info)
+---------------------------------
+You can get nicely formatted information on a collection of torrents, or all torrents, through running ``howdy_transmission_console info``. Running ``howdy_transmission_console info -h`` gives the following output.
+
+.. code-block:: console
+
+   usage: howdy_transmission_console info [-h] [-f] [torrent [torrent ...]]
+
+   positional arguments:
+     torrent     The hash ID, or identifying initial substring, of torrents for which to get information. Example usage is "howdy_transmission_console info ab1 bc2", where "ab1" and "bc2" are the first three digits of
+		 the MD5 hashes of torrents to examine.
+
+   optional arguments:
+     -h, --help  show this help message and exit
+     -f, --file  If chosen, then spit out the torrent selections into a debug output file. Name of the file is given by howdy_transmission_console.YYYYMMDD-HHMMSS.txt
+
+``howdy_transmission_console info`` will show nicely formatted information on ALL torrents.
+
+.. code-block:: console
+
+   $ howdy_transmission_console info
+   ID: dd5600473d34ffa3bdbe0f25800ec3981752ac60
+   State: Seeding
+   Up Speed: 0.0 KiB/s ETA: -1 days 23:59:59
+   Seeds: 1274 (1274) Peers: 1 (1) Availability: 100.00
+   Size: 1.9 GiB/1.9 GiB Ratio: 0.000
+   Seed time: 0 days 00:01:21 Active: 0 days 00:02:58
+   Tracker status: https://torrent.ubuntu.com/announce: Announce Success
+
+   Name: ubuntu-25.04-desktop-amd64.iso
+   ID: 8a19577fb5f690970ca43a57ff1011ae202244b8
+   State: Downloading
+   Down Speed: 49.8 MiB/s Up Speed: 0.0 KiB/s ETA: 0 days 00:00:16
+   Seeds: 2300 (2300) Peers: 100 (100) Availability: 100.00
+   Size: 5.0 GiB/5.8 GiB Ratio: 0.000
+   Seed time: 0 days 00:00:00 Active: 0 days 00:02:05
+   Tracker status: https://torrent.ubuntu.com/announce: Announce Success
+   Progress: 85.92% [############################################################~~~~~~~~~~]
+
+You can give it a list of truncated MD5 hashes to get status information on selected torrents,
+
+.. code-block:: console
+
+   $ howdy_transmission_console info dd5
+   ID: dd5600473d34ffa3bdbe0f25800ec3981752ac60
+   State: Seeding
+   Up Speed: 0.0 KiB/s ETA: -1 days 23:59:59
+   Seeds: 1274 (1274) Peers: 1 (1) Availability: 100.00
+   Size: 1.9 GiB/1.9 GiB Ratio: 0.000
+   Seed time: 0 days 00:01:21 Active: 0 days 00:02:58
+   Tracker status: https://torrent.ubuntu.com/announce: Announce Success
+
+Furthermore, since this CLI does not have UNIX piping and redirect functionalities, running with the ``-f`` or ``--file`` flag will spit out a debug text output of torrent statuses, the same as spit out into the command line. The name of the debug output file is ``howdy_transmission_console.YYYYMMDD-HHMMSS.txt``: the middle text is the 4-digit year, 2-digit month, 2-digit-day, followed by hour-min-second, at the time when the info command was requested.
+
+.. _howdy_transmission_rm:
+
+transmission removing torrents (rm or del)
+--------------------------------------------
+You can remove some or all torrents by running ``howdy_transmission_console rm`` or ``howdy_transmission_console del``. Running ``howdy_deluge_console rm -h`` gives the following output.
+
+.. code-block:: console
+
+   usage: howdy_transmission_console rm [-h] [-R] torrent [torrent ...]
+
+   positional arguments:
+     torrent            The hash ID, or identifying initial substring, of torrents to remove.
+
+   optional arguments:
+     -h, --help         show this help message and exit
+     -R, --remove_data  Remove the torrent's data.
+
+* ``howdy_transmission_console rm md5trunc_1 md5_trunc_2 ...`` removes specified torrents but keeps whatever data has been downloaded on the Deluge server. You would run this once the torrent's state was ``Seeding`` or ``Paused`` (see :ref:`transmission torrent info (info)`).
+
+* ``howdy_transmission_console rm -R ...`` does the same, but also removes whatever data has been downloaded from the Deluge server.
+
+* ``howdy_transmission_console rm`` without specific torrents removes (or removes with deletion) **all** torrents from the Deluge server.
+
+transmission adding torrents (add)
+------------------------------------
+You can add torrents to the Transmission_ server by running ``howdy_transmission_console add``. You can add a torrent file as URL, a torrent file on disk, and a `Magnet URI`_. Running ``howdy_transmission_console add -h`` gives the following output.
+
+.. code-block:: console
+
+   usage: howdy_transmission_console add [-h] torrent
+
+   positional arguments:
+     torrent     The fully realized magnet link, torrent file, or URL to torrent file, to
+		 add to the torrent server.
+
+   options:
+     -h, --help  show this help message and exit
+
+* torrent file as remote URL:
+
+  .. code-block:: console
+
+     howdy_transmission_console add howdy_transmission_console add https://releases.ubuntu.com/25.04/ubuntu-25.04-desktop-amd64.iso.torrent
+
+* torrent file on disk:
+
+  .. code-block:: console
+
+     howdy_transmission_console add ubuntu-25.04-live-server-amd64.iso.torrent
+
+* `Magnet URI`_:
+
+  .. code-block:: console
+
+     howdy_transmission_console add "magnet:?xt=urn:btih:49efb5fdd274abb26c5ea6361d1d9be28e4db2d3&dn=archlinux-2019.09.01-x86_64.iso&tr=udp://tracker.archlinux.org:6969&tr=http://tracker.archlinux.org:6969/announce"
+
+transmission pausing and resuming torrents (pause or resume)
+-------------------------------------------------------------
+You can pause torrents on the Deluge server by running ``howdy_transmission_console pause``, and you can resume them by running ``howdy_transmission_console resume``.
+
+* You can pause/resume specific torrents by running ``howdy_transmission_console pause md5trunc_1 md5_trunc_2 ...`` or ``howdy_deluge_console resume md5trunc_1 md5_trunc_2 ...``.
+
+  For example, first let's do a ``howdy_transmission_console info``.
+
+  .. code-block:: console
+
+     $ howdy_transmission_console info
+     Name: ubuntu-25.04-desktop-amd64.iso
+     ID: 8a19577fb5f690970ca43a57ff1011ae202244b8
+     State: Downloading
+     Down Speed: 0.0 KiB/s Up Speed: 0.0 KiB/s ETA: -1 days 23:59:59
+     Seeds: 2330 (2330) Peers: 11 (11) Availability: 100.00
+     Size: 0.0 KiB/5.8 GiB Ratio: 0.000
+     Seed time: 0 days 00:00:00 Active: 0 days 00:00:04
+     Tracker status: https://torrent.ubuntu.com/announce: Announce Success
+     Progress: 0.00% [~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+
+  Now see what happens when we do a ``howdy_transmission_console pause`` on this torrent,
+
+  .. code-block:: console
+
+     $ howdy_transmission_console pause 8a1
+     $ howdy_transmission_console info
+     Name: ubuntu-25.04-desktop-amd64.iso
+     ID: 8a19577fb5f690970ca43a57ff1011ae202244b8
+     State: Stopped
+     Size: 1.5 MiB/5.8 GiB Ratio: 0.000
+     Seed time: 0 days 00:00:00 Active: 0 days 00:00:00
+     Tracker status: https://torrent.ubuntu.com/announce: Announce Success
+     Progress: 0.02% [~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+
+  See the ``Stopped`` state of this torrent? Finally, let's do a ``howdy_transmission_console resume`` on this torrent.
+
+  .. code-block:: console
+
+     $ howdy_transmission_console resume 8a1
+     $ howdy_transmission_console info
+     Name: ubuntu-25.04-desktop-amd64.iso
+     ID: 8a19577fb5f690970ca43a57ff1011ae202244b8
+     State: Downloading
+     Down Speed: 0.0 KiB/s Up Speed: 0.0 KiB/s ETA: -1 days 23:59:59
+     Seeds: 2332 (2332) Peers: 12 (12) Availability: 100.00
+     Size: 1.5 MiB/5.8 GiB Ratio: 0.000
+     Seed time: 0 days 00:00:00 Active: 0 days 00:00:03
+     Tracker status: https://torrent.ubuntu.com/announce: Announce Success
+     Progress: 0.02% [~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+
+  The status this torrent changed to ``Downloading``.
+
+* You can pause/resume ALL torrents on the Deluge server by not specifying any truncated MD5 hashes, ``howdy_transmission_console pause`` or ``howdy_transmission_console resume``.  
+
+transmission pushing credentials (push)
+------------------------------------------
+You can push new Transmission_ server credentials (URL, username, and password) to the SQLite3_ configuration database. Running ``howdy_transmission_console push -h`` gives its help syntax,
+
+.. code-block:: console
+
+   usage: howdy_transmission_console push [-h] [-H url] [-U username] [-P password]
+
+   options:
+     -h, --help            show this help message and exit
+     -H url, --host url    URL of the transmission server. Default is localhost.
+     -U username, --username username
+			   Username to login to the transmission server. Default is admin.
+     -P password, --password password
+			   Password to login to the transmission server. Default is admin.
+
+Push new Transmission_ server settings into the configuration database by running,
+
+.. code-block:: console
+
+   howdy_transmission_console push -H HOST -U USERNAME -P PASSWORD
 
 If those are valid settings, nothing more happens. If these are invalid settings, then specific error messages will print to the screen.
 
@@ -642,6 +875,7 @@ We can modify this command with the following.
   
 .. _Deluge: https://en.wikipedia.org/wiki/Deluge_(software)
 .. _deluge_console: https://whatbox.ca/wiki/Deluge_Console_Documentation
+.. _Transmission: https://transmissionbt.com
 .. _rsync: https://en.wikipedia.org/wiki/Rsync
 .. _Plex: https://plex.tv
 .. _`Magnet URI`: https://en.wikipedia.org/wiki/Magnet_URI_scheme

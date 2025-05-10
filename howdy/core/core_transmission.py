@@ -9,13 +9,13 @@ from howdy.core.core_deluge import (
 
 def push_transmission_credentials( url, username, password ):
     """
-    Stores the Transmission server credentials into the SQLite3_ configuration database.
+    Stores the Transmission_ server credentials into the SQLite3_ configuration database.
 
-    :param str url: URL of the Transmission server.
+    :param str url: URL of the Transmission_ server.
     :param str username: server account username.
     :param str password: server account password.
     
-    :returns: if successful (due to correct Transmission server settings), returns ``'SUCCESS'``. If unsuccessful, returns ``'ERROR, INVALID SETTINGS FOR TRANSMISSION CLIENT.'``
+    :returns: if successful (due to correct Transmission_ server settings), returns ``'SUCCESS'``. If unsuccessful, returns ``'ERROR, INVALID SETTINGS FOR TRANSMISSION CLIENT.'``
     :rtype: str
 
     .. seealso::
@@ -23,13 +23,15 @@ def push_transmission_credentials( url, username, password ):
        * :py:meth:`create_transmission_client <howdy.core.core_transmission.create_transmission_client>`.
        * :py:meth:`get_transmission_client <howdy.core.core_transmission.get_transmission_client>`.
        * :py:meth:`get_transmission_credentials <howdy.core.core_transmission.get_transmission_credentials>`.
+
+    _Transmission: https://transmissionbt.com
     """
     
     #
     ## first check that the configurations are valid
     try:
         client = create_transmission_client( url, username, password )
-    except:
+    except Exception as e:
         error_message = 'ERROR, INVALID SETTINGS FOR DELUGE CLIENT.'
         logging.debug( error_message )
         return error_message
@@ -52,7 +54,7 @@ def push_transmission_credentials( url, username, password ):
 
 def get_transmission_credentials( ):
     """
-    Gets the Deluge server credentials from the SQLite3_ configuration database. The data looks like this.
+    Gets the Transmission_ server credentials from the SQLite3_ configuration database. The data looks like this.
 
     .. code-block:: python
     
@@ -60,7 +62,7 @@ def get_transmission_credentials( ):
         'username': AAAA,
         'password': BBBB }
    
-    :returns: dictionary of Transmission server settings.
+    :returns: dictionary of Transmission_ server settings.
     :rtype: dict
 
     .. seealso::
@@ -76,13 +78,13 @@ def get_transmission_credentials( ):
 
 def create_transmission_client( url, username, password ):
     """
-    Creates a minimal Transmission torrent client to the Transmission seedbox server.
+    Creates a minimal Transmission_ torrent client to the Transmission seedbox server.
 
     :param str url: URL of the Transmission server.
     :param str username: server account username.
     :param str password: server account password.
 
-    :returns: previously a lightweight `Transmission RPC client`_, although now it is a :py:class:`TransmissionRPCClient <howdy.core.transmission_client_tanim.client.TransmissionRPCClient>`.
+    :returns: previously a lightweight :py:class:`TransmissionRPCClient <transmission_rpc.Client>`.
 
     .. seealso::
     
@@ -90,7 +92,7 @@ def create_transmission_client( url, username, password ):
        * :py:meth:`get_transmission_credentials <howdy.core.core_transmission.get_transmission_credentials>`.
        * :py:meth:`push_transmission_credentials <howdy.core.core_transmission.push_transmission_credentials>`.
 
-    .. _`Transmission RPC client`: https://github.com/JohnDoee/transmission-client
+    .. _`Transmission RPC client`: 
     """
     from transmission_rpc import Client
     client = Client( protocol='https', host = url, port = 443,
@@ -100,9 +102,9 @@ def create_transmission_client( url, username, password ):
 
 def get_transmission_client( ):
     """
-    Using a minimal Transmission torrent client from server credentials stored in the SQLite3_ configuration database.
+    Returns a minimal Transmission_ torrent client from server credentials stored in the SQLite3_ configuration database.
 
-    :returns: a :py:class:`tuple`. If successful, the first element is a lightweight `Transmission RPC client`_ and the second element is the string ``'SUCCESS'``. If unsuccessful, the first element is ``None`` and the second element is an error string.
+    :returns: a :py:class:`tuple`. If successful, the first element is a lightweight :py:class:`TransmissionRPCClient <transmission_rpc.Client>`, and the second element is the string ``'SUCCESS'``. If unsuccessful, the first element is ``None`` and the second element is an error string.
     :rtype: tuple
 
     .. seealso::
@@ -134,14 +136,15 @@ def get_transmission_client( ):
 
 def transmission_get_torrents_info( client ):
     """
-    Returns a :py:class:`dict` of status info for every torrent on the Transmission server through the Transmission RPC client.
+    Returns a :py:class:`dict` of status info for every torrent on the Transmission_ server through the :py:class:`TransmissionRPCClient <transmission_rpc.Client>`.
 
     The key in this :py:class:`dict` is the MD5 hash of the torrent, and its value is a status :py:class:`dict`.
 
     For each torrent, here are the keys in the status :py:class:`dict`: ``name``, ``state``, ``download rate``, ``upload rate``, ``eta`` (which may be ``None`` if download has *not* started), ``num seeds``, ``total seeds``, ``num peers``, ``total peers``, ``availability``, ``total done``, ``total size``, ``ratio``, ``seed time``, ``active time``, ``tracker status``, and ``progress``.
 
     :param client: the Transmission RPC client.
-    :returns: a :py:class:`dict` of status :py:class:`dict` for each torrent on the Transmission server.
+    :type client: :py:class:`TransmissionRPCClient <transmission_rpc.Client>`
+    :returns: a :py:class:`dict` of status :py:class:`dict` for each torrent on the Transmission_ server.
     :rtype: dict
     """
     all_torrents = client.get_torrents( )
@@ -187,9 +190,10 @@ def transmission_get_torrents_info( client ):
 
 def transmission_add_torrent_file( client, torrent_file_name ):
     """
-    Higher level method that takes a torrent file on disk and uploads to the Transmission server through the `Transmission RPC client`_.
+    Higher level method that takes a torrent file on disk and uploads to the Transmission_ server through the :py:class:`TransmissionRPCClient <transmission_rpc.Client>`.
 
-    :param client: the `Transmission RPC client`_.
+    :param client: the Transmission RPC client.
+    :type client: :py:class:`TransmissionRPCClient <transmission_rpc.Client>`
     :param str torrent_file_name: name of the candidate file.
     
     :returns: if successful, returns the MD5 hash of the uploaded torrent as a :py:class:`str`. If unsuccessful, returns ``None``.
@@ -200,12 +204,12 @@ def transmission_add_torrent_file( client, torrent_file_name ):
     tor = client.add_torrent( Path( torrent_file_name ) )
     return tor.info_hash
 
-def transmission_add_torrent_file_as_data(
-        client, torrent_file_data ):
+def transmission_add_torrent_file_as_data( client, torrent_file_data ):
     """
-    Higher level method that takes a torrent file name, and its byte data representation, and uploads to the Transmission server through the `Transmission RPC client`_.
+    Higher level method that takes a torrent file name, and its byte data representation, and uploads to the Transmission server through the :py:class:`TransmissionRPCClient <transmission_rpc.Client>`.
 
-    :param client: the `Transmission RPC client`_.
+    :param client: the Transmission RPC client.
+    :type client: :py:class:`TransmissionRPCClient <transmission_rpc.Client>`
     :param byte torrent_file_data: byte representation of the torrent file data.
     
     :returns: if successful, returns the MD5 hash of the uploaded torrent as a :py:class:`str`. If unsuccessful, returns ``None``.
@@ -220,9 +224,10 @@ def transmission_add_torrent_file_as_data(
 
 def transmission_add_magnet_file( client, magnet_uri ):
     """
-    Uploads a `Magnet URI`_ to the Transmission server through the `Transmission RPC client`_.
+    Uploads a `Magnet URI`_ to the Transmission server through the :py:class:`TransmissionRPCClient <transmission_rpc.Client>`.
 
-    :param client: the `Transmission RPC client`_.
+    :param client: the Transmission RPC client.
+    :type client: :py:class:`TransmissionRPCClient <transmission_rpc.Client>`
     :param str magnet_uri: the Magnet URI to upload.
 
     :returns: if successful, returns the MD5 hash of the uploaded torrent as a :py:class:`str`. If unsuccessful, returns ``None``.
@@ -231,7 +236,6 @@ def transmission_add_magnet_file( client, magnet_uri ):
     """
     #
     ## check if the magnet link is in there already
-    ## this is an obvious failure mode that I had not considered
     torrentIds = set( transmission_get_torrents_info( client ) )
     cand_torr_id = parse_qs( magnet_uri )['magnet:?xt'][0].split(':')[-1].strip( ).lower( )
     if cand_torr_id in torrentIds: return cand_torr_id
@@ -242,22 +246,23 @@ def transmission_add_magnet_file( client, magnet_uri ):
 
 def transmission_add_url( client, torrent_url ):
     """
-    Adds a torrent file via URL to the Transmission server through the `Transmission RPC client`_. If the URL is valid, then added. If the URL is invalid, then nothing happens.
+    Adds a torrent file via URL to the Transmission_ server through the :py:class:`TransmissionRPCClient <transmission_rpc.Client>`. If the URL is valid, then added. If the URL is invalid, then nothing happens.
 
-    :param client: the `Transmission RPC client`_.
+    :param client: the Transmission RPC client.
+    :type client: :py:class:`TransmissionRPCClient <transmission_rpc.Client>`
     :param str torrent_url: candidate URL.
     """
     if deluge_is_url( torrent_url ): client.add_torrent( torrent_url )
 
 def transmission_get_matching_torrents( client, torrent_id_strings ):
     """
-    Given a :py:class:`list` of possibly truncated MD5 hashes of candidate torrents on the Transmission server, returns a :py:class:`list` of MD5 sums of torrents that match what was provided.
+    Given a :py:class:`list` of possibly truncated MD5 hashes of candidate torrents on the Transmission_ server, returns a :py:class:`list` of MD5 sums of torrents that match what was provided.
 
-    :param client: the `Transmission RPC client`_.
-    
+    :param client: the Transmission RPC client.
+    :type client: :py:class:`TransmissionRPCClient <transmission_rpc.Client>`
     :param torrent_id_strings: the candidate :py:class:`list` of truncated MD5 hashes on the Transmission server. The ``[ '*' ]`` input means to look for all torrents on the Transmission server.
-
-    :returns: a :py:class:`list` of candidate torrents, as their MD5 hash, tat match ``torrent_id_strings``. If ``torrent_id_strings == ['*']``, then return all the torrents (as MD5 hashes) on the Transmission server.
+    :type torrent_id_strings: list
+    :returns: a :py:class:`list` of candidate torrents, as their MD5 hash, tat match ``torrent_id_strings``. If ``torrent_id_strings == ['*']``, then return all the torrents (as MD5 hashes) on the Transmission_ server.
     :rtype: list
     
     """
@@ -277,10 +282,12 @@ def transmission_get_matching_torrents( client, torrent_id_strings ):
 
 def transmission_remove_torrent( client, torrent_ids, remove_data = False ):
     """
-    Remove torrents from the Transmission server through the `Transmission RPC client`_.
-
-    :param client: the `Transmission RPC client`_.
-    :param torrent_ids: :py:class:`list` of MD5 hashes on the Transmission server.
+    Remove torrents from the Transmission_ server through the :py:class:`TransmissionRPCClient <transmission_rpc.Client>`.
+    
+    :param client: the Transmission RPC client.
+    :type client: :py:class:`TransmissionRPCClient <transmission_rpc.Client>`
+    :param torrent_ids: :py:class:`list` of MD5 hashes on the Transmission_ server.
+    :type torrent_ids: list
     :param bool remove_data: if ``True``, remove the torrent and delete all data associated with the torrent on disk. If ``False``, just remove the torrent.
     """
     act_torrentIds = list( transmission_get_matching_torrents( client, torrent_ids ) )
@@ -288,20 +295,24 @@ def transmission_remove_torrent( client, torrent_ids, remove_data = False ):
 
 def transmission_pause_torrent( client, torrent_ids ):
     """
-    Pauses torrents on the Transmission server.
+    Pauses torrents on the Transmission_ server.
 
-    :param client: the `Transmission RPC client`_.
-    :param torrent_ids: :py:class:`list` of MD5 hashes on the Transmission server.
+    :param client: the Transmission RPC client.
+    :type client: :py:class:`TransmissionRPCClient <transmission_rpc.Client>`
+    :param torrent_ids: :py:class:`list` of MD5 hashes on the Transmission_ server.
+    :type torrent_ids: list
     """
     act_torrentIds = list( transmission_get_matching_torrents( client, torrent_ids ) )
     client.stop_torrent( act_torrentIds )
 
 def transmission_resume_torrent( client, torrent_ids ):
     """
-    Resumes torrents on the Transmission server.
+    Resumes torrents on the Transmission_ server.
 
-    :param client: the `Transmission RPC client`_. In this case, only the configuration info (username, password, URL, and port) are used.
-    :param torrent_ids: :py:class:`list` of MD5 hashes on the Transmission server.
+    :param client: the Transmission RPC client.
+    :type client: :py:class:`TransmissionRPCClient <transmission_rpc.Client>`
+    :param torrent_ids: :py:class:`list` of MD5 hashes on the Transmission_ server.
+    :type torrent_ids: list
     """
     act_torrentIds = list( transmission_get_matching_torrents( client, torrent_ids ) )
     client.start_torrent( act_torrentIds )

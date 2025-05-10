@@ -59,8 +59,6 @@ def main( ):
     parser_push = subparser.add_parser( 'push', help = 'Push settings for a new transmission server to configuration.' )
     parser_push.add_argument( '--host', dest='push_url', metavar = 'url', action = 'store', type = str, default = 'localhost',
                              help = 'URL of the transmission server. Default is localhost.' )
-    parser_push.add_argument('--port', dest='push_port', metavar = 'port', action='store', type=int, default = 12345,
-                             help = 'Port for the transmission server. Default is 12345.' )
     parser_push.add_argument('--username', dest='push_username', metavar = 'username', action='store', type=str, default = 'admin',
                              help = 'Username to login to the transmission server. Default is admin.' )
     parser_push.add_argument('--password', dest='push_password', metavar = 'password', action='store', type=str, default = 'admin',
@@ -107,7 +105,7 @@ def main( ):
         return
     if args.choose_option == 'push':
         status = core_transmission.push_transmission_credentials(
-            args.push_url, args.push_port, args.push_username, args.push_password )
+            args.push_url, args.push_username, args.push_password )
         if status != 'SUCCESS': print( status )
         return
     if args.choose_option == 'add': # adds a single torrent file or magnet URL

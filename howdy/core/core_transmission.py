@@ -12,7 +12,6 @@ def push_transmission_credentials( url, username, password ):
     Stores the Transmission server credentials into the SQLite3_ configuration database.
 
     :param str url: URL of the Transmission server.
-    :param int port: port used to access the Transmission server.
     :param str username: server account username.
     :param str password: server account password.
     
@@ -58,7 +57,6 @@ def get_transmission_credentials( ):
     .. code-block:: python
     
       { 'url': XXXX,
-        'port': YYYY,
         'username': AAAA,
         'password': BBBB }
    

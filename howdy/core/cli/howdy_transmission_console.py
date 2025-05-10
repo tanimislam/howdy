@@ -57,11 +57,11 @@ def main( ):
     #
     ## push settings for new deluge server
     parser_push = subparser.add_parser( 'push', help = 'Push settings for a new transmission server to configuration.' )
-    parser_push.add_argument( '--host', dest='push_url', metavar = 'url', action = 'store', type = str, default = 'localhost',
+    parser_push.add_argument( '-H', '--host', dest='push_url', metavar = 'url', action = 'store', type = str, default = 'localhost',
                              help = 'URL of the transmission server. Default is localhost.' )
-    parser_push.add_argument('--username', dest='push_username', metavar = 'username', action='store', type=str, default = 'admin',
+    parser_push.add_argument( '-U', '--username', dest='push_username', metavar = 'username', action='store', type=str, default = 'admin',
                              help = 'Username to login to the transmission server. Default is admin.' )
-    parser_push.add_argument('--password', dest='push_password', metavar = 'password', action='store', type=str, default = 'admin',
+    parser_push.add_argument( '-P', '--password', dest='push_password', metavar = 'password', action='store', type=str, default = 'admin',
                             help = 'Password to login to the transmission server. Default is admin.' )
     #
     ## start operation

@@ -24,7 +24,7 @@ def push_transmission_credentials( url, username, password ):
        * :py:meth:`get_transmission_client <howdy.core.core_transmission.get_transmission_client>`.
        * :py:meth:`get_transmission_credentials <howdy.core.core_transmission.get_transmission_credentials>`.
 
-    _Transmission: https://transmissionbt.com
+    .. _Transmission: https://transmissionbt.com
     """
     
     #
@@ -210,7 +210,7 @@ def transmission_add_torrent_file_as_data( client, torrent_file_data ):
 
     :param client: the Transmission RPC client.
     :type client: :py:class:`TransmissionRPCClient <transmission_rpc.Client>`
-    :param byte torrent_file_data: byte representation of the torrent file data.
+    :param bytes torrent_file_data: byte representation of the torrent file data.
     
     :returns: if successful, returns the MD5 hash of the uploaded torrent as a :py:class:`str`. If unsuccessful, returns ``None``.
 

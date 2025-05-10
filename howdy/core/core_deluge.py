@@ -351,7 +351,7 @@ def deluge_add_torrent_file_as_data( client, torrent_file_name,
 
     :param client: the `Deluge RPC client`_.
     :param str torrent_file_name: name of the candidate file.
-    :param byte torrent_file_data: byte representation of the torrent file data.
+    :param bytes torrent_file_data: byte representation of the torrent file data.
     
     :returns: if successful, returns the MD5 hash of the uploaded torrent as a :py:class:`str`. If unsuccessful, returns ``None``.
 

@@ -60,7 +60,7 @@ This module implements the functionality to interact with a Seedhost_  seedbox_ 
 
 howdy.core.core_torrents module
 ----------------------------------------------
-This is a newer module. It implements higher level interfaces to the Jackett_ torrent searching server to search for ebooks. :ref:`get_book_tor` is its only CLI front-end.
+This is a newer module. It implements higher level interfaces to the Jackett_ torrent searching server to search for ebooks. :ref:`get_book_tor` is its only CLI front-end. It also implements some lower-level methods for identifying torrents (files, URLs, binary representations of torrent files, and magnet links), and in string-formatting the information output of torrent servers.
 
 .. automodule:: howdy.core.core_torrents
    :members:

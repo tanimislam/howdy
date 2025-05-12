@@ -6,7 +6,7 @@ def _signal_handler( signal, frame ):
 signal.signal( signal.SIGINT, _signal_handler )
 from argparse import ArgumentParser
 #
-from howdy.core import core_deluge
+from howdy.core import core_deluge, core_torrents
 
 def _get_matching_torrents( client, list_of_torrents, operation_if_size_1 = False ):
     if any(map(lambda tok: tok == "*", list_of_torrents ) ):
@@ -79,7 +79,7 @@ def main( ):
         info_torrents = args.info_torrent
         torrentIds = _get_matching_torrents( client, info_torrents, operation_if_size_1 = True )
         torrentInfo = core_deluge.deluge_get_torrents_info( client )
-        infos = list(map(lambda torrentId: core_deluge.deluge_format_info(
+        infos = list(map(lambda torrentId: core_torrents.torrent_format_info(
             torrentInfo[ torrentId ], torrentId ), torrentIds ) )
         if len( infos ) == 0: return
         mystr = '\n'.join(map(lambda info: '%s\n' % info, infos))

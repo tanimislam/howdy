@@ -7,8 +7,213 @@ from pathos.multiprocessing import Pool
 from bs4 import BeautifulSoup
 from torf import Magnet
 #
-from howdy.core import core_deluge, get_formatted_size, get_maximum_matchval, return_error_raw, core
+from howdy.core import return_error_raw, core
 from howdy.core import PlexExcludedTrackerStubs, session
+
+def torrent_is_torrent_file( torrent_file_name ):
+    """
+    Check if a file is a torrent file.
+
+    :param str torrent_file_name: name of the candidate file.
+
+    :returns: ``True`` if it is a torrent file, ``False`` otherwise.
+    :rtype: bool
+    """
+    if not os.path.isfile( torrent_file_name ): return False
+    if not os.path.basename( torrent_file_name ).endswith( '.torrent' ): return False
+    if magic.from_file( torrent_file_name ) != 'BitTorrent file': return False
+    return True
+
+
+def torrent_is_url( torrent_url ):
+    """
+    Checks whether an URL is valid, following `this prescription <https://stackoverflow.com/questions/7160737/python-how-to-validate-a-url-in-python-malformed-or-not>`_.
+
+    :param str torrent_url: candidate URL.
+    
+    :returns: ``True`` if it is a valid URL, ``False`` otherwise.
+    :rtype: bool
+    """
+    from urllib.parse import urlparse
+    try:
+        result = urlparse( torrent_url )
+        return all([result.scheme, result.netloc, result.path])
+    except Exception as e: return False
+
+
+#
+## copied from deluge.common
+def format_size( fsize_b ):
+    """
+    Formats the bytes value into a string with KiB, MiB or GiB units. This code has been copied from `deluge's format_size <https://github.com/deluge-torrent/deluge/blob/6ec1479cdbbfed269844041d1001de657594d6da/deluge/ui/console/utils/format_utils.py#L17-L18>`_.
+
+    :param int fsize_b: the filesize in bytes.
+    :returns: formatted string in KiB, MiB or GiB units.
+    :rtype: str
+
+    **Usage**
+    
+    >>> format_size( 112245 )
+    '109.6 KiB'
+
+    """
+    fsize_kb = fsize_b / 1024.0
+    if fsize_kb < 1024:
+        return "%.1f KiB" % fsize_kb
+    fsize_mb = fsize_kb / 1024.0
+    if fsize_mb < 1024:
+        return "%.1f MiB" % fsize_mb
+    fsize_gb = fsize_mb / 1024.0
+    return "%.1f GiB" % fsize_gb
+
+# copied from deluge.ui.console.commands.info
+def format_time( seconds ):
+    """
+    Formats the time, in seconds, to a nice format. Unfortunately, the :py:class:`datetime <datetime.datetime>` class is too unwieldy for this type of formatting. This code is copied from `deluge's format_time <https://github.com/deluge-torrent/deluge/blob/6ec1479cdbbfed269844041d1001de657594d6da/deluge/ui/console/utils/format_utils.py#L28-L34>`_.
+
+    :param int seconds: number of seconds.
+    :returns: formatted string in the form of ``1 days 03:05:04``.
+    :rtype: str
+
+    **Usage**
+    
+    >>> format_time( 97262 )
+    '1 days 03:01:02'
+
+    """
+    minutes = seconds // 60
+    seconds = seconds - minutes * 60
+    hours = minutes // 60
+    minutes = minutes - hours * 60
+    days = hours // 24
+    hours = hours - days * 24
+    return "%d days %02d:%02d:%02d" % (days, hours, minutes, seconds)
+
+# copied from deluge.ui.console.commands.info
+def format_progressbar(progress, width):
+    """
+    Returns a string of a progress bar. This code has been copied from `deluge's f_progressbar <https://github.com/deluge-torrent/deluge/blob/6ec1479cdbbfed269844041d1001de657594d6da/deluge/ui/console/utils/format_utils.py#L66-L82>`_.
+
+    :param float progress: a value between 0-100.
+
+    :returns: str, a progress bar based on width.
+    :rtype: str
+
+    **Usage**
+    
+    >>> format_progressbar( 87.6, 100 )
+    '[######################################################################################~~~~~~~~~~~~]'
+    
+    """
+    w = width - 2 # we use a [] for the beginning and end
+    s = "["
+    p = int(round((progress/100) * w))
+    s += "#" * p
+    s += "~" * (w - p)
+    s += "]"
+    return s
+
+# copied from deluge.common
+def format_speed(bps):
+    """
+    Formats a string to display a transfer speed utilizing :py:func:`fsize`. This is code has been copied from `deluge's format_speed <https://github.com/deluge-torrent/deluge/blob/6ec1479cdbbfed269844041d1001de657594d6da/deluge/ui/console/utils/format_utils.py#L21-L25>`_.
+
+    :param int bps: bytes per second.
+    :returns: a formatted string representing transfer speed
+    :rtype: str
+
+    **Usage**
+
+    >>> format_speed( 43134 )
+    '42.1 KiB/s'
+
+    """
+    fspeed_kb = bps / 1024.0
+    if fspeed_kb < 1024:
+        return "%.1f KiB/s" % fspeed_kb
+    fspeed_mb = fspeed_kb / 1024.0
+    if fspeed_mb < 1024:
+        return "%.1f MiB/s" % fspeed_mb
+    fspeed_gb = fspeed_mb / 1024.0
+    return "%.1f GiB/s" % fspeed_gb
+
+def torrent_format_info( status, torrent_id ):
+    """
+    Returns a nicely formatted representation of the status of a torrent.
+
+    .. code-block:: console
+
+       >>> print( '%s\' % torrent_format_info( status, 'ed53ba61555cab24946ebf2f346752805601a7fb' ) )
+
+       Name: ubuntu-19.10-beta-desktop-amd64.iso
+       ID: ed53ba61555cab24946ebf2f346752805601a7fb
+       State: Downloading
+       Down Speed: 73.4 MiB/s Up Speed: 0.0 KiB/s ETA: 0 days 00:00:23
+       Seeds: 24 (67) Peers: 1 (4) Availability: 24.22
+       Size: 474.5 MiB/2.1 GiB Ratio: 0.000
+       Seed time: 0 days 00:00:00 Active: 0 days 00:00:05
+       Tracker status: ubuntu.com: Announce OK
+       Progress: 21.64% [##################################~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+    
+    :param dict status: the status :py:class:`dict` for a given torrent, generated from :py:meth:`deluge_get_torrents_info <howdy.core.core_deluge.deluge_get_torrents_info>` or :py:meth:`transmission_get_torrents_info <howdy.core.core_transmission.transmission_get_torrents_info>`.
+    :param str torrent_id: the MD5 hash of that torrent.
+    
+    :returns: a nicely formatted representation of that torrent on the Deluge or Transmission server.
+    :rtype: str
+
+    .. seealso:: :py:meth:`deluge_get_torrents_info <howdy.core.core_deluge.deluge_get_torrents_info>`.
+    .. seealso:: :py:meth:`transmission_get_torrents_info <howdy.core.core_transmission.transmission_get_torrents_info>`.
+    """
+    cols, _ = os.get_terminal_size( )
+
+    mystr_split = [
+        "Name: %s" % status[ 'name' ],
+        "ID: %s" % torrent_id,
+        "State: %s" % status[ 'state' ] ]
+    if status[ 'state' ] in ( 'Seeding', 'Downloading' ):
+        line_split = [ ]
+        if status[ 'state'] != 'Seeding':
+            line_split.append(
+                "Down Speed: %s" % format_speed(
+                    status[ 'download_payload_rate' ] ) )
+        line_split.append(
+            "Up Speed: %s" % format_speed(
+                status[ 'upload_payload_rate' ] ) )
+        if status[ 'eta' ]:
+            line_split.append(
+                "ETA: %s" % format_time( status[ 'eta' ] ) )
+        mystr_split.append( ' '.join( line_split ) )
+    #
+    if status[ 'state' ] in ( 'Seeding', 'Downloading', 'Queued' ):
+        line_split = [ 
+            "Seeds: %s (%s)" % (
+                status[ 'num_seeds' ],
+                status[ 'total_seeds' ] ),
+            "Peers: %s (%s)" % (
+                status[ 'num_peers' ],
+                status[ 'total_peers' ] ),
+            "Availability: %0.2f" % status[ 'distributed_copies' ] ]
+        mystr_split.append( ' '.join( line_split ) )
+    #
+    total_done = format_size( status[ 'total_done' ] )
+    total_size = format_size( status[ 'total_size' ] )
+    mystr_split.append(
+        "Size: %s/%s Ratio: %0.3f" % ( total_done, total_size,
+                                       status[ 'ratio' ] ) )
+    #
+    mystr_split.append(
+        "Seed time: %s Active: %s" % ( format_time( status[ 'seeding_time' ] ),
+                                       format_time( status[ 'active_time' ] ) ) )
+    #
+    mystr_split.append(
+        "Tracker status: %s" % status[ 'tracker_status' ] )
+    #
+    if not status[ 'is_finished' ]:
+        pbar = format_progressbar( status[ 'progress' ],
+                                    cols - (13 + len('%0.2f%%' % status[ 'progress'] ) ) )
+        mystr_split.append( "Progress: %0.2f%% %s" % ( status[ 'progress' ], pbar ) )
+    return '\n'.join( mystr_split )
+
 
 def get_trackers_to_exclude( ):
     """

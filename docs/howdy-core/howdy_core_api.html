@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.3. Howdy Core API &mdash; howdy! 1.55-77-g52833eaf documentation</title>
+  <title>4.3. Howdy Core API &mdash; howdy! 1.55-79-g6e57153d documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7dc6ce7e" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=bfa03ebf"></script>
+      <script src="../_static/documentation_options.js?v=50118dd8"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -122,18 +122,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.deluge_add_torrent_file"><code class="docutils literal notranslate"><span class="pre">deluge_add_torrent_file()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.deluge_add_torrent_file_as_data"><code class="docutils literal notranslate"><span class="pre">deluge_add_torrent_file_as_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.deluge_add_url"><code class="docutils literal notranslate"><span class="pre">deluge_add_url()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.deluge_format_info"><code class="docutils literal notranslate"><span class="pre">deluge_format_info()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.deluge_get_matching_torrents"><code class="docutils literal notranslate"><span class="pre">deluge_get_matching_torrents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.deluge_get_torrents_info"><code class="docutils literal notranslate"><span class="pre">deluge_get_torrents_info()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.deluge_is_torrent_file"><code class="docutils literal notranslate"><span class="pre">deluge_is_torrent_file()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.deluge_is_url"><code class="docutils literal notranslate"><span class="pre">deluge_is_url()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.deluge_pause_torrent"><code class="docutils literal notranslate"><span class="pre">deluge_pause_torrent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.deluge_remove_torrent"><code class="docutils literal notranslate"><span class="pre">deluge_remove_torrent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.deluge_resume_torrent"><code class="docutils literal notranslate"><span class="pre">deluge_resume_torrent()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.format_progressbar"><code class="docutils literal notranslate"><span class="pre">format_progressbar()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.format_size"><code class="docutils literal notranslate"><span class="pre">format_size()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.format_speed"><code class="docutils literal notranslate"><span class="pre">format_speed()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.format_time"><code class="docutils literal notranslate"><span class="pre">format_time()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.get_deluge_client"><code class="docutils literal notranslate"><span class="pre">get_deluge_client()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.get_deluge_credentials"><code class="docutils literal notranslate"><span class="pre">get_deluge_credentials()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_deluge.push_deluge_credentials"><code class="docutils literal notranslate"><span class="pre">push_deluge_credentials()</span></code></a></li>
@@ -165,10 +158,17 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-torrents-module">4.3.6. howdy.core.core_torrents module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.deconfuse_magnet_link"><code class="docutils literal notranslate"><span class="pre">deconfuse_magnet_link()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.format_progressbar"><code class="docutils literal notranslate"><span class="pre">format_progressbar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.format_size"><code class="docutils literal notranslate"><span class="pre">format_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.format_speed"><code class="docutils literal notranslate"><span class="pre">format_speed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.format_time"><code class="docutils literal notranslate"><span class="pre">format_time()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.get_book_torrent_jackett"><code class="docutils literal notranslate"><span class="pre">get_book_torrent_jackett()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.get_trackers_to_exclude"><code class="docutils literal notranslate"><span class="pre">get_trackers_to_exclude()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.push_trackers_to_exclude"><code class="docutils literal notranslate"><span class="pre">push_trackers_to_exclude()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.remove_trackers_to_exclude"><code class="docutils literal notranslate"><span class="pre">remove_trackers_to_exclude()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.torrent_format_info"><code class="docutils literal notranslate"><span class="pre">torrent_format_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.torrent_is_torrent_file"><code class="docutils literal notranslate"><span class="pre">torrent_is_torrent_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_torrents.torrent_is_url"><code class="docutils literal notranslate"><span class="pre">torrent_is_url()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-admin-module">4.3.7. howdy.core.core_admin module</a><ul>
@@ -620,7 +620,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.get_lastupdated_string">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2025,</span> <span class="pre">5,</span> <span class="pre">10,</span> <span class="pre">13,</span> <span class="pre">21,</span> <span class="pre">15,</span> <span class="pre">234579)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2025,</span> <span class="pre">5,</span> <span class="pre">12,</span> <span class="pre">11,</span> <span class="pre">5,</span> <span class="pre">31,</span> <span class="pre">749508)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Link to this definition"></a></dt>
 <dd><p>Returns a string representation of a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1818,43 +1818,6 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_format_info">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_format_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_format_info" title="Link to this definition"></a></dt>
-<dd><p>Returns a nicely formatted representation of the status of a torrent.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt; print( &#39;%s&#39; % deluge_format_info( status, &#39;ed53ba61555cab24946ebf2f346752805601a7fb&#39; ) )</span>
-
-<span class="go">Name: ubuntu-19.10-beta-desktop-amd64.iso</span>
-<span class="go">ID: ed53ba61555cab24946ebf2f346752805601a7fb</span>
-<span class="go">State: Downloading</span>
-<span class="go">Down Speed: 73.4 MiB/s Up Speed: 0.0 KiB/s ETA: 0 days 00:00:23</span>
-<span class="go">Seeds: 24 (67) Peers: 1 (4) Availability: 24.22</span>
-<span class="go">Size: 474.5 MiB/2.1 GiB Ratio: 0.000</span>
-<span class="go">Seed time: 0 days 00:00:00 Active: 0 days 00:00:05</span>
-<span class="go">Tracker status: ubuntu.com: Announce OK</span>
-<span class="go">Progress: 21.64% [##################################~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>status</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – the status <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> for a given torrent, generated from <a class="reference internal" href="#howdy.core.core_deluge.deluge_get_torrents_info" title="howdy.core.core_deluge.deluge_get_torrents_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">deluge_get_torrents_info</span></code></a>.</p></li>
-<li><p><strong>torrent_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the MD5 hash of that torrent.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a nicely formatted representation of that torrent on the Deluge server.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#howdy.core.core_deluge.deluge_get_torrents_info" title="howdy.core.core_deluge.deluge_get_torrents_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">deluge_get_torrents_info</span></code></a>.</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_get_matching_torrents">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_get_matching_torrents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_id_strings</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_get_matching_torrents" title="Link to this definition"></a></dt>
 <dd><p>Given a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of possibly truncated MD5 hashes of candidate torrents on the Deluge server, returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of MD5 sums of torrents that match what was provided.</p>
@@ -1887,40 +1850,6 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_is_torrent_file">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_is_torrent_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">torrent_file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_is_torrent_file" title="Link to this definition"></a></dt>
-<dd><p>Check if a file is a torrent file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>torrent_file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – name of the candidate file.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if it is a torrent file, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="howdy.core.core_deluge.deluge_is_url">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">deluge_is_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">torrent_url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.deluge_is_url" title="Link to this definition"></a></dt>
-<dd><p>Checks whether an URL is valid, following <a class="reference external" href="https://stackoverflow.com/questions/7160737/python-how-to-validate-a-url-in-python-malformed-or-not">this prescription</a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>torrent_url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – candidate URL.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if it is a valid URL, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1966,94 +1895,6 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="howdy.core.core_deluge.format_progressbar">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">format_progressbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">progress</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.format_progressbar" title="Link to this definition"></a></dt>
-<dd><p>Returns a string of a progress bar. This code has been copied from <code class="xref py py-meth docutils literal notranslate"><span class="pre">deluge's</span> <span class="pre">format_progressbar</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>progress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – a value between 0-100.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>str, a progress bar based on width.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
-</dd>
-</dl>
-<p><strong>Usage</strong></p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">format_progressbar</span><span class="p">(</span> <span class="mf">87.6</span><span class="p">,</span> <span class="mi">100</span> <span class="p">)</span>
-<span class="go">&#39;[######################################################################################~~~~~~~~~~~~]&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="howdy.core.core_deluge.format_size">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">format_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fsize_b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.format_size" title="Link to this definition"></a></dt>
-<dd><p>Formats the bytes value into a string with KiB, MiB or GiB units. This code has been copied from <code class="xref py py-meth docutils literal notranslate"><span class="pre">deluge's</span> <span class="pre">format_size</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>fsize_b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the filesize in bytes.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>formatted string in KiB, MiB or GiB units.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
-</dd>
-</dl>
-<p><strong>Usage</strong></p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">format_size</span><span class="p">(</span> <span class="mi">112245</span> <span class="p">)</span>
-<span class="go">&#39;109.6 KiB&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="howdy.core.core_deluge.format_speed">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">format_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.format_speed" title="Link to this definition"></a></dt>
-<dd><p>Formats a string to display a transfer speed utilizing <code class="xref py py-func docutils literal notranslate"><span class="pre">fsize()</span></code>. This is code has been copied from <code class="xref py py-meth docutils literal notranslate"><span class="pre">deluge's</span> <span class="pre">format_speed</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>bps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – bytes per second.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a formatted string representing transfer speed</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
-</dd>
-</dl>
-<p><strong>Usage</strong></p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">format_speed</span><span class="p">(</span> <span class="mi">43134</span> <span class="p">)</span>
-<span class="go">&#39;42.1 KiB/s&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="howdy.core.core_deluge.format_time">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.core_deluge.</span></span><span class="sig-name descname"><span class="pre">format_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_deluge.format_time" title="Link to this definition"></a></dt>
-<dd><p>Formats the time, in seconds, to a nice format. Unfortunately, the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> class is too unwieldy for this type of formatting. This code is copied from <code class="xref py py-meth docutils literal notranslate"><span class="pre">deluge's</span> <span class="pre">format_time</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>seconds</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of seconds.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>formatted string in the form of <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">days</span> <span class="pre">03:05:04</span></code>.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
-</dd>
-</dl>
-<p><strong>Usage</strong></p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">format_time</span><span class="p">(</span> <span class="mi">97262</span> <span class="p">)</span>
-<span class="go">&#39;1 days 03:01:02&#39;</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -2147,7 +1988,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – URL of the Transmission server.</p></li>
+<li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – URL of the <a class="reference external" href="https://transmissionbt.com">Transmission</a> server.</p></li>
 <li><p><strong>username</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – server account username.</p></li>
 <li><p><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – server account password.</p></li>
 </ul>
@@ -2539,7 +2380,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </section>
 <section id="howdy-core-core-torrents-module">
 <h2><span class="section-number">4.3.6. </span>howdy.core.core_torrents module<a class="headerlink" href="#howdy-core-core-torrents-module" title="Link to this heading"></a></h2>
-<p>This is a newer module. It implements higher level interfaces to the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching server to search for ebooks. <a class="reference internal" href="cli_tools/howdy_core_cli.html#get-book-tor"><span class="std std-ref">get_book_tor</span></a> is its only CLI front-end.</p>
+<p>This is a newer module. It implements higher level interfaces to the <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching server to search for ebooks. <a class="reference internal" href="cli_tools/howdy_core_cli.html#get-book-tor"><span class="std std-ref">get_book_tor</span></a> is its only CLI front-end. It also implements some lower-level methods for identifying torrents (files, URLs, binary representations of torrent files, and magnet links), and in string-formatting the information output of torrent servers.</p>
 <dl class="py function" id="module-howdy.core.core_torrents">
 <dt class="sig sig-object py" id="howdy.core.core_torrents.deconfuse_magnet_link">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.core_torrents.</span></span><span class="sig-name descname"><span class="pre">deconfuse_magnet_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">magnet_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_tracker_stubs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['stealth.si']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.deconfuse_magnet_link" title="Link to this definition"></a></dt>
@@ -2555,6 +2396,94 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dl>
 <p>:returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of a <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet</a> string with the problematic <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">torrent tracker</a> stubs in <code class="docutils literal notranslate"><span class="pre">excluded_tracker_stubs</span></code> removed. If <code class="docutils literal notranslate"><span class="pre">magnet_string</span></code> is not a valid <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet</a> string, return <code class="docutils literal notranslate"><span class="pre">None</span></code>.
 :rtype: str</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_torrents.format_progressbar">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_torrents.</span></span><span class="sig-name descname"><span class="pre">format_progressbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">progress</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.format_progressbar" title="Link to this definition"></a></dt>
+<dd><p>Returns a string of a progress bar. This code has been copied from <a class="reference external" href="https://github.com/deluge-torrent/deluge/blob/6ec1479cdbbfed269844041d1001de657594d6da/deluge/ui/console/utils/format_utils.py#L66-L82">deluge’s f_progressbar</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>progress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – a value between 0-100.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>str, a progress bar based on width.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+<p><strong>Usage</strong></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">format_progressbar</span><span class="p">(</span> <span class="mf">87.6</span><span class="p">,</span> <span class="mi">100</span> <span class="p">)</span>
+<span class="go">&#39;[######################################################################################~~~~~~~~~~~~]&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_torrents.format_size">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_torrents.</span></span><span class="sig-name descname"><span class="pre">format_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fsize_b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.format_size" title="Link to this definition"></a></dt>
+<dd><p>Formats the bytes value into a string with KiB, MiB or GiB units. This code has been copied from <a class="reference external" href="https://github.com/deluge-torrent/deluge/blob/6ec1479cdbbfed269844041d1001de657594d6da/deluge/ui/console/utils/format_utils.py#L17-L18">deluge’s format_size</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fsize_b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the filesize in bytes.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>formatted string in KiB, MiB or GiB units.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+<p><strong>Usage</strong></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">format_size</span><span class="p">(</span> <span class="mi">112245</span> <span class="p">)</span>
+<span class="go">&#39;109.6 KiB&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_torrents.format_speed">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_torrents.</span></span><span class="sig-name descname"><span class="pre">format_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.format_speed" title="Link to this definition"></a></dt>
+<dd><p>Formats a string to display a transfer speed utilizing <code class="xref py py-func docutils literal notranslate"><span class="pre">fsize()</span></code>. This is code has been copied from <a class="reference external" href="https://github.com/deluge-torrent/deluge/blob/6ec1479cdbbfed269844041d1001de657594d6da/deluge/ui/console/utils/format_utils.py#L21-L25">deluge’s format_speed</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – bytes per second.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a formatted string representing transfer speed</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+<p><strong>Usage</strong></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">format_speed</span><span class="p">(</span> <span class="mi">43134</span> <span class="p">)</span>
+<span class="go">&#39;42.1 KiB/s&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_torrents.format_time">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_torrents.</span></span><span class="sig-name descname"><span class="pre">format_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.format_time" title="Link to this definition"></a></dt>
+<dd><p>Formats the time, in seconds, to a nice format. Unfortunately, the <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> class is too unwieldy for this type of formatting. This code is copied from <a class="reference external" href="https://github.com/deluge-torrent/deluge/blob/6ec1479cdbbfed269844041d1001de657594d6da/deluge/ui/console/utils/format_utils.py#L28-L34">deluge’s format_time</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seconds</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of seconds.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>formatted string in the form of <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">days</span> <span class="pre">03:05:04</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+<p><strong>Usage</strong></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">format_time</span><span class="p">(</span> <span class="mi">97262</span> <span class="p">)</span>
+<span class="go">&#39;1 days 03:01:02&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -2615,6 +2544,81 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>tracker_stubs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – the collection of <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">torrent tracker stubs</a> to remove from the database.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_torrents.torrent_format_info">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_torrents.</span></span><span class="sig-name descname"><span class="pre">torrent_format_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.torrent_format_info" title="Link to this definition"></a></dt>
+<dd><p>Returns a nicely formatted representation of the status of a torrent.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt; print( &#39;%s&#39; % torrent_format_info( status, &#39;ed53ba61555cab24946ebf2f346752805601a7fb&#39; ) )</span>
+
+<span class="go">Name: ubuntu-19.10-beta-desktop-amd64.iso</span>
+<span class="go">ID: ed53ba61555cab24946ebf2f346752805601a7fb</span>
+<span class="go">State: Downloading</span>
+<span class="go">Down Speed: 73.4 MiB/s Up Speed: 0.0 KiB/s ETA: 0 days 00:00:23</span>
+<span class="go">Seeds: 24 (67) Peers: 1 (4) Availability: 24.22</span>
+<span class="go">Size: 474.5 MiB/2.1 GiB Ratio: 0.000</span>
+<span class="go">Seed time: 0 days 00:00:00 Active: 0 days 00:00:05</span>
+<span class="go">Tracker status: ubuntu.com: Announce OK</span>
+<span class="go">Progress: 21.64% [##################################~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>status</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – the status <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> for a given torrent, generated from <a class="reference internal" href="#howdy.core.core_deluge.deluge_get_torrents_info" title="howdy.core.core_deluge.deluge_get_torrents_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">deluge_get_torrents_info</span></code></a> or <a class="reference internal" href="#howdy.core.core_transmission.transmission_get_torrents_info" title="howdy.core.core_transmission.transmission_get_torrents_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">transmission_get_torrents_info</span></code></a>.</p></li>
+<li><p><strong>torrent_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the MD5 hash of that torrent.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a nicely formatted representation of that torrent on the Deluge or Transmission server.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#howdy.core.core_deluge.deluge_get_torrents_info" title="howdy.core.core_deluge.deluge_get_torrents_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">deluge_get_torrents_info</span></code></a>.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#howdy.core.core_transmission.transmission_get_torrents_info" title="howdy.core.core_transmission.transmission_get_torrents_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">transmission_get_torrents_info</span></code></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_torrents.torrent_is_torrent_file">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_torrents.</span></span><span class="sig-name descname"><span class="pre">torrent_is_torrent_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">torrent_file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.torrent_is_torrent_file" title="Link to this definition"></a></dt>
+<dd><p>Check if a file is a torrent file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>torrent_file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – name of the candidate file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if it is a torrent file, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_torrents.torrent_is_url">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_torrents.</span></span><span class="sig-name descname"><span class="pre">torrent_is_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">torrent_url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.torrent_is_url" title="Link to this definition"></a></dt>
+<dd><p>Checks whether an URL is valid, following <a class="reference external" href="https://stackoverflow.com/questions/7160737/python-how-to-validate-a-url-in-python-malformed-or-not">this prescription</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>torrent_url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – candidate URL.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if it is a valid URL, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>

@@ -3,9 +3,7 @@ from urllib.parse import parse_qs, urlparse
 from pathlib import Path
 from shutil import which
 #
-from howdy.core import session, PlexConfig
-from howdy.core.core_deluge import (
-    deluge_is_torrent_file, deluge_is_url, deluge_format_info )
+from howdy.core import session, PlexConfig, core_torrents
 
 def push_transmission_credentials( url, username, password ):
     """
@@ -200,7 +198,7 @@ def transmission_add_torrent_file( client, torrent_file_name ):
 
     .. seealso:: :py:meth:`transmission_add_torrent_file_as_data <howdy.core.core_transmission.transmission_add_torrent_file_as_data>`.
     """
-    if not deluge_is_torrent_file( torrent_file_name ): return None
+    if not core_torrents.torrent_is_torrent_file( torrent_file_name ): return None
     tor = client.add_torrent( Path( torrent_file_name ) )
     return tor.info_hash
 
@@ -252,7 +250,7 @@ def transmission_add_url( client, torrent_url ):
     :type client: :py:class:`TransmissionRPCClient <transmission_rpc.Client>`
     :param str torrent_url: candidate URL.
     """
-    if deluge_is_url( torrent_url ): client.add_torrent( torrent_url )
+    if core_torrents.torrent_is_url( torrent_url ): client.add_torrent( torrent_url )
 
 def transmission_get_matching_torrents( client, torrent_id_strings ):
     """

@@ -1,4 +1,4 @@
-import os, sys, numpy, logging, magic, base64, subprocess
+import os, sys, numpy, logging, base64, subprocess
 from shutil import which
 #
 from howdy.core import session, PlexConfig, core_torrents

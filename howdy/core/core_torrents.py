@@ -1,4 +1,4 @@
-import requests, re, threading, logging
+import requests, re, threading, logging, magic
 import os, time, numpy, logging, datetime, pickle, gzip
 from itertools import chain
 from requests.compat import urljoin

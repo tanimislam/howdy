@@ -153,9 +153,9 @@ def push_deluge_credentials( url, port, username, password ):
     ## first check that the configurations are valid
     try:
         client = create_deluge_client( url, port, username, password )
-    except:
+    except Exception as e:
         error_message = 'ERROR, INVALID SETTINGS FOR DELUGE CLIENT.'
-        logging.debug( error_message )
+        logging.debug( error_message, 'REASON = %s' % str( e ) )
         return error_message
     #
     ## now put into the database

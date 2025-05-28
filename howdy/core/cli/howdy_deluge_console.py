@@ -115,10 +115,10 @@ def main( ):
         if candidate_add.startswith( 'magnet' ): # is magnet
             core_deluge.deluge_add_magnet_file( client, candidate_add )
             return
-        if core_deluge.deluge_is_url( candidate_add ): # is an URL
+        if core_torrents.torrent_is_url( candidate_add ): # is an URL
             core_deluge.deluge_add_url( client, candidate_add )
             return
-        if core_deluge.deluge_is_torrent_file( candidate_add ): # is a torrent file
+        if core_torrents.torrent_is_torrent_file( candidate_add ): # is a torrent file
             core_deluge.deluge_add_torrent_file( client, candidate_add )
             return
         return

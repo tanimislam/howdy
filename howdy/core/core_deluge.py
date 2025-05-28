@@ -1,4 +1,5 @@
 import os, sys, numpy, logging, base64, subprocess
+from urllib.parse import parse_qs, urlparse
 from shutil import which
 #
 from howdy.core import session, PlexConfig, core_torrents

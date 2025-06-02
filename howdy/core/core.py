@@ -687,7 +687,8 @@ def _get_library_data_show(
                     if datetime.datetime.fromtimestamp( float( videlem['addedat'] ) ).date() < sinceDate:
                         continue
                     seasno = int( videlem['parentindex'] )
-                    epno = int( videlem[ 'index' ] )
+                    try: epno = int( videlem[ 'index' ] )
+                    except: epno = -1
                     pthumb = videlem.get( 'parentthumb' )
                     if pthumb is not None: seasonpicurl = '%s%s' % ( fullURL, videlem.get( 'parentthumb' ) )
                     else: seasonpicurl = fullURL

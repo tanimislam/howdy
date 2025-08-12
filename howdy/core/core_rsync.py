@@ -33,7 +33,6 @@ def check_credentials( local_dir, sshpath, password, subdir = None ):
         ## second, can we login with username and password?
         uname = sshpath.split('@')[0]
         hostname = sshpath.split('@')[1]
-        print( uname, hostname )
         # raises a ValueError if cannot do so
         # needs to pass in look_for_keys = False so not use id_* keys
         with Connection( hostname, user = uname,

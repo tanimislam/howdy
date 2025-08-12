@@ -1,4 +1,4 @@
-import sys, os, signal, tabulate, datetime
+import sys, os, signal, tabulate, datetime, logging
 # code to handle Ctrl+C, convenience method for command line tools
 def _signal_handler( signal, frame ):
     print( "You pressed Ctrl+C. Exiting...")
@@ -17,6 +17,9 @@ def _get_matching_torrents( client, list_of_torrents, operation_if_size_1 = Fals
 
 def main( ):
     parser = ArgumentParser( )
+    parser.add_argument( '-D', '--debug', dest = 'do_debug', action = 'store_true', default = False,
+                        help = 'If chosen, then turn on DEBUG logging.' )
+    #
     subparser = parser.add_subparsers( help = 'Choose one of these three modes of operation: rm, add, pause, resume, or push.',
                                        dest = 'choose_option' )
     #
@@ -68,6 +71,9 @@ def main( ):
     #
     ## start operation
     args = parser.parse_args( )
+    logger = logging.getLogger( )
+    if args.do_debug:
+        logger.setLevel( logging.DEBUG )
     client, status = core_deluge.get_deluge_client( )
     if status != 'SUCCESS':
         print( "ERROR, COULD NOT GET VALID DELUGE CLIENT." )

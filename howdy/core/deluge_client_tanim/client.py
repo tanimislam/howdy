@@ -6,6 +6,7 @@ import warnings
 import zlib
 import io
 import os
+import sys
 import platform
 from functools import wraps
 from threading import local as thread_local
@@ -81,12 +82,20 @@ class DelugeRPCClient(object):
         ctx = ssl.create_default_context( )
         ctx.set_ciphers( 'DEFAULT' )
         cipherlist = ':'.join(map(lambda cipher: cipher['name'], ctx.get_ciphers()))
+        ctx.check_hostname = False
         #
-        if ssl_version is not None:
-            self._socket = ssl.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_STREAM), ssl_version=ssl_version,
-                                           ciphers = cipherlist )
+        if tuple([ sys.version_info.major, sys.version_info.minor ]) < (3, 12):
+            if ssl_version is not None:
+                self._socket = ssl.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_STREAM), ssl_version=ssl_version,
+                                               ciphers = cipherlist )
+            else:
+                self._socket = ssl.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_STREAM), ciphers = cipherlist )
         else:
-            self._socket = ssl.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_STREAM), ciphers = cipherlist )
+            uctx = ssl._create_unverified_context( )
+            uctx.set_ciphers( 'DEFAULT' )
+            uctx.check_hostname = False
+            self._socket = uctx.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_STREAM) )
+
         self._socket.settimeout(self.timeout)
 
     def connect(self):

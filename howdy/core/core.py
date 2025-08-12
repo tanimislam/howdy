@@ -1373,8 +1373,9 @@ def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400', verify = T
             pool.map( _solve_problem_row, problem_rows ) )
         return movie_data_rows, genres
 
-def get_lastN_movies( lastN, token, fullURL = 'http://localhost:32400',
-                      useLastNewsletterDate = True ):
+def get_lastN_movies(
+    lastN, token, fullURL = 'http://localhost:32400',
+    useLastNewsletterDate = True ):
     """
     Returns the last :math:`N` movies that were uploaded to the Plex_ server, either after the last date at which a newsletter was sent out or not.
     

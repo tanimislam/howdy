@@ -8,7 +8,7 @@ from howdy.core import get_maximum_matchval, get_formatted_size, return_error_ra
 from howdy.movie import movie
 
 def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, tmdb_id = None ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate movie Magnet links found using the main Jackett_ torrent searching service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the movie string on which to search.
@@ -144,7 +144,7 @@ def get_movie_torrent_jackett( name, maxnum = 10, verify = True, doRaw = False, 
     return items[:maxnum], 'SUCCESS'
 
 def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True, tmdb_id = None ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate movie Magnet links found using the `EZTV.IO`_ torrent service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the movie on which to search.
@@ -222,7 +222,7 @@ def get_movie_torrent_eztv_io( name, maxnum = 10, verify = True, tmdb_id = None 
     
 
 def get_movie_torrent_zooqle( name, maxnum = 10, verify = True ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate movie Magnet links found using the Zooqle_ torrent service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the movie string on which to search.
@@ -311,7 +311,7 @@ def get_movie_torrent_zooqle( name, maxnum = 10, verify = True ):
     return sorted( items_toshow, key = lambda item: -item['seeders'] - item['leechers'] )[:maxnum], 'SUCCESS'
 
 def get_movie_torrent_rarbg( name, maxnum = 10, verify = True ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate movie Magnet links found using the RARBG_ torrent service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the movie string on which to search.
@@ -383,7 +383,7 @@ def get_movie_torrent_rarbg( name, maxnum = 10, verify = True ):
     return actdata, 'SUCCESS'
         
 def get_movie_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate movie Magnet links found using the `The Pirate Bay`_ torrent service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the movie string on which to search.
@@ -545,7 +545,7 @@ def get_movie_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
         'torrent_size' : item[ 'size' ] }, items ) ), 'SUCCESS'
 
 def get_movie_torrent_kickass( name, maxnum = 10, verify = True ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate movie Magnet links found using the KickAssTorrents_ torrent service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the movie string on which to search.

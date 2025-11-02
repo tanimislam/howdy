@@ -2,10 +2,15 @@ import os, sys, tabulate, signal
 from howdy import signal_handler
 signal.signal( signal.SIGINT, signal_handler )
 #
+import warnings
+from bs4.builder import XMLParsedAsHTMLWarning
 from howdy.tv import tv
 from howdy.core import core, return_error_raw
 from itertools import chain
 from argparse import ArgumentParser
+#
+## suppress these XML warnings
+warnings.filterwarnings('ignore', category=XMLParsedAsHTMLWarning)
 
 def try_continue( ):
     val = str(input( 'PERFORM OPERATION (must choose one) [y/n]:')).lower( )

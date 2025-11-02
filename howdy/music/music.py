@@ -211,7 +211,7 @@ class MusicInfo( object ):
     def get_artist_datas_LL(
         cls, artist_name, min_score = 100,
         do_strict = True, artist_mbid = None, do_direct = False ):
-        """
+        r"""
         :param str artist_name: the artist over which to search.
         :param int min_score: optional argument. Filter on this minimum score on artist name matches to ``artist_name``. 0 :math:`\le` ``min_score`` :math:`\le 100`. Default is ``100``.
         :param bool do_strict: optional argument. If ``True``, performs a strict search using the :py:meth:`musicbrainzngs search_artists <musicbrainz.search_artists>` method. Default is ``True``.
@@ -346,7 +346,10 @@ class MusicInfo( object ):
         """
         time0 = time.perf_counter( )
         rgid = album['id']
-        rgdate = album['first-release-date']
+        #
+        ## guard code, if do NOT have a release date
+        try: rgdate = album['first-release-date']
+        except: rgdate = 1900
         rtitle = album['title']
         rgdate_date = None
         for fmt in ( '%Y-%m-%d', '%Y-%m', '%Y' ):
@@ -427,7 +430,7 @@ class MusicInfo( object ):
             len( self.alltrackdata ), artist_name, time.perf_counter( ) - time0 ) )
 
     def get_music_metadatas_album( self, album_name, min_criterion_score = 95 ):
-        """
+        r"""
         :param str album_name: a studio album released by this artist.
         :param int min_criterion_score: the minimum score to accept for a string similarity comparison between ``album_name`` and any studio album created by this artist. ``70`` :math:`\le` ``min_criterion_score`` :math:`\le` ``100``, and the default is ``95``. The :py:meth:`get_maximum_matchval <howdy.core.get_maximum_matchval>` performs the string comparison. If no album matches ``album_name``, then return album data for the album whose name is closest (while having a similarity score :math:`\ge` ``min_criterion_score``) to ``album_name`` is returned.
         :returns: a two-element :py:class:`tuple`, whose first element is a :py:class:`list` of summary information on tracks for this album, and whose second element is the string ``"SUCCESS"``. The elements in this list are ordered by first song track to last song track. An example first song for the `Moon Safari`_ album released by Air_ is,
@@ -496,7 +499,7 @@ class MusicInfo( object ):
         return filename, 'SUCCESS'
 
     def get_music_metadata( self, song_name, min_criterion_score = 85 ):
-        """
+        r"""
         :param str song_name: name of the song.
         :param int min_criterion_score: the minimum score to accept for a string similarity comparison between ``song_name`` and any track created by this artist. ``70`` :math:`\le` ``min_criterion_score`` :math:`\le` ``100``, and the default is ``85``. The :py:meth:`get_maximum_matchval <howdy.core.get_maximum_matchval>` performs the string comparison. If no track matches ``song_name``, then track data for a track that is the closest match (while having a similarity score :math:`\ge` ``min_criterion_score``) to ``song_name`` is returned.
         :returns: if successful, a two element :py:class:`tuple`. First element is a :py:class:`dict` of information on the song, and the second element is the string ``"SUCCESS"``. For example, for the Air_ song `Kelly Watch the Stars`_ in `Moon Safari`_, the closest match is ``Kelly, Watch the Stars!``.
@@ -941,7 +944,7 @@ def get_youtube_file( youtube_URL, outputfile, use_aria2c = True ):
             os.remove( tmpfile )        
             
 def youtube_search(youtube, query, max_results = 10):
-    """
+    r"""
     Performs a string query to search through YouTube_ clips, and returns list of valid YouTube_ URLs.
 
     :param Resource youtube: a `googleapiclient Resource`_ object that allows for the access to the `YouTube Google API`_.

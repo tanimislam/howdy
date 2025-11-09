@@ -9,10 +9,8 @@ class ShowsExtraFilters( Base ): # these are the shows for which to add an extra
     This SQLAlchemy_ ORM class contains the list of shows over which one wants to apply extra filters. These shows must exist on the Plex_ server. Stored into the ``showsextrafilters`` table in the SQLite3_ configuration database.
 
     :var show: the show, that exists on the Plex_ server, over which to apply the extra filtration. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` object of size 65536.
-    :type: :py:class:`Column <sqlalchemy.schema.Column>`
 
     :var showfilter: The *additional* torrent filtering to apply to the show. This filter is a string that contains the filter tokens in lowercase order. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` object of size 65536.
-    :type: :py:class:`Column <sqlalchemy.schema.Column>`
 
     .. _TVDB: https://api.thetvdb.com/swagger
     .. _SQLAlchemy: https://www.sqlalchemy.org

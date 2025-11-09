@@ -4,6 +4,29 @@ from sqlalchemy import Column, String, Integer
 #
 from howdy.core import session, create_all, PlexConfig, Base
 
+class ShowsExtraFilters( Base ): # these are the shows for which to add an extra filter when searching for torrents
+    """
+    This SQLAlchemy_ ORM class contains the list of shows over which one wants to apply extra filters. These shows must exist on the Plex_ server. Stored into the ``showsextrafilters`` table in the SQLite3_ configuration database.
+
+    :var show: the show, that exists on the Plex_ server, over which to apply the extra filtration. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` object of size 65536.
+    :type: :py:class:`Column <sqlalchemy.schema.Column>`
+
+    :var showfilter: The *additional* torrent filtering to apply to the show. This filter is a string that contains the filter tokens in lowercase order. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` object of size 65536.
+    :type: :py:class:`Column <sqlalchemy.schema.Column>`
+
+    .. _TVDB: https://api.thetvdb.com/swagger
+    .. _SQLAlchemy: https://www.sqlalchemy.org
+    .. _Plex: https://plex.tv
+    .. _SQLite3: https://www.sqlite.org/index.html
+    """
+    
+    #
+    ## create the table using Base.metadata.create_all( _engine )
+    __tablename__ = 'showsextrafilters'
+    __table_args__ = { 'extend_existing': True }
+    show       = Column( String( 65536), index = True, primary_key = True )
+    showfilter = Column( String( 65536) )
+
 class ShowsToExclude( Base ): # these are shows you want to exclude
     """
     This SQLAlchemy_ ORM class contains the list of shows to exclude from analysis. These shows must exist on the Plex_ server. Stored into the ``showstoexclude`` table in the SQLite3_ configuration database.
@@ -26,8 +49,9 @@ class TMDBShowIds( Base ): # these are the TMDB IDs for shows
     """
     This SQLAlchemy_ ORM class contains the show names with the TMDB IDs of the shows. These shows must exist on the Plex_ server. Storied in the the ``tmdbshowids`` table in the SQLite3_ configuration database.
 
-       :var show: the show, that exists on the Plex_ server. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` object of size 65536.
-       :var tmdbid: the TMDB_ ID of the show. THis is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`Integer <sqlalchemy.types.Integer>`.
+    :var show: the show, that exists on the Plex_ server. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` object of size 65536.
+
+    :var tmdbid: the TMDB_ ID of the show. THis is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`Integer <sqlalchemy.types.Integer>`.
     """
     #
     ## create the table using Base.metadata.create_all( _engine )

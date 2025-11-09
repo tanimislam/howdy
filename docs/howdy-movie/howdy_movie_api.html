@@ -6,16 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6.3. Howdy Movie API &mdash; howdy! 1.55-79-g6e57153d documentation</title>
+  <title>6.3. Howdy Movie API &mdash; howdy! 1.55-89-g7153aa42 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7dc6ce7e" />
 
   
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=50118dd8"></script>
+      <script src="../_static/documentation_options.js?v=0bcd2323"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -139,7 +139,7 @@
 </div></blockquote>
 <dl class="py class" id="module-howdy.movie">
 <dt class="sig sig-object py" id="howdy.movie.TMDBEngine">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.movie.</span></span><span class="sig-name descname"><span class="pre">TMDBEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngine" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.movie.</span></span><span class="sig-name descname"><span class="pre">TMDBEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngine" title="Link to this definition"></a></dt>
 <dd><p>The singleton class that, once called, initializes movie genre information from the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database. This object can then be accessed to find <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database genre IDs from genres or vice-versa. This also loads in all TTF fonts located in the <code class="docutils literal notranslate"><span class="pre">resources</span></code> directory.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -147,11 +147,11 @@
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.movie.TMDBEngine.__TMDBEngine">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__TMDBEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngine.__TMDBEngine" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__TMDBEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngine.__TMDBEngine" title="Link to this definition"></a></dt>
 <dd><p>This object is only instantiated once. It implements mappings between <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API genre IDs and genre names (horror, comedy, etc.)  and loads all TTF fonts from the <code class="docutils literal notranslate"><span class="pre">resources</span></code> subdirectory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<dd class="field-odd"><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -159,13 +159,13 @@
 <span class="sig-name descname"><span class="pre">getGenreFromGenreId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genre_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngine.__TMDBEngine.getGenreFromGenreId" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>genre_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre ID.</p>
+<dd class="field-odd"><p><strong>genre_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre ID.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the movie genre.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -175,13 +175,13 @@
 <span class="sig-name descname"><span class="pre">getGenreIdFromGenre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genre</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngine.__TMDBEngine.getGenreIdFromGenre" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>genre</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the movie genre.</p>
+<dd class="field-odd"><p><strong>genre</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the movie genre.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre ID from the genre.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -191,10 +191,10 @@
 <span class="sig-name descname"><span class="pre">getGenreIds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngine.__TMDBEngine.getGenreIds" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of all the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre IDs.</p>
+<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of all the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre IDs.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -204,10 +204,10 @@
 <span class="sig-name descname"><span class="pre">getGenres</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngine.__TMDBEngine.getGenres" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of all the movie genres.</p>
+<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of all the movie genres.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -220,7 +220,7 @@
 <dd class="field-odd"><p>a <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> api key.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -231,7 +231,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.movie.TMDBEngineSimple">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.movie.</span></span><span class="sig-name descname"><span class="pre">TMDBEngineSimple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngineSimple" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.movie.</span></span><span class="sig-name descname"><span class="pre">TMDBEngineSimple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngineSimple" title="Link to this definition"></a></dt>
 <dd><p>The singleton class that, once called, initializes movie genre information from the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database. This object can then be accessed to find <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database genre IDs from genres or vice-versa. Unlike <a class="reference internal" href="#howdy.movie.TMDBEngine" title="howdy.movie.TMDBEngine"><code class="xref py py-class docutils literal notranslate"><span class="pre">TMDBEngine</span></code></a>, this also does not contain the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API key.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -239,11 +239,11 @@
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.movie.TMDBEngineSimple.__TMDBEngine">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__TMDBEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngineSimple.__TMDBEngine" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__TMDBEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngineSimple.__TMDBEngine" title="Link to this definition"></a></dt>
 <dd><p>This object is only instantiated once. It implements mappings between <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API genre IDs and genre names (horror, comedy, etc.).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<dd class="field-odd"><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -251,13 +251,13 @@
 <span class="sig-name descname"><span class="pre">getGenreFromGenreId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genre_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngineSimple.__TMDBEngine.getGenreFromGenreId" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>genre_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre ID.</p>
+<dd class="field-odd"><p><strong>genre_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre ID.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the movie genre.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -267,13 +267,13 @@
 <span class="sig-name descname"><span class="pre">getGenreIdFromGenre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genre</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngineSimple.__TMDBEngine.getGenreIdFromGenre" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>genre</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the movie genre.</p>
+<dd class="field-odd"><p><strong>genre</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the movie genre.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre ID from the genre.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -283,10 +283,10 @@
 <span class="sig-name descname"><span class="pre">getGenreIds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngineSimple.__TMDBEngine.getGenreIds" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of all the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre IDs.</p>
+<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of all the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre IDs.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -296,10 +296,10 @@
 <span class="sig-name descname"><span class="pre">getGenres</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.TMDBEngineSimple.__TMDBEngine.getGenres" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of all the movie genres.</p>
+<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of all the movie genres.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -318,7 +318,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dd class="field-odd"><p>the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API key.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -329,7 +329,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dd><p>Saves the provided <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API key into the <code class="docutils literal notranslate"><span class="pre">plexconfig</span></code> table, under the <code class="docutils literal notranslate"><span class="pre">tmdb</span></code> service, in the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>apikey</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API key.</p>
+<dd class="field-odd"><p><strong>apikey</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API key.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -347,26 +347,26 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="py function" id="module-howdy.movie.movie">
 <dt class="sig sig-object py" id="howdy.movie.movie.createProcessedMovieData">
 <span class="sig-prename descclassname"><span class="pre">howdy.movie.movie.</span></span><span class="sig-name descname"><span class="pre">createProcessedMovieData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.movie.createProcessedMovieData" title="Link to this definition"></a></dt>
-<dd><p>Takes the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of raw movie data (one row per movie) produced by <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a>, and then processes each row in the following way.</p>
+<dd><p>Takes the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of raw movie data (one row per movie) produced by <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a>, and then processes each row in the following way.</p>
 <ul class="simple">
 <li><p>If a year is specified in this method, then reject any movie that has not been aired that year.</p></li>
-<li><p>Takes the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> release date that <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> produces by default, and converts that into a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a>.</p></li>
+<li><p>Takes the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> release date that <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> produces by default, and converts that into a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a>.</p></li>
 <li><p>Fixes up the <code class="docutils literal notranslate"><span class="pre">vote_average</span></code> value for the movie.</p></li>
 <li><p>Tries to find the <a class="reference external" href="https://www.imdb.com">IMDB</a> ID for a movie.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>results</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – the pre-processed <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of movies that the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database produces through its API.</p></li>
-<li><p><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argument. If defined, then reject any movie not produced that year.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>results</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – the pre-processed <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of movies that the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database produces through its API.</p></li>
+<li><p><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – optional argument. If defined, then reject any movie not produced that year.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the post-processed and filtered <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of movies with fixed and extra data.</p>
+<dd class="field-even"><p>the post-processed and filtered <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of movies with fixed and extra data.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -378,8 +378,8 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the year on which to search.</p></li>
-<li><p><strong>genre_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – <p>the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre ID. The mapping of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre ID to genre is,</p>
+<li><p><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the year on which to search.</p></li>
+<li><p><strong>genre_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – <p>the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre ID. The mapping of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> genre ID to genre is,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="mi">12</span><span class="p">:</span> <span class="s1">&#39;Adventure&#39;</span><span class="p">,</span>
  <span class="mi">14</span><span class="p">:</span> <span class="s1">&#39;Fantasy&#39;</span><span class="p">,</span>
  <span class="mi">16</span><span class="p">:</span> <span class="s1">&#39;Animation&#39;</span><span class="p">,</span>
@@ -403,14 +403,14 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </div>
 <p>If <code class="docutils literal notranslate"><span class="pre">genre_id</span></code> is <code class="docutils literal notranslate"><span class="pre">-1</span></code>, then <strong>ALL</strong> movies (of all genres) are chosen.</p>
 </p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie data released that year in that genre.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie data released that year in that genre.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 <div class="admonition warning">
@@ -422,16 +422,16 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.movie.movie.get_actor_ids_dict">
 <span class="sig-prename descclassname"><span class="pre">howdy.movie.movie.</span></span><span class="sig-name descname"><span class="pre">get_actor_ids_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actor_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.movie.get_actor_ids_dict" title="Link to this definition"></a></dt>
-<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of actor names to their <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> actor ID.</p>
+<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of actor names to their <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> actor ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>actor_names</strong> (<em>iterable</em>) – an iterable collection (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>, etc.) of actor names.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>actor_names</strong> (<em>iterable</em>) – an iterable collection (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>, etc.) of actor names.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, where the key is the actor name and its value is the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> actor ID. For example, if we want to get the ids for <a class="reference external" href="https://en.wikipedia.org/wiki/Steve_Martin">Steve Martin</a> and <a class="reference external" href="https://en.wikipedia.org/wiki/Richard_Pryor">Richard Pryor</a>,</p>
+<dd class="field-even"><p><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, where the key is the actor name and its value is the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> actor ID. For example, if we want to get the ids for <a class="reference external" href="https://en.wikipedia.org/wiki/Steve_Martin">Steve Martin</a> and <a class="reference external" href="https://en.wikipedia.org/wiki/Richard_Pryor">Richard Pryor</a>,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">{&#39;Richard Pryor&#39;: 9309, &#39;Steve Martin&#39;: 67773}</span>
 </pre></div>
 </div>
@@ -452,13 +452,13 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tmdb_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the TMDB ID of the movie.</p></li>
-<li><p><strong>num_actors</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optinal argument, the top number of actors to choose. Default is <code class="docutils literal notranslate"><span class="pre">3</span></code>. must be <span class="math notranslate nohighlight">\(\ge 1\)</span>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>tmdb_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the TMDB ID of the movie.</p></li>
+<li><p><strong>num_actors</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – optinal argument, the top number of actors to choose. Default is <code class="docutils literal notranslate"><span class="pre">3</span></code>. must be <span class="math notranslate nohighlight">\(\ge 1\)</span>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> containing the top <code class="docutils literal notranslate"><span class="pre">num_actors</span></code> main actors, producers, and director of the movie. For example, the movie <a class="reference external" href="https://en.wikipedia.org/wiki/Novocaine_(film)">Novocaine (2001)</a> has <code class="docutils literal notranslate"><span class="pre">tmdb_id</span> <span class="pre">=</span> <span class="pre">20794</span></code>. This returns the following information,</p>
+<dd class="field-even"><p><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> containing the top <code class="docutils literal notranslate"><span class="pre">num_actors</span></code> main actors, producers, and director of the movie. For example, the movie <a class="reference external" href="https://en.wikipedia.org/wiki/Novocaine_(film)">Novocaine (2001)</a> has <code class="docutils literal notranslate"><span class="pre">tmdb_id</span> <span class="pre">=</span> <span class="pre">20794</span></code>. This returns the following information,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s1">&#39;actors&#39;</span> <span class="p">:</span> <span class="p">[</span> <span class="s1">&#39;Steve Martin&#39;</span><span class="p">,</span> <span class="s1">&#39;Laura Dern&#39;</span><span class="p">,</span> <span class="s1">&#39;Helena Bonham Carter&#39;</span> <span class="p">],</span>
   <span class="s1">&#39;producers&#39;</span> <span class="p">:</span> <span class="p">[</span> <span class="s1">&#39;Daniel M. Rosenberg&#39;</span><span class="p">,</span> <span class="s1">&#39;Paul Mones&#39;</span> <span class="p">],</span>
   <span class="s1">&#39;director&#39;</span> <span class="p">:</span> <span class="s1">&#39;David Atkins&#39;</span> <span class="p">}</span>
@@ -467,7 +467,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -475,20 +475,20 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.movie.movie.get_episodes_series_tmdb">
 <span class="sig-prename descclassname"><span class="pre">howdy.movie.movie.</span></span><span class="sig-name descname"><span class="pre">get_episodes_series_tmdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tv_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.movie.get_episodes_series_tmdb" title="Link to this definition"></a></dt>
-<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of episodes from the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database for a TV show. Otherwise returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if cannot be found.</p>
+<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of episodes from the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> database for a TV show. Otherwise returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if cannot be found.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tv_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series ID for the TV show.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>tv_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series ID for the TV show.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of episodes for this TV show, ordered by air date. Each element is a summary of an episode with the following keys.</p>
+<dd class="field-even"><p><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of episodes for this TV show, ordered by air date. Each element is a summary of an episode with the following keys.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">airedSeason</span></code> is the season the episode aired.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">airedEpisodeNumber</span></code> is the order in the season that the episode aired.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">firstAired</span></code> is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> representation, in the format “YYYY-MM-DD”, when the episode aired.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">firstAired</span></code> is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> representation, in the format “YYYY-MM-DD”, when the episode aired.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">overview</span></code> is a plot summary of the episode.</p></li>
 </ul>
 <p>For example, for <a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons">The Simpsons</a>,</p>
@@ -523,7 +523,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -539,17 +539,17 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the movie name.</p></li>
-<li><p><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argument. If defined, check only on movies released that year.</p></li>
-<li><p><strong>checkMultiple</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then do an involved search where each word in the <code class="docutils literal notranslate"><span class="pre">title</span></code> is individually capitalized. This functionality was developed to make <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie searches more robust. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the movie name.</p></li>
+<li><p><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – optional argument. If defined, check only on movies released that year.</p></li>
+<li><p><strong>checkMultiple</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then do an involved search where each word in the <code class="docutils literal notranslate"><span class="pre">title</span></code> is individually capitalized. This functionality was developed to make <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie searches more robust. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the main movie genre, which can be one of action, animation, comedy, documentary, drama, hindi, horror, horror, science fiction.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -561,15 +561,15 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tmdb_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie ID.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>tmdb_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie ID.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the <a class="reference external" href="https://www.imdb.com">IMDB</a> movie ID. If cannot be found, returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -581,12 +581,12 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tmdb_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie ID.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>tmdb_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie ID.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>a comprehensive <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of summary information for the movie. For example, for <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Wars_(film)">Star Wars</a>,</p>
+<dd class="field-even"><p><p>a comprehensive <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of summary information for the movie. For example, for <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Wars_(film)">Star Wars</a>,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;adult&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
  <span class="s1">&#39;backdrop_path&#39;</span><span class="p">:</span> <span class="s1">&#39;/4iJfYYoQzZcONB9hNzg0J0wWyPH.jpg&#39;</span><span class="p">,</span>
  <span class="s1">&#39;belongs_to_collection&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
@@ -631,7 +631,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -639,21 +639,21 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.movie.movie.get_movie_tmdbids">
 <span class="sig-prename descclassname"><span class="pre">howdy.movie.movie.</span></span><span class="sig-name descname"><span class="pre">get_movie_tmdbids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">getAll</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.movie.get_movie_tmdbids" title="Link to this definition"></a></dt>
-<dd><p>Gets either a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie IDs that match a movie name, or a single best <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie ID.</p>
+<dd><p>Gets either a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie IDs that match a movie name, or a single best <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the movie name.</p></li>
-<li><p><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argument. If defined, check only on movies released that year.</p></li>
-<li><p><strong>getAll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then find all matches. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, only return the best match. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the movie name.</p></li>
+<li><p><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – optional argument. If defined, check only on movies released that year.</p></li>
+<li><p><strong>getAll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then find all matches. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, only return the best match. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>If <code class="docutils literal notranslate"><span class="pre">getAll`</span> <span class="pre">is</span> <span class="pre">``True</span></code>, then return a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of all <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie IDs that match <code class="docutils literal notranslate"><span class="pre">title</span></code>. If <cite>it is `False`</cite>, then return a single (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) best <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie ID match to <code class="docutils literal notranslate"><span class="pre">title</span></code>. If there are no matches, return <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dd class="field-even"><p>If <code class="docutils literal notranslate"><span class="pre">getAll`</span> <span class="pre">is</span> <span class="pre">``True</span></code>, then return a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of all <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie IDs that match <code class="docutils literal notranslate"><span class="pre">title</span></code>. If <cite>it is `False`</cite>, then return a single (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) best <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie ID match to <code class="docutils literal notranslate"><span class="pre">title</span></code>. If there are no matches, return <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">getAll</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>. If <code class="docutils literal notranslate"><span class="pre">getAll</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, an <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>.</p>
+<dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">getAll</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>. If <code class="docutils literal notranslate"><span class="pre">getAll</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, an <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -665,12 +665,12 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>actor_name_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, of format returned by <a class="reference internal" href="#howdy.movie.movie.get_actor_ids_dict" title="howdy.movie.movie.get_actor_ids_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_actor_ids_dict</span></code></a>, of the collection of actors.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>actor_name_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, of format returned by <a class="reference internal" href="#howdy.movie.movie.get_actor_ids_dict" title="howdy.movie.movie.get_actor_ids_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_actor_ids_dict</span></code></a>, of the collection of actors.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of movies in which these actors have acted. For example, here are the three movies that <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> found in which <a class="reference external" href="https://en.wikipedia.org/wiki/Steve_Martin">Steve Martin</a> and <a class="reference external" href="https://en.wikipedia.org/wiki/Richard_Pryor">Richard Pryor</a> acted together.</p>
+<dd class="field-even"><p><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of movies in which these actors have acted. For example, here are the three movies that <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> found in which <a class="reference external" href="https://en.wikipedia.org/wiki/Steve_Martin">Steve Martin</a> and <a class="reference external" href="https://en.wikipedia.org/wiki/Richard_Pryor">Richard Pryor</a> acted together.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;The Muppet Movie&#39;</span><span class="p">,</span>
   <span class="s1">&#39;release_date&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1979</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
   <span class="s1">&#39;popularity&#39;</span><span class="p">:</span> <span class="mf">7.743</span><span class="p">,</span>
@@ -707,7 +707,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -719,13 +719,13 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the movie name.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>apiKey</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument, the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API key.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the movie name.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>apiKey</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – optional argument, the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> API key.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of movies that match <code class="docutils literal notranslate"><span class="pre">title</span></code> according to <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a>. For example, 128 movies are a “match” for <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Wars_(film)">Star Wars</a>, according to <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a>. Here is the top match (all movies have the same <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> format).</p>
+<dd class="field-even"><p><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of movies that match <code class="docutils literal notranslate"><span class="pre">title</span></code> according to <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a>. For example, 128 movies are a “match” for <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Wars_(film)">Star Wars</a>, according to <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a>. Here is the top match (all movies have the same <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> format).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Star Wars&#39;</span><span class="p">,</span>
  <span class="s1">&#39;release_date&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1997</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
  <span class="s1">&#39;popularity&#39;</span><span class="p">:</span> <span class="mf">50.48</span><span class="p">,</span>
@@ -742,7 +742,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -754,19 +754,19 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.movie.movie.get_tv_ids_by_series_name">
 <span class="sig-prename descclassname"><span class="pre">howdy.movie.movie.</span></span><span class="sig-name descname"><span class="pre">get_tv_ids_by_series_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.movie.get_tv_ids_by_series_name" title="Link to this definition"></a></dt>
-<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series IDs that match to a given TV show name.</p>
+<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series IDs that match to a given TV show name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>series_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the name of the TV series.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>series_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the name of the TV series.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series IDs..</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series IDs..</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -778,15 +778,15 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tv_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series ID for the TV show.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>tv_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series ID for the TV show.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the <a class="reference external" href="https://www.imdb.com">IMDB</a> ID for that TV show. Otherwise returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if cannot be found.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -798,16 +798,16 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tv_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series ID for the TV show.</p></li>
-<li><p><strong>season</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the season on the TV show.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>tv_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series ID for the TV show.</p></li>
+<li><p><strong>season</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the season on the TV show.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a comprehensive <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> information on the TV show and the given season. Example nicely formatted JSON representation for <a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons_(season_10)">The Simpsons Season 10</a> is located in <a class="reference download internal" download="" href="../_downloads/e182ebd2567f0c9bcff6a858224a6a8e/tmdb_simpsons_season10_info.json"><code class="xref download docutils literal notranslate"><span class="pre">tmdb_simpsons_info.json</span></code></a>. Otherwise returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if TV show cannot be found.</p>
+<dd class="field-even"><p>a comprehensive <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> information on the TV show and the given season. Example nicely formatted JSON representation for <a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons_(season_10)">The Simpsons Season 10</a> is located in <a class="reference download internal" download="" href="../_downloads/e182ebd2567f0c9bcff6a858224a6a8e/tmdb_simpsons_season10_info.json"><code class="xref download docutils literal notranslate"><span class="pre">tmdb_simpsons_info.json</span></code></a>. Otherwise returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if TV show cannot be found.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -819,15 +819,15 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tv_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series ID for the TV show.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>tv_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> series ID for the TV show.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a comprehensive <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> information on the TV show. Example nicely formatted JSON representation for <a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons">The Simpsons</a> is located in <a class="reference download internal" download="" href="../_downloads/90247baa3091caef6eeb254723cee48c/tmdb_simpsons_info.json"><code class="xref download docutils literal notranslate"><span class="pre">tmdb_simpsons_info.json</span></code></a>. Otherwise returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if TV show cannot be found.</p>
+<dd class="field-even"><p>a comprehensive <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> information on the TV show. Example nicely formatted JSON representation for <a class="reference external" href="https://en.wikipedia.org/wiki/The_Simpsons">The Simpsons</a> is located in <a class="reference download internal" download="" href="../_downloads/90247baa3091caef6eeb254723cee48c/tmdb_simpsons_info.json"><code class="xref download docutils literal notranslate"><span class="pre">tmdb_simpsons_info.json</span></code></a>. Otherwise returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if TV show cannot be found.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -841,9 +841,9 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <li><p>no method that searches on the <a class="reference external" href="https://en.wikipedia.org/wiki/Torrentz">Torrentz</a> torrent tracker.</p></li>
 <li><p>an extra method, <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent" title="howdy.movie.movie_torrents.get_movie_torrent"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent</span></code></a> uses the <a class="reference external" href="https://yts.ag/api">YTS API</a> to retrieve movie <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent files</a> instead of Magnet links.</p></li>
 </ul>
-<p>Here are the six methods that return the movie magnet links found by different torrent services – <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent_eztv_io" title="howdy.movie.movie_torrents.get_movie_torrent_eztv_io"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent_eztv_io</span></code></a> (<a class="reference external" href="https://eztv.io">EZTV.IO</a>), <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent_zooqle" title="howdy.movie.movie_torrents.get_movie_torrent_zooqle"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent_zooqle</span></code></a> (<a class="reference external" href="https://zooqle.com">Zooqle</a>), <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent_rarbg" title="howdy.movie.movie_torrents.get_movie_torrent_rarbg"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent_rarbg</span></code></a> (<a class="reference external" href="https://en.wikipedia.org/wiki/RARBG">RARBG</a>), <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent_kickass" title="howdy.movie.movie_torrents.get_movie_torrent_kickass"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent_kickass</span></code></a> (<a class="reference external" href="https://en.wikipedia.org/wiki/KickassTorrents">KickassTorrents</a>), <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent_tpb" title="howdy.movie.movie_torrents.get_movie_torrent_tpb"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent_tpb</span></code></a> (<a class="reference external" href="https://en.wikipedia.org/wiki/The_Pirate_Bay">The Pirate Bay</a>), and the unified torrent searcher <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent_jackett" title="howdy.movie.movie_torrents.get_movie_torrent_jackett"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent_jackett</span></code></a> (<a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent search) – produce a common two element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> output format.</p>
+<p>Here are the six methods that return the movie magnet links found by different torrent services – <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent_eztv_io" title="howdy.movie.movie_torrents.get_movie_torrent_eztv_io"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent_eztv_io</span></code></a> (<a class="reference external" href="https://eztv.io">EZTV.IO</a>), <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent_zooqle" title="howdy.movie.movie_torrents.get_movie_torrent_zooqle"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent_zooqle</span></code></a> (<a class="reference external" href="https://zooqle.com">Zooqle</a>), <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent_rarbg" title="howdy.movie.movie_torrents.get_movie_torrent_rarbg"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent_rarbg</span></code></a> (<a class="reference external" href="https://en.wikipedia.org/wiki/RARBG">RARBG</a>), <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent_kickass" title="howdy.movie.movie_torrents.get_movie_torrent_kickass"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent_kickass</span></code></a> (<a class="reference external" href="https://en.wikipedia.org/wiki/KickassTorrents">KickassTorrents</a>), <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent_tpb" title="howdy.movie.movie_torrents.get_movie_torrent_tpb"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent_tpb</span></code></a> (<a class="reference external" href="https://en.wikipedia.org/wiki/The_Pirate_Bay">The Pirate Bay</a>), and the unified torrent searcher <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent_jackett" title="howdy.movie.movie_torrents.get_movie_torrent_jackett"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent_jackett</span></code></a> (<a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent search) – produce a common two element <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> output format.</p>
 <ul>
-<li><p>If successful, then the first element is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched episode. Each element is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, ordered by the total number of seeds and leechs. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The <strong>common</strong> keys in each element are,</p>
+<li><p>If successful, then the first element is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched episode. Each element is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, ordered by the total number of seeds and leechs. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The <strong>common</strong> keys in each element are,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> is usually the name of the candidate movie to download.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">seeders</span></code> is the number of seeds for this Magnet link.</p></li>
@@ -863,7 +863,7 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </li>
 </ul>
 <p>An extra method, <a class="reference internal" href="#howdy.movie.movie_torrents.get_movie_torrent" title="howdy.movie.movie_torrents.get_movie_torrent"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_movie_torrent</span></code></a> uses the <a class="reference external" href="https://yts.ag/api">YTS API</a> to retrieve movie <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">torrent files</a>.</p>
-<p>As of May 12, 2025, here are three movie torrent finding methods that work and don’t work when searching for <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Trek_Beyond">Star Trek Beyond</a>. See <a class="reference internal" href="../howdy-tv/howdy_tv_api.html#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a> for a description of what services or trackers work for downloading TV torrents.</p>
+<p>As of November 09, 2025, here are three movie torrent finding methods that work and don’t work when searching for <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Trek_Beyond">Star Trek Beyond</a>. See <a class="reference internal" href="../howdy-tv/howdy_tv_api.html#table-working-tvtorrents"><span class="std std-numref">Table 5.1</span></a> for a description of what services or trackers work for downloading TV torrents.</p>
 <span id="table-working-movietorrents"></span><table class="docutils align-default" id="id11">
 <caption><span class="caption-number">Table 6.1 </span><span class="caption-text">Which Movie Torrent Trackers or Services Work?</span><a class="headerlink" href="#id11" title="Link to this table"></a></caption>
 <tbody>
@@ -912,19 +912,19 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="py function" id="module-howdy.movie.movie_torrents">
 <dt class="sig sig-object py" id="howdy.movie.movie_torrents.get_movie_torrent">
 <span class="sig-prename descclassname"><span class="pre">howdy.movie.movie_torrents.</span></span><span class="sig-name descname"><span class="pre">get_movie_torrent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.movie_torrents.get_movie_torrent" title="Link to this definition"></a></dt>
-<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie found using <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">Torrent files</a> using the <a class="reference external" href="https://yts.ag/api">YTS API</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
+<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie found using <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">Torrent files</a> using the <a class="reference external" href="https://yts.ag/api">YTS API</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the movie string on which to search.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the movie string on which to search.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">Torrent files</a> that match the searched movie, ordered from <em>earliest</em> to <em>latest</em> year of release. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
+<dd class="field-even"><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://en.wikipedia.org/wiki/Torrent_file">Torrent files</a> that match the searched movie, ordered from <em>earliest</em> to <em>latest</em> year of release. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -932,18 +932,18 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.movie.movie_torrents.get_movie_torrent_eztv_io">
 <span class="sig-prename descclassname"><span class="pre">howdy.movie.movie_torrents.</span></span><span class="sig-name descname"><span class="pre">get_movie_torrent_eztv_io</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmdb_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.movie_torrents.get_movie_torrent_eztv_io" title="Link to this definition"></a></dt>
-<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie Magnet links found using the <a class="reference external" href="https://eztv.io">EZTV.IO</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
+<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie Magnet links found using the <a class="reference external" href="https://eztv.io">EZTV.IO</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the movie on which to search.</p></li>
-<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argument, the maximum number of magnet links to return. Default is 10. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>tmdb_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – optional argument. The <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> ID of the movie.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the movie on which to search.</p></li>
+<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – optional argument, the maximum number of magnet links to return. Default is 10. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>tmdb_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – optional argument. The <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> ID of the movie.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched movie, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
+<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched movie, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> is the name of the candidate movie to download, and in parentheses is the size of the download in MB or GB.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">rawtitle</span></code> is <em>only</em> the name of the candidate movie to download.</p></li>
@@ -955,34 +955,34 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </p>
 </dd>
 </dl>
-<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
+<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
 </dd>
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of May 12, 2025, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
+<p>As of November 09, 2025, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.movie.movie_torrents.get_movie_torrent_jackett">
 <span class="sig-prename descclassname"><span class="pre">howdy.movie.movie_torrents.</span></span><span class="sig-name descname"><span class="pre">get_movie_torrent_jackett</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doRaw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmdb_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.movie_torrents.get_movie_torrent_jackett" title="Link to this definition"></a></dt>
-<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie Magnet links found using the main <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
+<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie Magnet links found using the main <a class="reference external" href="https://github.com/Jackett/Jackett">Jackett</a> torrent searching service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the movie string on which to search.</p></li>
-<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argumeent, the maximum number of magnet links to return. Default is 10. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>doRaw</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, uses the <a class="reference external" href="https://www.imdb.com">IMDb</a> information to search for the movie. Otherwise, uses the full string in <code class="docutils literal notranslate"><span class="pre">name</span></code> to search for the movie.</p></li>
-<li><p><strong>tmdb_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argument. If defined, use this <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie ID to search for magnet links.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the movie string on which to search.</p></li>
+<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – optional argumeent, the maximum number of magnet links to return. Default is 10. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>doRaw</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, uses the <a class="reference external" href="https://www.imdb.com">IMDb</a> information to search for the movie. Otherwise, uses the full string in <code class="docutils literal notranslate"><span class="pre">name</span></code> to search for the movie.</p></li>
+<li><p><strong>tmdb_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – optional argument. If defined, use this <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> movie ID to search for magnet links.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched movie, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
+<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched movie, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> is the name of the candidate movie to download, and in parentheses the size of the candidate in MB or GB.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">rawtitle</span></code> is <em>only</em> the name of the candidate movie to download.</p></li>
@@ -994,10 +994,10 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </p>
 </dd>
 </dl>
-<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
+<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1005,17 +1005,17 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.movie.movie_torrents.get_movie_torrent_kickass">
 <span class="sig-prename descclassname"><span class="pre">howdy.movie.movie_torrents.</span></span><span class="sig-name descname"><span class="pre">get_movie_torrent_kickass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.movie_torrents.get_movie_torrent_kickass" title="Link to this definition"></a></dt>
-<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie Magnet links found using the <a class="reference external" href="https://en.wikipedia.org/wiki/KickassTorrents">KickAssTorrents</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
+<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie Magnet links found using the <a class="reference external" href="https://en.wikipedia.org/wiki/KickassTorrents">KickAssTorrents</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the movie string on which to search.</p></li>
-<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argument, the maximum number of magnet links to return. Default is 10. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the movie string on which to search.</p></li>
+<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – optional argument, the maximum number of magnet links to return. Default is 10. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched movie, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
+<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched movie, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> is <em>only</em> the name of the candidate movie to download.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">seeders</span></code> is the number of seeds for this Magnet link.</p></li>
@@ -1025,32 +1025,32 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </p>
 </dd>
 </dl>
-<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
+<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
 </dd>
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of May 12, 2025, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
+<p>As of November 09, 2025, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.movie.movie_torrents.get_movie_torrent_rarbg">
 <span class="sig-prename descclassname"><span class="pre">howdy.movie.movie_torrents.</span></span><span class="sig-name descname"><span class="pre">get_movie_torrent_rarbg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.movie_torrents.get_movie_torrent_rarbg" title="Link to this definition"></a></dt>
-<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie Magnet links found using the <a class="reference external" href="https://en.wikipedia.org/wiki/RARBG">RARBG</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
+<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie Magnet links found using the <a class="reference external" href="https://en.wikipedia.org/wiki/RARBG">RARBG</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the movie string on which to search.</p></li>
-<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argument, the maximum number of magnet links to return. Default is 10. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the movie string on which to search.</p></li>
+<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – optional argument, the maximum number of magnet links to return. Default is 10. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched movie, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
+<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched movie, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> is <em>only</em> the name of the candidate movie to download.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">seeders</span></code> is the number of seeds for this Magnet link.</p></li>
@@ -1060,33 +1060,33 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </p>
 </dd>
 </dl>
-<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
+<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
 </dd>
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of May 12, 2025, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
+<p>As of November 09, 2025, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.movie.movie_torrents.get_movie_torrent_tpb">
 <span class="sig-prename descclassname"><span class="pre">howdy.movie.movie_torrents.</span></span><span class="sig-name descname"><span class="pre">get_movie_torrent_tpb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doAny</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.movie_torrents.get_movie_torrent_tpb" title="Link to this definition"></a></dt>
-<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie Magnet links found using the <a class="reference external" href="https://en.wikipedia.org/wiki/The_Pirate_Bay">The Pirate Bay</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
+<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie Magnet links found using the <a class="reference external" href="https://en.wikipedia.org/wiki/The_Pirate_Bay">The Pirate Bay</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the movie string on which to search.</p></li>
-<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argument, the maximum number of magnet links to return. Default is 100. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
-<li><p><strong>doAny</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then only search through TV shows. Otherwise, search through all media.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the movie string on which to search.</p></li>
+<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – optional argument, the maximum number of magnet links to return. Default is 100. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
+<li><p><strong>doAny</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then only search through TV shows. Otherwise, search through all media.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched movie, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
+<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched movie, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> is <em>only</em> the name of the candidate movie to download.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">seeders</span></code> is the number of seeds for this Magnet link.</p></li>
@@ -1097,32 +1097,32 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </p>
 </dd>
 </dl>
-<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
+<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
 </dd>
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>As of May 12, 2025, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
+<p>As of November 09, 2025, cannot get it to work when giving it valid movie searches, such as <code class="docutils literal notranslate"><span class="pre">&quot;Star</span> <span class="pre">Trek</span> <span class="pre">Beyond&quot;</span></code>. See <a class="reference internal" href="#table-working-movietorrents"><span class="std std-numref">Table 6.1</span></a>.</p>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.movie.movie_torrents.get_movie_torrent_zooqle">
 <span class="sig-prename descclassname"><span class="pre">howdy.movie.movie_torrents.</span></span><span class="sig-name descname"><span class="pre">get_movie_torrent_zooqle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.movie.movie_torrents.get_movie_torrent_zooqle" title="Link to this definition"></a></dt>
-<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie Magnet links found using the <a class="reference external" href="https://zooqle.com">Zooqle</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
+<dd><p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of candidate movie Magnet links found using the <a class="reference external" href="https://zooqle.com">Zooqle</a> torrent service and the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>, if successful.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the movie string on which to search.</p></li>
-<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – optional argument, the maximum number of magnet links to return. Default is 100. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
-<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the movie string on which to search.</p></li>
+<li><p><strong>maxnum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – optional argument, the maximum number of magnet links to return. Default is 100. Must be <span class="math notranslate nohighlight">\(\ge 5\)</span>.</p></li>
+<li><p><strong>verify</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – optional argument, whether to verify SSL connections. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched movie, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
+<dd class="field-even"><p><p>if successful, then returns a two member <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> the first member is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements that match the searched movie, ordered from <em>most</em> seeds and leechers to least. The second element is the string <code class="docutils literal notranslate"><span class="pre">&quot;SUCCESS&quot;</span></code>. The keys in each element of the list are,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> is the name of the candidate movie to download, and in parentheses is the size of the download in MB or GB.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">rawtitle</span></code> is <em>only</em> the name of the candidate movie to download.</p></li>
@@ -1134,10 +1134,10 @@ Returns the <a class="reference external" href="https://www.themoviedb.org/docum
 </p>
 </dd>
 </dl>
-<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
+<p>If this is unsuccessful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
 </dd>
 </dl>
 </dd></dl>

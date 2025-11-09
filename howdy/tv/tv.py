@@ -10,7 +10,7 @@ from dateutil.relativedelta import relativedelta
 from rapidfuzz.fuzz import ratio
 from ive_tanim.core import autocrop_image
 #
-from howdy.tv import get_token, tv_torrents, ShowsToExclude, tv_attic
+from howdy.tv import get_token, tv_torrents, ShowsToExclude, ShowsExtraFilters, tv_attic
 from howdy.core import core_rsync, splitall, session, return_error_raw
 from howdy.movie import movie
 
@@ -1003,7 +1003,7 @@ def get_episodes_series( series_id, tvdb_token, showSpecials = True, fromDate = 
     return sData
 
 def get_path_data_on_tvshow( tvdata, tvshow ):
-    """
+    r"""
     This method is used by the :ref:`get_tv_batch` tool that can automatically download new episodes. This returns a summary :py:class:`dict` of information on a TV show stored in the Plex_ server (see documentation in :py:meth:`get_library_data <howdy.core.core.get_library_data>` that focuses on the format of the dictionary for TV libraries). Here is a guide to the keys:
     
     * ``prefix`` is the root directory in which the episodes of the TV show live.
@@ -1123,7 +1123,7 @@ def get_path_data_on_tvshow( tvdata, tvshow ):
         toks = list(map(lambda tok: tok.strip( ), basename.split(' - ') ) )
         idx_match = -1
         for idx in range(len(toks)):
-            if re.match('^s\d{1,}e\d{1,}', toks[idx].lower( ) ) is not None:
+            if re.match(r'^s\d{1,}e\d{1,}', toks[idx].lower( ) ) is not None:
                 idx_match = idx
                 break
         assert( idx_match != -1 ), 'problem with %s' % basename
@@ -1292,7 +1292,7 @@ def get_remaining_episodes(
         doShowEnded = False, showsToExclude = None, showFuture = False,
         num_threads = 2 * cpu_count( ), token = None,
         mustHaveTitle = True ):
-    """
+    r"""
     Returns a :py:class:`dict` of episodes missing from the Plex_ TV library for the TV shows that are in it. Each key in the dictionary is the TV show with missing episodes. The value is another dictionary. Here are their keys and values,
     
     * ``episodes`` returns a :py:class:`list` of :py:class:`tuple`\ s of missing episodes. Each tuple is of the form ``( SEASON #, EPISODE #, EPISODE NAME )``.
@@ -1561,6 +1561,23 @@ def push_shows_to_exclude( tvdata, showsToExclude ):
     for show in candShows: session.add( ShowsToExclude( show = show ) )
     session.commit( )
 
+def get_shows_extra_filters( ):
+    """
+    Returns the :py:class:`dict` of shows in the Plex_ library that are ignored from analysis or update. This queries the ``showsextrafilters`` table in the SQLite3_ configuration database.
+
+    :returns: a :py:class:`dict` of TV shows for which we have applied an extra filter.
+    :rtype: dict
+    """
+    showsExtraFiltersDB = list(session.query( ShowsExtraFilters ).all( ) )
+    showsExtraFiltersDict = dict()
+    for entry in showsExtraFiltersDB:
+        showname = entry.show
+        showfilter = entry.showfilter.strip( )
+        if len( showfilter ) == 0:
+            continue
+        showsExtraFiltersDict[ showname ] = sorted(set( showfilter.split( ) ) )
+    return showsExtraFiltersDict
+    
 def get_shows_to_exclude( tvdata = None ):
     """
     Returns the list of shows in the Plex_ library that are ignored from analysis or update. This queries the ``showstoexclude`` table in the SQLite3_ configuration database.
@@ -1647,6 +1664,9 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
     tv_torrent_gets = { }
     tv_torrent_gets.setdefault( 'nonewdirs', [] )
     tv_torrent_gets.setdefault( 'newdirs', {} )
+    #
+    ## now search for shows to find
+    shows_extra_filters = get_shows_extra_filters( )
     for tvshow in toGet:
         mydict = toGet[ tvshow ]
         showFileName = mydict[ 'showFileName' ]
@@ -1679,8 +1699,13 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
                           zip([ ":", "&", "/", "!", "'", ".", "?" ], # do not replace apostrophe
                               [ '', '', 'and', '', '', '', '', '' ]),
                           showFileName)
+        #
+        ## extra logic check for shows to filter on
+        must_have_extra = must_have
+        if tvshow in shows_extra_filters:
+            must_have_extra = set( must_have | set( shows_extra_filters[ tvshow ] ) )
         for seasno, epno, title in mydict[ 'episodes' ]:
-            must_have_here = set(map(lambda elem: elem.strip( ).lower( ), must_have))
+            must_have_here = set(map(lambda elem: elem.strip( ).lower( ), must_have_extra ) )
             actTitle = title.replace('/', ', ')
             candDir = os.path.join( prefix, 'Season %%%02dd' % min_inferred_length % seasno )
             fname = '%s - s%02de%s - %s' % ( showFileName, seasno, '%%%02dd' % episode_number_length % epno, actTitle )
@@ -1707,7 +1732,7 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
 
 def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs = 240, num_iters = 10,
                                       do_raw = False, do_local_rsync = False ):
-    """
+    r"""
     Engine backend code, used by :ref:`get_tv_batch`, that searches for Magnet links for missing episodes on the Jackett_ server, downloads the Magnet links using the Deluge_ server, and finally copies the downloaded missing episodes to the appropriate locations in the Plex_ TV library. This expects the :py:class:`tuple` input returned by :py:meth:`create_tvTorUnits <howdy.tv.tv.create_tvTorUnits>` to run.
 
     :param list tvTorUnits: the :py:class:`list` of missing episodes to search on the Jackett_ server. This is the first element of the :py:class:`tuple` returned by :py:meth:`create_tvTorUnits <howdy.tv.tv.create_tvTorUnits>`.

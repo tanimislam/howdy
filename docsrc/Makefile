@@ -28,3 +28,6 @@ gitdeploy: deploy
 	git pull
 	git commit -a -m "documentation fix."
 	git push
+
+remotedeploy: deploy
+	rsync -avzP ../docs $(remote):$(directory)

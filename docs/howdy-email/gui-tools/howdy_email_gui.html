@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>8.2. howdy_email_gui &mdash; howdy! 1.55-79-g6e57153d documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+  <title>8.2. howdy_email_gui &mdash; howdy! 1.55-87-ge433a32 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=7dc6ce7e" />
 
@@ -15,9 +15,9 @@
     <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=50118dd8"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=2a2a40ae"></script>
+      <script src="../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -103,7 +103,7 @@
            <div itemprop="articleBody">
              
   <section id="howdy-email-gui-icon-howdy-email-gui">
-<span id="howdy-email-gui-label"></span><h1><span class="section-number">8.2. </span><a class="reference internal" href="../../_images/howdy_email_gui_SQUARE_VECTA.svg"><img alt="howdy_email_gui_icon" class="align-middle" src="../../_images/howdy_email_gui_SQUARE_VECTA.svg" style="width: 50px;" /></a> <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code><a class="headerlink" href="#howdy-email-gui-icon-howdy-email-gui" title="Link to this heading"></a></h1>
+<span id="howdy-email-gui-label"></span><h1><span class="section-number">8.2. </span><a class="reference internal" href="../../_images/howdy_email_gui_SQUARE_VECTA.svg"><img alt="howdy_email_gui_icon" class="align-middle" src="../../_images/howdy_email_gui_SQUARE_VECTA.svg" width="50" /></a> <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code><a class="headerlink" href="#howdy-email-gui-icon-howdy-email-gui" title="Permalink to this heading"></a></h1>
 <p>This is documentation for the Howdy one-off and newslettering email announcement GUI, <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span></code>. The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_email_notif</span> <span class="pre">-h</span></code>, produces the following output,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_email_gui [-h] [--info] [--local] [--large] [--noverify]</span>
 <span class="go">                       [--extraemails EXTRAEMAILS] [--extranames EXTRANAMES]</span>
@@ -126,19 +126,18 @@
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">(n)</span></code> choice means do a <a class="reference internal" href="#newsletter-mode"><span class="std std-ref">newsletter</span></a>, while the <code class="docutils literal notranslate"><span class="pre">(o)</span></code> choice means do <a class="reference internal" href="#only-email-mode"><span class="std std-ref">only the email</span></a>. Here are the common arguments.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--info</span></code> prints out <code class="xref py py-const docutils literal notranslate"><span class="pre">INFO</span></code> level <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> output.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--local</span></code> specifies that we look for a local (<code class="docutils literal notranslate"><span class="pre">https://localhost:3400</span></code>) running <a class="reference external" href="https://plex.tv">Plex</a> server.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--large</span></code> specifies that one should make the GUI (widgets and fonts) <em>LARGER</em> to aid in readibility.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--noverify</span></code> is a standard option in many of the Howdy CLI and GUIs to ignore verification of SSL transactions. It is optional and will default to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 <section id="only-email-mode">
-<h2><span class="section-number">8.2.1. </span>Only Email Mode<a class="headerlink" href="#only-email-mode" title="Link to this heading"></a></h2>
+<h2><span class="section-number">8.2.1. </span>Only Email Mode<a class="headerlink" href="#only-email-mode" title="Permalink to this heading"></a></h2>
 <p>When running with the <code class="docutils literal notranslate"><span class="pre">(o)</span></code> choice, this GUI only sends a non-newsletter email to either yourself or to all the friends of your <a class="reference external" href="https://plex.tv">Plex</a> server. This GUI is launched when running <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span> <span class="pre">--noverify</span> <span class="pre">--local</span> <span class="pre">o</span></code>.</p>
 <figure class="align-left" id="id1">
-<span id="onlyemail-mainwindow-annotated"></span><a class="reference internal image-reference" href="../../_images/howdy_email_gui_onlyemail_mainwindow_ANNOTATED.png"><img alt="../../_images/howdy_email_gui_onlyemail_mainwindow_ANNOTATED.png" src="../../_images/howdy_email_gui_onlyemail_mainwindow_ANNOTATED.png" style="width: 100%;" />
-</a>
+<span id="onlyemail-mainwindow-annotated"></span><a class="reference internal image-reference" href="../../_images/howdy_email_gui_onlyemail_mainwindow_ANNOTATED.png"><img alt="../../_images/howdy_email_gui_onlyemail_mainwindow_ANNOTATED.png" src="../../_images/howdy_email_gui_onlyemail_mainwindow_ANNOTATED.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.2 </span><span class="caption-text">The main window launched when running <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span> <span class="pre">o</span></code>. Annotations show where one puts in the email body and email text.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.2 </span><span class="caption-text">The main window launched when running <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span> <span class="pre">o</span></code>. Annotations show where one puts in the email body and email text.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <p>The <a class="reference internal" href="#onlyemail-mainwindow-annotated"><span class="std std-ref">main window</span></a> has the following buttons and text fields. The subject and body fields go into their respective text areas.</p>
@@ -157,7 +156,7 @@
 <li><p><a class="reference internal" href="#send-email"><span class="std std-ref">Send email</span></a>.</p></li>
 </ol>
 <section id="write-and-test-email">
-<span id="write-and-test-email-label"></span><h3><span class="section-number">8.2.1.1. </span>Write and Test Email<a class="headerlink" href="#write-and-test-email" title="Link to this heading"></a></h3>
+<span id="write-and-test-email-label"></span><h3><span class="section-number">8.2.1.1. </span>Write and Test Email<a class="headerlink" href="#write-and-test-email" title="Permalink to this heading"></a></h3>
 <p>Here, we write an email that consists of some stylized text, some <a class="reference external" href="https://en.wikipedia.org/wiki/LaTeX">LaTeX</a> math, and an inset image with caption using our <a class="reference external" href="https://imgur.com">Imgur</a> library. The subject of the email is <code class="docutils literal notranslate"><span class="pre">test</span></code>. The body is <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a>, and is given by,</p>
 <div class="highlight-RST notranslate" id="example-email-body"><div class="highlight"><pre><span></span>I am showing some example code. Here is some <span class="ge">*bold*</span> code.
 
@@ -184,37 +183,33 @@ Finally, one can insert an image into here. Here is what I will do.
 <ul id="adding-png-to-text">
 <li><p>First click on <code class="docutils literal notranslate"><span class="pre">SHOW</span> <span class="pre">PNGS</span></code> to pop up a table that shows the available <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> images in our <a class="reference external" href="https://imgur.com">Imgur</a> library.</p>
 <figure class="align-left" id="id2">
-<a class="reference internal image-reference" href="../../_images/onlyemail_show_pngs_information_ANNOTATED.png"><img alt="../../_images/onlyemail_show_pngs_information_ANNOTATED.png" src="../../_images/onlyemail_show_pngs_information_ANNOTATED.png" style="width: 100%;" />
-</a>
+<a class="reference internal image-reference" href="../../_images/onlyemail_show_pngs_information_ANNOTATED.png"><img alt="../../_images/onlyemail_show_pngs_information_ANNOTATED.png" src="../../_images/onlyemail_show_pngs_information_ANNOTATED.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.3 </span><span class="caption-text">There are <em>nine</em> images in the main album of our <a class="reference external" href="https://imgur.com">Imgur</a> library. Here, we wish to select <code class="docutils literal notranslate"><span class="pre">howdy_email_gui_SQUARE.png</span></code>.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.3 </span><span class="caption-text">There are <em>nine</em> images in the main album of our <a class="reference external" href="https://imgur.com">Imgur</a> library. Here, we wish to select <code class="docutils literal notranslate"><span class="pre">howdy_email_gui_SQUARE.png</span></code>.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 </li>
 <li><p>Second, right-click on the row that has <code class="docutils literal notranslate"><span class="pre">howdy_email_gui_SQUARE.png</span></code>, which will pop up a context menu. Select the <code class="docutils literal notranslate"><span class="pre">Information</span></code> context menu event to verify that we have the right image.</p>
 <figure class="align-left" id="id3">
-<a class="reference internal image-reference" href="../../_images/onlyemail_show_pngs_information_ANNOTATED.png"><img alt="../../_images/onlyemail_show_pngs_information_ANNOTATED.png" src="../../_images/onlyemail_show_pngs_information_ANNOTATED.png" style="width: 100%;" />
-</a>
+<a class="reference internal image-reference" href="../../_images/onlyemail_show_pngs_information_ANNOTATED.png"><img alt="../../_images/onlyemail_show_pngs_information_ANNOTATED.png" src="../../_images/onlyemail_show_pngs_information_ANNOTATED.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.4 </span><span class="caption-text">Select the <code class="docutils literal notranslate"><span class="pre">Information</span></code> context menu event on <code class="docutils literal notranslate"><span class="pre">howdy_email_gui_SQUARE.png</span></code>. This will pop up another window that shows the URL and verifies this is the correct image.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.4 </span><span class="caption-text">Select the <code class="docutils literal notranslate"><span class="pre">Information</span></code> context menu event on <code class="docutils literal notranslate"><span class="pre">howdy_email_gui_SQUARE.png</span></code>. This will pop up another window that shows the URL and verifies this is the correct image.</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 </li>
 <li><p>Third, we see that <code class="docutils literal notranslate"><span class="pre">howdy_email_gui_SQUARE.png</span></code> is the correct image, and we get its URL.</p>
 <figure class="align-left" id="id4">
-<span id="onlyemail-show-pngs-information-annotated"></span><a class="reference internal image-reference" href="../../_images/onlyemail_show_pngs_information_ANNOTATED.png"><img alt="../../_images/onlyemail_show_pngs_information_ANNOTATED.png" src="../../_images/onlyemail_show_pngs_information_ANNOTATED.png" style="width: 100%;" />
-</a>
+<span id="onlyemail-show-pngs-information-annotated"></span><a class="reference internal image-reference" href="../../_images/onlyemail_show_pngs_information_ANNOTATED.png"><img alt="../../_images/onlyemail_show_pngs_information_ANNOTATED.png" src="../../_images/onlyemail_show_pngs_information_ANNOTATED.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.5 </span><span class="caption-text">This is the correct image for the icon. It has a neon green cowboy hat in the middle, and the name <code class="docutils literal notranslate"><span class="pre">HOWDY!</span> <span class="pre">EMAIL</span> <span class="pre">GUI</span></code>. We also see that its URL is <code class="docutils literal notranslate"><span class="pre">https://i.imgur.com/raP42Rz.png</span></code>.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.5 </span><span class="caption-text">This is the correct image for the icon. It has a neon green cowboy hat in the middle, and the name <code class="docutils literal notranslate"><span class="pre">HOWDY!</span> <span class="pre">EMAIL</span> <span class="pre">GUI</span></code>. We also see that its URL is <code class="docutils literal notranslate"><span class="pre">https://i.imgur.com/raP42Rz.png</span></code>.</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 </li>
 <li><p>Finally, copy that email using the <code class="docutils literal notranslate"><span class="pre">Copy</span> <span class="pre">Image</span> <span class="pre">URL</span></code> context menu event.</p>
 <figure class="align-left" id="id5">
-<a class="reference internal image-reference" href="../../_images/onlyemail_show_pngs_copyurl_ANNOTATED.png"><img alt="../../_images/onlyemail_show_pngs_copyurl_ANNOTATED.png" src="../../_images/onlyemail_show_pngs_copyurl_ANNOTATED.png" style="width: 100%;" />
-</a>
+<a class="reference internal image-reference" href="../../_images/onlyemail_show_pngs_copyurl_ANNOTATED.png"><img alt="../../_images/onlyemail_show_pngs_copyurl_ANNOTATED.png" src="../../_images/onlyemail_show_pngs_copyurl_ANNOTATED.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.6 </span><span class="caption-text">We don’t need to transcribe the URL as shown in <a class="reference internal" href="#onlyemail-show-pngs-information-annotated"><span class="std std-numref">Fig. 8.5</span></a>, by right-clicking on the <code class="docutils literal notranslate"><span class="pre">howdy_email_gui_SQUARE.png</span></code> row and choosing the <code class="docutils literal notranslate"><span class="pre">Copy</span> <span class="pre">Image</span> <span class="pre">URL</span></code> context menu event. This will copy its URL to the clipboard.</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.6 </span><span class="caption-text">We don’t need to transcribe the URL as shown in <a class="reference internal" href="#onlyemail-show-pngs-information-annotated"><span class="std std-numref">Fig. 8.5</span></a>, by right-clicking on the <code class="docutils literal notranslate"><span class="pre">howdy_email_gui_SQUARE.png</span></code> row and choosing the <code class="docutils literal notranslate"><span class="pre">Copy</span> <span class="pre">Image</span> <span class="pre">URL</span></code> context menu event. This will copy its URL to the clipboard.</span><a class="headerlink" href="#id5" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 </li>
@@ -224,10 +219,9 @@ Finally, one can insert an image into here. Here is what I will do.
 <iframe allowfullscreen="true" id="onlyemail-write-test-email" src="https://www.youtube.com/embed/K2EKQUldBD8" style="border: 0; height: 100%; left: 0; position: absolute; top: 0; width: 100%">
 </iframe></div><p id="check-email-to-see-text">After we have our URL copied and pasted, we click on <code class="docutils literal notranslate"><span class="pre">CHECK</span> <span class="pre">EMAIL</span></code> to pop up the rich HTML representation of the email body.</p>
 <figure class="align-left" id="id6">
-<a class="reference internal image-reference" href="../../_images/onlyemail_write_test_email_showHTML_ANNOTATED.png"><img alt="../../_images/onlyemail_write_test_email_showHTML_ANNOTATED.png" src="../../_images/onlyemail_write_test_email_showHTML_ANNOTATED.png" style="width: 100%;" />
-</a>
+<a class="reference internal image-reference" href="../../_images/onlyemail_write_test_email_showHTML_ANNOTATED.png"><img alt="../../_images/onlyemail_write_test_email_showHTML_ANNOTATED.png" src="../../_images/onlyemail_write_test_email_showHTML_ANNOTATED.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.7 </span><span class="caption-text">Finally, click on <code class="docutils literal notranslate"><span class="pre">CHECK</span> <span class="pre">EMAIL</span></code>. If the email body text is valid, then <code class="docutils literal notranslate"><span class="pre">VALID</span> <span class="pre">RESTRUCTUREDTEXT</span></code> will appear and a rich HTML rendering of the email body will pop up.</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.7 </span><span class="caption-text">Finally, click on <code class="docutils literal notranslate"><span class="pre">CHECK</span> <span class="pre">EMAIL</span></code>. If the email body text is valid, then <code class="docutils literal notranslate"><span class="pre">VALID</span> <span class="pre">RESTRUCTUREDTEXT</span></code> will appear and a rich HTML rendering of the email body will pop up.</span><a class="headerlink" href="#id6" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <p>Furthermore, if the email body text is <em>valid</em>, then the buttons <code class="docutils literal notranslate"><span class="pre">SEND</span> <span class="pre">ALL</span> <span class="pre">EMAIL</span></code> and <code class="docutils literal notranslate"><span class="pre">SEND</span> <span class="pre">TEST</span> <span class="pre">EMAIL</span></code> will be active. If the email body text is <em>invalid</em>, then those two buttons will be inactive.</p>
@@ -236,24 +230,23 @@ Finally, one can insert an image into here. Here is what I will do.
 <iframe allowfullscreen="true" id="onlyemail-write-test-email-showhtml" src="https://www.youtube.com/embed/yRzKNJ006dg" style="border: 0; height: 100%; left: 0; position: absolute; top: 0; width: 100%">
 </iframe></div></section>
 <section id="verify-plex-friends">
-<h3><span class="section-number">8.2.1.2. </span>Verify <a class="reference external" href="https://plex.tv">Plex</a> Friends<a class="headerlink" href="#verify-plex-friends" title="Link to this heading"></a></h3>
+<h3><span class="section-number">8.2.1.2. </span>Verify <a class="reference external" href="https://plex.tv">Plex</a> Friends<a class="headerlink" href="#verify-plex-friends" title="Permalink to this heading"></a></h3>
 <p>Once you verify that your email is valid, you should check that your list of friends on your <a class="reference external" href="https://plex.tv">Plex</a> server is valid. Just click on <code class="docutils literal notranslate"><span class="pre">PLEX</span> <span class="pre">GUESTS</span></code> to get the list of friends, one per row and ordered by name. First column is the full name, and the second column is the email address for their <a class="reference external" href="https://plex.tv">Plex</a> account.</p>
 <figure class="align-left" id="id7">
-<a class="reference internal image-reference" href="../../_images/onlyemail_show_plex_friends_ANNOTATED.png"><img alt="../../_images/onlyemail_show_plex_friends_ANNOTATED.png" src="../../_images/onlyemail_show_plex_friends_ANNOTATED.png" style="width: 100%;" />
-</a>
+<a class="reference internal image-reference" href="../../_images/onlyemail_show_plex_friends_ANNOTATED.png"><img alt="../../_images/onlyemail_show_plex_friends_ANNOTATED.png" src="../../_images/onlyemail_show_plex_friends_ANNOTATED.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.8 </span><span class="caption-text">Click on <code class="docutils literal notranslate"><span class="pre">PLEX</span> <span class="pre">GUESTS</span></code> to show the list of people who have access to your <a class="reference external" href="https://plex.tv">Plex</a> server, and who will receive your email. For privacy reasons, I blank out these friends just as in <a class="reference internal" href="../cli-tools/howdy_email_notif.html#howdy-core-cli-example"><span class="std std-numref">Fig. 8.1</span></a>.</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.8 </span><span class="caption-text">Click on <code class="docutils literal notranslate"><span class="pre">PLEX</span> <span class="pre">GUESTS</span></code> to show the list of people who have access to your <a class="reference external" href="https://plex.tv">Plex</a> server, and who will receive your email. For privacy reasons, I blank out these friends just as in <a class="reference internal" href="../cli-tools/howdy_email_notif.html#howdy-core-cli-example"><span class="std std-numref">Fig. 8.1</span></a>.</span><a class="headerlink" href="#id7" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 </section>
 <section id="send-email">
-<h3><span class="section-number">8.2.1.3. </span>Send Email<a class="headerlink" href="#send-email" title="Link to this heading"></a></h3>
+<h3><span class="section-number">8.2.1.3. </span>Send Email<a class="headerlink" href="#send-email" title="Permalink to this heading"></a></h3>
 <p>Once your email body text is valid, and you are satisfied that you may want to send this email out to people who have access to your <a class="reference external" href="https://plex.tv">Plex</a> server, then you can click on either <code class="docutils literal notranslate"><span class="pre">SEND</span> <span class="pre">TEST</span> <span class="pre">EMAIL</span></code> (sends the email <em>only</em> to you) or <code class="docutils literal notranslate"><span class="pre">SEND</span> <span class="pre">ALL</span> <span class="pre">EMAIL</span></code> (sends the email to all your <a class="reference external" href="https://plex.tv">Plex</a> friends).</p>
 <p>I always verify that the email is valid, by clicking <code class="docutils literal notranslate"><span class="pre">SEND</span> <span class="pre">TEST</span> <span class="pre">EMAIL</span></code> first, before sending the email to everyone.</p>
 </section>
 </section>
 <section id="newsletter-mode">
-<h2><span class="section-number">8.2.2. </span>Newsletter Mode<a class="headerlink" href="#newsletter-mode" title="Link to this heading"></a></h2>
+<h2><span class="section-number">8.2.2. </span>Newsletter Mode<a class="headerlink" href="#newsletter-mode" title="Permalink to this heading"></a></h2>
 <p>When running with the <code class="docutils literal notranslate"><span class="pre">(n)</span></code> choice, this GUI only sends a non-newsletter email to either yourself or to all the friends of your <a class="reference external" href="https://plex.tv">Plex</a> server. The <a class="reference external" href="https://plex.tv">Plex</a> newsletter email has this format,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Hello &lt;name&gt;,</span>
 
@@ -267,10 +260,9 @@ Finally, one can insert an image into here. Here is what I will do.
 <p>Here, <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code> is the person receiving the email, <code class="docutils literal notranslate"><span class="pre">&lt;PREAMBLE</span> <span class="pre">PART&gt;</span></code> is an optional introductory section, <code class="docutils literal notranslate"><span class="pre">&lt;SUMMARY</span> <span class="pre">OF</span> <span class="pre">MEDIA</span> <span class="pre">ON</span> <span class="pre">PLEX</span> <span class="pre">SERVER&gt;</span></code> summarizes the current media on the <a class="reference external" href="https://plex.tv">Plex</a> server, and <code class="docutils literal notranslate"><span class="pre">&lt;POSTAMBLE</span> <span class="pre">PART&gt;</span></code> is an optional final section.</p>
 <p>This GUI is launched when running <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span> <span class="pre">--noverify</span> <span class="pre">--local</span> <span class="pre">n</span></code>.</p>
 <figure class="align-left" id="id8">
-<span id="newsletter-mainwindow"></span><a class="reference internal image-reference" href="../../_images/howdy_email_gui_newsletter_mainwindow.png"><img alt="../../_images/howdy_email_gui_newsletter_mainwindow.png" src="../../_images/howdy_email_gui_newsletter_mainwindow.png" style="width: 100%;" />
-</a>
+<span id="newsletter-mainwindow"></span><a class="reference internal image-reference" href="../../_images/howdy_email_gui_newsletter_mainwindow.png"><img alt="../../_images/howdy_email_gui_newsletter_mainwindow.png" src="../../_images/howdy_email_gui_newsletter_mainwindow.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.9 </span><span class="caption-text">The main window launched when running <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span> <span class="pre">n</span></code>. This beginning window has only five buttons, and no text fields such as the <code class="docutils literal notranslate"><span class="pre">only</span> <span class="pre">email</span> <span class="pre">functionality</span></code> described in <a class="reference internal" href="#onlyemail-mainwindow-annotated"><span class="std std-numref">Fig. 8.2</span></a>.</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.9 </span><span class="caption-text">The main window launched when running <code class="docutils literal notranslate"><span class="pre">howdy_email_gui</span> <span class="pre">n</span></code>. This beginning window has only five buttons, and no text fields such as the <code class="docutils literal notranslate"><span class="pre">only</span> <span class="pre">email</span> <span class="pre">functionality</span></code> described in <a class="reference internal" href="#onlyemail-mainwindow-annotated"><span class="std std-numref">Fig. 8.2</span></a>.</span><a class="headerlink" href="#id8" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <p>The <a class="reference internal" href="#newsletter-mainwindow"><span class="std std-ref">main window</span></a> has the following buttons.</p>
@@ -287,21 +279,19 @@ Finally, one can insert an image into here. Here is what I will do.
 <li><p><a class="reference internal" href="#send-newsletter-email"><span class="std std-ref">Send email</span></a>.</p></li>
 </ol>
 <section id="setting-up-the-preamble-and-postamble-parts">
-<h3><span class="section-number">8.2.2.1. </span>Setting up the PREAMBLE and POSTAMBLE parts<a class="headerlink" href="#setting-up-the-preamble-and-postamble-parts" title="Link to this heading"></a></h3>
+<h3><span class="section-number">8.2.2.1. </span>Setting up the PREAMBLE and POSTAMBLE parts<a class="headerlink" href="#setting-up-the-preamble-and-postamble-parts" title="Permalink to this heading"></a></h3>
 <p>Click on the <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> button to write up an introductory section in the newsletter, and the <code class="docutils literal notranslate"><span class="pre">POSTAMBLE</span></code> button to write up a concluding section. The <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> and <code class="docutils literal notranslate"><span class="pre">POSTAMBLE</span></code> dialog windows are nearly identical, and differ <em>only</em> in where the text is placed in the newsletter. <a class="reference internal" href="#newsletter-preamble-postamble-window"><span class="std std-numref">Fig. 8.10</span></a> shows both together, but subsequent instructions focus only on describing the <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code>.</p>
 <figure class="align-left" id="id9">
-<span id="newsletter-preamble-postamble-window"></span><a class="reference internal image-reference" href="../../_images/newsletter_preamble_postamble_window.png"><img alt="../../_images/newsletter_preamble_postamble_window.png" src="../../_images/newsletter_preamble_postamble_window.png" style="width: 100%;" />
-</a>
+<span id="newsletter-preamble-postamble-window"></span><a class="reference internal image-reference" href="../../_images/newsletter_preamble_postamble_window.png"><img alt="../../_images/newsletter_preamble_postamble_window.png" src="../../_images/newsletter_preamble_postamble_window.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.10 </span><span class="caption-text">The <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> and <code class="docutils literal notranslate"><span class="pre">POSTAMBLE</span></code> windows launched when clicking on either the <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> or <code class="docutils literal notranslate"><span class="pre">POSTAMBLE</span></code> main window buttons in <a class="reference internal" href="#newsletter-mainwindow"><span class="std std-numref">Fig. 8.9</span></a>.</span><a class="headerlink" href="#id9" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.10 </span><span class="caption-text">The <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> and <code class="docutils literal notranslate"><span class="pre">POSTAMBLE</span></code> windows launched when clicking on either the <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> or <code class="docutils literal notranslate"><span class="pre">POSTAMBLE</span></code> main window buttons in <a class="reference internal" href="#newsletter-mainwindow"><span class="std std-numref">Fig. 8.9</span></a>.</span><a class="headerlink" href="#id9" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <p>The <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> window has a similar functionality as the <a class="reference internal" href="#onlyemail-mainwindow-annotated"><span class="std std-ref">main email window</span></a> when running in <a class="reference internal" href="#only-email-mode"><span class="std std-ref">Only Email Mode</span></a>.</p>
 <figure class="align-left" id="id10">
-<span id="newsletter-preamble-annotated"></span><a class="reference internal image-reference" href="../../_images/newsletter_preamble_ANNOTATED.png"><img alt="../../_images/newsletter_preamble_ANNOTATED.png" src="../../_images/newsletter_preamble_ANNOTATED.png" style="width: 100%;" />
-</a>
+<span id="newsletter-preamble-annotated"></span><a class="reference internal image-reference" href="../../_images/newsletter_preamble_ANNOTATED.png"><img alt="../../_images/newsletter_preamble_ANNOTATED.png" src="../../_images/newsletter_preamble_ANNOTATED.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.11 </span><span class="caption-text">A cropped and annotated screenshot of the <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> dialog showing functionality similar to <a class="reference internal" href="#onlyemail-mainwindow-annotated"><span class="std std-numref">Fig. 8.2</span></a>.</span><a class="headerlink" href="#id10" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.11 </span><span class="caption-text">A cropped and annotated screenshot of the <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> dialog showing functionality similar to <a class="reference internal" href="#onlyemail-mainwindow-annotated"><span class="std std-numref">Fig. 8.2</span></a>.</span><a class="headerlink" href="#id10" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <p>Here, the <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> of the introduction goes into the text box. The title of the introduction goes into the text label after <code class="docutils literal notranslate"><span class="pre">SECTION</span></code>. Toggle between the <code class="docutils literal notranslate"><span class="pre">YES</span></code> and <code class="docutils literal notranslate"><span class="pre">NO</span></code> radio buttons. If you want the introduction title in the newsletter email, choose <code class="docutils literal notranslate"><span class="pre">YES</span></code>; otherwise, choose <code class="docutils literal notranslate"><span class="pre">NO</span></code>.</p>
@@ -309,28 +299,25 @@ Finally, one can insert an image into here. Here is what I will do.
 <p>Finally, test your introductory text by clicking on the <code class="docutils literal notranslate"><span class="pre">TEST</span> <span class="pre">TEXT</span></code> button. Its functionality is the same as described in <a class="reference internal" href="#check-email-to-see-text"><span class="std std-ref">checking email to see text</span></a> in <a class="reference internal" href="#write-and-test-email"><span class="std std-numref">Section 8.2.1.1</span></a>.</p>
 <p><a class="reference internal" href="#newsletter-preamble-showtext"><span class="std std-numref">Fig. 8.12</span></a> and <a class="reference internal" href="#newsletter-postamble-showtext"><span class="std std-numref">Fig. 8.13</span></a> show the rich HTML for the introductory and final sections, respectively. If the text is valid, then <code class="docutils literal notranslate"><span class="pre">VALID</span> <span class="pre">RESTRUCTUREDTEXT</span></code> appears on the bottom left corner of the <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> and <code class="docutils literal notranslate"><span class="pre">POSTAMBLE</span></code> dialog windows.</p>
 <figure class="align-left" id="id11">
-<span id="newsletter-preamble-showtext"></span><a class="reference internal image-reference" href="../../_images/newsletter_preamble_showtext.png"><img alt="../../_images/newsletter_preamble_showtext.png" src="../../_images/newsletter_preamble_showtext.png" style="width: 100%;" />
-</a>
+<span id="newsletter-preamble-showtext"></span><a class="reference internal image-reference" href="../../_images/newsletter_preamble_showtext.png"><img alt="../../_images/newsletter_preamble_showtext.png" src="../../_images/newsletter_preamble_showtext.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.12 </span><span class="caption-text">The fancy-looking introductory text that will go into the <a class="reference external" href="https://plex.tv">Plex</a> newsletter. Here we chosen <code class="docutils literal notranslate"><span class="pre">YES</span></code> to show the introductory section title, which is <code class="docutils literal notranslate"><span class="pre">Introduction</span></code>.</span><a class="headerlink" href="#id11" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.12 </span><span class="caption-text">The fancy-looking introductory text that will go into the <a class="reference external" href="https://plex.tv">Plex</a> newsletter. Here we chosen <code class="docutils literal notranslate"><span class="pre">YES</span></code> to show the introductory section title, which is <code class="docutils literal notranslate"><span class="pre">Introduction</span></code>.</span><a class="headerlink" href="#id11" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <figure class="align-left" id="id12">
-<span id="newsletter-postamble-showtext"></span><a class="reference internal image-reference" href="../../_images/newsletter_postamble_showtext.png"><img alt="../../_images/newsletter_postamble_showtext.png" src="../../_images/newsletter_postamble_showtext.png" style="width: 100%;" />
-</a>
+<span id="newsletter-postamble-showtext"></span><a class="reference internal image-reference" href="../../_images/newsletter_postamble_showtext.png"><img alt="../../_images/newsletter_postamble_showtext.png" src="../../_images/newsletter_postamble_showtext.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.13 </span><span class="caption-text">An even-more fancy-looking final text that will go into the <a class="reference external" href="https://plex.tv">Plex</a> newsletter. Here we chosen <code class="docutils literal notranslate"><span class="pre">YES</span></code> to show the final section title, which is <code class="docutils literal notranslate"><span class="pre">Final</span> <span class="pre">Thoughts</span></code>.</span><a class="headerlink" href="#id12" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.13 </span><span class="caption-text">An even-more fancy-looking final text that will go into the <a class="reference external" href="https://plex.tv">Plex</a> newsletter. Here we chosen <code class="docutils literal notranslate"><span class="pre">YES</span></code> to show the final section title, which is <code class="docutils literal notranslate"><span class="pre">Final</span> <span class="pre">Thoughts</span></code>.</span><a class="headerlink" href="#id12" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 </section>
 <section id="checking-newsletter-email">
-<h3><span class="section-number">8.2.2.2. </span>Checking Newsletter Email<a class="headerlink" href="#checking-newsletter-email" title="Link to this heading"></a></h3>
+<h3><span class="section-number">8.2.2.2. </span>Checking Newsletter Email<a class="headerlink" href="#checking-newsletter-email" title="Permalink to this heading"></a></h3>
 <p>After choosing the form of the introductory (<a class="reference internal" href="#newsletter-preamble-showtext"><span class="std std-numref">Fig. 8.12</span></a>) and final (<a class="reference internal" href="#newsletter-postamble-showtext"><span class="std std-numref">Fig. 8.13</span></a>) sections, click on <code class="docutils literal notranslate"><span class="pre">CHECK</span> <span class="pre">EMAIL</span></code> to (<strong>wait a long time and</strong>)  show the rich HTML email of the <a class="reference external" href="https://plex.tv">Plex</a> newsletter.</p>
 <figure class="align-left" id="id13">
-<span id="newsletter-checkemail-annotated"></span><a class="reference internal image-reference" href="../../_images/newsletter_checkemail_ANNOTATED.png"><img alt="../../_images/newsletter_checkemail_ANNOTATED.png" src="../../_images/newsletter_checkemail_ANNOTATED.png" style="width: 100%;" />
-</a>
+<span id="newsletter-checkemail-annotated"></span><a class="reference internal image-reference" href="../../_images/newsletter_checkemail_ANNOTATED.png"><img alt="../../_images/newsletter_checkemail_ANNOTATED.png" src="../../_images/newsletter_checkemail_ANNOTATED.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.14 </span><span class="caption-text">The full HTML <a class="reference external" href="https://plex.tv">Plex</a> newsletter email that will go out, as shown in the <code class="docutils literal notranslate"><span class="pre">HTML</span> <span class="pre">EMAIL</span> <span class="pre">BODY</span></code> window.</span><a class="headerlink" href="#id13" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.14 </span><span class="caption-text">The full HTML <a class="reference external" href="https://plex.tv">Plex</a> newsletter email that will go out, as shown in the <code class="docutils literal notranslate"><span class="pre">HTML</span> <span class="pre">EMAIL</span> <span class="pre">BODY</span></code> window.</span><a class="headerlink" href="#id13" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <p>Although the email is too long to fit into the <code class="docutils literal notranslate"><span class="pre">HTML</span> <span class="pre">EMAIL</span> <span class="pre">BODY</span></code> window and the <code class="docutils literal notranslate"><span class="pre">RENDERED</span> <span class="pre">HTML</span></code> tab, we first identify the <code class="docutils literal notranslate"><span class="pre">Introduction</span></code> section name for the <code class="docutils literal notranslate"><span class="pre">PREAMBLE</span></code> and the <code class="docutils literal notranslate"><span class="pre">Final</span> <span class="pre">Thoughts</span></code> section name for the <code class="docutils literal notranslate"><span class="pre">POSTAMBLE</span></code>. The <a class="reference external" href="https://plex.tv">Plex</a> server summary part, in the middle is structured as follows.</p>
@@ -341,10 +328,9 @@ Finally, one can insert an image into here. Here is what I will do.
 </ul>
 <p>Furthermore, to aid in debugging, you can click on the <code class="docutils literal notranslate"><span class="pre">RESTRUCTURED</span> <span class="pre">TEXT</span></code> tab in the <code class="docutils literal notranslate"><span class="pre">HTML</span> <span class="pre">EMAIL</span> <span class="pre">BODY</span></code> window to show the <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> used to create this email. I have also included this <a class="reference download internal" download="" href="../../_downloads/643bd2a517eccc4926db09577e04aad5/howdy_email_gui_newsletter_restructuredtext.rst"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">restructuredText</span> <span class="pre">newsletter</span></code></a> to inspect, and independently verify, that it creates proper HTML.</p>
 <figure class="align-left" id="id14">
-<span id="newsletter-checkemail-restructuredtext-annotated"></span><a class="reference internal image-reference" href="../../_images/newsletter_checkemail_restructuredtext_ANNOTATED.png"><img alt="../../_images/newsletter_checkemail_restructuredtext_ANNOTATED.png" src="../../_images/newsletter_checkemail_restructuredtext_ANNOTATED.png" style="width: 100%;" />
-</a>
+<span id="newsletter-checkemail-restructuredtext-annotated"></span><a class="reference internal image-reference" href="../../_images/newsletter_checkemail_restructuredtext_ANNOTATED.png"><img alt="../../_images/newsletter_checkemail_restructuredtext_ANNOTATED.png" src="../../_images/newsletter_checkemail_restructuredtext_ANNOTATED.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.15 </span><span class="caption-text">To those who know it, the <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> can be very helpful in figuring out why the HTML does not look as intended.</span><a class="headerlink" href="#id14" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.15 </span><span class="caption-text">To those who know it, the <a class="reference external" href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> can be very helpful in figuring out why the HTML does not look as intended.</span><a class="headerlink" href="#id14" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <p>The movie below demonstrates the usually long process in in <a class="reference internal" href="#checking-newsletter-email"><span class="std std-ref">checking that the newsletter email looks good</span></a>.</p>
@@ -352,13 +338,12 @@ Finally, one can insert an image into here. Here is what I will do.
 <iframe allowfullscreen="true" src="https://www.youtube.com/embed/AgTGYA-bfI0" style="border: 0; height: 100%; left: 0; position: absolute; top: 0; width: 100%">
 </iframe></div></section>
 <section id="send-newsletter-email">
-<h3><span class="section-number">8.2.2.3. </span>Send Newsletter Email<a class="headerlink" href="#send-newsletter-email" title="Link to this heading"></a></h3>
+<h3><span class="section-number">8.2.2.3. </span>Send Newsletter Email<a class="headerlink" href="#send-newsletter-email" title="Permalink to this heading"></a></h3>
 <p>Once your email body is valid (it generated HTML), and you are satisfied, that you may want to send this email out to people who have access to your <a class="reference external" href="https://plex.tv">Plex</a> server, then you click on the <code class="docutils literal notranslate"><span class="pre">EMAIL</span> <span class="pre">DIALOG</span></code> button to launch an email dialog. This dialog allows you to send the email only to yourself, to specific <a class="reference external" href="https://plex.tv">Plex</a> friends, or to all your <a class="reference external" href="https://plex.tv">Plex</a> friends and yourself.</p>
 <figure class="align-left" id="id15">
-<span id="newsletter-sendemail-annotated"></span><a class="reference internal image-reference" href="../../_images/newsletter_sendemail_ANNOTATED.png"><img alt="../../_images/newsletter_sendemail_ANNOTATED.png" src="../../_images/newsletter_sendemail_ANNOTATED.png" style="width: 100%;" />
-</a>
+<span id="newsletter-sendemail-annotated"></span><a class="reference internal image-reference" href="../../_images/newsletter_sendemail_ANNOTATED.png"><img alt="../../_images/newsletter_sendemail_ANNOTATED.png" src="../../_images/newsletter_sendemail_ANNOTATED.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 8.16 </span><span class="caption-text">Clicking on <code class="docutils literal notranslate"><span class="pre">EMAIL</span> <span class="pre">DIALOG</span></code> launches the sending email dialog window. You can click on specific friends to toggle whether to send them a newsletter email. Clicking on the <code class="docutils literal notranslate"><span class="pre">TEST</span> <span class="pre">EMAIL</span></code> button selects only yourself (top row). Clicking on the <code class="docutils literal notranslate"><span class="pre">ALL</span> <span class="pre">ADDRESSES</span></code> button selects all your friends and yourself.</span><a class="headerlink" href="#id15" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 8.16 </span><span class="caption-text">Clicking on <code class="docutils literal notranslate"><span class="pre">EMAIL</span> <span class="pre">DIALOG</span></code> launches the sending email dialog window. You can click on specific friends to toggle whether to send them a newsletter email. Clicking on the <code class="docutils literal notranslate"><span class="pre">TEST</span> <span class="pre">EMAIL</span></code> button selects only yourself (top row). Clicking on the <code class="docutils literal notranslate"><span class="pre">ALL</span> <span class="pre">ADDRESSES</span></code> button selects all your friends and yourself.</span><a class="headerlink" href="#id15" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <p>The email dialog window starts with yourself on the top row. Subsequent rows are your <a class="reference external" href="https://plex.tv">Plex</a> friends.</p>

@@ -610,7 +610,9 @@ def _get_library_data_show(
     def _valid_videlem( elem ):
         if elem.name != 'video':
             return False
-        if len( elem.find_all('media')) != 1: 
+        if len( elem.find_all('media')) != 1:
+            logging.debug( "TANIM DEBUG, POSSIBLE ERRONEOUS DUPLICATED MEDIA FILE DOWNLOAD = %s." % (
+                elem.find_all('media') ) )
             return False
         media_elem = elem.find( 'media' )
         if len(set([ 'duration', 'bitrate' ]) -

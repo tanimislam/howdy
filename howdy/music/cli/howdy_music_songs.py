@@ -288,12 +288,7 @@ def _download_songs_oldformat( args ):
         #
         ## figure out order of music metadata services to get
         mi = None
-        if args.do_lastfm:
-            do_whichone = 'LASTFM'
-        elif args.do_musicbrainz:
-            do_whichone = 'MUSICBRAINZ'
-            mi = music.MusicInfo( args.artist_name, do_direct = args.do_direct, artist_mbid = args.artist_mbid )
-        else: do_whichone = 'GRACENOTE'
+        do_whichone = args.metadata_server
         album_data_dict, status = _process_data_album_dict(
             hm, lastfm, args.album_name.strip( ), args.artist_name,
             do_whichone, mi = mi, do_direct = args.do_direct )
@@ -352,12 +347,7 @@ def _download_songs_oldformat( args ):
         #0
         ## order of the music metadata to get
         mi = None
-        if args.do_lastfm:
-            do_whichone = 'LASTFM'
-        elif args.do_musicbrainz:
-            do_whichone = 'MUSICBRAINZ'
-            mi = music.MusicInfo( args.artist_name, do_direct = args.do_direct )
-        else: do_whichone = 'GRACENOTE'
+        do_whichone = args.metadata_server
         #
         ## now do the processing
         song_names = list(
@@ -396,14 +386,10 @@ def main( ):
                              "Instead of -a or --artist, will look for --artists.",
                              "Each artist is separated by a ';'." ]))
     parser.add_argument( '--artists', dest='artist_names', type=str, action='store',
-                         help = "List of artists. Each artist is separated by a ';'.")
-    parser.add_argument( '-L', '--lastfm', dest='do_lastfm', action='store_true', default = False,
-                         help = 'If chosen, then only use the LastFM API to get song metadata.' )
-    parser.add_argument(
-        '-M', '--musicbrainz', dest='do_musicbrainz', action='store_true', default = False,
-        help = ' '.join( [
-            'If chosen, use Musicbrainz to get the artist metadata.',
-            'Note that this is expensive.' ] ) )
+                         help = "List of artists. Each artist is separated by a ';'." )
+    parser.add_argument( '-M', '--metadata', dest = 'metadata_server', choices = [ 'MUSICBRAINZ', 'GRACENOTE', 'LASTFM', ],
+                         default = 'MUSICBRAINZ',
+                         help = 'The choice of music metadata server to use. Choices are MUSICBRAINZ, GRACENOTE, LASTFM. Default is MUSICBRAINZ.' )
     parser.add_argument(
         '-m', '--mbid', dest='artist_mbid', action = 'store', type = str, default = None,
         help = ' '.join([
@@ -424,9 +410,6 @@ def main( ):
     logging_dict = { 'ERROR' : logging.ERROR, 'INFO' : logging.INFO, 'DEBUG' : logging.DEBUG }
     if args.debug_level in logging_dict: logger.setLevel( logging_dict[ args.debug_level ] )
     #
-    ## must set TRUE only ONE of --lastfm or --musicbrainz
-    assert( len(list(filter(lambda tok: tok is True, ( args.do_lastfm, args.do_musicbrainz ) ) ) ) <= 1 ), "error, can do at most one of --lastfm or --musicbrainz"
-
     if not args.do_new: all_songs_downloaded = _download_songs_oldformat( args )
     else: all_songs_downloaded = _download_songs_newformat( args )
     # if args.email is not None: _email_songs( args, all_songs_downloaded )

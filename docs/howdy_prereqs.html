@@ -1,23 +1,23 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>1. Prerequisites and Overall Design Philosophy &mdash; howdy! 1.55-94-g18c1163c documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+  <title>1. Prerequisites and Overall Design Philosophy &mdash; howdy! 1.55-92-g808fd20 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=7dc6ce7e" />
 
   
     <link rel="shortcut icon" href="_static/howdy_icon_VECTA.svg"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=cc349165"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1b445af9"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -86,10 +86,10 @@
            <div itemprop="articleBody">
              
   <section id="prerequisites-and-overall-design-philosophy">
-<h1><span class="section-number">1. </span>Prerequisites and Overall Design Philosophy<a class="headerlink" href="#prerequisites-and-overall-design-philosophy" title="Link to this heading"></a></h1>
+<h1><span class="section-number">1. </span>Prerequisites and Overall Design Philosophy<a class="headerlink" href="#prerequisites-and-overall-design-philosophy" title="Permalink to this heading"></a></h1>
 <p>To get started, I assume you have your own <a class="reference external" href="https://plex.tv">Plex</a> server. In order to get started with Plex, start at the <a class="reference external" href="https://plex.tv">Plex website</a> and put your media into it. Next, follow the <a class="reference internal" href="#installation"><span class="std std-ref">Installation</span></a> instructions. Join or identify the music, television, and movie based services described in <a class="reference internal" href="howdy-config/howdy_services_config.html#howdy-services-configuration"><span class="std std-numref">Section 2.1</span></a>, and server settings described in <a class="reference internal" href="howdy-config/howdy_settings_config.html#howdy-settings-configuration"><span class="std std-numref">Section 2.2</span></a>. Use <code class="docutils literal notranslate"><span class="pre">howdy_config_gui</span></code> to save your services and settings information, and then you will be good to go in using the ~25 or so command line and graphical user interface (GUI) tools to manage your Plex server.</p>
 <section id="prerequisites">
-<h2><span class="section-number">1.1. </span>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<h2><span class="section-number">1.1. </span>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
 <p>You will need to have <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/index.html">PyQt5</a>, <a class="reference external" href="https://www.riverbankcomputing.com/software/pyqtwebengine">PyQtWebEngine</a>, and <a class="reference external" href="https://linux.die.net/man/1/sshpass">sshpass</a>. On Debian based systems (such as <a class="reference external" href="https://www.ubuntu.com">Ubuntu</a>. <a class="reference external" href="https://linuxmint.com">Mint</a>, or <a class="reference external" href="https://www.debian.org">Debian</a>), you can install <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/index.html">PyQt5</a> and <a class="reference external" href="https://linux.die.net/man/1/sshpass">sshpass</a> with the following command (as <a class="reference external" href="https://en.wikipedia.org/wiki/Sudo">sudo</a> or root).</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt install python3-pyqt5 python3-pyqt5.qtwebengine sshpass</span>
 </pre></div>
@@ -104,7 +104,7 @@
 </div>
 </section>
 <section id="installation">
-<h2><span class="section-number">1.2. </span>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<h2><span class="section-number">1.2. </span>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
 <p>Since this package has been setup-ified, installation is very easy. Just <code class="docutils literal notranslate"><span class="pre">cd</span></code> into the <code class="docutils literal notranslate"><span class="pre">howdy</span></code> directory, and run,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python3 setup.py install --user</span>
 </pre></div>
@@ -119,7 +119,7 @@
 </div>
 </section>
 <section id="common-design-philosophies-and-features-for-command-line-and-guis">
-<h2><span class="section-number">1.3. </span>Common Design Philosophies and Features for Command Line and GUIs<a class="headerlink" href="#common-design-philosophies-and-features-for-command-line-and-guis" title="Link to this heading"></a></h2>
+<h2><span class="section-number">1.3. </span>Common Design Philosophies and Features for Command Line and GUIs<a class="headerlink" href="#common-design-philosophies-and-features-for-command-line-and-guis" title="Permalink to this heading"></a></h2>
 <p>Since I am forced to use the tools I developed to manage my Plex server, my command line interfaces (CLIs) and GUIs share common features that I hope make these tools <em>discoverable</em> and more easily <em>debuggable</em>.</p>
 <p>The CLIs are programmed with <a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse's</span> <span class="pre">ArgumentParser(</span> <span class="pre">)</span></code></a> and have a comprehensive help that can be accessed via <code class="docutils literal notranslate"><span class="pre">&lt;cli_tool&gt;</span> <span class="pre">-h</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;cli_tool&gt;</span></code> refers to the the specific Python CLI.</p>
 <p>The GUI tools all share common features. One can take a PNG screenshot of each widget and sub-widget with the <code class="docutils literal notranslate"><span class="pre">Shift+Ctrl+P</span></code> (or <code class="docutils literal notranslate"><span class="pre">Shift+Command+P</span></code> on Mac OS X computers) key combination. This helps to debug issues that may appear in the GUI, and helps to create useful documentation. I always try to put help screens into my GUIs, although not all the GUIs have working help dialogs.</p>
@@ -133,11 +133,11 @@
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">core</span></code></p></td>
 <td><p><a class="reference internal" href="howdy-core/cli_tools/howdy_core_cli.html#howdy-core-cli-label"><span class="std std-ref">howdy_core_cli</span></a> ☑</p></td>
-<td><p><a class="reference internal" href="_images/howdy_config_gui_SQUARE_VECTA.svg"><img alt="howdy_config_gui_icon" class="align-middle" src="_images/howdy_config_gui_SQUARE_VECTA.svg" style="width: 50px;" /></a> <a class="reference internal" href="howdy-config/howdy_config_gui_usage.html#howdy-config-gui-label"><span class="std std-ref">howdy_config_gui</span></a> ☑</p></td>
+<td><p><a class="reference internal" href="_images/howdy_config_gui_SQUARE_VECTA.svg"><img alt="howdy_config_gui_icon" class="align-middle" src="_images/howdy_config_gui_SQUARE_VECTA.svg" width="50" /></a> <a class="reference internal" href="howdy-config/howdy_config_gui_usage.html#howdy-config-gui-label"><span class="std std-ref">howdy_config_gui</span></a> ☑</p></td>
 </tr>
 <tr class="row-odd"><td></td>
 <td><p><a class="reference internal" href="howdy-core/cli_tools/howdy_core_cli.html#howdy-deluge-console-label"><span class="std std-ref">howdy_deluge_console</span></a> ☑</p></td>
-<td><p><a class="reference internal" href="_images/howdy_core_gui_SQUARE_VECTA.svg"><img alt="howdy_core_gui_icon" class="align-middle" src="_images/howdy_core_gui_SQUARE_VECTA.svg" style="width: 50px;" /></a> <a class="reference internal" href="howdy-core/gui_tools/howdy_core_gui.html#howdy-core-gui-label"><span class="std std-ref">howdy_core_gui</span></a> ☑</p></td>
+<td><p><a class="reference internal" href="_images/howdy_core_gui_SQUARE_VECTA.svg"><img alt="howdy_core_gui_icon" class="align-middle" src="_images/howdy_core_gui_SQUARE_VECTA.svg" width="50" /></a> <a class="reference internal" href="howdy-core/gui_tools/howdy_core_gui.html#howdy-core-gui-label"><span class="std std-ref">howdy_core_gui</span></a> ☑</p></td>
 </tr>
 <tr class="row-even"><td></td>
 <td><p><a class="reference internal" href="howdy-core/cli_tools/howdy_core_cli.html#howdy-resynclibs-label"><span class="std std-ref">howdy_resynclibs</span></a> ☑</p></td>
@@ -157,7 +157,7 @@
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tv</span></code></p></td>
 <td><p><a class="reference internal" href="howdy-tv/cli_tools/howdy_tv_cli.html#get-tv-batch-label"><span class="std std-ref">get_tv_batch</span></a> ☑</p></td>
-<td><p><a class="reference internal" href="_images/howdy_tv_gui_SQUARE_VECTA.svg"><img alt="howdy_tv_gui_icon" class="align-middle" src="_images/howdy_tv_gui_SQUARE_VECTA.svg" style="width: 50px;" /></a> <a class="reference internal" href="howdy-tv/howdy_tv_gui.html#howdy-tv-gui-label"><span class="std std-ref">howdy_tv_gui</span></a></p></td>
+<td><p><a class="reference internal" href="_images/howdy_tv_gui_SQUARE_VECTA.svg"><img alt="howdy_tv_gui_icon" class="align-middle" src="_images/howdy_tv_gui_SQUARE_VECTA.svg" width="50" /></a> <a class="reference internal" href="howdy-tv/howdy_tv_gui.html#howdy-tv-gui-label"><span class="std std-ref">howdy_tv_gui</span></a></p></td>
 </tr>
 <tr class="row-odd"><td></td>
 <td><p><a class="reference internal" href="howdy-tv/cli_tools/howdy_tv_cli.html#get-tv-tor-label"><span class="std std-ref">get_tv_tor</span></a> ☑</p></td>
@@ -185,7 +185,7 @@
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">movie</span></code></p></td>
 <td><p><a class="reference internal" href="howdy-movie/get_mov_tor.html#get-mov-tor-label"><span class="std std-ref">get_mov_tor</span></a> ☑</p></td>
-<td><p><a class="reference internal" href="_images/howdy_movie_gui_SQUARE_VECTA.svg"><img alt="howdy_movie_totgui_icon" class="align-middle" src="_images/howdy_movie_gui_SQUARE_VECTA.svg" style="width: 50px;" /></a> <a class="reference internal" href="howdy-movie/howdy_movie_totgui.html#howdy-movie-totgui-label"><span class="std std-ref">howdy_movie_totgui</span></a></p></td>
+<td><p><a class="reference internal" href="_images/howdy_movie_gui_SQUARE_VECTA.svg"><img alt="howdy_movie_totgui_icon" class="align-middle" src="_images/howdy_movie_gui_SQUARE_VECTA.svg" width="50" /></a> <a class="reference internal" href="howdy-movie/howdy_movie_totgui.html#howdy-movie-totgui-label"><span class="std std-ref">howdy_movie_totgui</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">music</span></code></p></td>
 <td><p><a class="reference internal" href="howdy-music/cli_tools/howdy_music_cli.html#howdy-music-album-label"><span class="std std-ref">howdy_music_album</span></a> ☑</p></td>
@@ -205,11 +205,11 @@
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">email</span></code></p></td>
 <td><p><a class="reference internal" href="howdy-email/cli-tools/howdy_email_notif.html#howdy-email-notif-label"><span class="std std-ref">howdy_email_notif</span></a> ☑</p></td>
-<td><p><a class="reference internal" href="_images/howdy_email_gui_SQUARE_VECTA.svg"><img alt="howdy_email_gui_icon" class="align-middle" src="_images/howdy_email_gui_SQUARE_VECTA.svg" style="width: 50px;" /></a> <a class="reference internal" href="howdy-email/gui-tools/howdy_email_gui.html#howdy-email-gui-label"><span class="std std-ref">howdy_email_gui</span></a> ☑</p></td>
+<td><p><a class="reference internal" href="_images/howdy_email_gui_SQUARE_VECTA.svg"><img alt="howdy_email_gui_icon" class="align-middle" src="_images/howdy_email_gui_SQUARE_VECTA.svg" width="50" /></a> <a class="reference internal" href="howdy-email/gui-tools/howdy_email_gui.html#howdy-email-gui-label"><span class="std std-ref">howdy_email_gui</span></a> ☑</p></td>
 </tr>
 <tr class="row-odd"><td></td>
 <td></td>
-<td><p><a class="reference internal" href="_images/howdy_email_demo_gui_SQUARE_VECTA.svg"><img alt="howdy_email_demo_gui_icon" class="align-middle" src="_images/howdy_email_demo_gui_SQUARE_VECTA.svg" style="width: 50px;" /></a> <a class="reference internal" href="howdy-email/gui-tools/howdy_email_demo_gui.html#howdy-email-demo-gui-label"><span class="std std-ref">howdy_email_demo_gui</span></a> ☑</p></td>
+<td><p><a class="reference internal" href="_images/howdy_email_demo_gui_SQUARE_VECTA.svg"><img alt="howdy_email_demo_gui_icon" class="align-middle" src="_images/howdy_email_demo_gui_SQUARE_VECTA.svg" width="50" /></a> <a class="reference internal" href="howdy-email/gui-tools/howdy_email_demo_gui.html#howdy-email-demo-gui-label"><span class="std std-ref">howdy_email_demo_gui</span></a> ☑</p></td>
 </tr>
 </tbody>
 </table>

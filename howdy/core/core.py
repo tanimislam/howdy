@@ -1074,7 +1074,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
         
           * ``year``: the year of release.
           * ``picurl``: the URL of album cover on the Plex_server.
-          * ``tracks``L contains the :py:class:`list` of songs associated with this artist and album on the Plex_ server.
+          * ``tracks``: contains the :py:class:`list` of songs associated with this artist and album on the Plex_ server.
 
         * ``musicdata[<artistname>][<albumname>]['tracks']`` is a :py:class:`list` of :py:class:`dict`\ s representing each song that is on the Plex_ server. Each song :py:class:`dict` has the following keys and values.
 

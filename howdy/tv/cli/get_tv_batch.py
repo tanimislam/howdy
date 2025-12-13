@@ -111,7 +111,7 @@ def main( ):
             '%d, Error, could not find a TV show library in %0.3f seconds. Exiting...' %
             ( time.perf_counter( ) - time0, step ), finish_statement( step ) ]))
         return
-    tvlib_title = library_dict[ max( valid_keys ) ][ 0 ]
+    tvlib_title = library_dict[ min( valid_keys ) ][ 0 ]
     print( '%d, found TV library: %s.' % ( step, tvlib_title ) )
     step += 1
     #

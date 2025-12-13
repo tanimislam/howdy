@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5.3. Howdy TV API &mdash; howdy! 1.55-87-ge433a32 documentation</title>
+  <title>5.3. Howdy TV API &mdash; howdy! 1.55-97-g65694e1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7dc6ce7e" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=2a2a40ae"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=a6a0da19"></script>
       <script src="../_static/doctools.js?v=888ff710"></script>
       <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -55,6 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="howdy_tv_gui.html">5.2.  <code class="docutils literal notranslate"><span class="pre">howdy_tv_gui</span></code></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">5.3. Howdy TV API</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#howdy-tv-module">5.3.1. howdy.tv module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.tv.ShowsExtraFilters"><code class="docutils literal notranslate"><span class="pre">ShowsExtraFilters</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.tv.ShowsToExclude"><code class="docutils literal notranslate"><span class="pre">ShowsToExclude</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.tv.TMDBShowIds"><code class="docutils literal notranslate"><span class="pre">TMDBShowIds</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.tv.check_tvdb_api"><code class="docutils literal notranslate"><span class="pre">check_tvdb_api()</span></code></a></li>
@@ -84,6 +85,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#howdy.tv.tv.get_series_image"><code class="docutils literal notranslate"><span class="pre">get_series_image()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.tv.tv.get_series_info"><code class="docutils literal notranslate"><span class="pre">get_series_info()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.tv.tv.get_series_season_image"><code class="docutils literal notranslate"><span class="pre">get_series_season_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.tv.tv.get_shows_extra_filters"><code class="docutils literal notranslate"><span class="pre">get_shows_extra_filters()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.tv.tv.get_shows_to_exclude"><code class="docutils literal notranslate"><span class="pre">get_shows_to_exclude()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.tv.tv.get_tot_epdict_tvdb"><code class="docutils literal notranslate"><span class="pre">get_tot_epdict_tvdb()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.tv.tv.get_tvdata_ordered_by_date"><code class="docutils literal notranslate"><span class="pre">get_tvdata_ordered_by_date()</span></code></a></li>
@@ -168,6 +170,20 @@
 <li><p>Retrieve and refresh the <a class="reference external" href="https://api.thetvdb.com/swagger">TVDB</a> API access token.</p></li>
 </ul>
 <span class="target" id="module-howdy.tv"></span><dl class="py class">
+<dt class="sig sig-object py" id="howdy.tv.ShowsExtraFilters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.tv.</span></span><span class="sig-name descname"><span class="pre">ShowsExtraFilters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.ShowsExtraFilters" title="Permalink to this definition"></a></dt>
+<dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains the list of shows over which one wants to apply extra filters. These shows must exist on the <a class="reference external" href="https://plex.tv">Plex</a> server. Stored into the <code class="docutils literal notranslate"><span class="pre">showsextrafilters</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>show</strong> – the show, that exists on the <a class="reference external" href="https://plex.tv">Plex</a> server, over which to apply the extra filtration. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a> object of size 65536.</p></li>
+<li><p><strong>showfilter</strong> – The <em>additional</em> torrent filtering to apply to the show. This filter is a string that contains the filter tokens in lowercase order. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a> object of size 65536.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="howdy.tv.ShowsToExclude">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.tv.</span></span><span class="sig-name descname"><span class="pre">ShowsToExclude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.ShowsToExclude" title="Permalink to this definition"></a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains the list of shows to exclude from analysis. These shows must exist on the <a class="reference external" href="https://plex.tv">Plex</a> server. Stored into the <code class="docutils literal notranslate"><span class="pre">showstoexclude</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
@@ -182,16 +198,14 @@
 <dt class="sig sig-object py" id="howdy.tv.TMDBShowIds">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.tv.</span></span><span class="sig-name descname"><span class="pre">TMDBShowIds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.TMDBShowIds" title="Permalink to this definition"></a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains the show names with the TMDB IDs of the shows. These shows must exist on the <a class="reference external" href="https://plex.tv">Plex</a> server. Storied in the the <code class="docutils literal notranslate"><span class="pre">tmdbshowids</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
-<blockquote>
-<div><dl class="field-list simple">
-<dt class="field-odd">var show<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the show, that exists on the <a class="reference external" href="https://plex.tv">Plex</a> server. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a> object of size 65536.</p>
-</dd>
-<dt class="field-even">var tmdbid<span class="colon">:</span></dt>
-<dd class="field-even"><p>the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> ID of the show. THis is a <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/type_basics.html#sqlalchemy.types.Integer" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Integer</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>show</strong> – the show, that exists on the <a class="reference external" href="https://plex.tv">Plex</a> server. This is a <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/type_basics.html#sqlalchemy.types.String" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">String</span></code></a> object of size 65536.</p></li>
+<li><p><strong>tmdbid</strong> – the <a class="reference external" href="https://www.themoviedb.org/documentation/api?language=en-US">TMDB</a> ID of the show. THis is a <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> containing a <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/type_basics.html#sqlalchemy.types.Integer" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Integer</span></code></a>.</p></li>
+</ul>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -1107,6 +1121,20 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="howdy.tv.tv.get_shows_extra_filters">
+<span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_shows_extra_filters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_shows_extra_filters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of shows in the <a class="reference external" href="https://plex.tv">Plex</a> library that are ignored from analysis or update. This queries the <code class="docutils literal notranslate"><span class="pre">showsextrafilters</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of TV shows for which we have applied an extra filter.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="howdy.tv.tv.get_shows_to_exclude">
 <span class="sig-prename descclassname"><span class="pre">howdy.tv.tv.</span></span><span class="sig-name descname"><span class="pre">get_shows_to_exclude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tvdata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.tv.tv.get_shows_to_exclude" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the list of shows in the <a class="reference external" href="https://plex.tv">Plex</a> library that are ignored from analysis or update. This queries the <code class="docutils literal notranslate"><span class="pre">showstoexclude</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
@@ -1270,8 +1298,8 @@
 <li><p>If unsuccesful, then returns an error <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of the form returned by <a class="reference internal" href="../howdy-core/howdy_core_api.html#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p></li>
 </ul>
 <p>As of November 14, 2025, here are the magnet link methods that work and don’t work when searching for <code class="docutils literal notranslate"><span class="pre">&quot;The</span> <span class="pre">Simpsons</span> <span class="pre">S31E01&quot;</span></code>.</p>
-<span id="table-working-tvtorrents"></span><table class="docutils align-default" id="id17">
-<caption><span class="caption-number">Table 5.1 </span><span class="caption-text">Which TV Torrent Trackers or Services Work?</span><a class="headerlink" href="#id17" title="Permalink to this table"></a></caption>
+<span id="table-working-tvtorrents"></span><table class="docutils align-default" id="id21">
+<caption><span class="caption-text">Which TV Torrent Trackers or Services Work?</span><a class="headerlink" href="#id21" title="Permalink to this table"></a></caption>
 <tbody>
 <tr class="row-odd"><td><p>Torrent Service</p></td>
 <td><p>Logo</p></td>

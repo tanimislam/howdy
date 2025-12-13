@@ -13,6 +13,11 @@ from howdy.tv import tv_torrents, tv
 from bs4 import XMLParsedAsHTMLWarning
 warnings.filterwarnings('ignore', category = XMLParsedAsHTMLWarning )
 
+
+_debug_level_dict = {
+    'info'  : logging.INFO,
+    'debug' : logging.DEBUG, }
+
 def get_items_eztv_io( name, maxnum = 10, verify = True, filtered = [ ] ):
     assert( maxnum >= 5 )
     try: 
@@ -161,9 +166,11 @@ def main( ):
     parser.add_argument('-f', '--filename', dest='filename', action='store', type=str,
                       help = 'If defined, put torrent or magnet link into filename.')
     parser.add_argument('-a', '--add', dest='do_add', action='store_true', default = False,
-                      help = 'If chosen, push the magnet link into the deluge server.' )
-    parser.add_argument('-i', '--info', dest='do_info', action='store_true', default = False,
-                      help = 'If chosen, run in info mode.' )
+                        help = 'If chosen, push the magnet link into the deluge server.' )
+    parser.add_argument(
+        '-D', '--debuglevel', dest='debug_level', action='store', type=str, default = 'None',
+        choices = [ 'None', 'info', 'debug' ],
+        help = 'Choose the debug level for the system logger. Default is None (no logging). Can be one of None (no logging), info, or debug.' )
     parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
                       help = 'If chosen, do not verify SSL connections.' )
     #
@@ -175,7 +182,8 @@ def main( ):
     if args.filter is None: filtered = [ ]
     else: filtered = sorted(set(map(lambda tok: tok.strip().lower(), args.filter)))
     logger = logging.getLogger( )
-    if args.do_info: logger.setLevel( logging.INFO )
+    if args.debug_level.lower( ) in _debug_level_dict:
+        logger.setLevel( _debug_level_dict[ args.debug_level.lower( ) ] )
     logging.info( 'FILTERED LIST = %s.' % filtered )
     #
     time0 = time.perf_counter( )

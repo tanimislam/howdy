@@ -611,6 +611,8 @@ def _get_library_data_show(
         if elem.name != 'video':
             return False
         if len( elem.find_all('media')) != 1:
+            logging.debug( "TANIM DEBUG, POSSIBLE ERRONEOUS DUPLICATED MEDIA FILE DOWNLOAD = %s." % (
+                elem.find_all('media') ) )
             return False
         media_elem = elem.find( 'media' )
         if len(set([ 'duration', 'bitrate' ]) -
@@ -1015,7 +1017,7 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
 def get_library_data( title, token, fullURL = 'http://localhost:32400',
                       num_threads = 2 * multiprocessing.cpu_count( ), timeout = None,
                       mainPath = None ):
-    """
+    r"""
     Returns the data on the specific Plex library, as a :py:class:`dict`. This lower level functionality lives in the same space as `PlexAPI <https://python-plexapi.readthedocs.io/en/latest>`_. Three types of library data can be returned: movies, TV shows, and music.
     
       * Movie data has this JSON like structure. ``moviedata`` is an example movie data dictionary.
@@ -1072,7 +1074,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
         
           * ``year``: the year of release.
           * ``picurl``: the URL of album cover on the Plex_server.
-          * ``tracks``L contains the :py:class:`list` of songs associated with this artist and album on the Plex_ server.
+          * ``tracks``: contains the :py:class:`list` of songs associated with this artist and album on the Plex_ server.
 
         * ``musicdata[<artistname>][<albumname>]['tracks']`` is a :py:class:`list` of :py:class:`dict`\ s representing each song that is on the Plex_ server. Each song :py:class:`dict` has the following keys and values.
 
@@ -1376,7 +1378,7 @@ def fill_out_movies_stuff( token, fullURL = 'http://localhost:32400', verify = T
 def get_lastN_movies(
     lastN, token, fullURL = 'http://localhost:32400',
     useLastNewsletterDate = True ):
-    """
+    r"""
     Returns the last :math:`N` movies that were uploaded to the Plex_ server, either after the last date at which a newsletter was sent out or not.
     
     :param int lastN: the last :math:`N` movies to be sent out. Must be :math:`\ge 1`.

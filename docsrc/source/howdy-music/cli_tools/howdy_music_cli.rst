@@ -217,11 +217,12 @@ howdy_music_songs
 ^^^^^^^^^^^^^^^^^^^^^^
 The help output, when running ``howdy_music_songs -h``, produces the following.
 
-.. code-block:: bash
-		
-   usage: howdy_music_songs [-h] [-a ARTIST_NAME] [-s SONG_NAMES] [--maxnum MAXNUM] [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES] [-L] [-M] [--noverify] [--debuglevel {NONE,ERROR,INFO,DEBUG}] [-D]
+.. code-block:: console
 
-   optional arguments:
+   usage: howdy_music_songs [-h] [-a ARTIST_NAME] [-s SONG_NAMES] [--maxnum MAXNUM] [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES]
+			    [-M {MUSICBRAINZ,GRACENOTE,LASTFM}] [-m ARTIST_MBID] [--noverify] [--debuglevel {NONE,ERROR,INFO,DEBUG}] [-D]
+
+   options:
      -h, --help            show this help message and exit
      -a ARTIST_NAME, --artist ARTIST_NAME
 			   Name of the artist to put into the M4A file.
@@ -233,12 +234,14 @@ The help output, when running ``howdy_music_songs -h``, produces the following.
      --new                 If chosen, use the new format for getting the song list. Instead of -a or --artist, will look for --artists. Each artist is separated by a ';'.
      --artists ARTIST_NAMES
 			   List of artists. Each artist is separated by a ';'.
-     -L, --lastfm          If chosen, then only use the LastFM API to get song metadata.
-     -M, --musicbrainz     If chosen, use Musicbrainz to get the artist metadata. Note that this is expensive.
+     -M {MUSICBRAINZ,GRACENOTE,LASTFM}, --metadata {MUSICBRAINZ,GRACENOTE,LASTFM}
+			   The choice of music metadata server to use. Choices are MUSICBRAINZ, GRACENOTE, LASTFM. Default is MUSICBRAINZ.
+     -m ARTIST_MBID, --mbid ARTIST_MBID
+			   Optional argument, the ARTIST MusicBrainz ID to use to select on artist (in addition to the -a flag). Only makes sense and is used when running with MusicBrainz.
      --noverify            Do not verify SSL transactions if chosen.
      --debuglevel {NONE,ERROR,INFO,DEBUG}
 			   Choose the debug level for the system logger. Default is NONE (no logging). Can be one of NONE (no logging), ERROR, INFO, or DEBUG.
-     -D, --direct          Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.
+     -D, --direct          Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.		
 
 In all three operations, here are required arguments or common flags,
 
@@ -266,7 +269,7 @@ Some example animated GIFs can be downloaded from here, and is mirrored in this 
    :width: 100%
    :align: middle
 
-.. |howdy_music_cli_clip2| image:: howdy-music-cli-figures/howdy_music_songs_download_by_artist_and_album_SHRINK.gif
+.. |howdy_music_cli_clip2| image:: howdy-music-cli-figures/howdy_music_songs_download_by_artist_and_album.gif
    :width: 200%
    :align: middle
 

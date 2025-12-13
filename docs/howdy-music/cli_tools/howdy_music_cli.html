@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.55-87-ge433a32 documentation</title>
+  <title>7.1. Howdy Music Command Line Utilities &mdash; howdy! 1.55-97-g65694e1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=7dc6ce7e" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=2a2a40ae"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=a6a0da19"></script>
       <script src="../../_static/doctools.js?v=888ff710"></script>
       <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -293,26 +293,29 @@ ACTUAL<span class="w"> </span>SONG:<span class="w"> </span>La<span class="w"> </
 <section id="howdy-music-songs">
 <span id="howdy-music-songs-label"></span><h2><span class="section-number">7.1.3. </span>howdy_music_songs<a class="headerlink" href="#howdy-music-songs" title="Permalink to this heading"></a></h2>
 <p>The help output, when running <code class="docutils literal notranslate"><span class="pre">howdy_music_songs</span> <span class="pre">-h</span></code>, produces the following.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>howdy_music_songs<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">[</span>-a<span class="w"> </span>ARTIST_NAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>SONG_NAMES<span class="o">]</span><span class="w"> </span><span class="o">[</span>--maxnum<span class="w"> </span>MAXNUM<span class="o">]</span><span class="w"> </span><span class="o">[</span>-A<span class="w"> </span>ALBUM_NAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>--new<span class="o">]</span><span class="w"> </span><span class="o">[</span>--artists<span class="w"> </span>ARTIST_NAMES<span class="o">]</span><span class="w"> </span><span class="o">[</span>-L<span class="o">]</span><span class="w"> </span><span class="o">[</span>-M<span class="o">]</span><span class="w"> </span><span class="o">[</span>--noverify<span class="o">]</span><span class="w"> </span><span class="o">[</span>--debuglevel<span class="w"> </span><span class="o">{</span>NONE,ERROR,INFO,DEBUG<span class="o">}]</span><span class="w"> </span><span class="o">[</span>-D<span class="o">]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: howdy_music_songs [-h] [-a ARTIST_NAME] [-s SONG_NAMES] [--maxnum MAXNUM] [-A ALBUM_NAME] [--new] [--artists ARTIST_NAMES]</span>
+<span class="go">                         [-M {MUSICBRAINZ,GRACENOTE,LASTFM}] [-m ARTIST_MBID] [--noverify] [--debuglevel {NONE,ERROR,INFO,DEBUG}] [-D]</span>
 
-optional<span class="w"> </span>arguments:
-<span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
-<span class="w">  </span>-a<span class="w"> </span>ARTIST_NAME,<span class="w"> </span>--artist<span class="w"> </span>ARTIST_NAME
-<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>artist<span class="w"> </span>to<span class="w"> </span>put<span class="w"> </span>into<span class="w"> </span>the<span class="w"> </span>M4A<span class="w"> </span>file.
-<span class="w">  </span>-s<span class="w"> </span>SONG_NAMES,<span class="w"> </span>--songs<span class="w"> </span>SONG_NAMES
-<span class="w">                        </span>Names<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>song<span class="w"> </span>to<span class="w"> </span>put<span class="w"> </span>into<span class="w"> </span>M4A<span class="w"> </span>files.<span class="w"> </span>Separated<span class="w"> </span>by<span class="w"> </span><span class="p">;</span>
-<span class="w">  </span>--maxnum<span class="w"> </span>MAXNUM<span class="w">       </span>Number<span class="w"> </span>of<span class="w"> </span>YouTube<span class="w"> </span>video<span class="w"> </span>choices<span class="w"> </span>to<span class="w"> </span>choose<span class="w"> </span><span class="k">for</span><span class="w"> </span>each<span class="w"> </span>of<span class="w"> </span>your<span class="w"> </span>songs.Default<span class="w"> </span>is<span class="w"> </span><span class="m">10</span>.
-<span class="w">  </span>-A<span class="w"> </span>ALBUM_NAME,<span class="w"> </span>--album<span class="w"> </span>ALBUM_NAME
-<span class="w">                        </span>If<span class="w"> </span>defined,<span class="w"> </span><span class="k">then</span><span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>the<span class="w"> </span>songs<span class="w"> </span><span class="k">in</span><span class="w"> </span>order<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>album.
-<span class="w">  </span>--new<span class="w">                 </span>If<span class="w"> </span>chosen,<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span>new<span class="w"> </span>format<span class="w"> </span><span class="k">for</span><span class="w"> </span>getting<span class="w"> </span>the<span class="w"> </span>song<span class="w"> </span>list.<span class="w"> </span>Instead<span class="w"> </span>of<span class="w"> </span>-a<span class="w"> </span>or<span class="w"> </span>--artist,<span class="w"> </span>will<span class="w"> </span>look<span class="w"> </span><span class="k">for</span><span class="w"> </span>--artists.<span class="w"> </span>Each<span class="w"> </span>artist<span class="w"> </span>is<span class="w"> </span>separated<span class="w"> </span>by<span class="w"> </span>a<span class="w"> </span><span class="s1">&#39;;&#39;</span>.
-<span class="w">  </span>--artists<span class="w"> </span>ARTIST_NAMES
-<span class="w">                        </span>List<span class="w"> </span>of<span class="w"> </span>artists.<span class="w"> </span>Each<span class="w"> </span>artist<span class="w"> </span>is<span class="w"> </span>separated<span class="w"> </span>by<span class="w"> </span>a<span class="w"> </span><span class="s1">&#39;;&#39;</span>.
-<span class="w">  </span>-L,<span class="w"> </span>--lastfm<span class="w">          </span>If<span class="w"> </span>chosen,<span class="w"> </span><span class="k">then</span><span class="w"> </span>only<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span>LastFM<span class="w"> </span>API<span class="w"> </span>to<span class="w"> </span>get<span class="w"> </span>song<span class="w"> </span>metadata.
-<span class="w">  </span>-M,<span class="w"> </span>--musicbrainz<span class="w">     </span>If<span class="w"> </span>chosen,<span class="w"> </span>use<span class="w"> </span>Musicbrainz<span class="w"> </span>to<span class="w"> </span>get<span class="w"> </span>the<span class="w"> </span>artist<span class="w"> </span>metadata.<span class="w"> </span>Note<span class="w"> </span>that<span class="w"> </span>this<span class="w"> </span>is<span class="w"> </span>expensive.
-<span class="w">  </span>--noverify<span class="w">            </span>Do<span class="w"> </span>not<span class="w"> </span>verify<span class="w"> </span>SSL<span class="w"> </span>transactions<span class="w"> </span><span class="k">if</span><span class="w"> </span>chosen.
-<span class="w">  </span>--debuglevel<span class="w"> </span><span class="o">{</span>NONE,ERROR,INFO,DEBUG<span class="o">}</span>
-<span class="w">                        </span>Choose<span class="w"> </span>the<span class="w"> </span>debug<span class="w"> </span>level<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>system<span class="w"> </span>logger.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>NONE<span class="w"> </span><span class="o">(</span>no<span class="w"> </span>logging<span class="o">)</span>.<span class="w"> </span>Can<span class="w"> </span>be<span class="w"> </span>one<span class="w"> </span>of<span class="w"> </span>NONE<span class="w"> </span><span class="o">(</span>no<span class="w"> </span>logging<span class="o">)</span>,<span class="w"> </span>ERROR,<span class="w"> </span>INFO,<span class="w"> </span>or<span class="w"> </span>DEBUG.
-<span class="w">  </span>-D,<span class="w"> </span>--direct<span class="w">          </span>Only<span class="w"> </span>makes<span class="w"> </span>sense<span class="w"> </span>when<span class="w"> </span>running<span class="w"> </span>with<span class="w"> </span>MusicBrainz.<span class="w"> </span>Option<span class="w"> </span>of<span class="w"> </span>using<span class="w"> </span>direct<span class="w"> </span>instead<span class="w"> </span>of<span class="w"> </span>indexed<span class="w"> </span>search<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>artist.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>False.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -a ARTIST_NAME, --artist ARTIST_NAME</span>
+<span class="go">                        Name of the artist to put into the M4A file.</span>
+<span class="go">  -s SONG_NAMES, --songs SONG_NAMES</span>
+<span class="go">                        Names of the song to put into M4A files. Separated by ;</span>
+<span class="go">  --maxnum MAXNUM       Number of YouTube video choices to choose for each of your songs.Default is 10.</span>
+<span class="go">  -A ALBUM_NAME, --album ALBUM_NAME</span>
+<span class="go">                        If defined, then get all the songs in order from the album.</span>
+<span class="go">  --new                 If chosen, use the new format for getting the song list. Instead of -a or --artist, will look for --artists. Each artist is separated by a &#39;;&#39;.</span>
+<span class="go">  --artists ARTIST_NAMES</span>
+<span class="go">                        List of artists. Each artist is separated by a &#39;;&#39;.</span>
+<span class="go">  -M {MUSICBRAINZ,GRACENOTE,LASTFM}, --metadata {MUSICBRAINZ,GRACENOTE,LASTFM}</span>
+<span class="go">                        The choice of music metadata server to use. Choices are MUSICBRAINZ, GRACENOTE, LASTFM. Default is MUSICBRAINZ.</span>
+<span class="go">  -m ARTIST_MBID, --mbid ARTIST_MBID</span>
+<span class="go">                        Optional argument, the ARTIST MusicBrainz ID to use to select on artist (in addition to the -a flag). Only makes sense and is used when running with MusicBrainz.</span>
+<span class="go">  --noverify            Do not verify SSL transactions if chosen.</span>
+<span class="go">  --debuglevel {NONE,ERROR,INFO,DEBUG}</span>
+<span class="go">                        Choose the debug level for the system logger. Default is NONE (no logging). Can be one of NONE (no logging), ERROR, INFO, or DEBUG.</span>
+<span class="go">  -D, --direct          Only makes sense when running with MusicBrainz. Option of using direct instead of indexed search on the artist. Default is False.</span>
 </pre></div>
 </div>
 <p>In all three operations, here are required arguments or common flags,</p>
@@ -334,7 +337,7 @@ optional<span class="w"> </span>arguments:
 <table class="docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../../_images/howdy_music_songs_download_by_song_and_artist.gif"><img alt="howdy_music_cli_clip1" class="align-middle" src="../../_images/howdy_music_songs_download_by_song_and_artist.gif" style="width: 100%;" /></a></p></td>
-<td><p><a class="reference internal" href="../../_images/howdy_music_songs_download_by_artist_and_album_SHRINK.gif"><img alt="howdy_music_cli_clip2" class="align-middle" src="../../_images/howdy_music_songs_download_by_artist_and_album_SHRINK.gif" style="width: 200%;" /></a></p></td>
+<td><p><a class="reference internal" href="../../_images/howdy_music_songs_download_by_artist_and_album.gif"><img alt="howdy_music_cli_clip2" class="align-middle" src="../../_images/howdy_music_songs_download_by_artist_and_album.gif" style="width: 200%;" /></a></p></td>
 <td><p><a class="reference internal" href="../../_images/howdy_music_songs_download_by_sep_list_artist_songs.gif"><img alt="howdy_music_cli_clip3" class="align-middle" src="../../_images/howdy_music_songs_download_by_sep_list_artist_songs.gif" style="width: 100%;" /></a></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference external" href="https://youtu.be/W5AYAFYI9QA">Download artists &amp; songs</a></p></td>
@@ -594,7 +597,7 @@ options:
 <span class="mi">9</span>                 <span class="mi">10</span>  <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">media</span><span class="o">/</span><span class="n">aacmusic</span><span class="o">/</span><span class="n">Morcheeba</span><span class="o">/</span><span class="n">The</span> <span class="n">Antidote</span> <span class="p">(</span><span class="mf">20.</span><span class="o">..</span> <span class="mi">2020</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">10</span> <span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">29</span>               <span class="n">Antidote</span>                   <span class="n">Morcheeba</span>             <span class="mi">9</span>          <span class="n">The</span> <span class="n">Antidote</span>                      <span class="mi">10</span>        <span class="mi">2005</span>
 </pre></div>
 </div>
-<p>This contains the following columns, as described in <code class="xref py py-meth docutils literal notranslate"><span class="pre">plexapi_music_playlist_info</span></code>: order in playlist, filename, added date, song name, artist, track number in the album, alnum name, number of tracks in the album, and album year.</p>
+<p>This contains the following columns, as described in <a class="reference internal" href="../howdy_music_api.html#howdy.music.music.plexapi_music_playlist_info" title="howdy.music.music.plexapi_music_playlist_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plexapi_music_playlist_info</span></code></a>: order in playlist, filename, added date, song name, artist, track number in the album, alnum name, number of tracks in the album, and album year.</p>
 </section>
 </section>
 <section id="howdy-music-spotify-push-from-plex">

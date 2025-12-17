@@ -319,9 +319,9 @@ def get_rsync_command( data, mystr, do_download = True, do_local_rsync = False, 
             fullpath = os.path.join( data['local_dir'], mystr )
         #
         if data['subdir'] is not None:
-            mycmd = 'rsync --remove-source-files -P --info=progress2 --rsh="%s %s ssh" -avzs -e ssh %s %s:%s/' % (
+            mycmd = 'rsync --remove-source-files -P --info=progress2 --rsh="%s %s ssh" -avzs -e ssh "%s" "%s:%s/"' % (
                 sshpass_exec, data[ 'password' ], fullpath, data[ 'sshpath' ], data['subdir'] )
-            mxcmd = 'rsync --remove-source-files -P --rsh="%s XXXX ssh" -avz -e ssh %s %s:%s/' % (
+            mxcmd = 'rsync --remove-source-files -P --rsh="%s XXXX ssh" -avzs -e ssh "%s" "%s:%s/"' % (
                 sshpass_exec, fullpath, data[ 'sshpath' ], data['subdir'] )
         else:
             mycmd = 'rsync --remove-source-files -P -avzs --info=progress2 --rsh="%s %s ssh" -e ssh %s %s:' % (

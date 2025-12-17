@@ -6,10 +6,6 @@ from argparse import ArgumentParser
 #
 from howdy.core import core_rsync, SSHUploadPaths
 
-def _show_all_remote_directory_collections( fulldict ):
-    data = [ ]
-    return
-
 def main( ):
     parser = ArgumentParser( )
     parser.add_argument('-D', '--debug', dest='do_debug', action='store_true', default = False,
@@ -85,3 +81,12 @@ def main( ):
         core_rsync.push_remote_connection(
             add_alias, add_mediatype, add_sshpath,
             add_password, add_maindir, subdirs_dict = subdirs_dict )
+        return
+    #
+    ## remote remote media directory collection
+    if args.choose_option == 'remove':
+        remove_alias = args.remove_alias.strip( )
+        status = core_rsync.remove_remote_connection( remove_alias )
+        if status != 'SUCCESS':
+            print( status )
+        return

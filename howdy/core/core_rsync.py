@@ -94,10 +94,29 @@ def push_remote_connection( alias, mediatype, sshpath, password, mainDir_remote,
     session.add( newval )
     session.commit( )
 
-def get_remote_connections( ):
+def remove_remote_connection( alias ):
     """
-    Get *all* the remote connections
+    Remove a single remote media directory collection, identified by its alias.
 
+    :param str alias: the alias used to uniquely identify the collection of directories, each identified by keys, to the remote Plex_ and SSH server.
+
+    :returns: if alias exists, return ``'SUCCESS'``. Otherwise, return nothing.
+    :rtype: str
+    """
+    val = session.query( SSHUploadPaths ).filter(
+        SSHUploadPaths.alias == alias ).first( )
+    if val is None:
+        return "Could not find remote directory collection identified by alias = %s." % alias
+    session.delete( val )
+    session.commit( )
+    return "SUCCESS"
+
+def get_remote_connections( show_password = False ):
+    """
+    Get *all* the remote connections.
+
+    :param bool show_password: by default ``False``. If ``True``, then also include the password associated with each remote media directory collection.
+    
     :returns: a :py:class:`dict` of all the remote Plex_ media directory collections. The key is the ``alias`` string.
     :rtype: dict
     """
@@ -112,6 +131,8 @@ def get_remote_connections( ):
                 map(lambda key: (key, os.path.join( entry.maindir, entry.subdirs[ key ] ) ),
                     entry.subdirs ) ),
         }
+        if show_password:
+            data[ 'password' ] = entry.password
         dict_to_return[ alias ] = data
     return dict_to_return
     
@@ -254,7 +275,7 @@ def get_credentials( ):
     else: datan['subdir'] = subdir.strip( )
     return datan
 
-def get_rsync_command( data, mystr, do_download = True, do_local_rsync = False ):
+def get_rsync_command( data, mystr, do_download = True, do_local_rsync = False, use_local_dir_for_upload = True ):
     """
     Returns a :py:class:`tuple` of the actual rsync_ command, and the command with password information obscured, to download from or upload to the remote SSH server from the Plex_ server. *We require that sshpass_ exists and is accessible on this system*.
     
@@ -264,6 +285,8 @@ def get_rsync_command( data, mystr, do_download = True, do_local_rsync = False )
     :param bool do_download: if ``True``, then download from remote SSH server. If ``False``, then upload to remote SSH server.
 
     :param bool do_local_rsync: if ``True``, then instead of SSH-ing do an effectively move command from path = ``os.path.expanduser( os.path.join( "~", data[ 'subdir' ], mystr ) )`` into ``data['local_dir']`` via rsync. This *requires* that data['subdir'] is *not* ``None``.
+
+    :param bool use_local_dir_for_upload: when ``do_download`` is False (doing upload), and if ``True``, then the full path to upload to remote server adds the directory defined by ``data['local_dir']`` to the source file or directory path. Otherwise, *do not* append ``data['local_dir']`` to the source when setting the full path.
 
     :returns: a :py:class:`tuple` of the actual rsync_ command, and the command with password information obscured, to download from or upload to the remote SSH server from the Plex_ server.
     :rtype: tuple
@@ -286,21 +309,24 @@ def get_rsync_command( data, mystr, do_download = True, do_local_rsync = False )
         if data['subdir'] is not None:
             mainStr = os.path.join( data['subdir'], mystr.strip( ) )
         else: mainStr = mystr.strip( )
-        mycmd = 'rsync --remove-source-files -P -avz --info=progress2 --rsh="%s %s ssh" -e ssh %s:%s %s/' % (
+        mycmd = 'rsync --remove-source-files -P -avzs --info=progress2 --rsh="%s %s ssh" -e ssh %s:%s %s/' % (
             sshpass_exec, data[ 'password' ], data[ 'sshpath' ], mainStr, data['local_dir'] )
-        mxcmd = 'rsync --remove-source-files -P -avz --info=progress2 --rsh="%s XXXX ssh" -e ssh %s:%s %s/' % (
+        mxcmd = 'rsync --remove-source-files -P -avzs --info=progress2 --rsh="%s XXXX ssh" -e ssh %s:%s %s/' % (
             sshpass_exec, data[ 'sshpath' ], mainStr, data['local_dir'] )
     else:
-        fullpath = os.path.join( data['local_dir'], mystr )
+        fullpath = mystr
+        if use_local_dir_for_upload:
+            fullpath = os.path.join( data['local_dir'], mystr )
+        #
         if data['subdir'] is not None:
-            mycmd = 'rsync --remove-source-files -P --info=progress2 --rsh="%s %s ssh" -avz -e ssh %s %s:%s/' % (
+            mycmd = 'rsync --remove-source-files -P --info=progress2 --rsh="%s %s ssh" -avzs -e ssh %s %s:%s/' % (
                 sshpass_exec, data[ 'password' ], fullpath, data[ 'sshpath' ], data['subdir'] )
             mxcmd = 'rsync --remove-source-files -P --rsh="%s XXXX ssh" -avz -e ssh %s %s:%s/' % (
                 sshpass_exec, fullpath, data[ 'sshpath' ], data['subdir'] )
         else:
-            mycmd = 'rsync --remove-source-files -P -avz --info=progress2 --rsh="%s %s ssh" -e ssh %s %s:' % (
+            mycmd = 'rsync --remove-source-files -P -avzs --info=progress2 --rsh="%s %s ssh" -e ssh %s %s:' % (
                 sshpass_exec, data[ 'password' ], fullpath, data[ 'sshpath' ] )
-            mxcmd = 'rsync --remove-source-files -P -avz --info=progress2 --rsh="%s XXXX ssh" -e ssh %s %s:' % (
+            mxcmd = 'rsync --remove-source-files -P -avzs --info=progress2 --rsh="%s XXXX ssh" -e ssh %s %s:' % (
                 sshpass_exec, fullpath, data[ 'sshpath' ] )
     return mycmd, mxcmd
 
@@ -330,23 +356,23 @@ def download_upload_files( glob_string, numtries = 10, debug_string = False,
     if debug_string:
         print( mystr_split[-1] )
         print( 'TRYING UP TO %d TIMES.' % numtries )
-    time0 = time.time( )
+    time0 = time.perf_counter( )
     for idx in range( numtries ):
-        time00 = time.time( )
+        time00 = time.perf_counter( )
         stdout_val = subprocess.check_output(
             shlex.split( mycmd ), stderr = subprocess.STDOUT )
         if not any(map(lambda line: 'dispatch_run_fatal' in line, stdout_val.decode('utf-8').split('\n'))):
             mystr_split.append(
                 'SUCCESSFUL ATTEMPT %d / %d IN %0.3f SECONDS.' % (
-                    idx + 1, numtries, time.time( ) - time00 ) )
+                    idx + 1, numtries, time.perf_counter( ) - time00 ) )
             if debug_string: print( mystr_split[-1] )
             logging.debug( '%s\n' % stdout_val.decode( 'utf-8' ) )
             return "SUCCESS", '\n'.join( mystr_split )
         mystr_split.append('FAILED ATTEMPT %d / %d IN %0.3f SECONDS.' % (
-            idx + 1, numtries, time.time( ) - time00 ) )
+            idx + 1, numtries, time.perf_counter( ) - time00 ) )
         if debug_string: print( mystr_split[-1] )
         logging.debug( '%s\n' % stdout_val.decode( 'utf-8' ) )
     mystr_split.append( 'ATTEMPTED AND FAILED %d TIMES IN %0.3f SECONDS TOTAL.' % (
-        numtries, time.time( ) - time0 ) )
+        numtries, time.perf_counter( ) - time0 ) )
     if debug_string: print( mystr_split[-1] )
     return "FAILURE", '\n'.join( mystr_split )

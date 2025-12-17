@@ -79,6 +79,7 @@ setup(
             'howdy_resynclibs = howdy.core.cli.howdy_resynclibs:main',
             'howdy_store_credentials = howdy.core.cli.howdy_store_credentials:main',
             'rsync_subproc = howdy.core.cli.rsync_subproc:main',
+            'rsync_remote_setup = howdy.core.cli.rsync_remote_setup:main',
             'get_book_tor = howdy.core.cli.get_book_tor:main',
             'howdy_core_plex_download = howdy.core.cli.howdy_core_plex_download:main',
             'howdy_core_trackers_exclude = howdy.core.cli.howdy_core_trackers_exclude:main',

@@ -1,9 +1,9 @@
-import os, sys, signal, datetime, glob, logging, time, numpy
+import os, sys, signal, datetime, glob, logging, time, numpy, enum
 import geoip2.database, _geoip_geolite2, multiprocessing, multiprocessing.pool
 from bs4 import BeautifulSoup
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean
+from sqlalchemy import create_engine, Column, String, JSON, Date, Boolean, Enum
 from rapidfuzz.fuzz import partial_ratio
 from docutils.examples import html_parts
 #
@@ -658,6 +658,45 @@ if not os.environ.get( 'READTHEDOCS' ):
     Base.metadata.bind = _engine
     session = sessionmaker( bind = _engine )( )
 else: session = sessionmaker( )
+
+#
+## this table stores the upload paths to remote servers
+class SSHUploadPaths( Base ):
+    """
+    This SQLAlchemy_ ORM class contains information used to upload files to media libraries on remote Plex_ servers. Stored into the ``plexsshupload`` table int he SQLite3_ configuration database.
+
+    :var alias: the name of the useful alias to connect to the remote Plex_ server via SSH. Index on this unique key. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` of size 65536.
+    :var mediatype: the *type* of media we store in the collection of remote directories. Must be one of 'movie' or 'tv'. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`Enum <sqlalchemy.types.Enum>` of type 'movie' or 'tv'.
+    :var sshpath: the full path with username and host name for the SSH server. Format is ``'username@hostname'``. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` of size 65536.
+    :var password: the password to connect as the SSH server. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` of size 65536.
+    :var maindir: the full top level directory path on the remote server. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`String <sqlalchemy.types.String>` of size 65536.
+    :var subdirs: the dictionary of remote paths on the remote server. The key is an identifying name, such as ``foo``; the value is a full subdirectory off ``maindir``. For example, if the value is ``full/subdir/path``, then the directory name on the remote server is ``maindir/full/subdir/path``. This is a :py:class:`Column <sqlalchemy.schema.Column>` containing a :py:class:`JSON <sqlalchemy.types.JSON>` object.
+    """
+
+    class MediaType( enum.Enum ):
+        movie = 'movie'
+        tv = 'tv'
+                                
+    mediatype_enum_mapping = dict(
+        map(lambda entry: ( entry, entry.name ),
+            list( MediaType )))
+
+    mediatype_enum_mapping_rev = dict(
+        map(lambda entry: ( entry.name, entry ),
+            list( MediaType ) ) )
+        
+        
+    #
+    ## create the table using Base.metadata.create_all( _engine )
+    __tablename__ = 'plexsshupload'
+    __table_args__ = { 'extend_existing' : True }
+    alias     = Column( String( 65536 ), index = True, unique = True, primary_key = True )
+    mediatype = Column( Enum( MediaType ) )
+    sshpath   = Column( String( 65536 ) )
+    password  = Column( String( 65536 ) )
+    maindir   = Column( String( 65536 ) )
+    subdirs   = Column( JSON )
+    
 
 #
 ## this will be used to replace all the existing credentials stored in separate tables

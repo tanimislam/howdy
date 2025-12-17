@@ -3,8 +3,119 @@ from shutil import which
 from fabric import Connection
 from patchwork.files import exists, directory
 #
-from howdy.core import session, PlexConfig
+from howdy.core import session, PlexConfig, SSHUploadPaths
 
+def check_remote_connection_paths( sshpath, password, mainDir_remote, subdirs_dict = dict() ):
+    """
+    Checks whether one can upload to the following remote directory, ``mainDir_remote``, and the following subdirectories in the :py:class:`dict` of ``subdirs_dict``.
+
+    ``subdirs_dict`` need not be populated (may be empty). If it is, each key is an identifying name, and each value is a subdirectory attached to mainDir_remote.
+
+    :param str sshpath: the full path with username and host name for the SSH server. Format is ``'username@hostname'``.
+    :param str password: the password to connect as the SSH server.
+    :param str mainDir_remote: the full top level directory path on the remote server.
+    :param dict subdirs_dict: the dictionary of remote paths on the remote server. The key is an identifying name, such as ``foo``; the value is a full subdirectory off ``mainDir_remote``. For example, if the value is ``full/subdir/path``, then the directory name on the remote server is ``mainDir_remote/full/subdir/path``.
+
+    :returns: if everything works, return ``'SUCCESS'``. If fails, return specific illuminating error messages.
+    :rtype: str
+    """
+
+    try:
+        #
+        ## first, can we login with username and password?
+        uname = sshpath.split('@')[0]
+        hostname = sshpath.split('@')[1]
+        # raises a ValueError if cannot do so
+        # needs to pass in look_for_keys = False so not use id_* keys
+        with Connection( hostname, user = uname,
+                         connect_kwargs = {
+                             'password' : password,
+                             'look_for_keys' : False } ) as conn:
+            conn.run( 'ls', hide = True ) # errors out if not a valid connection
+            if not exists( conn, mainDir_remote ):
+                raise ValueError( "Error, %s does not exist in remote server." % mainDir_remote )
+            #
+            ## will raise an error if this is a file
+            directory( conn, mainDir_remote )
+
+            all_subdirs = set(map(lambda subdir: os.path.join( mainDir_remote, subdir ), set(subdirs_dict.values( ) )) )
+            logging.info( 'checking through %d possible subdirectories' % len( all_subdirs ) )
+            logging_messages = [ ]
+            for full_subdir in all_subdirs:
+                if not exists( conn, full_subdir ):
+                    logging_messages.append(
+                        "Error, %s does not exist in remote server." % full_subdir )
+                    continue
+                try:
+                    directory( conn, full_subdir )
+                except:
+                    logging_message.append(
+                        "Error, %s exists on remote server, but it is a file." % full_subdir )
+            
+            if len( logging_messages ) == 0:
+                return 'SUCCESS'
+            raise ValueError( '\n'.join( logging_messages ) )
+    except Exception as e:
+        return str( e )
+
+def push_remote_connection( alias, mediatype, sshpath, password, mainDir_remote, subdirs_dict = dict() ):
+    """
+    Push the rsync-ing upload configuration to the Plex_ server (``alias``, ``sshpath``, ``password``, ``mainDir_remote``, and ``subdirs_dict``), if working, into the SQLite3_ database of SSH media uplodads.
+
+    :param str alias: the alias used to uniquely identify the collection of directories, each identified by keys, to the remote Plex_ and SSH server.
+    :param mediatype: the :py:class:`Enum <enum.Enum>` that defines the type of media in the directory collection.
+    :type: :py:class:`MediaType <howdy.core.SSHUploadPaths.MediaType>`
+    :param str sshpath: the full path with username and host name for the SSH server. Format is ``'username@hostname'``.
+    :param str password: the password to connect as the SSH server.
+    :param str mainDir_remote: the full top level directory path on the remote server.
+    :param dict subdirs_dict: the dictionary of remote paths on the remote server. The key is an identifying name, such as ``foo``; the value is a full subdirectory off ``mainDir_remote``. For example, if the value is ``full/subdir/path``, then the directory name on the remote server is ``mainDir_remote/full/subdir/path``.
+
+    :returns: if everything works, return ``'SUCCESS'``. If fails, return specific illuminating error messages.
+    :rtype: str
+    """
+    status = check_remote_connection_paths(
+        sshpath, password, mainDir_remote, subdirs_dict = subdirs_dict )
+    if status != 'SUCCESS':
+        return "ERROR, COULD NOT SET UP A VALID CONNECTION TO REMOTE SERVER = %s." % sshpath
+    #
+    ## success
+    val = session.query( SSHUploadPaths ).filter(
+        SSHUploadPaths.alias == alias ).first( )
+    if val is not None:
+        session.delete( val )
+        session.commit( )
+    newval = SSHUploadPaths(
+        alias = alias,
+        mediatype = mediatype,
+        sshpath = sshpath,
+        password = password,
+        maindir = mainDir_remote,
+        subdirs = subdirs_dict )
+    session.add( newval )
+    session.commit( )
+
+def get_remote_connections( ):
+    """
+    Get *all* the remote connections
+
+    :returns: a :py:class:`dict` of all the remote Plex_ media directory collections. The key is the ``alias`` string.
+    :rtype: dict
+    """
+    dict_to_return = dict()
+    for entry in sorted(session.query( SSHUploadPaths ), key = lambda entr: entr.alias ):
+        alias = entry.alias
+        data = {
+            'ssh path' : entry.sshpath,
+            'media type' : entry.mediatype.name,
+            'main directory' : entry.maindir,
+            'sub directories' : dict(
+                map(lambda key: (key, os.path.join( entry.maindir, entry.subdirs[ key ] ) ),
+                    entry.subdirs ) ),
+        }
+        dict_to_return[ alias ] = data
+    return dict_to_return
+    
+    
 ## see if the data is valid
 def check_credentials( local_dir, sshpath, password, subdir = None ):
     """

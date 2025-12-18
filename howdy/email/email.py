@@ -644,9 +644,9 @@ def get_summary_data_movies_remote(
             if genre not in sorted_by_genres:
                 sorted_by_genres[ genre ] = data_sorted_by_genre[ genre ].copy( )
                 continue
-            sorted_by_genres[ genre ][ 'totum'  ] += data_sorted_by_genre[ genre ][ 'totnum'  ]
-            sorted_by_genres[ genre ][ 'totdur' ] += data_sorted_by_genre[ genre ][ 'totdur'  ]
-            sorted_by_genres[ genre ][ 'totsize'] += data_sorted_by_genre[ genre ][ 'totsize' ]
+            sorted_by_genres[ genre ][ 'totnum'  ] += data_sorted_by_genre[ genre ][ 'totnum'  ]
+            sorted_by_genres[ genre ][ 'totdur'  ] += data_sorted_by_genre[ genre ][ 'totdur'  ]
+            sorted_by_genres[ genre ][ 'totsize' ] += data_sorted_by_genre[ genre ][ 'totsize' ]
     _join_by_genre( sorted_by_genres, join_genres )
     categories = set( sorted_by_genres )
     num_movies = f'{sum(list(map(lambda data: data[ "num_movies" ], datas ) ) ):,}'
@@ -671,9 +671,9 @@ def get_summary_data_movies_remote(
                 if genre not in sorted_by_genres_since:
                     sorted_by_genres_since[ genre ] = data_since_sorted_by_genre[ genre ].copy( )
                     continue
-                sorted_by_genres_since[ genre ][ 'totum'  ] += data_since_sorted_by_genre[ genre ][ 'totnum'  ]
-                sorted_by_genres_since[ genre ][ 'totdur' ] += data_since_sorted_by_genre[ genre ][ 'totdur'  ]
-                sorted_by_genres_since[ genre ][ 'totsize'] += data_since_sorted_by_genre[ genre ][ 'totsize' ]
+                sorted_by_genres_since[ genre ][ 'totnum'  ] += data_since_sorted_by_genre[ genre ][ 'totnum'  ]
+                sorted_by_genres_since[ genre ][ 'totdur'  ] += data_since_sorted_by_genre[ genre ][ 'totdur'  ]
+                sorted_by_genres_since[ genre ][ 'totsize' ] += data_since_sorted_by_genre[ genre ][ 'totsize' ]
         _join_by_genre( sorted_by_genres_since, join_genres )
         num_movies_since = f'{sum(list(map(lambda data_since: data_since[ "num_movies" ], datas_since ) ) ):,}'
         categories_since = set( sorted_by_genres_since )

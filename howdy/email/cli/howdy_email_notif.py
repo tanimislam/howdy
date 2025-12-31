@@ -1,4 +1,4 @@
-import os, datetime, logging, time, json, sys
+import os, datetime, logging, time, json, sys, tabulate
 from pathlib import Path
 from email.utils import formataddr
 from argparse import ArgumentParser
@@ -109,7 +109,9 @@ def main( ):
     excl_set = set( map(lambda elem: elem.lower().strip(), args.excluded_contact_fragments ) )
     logging.info( 'excluded contact fragments = %s.' % excl_set )
     name_emails = exclude_name_emails( excl_set, name_emails )
-    logging.info( 'LIST OF NAME_EMAILS: %s.' % name_emails )
+    logging.info( '\n'.join([
+        'LIST OF NAME_EMAILS:',
+        '%s' % tabulate.tabulate( name_emails, headers = [ 'NAME', 'EMAIL' ], tablefmt = 'plain' ) ] ) )
     #
     ## now do the email sending out
     print( 'processed all checks in %0.3f seconds.' % ( time.perf_counter( ) - time0 ) )

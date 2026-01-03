@@ -398,6 +398,24 @@ def get_email_contacts( token, fullURL = 'https://localhost:32400', verify = Tru
     plex = PlexServer( fullURL, token, session = session )
     return sorted( set( map(lambda user: user.email.strip( ), plex.myPlexAccount( ).users( ) ) ) )
 
+def get_email_contacts_FULL( token, fullURL = 'https://localhost:32400', verify = True ):
+    """list of all email addresses of friends who have stream access to your Plex_ server.
+
+    :param str token: Plex_ access token.
+    :param str fullURL: the Plex_ server URL.
+    :param bool verify: optional argument, whether to verify SSL connections. Default is ``True``.
+    :returns: :py:class:`dict` of email addresses of Plex_ friends. Key is the email address, value is the Plex_ username.
+    :rtype: list
+
+    .. seealso: :py:method:`get_email_contacts <howdy.core.core.get_email_contacts>`.
+    .. seealso: :py:method:`get_mapped_email_contacts <howdy.core.core.get_mapped_email_contacts>`.
+
+    """
+    session = requests.Session( )
+    session.verify = verify
+    plex = PlexServer( fullURL, token, session = session )
+    return dict(map(lambda user: ( user.email.strip( ), user.username.strip( ) ), plex.myPlexAccount( ).users( ) ) )
+
 def get_mapped_email_contacts( token, fullURL = 'https://localhost:32400', verify = True ):
     """list of all email addresses (including Plex_ server friends and mapped emails) to send Howdy_ related emails.
 

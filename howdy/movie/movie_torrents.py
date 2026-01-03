@@ -635,7 +635,6 @@ def get_movie_torrent( name, verify = True ):
     :returns: if successful, then returns a two member :py:class:`tuple` the first member is a :py:class:`list` of `Torrent files <torrent file_>`_ that match the searched movie, ordered from *earliest* to *latest* year of release. The second element is the string ``"SUCCESS"``. If this is unsuccessful, then returns an error :py:class:`tuple` of the form returned by :py:meth:`return_error_raw <howdy.core.return_error_raw>`.
     :rtype: tuple
     
-    .. _`YTS API`: https://yts.lt/api
     .. _`torrent file`: https://en.wikipedia.org/wiki/Torrent_file
     """
     mainURL = 'https://yts.lt/api/v2/list_movies.json'

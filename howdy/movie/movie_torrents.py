@@ -637,7 +637,7 @@ def get_movie_torrent( name, verify = True ):
     
     .. _`torrent file`: https://en.wikipedia.org/wiki/Torrent_file
     """
-    mainURL = 'https://yts.lt/api/v2/list_movies.json'
+    mainURL = 'https://yts.bz/api/v2/list_movies.json'
     params = { 'query_term' : name, 'order_by' : 'year' }
     response = requests.get( mainURL, params = params, verify = verify )
     if response.status_code != 200:

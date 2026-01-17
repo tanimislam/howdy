@@ -1144,7 +1144,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
     _, data = func_dict[ mediatype ](
         key, token, fullURL = fullURL,
         num_threads = num_threads, timeout = timeout, mainPath = mainPath )
-    logging.info( "took %0.3f seconds to gete here in get_library_data, library = %s." %
+    logging.info( "took %0.3f seconds to get here in get_library_data, library = %s." %
                   ( time.perf_counter( ) - time0, title ) )
     return data
 

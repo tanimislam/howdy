@@ -1,0 +1,151 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "howdy"
+# Using dynamic version from git tags (replaces get_version_number function)
+dynamic = ["version"]
+description = "This is a collection of a bunch of tools, and APIs, to access media within my Plex server."
+authors = [
+    {name = "Tanim Islam", email = "tanim.islam@gmail.com"}
+]
+readme = "README.rst"
+license = {text = "BSD-2-Clause"}
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: POSIX",
+    "Environment :: Console",
+    "Environment :: X11 Applications :: Qt",
+    "Programming Language :: Python :: 3",
+    "Topic :: Utilities",
+    "Topic :: Multimedia",
+]
+
+# TODO: Add your actual dependencies here from requirements.txt
+# NOTE: The original setup.py checks for 'sshpass' executable at install time.
+#       You may need to document this as a system requirement in your README.
+dependencies = [
+    "google-auth-oauthlib",
+    "google-oauth",
+    "gspread",
+    "httplib2",
+    "imdbpy",
+    "isodate",
+    "ive_tanim",
+    "KickassAPI",
+    "matplotlib",
+    "musicbrainzngs",
+    "mutagen",
+    "numpy",
+    "oauth2client",
+    "patchwork",
+    "pathos",
+    "Pillow",
+    "plexapi",
+    "pyasn1",
+    "pyasn1-modules",
+    "pyqt5",
+    "PyQtWebEngine",
+    "python-geoip-geolite2",
+    "python-magic",
+    "pytz",
+    "qtmodern",
+    "rapidfuzz",
+    "requests",
+    "requests_oauthlib",
+    "sphinx",
+    "sphinx_rtd_theme",
+    "sphinx-argparse",
+    "sphinx-issues",
+    "sphinxcontrib-svg2pdfconverter",
+    "sphinxcontrib-youtube",
+    "SQLAlchemy",
+    "subliminal",
+    "tabulate",
+    "termcolor",
+    "ThePirateBay",
+    "titlecase",
+    "torf",
+    "tqdm",
+    "transmission-rpc",
+    "validators",
+    "yt_dlp",
+]
+
+[project.urls]
+Homepage = "https://tanimislam.github.io/howdy"
+Repository = "https://github.com/tanimislam/howdy"
+
+[project.scripts]
+# Movie stuff
+get_mov_tor = "howdy.movie.cli.get_mov_tor:main"
+howdy_movie_totgui = "howdy.movie.gui.howdy_movie_totgui:main"
+
+# Core stuff - CLI
+howdy_core_cli = "howdy.core.cli.howdy_core_cli:main"
+howdy_deluge_console = "howdy.core.cli.howdy_deluge_console:main"
+howdy_transmission_console = "howdy.core.cli.howdy_transmission_console:main"
+howdy_resynclibs = "howdy.core.cli.howdy_resynclibs:main"
+howdy_store_credentials = "howdy.core.cli.howdy_store_credentials:main"
+rsync_subproc = "howdy.core.cli.rsync_subproc:main"
+rsync_remote_setup = "howdy.core.cli.rsync_remote_setup:main"
+get_book_tor = "howdy.core.cli.get_book_tor:main"
+howdy_core_plex_download = "howdy.core.cli.howdy_core_plex_download:main"
+howdy_core_trackers_exclude = "howdy.core.cli.howdy_core_trackers_exclude:main"
+
+# Core stuff - GUI
+howdy_config_gui = "howdy.core.gui.howdy_config_gui:main"
+howdy_core_gui = "howdy.core.gui.howdy_core_gui:main"
+
+# Email stuff
+howdy_email_notif = "howdy.email.cli.howdy_email_notif:main"
+howdy_email_gui = "howdy.email.gui.howdy_email_gui:main"
+howdy_email_demo_gui = "howdy.email.gui.howdy_email_demo_gui:main"
+
+# Music stuff
+howdy_music_album = "howdy.music.cli.howdy_music_album:main"
+howdy_music_metafill = "howdy.music.cli.howdy_music_metafill:main"
+howdy_music_songs = "howdy.music.cli.howdy_music_songs:main"
+howdy_music_process_playlists = "howdy.music.cli.howdy_music_process_playlists:main_actual"
+howdy_music_spotify_push_from_plex = "howdy.music.cli.howdy_music_spotify_push_from_plex:main"
+howdy_music_musicbrainz_artists = "howdy.music.cli.howdy_music_musicbrainz_artists:main"
+upload_to_gmusic = "howdy.music.cli.upload_to_gmusic:main"
+
+# TV stuff - CLI
+get_tv_batch = "howdy.tv.cli.get_tv_batch:main"
+get_tv_tor = "howdy.tv.cli.get_tv_tor:main"
+howdy_tv_epinfo = "howdy.tv.cli.howdy_tv_epinfo:main"
+howdy_tv_epname = "howdy.tv.cli.howdy_tv_epname:main"
+howdy_tv_futureshows = "howdy.tv.cli.howdy_tv_futureshows:main"
+howdy_tv_plots = "howdy.tv.cli.howdy_tv_plots:main"
+howdy_tv_excludes = "howdy.tv.cli.howdy_tv_excludes:main"
+
+# TV stuff - GUI
+howdy_tv_gui = "howdy.tv.gui.howdy_tv_gui:main_actual"
+
+[tool.setuptools.packages.find]
+exclude = ["*.tests", "*.tests.*", "tests"]
+
+[tool.setuptools.package-data]
+howdy = [
+    "resources/*.ttf",
+    "resources/*.tex",
+    "resources/*.qss",
+    "resources/*.json",
+    "resources/*.html",
+    "resources/icons/*.svg",
+    "resources/icons/*.png",
+    "resources/icons/*.key",
+]
+
+# Dynamic versioning from git tags (replaces get_version_number function)
+[tool.setuptools_scm]
+# This will automatically get version from git tags
+# Falls back to version 1.5 if not in a git repo
+fallback_version = "1.5"
+# Strip 'v' prefix from tags (e.g., v1.2.3 -> 1.2.3)
+tag_regex = "^v?(?P<version>[0-9.]+)$"

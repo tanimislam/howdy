@@ -652,8 +652,8 @@ def returnQAppWithFonts( ):
     return app
 
 # follow directions in https://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
-# follow directions for postgresql from 
 _engine       = create_engine( 'sqlite:///%s' % os.path.join( baseConfDir, 'app.db') )
+# follow directions for postgresql from AI on 20260208
 _engine_pgsql = create_engine( 'postgresql://%s:%s@%s:%s/%s' % (
     os.environ[ 'HOWDY_PGSQL_USERNAME' ],
     os.environ[ 'HOWDY_PGSQL_PASSWORD' ],

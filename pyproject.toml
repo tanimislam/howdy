@@ -34,6 +34,7 @@ dependencies = [
     "gspread",
     "httplib2",
     "imdbpy",
+    "invoke >= 2.2",
     "isodate",
     "ive_tanim",
     "KickassAPI",

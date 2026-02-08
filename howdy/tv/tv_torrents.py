@@ -15,7 +15,7 @@ from howdy.tv import get_token, tv
 _num_to_quit = 10
 
 def return_error_couldnotfind( name ):
-    """
+    r"""
     Returns a :py:class:`tuple` error message in the format of :py:meth:`return_error_raw <howdy.core.return_error_raw>`, but with the message ``"Failure, could not find any tv shows with search term <name>"``, where ``<name>`` is the episode torrent that could not be found.
 
     :param str name: the episode torrent to be searched.
@@ -31,7 +31,7 @@ def return_error_couldnotfind( name ):
 
 def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None,
                             minsizes = None, maxsizes = None ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate episode Magnet links found using the `EZTV.IO`_ torrent service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the episode string on which to search.
@@ -170,7 +170,7 @@ def get_tv_torrent_eztv_io( name, maxnum = 10, verify = True, series_name = None
             all_torrents_mine ) ), 'SUCCESS'
 
 def get_tv_torrent_zooqle( name, maxnum = 100, verify = True ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate episode Magnet links found using the Zooqle_ torrent service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the episode string on which to search.
@@ -366,7 +366,7 @@ def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
     return items, 'SUCCESS'
 
 def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate episode Magnet links found using the Torrentz_ torrent service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the episode string on which to search.
@@ -454,7 +454,7 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
 def get_tv_torrent_jackett( name, maxnum = 10, minSize = 0, maxSize = numpy.inf, keywords = [ ],
                             keywords_exc = [ ], must_have = [ ], verify = True, series_name = None,
                             raw = False, debug_mode = False ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate episode Magnet links found using the main Jackett_ torrent searching service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the episode string on which to search.
@@ -628,7 +628,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minSize = 0, maxSize = numpy.inf,
     return items[:maxnum], 'SUCCESS'
 
 def get_tv_torrent_kickass( name, maxnum = 10, verify = True ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate episode Magnet links found using the KickAssTorrents_ torrent service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the episode string on which to search.
@@ -718,7 +718,7 @@ def get_tv_torrent_kickass( name, maxnum = 10, verify = True ):
     return items_toshow, 'SUCCESS'
 
 def get_tv_torrent_tpb( name, maxnum = 10, doAny = False, verify = True ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate episode Magnet links found using the `The Pirate Bay`_ torrent service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the episode string on which to search.
@@ -966,7 +966,7 @@ def _worker_process_tvtorrents( client, data, torFileName, totFname,
 def worker_process_download_tvtorrent(
         tvTorUnit, client = None, maxtime_in_secs = 14400, 
         num_iters = 1, kill_if_fail = False ):
-    """
+    r"""
     Used by, e.g., :ref:`get_tv_batch`, to download missing episodes on the Plex_ TV library. Attempts to use the Deluge_ server, specified in :numref:`Seedhost Services Setup`, to download an episode. If successful then uploads the finished episode from the remote SSH server to the Plex_ server and local directory, specified in :numref:`Local and Remote (Seedhost) SSH Setup`.
 
     :param dict tvTorUnit: a :py:class:`dict` representing a summarized magnet link searching operation on an episode. The format and meaning of this data structure is described in :py:meth:`create_tvTorUnits <howdy.tv.tv.create_tvTorUnits>`.
@@ -1031,7 +1031,7 @@ def worker_process_download_tvtorrent(
             torFileName, must_have, series_name ) )
         #
         ## try this twice if it can
-        torFileNameAlt = ' '.join( re.sub('\(([0-9]+)\)', '', torFileName ).strip( ).split( ) )
+        torFileNameAlt = ' '.join( re.sub( r'\(([0-9]+)\)', '', torFileName ).strip( ).split( ) )
         torFileNames = [ torFileName, ]
         if torFileNameAlt != torFileName: torFileNames.append( torFileNameAlt )
         for tfn in torFileNames:

@@ -651,12 +651,19 @@ def returnQAppWithFonts( ):
     for fontName in fontNames: QFontDatabase.addApplicationFont( fontName )
     return app
 
-# follow directions in http://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
-_engine = create_engine( 'sqlite:///%s' % os.path.join( baseConfDir, 'app.db') )
+# follow directions in https://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
+# follow directions for postgresql from 
+_engine       = create_engine( 'sqlite:///%s' % os.path.join( baseConfDir, 'app.db') )
+_engine_pgsql = create_engine( 'postgresql://%s:%s@%s:%s/%s' % (
+    os.environ[ 'HOWDY_PGSQL_USERNAME' ],
+    os.environ[ 'HOWDY_PGSQL_PASSWORD' ],
+    os.environ[ 'HOWDY_PGSQL_HOSTNAME' ],
+    os.environ[ 'HOWDY_PGSQL_PORT'     ],
+    os.environ[ 'HOWDY_PGSQL_DATABASE' ] ) )
 Base = declarative_base( )
 if not os.environ.get( 'READTHEDOCS' ):
-    Base.metadata.bind = _engine
-    session = sessionmaker( bind = _engine )( )
+    Base.metadata.bind = _engine_pgsql
+    session = sessionmaker( bind = _engine_pgsql )( )
 else: session = sessionmaker( )
 
 #

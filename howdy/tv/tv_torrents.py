@@ -261,7 +261,7 @@ def get_tv_torrent_zooqle( name, maxnum = 100, verify = True ):
     return items, 'SUCCESS'
 
 def get_tv_torrent_rarbg( name, maxnum = 10, verify = True ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate episode Magnet links found using the RARBG_ torrent service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the episode string on which to search.

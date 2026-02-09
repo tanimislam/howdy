@@ -235,7 +235,7 @@ def get_tot_epdict_omdb( showName, apikey, inYear = None ):
     return tot_epdict
 
 def get_possible_tmdb_ids( series_name, firstAiredYear = None, minmatch = 10.0 ):
-    """
+    r"""
     Returns a :py:class:`list` of candidate TMDB_ TV shows given the series name. Each element in the list is a dictionary: the ``id`` is the TMDB_ series ID, and ``airedYear`` is the year in which the first episode aired.
 
     :param str series_name: the series name.
@@ -371,9 +371,9 @@ def populate_out_tmdbshowids_and_fix( tvdata ):
     #
     ## first, those TV shows with years in parentheses they end on...
     def get_firstaired_year( tvshow ):
-        if not re.findall('\)$', tvshow.strip( ) ): return None
+        if not re.findall(r'\)$', tvshow.strip( ) ): return None
         lastelem = tvshow.split()[-1].strip( )
-        if not re.findall('^\(', lastelem ): return None
+        if not re.findall(r'^\(', lastelem ): return None
         try:
             return int( lastelem[1:-1])
         except:

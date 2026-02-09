@@ -13,7 +13,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtNetwork import QNetworkAccessManager
 #
-from howdy import resourceDir, baseConfDir
+from howdy import resourceDir, baseConfDir, howdy_pgsql_config
 #
 ## geoip stuff, exposes a single geop_reader from core
 _geoip_database = os.path.join(
@@ -651,20 +651,20 @@ def returnQAppWithFonts( ):
     for fontName in fontNames: QFontDatabase.addApplicationFont( fontName )
     return app
 
-# follow directions in https://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
-_engine       = create_engine( 'sqlite:///%s' % os.path.join( baseConfDir, 'app.db') )
-# follow directions for postgresql from AI on 20260208
-_engine_pgsql = create_engine( 'postgresql://%s:%s@%s:%s/%s' % (
-    os.environ[ 'HOWDY_PGSQL_USERNAME' ],
-    os.environ[ 'HOWDY_PGSQL_PASSWORD' ],
-    os.environ[ 'HOWDY_PGSQL_HOSTNAME' ],
-    os.environ[ 'HOWDY_PGSQL_PORT'     ],
-    os.environ[ 'HOWDY_PGSQL_DATABASE' ] ) )
+
 Base = declarative_base( )
-if not os.environ.get( 'READTHEDOCS' ):
+#
+## follow directions for postgresql from AI on 20260208
+_engine_pgsql = create_engine( howdy_pgsql_config.getEngineString( ) )
+#
+## follow directions in https://pythoncentral.io/introductory-tutorial-python-sqlalchemy
+_engine_sqlite = create_engine( 'sqlite:///%s' % os.path.join( baseConfDir, 'app.db') )
+try:
     Base.metadata.bind = _engine_pgsql
     session = sessionmaker( bind = _engine_pgsql )( )
-else: session = sessionmaker( )
+except Exception as e:
+    Base.metadata.bind = _engine_sqlite
+    session = sessionmaker( bind = _engine_sqlite )( )
 
 #
 ## this table stores the upload paths to remote servers
@@ -785,12 +785,14 @@ class PlexExcludedTrackerStubs( Base ):
     
 def create_all( ):
     """
-    creates the necessary SQLite3_ tables into the database file ``~/.config/howdy/app.db`` if they don't already exist, but only if not building documentation in `Read the docs`_.
+    creates the necessary SQLite3_ tables into the database file ``~/.config/howdy/app.db`` if they don't already exist.
 
     .. _`Read the docs`: https://www.readthedocs.io
     """
-    if os.environ.get( 'READTHEDOCS' ): return # do nothing if in READTHEDOCS
-    Base.metadata.create_all( _engine )
+    try:
+        Base.metadata.create_all( _engine_pgsql )
+    except:
+        Base.metadata.create_all( _engine_sqlite )
     session.commit( )
 
 create_all( ) # OK, now create the missing tables

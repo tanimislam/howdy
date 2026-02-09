@@ -292,7 +292,7 @@ def deconfuse_magnet_link( magnet_string, excluded_tracker_stubs = get_trackers_
         return None
 
 def get_book_torrent_jackett( name, maxnum = 10, keywords = [ ], verify = True ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate book Magnet links found using the main Jackett_ torrent searching service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the book to search for.

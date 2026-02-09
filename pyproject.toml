@@ -25,7 +25,6 @@ classifiers = [
     "Topic :: Multimedia",
 ]
 
-# TODO: Add your actual dependencies here from requirements.txt
 # NOTE: The original setup.py checks for 'sshpass' executable at install time.
 #       You may need to document this as a system requirement in your README.
 dependencies = [
@@ -45,6 +44,7 @@ dependencies = [
     "oauth2client",
     "patchwork",
     "pathos",
+    "pg8000",
     "Pillow",
     "plexapi",
     "pyasn1",
@@ -78,7 +78,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://tanimislam.github.io/howdy"
+Homepage   = "https://tanimislam.github.io/howdy"
 Repository = "https://github.com/tanimislam/howdy"
 
 [project.scripts]
@@ -87,16 +87,17 @@ get_mov_tor = "howdy.movie.cli.get_mov_tor:main"
 howdy_movie_totgui = "howdy.movie.gui.howdy_movie_totgui:main"
 
 # Core stuff - CLI
-howdy_core_cli = "howdy.core.cli.howdy_core_cli:main"
-howdy_deluge_console = "howdy.core.cli.howdy_deluge_console:main"
-howdy_transmission_console = "howdy.core.cli.howdy_transmission_console:main"
-howdy_resynclibs = "howdy.core.cli.howdy_resynclibs:main"
-howdy_store_credentials = "howdy.core.cli.howdy_store_credentials:main"
-rsync_subproc = "howdy.core.cli.rsync_subproc:main"
-rsync_remote_setup = "howdy.core.cli.rsync_remote_setup:main"
-get_book_tor = "howdy.core.cli.get_book_tor:main"
-howdy_core_plex_download = "howdy.core.cli.howdy_core_plex_download:main"
+howdy_core_cli              = "howdy.core.cli.howdy_core_cli:main"
+howdy_deluge_console        = "howdy.core.cli.howdy_deluge_console:main"
+howdy_transmission_console  = "howdy.core.cli.howdy_transmission_console:main"
+howdy_resynclibs            = "howdy.core.cli.howdy_resynclibs:main"
+howdy_store_credentials     = "howdy.core.cli.howdy_store_credentials:main"
+rsync_subproc               = "howdy.core.cli.rsync_subproc:main"
+rsync_remote_setup          = "howdy.core.cli.rsync_remote_setup:main"
+get_book_tor                = "howdy.core.cli.get_book_tor:main"
+howdy_core_plex_download    = "howdy.core.cli.howdy_core_plex_download:main"
 howdy_core_trackers_exclude = "howdy.core.cli.howdy_core_trackers_exclude:main"
+howdy_core_pgsql_config     = "howdy.core.cli.howdy_core_pgsql_config:main"
 
 # Core stuff - GUI
 howdy_config_gui = "howdy.core.gui.howdy_config_gui:main"

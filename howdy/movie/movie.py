@@ -575,7 +575,7 @@ def get_genre_movie( title, year = None, checkMultiple = True, verify = True ):
             return 'drama'
 
 def getMovieData( year, genre_id, verify = True ):
-    """
+    r"""
     This returns all the movies found by TMDB_ in a given year, of a given TMDB_ genre ID.
     
     :param int year: the year on which to search.
@@ -709,7 +709,7 @@ def createProcessedMovieData( results, year = None, verify = True ):
     return list(filter(None, map( processIndividualDatum, results ) ) )
 
 def get_cast_and_crew( tmdb_id, num_actors = 3, verify = True ):
-    """
+    r"""
     Gets the top ``num_actors``, director, and producer for the movie specified by its TMDB ID.
 
     :param int tmdb_id: the TMDB ID of the movie.

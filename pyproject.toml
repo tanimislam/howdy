@@ -87,6 +87,7 @@ howdy_movie_totgui = "howdy.movie.gui.howdy_movie_totgui:main"
 
 # Core stuff - CLI
 howdy_core_cli = "howdy.core.cli.howdy_core_cli:main"
+howdy_core_dump_library = "howdy.core.cli.howdy_core_dump_library:main"
 howdy_deluge_console = "howdy.core.cli.howdy_deluge_console:main"
 howdy_transmission_console = "howdy.core.cli.howdy_transmission_console:main"
 howdy_resynclibs = "howdy.core.cli.howdy_resynclibs:main"

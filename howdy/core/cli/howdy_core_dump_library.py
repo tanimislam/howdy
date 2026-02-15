@@ -62,6 +62,8 @@ def get_server_data( servername, library_name ):
         'library data'          : libdata,
         'date snapshot created' : dnow.strftime('%Y%m%d' ),
         'time to collect (s)'   : time_to_collect,
+        'server'                : servername,
+        'library'               : library_name,
     }
 
 def main( ):

@@ -574,6 +574,7 @@ def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sin
         all_states = set(chain.from_iterable(
             map(lambda genre: map(lambda entry: os.path.exists(
                 entry[ 'path' ] ), movie_data[genre] ), movie_data ) ) )
+        if len( all_states ) == 0: return True
         if len( all_states ) == 2: return False
         return max( all_states )
     

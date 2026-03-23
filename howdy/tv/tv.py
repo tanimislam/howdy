@@ -1730,8 +1730,9 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
                  tv_torrent_gets[ 'newdirs' ] ) ) ) )
     return tvTorUnits, sorted( tv_torrent_gets[ 'newdirs' ].keys( ) )
 
-def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs = 240, num_iters = 10,
-                                      do_raw = False, do_local_rsync = False ):
+def download_batched_tvtorrent_shows(
+    tvTorUnits, newdirs = [ ], maxtime_in_secs = 240, num_iters = 10,
+    do_raw = False, do_local_rsync = False, client_type = 'deluge' ):
     r"""
     Engine backend code, used by :ref:`get_tv_batch`, that searches for Magnet links for missing episodes on the Jackett_ server, downloads the Magnet links using the Deluge_ server, and finally copies the downloaded missing episodes to the appropriate locations in the Plex_ TV library. This expects the :py:class:`tuple` input returned by :py:meth:`create_tvTorUnits <howdy.tv.tv.create_tvTorUnits>` to run.
 
@@ -1741,6 +1742,7 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
     :param int num_iters: optional argument, the maximum number of Magnet links to try and fully download before giving up. The list of Magnet links to try for each missing episode is ordered from *most* seeders + leechers to *least*. Must be :math:`\ge 1`. Default is 10.
     :param bool do_raw: if ``False``, then search for Magnet links of missing episodes using their IMDb_ information. If ``True``, then search using the raw string. Default is ``False``.
     :param bool do_local_rsync: if ``False``, then do remote ssh rsync download into local directory. Otherwise do a move from "local" origin directory. Default is ``False``.
+    :param str client_type: optional argument, specifying name of the torrent client type. Must be one of 'deluge' or 'transmission'. By default it is 'deluge'.
 
     .. seealso::
     
@@ -1754,6 +1756,8 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
     assert( data is not None ), "error, could not get rsync download settings."
     assert( maxtime_in_secs >= 60 ), "error, max time to download each torrent >= 60 seconds."
     assert( num_iters >= 1 ), "error, number of tries on different magnet links >= 1."
+    assert( client_type in ( 'deluge', 'transmission' ) )
+    #
     print( 'started downloading %d episodes on %s' % (
         len( tvTorUnits ), datetime.datetime.now( ).strftime(
             '%B %d, %Y @ %I:%M:%S %p' ) ) )
@@ -1764,7 +1768,7 @@ def download_batched_tvtorrent_shows( tvTorUnits, newdirs = [ ], maxtime_in_secs
         try:
             dat, status_dict = tv_torrents.worker_process_download_tvtorrent(
                 tvTorUnit, maxtime_in_secs = maxtime_in_secs, num_iters = num_iters,
-                kill_if_fail = True )
+                kill_if_fail = True, client_type = client_type )
             if dat is None: return tvTorUnit[ 'torFname' ] # could not download this
             tvTorUnitFin = copy.deepcopy( tvTorUnit )
             tvTorUnitFin['remoteFileName'] = dat

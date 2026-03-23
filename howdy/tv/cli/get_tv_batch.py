@@ -28,25 +28,25 @@ def main( ):
     #
     parser = ArgumentParser( )
     parser.add_argument(
-        '--maxtime', dest='maxtime_in_secs', type=int, action='store', default = default_time,
+        '-m', '--maxtime', dest='maxtime_in_secs', type=int, action='store', default = default_time,
         help = ' '.join([
             'The maximum amount of time to spend (in seconds),',
             'per candidate magnet link,',
             'trying to download a TV show.',
             'Default is %d seconds.' % default_time ] ) )
     parser.add_argument(
-        '--num', dest='num_iters', type=int, action='store', default = default_iters,
+        '-N', '--num', dest='num_iters', type=int, action='store', default = default_iters,
         help = ' '.join([ 
             'The maximum number of different magnet links to try',
             'before giving up. Default is %d.' % default_iters ]) )
     parser.add_argument(
-        '--token', dest='token', type=str, action='store',
+        '-t', '--token', dest='token', type=str, action='store',
         help = 'Optional argument. If chosen, user provided Plex access token.')
     parser.add_argument(
         '-D', '--debuglevel', dest='debug_level', action='store', type=str, default = 'None',
         choices = [ 'None', 'info', 'debug' ], help = 'Choose the debug level for the system logger. Default is None (no logging). Can be one of None (no logging), info, or debug.' )
     parser.add_argument(
-        '--numthreads', dest='numthreads', type=int, action='store', default = default_num_threads,
+        '-n', '--numthreads', dest='numthreads', type=int, action='store', default = default_num_threads,
         help = 'Number of threads over which to search for TV shows in my library. Default is %d.' %
         default_num_threads )
     parser.add_argument(
@@ -61,11 +61,16 @@ def main( ):
     #
     ##
     parser.add_argument(
+        '-c', '--client_type', dest = 'client_type', type = str, action = 'store', choices = [ 'deluge', 'transmission' ], default = 'deluge',
+        help = 'Name of the torrent client type to use. Default is "deluge".' )
+    #
+    ##
+    parser.add_argument(
         '-R', '--remote', dest = 'do_local', action = 'store_false', default = True,
         help = 'If chosen, then use a REMOTE Plex server location.' )
     parser.add_argument(
         '-M', '--mainPath', dest = 'mainPath', type = str, action = 'store', default = None,
-        help = 'Optional argument fix, sometimes needed to add proper prefix path to files in Plex_ tv libraries. Otherwise do not add.' )
+        help = 'Optional argument fix, sometimes needed to add proper prefix path to files in Plex tv libraries. Otherwise do not add.' )
     parser.add_argument(
         '-L', '--localRSYNC', dest = 'do_local_rsync', action = 'store_true', default = False,
         help = 'Optional argument. If chosen, then do move command from local server where episodes downloaded instead of rsync ssh from remote server.' )
@@ -82,6 +87,7 @@ def main( ):
     assert( args.num_iters >= 1 ), 'error, must have a positive number of maximum iterations.'
     step = 0
     print( '%d, started on %s' % ( step, datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ) )
+    print( '%d, using client type = %s' % ( step, args.client_type ) )
     step += 1
     #
     ## get plex server token
@@ -162,6 +168,7 @@ def main( ):
     step += 1
     tv.download_batched_tvtorrent_shows(
         tvTorUnits, newdirs = newdirs, maxtime_in_secs = args.maxtime_in_secs,
-        num_iters = args.num_iters, do_local_rsync = args.do_local_rsync )
+        num_iters = args.num_iters, do_local_rsync = args.do_local_rsync,
+        client_type = args.client_type )
     print( '\n'.join([ '%d, everything done in %0.3f seconds.' % ( step, time.perf_counter( ) - time0 ),
                        finish_statement( step ) ]))

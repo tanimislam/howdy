@@ -11,7 +11,7 @@ from howdy.core import return_error_raw, core
 from howdy.core import PlexExcludedTrackerStubs, session
 
 def torrent_is_torrent_file( torrent_file_name ):
-    """
+    r"""
     Check if a file is a torrent file.
 
     :param str torrent_file_name: name of the candidate file.
@@ -26,7 +26,7 @@ def torrent_is_torrent_file( torrent_file_name ):
 
 
 def torrent_is_url( torrent_url ):
-    """
+    r"""
     Checks whether an URL is valid, following `this prescription <https://stackoverflow.com/questions/7160737/python-how-to-validate-a-url-in-python-malformed-or-not>`_.
 
     :param str torrent_url: candidate URL.
@@ -44,7 +44,7 @@ def torrent_is_url( torrent_url ):
 #
 ## copied from deluge.common
 def format_size( fsize_b ):
-    """
+    r"""
     Formats the bytes value into a string with KiB, MiB or GiB units. This code has been copied from `deluge's format_size <https://github.com/deluge-torrent/deluge/blob/6ec1479cdbbfed269844041d1001de657594d6da/deluge/ui/console/utils/format_utils.py#L17-L18>`_.
 
     :param int fsize_b: the filesize in bytes.
@@ -68,7 +68,7 @@ def format_size( fsize_b ):
 
 # copied from deluge.ui.console.commands.info
 def format_time( seconds ):
-    """
+    r"""
     Formats the time, in seconds, to a nice format. Unfortunately, the :py:class:`datetime <datetime.datetime>` class is too unwieldy for this type of formatting. This code is copied from `deluge's format_time <https://github.com/deluge-torrent/deluge/blob/6ec1479cdbbfed269844041d1001de657594d6da/deluge/ui/console/utils/format_utils.py#L28-L34>`_.
 
     :param int seconds: number of seconds.
@@ -91,7 +91,7 @@ def format_time( seconds ):
 
 # copied from deluge.ui.console.commands.info
 def format_progressbar(progress, width):
-    """
+    r"""
     Returns a string of a progress bar. This code has been copied from `deluge's f_progressbar <https://github.com/deluge-torrent/deluge/blob/6ec1479cdbbfed269844041d1001de657594d6da/deluge/ui/console/utils/format_utils.py#L66-L82>`_.
 
     :param float progress: a value between 0-100.
@@ -115,7 +115,7 @@ def format_progressbar(progress, width):
 
 # copied from deluge.common
 def format_speed(bps):
-    """
+    r"""
     Formats a string to display a transfer speed utilizing :py:func:`fsize`. This is code has been copied from `deluge's format_speed <https://github.com/deluge-torrent/deluge/blob/6ec1479cdbbfed269844041d1001de657594d6da/deluge/ui/console/utils/format_utils.py#L21-L25>`_.
 
     :param int bps: bytes per second.
@@ -138,7 +138,7 @@ def format_speed(bps):
     return "%.1f GiB/s" % fspeed_gb
 
 def torrent_format_info( status, torrent_id ):
-    """
+    r"""
     Returns a nicely formatted representation of the status of a torrent.
 
     .. code-block:: console
@@ -216,7 +216,7 @@ def torrent_format_info( status, torrent_id ):
 
 
 def get_trackers_to_exclude( ):
-    """
+    r"""
     Returns the :py:class:`set` of `torrent tracker stubs <torrent_tracker_>`_ to exclude from the reconstruction of magnet_ links.
 
     .. _torrent_tracker: https://en.wikipedia.org/wiki/BitTorrent_tracker
@@ -227,7 +227,7 @@ def get_trackers_to_exclude( ):
     return tracker_stubs_to_exclude
 
 def push_trackers_to_exclude( tracker_stubs ):
-    """
+    r"""
     Adds a collection of *new* `torrent tracker stubs <torrent_tracker_>`_ to the :py:class:`PlexExcludedTrackerStubs <howdy.core.PlexExcludedTrackerStubs>` database.
 
     :param list tracker_stubs: the collection of `torrent tracker stubs <torrent_tracker_>`_ to add to the database.
@@ -244,7 +244,7 @@ def push_trackers_to_exclude( tracker_stubs ):
     session.commit( )
 
 def remove_trackers_to_exclude( tracker_stubs ):
-    """
+    r"""
     Removes a collection of candidate `torrent tracker stubs <torrent_tracker_>`_ to the :py:class:`PlexExcludedTrackerStubs <howdy.core.PlexExcludedTrackerStubs>` database.
 
     :param list tracker_stubs: the collection of `torrent tracker stubs <torrent_tracker_>`_ to remove from the database.
@@ -262,7 +262,7 @@ def remove_trackers_to_exclude( tracker_stubs ):
     session.commit( )
     
 def deconfuse_magnet_link( magnet_string, excluded_tracker_stubs = get_trackers_to_exclude( ) ):
-    """
+    r"""
     First functional implementation that *returns* a magnet_ string given a :py:class:`list` of `torrent tracker`_ stubs to ignore.
     
     If one has an *invalid* magnet_string, then return ``None``.
@@ -292,7 +292,7 @@ def deconfuse_magnet_link( magnet_string, excluded_tracker_stubs = get_trackers_
         return None
 
 def get_book_torrent_jackett( name, maxnum = 10, keywords = [ ], verify = True ):
-    """
+    r"""
     Returns a :py:class:`tuple` of candidate book Magnet links found using the main Jackett_ torrent searching service and the string ``"SUCCESS"``, if successful.
 
     :param str name: the book to search for.

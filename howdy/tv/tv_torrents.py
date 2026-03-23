@@ -876,8 +876,8 @@ def _finish_and_clean_working_tvtorrent_download( totFname, client, torrentId, t
         #
         ## now delete the torrent and erase underlying data
         try:
-            #core_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = True )
-            core_transmission.transmission_remove_torrent( client, [ torrentId ], remove_data = True )
+            core_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = True )
+            #core_transmission.transmission_remove_torrent( client, [ torrentId ], remove_data = True )
         except: pass # maybe connection is broken now for some reason??
         return '%s.%s' % ( os.path.basename( totFname ), suffix ), 'SUCCESS'
 
@@ -899,16 +899,16 @@ def _worker_process_tvtorrents( client, data, torFileName, totFname,
 
     def kill_failing( torrentId ):
         if not kill_if_fail: return
-        #core_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = kill_if_fail )
-        core_transmission.transmission_remove_torrent( client, [ torrentId ], remove_data = kill_if_fail )
+        core_deluge.deluge_remove_torrent( client, [ torrentId ], remove_data = kill_if_fail )
+        #core_transmission.transmission_remove_torrent( client, [ torrentId ], remove_data = kill_if_fail )
     
     def process_single_iteration( data, idx ):
         mag_link = core_torrents.deconfuse_magnet_link(
             data[ idx ]['link'], excluded_tracker_stubs = excluded_tracker_stubs )
         #
         ## download the top magnet link
-        #torrentId = core_deluge.deluge_add_magnet_file( client, mag_link )
-        torrentId = core_transmission.transmission_add_magnet_file( client, mag_link )
+        torrentId = core_deluge.deluge_add_magnet_file( client, mag_link )
+        #torrentId = core_transmission.transmission_add_magnet_file( client, mag_link )
         if torrentId is None:
             return None, _create_status_dict(
                 'FAILURE',
@@ -918,8 +918,8 @@ def _worker_process_tvtorrents( client, data, torFileName, totFname,
         progresses = [ ]
         for jdx in range( numiters ):
             time.sleep( 30 )
-            #torrent_info = core_deluge.deluge_get_torrents_info( client )
-            torrent_info = core_transmission.transmission_get_torrents_info( client )
+            torrent_info = core_deluge.deluge_get_torrents_info( client )
+            #torrent_info = core_transmission.transmission_get_torrents_info( client )
             if torrentId not in torrent_info:
                 kill_failing( torrentId )
                 return None, _create_status_dict( 'FAILURE', 'ERROR, COULD NOT GET IDX = %d, TORRENT ID = %s.' % (
@@ -1007,14 +1007,14 @@ def worker_process_download_tvtorrent(
     if client is None:
         #
         ## 2025-05-09 use transmission instead, comment this code
-        client, status = core_transmission.get_transmission_client( )
+        #client, status = core_transmission.get_transmission_client( )
+        #if client is None:
+        #    return None, _create_status_dict(
+        #        'FAILURE', 'cannot create or run a valid transmission RPC client.', time0 )
+        client, status = core_deluge.get_deluge_client( )
         if client is None:
             return None, _create_status_dict(
-                'FAILURE', 'cannot create or run a valid transmission RPC client.', time0 )
-        # client, status = core_deluge.get_deluge_client( )
-        # if client is None:
-        #     return None, _create_status_dict(
-        #        'FAILURE', 'cannot create or run a valid deluge RPC client.', time0 )
+                'FAILURE', 'cannot create or run a valid deluge RPC client.', time0 )
     #
     ## now get list of torrents, choose "top" one
     def _process_jackett_items( tvTorUnit, shared_list ):

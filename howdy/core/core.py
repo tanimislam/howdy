@@ -612,7 +612,8 @@ def _get_library_stats_movie( key, token, fullURL ='http://localhost:32400', sin
 def _get_library_data_show(
         key, token, fullURL = 'http://localhost:32400',
         sinceDate = None, num_threads = 2 * multiprocessing.cpu_count( ),
-        timeout = None, mainPath = None ):
+        timeout = None, mainPath = None,
+        fix_missing_tmdb_ids = False ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
@@ -830,8 +831,12 @@ def _get_library_data_show(
         ## now ensure that all the file paths exist
         check_all_exists = set(map(lambda key: _check_exists_all_paths( tvdata, key ), tvdata ) )
         assert( len( check_all_exists ) == 1 )
-        assert( max( check_all_exists ) )            
-        return key,  tv_attic.populate_out_tmdbshowids_and_fix( tvdata ) # maybe try this out...?
+        assert( max( check_all_exists ) )
+        #
+        ## 20260324, JUST NOT WORKING RIGHT NOW
+        if fix_missing_tmdb_ids:
+            return key,  tv_attic.populate_out_tmdbshowids_and_fix( tvdata ) # maybe try this out...?
+        return key, tvdata
 
 def _get_library_stats_show(
         key, token, fullURL = 'http://localhost:32400',

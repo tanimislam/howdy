@@ -1,4 +1,4 @@
-import os, sys, datetime, re, isodate, mutagen.mp4, io, requests
+import os, sys, datetime, re, isodate, mutagen.mp4, io, requests, logging
 from dateutil.relativedelta import relativedelta
 from PIL import Image
 from io import BytesIO

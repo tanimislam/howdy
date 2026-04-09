@@ -78,7 +78,7 @@ def get_items_torrentz( name, maxnum = 100, verify = True ):
         return None
     return items
 
-def get_movie_torrent_items( items, filename = None, to_torrent = False ):
+def get_movie_torrent_items( items, filename = None, to_torrent = False, client_type = 'deluge' ):
     excluded_tracker_stubs = core_torrents.get_trackers_to_exclude( )
     if len( items ) != 1:
         sortdict = { idx + 1 : item for ( idx, item ) in enumerate(items) }
@@ -107,12 +107,19 @@ def get_movie_torrent_items( items, filename = None, to_torrent = False ):
             excluded_tracker_stubs = excluded_tracker_stubs )
 
     print('Chosen movie %s' % actmov )
-    if to_torrent: # upload to deluge server
-        client, status = core_deluge.get_deluge_client( )
-        if status != 'SUCCESS':
-            print( status )
-            return
-        core_deluge.deluge_add_magnet_file( client, magnet_link )
+    if to_torrent: # upload to deluge or transmission server
+        if client_type == 'deluge':
+            client, status = core_deluge.get_deluge_client( )
+            if status != 'SUCCESS':
+                print( status )
+                return
+            core_deluge.deluge_add_magnet_file( client, magnet_link )
+        else:
+            client, status = core_transmission.get_transmission_client( )
+            if status != 'SUCCESS':
+                print( status )
+                return
+            core_transmission.transmission_add_magnet_file( client, magnet_link )
     elif filename is None:
         print('magnet link: %s' % magnet_link )
         return
@@ -120,7 +127,10 @@ def get_movie_torrent_items( items, filename = None, to_torrent = False ):
         with open(filename, mode='w', encoding='utf-8') as openfile:
             openfile.write('%s\n' % magnet_link )
             
-def get_movie_yts( name, verify = True, raiseError = False, to_torrent = False ):
+def get_movie_yts(
+    name, verify = True, raiseError = False, to_torrent = False,
+    client_type = 'deluge' ):
+    #
     movies, status = movie_torrents.get_movie_torrent(
         name, verify = verify )
     if status != 'SUCCESS':
@@ -168,13 +178,20 @@ def get_movie_yts( name, verify = True, raiseError = False, to_torrent = False )
             openfile.write( resp.content )
     else:
         import base64
-        #client, status = core_deluge.get_deluge_client( )
-        client, status = core_transmission.get_transmission_client( )
-        if status != 'SUCCESS':
-            print( status )
-            return
-        core_transmission.transmission_add_torrent_file_as_data(
-            client, resp.content )
+        if client_type == 'deluge':
+            client, status = core_deluge.get_deluge_client( )
+            if status != 'SUCCESS':
+                print( status )
+                return
+            core_deluge.deluge_add_torrent_file_as_data(
+                client, '', resp.content )
+        else:
+            client, status = core_transmission.get_transmission_client( )
+            if status != 'SUCCESS':
+                print( status )
+                return
+            core_transmission.transmission_add_torrent_file_as_data(
+                client, resp.content )
 
 def main( ):
     parser = ArgumentParser( )
@@ -196,6 +213,10 @@ def main( ):
                         help = 'If chosen, do not verify SSL connections.' )
     parser.add_argument('-r', '--raw', dest='do_raw', action='store_true', default = False,
                         help = 'If chosen, do not use IMDB matching for Jackett torrents.')
+    parser.add_argument(
+        '-c', '--client_type', dest = 'client_type', type = str, action = 'store',
+        choices = [ 'deluge', 'transmission' ], default = 'deluge',
+        help = 'Name of the torrent client type to use. Default is "deluge".' )
     args = parser.parse_args( )
     # assert( args.timeout >= 10 )
     logging_dict = {
@@ -216,8 +237,10 @@ def main( ):
         tmdb_id = movie.get_movie_tmdbids( args.name, year = args.year )
     if not args.do_bypass:
         try:
-            get_movie_yts( args.name, verify = args.do_verify,
-                           raiseError = True, to_torrent = args.do_add )
+            get_movie_yts(
+                args.name, verify = args.do_verify,
+                raiseError = True, to_torrent = args.do_add,
+                client_type = args.client_type )
             logging.info( 'search for YTS torrents took %0.3f seconds.' %
                           ( time.time( ) - time0 ) )
             return
@@ -234,4 +257,8 @@ def main( ):
     #
     ## sort from most seeders + leecher to least
     items_sorted = sorted( items, key = lambda tup: -tup['seeders'] - tup['leechers'] )[:args.maxnum]
-    get_movie_torrent_items( items_sorted, filename = args.filename, to_torrent = args.do_add )
+    get_movie_torrent_items(
+        items_sorted,
+        filename = args.filename,
+        to_torrent = args.do_add,
+        client_type = args.client_type )

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.3. Howdy Core API &mdash; howdy! 1.55-111-g8c644fe4 documentation</title>
+  <title>4.3. Howdy Core API &mdash; howdy! 1.55-123-g866b1a00 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7dc6ce7e" />
@@ -15,10 +15,10 @@
     <link rel="shortcut icon" href="../_static/howdy_icon_VECTA.svg"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=eef769d8"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/documentation_options.js?v=ed8ef0ac"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -184,7 +184,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_admin.plex_download_release"><code class="docutils literal notranslate"><span class="pre">plex_download_release()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#howdy-core-deluge-client-tanim-module">4.3.8. howdy.core.deluge_client_tanim module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-core-core-ffmpeg-module">4.3.8. howdy.core.core_ffmpeg module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_ffmpeg.find_files_to_process"><code class="docutils literal notranslate"><span class="pre">find_files_to_process()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_ffmpeg.get_ffprobe_json"><code class="docutils literal notranslate"><span class="pre">get_ffprobe_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_ffmpeg.get_hevc_bitrate"><code class="docutils literal notranslate"><span class="pre">get_hevc_bitrate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_ffmpeg.is_hevc"><code class="docutils literal notranslate"><span class="pre">is_hevc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_ffmpeg.process_multiple_files_lower_audio"><code class="docutils literal notranslate"><span class="pre">process_multiple_files_lower_audio()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#howdy.core.core_ffmpeg.process_single_filename_lower_audio"><code class="docutils literal notranslate"><span class="pre">process_single_filename_lower_audio()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#howdy-core-deluge-client-tanim-module">4.3.9. howdy.core.deluge_client_tanim module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.deluge_client_tanim.client.CallTimeoutException"><code class="docutils literal notranslate"><span class="pre">CallTimeoutException</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.deluge_client_tanim.client.ConnectionLostException"><code class="docutils literal notranslate"><span class="pre">ConnectionLostException</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.deluge_client_tanim.client.DelugeClientException"><code class="docutils literal notranslate"><span class="pre">DelugeClientException</span></code></a></li>
@@ -192,7 +201,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.deluge_client_tanim.client.InvalidHeaderException"><code class="docutils literal notranslate"><span class="pre">InvalidHeaderException</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.deluge_client_tanim.client.LocalDelugeRPCClient"><code class="docutils literal notranslate"><span class="pre">LocalDelugeRPCClient</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#howdy.core.deluge_client_tanim.client.RemoteException"><code class="docutils literal notranslate"><span class="pre">RemoteException</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-howdy.core.deluge_client_tanim.rencode">4.3.8.1. howdy.core.deluge_client_tanim.rencode submodule</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-howdy.core.deluge_client_tanim.rencode">4.3.9.1. howdy.core.deluge_client_tanim.rencode submodule</a></li>
 </ul>
 </li>
 </ul>
@@ -249,13 +258,13 @@
 </ul>
 <dl class="py class" id="module-howdy.core">
 <dt class="sig sig-object py" id="howdy.core.HtmlView">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">HtmlView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">htmlString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.HtmlView" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">HtmlView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">htmlString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.HtmlView" title="Link to this definition"></a></dt>
 <dd><p>A convenient <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget that displays rich and interactive HTML (HTML with CSS and Javascript). This extends <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwebenginewidgets/qwebengineview.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QWebEngineView</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.LastNewsletterDate">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">LastNewsletterDate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.LastNewsletterDate" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">LastNewsletterDate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.LastNewsletterDate" title="Link to this definition"></a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains the date at which the last newsletter was sent. It is not used much, and now that <a class="reference external" href="https://tautulli.com">Tautulli</a> has newsletter functionality, I very likely won’t use this at all. Stored into the <code class="docutils literal notranslate"><span class="pre">lastnewsletterdate</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
@@ -266,7 +275,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.PlexConfig">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexConfig" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexConfig" title="Link to this definition"></a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains the configuration data used for running all the <a class="reference external" href="https://howdy.readthedocs.io">Howdy</a> tools. Stored into the <code class="docutils literal notranslate"><span class="pre">plexconfig</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
@@ -286,7 +295,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.PlexExcludedTrackerStubs">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexExcludedTrackerStubs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexExcludedTrackerStubs" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexExcludedTrackerStubs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexExcludedTrackerStubs" title="Link to this definition"></a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains all the excluded <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">trackers</a> (as of 7 AUGUST 2022 I am looking at <code class="docutils literal notranslate"><span class="pre">stealth.si</span></code>) when reconstructing <a class="reference external" href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet</a> links. Stored in the <code class="docutils literal notranslate"><span class="pre">plexexcludedtrackerstubs</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQlite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
@@ -297,7 +306,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.PlexGuestEmailMapping">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexGuestEmailMapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexGuestEmailMapping" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">PlexGuestEmailMapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.PlexGuestEmailMapping" title="Link to this definition"></a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains mapping of emails of <a class="reference external" href="https://plex.tv">Plex</a> server users, to other email addresses. This is used to determine other email addresses to which Howdy one-off or newsletter emails are delivered. Stored in the <code class="docutils literal notranslate"><span class="pre">plexguestemailmapping</span></code> table in the <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database. The structure of each row in this table is straightforward. Each column in the table is a member of the object in this ORM class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
@@ -312,7 +321,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.ProgressDialog">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">ProgressDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windowTitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doQuit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">ProgressDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windowTitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doQuit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialog" title="Link to this definition"></a></dt>
 <dd><p>A convenient <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget, inheriting from <a class="reference internal" href="#howdy.core.QDialogWithPrinting" title="howdy.core.QDialogWithPrinting"><code class="xref py py-class docutils literal notranslate"><span class="pre">QDialogWithPrinting</span></code></a>, that acts as a GUI blocking progress window for longer lasting operations. Like its parent class, this dialog widget is also resizable. This shows the passage of the underlying slow process in 5 second increments.</p>
 <p>This progress dialog exposes three methods – <a class="reference internal" href="#howdy.core.ProgressDialog.addText" title="howdy.core.ProgressDialog.addText"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addText</span></code></a>, <a class="reference internal" href="#howdy.core.ProgressDialog.stopDialog" title="howdy.core.ProgressDialog.stopDialog"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stopDialog</span></code></a>, and <a class="reference internal" href="#howdy.core.ProgressDialog.startDialog" title="howdy.core.ProgressDialog.startDialog"><code class="xref py py-meth docutils literal notranslate"><span class="pre">startDialog</span></code></a> – to which a custom <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtcore/qthread.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QThread</span></code></a> object can connect.</p>
 <ul class="simple">
@@ -376,7 +385,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.ProgressDialogThread">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">ProgressDialogThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialogThread" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">ProgressDialogThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.ProgressDialogThread" title="Link to this definition"></a></dt>
 <dd><p>This subclassing of <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtcore/qthread.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QThread</span></code></a> provides a convenient scaffolding to run, in a non-blocking fashion, some long-running processes with an asssociated <a class="reference internal" href="#howdy.core.ProgressDialog" title="howdy.core.ProgressDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressDialog</span></code></a> widget.</p>
 <p>Subclasses of this object need to have a particular structure for their <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method. The first three arguments MUST be <code class="docutils literal notranslate"><span class="pre">self</span></code>, <code class="docutils literal notranslate"><span class="pre">parent</span></code>, <code class="docutils literal notranslate"><span class="pre">self</span></code> is a reference to this object. <code class="docutils literal notranslate"><span class="pre">parent</span></code> is the parent <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qwidget.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></a> to which the <a class="reference internal" href="#howdy.core.ProgressDialog" title="howdy.core.ProgressDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressDialog</span></code></a> attribute, named <code class="docutils literal notranslate"><span class="pre">progress_dialog</span></code>, is the child. <code class="docutils literal notranslate"><span class="pre">title</span></code> is the title of <code class="docutils literal notranslate"><span class="pre">progress_dialog</span></code>. Here is an example, where an example class named <code class="docutils literal notranslate"><span class="pre">ProgressDialogThreadChildClass</span></code> inherits from  <a class="reference internal" href="#howdy.core.ProgressDialogThread" title="howdy.core.ProgressDialogThread"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressDialogThread</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
@@ -423,7 +432,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.QDialogWithPrinting">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">QDialogWithPrinting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isIsolated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doQuit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">QDialogWithPrinting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isIsolated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doQuit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QDialogWithPrinting" title="Link to this definition"></a></dt>
 <dd><p>A convenient <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget, inheriting from <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qdialog.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></a>, that allows for screen grabs and keyboard shortcuts to either hide this dialog window or quit the underlying program. This <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget is also resizable, in relative increments of 5% larger or smaller, to a maximum of <span class="math notranslate nohighlight">\(1.05^5\)</span> times the initial size, and to a minimum of <span class="math notranslate nohighlight">\(1.05^{-5}\)</span> times the initial size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -479,7 +488,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.QLabelWithSave">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">QLabelWithSave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QLabelWithSave" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">QLabelWithSave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.QLabelWithSave" title="Link to this definition"></a></dt>
 <dd><p>A convenient <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5">PyQt5</a> widget that inherits from <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/api/qtwidgets/qlabel.html" title="(in PyQt v5.14b1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QLabel</span></code></a>, but allows screen shots.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="howdy.core.QLabelWithSave.contextMenuEvent">
@@ -506,7 +515,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.SSHUploadPaths">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">SSHUploadPaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.SSHUploadPaths" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">SSHUploadPaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.SSHUploadPaths" title="Link to this definition"></a></dt>
 <dd><p>This <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a> ORM class contains information used to upload files to media libraries on remote <a class="reference external" href="https://plex.tv">Plex</a> servers. Stored into the <code class="docutils literal notranslate"><span class="pre">plexsshupload</span></code> table int he <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a> configuration database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
@@ -522,7 +531,7 @@
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.SSHUploadPaths.MediaType">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MediaType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.SSHUploadPaths.MediaType" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">MediaType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.SSHUploadPaths.MediaType" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -577,7 +586,7 @@
 
 <dl class="py data">
 <dt class="sig sig-object py" id="howdy.core.geoip_reader">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">geoip_reader</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;geoip2.database.Reader</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#howdy.core.geoip_reader" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">geoip_reader</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;geoip2.database.Reader</span> <span class="pre">object&gt;</span></span><a class="headerlink" href="#howdy.core.geoip_reader" title="Link to this definition"></a></dt>
 <dd><p>This contains an on-disk <a class="reference external" href="https://www.maxmind.com/en/geoip2-services-and-databases">MaxMind</a> database, of type <a class="reference external" href="https://geoip2.readthedocs.io/en/latest/index.html#geoip2.database.Reader" title="(in geoip2 v5.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">geoip2.database.Reader</span></code></a>, containing location information for IP addresses.</p>
 </dd></dl>
 
@@ -649,7 +658,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.get_lastupdated_string">
-<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2026,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">16,</span> <span class="pre">41,</span> <span class="pre">36,</span> <span class="pre">979649)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">howdy.core.</span></span><span class="sig-name descname"><span class="pre">get_lastupdated_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.datetime(2026,</span> <span class="pre">4,</span> <span class="pre">12,</span> <span class="pre">9,</span> <span class="pre">8,</span> <span class="pre">10,</span> <span class="pre">316595)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.get_lastupdated_string" title="Link to this definition"></a></dt>
 <dd><p>Returns a string representation of a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1392,7 +1401,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dl class="py function">
 <dt class="sig sig-object py" id="howdy.core.core.get_pic_data">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.core.</span></span><span class="sig-name descname"><span class="pre">get_pic_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plexPICURL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core.get_pic_data" title="Link to this definition"></a></dt>
-<dd><p>Get the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> data as a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.32.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a> object, from a movie picture URL on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
+<dd><p>Get the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> data as a <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.33.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a> object, from a movie picture URL on the <a class="reference external" href="https://plex.tv">Plex</a> server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1404,7 +1413,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dd class="field-even"><p>the <a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a> data for the movie image.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.32.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.33.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2667,7 +2676,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dd><p>Adds a collection of <em>new</em> <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">torrent tracker stubs</a> to the <a class="reference internal" href="#howdy.core.PlexExcludedTrackerStubs" title="howdy.core.PlexExcludedTrackerStubs"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexExcludedTrackerStubs</span></code></a> database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tracker_stubs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – the collection of <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">torrent tracker stubs</a> to add to the database.</p>
+<dd class="field-odd"><p><strong>tracker_stubs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – <p>the collection of <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">torrent tracker stubs</a> to add to the database.</p>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2678,7 +2688,8 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dd><p>Removes a collection of candidate <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">torrent tracker stubs</a> to the <a class="reference internal" href="#howdy.core.PlexExcludedTrackerStubs" title="howdy.core.PlexExcludedTrackerStubs"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlexExcludedTrackerStubs</span></code></a> database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tracker_stubs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – the collection of <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">torrent tracker stubs</a> to remove from the database.</p>
+<dd class="field-odd"><p><strong>tracker_stubs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – <p>the collection of <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent_tracker">torrent tracker stubs</a> to remove from the database.</p>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2687,7 +2698,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dt class="sig sig-object py" id="howdy.core.core_torrents.torrent_format_info">
 <span class="sig-prename descclassname"><span class="pre">howdy.core.core_torrents.</span></span><span class="sig-name descname"><span class="pre">torrent_format_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torrent_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_torrents.torrent_format_info" title="Link to this definition"></a></dt>
 <dd><p>Returns a nicely formatted representation of the status of a torrent.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt; print( &#39;%s&#39; % torrent_format_info( status, &#39;ed53ba61555cab24946ebf2f346752805601a7fb&#39; ) )</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt; print( &#39;%s\&#39; % torrent_format_info( status, &#39;ed53ba61555cab24946ebf2f346752805601a7fb&#39; ) )</span>
 
 <span class="go">Name: ubuntu-19.10-beta-desktop-amd64.iso</span>
 <span class="go">ID: ed53ba61555cab24946ebf2f346752805601a7fb</span>
@@ -2809,7 +2820,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.17.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> and “SUCCESS” if successful. Otherwise returns the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> returned by <a class="reference internal" href="#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.18.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> and “SUCCESS” if successful. Otherwise returns the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> returned by <a class="reference internal" href="#howdy.core.return_error_raw" title="howdy.core.return_error_raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">return_error_raw</span></code></a>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
@@ -2824,7 +2835,7 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>release</strong> (<a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.17.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a>) – the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.17.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> containing the <a class="reference external" href="https://plex.tv">Plex</a> update information.</p></li>
+<li><p><strong>release</strong> (<a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.18.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a>) – the <a class="reference external" href="https://python-plexapi.readthedocs.io/en/latest/modules/server.html#plexapi.server.Release" title="(in Python PlexAPI v4.18.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Release</span></code></a> containing the <a class="reference external" href="https://plex.tv">Plex</a> update information.</p></li>
 <li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the <a class="reference external" href="https://plex.tv">Plex</a> server token.</p></li>
 <li><p><strong>destination_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the destination directory into which to download.</p></li>
 <li><p><strong>do_progress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – whether to show the progress bar or not. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
@@ -2840,49 +2851,189 @@ type <a class="reference external" href="https://docs.python.org/3/library/datet
 </dd></dl>
 
 </section>
+<section id="howdy-core-core-ffmpeg-module">
+<h2><span class="section-number">4.3.8. </span>howdy.core.core_ffmpeg module<a class="headerlink" href="#howdy-core-core-ffmpeg-module" title="Link to this heading"></a></h2>
+<p>This is a new module, where I have borrowed some functionality from the <code class="docutils literal notranslate"><span class="pre">howdy_grabbag</span></code> Python module, to lower the audio bit rate of TV show media files I download into my <a class="reference external" href="https://plex.tv">Plex</a> server using <a class="reference internal" href="../howdy-tv/cli_tools/howdy_tv_cli.html#get-tv-batch"><span class="std std-ref">get_tv_batch</span></a>. This uses <a class="reference external" href="https://en.wikipedia.org/wiki/FFmpeg">FFMpeg</a>, <a class="reference external" href="https://ffmpeg.org/ffprobe.html">FFProbe</a>, and <a class="reference external" href="https://mkvtoolnix.download/doc/mkvpropedit.html">mkvpropedit</a>, to identify, reencode, and flesh out the metadata for these TV show files.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TODO, start really fleshing out documentation for <code class="docutils literal notranslate"><span class="pre">howdy_grabbag</span></code>, including URL to documentation.</p>
+</div>
+<dl class="py function" id="module-howdy.core.core_ffmpeg">
+<dt class="sig sig-object py" id="howdy.core.core_ffmpeg.find_files_to_process">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_ffmpeg.</span></span><span class="sig-name descname"><span class="pre">find_files_to_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_hevc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_bitrate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_ffmpeg.find_files_to_process" title="Link to this definition"></a></dt>
+<dd><p>Determines those video media files to select, that have a minimum total (video + all audio streams) bit rate above a threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fnames</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – the collection of video media files to process.</p></li>
+<li><p><strong>do_hevc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, then only process <a class="reference external" href="https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding">HEVC</a> encoded video media files in <code class="docutils literal notranslate"><span class="pre">fnames</span></code>. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, then select on <em>all</em> video media files in <code class="docutils literal notranslate"><span class="pre">fnames</span></code>.</p></li>
+<li><p><strong>min_bitrate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the <em>minimum</em> total bitrate, in kbps, of files to select. Default is 2000 kbps.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of files to choose. Each key is the filename, and its value is the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> returned by <a class="reference internal" href="#howdy.core.core_ffmpeg.get_hevc_bitrate" title="howdy.core.core_ffmpeg.get_hevc_bitrate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_hevc_bitrate</span></code></a> operating on that file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#howdy.core.core_ffmpeg.get_hevc_bitrate" title="howdy.core.core_ffmpeg.get_hevc_bitrate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_hevc_bitrate</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_ffmpeg.get_ffprobe_json">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_ffmpeg.</span></span><span class="sig-name descname"><span class="pre">get_ffprobe_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_ffmpeg.get_ffprobe_json" title="Link to this definition"></a></dt>
+<dd><p>Uses <a class="reference external" href="https://ffmpeg.org/ffprobe.html">FFProbe</a> to get statistics on media file and dumping into a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the input media file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of statistics on the media file, which includes video stream bitrate and duration, the bitrate and duration of each audio track, and summaries of each subtitle track.</p>
+</dd>
+</dl>
+<p>For example, here is the output when running on the <a class="reference external" href="https://en.wikipedia.org/wiki/Matroska">MKV</a> media file of <a class="reference external" href="https://en.wikipedia.org/wiki/Star_Trek_VI:_The_Undiscovered_Country">Star Trek VI: The Undiscovered Country</a> that I have,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;is_hevc&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+ <span class="s1">&#39;bit_rate_kbps&#39;</span><span class="p">:</span> <span class="mf">929.4638671875</span><span class="p">,</span>
+ <span class="s1">&#39;audio_bit_rate_kbps&#39;</span><span class="p">:</span> <span class="mf">93.4990234375</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>My media file is not <a class="reference external" href="https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding">HEVC</a> encoded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_ffmpeg.get_hevc_bitrate">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_ffmpeg.</span></span><span class="sig-name descname"><span class="pre">get_hevc_bitrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_ffmpeg.get_hevc_bitrate" title="Link to this definition"></a></dt>
+<dd><p>This is a confusing function, because this returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> that contains the audio and video stream bitrates <em>and</em> status on whether a video media file is <a class="reference external" href="https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding">HEVC</a> encoded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the input media video file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> that contains the</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_ffmpeg.is_hevc">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_ffmpeg.</span></span><span class="sig-name descname"><span class="pre">is_hevc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_ffmpeg.is_hevc" title="Link to this definition"></a></dt>
+<dd><p>Checks whether the video codec is <a class="reference external" href="https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding">HEVC</a> (also called H265).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the input media video file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the video stream codec is <a class="reference external" href="https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding">HEVC</a>, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#howdy.core.core_ffmpeg.get_ffprobe_json" title="howdy.core.core_ffmpeg.get_ffprobe_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ffprobe_json</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_ffmpeg.process_multiple_files_lower_audio">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_ffmpeg.</span></span><span class="sig-name descname"><span class="pre">process_multiple_files_lower_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_audio_bit_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_audio_bit_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">160</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_ffmpeg.process_multiple_files_lower_audio" title="Link to this definition"></a></dt>
+<dd><p>Processes a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of files, whose per-stream audio bit rates are <em>greater</em> than some threshold bit rate, down to a new and lower audio bit rate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – the collection of video media files to process.</p></li>
+<li><p><strong>min_audio_bit_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the threshold audio bit rate, in kbps, to process a video media file.</p></li>
+<li><p><strong>new_audio_bit_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the <em>new</em> audio bit rate, in kbps, of audio streams in each file that we process.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a status <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> that contains the number of unique video media files it checked, and the number of unique video files it processed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#howdy.core.core_ffmpeg.process_single_filename_lower_audio" title="howdy.core.core_ffmpeg.process_single_filename_lower_audio"><code class="xref py py-meth docutils literal notranslate"><span class="pre">process_single_filename_lower_audio</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="howdy.core.core_ffmpeg.process_single_filename_lower_audio">
+<span class="sig-prename descclassname"><span class="pre">howdy.core.core_ffmpeg.</span></span><span class="sig-name descname"><span class="pre">process_single_filename_lower_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audio_bit_rate_new</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">160</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.core_ffmpeg.process_single_filename_lower_audio" title="Link to this definition"></a></dt>
+<dd><p>Uses <a class="reference external" href="https://en.wikipedia.org/wiki/FFmpeg">FFMpeg</a> to lower the file name’s audio stream to newer audio bit rate, in kbps. This applies to every audio stream in the file. Also if the media file is an <a class="reference external" href="https://en.wikipedia.org/wiki/Matroska">MKV</a>, uses <a class="reference external" href="https://mkvtoolnix.download/doc/mkvpropedit.html">mkvpropedit</a> to add audio and video statistics metadata to the <a class="reference external" href="https://en.wikipedia.org/wiki/Matroska">MKV</a> file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the initial media file (must be <a class="reference external" href="https://en.wikipedia.org/wiki/Matroska">MKV</a> or <a class="reference external" href="https://en.wikipedia.org/wiki/MP4_file_format">MP4</a>) to process.</p></li>
+<li><p><strong>newfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the new media file (must be <a class="reference external" href="https://en.wikipedia.org/wiki/Matroska">MKV</a> or <a class="reference external" href="https://en.wikipedia.org/wiki/MP4_file_format">MP4</a>) to process. the extension for <code class="docutils literal notranslate"><span class="pre">newfile</span></code> must be the <em>same</em> as the extension for <code class="docutils literal notranslate"><span class="pre">filename</span></code>.</p></li>
+<li><p><strong>audio_bit_rate_new</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the new per-audio-stream bit rate, in kbps. Must be <span class="math notranslate nohighlight">\(\ge 10\)</span> kbps.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="howdy-core-deluge-client-tanim-module">
-<h2><span class="section-number">4.3.8. </span>howdy.core.deluge_client_tanim module<a class="headerlink" href="#howdy-core-deluge-client-tanim-module" title="Link to this heading"></a></h2>
+<h2><span class="section-number">4.3.9. </span>howdy.core.deluge_client_tanim module<a class="headerlink" href="#howdy-core-deluge-client-tanim-module" title="Link to this heading"></a></h2>
 <p>This is a newer module. This is a copy of the <a class="reference external" href="https://github.com/JohnDoee/deluge-client">deluge-client</a> repository and module. Instead of creating a special branch, I had to modify its <code class="docutils literal notranslate"><span class="pre">DelugeRPCClient</span></code> object to work in a custom way, because of <em>much</em> stricter SSL policies in Python 3.10.</p>
 <p>The relevant code that I modify now lives in my <code class="xref py py-class docutils literal notranslate"><span class="pre">DelugeRPCClient</span></code>. I followed advice from <a class="reference external" href="https://stackoverflow.com/questions/49774366/how-to-set-ciphers-in-ssl-python-socket">this StackOverflow article on how to set ciphers in SSL Python sockets</a>. I created an SSL context, allowed <em>all</em> ciphers, and then passed the all-ciphers list into the low-level socket that performs RPC communications.</p>
 <dl class="py exception" id="module-howdy.core.deluge_client_tanim.client">
 <dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.CallTimeoutException">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">CallTimeoutException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.CallTimeoutException" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">CallTimeoutException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.CallTimeoutException" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.ConnectionLostException">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">ConnectionLostException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.ConnectionLostException" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">ConnectionLostException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.ConnectionLostException" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.DelugeClientException">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">DelugeClientException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.DelugeClientException" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">DelugeClientException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.DelugeClientException" title="Link to this definition"></a></dt>
 <dd><p>Base exception for all deluge client exceptions</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.FailedToReconnectException">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">FailedToReconnectException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.FailedToReconnectException" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">FailedToReconnectException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.FailedToReconnectException" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.InvalidHeaderException">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">InvalidHeaderException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.InvalidHeaderException" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">InvalidHeaderException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.InvalidHeaderException" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.LocalDelugeRPCClient">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">LocalDelugeRPCClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'127.0.0.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">58846</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode_utf8</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_reconnect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.LocalDelugeRPCClient" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">LocalDelugeRPCClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'127.0.0.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">58846</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode_utf8</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_reconnect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.LocalDelugeRPCClient" title="Link to this definition"></a></dt>
 <dd><p>Client with auto discovery for the default local credentials</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="howdy.core.deluge_client_tanim.client.RemoteException">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">RemoteException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.RemoteException" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">howdy.core.deluge_client_tanim.client.</span></span><span class="sig-name descname"><span class="pre">RemoteException</span></span><a class="headerlink" href="#howdy.core.deluge_client_tanim.client.RemoteException" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <section id="module-howdy.core.deluge_client_tanim.rencode">
-<span id="howdy-core-deluge-client-tanim-rencode-submodule"></span><h3><span class="section-number">4.3.8.1. </span>howdy.core.deluge_client_tanim.rencode submodule<a class="headerlink" href="#module-howdy.core.deluge_client_tanim.rencode" title="Link to this heading"></a></h3>
+<span id="howdy-core-deluge-client-tanim-rencode-submodule"></span><h3><span class="section-number">4.3.9.1. </span>howdy.core.deluge_client_tanim.rencode submodule<a class="headerlink" href="#module-howdy.core.deluge_client_tanim.rencode" title="Link to this heading"></a></h3>
 <p>rencode – Web safe object pickling/unpickling.</p>
 <p>Public domain, <a class="reference external" href="http://www.connellybarnes.com/work">Connelly Barnes</a> 2006-2007.</p>
 <p>The rencode module is a modified version of <a class="reference external" href="https://en.wikipedia.org/wiki/Bencode">bencode</a> from the <a class="reference external" href="https://en.wikipedia.org/wiki/BitTorrent">BitTorrent</a> project.  For complex, heterogeneous data structures with many small elements, r-encodings take up significantly less space than b-encodings:</p>

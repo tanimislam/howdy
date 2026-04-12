@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; howdy! 1.55-111-g8c644fe4 documentation</title>
+  <title>Index &mdash; howdy! 1.55-123-g866b1a00 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=7dc6ce7e" />
@@ -14,9 +14,9 @@
     <link rel="shortcut icon" href="_static/howdy_icon_VECTA.svg"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=eef769d8"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=ed8ef0ac"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -238,6 +238,8 @@
 </li>
       <li><a href="howdy-core/howdy_core_api.html#howdy.core.core.fill_out_movies_stuff">fill_out_movies_stuff() (in module howdy.core.core)</a>
 </li>
+      <li><a href="howdy-core/howdy_core_api.html#howdy.core.core_ffmpeg.find_files_to_process">find_files_to_process() (in module howdy.core.core_ffmpeg)</a>
+</li>
       <li><a href="howdy-tv/howdy_tv_api.html#howdy.tv.tv_attic.fix_missing_unnamed_episodes">fix_missing_unnamed_episodes() (in module howdy.tv.tv_attic)</a>
 </li>
   </ul></td>
@@ -352,6 +354,8 @@
 </li>
       <li><a href="howdy-music/howdy_music_api.html#howdy.music.get_failing_artistalbum">get_failing_artistalbum() (in module howdy.music)</a>
 </li>
+      <li><a href="howdy-core/howdy_core_api.html#howdy.core.core_ffmpeg.get_ffprobe_json">get_ffprobe_json() (in module howdy.core.core_ffmpeg)</a>
+</li>
       <li><a href="howdy-core/howdy_core_api.html#howdy.core.get_formatted_duration">get_formatted_duration() (in module howdy.core)</a>
 </li>
       <li><a href="howdy-core/howdy_core_api.html#howdy.core.get_formatted_size">get_formatted_size() (in module howdy.core)</a>
@@ -367,6 +371,8 @@
       <li><a href="howdy-music/howdy_music_api.html#howdy.music.music.get_gmusicmanager">get_gmusicmanager() (in module howdy.music.music)</a>
 </li>
       <li><a href="howdy-music/howdy_music_api.html#howdy.music.music.HowdyMusic.get_gracenote_credentials">get_gracenote_credentials() (howdy.music.music.HowdyMusic class method)</a>
+</li>
+      <li><a href="howdy-core/howdy_core_api.html#howdy.core.core_ffmpeg.get_hevc_bitrate">get_hevc_bitrate() (in module howdy.core.core_ffmpeg)</a>
 </li>
       <li><a href="howdy-email/howdy_email_api.html#howdy.email.HowdyIMGClient.get_image_md5">get_image_md5() (howdy.email.HowdyIMGClient class method)</a>
 </li>
@@ -660,6 +666,13 @@
 </li>
       </ul></li>
       <li>
+    howdy.core.core_ffmpeg
+
+      <ul>
+        <li><a href="howdy-core/howdy_core_api.html#module-howdy.core.core_ffmpeg">module</a>
+</li>
+      </ul></li>
+      <li>
     howdy.core.core_rsync
 
       <ul>
@@ -708,6 +721,8 @@
         <li><a href="howdy-email/howdy_email_api.html#module-howdy.email.email">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     howdy.movie
 
@@ -715,8 +730,6 @@
         <li><a href="howdy-movie/howdy_movie_api.html#module-howdy.movie">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     howdy.movie.movie
 
@@ -804,6 +817,10 @@
       <li><a href="howdy-core/howdy_core_api.html#howdy.core.deluge_client_tanim.client.InvalidHeaderException">InvalidHeaderException</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="howdy-core/howdy_core_api.html#howdy.core.core_ffmpeg.is_hevc">is_hevc() (in module howdy.core.core_ffmpeg)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="L">L</h2>
@@ -840,6 +857,8 @@
         <li><a href="howdy-core/howdy_core_api.html#module-howdy.core.core_admin">howdy.core.core_admin</a>
 </li>
         <li><a href="howdy-core/howdy_core_api.html#module-howdy.core.core_deluge">howdy.core.core_deluge</a>
+</li>
+        <li><a href="howdy-core/howdy_core_api.html#module-howdy.core.core_ffmpeg">howdy.core.core_ffmpeg</a>
 </li>
         <li><a href="howdy-core/howdy_core_api.html#module-howdy.core.core_rsync">howdy.core.core_rsync</a>
 </li>
@@ -938,10 +957,14 @@
 </li>
       <li><a href="howdy-music/howdy_music_api.html#howdy.music.music_spotify.process_dataframe_playlist_spotify_multiproc">process_dataframe_playlist_spotify_multiproc() (in module howdy.music.music_spotify)</a>
 </li>
-      <li><a href="howdy-core/howdy_core_api.html#howdy.core.core.processValidHTMLWithPNG">processValidHTMLWithPNG() (in module howdy.core.core)</a>
+      <li><a href="howdy-core/howdy_core_api.html#howdy.core.core_ffmpeg.process_multiple_files_lower_audio">process_multiple_files_lower_audio() (in module howdy.core.core_ffmpeg)</a>
+</li>
+      <li><a href="howdy-core/howdy_core_api.html#howdy.core.core_ffmpeg.process_single_filename_lower_audio">process_single_filename_lower_audio() (in module howdy.core.core_ffmpeg)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="howdy-core/howdy_core_api.html#howdy.core.core.processValidHTMLWithPNG">processValidHTMLWithPNG() (in module howdy.core.core)</a>
+</li>
       <li><a href="howdy-core/howdy_core_api.html#howdy.core.ProgressDialog">ProgressDialog (class in howdy.core)</a>
 </li>
       <li><a href="howdy-core/howdy_core_api.html#howdy.core.ProgressDialogThread">ProgressDialogThread (class in howdy.core)</a>

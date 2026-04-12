@@ -11,7 +11,7 @@ from rapidfuzz.fuzz import ratio
 from ive_tanim.core import autocrop_image
 #
 from howdy.tv import get_token, tv_torrents, ShowsToExclude, ShowsExtraFilters, tv_attic
-from howdy.core import core_rsync, splitall, session, return_error_raw
+from howdy.core import core_rsync, core_ffmpeg, splitall, session, return_error_raw
 from howdy.movie import movie
 
 class TVShow( object ):
@@ -1731,8 +1731,10 @@ def create_tvTorUnits( toGet, restrictMaxSize = True, restrictMinSize = True,
     return tvTorUnits, sorted( tv_torrent_gets[ 'newdirs' ].keys( ) )
 
 def download_batched_tvtorrent_shows(
-    tvTorUnits, newdirs = [ ], maxtime_in_secs = 240, num_iters = 10,
-    do_raw = False, do_local_rsync = False, client_type = 'deluge' ):
+    tvTorUnits, newdirs = [ ],
+    maxtime_in_secs = 240, num_iters = 10,
+    do_raw = False, do_local_rsync = False, client_type = 'deluge',
+    min_audio_bit_rate = 256, new_audio_bit_rate = 160 ):
     r"""
     Engine backend code, used by :ref:`get_tv_batch`, that searches for Magnet links for missing episodes on the Jackett_ server, downloads the Magnet links using the Deluge_ server, and finally copies the downloaded missing episodes to the appropriate locations in the Plex_ TV library. This expects the :py:class:`tuple` input returned by :py:meth:`create_tvTorUnits <howdy.tv.tv.create_tvTorUnits>` to run.
 
@@ -1743,6 +1745,8 @@ def download_batched_tvtorrent_shows(
     :param bool do_raw: if ``False``, then search for Magnet links of missing episodes using their IMDb_ information. If ``True``, then search using the raw string. Default is ``False``.
     :param bool do_local_rsync: if ``False``, then do remote ssh rsync download into local directory. Otherwise do a move from "local" origin directory. Default is ``False``.
     :param str client_type: optional argument, specifying name of the torrent client type. Must be one of 'deluge' or 'transmission'. By default it is 'deluge'.
+    :param int min_audio_bit_rate: the threshold audio bit rate, in kbps, to process a video media file.
+    :param int new_audio_bit_rate: the *new* audio bit rate, in kbps, of audio streams to process a video media file.
 
     .. seealso::
     
@@ -1750,6 +1754,7 @@ def download_batched_tvtorrent_shows(
        * :py:meth:`get_remaining_episodes <howdy.tv.tv.get_remaining_episodes>`.
        * :py:meth:`create_tvTorUnits <howdy.tv.tv.create_tvTorUnits>`.
        * :py:meth:`worker_process_download_tvtorrent <howdy.tv.tv_torrents.worker_process_download_tvtorrent>`.
+       * :py:meth:`process_multiple_files_lower_audio <howdy.core.core_ffmpeg.process_multiple_files_lower_audio>`.
     """
     time0 = time.perf_counter( )
     data = core_rsync.get_credentials( )
@@ -1829,6 +1834,25 @@ def download_batched_tvtorrent_shows(
     #
     ## now move those files that have successfully downloaded into their final destinations
     time2 = time.perf_counter( )
+    #
+    ## first process the files to move based on audio size
+    all_files_downloaded = sorted(
+        map(os.path.realpath,
+            map(lambda tvTorUnit: os.path.join( local_dir, tvTorUnit[ 'remoteFileName' ] ), succesfulTvTorUnits ) ) )
+    try:
+        status_messages = core_ffmpeg.process_multiple_files_lower_audio(
+            all_files_downloaded,
+            min_audio_bit_rate = min_audio_bit_rate,
+            new_audio_bit_rate = new_audio_bit_rate )
+        print( 'took %0.3f seconds to lower audio on %d / %d files.' % (
+            time.perf_counter( ) - time2,
+            status_messages[ 'num files processed' ],
+            status_messages[ 'num total files' ] ) )
+    except Exception as e:
+        print( "Got an error message, %s. TRYING TO MOVE ON!" % str( e ) )
+    #
+    ## then move the files
+    time3 = time.perf_counter( )
     for tvTorUnit in successfulTvTorUnits:
         shutil.move( os.path.join( local_dir, tvTorUnit[ 'remoteFileName' ] ),
                      tvTorUnit[ 'totFname' ] )

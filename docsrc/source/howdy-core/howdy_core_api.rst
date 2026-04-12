@@ -72,6 +72,18 @@ This is a newer module. It implements the low-level tooling to monitor the Tautu
 .. automodule:: howdy.core.core_admin
    :members:
 
+      
+howdy.core.core_ffmpeg module
+----------------------------------------------
+This is a new module, where I have borrowed some functionality from the ``howdy_grabbag`` Python module, to lower the audio bit rate of TV show media files I download into my Plex_ server using :ref:`get_tv_batch`. This uses FFMpeg_, FFProbe_, and mkvpropedit_, to identify, reencode, and flesh out the metadata for these TV show files.
+
+.. note::
+
+   TODO, start really fleshing out documentation for ``howdy_grabbag``, including URL to documentation.
+
+.. automodule:: howdy.core.core_ffmpeg
+   :members:
+
 howdy.core.deluge_client_tanim module
 -------------------------------------------
 This is a newer module. This is a copy of the `deluge-client`_ repository and module. Instead of creating a special branch, I had to modify its ``DelugeRPCClient`` object to work in a custom way, because of *much* stricter SSL policies in Python 3.10.
@@ -106,3 +118,7 @@ howdy.core.deluge_client_tanim.rencode submodule
 .. _Plex: https://plex.tv
 .. _`deluge-client`: https://github.com/JohnDoee/deluge-client
 .. _so_article: https://stackoverflow.com/questions/49774366/how-to-set-ciphers-in-ssl-python-socket
+
+.. _FFMpeg: https://en.wikipedia.org/wiki/FFmpeg
+.. _FFProbe: https://ffmpeg.org/ffprobe.html
+.. _mkvpropedit: https://mkvtoolnix.download/doc/mkvpropedit.html

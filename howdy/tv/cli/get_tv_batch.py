@@ -59,7 +59,7 @@ def main( ):
         '-r', '--raw', dest='do_raw', action='store_true', default = False,
         help = 'If chosen, then use the raw string to specify TV show torrents.' )
     #
-    ##
+    ## type of torrent client to use
     parser.add_argument(
         '-c', '--client_type', dest = 'client_type', type = str, action = 'store', choices = [ 'deluge', 'transmission' ], default = 'deluge',
         help = 'Name of the torrent client type to use. Default is "deluge".' )
@@ -78,6 +78,20 @@ def main( ):
     ## now filter on these items
     parser.add_argument('-F', '--filter', dest = 'filter', action = 'store', nargs = '*',
                         help = 'List of strings on which to filter for the magnet link name.' )
+    #
+    ## 20260412 new functionality
+    ## choose a threshold minimum audio bit rate (per stream) over which to process, and new audio bit rate
+    parser.add_argument( '--min_audio_bit_rate', dest = 'min_audio_bit_rate', action = 'store', type = int, default = 256,
+                         help = ' '.join([
+                             'The minimum audio bit rate, in kbps, per stream. Above this per-stream bit rate, lower the audio bit rate.',
+                             'Do not process files with audio bit rate at or below this threshold.'
+                             'Default is 256 kbps. Must be >= 10 kbps.' ]) )
+    parser.add_argument( '--new_audio_bit_rate', dest = 'new_audio_bit_rate', action = 'store', type = int, default = 160,
+                         help = ' '.join([
+                             'For those files whose per-stream audio bit rate > min_audio_bit_rate, reencode their audio to new_audio_bit_rate, in kbps.',
+                             'Default is 160 kbps. Must be >= 10 kbps and less than min_audio_bit_rate.' ] ) )
+    #
+    ##
     args = parser.parse_args( )
     #
     logger = logging.getLogger( )
@@ -85,6 +99,10 @@ def main( ):
         logger.setLevel( _debug_level_dict[ args.debug_level.lower( ) ] )
     assert( args.maxtime_in_secs >= 60 ), 'error, max time must be >= 60 seconds.'
     assert( args.num_iters >= 1 ), 'error, must have a positive number of maximum iterations.'
+    assert( args.min_audio_bit_rate >= 10 )
+    assert( args.new_audio_bit_rate >= 10 )
+    assert( args.new_audio_bit_rate < args.min_audio_bit_rate )
+    #
     step = 0
     print( '%d, started on %s' % ( step, datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ) )
     print( '%d, using client type = %s' % ( step, args.client_type ) )
@@ -169,6 +187,8 @@ def main( ):
     tv.download_batched_tvtorrent_shows(
         tvTorUnits, newdirs = newdirs, maxtime_in_secs = args.maxtime_in_secs,
         num_iters = args.num_iters, do_local_rsync = args.do_local_rsync,
-        client_type = args.client_type )
+        client_type = args.client_type,
+        min_audio_bit_rate = args.min_audio_bit_rate,
+        new_audio_bit_rate = args.new_audio_bit_rate )
     print( '\n'.join([ '%d, everything done in %0.3f seconds.' % ( step, time.perf_counter( ) - time0 ),
                        finish_statement( step ) ]))

@@ -43,9 +43,21 @@ The help output, when running ``get_tv_batch -h``, produces the following. Here,
      --nomax               If chosen, do not restrict maximum size of downloaded file.
      --nomin               If chosen, do not restrict minimum size of downloaded file.
      -r, --raw             If chosen, then use the raw string to specify TV show torrents.
+     -c {deluge,transmission}, --client_type {deluge,transmission}
+			     Name of the torrent client type to use. Default is "deluge".
+     -R, --remote          If chosen, then use a REMOTE Plex server location.
+     -M MAINPATH, --mainPath MAINPATH
+			   Optional argument fix, sometimes needed to add proper prefix path to files in Plex tv libraries. Otherwise do not add.
+     -L, --localRSYNC      Optional argument. If chosen, then do move command from local server where episodes downloaded instead of rsync ssh from remote server.
      -F [FILTER ...], --filter [FILTER ...]
 			   List of strings on which to filter for the magnet link name.
-
+     --min_audio_bit_rate MIN_AUDIO_BIT_RATE
+			     The minimum audio bit rate, in kbps, per stream. Above this per-stream bit rate, lower the audio bit rate. Do not process files with audio bit rate at or
+			     below this threshold.Default is 256 kbps. Must be >= 10 kbps.
+     --new_audio_bit_rate NEW_AUDIO_BIT_RATE
+			     For those files whose per-stream audio bit rate > min_audio_bit_rate, reencode their audio to new_audio_bit_rate, in kbps. Default is 160 kbps. Must be >=
+			     10 kbps and less than min_audio_bit_rate.
+			   
 To better understand the command line switches (flags and inputs), we describe how the this executable, which searches for new episodes of TV shows on the Plex_ server on a given day, works.
 
 .. _get_tv_batch_point1label:
@@ -78,10 +90,24 @@ Here are the command line inputs that change the operation of this execution.
 
 * The ``--nomax`` flag means that there is no *upper* limit to the size of episode files to be downloaded onto the Plex_ server (see :ref:`point #1 <get_tv_batch_point1label>`).
 
-* The ``-r`` or ``--raw`` flag does not use the default IMDB_ information to search for the torrent. Instead it uses the full string to search for the episode (see :ref:`point #1 <get_tv_batch_point1label>`).
+* The ``-r`` or ``--raw`` flag **does not** use the default IMDB_ information to search for the torrent. Instead it uses the full string to search for the episode (see :ref:`point #1 <get_tv_batch_point1label>`).
 
+* The ``-c`` or ``--client_type`` selects the torrent client to use, whether Deluge_ (if ``deluge``) or Transmission_ (if ``transmission``). The default is ``deluge``.
+  
 * The ``-F`` or ``--filter`` is relatively new functionality. It allows us to *filter* on types of TV show files we want to download, which looks for magnet files with those strings in them. **We can use multiple filters on top of each other**.
 
+* The ``--min_audio_bit_rate`` selects on those files with a per-audio bit rate, in kbs, above ``min_audio_bit_rate``. If the downloaded TV show file has an audio bit rate at or below this, do nothing. If its audio bit rate is *above* ``min_audio_bit_rate``, then use FFMpeg_ to lower its per-audio-stream bit rate to a specific value.
+
+* The ``--new_audio_bit_rate`` reencodes audio, for those download TV show files with audio bit rate **above** ``min_audio_bit_rate``, to ``new_audio_bit_rate``. ``new_audio_bit_rate`` is in kbps.
+
+Finally, there are some historical extra settings when the Plex_ server and the seedbox server were the same. **I do not use these settings right now, and I copy their command line description.**
+
+* ``-R`` or ``--remote`` chooses a remote Plex_ server location.
+
+* ``-M`` or ``--mainPath`` is an extra prefix path to files in Plex_ TV libraries.
+
+*  ``-L`` or ``--localRSYNC`` says to do a move command from local server where episodes are downloaded, instead of rsync ssh from a remote server.
+  
 Here is a demonstration of its operation, searching for new episodes to download on the Plex_ server on ``Sunday, 20 October 2019``. `The Great British Bake-Off <https://en.wikipedia.org/wiki/The_Great_British_Bake_Off>`_ is going to be ignored because this show has been excluded for identification and searches. The output format during evaluation is descriptive because the process can take more than a few seconds.
 
 .. code-block:: console
@@ -582,6 +608,7 @@ Running ``howdy_tv_excludes show`` will display, in this instance, those three s
 
 .. _Jackett: https://github.com/Jackett/Jackett
 .. _Deluge: https://en.wikipedia.org/wiki/Deluge_(software)
+.. _Transmission: https://en.wikipedia.org/wiki/Transmission_(BitTorrent_client)
 .. _deluge_console: https://whatbox.ca/wiki/Deluge_Console_Documentation
 .. _rsync: https://en.wikipedia.org/wiki/Rsync
 .. _Plex: https://plex.tv
@@ -594,3 +621,4 @@ Running ``howdy_tv_excludes show`` will display, in this instance, those three s
 .. _`SpongeBob SquarePants`: https://www.imdb.com/title/tt0206512
 .. _`Reno 911!`: https://www.imdb.com/title/tt0370194
 .. _HEVC: https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding
+.. _FFMpeg: https://en.wikipedia.org/wiki/FFmpeg

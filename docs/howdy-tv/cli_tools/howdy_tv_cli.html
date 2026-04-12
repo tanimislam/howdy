@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5.1. Howdy TV Command Line Utilities &mdash; howdy! 1.55-123-g866b1a00 documentation</title>
+  <title>5.1. Howdy TV Command Line Utilities &mdash; howdy! 1.55-125-g9b47a4ee documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=7dc6ce7e" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/howdy_icon_VECTA.svg"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=ed8ef0ac"></script>
+      <script src="../../_static/documentation_options.js?v=81855f8d"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -129,8 +129,20 @@
 <span class="go">  --nomax               If chosen, do not restrict maximum size of downloaded file.</span>
 <span class="go">  --nomin               If chosen, do not restrict minimum size of downloaded file.</span>
 <span class="go">  -r, --raw             If chosen, then use the raw string to specify TV show torrents.</span>
+<span class="go">  -c {deluge,transmission}, --client_type {deluge,transmission}</span>
+<span class="go">                          Name of the torrent client type to use. Default is &quot;deluge&quot;.</span>
+<span class="go">  -R, --remote          If chosen, then use a REMOTE Plex server location.</span>
+<span class="go">  -M MAINPATH, --mainPath MAINPATH</span>
+<span class="go">                        Optional argument fix, sometimes needed to add proper prefix path to files in Plex tv libraries. Otherwise do not add.</span>
+<span class="go">  -L, --localRSYNC      Optional argument. If chosen, then do move command from local server where episodes downloaded instead of rsync ssh from remote server.</span>
 <span class="go">  -F [FILTER ...], --filter [FILTER ...]</span>
 <span class="go">                        List of strings on which to filter for the magnet link name.</span>
+<span class="go">  --min_audio_bit_rate MIN_AUDIO_BIT_RATE</span>
+<span class="go">                          The minimum audio bit rate, in kbps, per stream. Above this per-stream bit rate, lower the audio bit rate. Do not process files with audio bit rate at or</span>
+<span class="go">                          below this threshold.Default is 256 kbps. Must be &gt;= 10 kbps.</span>
+<span class="go">  --new_audio_bit_rate NEW_AUDIO_BIT_RATE</span>
+<span class="go">                          For those files whose per-stream audio bit rate &gt; min_audio_bit_rate, reencode their audio to new_audio_bit_rate, in kbps. Default is 160 kbps. Must be &gt;=</span>
+<span class="go">                          10 kbps and less than min_audio_bit_rate.</span>
 </pre></div>
 </div>
 <p>To better understand the command line switches (flags and inputs), we describe how the this executable, which searches for new episodes of TV shows on the <a class="reference external" href="https://plex.tv">Plex</a> server on a given day, works.</p>
@@ -155,8 +167,17 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">--numthreads</span></code> sets the number of threads used for downloading new episodes onto the <a class="reference external" href="https://plex.tv">Plex</a> server (see <a class="reference internal" href="#get-tv-batch-point2label"><span class="std std-ref">point #2</span></a>).</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">--nomin</span></code> flag means that there is no <em>lower</em> limit to the size of episode files to be downloaded onto the <a class="reference external" href="https://plex.tv">Plex</a> server (see <a class="reference internal" href="#get-tv-batch-point1label"><span class="std std-ref">point #1</span></a>).</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">--nomax</span></code> flag means that there is no <em>upper</em> limit to the size of episode files to be downloaded onto the <a class="reference external" href="https://plex.tv">Plex</a> server (see <a class="reference internal" href="#get-tv-batch-point1label"><span class="std std-ref">point #1</span></a>).</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">-r</span></code> or <code class="docutils literal notranslate"><span class="pre">--raw</span></code> flag does not use the default <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDB</a> information to search for the torrent. Instead it uses the full string to search for the episode (see <a class="reference internal" href="#get-tv-batch-point1label"><span class="std std-ref">point #1</span></a>).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">-r</span></code> or <code class="docutils literal notranslate"><span class="pre">--raw</span></code> flag <strong>does not</strong> use the default <a class="reference external" href="https://en.wikipedia.org/wiki/IMDb">IMDB</a> information to search for the torrent. Instead it uses the full string to search for the episode (see <a class="reference internal" href="#get-tv-batch-point1label"><span class="std std-ref">point #1</span></a>).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">-c</span></code> or <code class="docutils literal notranslate"><span class="pre">--client_type</span></code> selects the torrent client to use, whether <a class="reference external" href="https://en.wikipedia.org/wiki/Deluge_(software)">Deluge</a> (if <code class="docutils literal notranslate"><span class="pre">deluge</span></code>) or <a class="reference external" href="https://en.wikipedia.org/wiki/Transmission_(BitTorrent_client)">Transmission</a> (if <code class="docutils literal notranslate"><span class="pre">transmission</span></code>). The default is <code class="docutils literal notranslate"><span class="pre">deluge</span></code>.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">-F</span></code> or <code class="docutils literal notranslate"><span class="pre">--filter</span></code> is relatively new functionality. It allows us to <em>filter</em> on types of TV show files we want to download, which looks for magnet files with those strings in them. <strong>We can use multiple filters on top of each other</strong>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--min_audio_bit_rate</span></code> selects on those files with a per-audio bit rate, in kbs, above <code class="docutils literal notranslate"><span class="pre">min_audio_bit_rate</span></code>. If the downloaded TV show file has an audio bit rate at or below this, do nothing. If its audio bit rate is <em>above</em> <code class="docutils literal notranslate"><span class="pre">min_audio_bit_rate</span></code>, then use <a class="reference external" href="https://en.wikipedia.org/wiki/FFmpeg">FFMpeg</a> to lower its per-audio-stream bit rate to a specific value.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--new_audio_bit_rate</span></code> reencodes audio, for those download TV show files with audio bit rate <strong>above</strong> <code class="docutils literal notranslate"><span class="pre">min_audio_bit_rate</span></code>, to <code class="docutils literal notranslate"><span class="pre">new_audio_bit_rate</span></code>. <code class="docutils literal notranslate"><span class="pre">new_audio_bit_rate</span></code> is in kbps.</p></li>
+</ul>
+<p>Finally, there are some historical extra settings when the <a class="reference external" href="https://plex.tv">Plex</a> server and the seedbox server were the same. <strong>I do not use these settings right now, and I copy their command line description.</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-R</span></code> or <code class="docutils literal notranslate"><span class="pre">--remote</span></code> chooses a remote <a class="reference external" href="https://plex.tv">Plex</a> server location.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-M</span></code> or <code class="docutils literal notranslate"><span class="pre">--mainPath</span></code> is an extra prefix path to files in <a class="reference external" href="https://plex.tv">Plex</a> TV libraries.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-L</span></code> or <code class="docutils literal notranslate"><span class="pre">--localRSYNC</span></code> says to do a move command from local server where episodes are downloaded, instead of rsync ssh from a remote server.</p></li>
 </ul>
 <p>Here is a demonstration of its operation, searching for new episodes to download on the <a class="reference external" href="https://plex.tv">Plex</a> server on <code class="docutils literal notranslate"><span class="pre">Sunday,</span> <span class="pre">20</span> <span class="pre">October</span> <span class="pre">2019</span></code>. <a class="reference external" href="https://en.wikipedia.org/wiki/The_Great_British_Bake_Off">The Great British Bake-Off</a> is going to be ignored because this show has been excluded for identification and searches. The output format during evaluation is descriptive because the process can take more than a few seconds.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tanim-desktop $ get_tv_batch</span>

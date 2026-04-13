@@ -1843,7 +1843,8 @@ def download_batched_tvtorrent_shows(
         status_messages = core_ffmpeg.process_multiple_files_lower_audio(
             all_files_downloaded,
             min_audio_bit_rate = min_audio_bit_rate,
-            new_audio_bit_rate = new_audio_bit_rate )
+            new_audio_bit_rate = new_audio_bit_rate,
+            temp_dir = local_dir )
         print( 'took %0.3f seconds to lower audio on %d / %d files.' % (
             time.perf_counter( ) - time2,
             status_messages[ 'num files processed' ],

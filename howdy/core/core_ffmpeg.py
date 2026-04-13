@@ -2,23 +2,23 @@ import os, sys, glob, logging, subprocess, json, time, uuid
 from pathos.multiprocessing import Pool, cpu_count
 from shutil import which, move
 
-def _find_ffmpeg_exec( ):
-    ffmpeg_exec = which( 'ffmpeg' )
-    if ffmpeg_exec is None: return None
+def _find_exec( exec_name = 'ffmpeg' ):
+    which_exec = which( exec_name )
+    if which_exec is None: return None
     #
     ## now check if we can execute on it
-    if os.access( ffmpeg_exec, os.X_OK ): return ffmpeg_exec
+    if os.access( which_exec, os.X_OK ): return which_exec
     #
     ## otherwise look in /usr/bin
-    ffmpeg_exec = which( 'ffmpeg', path='/usr/bin')
-    if ffmpeg_exec is None: return None
-    if os.access( ffmpeg_exec, os.X_OK ): return ffmpeg_exec
+    which_exec = which( exec_name, path='/usr/bin')
+    if which_exec is None: return None
+    if os.access( which_exec, os.X_OK ): return which_exec
     return None
 
-_ffmpeg_exec      = _find_ffmpeg_exec( )
-_ffprobe_exec     = which( 'ffprobe' )
-_mkvpropedit_exec = which( 'mkvpropedit' )
-_nice_exec        = which( 'nice' )
+_ffmpeg_exec      = _find_exec( 'ffmpeg' )
+_ffprobe_exec     = _find_exec( 'ffprobe' )
+_mkvpropedit_exec = _find_exec( 'mkvpropedit' )
+_nice_exec        = _find_exec( 'nice' )
 
 def get_fnames_from_directories( directory_names ):
     fnames = sorted(set(
@@ -179,13 +179,15 @@ def process_single_filename_lower_audio( filename, newfile, audio_bit_rate_new =
         logging.debug( stdout_val.decode( 'utf8' ) )
 
 def process_multiple_files_lower_audio(
-    file_names, min_audio_bit_rate = 256, new_audio_bit_rate = 160 ):
+    file_names, min_audio_bit_rate = 256, new_audio_bit_rate = 160,
+    temp_dir = os.getcwd( ) ):
     """
     Processes a :py:class:`list` of files, whose per-stream audio bit rates are *greater* than some threshold bit rate, down to a new and lower audio bit rate.
 
     :param list file_names: the collection of video media files to process.
     :param int min_audio_bit_rate: the threshold audio bit rate, in kbps, to process a video media file.
     :param int new_audio_bit_rate: the *new* audio bit rate, in kbps, of audio streams in each file that we process.
+    :param str temp_dir: the *temporary* directory into which to store temporary files. Default is the current working directory.
     :returns: a status :py:class:`dict` that contains the number of unique video media files it checked, and the number of unique video files it processed.
     :rtype: dict
 
@@ -194,6 +196,7 @@ def process_multiple_files_lower_audio(
        * :py:meth:`process_single_filename_lower_audio <howdy.core.core_ffmpeg.process_single_filename_lower_audio>`
     """
     #
+    assert( os.path.isdir( os.path.realpath( temp_dir ) ) )
     act_file_names = sorted(filter(
         os.path.isfile, set(map(os.path.realpath, file_names))))
     fnames_dict = dict(filter(lambda entry: entry[1][ 'audio_bit_rate_kbps' ] > min_audio_bit_rate, find_files_to_process(
@@ -203,7 +206,9 @@ def process_multiple_files_lower_audio(
         len( fnames_dict ), min_audio_bit_rate, new_audio_bit_rate ) )
     for idx, filename in enumerate(sorted( fnames_dict ) ):
         time0 = time.perf_counter( )
-        newfile = '%s-%s' % ( str( uuid.uuid4( ) ).split('-')[0].strip( ), os.path.basename( filename ).replace(":", "-" ) )
+        newfile = os.path.join(
+            os.path.realpath( temp_dir ),
+            '%s-%s' % ( str( uuid.uuid4( ) ).split('-')[0].strip( ), os.path.basename( filename ).replace(":", "-" ) ) )
         #
         process_single_filename_lower_audio( filename, newfile, new_audio_bit_rate )
         #

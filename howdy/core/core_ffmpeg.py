@@ -212,8 +212,6 @@ def process_multiple_files_lower_audio(
         dt0 = time.perf_counter( ) - time0
         logging.info( 'processed file %02d / %02d in %0.3f seconds' % (
             idx + 1, len( fnames_dict ), dt0 ) )
-        list_processed.append( 'processed file %02d / %02d in %0.3f seconds' % (
-            idx + 1, len( fnames_dict ), dt0 ) )
     dt00 = time.perf_counter( ) - time00
     logging.info( 'took %0.3f seconds to process %d files' % (
         dt00, len( fnames_dict ) ) )

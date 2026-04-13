@@ -1838,7 +1838,7 @@ def download_batched_tvtorrent_shows(
     ## first process the files to move based on audio size
     all_files_downloaded = sorted(
         map(os.path.realpath,
-            map(lambda tvTorUnit: os.path.join( local_dir, tvTorUnit[ 'remoteFileName' ] ), succesfulTvTorUnits ) ) )
+            map(lambda tvTorUnit: os.path.join( local_dir, tvTorUnit[ 'remoteFileName' ] ), successfulTvTorUnits ) ) )
     try:
         status_messages = core_ffmpeg.process_multiple_files_lower_audio(
             all_files_downloaded,

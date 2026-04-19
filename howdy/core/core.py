@@ -483,8 +483,10 @@ def _get_main_genre_movie( movie_elem ):
         return postprocess_genre_dict[ genres[ 0 ] ]
     return genres[ 0 ]                             
 
-def _get_library_data_movie( key, token, fullURL = 'http://localhost:32400', sinceDate = None,
-                             num_threads = 2 * multiprocessing.cpu_count( ), timeout = None, mainPath = None ):
+def _get_library_data_movie(
+        key, token, fullURL = 'http://localhost:32400', sinceDate = None,
+        num_threads = 2 * multiprocessing.cpu_count( ), timeout = None, mainPath = None,
+        get_streams_data = False ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
@@ -613,7 +615,8 @@ def _get_library_data_show(
         key, token, fullURL = 'http://localhost:32400',
         sinceDate = None, num_threads = 2 * multiprocessing.cpu_count( ),
         timeout = None, mainPath = None,
-        fix_missing_tmdb_ids = False ):
+        fix_missing_tmdb_ids = False,
+        get_streams_data = False ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
@@ -655,6 +658,11 @@ def _get_library_data_show(
         timeout = input_data[ 'timeout' ]
         indices = input_data[ 'indices' ]
         #
+        stream_elem_mapping = {
+            1 : 'video',
+            2 : 'audio',
+            3 : 'subtitle' }
+        #
         html = BeautifulSoup( cont, 'html.parser' )
         direlems = html.find_all('directory')
         tvdata_tup = [ ]
@@ -682,7 +690,7 @@ def _get_library_data_show(
             ## now look for tvdb ID for series
             tvdbID = None
             tmdbID = None
-            result = session.query( TMDBShowIds ).filter(  TMDBShowIds.show == show ).first( )
+            result = session.query( TMDBShowIds ).filter( TMDBShowIds.show == show ).first( )
             if result is not None: tmdbID = result.tmdbid
             for leafElem in leafElems:
                 if 'parentguid' not in leafElem.attrs: continue
@@ -712,7 +720,7 @@ def _get_library_data_show(
                     try: epno = int( videlem[ 'index' ] )
                     except: epno = -1
                     pthumb = videlem.get( 'parentthumb' )
-                    if pthumb is not None: seasonpicurl = '%s%s' % ( fullURL, videlem.get( 'parentthumb' ) )
+                    if pthumb is not None: seasonpicurl = '%s%s' % ( fullURL, pthumb )
                     else: seasonpicurl = fullURL
                     episodepicurl = '%s%s' % ( fullURL, videlem.get( 'thumb' ) )
                     episodesummary = videlem.get('summary')
@@ -724,7 +732,38 @@ def _get_library_data_show(
                     title = videlem[ 'title' ]
                     duration = 1e-3 * int( videlem[ 'duration' ] )
                     media_elem = videlem.find('media')
-                    bitrate = int( media_elem[ 'bitrate' ] ) * 1e3 / 8.0
+                    #bitrate = int( media_elem[ 'bitrate' ] ) * 1e3 / 8.0
+                    bitrate = int( media_elem[ 'bitrate' ] )
+                    #
+                    ## now info on streams
+                    stream_list  = [ ]
+                    if get_streams_data:
+                        stream_URL = urljoin( fullURL, videlem['key'] )
+                        h4_stream  = BeautifulSoup(
+                            sess.get( stream_URL, params = params, verify = False, timeout = timeout ).content,
+                            'html.parser' )
+                        stream_elems = h4_stream.find_all( 'stream' )
+                        for stream_elem in stream_elems:
+                            if 'streamtype' not in stream_elem.attrs:
+                                continue
+                            if 'index' not in stream_elem.attrs:
+                                continue
+                            if int( stream_elem.attrs[ 'streamtype' ] ) not in stream_elem_mapping:
+                                continue
+                            stream_data = {
+                                'type'  : stream_elem_mapping[ int( stream_elem.attrs[ 'streamtype' ] ) ],
+                                'index' : int( stream_elem.attrs[ 'index' ] ), }
+                            if 'bitrate' in stream_elem.attrs:
+                                stream_data[ 'bitrate' ] = int( stream_elem.attrs[ 'bitrate' ] )
+                            #
+                            ## now what to do if type = audio, subtitle
+                            if stream_data[ 'type' ] in ( 'audio', 'subtitle' ):
+                                if 'language' in stream_elem.attrs:
+                                    stream_data[ 'language' ] = stream_elem.attrs[ 'language' ].strip( )
+                            #
+                            ## add to stream_list
+                            stream_list.append( stream_data )
+                    #
                     part_elem = media_elem.find('part')
                     filename = part_elem[ 'file' ]
                     if mainPath is not None: filename = os.path.join( mainPath, re.sub( '^/', '', filename ) )
@@ -739,8 +778,11 @@ def _get_library_data_show(
                         'date aired' : dateaired,
                         'summary' : episodesummary,
                         'duration' : duration,
+                        'total bitrate' : bitrate,
                         'size' : size,
                         'path' : filename }
+                    if len( stream_list ) > 0:
+                        seasons[ seasno ]['episodes'][ epno ][ 'streams' ] = stream_list
                     #
                     ## look for directors and writers
                     director_elems = videlem.find_all( 'director' )
@@ -806,6 +848,18 @@ def _get_library_data_show(
                 'indices' : list( range( idx, num_direlems, act_num_threads ) ) },
                 range( act_num_threads ) ) )
         #
+        ## now trying to debug this
+        # json.dump( {
+        #     'cont' : response.text,
+        #     'entries' : list(
+        #         map(lambda entry:
+        #             { 't0'      : entry[ 't0'],
+        #               'timeout' : entry[ 'timeout'],
+        #               'indices' : entry[ 'indices'] },
+        #             input_tuples ) )  },
+        #           open( 'TVDATA_DEMO_INPUT.json', 'w' ), indent = 1 )
+                                     
+        #
         ## final result reduced after a multiprocessing map
         tvdata = dict(
             chain.from_iterable(filter(
@@ -843,7 +897,8 @@ def _get_library_stats_show(
         sinceDate = None, mainPath = None ):
     _, tvdata = _get_library_data_show(
         key, token, fullURL = fullURL,
-        sinceDate = sinceDate, mainPath = mainPath )
+        sinceDate = sinceDate, mainPath = mainPath,
+        get_streams_data = False )
     numTVshows = len( tvdata )
     numTVeps = sum(list(
         map(lambda show:
@@ -899,9 +954,10 @@ def _get_library_stats_artist( key, token, fullURL = 'http://localhost:32400',
             music_data ) ) )                
     return key, num_songs, num_albums, num_artists, totdur, totsize
 
-def _get_library_data_artist( key, token, fullURL = 'http://localhost:32400',
-                              sinceDate = None, num_threads = 2 * multiprocessing.cpu_count( ),
-                              timeout = None, mainPath = None ):
+def _get_library_data_artist(
+        key, token, fullURL = 'http://localhost:32400',
+        sinceDate = None, num_threads = 2 * multiprocessing.cpu_count( ),
+        timeout = None, mainPath = None, get_streams_data = False ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
     if sinceDate is None:
@@ -1040,7 +1096,7 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
 
 def get_library_data( title, token, fullURL = 'http://localhost:32400',
                       num_threads = 2 * multiprocessing.cpu_count( ), timeout = None,
-                      mainPath = None ):
+                      mainPath = None, get_streams_data = False ):
     r"""
     Returns the data on the specific Plex library, as a :py:class:`dict`. This lower level functionality lives in the same space as `PlexAPI <https://python-plexapi.readthedocs.io/en/latest>`_. Three types of library data can be returned: movies, TV shows, and music.
     
@@ -1074,7 +1130,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
         * ``tvdata[<showname>]['seasons']`` is a :py:class:`dict` whose keys are the seasons. If the show has specials, then those episodes are in season 0.
         
           * this :py:class:`dict` has two keys: ``seasonpicurl`` (:py:class:`str` URL of the poster for the season), and ``episodes`` (:py:class:`dict` of the episodes for that season).
-          * ``tvdata[<showname>]['seasons']['episodes']`` is a :py:class:`dict` whose keys are the episode numbers, and whose value is a :py:class:`dict` with the following nine keys and values.
+          * ``tvdata[<showname>]['seasons']['episodes']`` is a :py:class:`dict` whose keys are the episode numbers, and whose value is a :py:class:`dict` with the following ten keys and values.
           
             * ``title``: :py:class:`str` title of the episode.
             * ``episodepicurl``: :py:class:`str` URL of the poster of the episode.
@@ -1082,6 +1138,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
             * ``summary``: :py:class:`str` summary of the episode's plot.
             * ``duration:``: :py:class:`float` episode duration in seconds.
             * ``size``: :py:class:`int` size of the episode file in bytes.
+            * ``total bitrate``: :py:class:`int` bitrate of the episode file in kbps.
             * ``path``: :py:class:`str` path, on the Plex_ server, of the episode file.
             * ``director``: :py:class:`list` of the episode's directors.
             * ``writer``: :py:class:`list` of the episode's writers.
@@ -1117,6 +1174,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
     :param int num_threads: the number of concurrent threads used to access the Plex_ server and get the library data.
     :param int timeout: optional time, in seconds, to wait for an HTTP conection to the Plex_ server.
     :param str mainPath: optional prefix directory to put in front of all the file paths on the Plex_ server.
+    :param bool get_streams_data: if ``True``, then also get info on every stream in the media file. Only works now for TV show libraries. Default is ``False``.
     
     :returns: a :py:class:`dict` of library data on the Plex_ server.
     :rtype: dict
@@ -1149,7 +1207,8 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
         return None
     _, data = func_dict[ mediatype ](
         key, token, fullURL = fullURL,
-        num_threads = num_threads, timeout = timeout, mainPath = mainPath )
+        num_threads = num_threads, timeout = timeout, mainPath = mainPath,
+        get_streams_data = get_streams_data )
     logging.info( "took %0.3f seconds to get here in get_library_data, library = %s." %
                   ( time.perf_counter( ) - time0, title ) )
     return data

@@ -37,7 +37,7 @@ def get_server_libraries( servername ):
                             library_dict ) )
     print( '%s\n' % tabulate.tabulate( library_data, headers = [ 'LIBRARY NAME', 'TYPE' ] ) )
 
-def get_server_data( servername, library_name ):
+def get_server_data( servername, library_name, get_streams_data = False ):
     time0 = time.perf_counter( )
     dnow = datetime.datetime.now( ).date( )
     _, token = core.checkServerCredentials( doLocal = True )
@@ -54,7 +54,8 @@ def get_server_data( servername, library_name ):
         library_name,
         token = server_access[ 'access token' ],
         fullURL = server_access[ 'url' ],
-        num_threads = 2 * cpu_count( ) )
+        num_threads = 2 * cpu_count( ),
+        get_streams_data = get_streams_data )
     time_to_collect = time.perf_counter( ) - time0
     logging.info( 'took %0.3f seconds to get %s LIBRARY DATA on %s PLEX SERVER.' % (
         time_to_collect, library_name, servername ) )
@@ -96,6 +97,10 @@ def main( ):
                                      help = 'Name of the Plex library, on the Plex server, to dump into a YAML gzipped file.' )
     parser_dumplibrary.add_argument( '-Y', '--yaml', dest = 'dumplibrary_yaml_prefix', type = str, action = 'store', required = True,
                                      help = 'Name of the prefix of the YAML gzipped file containing the library dump.' )
+    parser_dumplibrary.add_argument( '-S', '--stream', dest = 'do_stream', action = 'store_true', default = False,
+                                     help = ' '.join([
+                                         'If chosen, then get per-stream information on each media file in chosen library.',
+                                         'WARNING: this means the library data collection becomes several times longer than if not chosen.' ] ) )
     #
     args = parser.parse_args( )
     logger = logging.getLogger( )
@@ -118,6 +123,6 @@ def main( ):
         library    = args.dumplibrary_library
         yamldump   = args.dumplibrary_yaml_prefix
         dumpdata   = get_server_data(
-            servername, library )
+            servername, library, get_streams_data = args.do_stream )
         dtnow_str  = dumpdata[ 'date snapshot created' ]
         yaml.safe_dump( dumpdata, gzip.open( '%s_%s.yml.gz' % ( yamldump, dtnow_str ), 'wt' ) )

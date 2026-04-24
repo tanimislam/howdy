@@ -1131,7 +1131,7 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
         * ``tvdata[<showname>]['seasons']`` is a :py:class:`dict` whose keys are the seasons. If the show has specials, then those episodes are in season 0.
         
           * this :py:class:`dict` has two keys: ``seasonpicurl`` (:py:class:`str` URL of the poster for the season), and ``episodes`` (:py:class:`dict` of the episodes for that season).
-          * ``tvdata[<showname>]['seasons']['episodes']`` is a :py:class:`dict` whose keys are the episode numbers, and whose value is a :py:class:`dict` with the following ten keys and values.
+          * ``tvdata[<showname>]['seasons'][seasno]['episodes']`` is a :py:class:`dict` whose keys are the episode numbers for season number ``seasno``, and whose value is a :py:class:`dict` with the following ten keys and values.
           
             * ``title``: :py:class:`str` title of the episode.
             * ``episodepicurl``: :py:class:`str` URL of the poster of the episode.
@@ -1143,6 +1143,13 @@ def get_library_data( title, token, fullURL = 'http://localhost:32400',
             * ``path``: :py:class:`str` path, on the Plex_ server, of the episode file.
             * ``director``: :py:class:`list` of the episode's directors.
             * ``writer``: :py:class:`list` of the episode's writers.
+
+          If one provides the function argument, ``get_streams_data`` to be ``True`` (default is ``False``), then this :py:class:`dict` has an extra key, ``streams``. The value is a :py:class:`list` of :py:class:`dict` of each stream in this episode file. Streams are ordered by their index in the stream, and each stream has *at most* the following keys and values.
+
+            * ``index``: :py:class:`int` of stream index order in the episode file. **This will always be defined**.
+            * ``type``: :py:class:`str` describing the stream type (``audio``, ``video``, or ``subtitle``). **This will always be defined**.
+            * ``bitrate``: :py:class:`int` of the stream's bitrate, in kbps, **if defined**.
+            * ``language``: :py:class:`str` for ``audio`` and ``subtitle`` streams, the language of the stream. If the language for the stream is not defined, then the ``language`` key **will not be defined**.
             
         * An example ``tvdata`` :py:class:`dict` with one finished HBO show, `The Brink`_, can be found in :download:`tvdata example </_static/tvdata_example.json>` in JSON format.
 
@@ -1538,7 +1545,7 @@ def refresh_library( key, library_dict, token, fullURL = 'http://localhost:32400
 
 def fix_tv_library( input_tvdata_library ):
     """
-    This takes the TV data library deserialized from an ORJSON dumped file, where the season and episode number keys are strings, back to *integer* season and episode number keys
+    This takes the TV data library deserialized from an ORJSON dumped file, where the season and episode number keys are strings, back to *integer* season and episode number keys.
 
     :param dict input_tvdata_library: the input library of TV data, where each key is the show name
     :returns: a new :py:class:`dict` of TV library data, where season and episode keys are of type :py:class:`int` instead of :py:class:`str`.

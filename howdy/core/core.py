@@ -1,5 +1,5 @@
 import os, glob, datetime, logging, numpy, urllib3, datetime, warnings
-import uuid, requests, pytz, time, json, validators, re
+import uuid, requests, pytz, time, json, validators, re, copy
 import pathos.multiprocessing as multiprocessing
 # oauth2 stuff
 import oauth2client.client
@@ -615,7 +615,7 @@ def _get_library_data_show(
         key, token, fullURL = 'http://localhost:32400',
         sinceDate = None, num_threads = 2 * multiprocessing.cpu_count( ),
         timeout = None, mainPath = None,
-        fix_missing_tmdb_ids = False,
+        fix_missing_tmdb_ids = True,
         get_streams_data = False ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
@@ -846,7 +846,8 @@ def _get_library_data_show(
                 't0'      : time0,
                 'timeout' : timeout,
                 'indices' : list( range( idx, num_direlems, act_num_threads ) ) },
-                range( act_num_threads ) ) )
+            range( act_num_threads ) ) )
+        
         #
         ## now trying to debug this
         # json.dump( {
@@ -1535,6 +1536,28 @@ def refresh_library( key, library_dict, token, fullURL = 'http://localhost:32400
     assert( response.status_code == 200 )
     logging.info( 'refreshing %s Library...' % library_dict[ key ] )
 
+def fix_tv_library( input_tvdata_library ):
+    """
+    This takes the TV data library deserialized from an ORJSON dumped file, where the season and episode number keys are strings, back to *integer* season and episode number keys
+
+    :param dict input_tvdata_library: the input library of TV data, where each key is the show name
+    :returns: a new :py:class:`dict` of TV library data, where season and episode keys are of type :py:class:`int` instead of :py:class:`str`.
+    :rtype: dict
+    """
+    tvdata_output = copy.deepcopy( input_tvdata_library )
+    for showname in tvdata_output:
+        entry = tvdata_output[ showname ]
+        dict_newseasons = { int( seasno_str ) : entry[ 'seasons' ][ seasno_str ] for seasno_str in entry[ 'seasons' ] }
+        tvdata_output[ showname ][ 'seasons' ] = dict_newseasons
+
+    for showname in tvdata_output:
+        for seasno in tvdata_output[ showname ][ 'seasons' ]:
+            entry = tvdata_output[ showname ][ 'seasons' ][ seasno ]
+            dict_neweps = { int( epno_str ) : entry[ 'episodes' ][ epno_str ] for epno_str in entry[ 'episodes' ] }
+            tvdata_output[ showname ][ 'seasons' ][ seasno ][ 'episodes' ] = dict_neweps
+
+    return tvdata_output
+        
 def oauthCheckGoogleCredentials( bypass = False ):
     """
     Checks whether the `Google OAuth2`_ authentication settings exist in the SQLite3_ configuration database. The format of the authentication data in the configuration database is,

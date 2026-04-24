@@ -1,4 +1,4 @@
-import os, sys, time, datetime, yaml, gzip, warnings, logging, tabulate
+import os, sys, time, datetime, orjson, gzip, warnings, logging, tabulate
 from multiprocessing import cpu_count
 from howdy.core import core
 from bs4.builder import XMLParsedAsHTMLWarning
@@ -78,7 +78,7 @@ def main( ):
             'Choose one of three options:',
             '(S) shows the Plex servers to which you have access;',
             '(L) given a chosen Plex server, shows the libraries in that Plex server;',
-            '(D) dumps the plex server library into a YAML gzipped file.' ] ),
+            '(D) dumps the plex server library into a JSON gzipped file.' ] ),
         dest = 'choose_option' )
     #
     ## show plex servers
@@ -90,13 +90,13 @@ def main( ):
                                        help = 'The name of the Plex server.' )
     #
     ## dump the libraries to a file
-    parser_dumplibrary = subparsers.add_parser( 'D', help = 'Dump the library data, from a Plex server, into a YAML gzipped file.' )
+    parser_dumplibrary = subparsers.add_parser( 'D', help = 'Dump the library data, from a Plex server, into a JSON gzipped file.' )
     parser_dumplibrary.add_argument( '-s', '--server', dest = 'dumplibrary_server', type = str, action = 'store', required = True,
                                      help = 'Name of the Plex server to dump library data.' )
     parser_dumplibrary.add_argument( '-L', '--library', dest = 'dumplibrary_library', type = str, action = 'store', required = True,
-                                     help = 'Name of the Plex library, on the Plex server, to dump into a YAML gzipped file.' )
-    parser_dumplibrary.add_argument( '-Y', '--yaml', dest = 'dumplibrary_yaml_prefix', type = str, action = 'store', required = True,
-                                     help = 'Name of the prefix of the YAML gzipped file containing the library dump.' )
+                                     help = 'Name of the Plex library, on the Plex server, to dump into a JSON gzipped file.' )
+    parser_dumplibrary.add_argument( '-J', '--json', dest = 'dumplibrary_json_prefix', type = str, action = 'store', required = True,
+                                     help = 'Name of the prefix of the JSON gzipped file containing the library dump.' )
     parser_dumplibrary.add_argument( '-S', '--stream', dest = 'do_stream', action = 'store_true', default = False,
                                      help = ' '.join([
                                          'If chosen, then get per-stream information on each media file in chosen library.',
@@ -121,8 +121,9 @@ def main( ):
     if args.choose_option == 'D':
         servername = args.dumplibrary_server
         library    = args.dumplibrary_library
-        yamldump   = args.dumplibrary_yaml_prefix
+        jsondump   = args.dumplibrary_json_prefix
         dumpdata   = get_server_data(
             servername, library, get_streams_data = args.do_stream )
         dtnow_str  = dumpdata[ 'date snapshot created' ]
-        yaml.safe_dump( dumpdata, gzip.open( '%s_%s.yml.gz' % ( yamldump, dtnow_str ), 'wt' ) )
+        with gzip.open( '%s_%s.json.gz' % ( jsondump, dtnow_str ), 'w' ) as openfile:
+            openfile.write( orjson.dumps( dumpdata, option=orjson.OPT_NON_STR_KEYS ) )

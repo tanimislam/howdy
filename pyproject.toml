@@ -42,6 +42,7 @@ dependencies = [
     "mutagen",
     "numpy",
     "oauth2client",
+    "orjson",
     "patchwork",
     "pathos",
     "Pillow",

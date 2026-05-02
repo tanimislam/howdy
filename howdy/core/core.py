@@ -1545,11 +1545,13 @@ def refresh_library( key, library_dict, token, fullURL = 'http://localhost:32400
 
 def fix_tv_library( input_tvdata_library ):
     """
-    This takes the TV data library deserialized from an ORJSON dumped file, where the season and episode number keys are strings, back to *integer* season and episode number keys.
+    This takes the TV data library deserialized from an ORJSON_ dumped file, where the season and episode number keys are strings, back to *integer* season and episode number keys.
 
     :param dict input_tvdata_library: the input library of TV data, where each key is the show name
     :returns: a new :py:class:`dict` of TV library data, where season and episode keys are of type :py:class:`int` instead of :py:class:`str`.
     :rtype: dict
+
+    .. _ORJSON: https://github.com/ijl/orjson
     """
     tvdata_output = copy.deepcopy( input_tvdata_library )
     for showname in tvdata_output:

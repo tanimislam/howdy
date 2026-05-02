@@ -980,10 +980,13 @@ def _worker_process_tvtorrents(
             'failed to download idx = %d, %s after %0.3f seconds' % (
                 idx, torFileName, time.perf_counter( ) - time00 ), time00 )
     for idx in range( min( len( data ), num_iters ) ):
-        dat, status_dict = process_single_iteration( data, idx )
-        if dat is not None:
-            return dat, status_dict
-        failing_reasons.append( status_dict[ 'message' ] )
+        try:
+            dat, status_dict = process_single_iteration( data, idx )
+            if dat is not None:
+                return dat, status_dict
+            failing_reasons.append( status_dict[ 'message' ] )
+        except Exception as e:
+            failing_reasons.append( str( e ) )
     #
     ## final failing condition
     return None, _create_status_dict( 'FAILURE','\n'.join( failing_reasons ), time0 )

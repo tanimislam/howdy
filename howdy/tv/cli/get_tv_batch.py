@@ -105,7 +105,8 @@ def main( ):
     #
     step = 0
     print( '%d, started on %s' % ( step, datetime.datetime.now( ).strftime( '%B %d, %Y @ %I:%M:%S %p' ) ) )
-    print( '%d, using client type = %s' % ( step, args.client_type ) )
+    step += 1
+    print( '%d, using client type = %s.' % ( step, args.client_type ) )
     step += 1
     #
     ## get plex server token

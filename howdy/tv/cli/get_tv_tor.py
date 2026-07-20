@@ -31,12 +31,18 @@ def get_items_eztv_io( name, maxnum = 10, verify = True, filtered = [ ] ):
         return None
     return items
 
-def get_items_jackett( name, maxnum = 1000, raw = False, verify = True, filtered = [ ] ):
+def get_items_jackett(
+    name, maxnum = 1000, raw = False, verify = True,
+    filtered = [ ], excluded = [ ],
+    tmdb_id = None ):
+    #
     assert( maxnum >= 5 )
     logging.info( 'started jackett %s.' % name )
     items, status = tv_torrents.get_tv_torrent_jackett(
         name, maxnum = maxnum, raw = raw, verify = verify,
-        must_have = filtered )
+        must_have = filtered,
+        keywords_exc = excluded,
+        tmdb_id = tmdb_id )
     if status != 'SUCCESS':
         logging.info( 'ERROR, JACKETT COULD NOT FIND %s.' % name )
         return None
@@ -132,7 +138,10 @@ def get_tv_torrent_items(
         with open(filename, 'w') as openfile:
             openfile.write('%s\n' % magnet_link )
 
-def process_magnet_items( name, raw = False, verify = True, maxnum = 10, filtered = [ ] ):
+def process_magnet_items(
+    name, raw = False, verify = True, maxnum = 10,
+    filtered = [ ], excluded = [ ], tmdb_id = None ):
+    #
     time0 = time.perf_counter( )
     #
     ## check for jackett
@@ -149,7 +158,10 @@ def process_magnet_items( name, raw = False, verify = True, maxnum = 10, filtere
         jobs = list(map(
             lambda func: pool.apply_async( func, args = ( name, maxnum, verify ) ),
             ( get_items_zooqle, ) ) ) # get_items_eztv_io ) ) )
-        jobs.append( pool.apply_async( get_items_jackett, args = ( name, maxnum, raw, verify, filtered ) ) )
+        jobs.append(
+            pool.apply_async(
+                get_items_jackett,
+                args = ( name, maxnum, raw, verify, filtered, excluded, tmdb_id ) ) )
     items_all = list( chain.from_iterable( filter( None, map(lambda job: job.get( ), jobs ) ) ) )
     logging.info( 'search for torrents took %0.3f seconds.' % ( time.perf_counter( ) - time0 ) )
     if len( items_all ) != 0: return items_all
@@ -157,40 +169,61 @@ def process_magnet_items( name, raw = False, verify = True, maxnum = 10, filtere
             
 def main( ):
     parser = ArgumentParser( )
-    parser.add_argument('-n', '--name', dest='name', type=str, action='store', required = True,
-                      help = 'Name of the TV show to get.')
-    parser.add_argument('--maxnum', dest='maxnum', type=int, action='store', default = 10,
-                      help = 'Maximum number of torrents to look through. Default is 10.')
-    parser.add_argument('-r', '--raw', dest='do_raw', action='store_true', default = False,
-                      help = 'If chosen, then use the raw string (for jackett) to download the torrent.' )
-    parser.add_argument('-f', '--filename', dest='filename', action='store', type=str,
-                      help = 'If defined, put torrent or magnet link into filename.')
-    parser.add_argument('-a', '--add', dest='do_add', action='store_true', default = False,
-                        help = 'If chosen, push the magnet link into the deluge server.' )
+    parser.add_argument(
+        '-n', '--name', dest='name', type=str, action='store', required = True,
+        help = 'Name of the TV show to get.')
+    parser.add_argument(
+        '-M', '--maxnum', dest='maxnum', type=int, action='store', default = 10,
+        help = 'Maximum number of torrents to look through. Default is 10.')
+    parser.add_argument(
+        '-r', '--raw', dest='do_raw', action='store_true', default = False,
+        help = 'If chosen, then use the raw string (for jackett) to download the torrent.' )
+    parser.add_argument(
+        '-f', '--filename', dest='filename', action='store', type=str,
+        help = 'If defined, put torrent or magnet link into filename.')
+    parser.add_argument(
+        '-a', '--add', dest='do_add', action='store_true', default = False,
+        help = 'If chosen, push the magnet link into the deluge server.' )
     parser.add_argument(
         '-D', '--debuglevel', dest='debug_level', action='store', type=str, default = 'None',
         choices = [ 'None', 'info', 'debug' ],
         help = 'Choose the debug level for the system logger. Default is None (no logging). Can be one of None (no logging), info, or debug.' )
-    parser.add_argument('--noverify', dest='do_verify', action='store_false', default = True,
-                      help = 'If chosen, do not verify SSL connections.' )
+    parser.add_argument(
+        '--noverify', dest='do_verify', action='store_false', default = True,
+        help = 'If chosen, do not verify SSL connections.' )
     #
     ## now filter on these items
-    parser.add_argument('-F', '--filter', dest = 'filter', action = 'store', nargs = '*',
-                        help = 'List of strings on which to filter for the magnet link name.' )
+    parser.add_argument(
+        '-F', '--filter', dest = 'filter', action = 'store', nargs = '*',
+        help = 'List of strings on which to filter (must match) for the magnet link name.' )
+    parser.add_argument(
+        '-E', '--excluded', dest = 'exclude', action = 'store', nargs = '*',
+        help = 'List of strings on which to exclude (must NOT match) for the magnet link name.' )
+    parser.add_argument(
+        '-T', '--tmdbid', dest = 'tmdb_id', action = 'store',
+        help = 'Optional argument, if defined is the TMDB ID of the TV show to search.' )
     #
     args = parser.parse_args( )
+    #
     if args.filter is None: filtered = [ ]
-    else: filtered = sorted(set(map(lambda tok: tok.strip().lower(), args.filter)))
+    else: filtered = sorted(set(map(lambda tok: tok.strip().lower(), args.filter ) ) )
+    #
+    if args.exclude is None: excluded = [ ]
+    else: excluded = sorted(set(map(lambda tok: tok.strip().lower(), args.exclude ) ) )
+    #
     logger = logging.getLogger( )
     if args.debug_level.lower( ) in _debug_level_dict:
         logger.setLevel( _debug_level_dict[ args.debug_level.lower( ) ] )
     logging.info( 'FILTERED LIST = %s.' % filtered )
+    logging.info( 'EXCLUDED LIST = %s.' % excluded )
     #
     time0 = time.perf_counter( )
     items = process_magnet_items(
         args.name, maxnum = args.maxnum,
         raw = args.do_raw, verify = args.do_verify,
-        filtered = filtered )
+        filtered = filtered,
+        excluded = excluded,
+        tmdb_id = args.tmdb_id )
 
     logging.info( 'took %0.3f seconds to get TV torrents for %s.' % (
         time.perf_counter( ) - time0, args.name ) )

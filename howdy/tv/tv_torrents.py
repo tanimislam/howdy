@@ -453,9 +453,19 @@ def get_tv_torrent_torrentz( name, maxnum = 10, verify = True ):
     items = items[:maxnum]
     return items, 'SUCCESS'
 
-def get_tv_torrent_jackett( name, maxnum = 10, minSize = 0, maxSize = numpy.inf, keywords = [ ],
-                            keywords_exc = [ ], must_have = [ ], verify = True, series_name = None,
-                            raw = False, debug_mode = False ):
+def get_tv_torrent_jackett(
+        name,
+        maxnum = 10,
+        minSize = 0,
+        maxSize = numpy.inf,
+        keywords = [ ],
+        keywords_exc = [ ],
+        must_have = [ ],
+        verify = True,
+        series_name = None,
+        tmdb_id = None,
+        raw = False,
+        debug_mode = False ):
     r"""
     Returns a :py:class:`tuple` of candidate episode Magnet links found using the main Jackett_ torrent searching service and the string ``"SUCCESS"``, if successful.
 
@@ -468,6 +478,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minSize = 0, maxSize = numpy.inf,
     :param list must_have: optional argument. If not empty, then title of the candidate element must have *all* the keywords in ``must_have``.    
     :param bool verify:  optional argument, whether to verify SSL connections. Default is ``True``.
     :param str series_name: optional argument. the TV show for this episode.
+    :param str tmdb_id: optional argument, the TMDB ID of the TV show for this episode.
     :param bool raw: if ``True``, uses the IMDb_ information to search for the episode. Otherwise, uses the full string in ``name`` to search for the episode.
     :param bool debug_mode: if ``True``, then dumps out information on the elements that it has found into a (hopefully useful) file name. Default is ``False``.
     
@@ -504,6 +515,7 @@ def get_tv_torrent_jackett( name, maxnum = 10, minSize = 0, maxSize = numpy.inf,
     def _return_params( name ):
         params = { 'apikey' : apikey, 'q' : name, 'cat' : '5000' }
         if raw: return params
+        #
         if tvdb_token is None: return params
         if series_name is None:
             if status is None: sname = name
@@ -516,8 +528,13 @@ def get_tv_torrent_jackett( name, maxnum = 10, minSize = 0, maxSize = numpy.inf,
         params[ 'imdbid' ] = imdb_id
         return params
 
-    logging.debug( 'URL ENDPOINT: %s, PARAMS = %s.' % (
-        urljoin( url, endpoint ), _return_params( name ) ) )
+    params = _return_params( name )
+    if tmdb_id is not None:
+        params[ 'tmdbid' ] = tmdb_id.strip( ).lower( )
+    
+
+    logging.info( 'URL ENDPOINT: %s, PARAMS = %s.' % (
+        urljoin( url, endpoint ), params ) )
     response = requests.get(
         urljoin( url, endpoint ),
         params = _return_params( name ), verify = verify ) # tv shows
@@ -615,14 +632,18 @@ def get_tv_torrent_jackett( name, maxnum = 10, minSize = 0, maxSize = numpy.inf,
         return False
       return True
     items = list(filter(lambda item: _filter_minmax_size( minSize, maxSize, item ), items ) )
-    
+    #
     if len( keywords ) != 0:
-      items = list(filter(
-        lambda item: any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords ) ) and
-        not any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords_exc ) ), items ) )
+        items = list(filter(
+            lambda item: any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords ) ), items ) )
+    if len( keywords_exc ) != 0:
+        items = list(filter(
+            lambda item: not any(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), keywords_exc ) ),
+            items ) )
     if len( must_have ) != 0:
-      items = list(filter(lambda item: all(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), must_have ) ), items ) )
-
+        items = list(filter(
+            lambda item: all(map(lambda tok: tok.lower( ) in item['rawtitle'].lower( ), must_have ) ), items ) )
+    #
     logging.debug( 'name = %s, num items pass final = %s.' % (name, len( items ) ) )
     if len( items ) == 0:
       return return_error_raw( 'FAILURE, NO TV SHOWS OR SERIES SATISFYING CRITERIA FOR GETTING %s' % name )
@@ -1070,10 +1091,12 @@ def worker_process_download_tvtorrent(
             logging.debug( 'processing jackett from "%s", using "%s" now, at %0.3f seconds after start.' % (
                 torFileName, tfn, time.perf_counter( ) - time0 ) )
             data, status = get_tv_torrent_jackett(
-              tfn, maxnum = 100, keywords = [ 'x264', 'x265', '720p' ],
-              minSize = minSize, maxSize = maxSize,
-              keywords_exc = [ 'xvid' ], raw = do_raw,
-              must_have = must_have )
+                tfn, maxnum = 100,
+                keywords = [ 'x264', 'x265', '720p' ],
+                minSize = minSize, maxSize = maxSize,
+                keywords_exc = [ 'xvid' ],
+                raw = do_raw,
+                must_have = must_have )
             if status == 'SUCCESS': break
         if status != 'SUCCESS':
             shared_list.append( ( 'jackett', _create_status_dict( 'FAILURE', status, t0 ), 'FAILURE' ) )

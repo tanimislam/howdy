@@ -1103,6 +1103,54 @@ def get_all_tv_library_data(
     timeout = None,
     mainPath = None,
     get_streams_data = False ):
+    r"""
+    Returns all TV data on the Plex library, as a :py:class:`dict`. This lower level functionality lives in the same space as `PlexAPI <https://python-plexapi.readthedocs.io/en/latest>`_, with this JSON like structure. ``tvdata`` is a :py:class:`dict` whose keys are the individual TV shows.
+
+      * Each value in ``tvdata[<showname>]`` is a dictionary with four keys: ``title`` (:py:class:`str` name of the show, <showname>), ``summary`` (:py:class:`str` description of the show), ``picturl`` (:py:class:`str` URL of the poster for the show), and ``seasons`` (:py:class:`dict` whose keys are the seasons of the show).
+
+      * ``tvdata[<showname>]['seasons']`` is a :py:class:`dict` whose keys are the seasons. If the show has specials, then those episodes are in season 0.
+
+        * this :py:class:`dict` has two keys: ``seasonpicurl`` (:py:class:`str` URL of the poster for the season), and ``episodes`` (:py:class:`dict` of the episodes for that season).
+        * ``tvdata[<showname>]['seasons'][seasno]['episodes']`` is a :py:class:`dict` whose keys are the episode numbers for season number ``seasno``, and whose value is a :py:class:`dict` with the following ten keys and values.
+
+          * ``title``: :py:class:`str` title of the episode.
+          * ``episodepicurl``: :py:class:`str` URL of the poster of the episode.
+          * ``date aired``: :py:class:`date <datetime.date>` of when the episode first aired.
+          * ``summary``: :py:class:`str` summary of the episode's plot.
+          * ``duration:``: :py:class:`float` episode duration in seconds.
+          * ``size``: :py:class:`int` size of the episode file in bytes.
+          * ``total bitrate``: :py:class:`int` bitrate of the episode file in kbps.
+          * ``path``: :py:class:`str` path, on the Plex_ server, of the episode file.
+          * ``director``: :py:class:`list` of the episode's directors.
+          * ``writer``: :py:class:`list` of the episode's writers.
+
+        If one provides the function argument, ``get_streams_data`` to be ``True`` (default is ``False``), then this :py:class:`dict` has an extra key, ``streams``. The value is a :py:class:`list` of :py:class:`dict` of each stream in this episode file. Streams are ordered by their index in the stream, and each stream has *at most* the following keys and values.
+
+          * ``index``: :py:class:`int` of stream index order in the episode file. **This will always be defined**.
+          * ``type``: :py:class:`str` describing the stream type (``audio``, ``video``, or ``subtitle``). **This will always be defined**.
+          * ``bitrate``: :py:class:`int` of the stream's bitrate, in kbps, **if defined**.
+          * ``language``: :py:class:`str` for ``audio`` and ``subtitle`` streams, the language of the stream. If the language for the stream is not defined, then the ``language`` key **will not be defined**.
+
+      * An example ``tvdata`` :py:class:`dict` with one finished HBO show, `The Brink`_, can be found in :download:`tvdata example </_static/tvdata_example.json>` in JSON format.
+    
+    :param str token: the Plex_ server access token.
+    :param str fullURL: the Plex_ server address.
+    :param int num_threads: the number of concurrent threads used to access the Plex_ server and get the library data.
+    :param int timeout: optional time, in seconds, to wait for an HTTP conection to the Plex_ server.
+    :param str mainPath: optional prefix directory to put in front of all the file paths on the Plex_ server.
+    :param bool get_streams_data: if ``True``, then also get info on every stream in the media file. Only works now for TV show libraries. Default is ``False``.
+    
+    :returns: a :py:class:`dict` of library data on the Plex_ server.
+    :rtype: dict
+    
+    .. _`The Brink`: https://en.wikipedia.org/wiki/The_Brink_(TV_series)
+
+    
+    .. seealso::
+    
+       * :py:meth:`get_library_data <howdy.core.core.get_library_data>`.
+    """
+    
     #
     ## suppress these warning
     warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning, module='bs4')

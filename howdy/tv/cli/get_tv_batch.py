@@ -133,19 +133,16 @@ def main( ):
                              'show', library_dict ) )
     if len( valid_keys ) == 0:
         print('\n'.join([
-            '%d, Error, could not find a TV show library in %0.3f seconds. Exiting...' %
+            '%d, Error, could not find any TV show library in %0.3f seconds. Exiting...' %
             ( time.perf_counter( ) - time0, step ), finish_statement( step ) ]))
         return
-    tvlib_title = library_dict[ min( valid_keys ) ][ 0 ]
-    print( '%d, found TV library: %s.' % ( step, tvlib_title ) )
-    step += 1
     #
     ## now get the TV shows
     time0 = time.perf_counter( )
-    tvdata = core.get_library_data(
-        tvlib_title, token = token, fullURL = fullURL, num_threads = args.numthreads,
+    tvdata = core.get_all_tv_library_data(
+        token = token, fullURL = fullURL, num_threads = args.numthreads,
         mainPath = args.mainPath )
-    print( '%d, found %d shows in the TV library, in %0.3f seconds.' % (
+    print( '%d, found %d shows in the TV libraries, in %0.3f seconds.' % (
         step, len( tvdata ), time.perf_counter( ) - time0 ) )
     step += 1
     showsToExclude = tv.get_shows_to_exclude( tvdata )

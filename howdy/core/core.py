@@ -615,7 +615,7 @@ def _get_library_data_show(
         key, token, fullURL = 'http://localhost:32400',
         sinceDate = None, num_threads = 2 * multiprocessing.cpu_count( ),
         timeout = None, mainPath = None,
-        fix_missing_tmdb_ids = True,
+        fix_missing_tmdb_ids = False,
         get_streams_data = False ):
     assert( num_threads >= 1 )
     params = { 'X-Plex-Token' : token }
@@ -889,8 +889,9 @@ def _get_library_data_show(
         assert( max( check_all_exists ) )
         #
         ## 20260324, JUST NOT WORKING RIGHT NOW
-        if fix_missing_tmdb_ids:
-            return key,  tv_attic.populate_out_tmdbshowids_and_fix( tvdata ) # maybe try this out...?
+        ## 20260722, CONFIRM NOT WORKING RIGHT NOW
+        #if fix_missing_tmdb_ids:
+        #    return key,  tv_attic.populate_out_tmdbshowids_and_fix( tvdata ) # maybe try this out...?
         return key, tvdata
 
 def _get_library_stats_show(
@@ -1094,6 +1095,63 @@ def get_movies_libraries( token, fullURL = 'http://localhost:32400' ):
                      direlem in html.find_all('directory') }
     return sorted(set(filter(lambda key: library_dict[ key ][1] == 'movie',
                              library_dict ) ) )
+
+def get_all_tv_library_data(
+    token,
+    fullURL = 'http://localhost:32400',
+    num_threads = 2 * multiprocessing.cpu_count( ),
+    timeout = None,
+    mainPath = None,
+    get_streams_data = False ):
+    #
+    ## suppress these warning
+    warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning, module='bs4')
+    #
+    library_dict = get_libraries(
+        token,
+        fullURL,
+        do_full = True )
+    #
+    valid_library_names = set(
+        map(lambda key: library_dict[ key ][ 0 ],
+            filter(lambda key: library_dict[ key ][ -1 ] == 'show', library_dict ) ) )
+    if len( valid_library_names ) == 0:
+        return dict()
+    tvdata_all_dict = dict(map(lambda library_name: (
+        library_name, get_library_data(
+            library_name, token, fullURL = fullURL, num_threads = num_threads,
+            mainPath = mainPath, get_streams_data = get_streams_data ) ),
+                               valid_library_names ) )
+    #
+    ## now for each tv library only select UNIQUE tv show names among all libraries
+    num_libraries_with_tv_shows = len(
+        list(filter(lambda library_name: len( tvdata_all_dict[ library_name ] ) > 0,
+                    tvdata_all_dict ) ) )
+    logging.info( 'NUMBER OF TV LIBRARIES = %d.' % num_libraries_with_tv_shows )
+    logging.info( 'TOTAL NUMBER OF TV SHOWS IN %d LIBRARIES: %d' % (
+        num_libraries_with_tv_shows, len(
+            list(chain.from_iterable(map(lambda library_name: set( tvdata_all_dict[ library_name ] ),
+                                         tvdata_all_dict ) ) ) ) ) )
+    logging.info( 'TOTAL NUMBER OF UNIQUE TV SHOWS IN %d LIBRARIES: %d' % (
+        num_libraries_with_tv_shows, len(
+            set(chain.from_iterable(map(lambda library_name: set( tvdata_all_dict[ library_name ] ),
+                                         tvdata_all_dict ) ) ) ) ) )
+    #
+    ## uniques per tv library
+    dict_of_tv_shows_per_library = dict()
+    for library_name in sorted( tvdata_all_dict ):
+        new_set = set( tvdata_all_dict[ library_name ] )
+        for other_library in sorted( set( tvdata_all_dict ) - set([ library_name, ] ) ):
+            new_set = set( new_set ) - set( tvdata_all_dict[ other_library ] )
+        dict_of_tv_shows_per_library[ library_name ] = new_set
+    #
+    ## now put into tvdata
+    tvdata = dict()
+    for library_name in dict_of_tv_shows_per_library:
+        for show_name in dict_of_tv_shows_per_library[ library_name ]:
+            tvdata[ show_name ] = tvdata_all_dict[ library_name ][ show_name ]
+    return tvdata
+    
 
 def get_library_data( title, token, fullURL = 'http://localhost:32400',
                       num_threads = 2 * multiprocessing.cpu_count( ), timeout = None,

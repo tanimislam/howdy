@@ -347,7 +347,9 @@ def fix_show_tmdbid( show, firstAiredYear ):
     
 def populate_out_tmdbshowids_and_fix( tvdata ):
     """
-    This fills out the database of TV show names with the TMDB_ ids. DOCUMENTATION TO FOLLOW.
+    This fills out the database of TV show names with the TMDB_ ids.
+
+    Only 
     
     :param dict tvdata: the dictionary of TV shows to their attributes.
     :returns: a modified ``tvdata`` dictionary that contains all the TMDB_ ids it could find. For each TV show it finds, it fills in the ``tmdbid`` key associated with it.
@@ -364,7 +366,9 @@ def populate_out_tmdbshowids_and_fix( tvdata ):
         if tmdb_id is None: return None
         return ( tvshow, tmdb_id )
     with Pool( processes = 2 * cpu_count( ) ) as pool:
-        tmdbid_dict = dict(filter(None, pool.map(get_tvshow_tmdbid, tvshows_without_tmdbids)))
+        tmdbid_dict = dict(
+            filter(None, pool.map(
+                get_tvshow_tmdbid, tvshows_without_tmdbids ) ) )
     #
     ## now find the TV shows remaining
     tvshows_remaining = set(  tvshows_without_tmdbids ) - set( tmdbid_dict )
@@ -425,18 +429,19 @@ def populate_out_tmdbshowids_and_fix( tvdata ):
     #
     ## find the entries to get rid of...
     ## and get rid of them
-    tvshows_to_delete_from_database = set( tmdb_dict_db ) - set( tmdb_dict )
-    result = session.query( TMDBShowIds ).filter( TMDBShowIds.show.in_(list(tvshows_to_delete_from_database)))
-    for tmdbshowid in result:
-        session.delete( tmdbshowid )
-    session.commit( )
-    for tvshow in tvshows_to_delete_from_database:
-        tmdb_dict_db.pop( tvshow )
+    #tvshows_to_delete_from_database = set( tmdb_dict_db ) - set( tmdb_dict )
+    #result = session.query( TMDBShowIds ).filter( TMDBShowIds.show.in_(list(tvshows_to_delete_from_database)))
+    #for tmdbshowid in result:
+    #    session.delete( tmdbshowid )
+    #session.commit( )
+    #for tvshow in tvshows_to_delete_from_database:
+    #    tmdb_dict_db.pop( tvshow )
+    
     #
     ## now find the entries to change or add
     entries_to_change_in_db = set( tmdb_dict.items( ) ) - set( tmdb_dict_db.items( ) )
     #
-    ## find those tvshows already in the db, and get rid of them
+    ## find those tvshows already in the db, and MODIFY them
     tvshows_already_in_db = set(map(lambda tup: tup[0], entries_to_change_in_db ) ) & set(
         map(lambda tmdbshowid: tmdbshowid.show, session.query( TMDBShowIds ) ) )
     result = session.query( TMDBShowIds ).filter( TMDBShowIds.show.in_(list( tvshows_already_in_db)))

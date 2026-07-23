@@ -108,12 +108,12 @@ issues_github_path = "tanimislam/howdy"
 
 
 #
-## change favicon to CADUCEUS logo
-#html_logo = '_static/howdy_icon.svg'
-html_favicon = '_static/howdy_icon_VECTA.svg'
-#html_theme_options = {
-#    'logo_only': False,
-#}
+## change favicon to HOWDY logo
+html_logo = '_static/howdy_icon_VECTA.png'
+html_favicon = '_static/howdy_icon_VECTA.png'
+html_theme_options = {
+    'logo_only': False,
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = [ '_templates' ]

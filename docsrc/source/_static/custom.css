@@ -1,3 +1,7 @@
 .wy-nav-content {
     max-width: 75% !important;
 }
+
+pre, code, kbd, samp {
+    font-family: "Ubuntu Mono", "Ubuntu Sans Mono", monospace !important;
+}

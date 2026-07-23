@@ -1132,7 +1132,14 @@ def get_all_tv_library_data(
           * ``language``: :py:class:`str` for ``audio`` and ``subtitle`` streams, the language of the stream. If the language for the stream is not defined, then the ``language`` key **will not be defined**.
 
       * An example ``tvdata`` :py:class:`dict` with one finished HBO show, `The Brink`_, can be found in :download:`tvdata example </_static/tvdata_example.json>` in JSON format.
-    
+
+    .. note::
+
+       The TV shows in the final ``tvdata`` :py:class:`dict` are *only* those TV shows that are *unique* to each Plex TV library.
+
+       We **do not** include TV shows that are common to two or more different Plex TV libraries.
+      
+      
     :param str token: the Plex_ server access token.
     :param str fullURL: the Plex_ server address.
     :param int num_threads: the number of concurrent threads used to access the Plex_ server and get the library data.

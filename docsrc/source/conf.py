@@ -109,8 +109,8 @@ issues_github_path = "tanimislam/howdy"
 
 #
 ## change favicon to HOWDY logo
-html_logo = '_static/howdy_icon_VECTA.png'
-html_favicon = '_static/howdy_icon_VECTA.png'
+html_logo = '_static/howdy_icon_VECTA.svg'
+html_favicon = '_static/howdy_icon_VECTA.svg'
 html_theme_options = {
     'logo_only': False,
 }

@@ -240,21 +240,18 @@ def _email_songs( opts, all_songs_downloaded ):
 def _download_songs_newformat( args ):
     assert( args.song_names is not None )
     assert( args.artist_names is not None )
-    assert( len(list(filter(lambda tok: tok is True,
-                            ( args.do_lastfm, args.do_musicbrainz ) ) ) ) <= 1 )
     #
     ## first get the music metadata
     hm = music.HowdyMusic( verify = args.do_verify )
     lastfm = music.HowdyLastFM( verify = args.do_verify )
-    do_whichone = 'GRACENOTE'
-    if args.do_lastfm: do_whichone = 'LASTFM'
-    if args.do_musicbrainz: do_whichone = 'MUSICBRAINZ'
+    #
+    do_whichone = args.metadata_server
     song_names = list(
         map(lambda song_name: song_name.strip( ), args.song_names.split(';')))
     artist_names = list(
         map(lambda artist_name: artist_name.strip( ), args.artist_names.split(';')))
     artist_names_dict = dict(map(lambda artist_name: ( artist_name, None ), set( artist_names ) ) )
-    if args.do_musicbrainz:
+    if do_whichone == 'MUSICBRAINZ':
         artist_names_dict = dict(map(lambda artist_name: (
             artist_name, music.MusicInfo( artist_name ) ), set( artist_names ) ) )
     all_songs_downloaded = list(

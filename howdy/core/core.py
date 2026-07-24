@@ -1102,7 +1102,9 @@ def get_all_tv_library_data(
     num_threads = 2 * multiprocessing.cpu_count( ),
     timeout = None,
     mainPath = None,
-    get_streams_data = False ):
+    get_streams_data = False,
+    fix_missing_tmdb_ids = True,
+    ):
     r"""
     Returns all TV data on the Plex library, as a :py:class:`dict`. This lower level functionality lives in the same space as `PlexAPI <https://python-plexapi.readthedocs.io/en/latest>`_, with this JSON like structure. ``tvdata`` is a :py:class:`dict` whose keys are the individual TV shows.
 
@@ -1146,6 +1148,7 @@ def get_all_tv_library_data(
     :param int timeout: optional time, in seconds, to wait for an HTTP conection to the Plex_ server.
     :param str mainPath: optional prefix directory to put in front of all the file paths on the Plex_ server.
     :param bool get_streams_data: if ``True``, then also get info on every stream in the media file. Only works now for TV show libraries. Default is ``False``.
+    :param bool fix_missing_tmdb_ids: if ``True``, then *also* fix the missing TMDB id's on TV shows in the ``tvdata`` dict, and update the ``tmdbshowids`` database of TV shows with TMDB id's.
     
     :returns: a :py:class:`dict` of library data on the Plex_ server.
     :rtype: dict
@@ -1205,6 +1208,10 @@ def get_all_tv_library_data(
     for library_name in dict_of_tv_shows_per_library:
         for show_name in dict_of_tv_shows_per_library[ library_name ]:
             tvdata[ show_name ] = tvdata_all_dict[ library_name ][ show_name ]
+    #
+    ## fix missing TMDB id's
+    if fix_missing_tmdb_ids:
+        tvdata = tv_attic.populate_out_tmdbshowids_and_fix( tvdata ) # maybe try this out...?
     return tvdata
     
 

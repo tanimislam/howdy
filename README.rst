@@ -73,7 +73,7 @@ You can try out `howdy_music_songs`_ to get individual songs or all the songs in
    :width: 100%
    :align: middle
 
-.. |howdy_music_songs_clip2| image:: https://tanimislam.github.io/howdy/_images/howdy_music_songs_download_by_artist_and_album_SHRINK.gif
+.. |howdy_music_songs_clip2| image:: https://tanimislam.github.io/howdy/_images/howdy_music_songs_download_by_artist_and_album.gif
    :width: 100%
    :align: middle
 

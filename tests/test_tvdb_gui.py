@@ -32,7 +32,7 @@ def main( info = False, doLocal = True, verify = True ):
         tvdata = pickle.load(
             gzip.open( os.path.join( testDir, 'tvdata_remote.pkl.gz' ), 'rb' ) )
     toGet = pickle.load( gzip.open(
-        gzip.open( os.path.join( testDir, 'toGet.pkl.gz' ), 'rb' ) )
+        gzip.open( os.path.join( testDir, 'toGet.pkl.gz' ), 'rb' ) ) )
     tvdbg = plextvdb_gui.TVDBGUI(
         token, fullURL, tvdata_on_plex = tvdata,
         toGet = toGet, didend = didend, verify = verify )

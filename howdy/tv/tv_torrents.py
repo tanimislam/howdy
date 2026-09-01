@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from tpb import CATEGORIES, ORDERS
 from itertools import chain
 from requests.compat import urljoin
-from multiprocessing import Process, Manager
+from multiprocess import Process, Manager, get_context
 from pathos.multiprocessing import Pool
 #
 from howdy.core import (
@@ -1070,7 +1070,7 @@ def worker_process_download_tvtorrent(
             
     #
     ## now get list of torrents, choose "top" one
-    def _process_jackett_items( tvTorUnit, shared_list ):
+    def _process_jackett_items( tvTorUnit ):
         t0 = time.perf_counter( )
         torFileName = tvTorUnit[ 'torFname' ]
         totFname = tvTorUnit[ 'totFname' ]
@@ -1094,18 +1094,17 @@ def worker_process_download_tvtorrent(
                 tfn, maxnum = 100,
                 keywords = [ 'x264', 'x265', '720p' ],
                 minSize = minSize, maxSize = maxSize,
-                keywords_exc = [ 'xvid' ],
+                keywords_exc = [ 'xvid', 'exe' ],
                 raw = do_raw,
                 must_have = must_have )
             if status == 'SUCCESS': break
         if status != 'SUCCESS':
-            shared_list.append( ( 'jackett', _create_status_dict( 'FAILURE', status, t0 ), 'FAILURE' ) )
-            return
+            return ( 'jackett', _create_status_dict( 'FAILURE', status, t0 ), 'FAILURE' )
         logging.debug( 'successfully processed jackett on %s in %0.3f seconds.' % (
             torFileName, time.perf_counter( ) - t0 ) )
-        shared_list.append( ( 'jackett', data, 'SUCCESS' ) )
+        return ( 'jackett', data, 'SUCCESS' )
     #
-    def _process_eztv_io_items( tvTorUnit, shared_list ):
+    def _process_eztv_io_items( tvTorUnit ):
         t0 = time.perf_counter( )
         torFileName = tvTorUnit[ 'torFname' ]
         totFname = tvTorUnit[ 'totFname' ]
@@ -1132,15 +1131,17 @@ def worker_process_download_tvtorrent(
                                  ( 'x264', 'x265', '720p' ) ) ) and
             'xvid' not in elem['title'].lower( ), data ) )
         if len( data_filt ) == 0:
-            shared_list.append(
-                ( 'eztv.io', _create_status_dict(
-                    'FAILURE', 'ERROR, COULD NOT FIND %s IN EZTV.IO.' % torFileName, t0 ), 'FAILURE' ) )
+            return (
+                'eztv.io',
+                _create_status_dict(
+                    'FAILURE', 'ERROR, COULD NOT FIND %s IN EZTV.IO.' % torFileName, t0 ),
+                'FAILURE' )
             return
         logging.debug( 'successfully processed eztv.io on %s in %0.3f seconds.' % (
             torFileName, time.perf_counter( ) - t0 ) )
-        shared_list.append( ( 'eztv.io', data_filt, 'SUCCESS' ) )
+        return ( 'eztv.io', data_filt, 'SUCCESS' )
     #
-    def _process_zooqle_items( tvTorUnit, shared_list ):
+    def _process_zooqle_items( tvTorUnit ):
         t0 = time.perf_counter( )
         torFileName = tvTorUnit[ 'torFname' ]
         totFname = tvTorUnit[ 'totFname' ]
@@ -1161,27 +1162,43 @@ def worker_process_download_tvtorrent(
             elem['torrent_size'] >= minSize*1e6 and
             elem['torrent_size'] <= maxSize*1e6, data ) )
         if len( data_filt ) == 0:
-            shared_list.append(
-                ( 'zooqle', _create_status_dict(
-                    'FAILURE', 'ERROR, COULD NOT FIND %s IN ZOOQLE.' % torFileName, t0 ), 'FAILURE' ) )
+            return (
+                'zooqle',
+                _create_status_dict(
+                    'FAILURE', 'ERROR, COULD NOT FIND %s IN ZOOQLE.' % torFileName, t0 ),
+                'FAILURE' )
         logging.debug( 'successfully processed zooqle on %s in %0.3f seconds.' % (
             torFileName, time.perf_counter( ) - t0 ) )
-        shared_list.append( ( 'zooqle', data_filt, 'SUCCESS' ) )
+        #shared_list.append( ( 'zooqle', data_filt, 'SUCCESS' ) )
+        return ( 'zooqle', data_filt, 'SUCCESS' )
 
-    m = Manager( )
-    shared_list = m.list( )
-    jobs = [ ]
-    # for targ in ( _process_jackett_items, _process_eztv_io_items, _process_zooqle_items ):
-    for targ in ( _process_jackett_items, _process_zooqle_items ): # because eztv.io is DEAD as of 20220928
-        job = Process( target = targ, args = ( tvTorUnit, shared_list ) )
-        job.daemon = False
-        jobs.append( job )
-        job.start( )
-    for job in jobs: job.join( )
-    for job in jobs: job.close( )
+    #m = Manager( )
+    #shared_list = m.list( )
+    #jobs = [ ]
+    #
+    ## because eztv.io is DEAD as of 20220928
+    ##  for targ in ( _process_jackett_items, _process_eztv_io_items, _process_zooqle_items ):
+
+    #
+    ## 20260901
+    ## following advice on change in multiprocessing start method as of Python 3.14
+    ## advice I do not yet understand = https://share.google/aimode/vMvd92lZ3S2oyYTsS
+    #ctx = get_context( "fork" )
+    # for targ in ( _process_jackett_items, _process_zooqle_items ):
+    #     #
+    #     ## replace Process with ctx.
+    #     job = Process( target = targ, args = ( tvTorUnit, shared_list ) )
+    #     job.daemon = True
+    #     jobs.append( job )
+    #     job.start( )
+    # for job in jobs: job.join( )
+    # for job in jobs: job.close( )
     #shared_list = list(map(
     #    lambda proc: proc( tvTorUnit ),
     #    ( _process_jackett_items, _process_eztv_io_items, _process_zooqle_items ) ) )
+    shared_list = list(map(
+        lambda proc: proc( tvTorUnit ),
+        ( _process_jackett_items, ) ) )
     error_tup = list(map(
         lambda dat: ( dat[0], dat[1] ), filter(lambda dat: dat[-1] == 'FAILURE', shared_list ) ) )
     data = list( chain.from_iterable( map(lambda dat: dat[1],

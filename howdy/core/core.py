@@ -643,6 +643,34 @@ def _get_library_data_show(
             return False
         part_elem = media_elem.find( 'part' )
         return 'size' in part_elem.attrs
+
+    #
+    ## get the tvdb and tmdb from here
+    def _get_tmdb_id( leafElems, show ):
+        result = session.query( TMDBShowIds ).filter( TMDBShowIds.show == show ).first( )
+        if result is not None:
+            return result.tmdbid
+        #
+        for leafElem in leafElems:
+            if 'parentguid' not in leafElem.attrs: continue
+            pguid = leafElem.attrs[ 'parentguid']
+            prs = urlparse( pguid )
+            scheme = prs.scheme
+            if 'themoviedb' in scheme:
+                try:
+                    return int( prs.netloc )
+                except: pass
+        return None
+
+    def _get_tvdb_id( leafElems ):
+        for leafElem in leafElems:
+            if 'parentguid' not in leafElem.attrs: continue
+            pguid = leafElem.attrs[ 'parentguid']
+            prs = urlparse( pguid )
+            try:                  
+                return int( prs.netloc )
+            except: pass
+        return None
     
     #
     ## for videlems in shows
@@ -688,25 +716,8 @@ def _get_library_data_show(
             }
             #
             ## now look for tvdb ID for series
-            tvdbID = None
-            tmdbID = None
-            result = session.query( TMDBShowIds ).filter( TMDBShowIds.show == show ).first( )
-            if result is not None: tmdbID = result.tmdbid
-            for leafElem in leafElems:
-                if 'parentguid' not in leafElem.attrs: continue
-                pguid = leafElem.attrs[ 'parentguid']
-                prs = urlparse( pguid )
-                scheme = prs.scheme
-                if 'themoviedb' in scheme and tmdbID is None:
-                    try:
-                        tmdbID = int( prs.netloc )
-                    except: pass
-                if tvdbID is None:
-                    try:                  
-                        tvdbID = int( prs.netloc )
-                    except: pass
-            if tvdbID is not None: showdata[ 'tvdbid' ] = tvdbID
-            if tmdbID is not None: showdata[ 'tmdbid' ] = tmdbID
+            showdata[ 'tvdbid' ] = _get_tvdb_id( leafElems )
+            showdata[ 'tmdbid' ] = _get_tmdb_id( leafElems, show )
             #
             for leafElem in leafElems:
                 newURL = urljoin( fullURL, leafElem[ 'key' ] )
@@ -888,10 +899,7 @@ def _get_library_data_show(
         assert( len( check_all_exists ) == 1 )
         assert( max( check_all_exists ) )
         #
-        ## 20260324, JUST NOT WORKING RIGHT NOW
-        ## 20260722, CONFIRM NOT WORKING RIGHT NOW
-        #if fix_missing_tmdb_ids:
-        #    return key,  tv_attic.populate_out_tmdbshowids_and_fix( tvdata ) # maybe try this out...?
+        ## return it
         return key, tvdata
 
 def _get_library_stats_show(

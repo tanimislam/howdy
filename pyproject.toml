@@ -29,6 +29,7 @@ classifiers = [
 # NOTE: The original setup.py checks for 'sshpass' executable at install time.
 #       You may need to document this as a system requirement in your README.
 dependencies = [
+    "authlib",
     "google-auth-oauthlib",
     "google-oauth",
     "gspread",

@@ -1169,7 +1169,6 @@ def worker_process_download_tvtorrent(
                 'FAILURE' )
         logging.debug( 'successfully processed zooqle on %s in %0.3f seconds.' % (
             torFileName, time.perf_counter( ) - t0 ) )
-        #shared_list.append( ( 'zooqle', data_filt, 'SUCCESS' ) )
         return ( 'zooqle', data_filt, 'SUCCESS' )
 
     #m = Manager( )
